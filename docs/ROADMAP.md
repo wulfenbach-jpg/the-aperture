@@ -32,6 +32,8 @@ python scripts/github-board.py status 6 in-progress
 python scripts/github-board.py snapshot
 ```
 
+**Two distinct boards.** The internal native Hermes execution board `the-aperture` is an operational planning surface for the current OMP team. It is separate from this public GitHub issue list and its Pages mirror. Neither direction is synchronized automatically; a card moving on the Hermes board does not change a GitHub issue or label, and vice versa. The public GitHub issues remain the authoritative public status record; Hermes progress is reported back to them deliberately.
+
 Open issues have one `status:` label: backlog, ready, in-progress, review or blocked. Closed issues are Done. A stale/incomplete browser fetch must not masquerade as current status: fallback mode visibly identifies the snapshot date. The board does not offer fake drag-and-drop; edits happen through authenticated GitHub issue controls. A native GitHub Project can be added after the account grants `project` scope.
 
 `bootstrap` creates missing labels/milestones/ownership-marked issues idempotently, verifies remote titles/checklists/milestones and refreshes the fallback. It does not overwrite issue discussions, progress or labels on existing work.

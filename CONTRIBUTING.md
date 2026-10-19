@@ -24,6 +24,6 @@ Read [README.md](README.md), [the roadmap](docs/ROADMAP.md), the relevant GitHub
 
 ## Workflow
 
-The [kanban](https://wulfenbach-jpg.github.io/the-aperture/) reads GitHub issues. Open issues have exactly one `status:` label: backlog, ready, in-progress, review or blocked. Close only after acceptance evidence is attached; closed issues appear in Done. Use `python scripts/github-board.py status NUMBER STATUS` for a verified transition, or edit labels on GitHub. `python scripts/github-board.py snapshot` refreshes the dated fallback; it does not commit or push it.
+The [public kanban mirror](https://wulfenbach-jpg.github.io/the-aperture/) reads GitHub issues. It is not the internal native Hermes execution board `the-aperture`, and the two are not synchronized automatically in either direction. Open issues have exactly one `status:` label: backlog, ready, in-progress, review or blocked. Close only after acceptance evidence is attached; closed issues appear in Done. Use `python scripts/github-board.py status NUMBER STATUS` for a verified transition, or edit labels on GitHub. `python scripts/github-board.py snapshot` refreshes the dated fallback; it does not commit or push it.
 
 A bootstrap rerun creates only missing ownership-marked roadmap issues and does not overwrite work in progress. Keep [docs/roadmap.json](docs/roadmap.json) as the source specification and link scope changes in the issue.
