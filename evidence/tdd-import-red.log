@@ -1,0 +1,63 @@
+=== 2026-10-19T01:57:00Z RED: cargo test -p aperture-import --no-fail-fast (stub API) ===
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 2 tests
+test real_deck_is_honestly_unsupported_and_cannot_launch ... FAILED
+test real_deck_metadata_and_entry_counts_are_exact ... FAILED
+---- real_deck_is_honestly_unsupported_and_cannot_launch stdout ----
+thread 'real_deck_is_honestly_unsupported_and_cannot_launch' (32640) panicked at crates\import\tests\normalize_real.rs:38:32:
+---- real_deck_metadata_and_entry_counts_are_exact stdout ----
+thread 'real_deck_metadata_and_entry_counts_are_exact' (27244) panicked at crates\import\tests\normalize_real.rs:11:32:
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error: test failed, to rerun pass `-p aperture-import --test normalize_real`
+running 6 tests
+test a_deck_that_is_too_small_is_refused_by_the_practice_profile ... FAILED
+test commander_sections_are_reported_and_refused ... FAILED
+test a_fully_supported_import_launches_with_merged_entries ... FAILED
+test an_unsupported_main_deck_card_refuses_to_launch ... FAILED
+test deleted_and_faceless_entries_are_reported_not_ignored ... FAILED
+test private_decks_are_refused_with_an_explanation ... FAILED
+---- a_deck_that_is_too_small_is_refused_by_the_practice_profile stdout ----
+thread 'a_deck_that_is_too_small_is_refused_by_the_practice_profile' (24248) panicked at crates\import\tests\plan.rs:144:56:
+---- commander_sections_are_reported_and_refused stdout ----
+thread 'commander_sections_are_reported_and_refused' (31664) panicked at crates\import\tests\plan.rs:107:45:
+---- a_fully_supported_import_launches_with_merged_entries stdout ----
+thread 'a_fully_supported_import_launches_with_merged_entries' (18744) panicked at crates\import\tests\plan.rs:69:54:
+---- an_unsupported_main_deck_card_refuses_to_launch stdout ----
+thread 'an_unsupported_main_deck_card_refuses_to_launch' (26128) panicked at crates\import\tests\plan.rs:93:56:
+---- deleted_and_faceless_entries_are_reported_not_ignored stdout ----
+thread 'deleted_and_faceless_entries_are_reported_not_ignored' (25764) panicked at crates\import\tests\plan.rs:124:56:
+---- private_decks_are_refused_with_an_explanation stdout ----
+thread 'private_decks_are_refused_with_an_explanation' (7836) panicked at crates\import\tests\plan.rs:156:46:
+test result: FAILED. 0 passed; 6 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error: test failed, to rerun pass `-p aperture-import --test plan`
+running 4 tests
+test an_empty_text_list_is_an_error ... ok
+test sideboard_and_commander_sections_are_kept_out_of_the_deck ... FAILED
+test a_supported_text_list_launches ... FAILED
+test an_unsupported_card_in_a_text_list_is_refused_with_its_name ... FAILED
+---- sideboard_and_commander_sections_are_kept_out_of_the_deck stdout ----
+thread 'sideboard_and_commander_sections_are_kept_out_of_the_deck' (32448) panicked at crates\import\tests\text_import.rs:31:56:
+---- a_supported_text_list_launches stdout ----
+thread 'a_supported_text_list_launches' (6696) panicked at crates\import\tests\text_import.rs:9:61:
+---- an_unsupported_card_in_a_text_list_is_refused_with_its_name stdout ----
+thread 'an_unsupported_card_in_a_text_list_is_refused_with_its_name' (34692) panicked at crates\import\tests\text_import.rs:51:5:
+not implemented yet
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error: test failed, to rerun pass `-p aperture-import --test text_import`
+running 4 tests
+test rejects_non_approved_schemes_hosts_and_paths ... ok
+test accepts_the_documented_deck_url_forms ... FAILED
+test api_endpoint_is_built_from_the_numeric_id ... FAILED
+test host_allowlist_is_exact ... FAILED
+---- accepts_the_documented_deck_url_forms stdout ----
+thread 'accepts_the_documented_deck_url_forms' (33492) panicked at crates\import\tests\url_guard.rs:20:63:
+---- api_endpoint_is_built_from_the_numeric_id stdout ----
+thread 'api_endpoint_is_built_from_the_numeric_id' (10948) panicked at crates\import\tests\url_guard.rs:73:81:
+---- host_allowlist_is_exact stdout ----
+thread 'host_allowlist_is_exact' (15276) panicked at crates\import\tests\url_guard.rs:61:5:
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error: test failed, to rerun pass `-p aperture-import --test url_guard`
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error: 4 targets failed:

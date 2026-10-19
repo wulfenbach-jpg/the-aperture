@@ -1,0 +1,15 @@
+[package]
+name = "aperture-import"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Bounded, host-allowlisted Archidekt import plus a text-list fallback for THE APERTURE."
+
+[dependencies]
+aperture-core = { path = "../core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+thiserror = { workspace = true }
+sha2 = { workspace = true }

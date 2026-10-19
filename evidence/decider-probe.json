@@ -1,0 +1,56 @@
+{
+  "counts": {
+    "attacks": 0,
+    "blocks": 0,
+    "casts": 0,
+    "counterspells": 0,
+    "damage_events": 0,
+    "events": 406
+  },
+  "decider": "seat 0 uses decider-2b with heuristic fallback",
+  "decision_sources": {
+    "decider-2b": 12,
+    "forced (single legal option)": 65,
+    "heuristic": 73
+  },
+  "deck_a": {
+    "cards": 40,
+    "name": "Temur Beats",
+    "source": "decks/temur-beats.txt"
+  },
+  "deck_b": {
+    "cards": 40,
+    "name": "Izzet Control",
+    "source": "decks/izzet-control.txt"
+  },
+  "final_digest": "238907e67f14bf9c5a15a9523607772e292e23471801c60ad35ddeef953332f0",
+  "libraries": {
+    "P0": 30,
+    "P1": 30
+  },
+  "life": {
+    "P0": 20,
+    "P1": 20
+  },
+  "policies": "decider-2b vs heuristic",
+  "policy_notes": [
+    "model decider-2b chose Keep hand (7 cards) (preference 0.600; not a win probability)",
+    "only 1 legal option(s): the choice is forced and no model call was made",
+    "model decider-2b chose Play Forest (preference 0.412; not a win probability)",
+    "model decider-2b chose Tap Forest for {G} (preference 0.708; not a win probability)",
+    "model decider-2b chose Tap Forest for {G} (preference 0.658; not a win probability)"
+  ],
+  "pool_size": 15,
+  "reason": "",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 150,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/1",
+  "seed": 21,
+  "steps": 150,
+  "truncated": "step cap of 150 reached before the game ended",
+  "turns": 7,
+  "winner": null,
+  "winner_label": "none (truncated)"
+}

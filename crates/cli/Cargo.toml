@@ -1,0 +1,20 @@
+[package]
+name = "aperture-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Headless CLI for THE APERTURE rules lab."
+
+[[bin]]
+name = "aperture-cli"
+path = "src/main.rs"
+
+[dependencies]
+aperture-core = { path = "../core" }
+aperture-import = { path = "../import" }
+aperture-ai = { path = "../ai" }
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }

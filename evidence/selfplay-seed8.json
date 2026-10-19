@@ -1,0 +1,48 @@
+{
+  "counts": {
+    "attacks": 3,
+    "blocks": 0,
+    "casts": 9,
+    "counterspells": 2,
+    "damage_events": 7,
+    "events": 1192
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 419
+  },
+  "deck_a": {
+    "cards": 40,
+    "name": "Temur Beats",
+    "source": "decks/temur-beats.txt"
+  },
+  "deck_b": {
+    "cards": 40,
+    "name": "Izzet Control",
+    "source": "decks/izzet-control.txt"
+  },
+  "final_digest": "9e0b5f6c0751654ef3bdd152259951bbb7b28117ff0c0220d31a55a4034a0467",
+  "libraries": {
+    "P0": 24,
+    "P1": 24
+  },
+  "life": {
+    "P0": 20,
+    "P1": -7
+  },
+  "policies": "heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 15,
+  "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 419,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/1",
+  "seed": 8,
+  "steps": 419,
+  "truncated": null,
+  "turns": 19,
+  "winner": 0,
+  "winner_label": "P0 (deck A)"
+}

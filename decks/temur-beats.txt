@@ -1,0 +1,13 @@
+// Temur Beats — bundled practice deck A (40 cards, supported pool only).
+// Deck lists here and in crates/core/tests are the same files: the tests load
+// this list verbatim, so the bundled decks are exercised, not a copy.
+9 Forest
+8 Mountain
+4 Grizzly Bears
+4 Runeclaw Bear
+4 Centaur Courser
+3 Hill Giant
+2 Craw Wurm
+2 Giant Growth
+2 Lightning Strike
+2 Shock

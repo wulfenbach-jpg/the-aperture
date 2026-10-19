@@ -1,0 +1,10 @@
+// Izzet Control — bundled practice deck B (40 cards, supported pool only).
+12 Island
+5 Mountain
+4 Counterspell
+4 Divination
+4 Opt
+3 Consider
+4 Hill Giant
+2 Shock
+2 Lightning Strike

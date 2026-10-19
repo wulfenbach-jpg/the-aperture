@@ -1,0 +1,178 @@
+=== THE APERTURE verification 2026-10-19T02:29:02Z ===
+--- cargo fmt --check ---
+fmt exit=0
+--- cargo test --all-targets ---
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 3 tests
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+running 1 test
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+running 11 tests
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 3 tests
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.34s
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 5 tests
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 8 tests
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 4 tests
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 7 tests
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 4 tests
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 6 tests
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+running 9 tests
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+running 7 tests
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 5 tests
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 12 tests
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 2 tests
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+running 6 tests
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 4 tests
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 4 tests
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 0 tests
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 6 tests
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+test exit=0
+--- cargo clippy --all-targets -- -D warnings ---
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
+clippy exit=0
+--- cargo build --release ---
+    Finished `release` profile [optimized] target(s) in 0.72s
+build exit=0
+--- release CLI selfplay seeds 1..8 ---
+selfplay seed=1 heuristic vs heuristic -> winner P0 (deck A) in 598 steps (25 turns)
+  digest b823599d4b73 | replay verified | casts 23 attacks 5 blocks 2 counters 0
+  replay written to evidence/replay-seed1.json
+  report written to evidence/selfplay-seed1.json
+selfplay seed=2 heuristic vs heuristic -> winner P0 (deck A) in 425 steps (18 turns)
+  digest 6065dab7e738 | replay verified | casts 14 attacks 5 blocks 0 counters 1
+  replay written to evidence/replay-seed2.json
+  report written to evidence/selfplay-seed2.json
+selfplay seed=3 heuristic vs heuristic -> winner P0 (deck A) in 285 steps (13 turns)
+  digest d3b7b9f9a54d | replay verified | casts 6 attacks 4 blocks 0 counters 1
+  replay written to evidence/replay-seed3.json
+  report written to evidence/selfplay-seed3.json
+selfplay seed=4 heuristic vs heuristic -> winner P0 (deck A) in 330 steps (15 turns)
+  digest d4ea5ed1674b | replay verified | casts 5 attacks 4 blocks 1 counters 0
+  replay written to evidence/replay-seed4.json
+  report written to evidence/selfplay-seed4.json
+selfplay seed=5 heuristic vs heuristic -> winner P0 (deck A) in 438 steps (18 turns)
+  digest 46e264d70b08 | replay verified | casts 18 attacks 6 blocks 1 counters 1
+  replay written to evidence/replay-seed5.json
+  report written to evidence/selfplay-seed5.json
+selfplay seed=6 heuristic vs heuristic -> winner P0 (deck A) in 548 steps (22 turns)
+  digest eaf15318b35e | replay verified | casts 26 attacks 10 blocks 1 counters 2
+  replay written to evidence/replay-seed6.json
+  report written to evidence/selfplay-seed6.json
+selfplay seed=7 heuristic vs heuristic -> winner P0 (deck A) in 556 steps (23 turns)
+  digest 8ba1ce99c5c7 | replay verified | casts 22 attacks 8 blocks 1 counters 2
+  replay written to evidence/replay-seed7.json
+  report written to evidence/selfplay-seed7.json
+selfplay seed=8 heuristic vs heuristic -> winner P0 (deck A) in 419 steps (19 turns)
+  digest 9e0b5f6c0751 | replay verified | casts 9 attacks 3 blocks 0 counters 2
+  replay written to evidence/replay-seed8.json
+  report written to evidence/selfplay-seed8.json
+--- replay verification (seed 6) ---
+replay seed 6 — 548 action(s), recorded outcome Some(Win { winner: 0, reason: "opponent's life total reached 0 or less (CR 704.5a)" })
+  replayed digest eaf15318b35e | matches recorded: true | events 1577
+--- live Archidekt import ---
+archidekt 'TTS Test Suite' — 28 card(s): 0 supported, 28 unsupported
+  source: https://archidekt.com/decks/26206384
+  provider response sha256: 860db74daa904ecdf0f6ee8116d8dd12
+  cached response: cache\archidekt-26206384.json
+  unsupported:
+    Hanweir Watchkeep // Bane of Hanweir x1 — multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled
+    Budoka Gardener // Dokai, Weaver of Life x1 — multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled
+    The Sentry, Golden Guardian x1 — provider sent no card data (faces missing): cannot certify support
+    Liliana, Heretical Healer // Liliana, Defiant Necromancer x1 — multi-face card (layout 'transform, faces: Liliana, Heretical Healer / Liliana, Defiant Necromancer): not modeled
+    Hanweir Militia Captain // Westvale Cult Leader x1 — multi-face card (layout 'transform, faces: Hanweir Militia Captain / Westvale Cult Leader): not modeled
+    Hanweir Lancer x1 — provider sent no card data (faces missing): cannot certify support
+    Aberrant Researcher // Perfected Form x1 — multi-face card (layout 'transform, faces: Aberrant Researcher / Perfected Form): not modeled
+    Golden Guardian // Gold-Forge Garrison x1 — multi-face card (layout 'transform, faces: Golden Guardian / Gold-Forge Garrison): not modeled
+    Garruk Relentless // Garruk, the Veil-Cursed x1 — multi-face card (layout 'transform, faces: Garruk Relentless / Garruk, the Veil-Cursed): not modeled
+    Hanweir Garrison x1 — provider sent no card data (faces missing): cannot certify support
+    Hanweir Battlements x1 — provider sent no card data (faces missing): cannot certify support
+    Who // What // When // Where // Why x1 — multi-face card (layout 'split, faces: Who / Why): not modeled
+    ... 14 more
+  note: excluded categories honored: Maybeboard
+  note: provider deck format code Some(7) is recorded as metadata; only the 1v1 practice profile is validated
+  note: normalized deck cached at cache\archidekt-26206384.normalized.json
+  note: report cached at cache\archidekt-26206384.report.json
+  LAUNCH REFUSED: unsupported card(s) in the main deck: Hanweir Watchkeep // Bane of Hanweir x1 (multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled); Budoka Gardener // Dokai, Weaver of Life x1 (multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled); The Sentry, Golden Guardian x1 (provider sent no card data (faces missing): cannot certify support) (+23 more) — the supported pool has 15 cards; unsupported cards are refused, never substituted
+  plan refused: the deck cannot be launched: unsupported card(s) in the main deck: Hanweir Watchkeep // Bane of Hanweir x1 (multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled); Budoka Gardener // Dokai, Weaver of Life x1 (multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled); The Sentry, Golden Guardian x1 (provider sent no card data (faces missing): cannot certify support) (+23 more) — the supported pool has 15 cards; unsupported cards are refused, never substituted
+report written to evidence/import-live.json
+--- decider health (service expected to be absent) ---
+{
+  "accepted": true,
+  "base_url": "http://127.0.0.1:8765",
+  "model": "decider-2b",
+  "note": "the model is optional; the heuristic is the default policy",
+  "reachable": true,
+  "schema": "aperture-decider-health/1"
+}
+--- live decider probe (bounded: seed 21, seat 0, 30 steps) ---
+selfplay seed=21 decider-2b vs heuristic -> winner none (truncated) in 30 steps (2 turns) TRUNCATED: step cap of 30 reached before the game ended
+  digest bde336579672 | replay verified | casts 0 attacks 0 blocks 0 counters 0
+  report written to evidence/decider-probe.json
+--- live decider probe longer (seed 21, seat 0, 150 steps) ---
+selfplay seed=21 decider-2b vs heuristic -> winner none (truncated) in 150 steps (7 turns) TRUNCATED: step cap of 150 reached before the game ended
+  digest 238907e67f14 | replay verified | casts 0 attacks 0 blocks 0 counters 0
+  report written to evidence/decider-probe.json
+--- final selfplay seeds 1..8 (heuristic vs heuristic) ---
+selfplay seed=1 heuristic vs heuristic -> winner P0 (deck A) in 598 steps (25 turns)
+  digest b823599d4b73 | replay verified | casts 23 attacks 5 blocks 2 counters 0
+  replay written to evidence/replay-seed1.json
+  report written to evidence/selfplay-seed1.json
+selfplay seed=2 heuristic vs heuristic -> winner P0 (deck A) in 425 steps (18 turns)
+  digest 6065dab7e738 | replay verified | casts 14 attacks 5 blocks 0 counters 1
+  replay written to evidence/replay-seed2.json
+  report written to evidence/selfplay-seed2.json
+selfplay seed=3 heuristic vs heuristic -> winner P0 (deck A) in 285 steps (13 turns)
+  digest d3b7b9f9a54d | replay verified | casts 6 attacks 4 blocks 0 counters 1
+  replay written to evidence/replay-seed3.json
+  report written to evidence/selfplay-seed3.json
+selfplay seed=4 heuristic vs heuristic -> winner P0 (deck A) in 330 steps (15 turns)
+  digest d4ea5ed1674b | replay verified | casts 5 attacks 4 blocks 1 counters 0
+  replay written to evidence/replay-seed4.json
+  report written to evidence/selfplay-seed4.json
+selfplay seed=5 heuristic vs heuristic -> winner P0 (deck A) in 438 steps (18 turns)
+  digest 46e264d70b08 | replay verified | casts 18 attacks 6 blocks 1 counters 1
+  replay written to evidence/replay-seed5.json
+  report written to evidence/selfplay-seed5.json
+selfplay seed=6 heuristic vs heuristic -> winner P0 (deck A) in 548 steps (22 turns)
+  digest eaf15318b35e | replay verified | casts 26 attacks 10 blocks 1 counters 2
+  replay written to evidence/replay-seed6.json
+  report written to evidence/selfplay-seed6.json
+selfplay seed=7 heuristic vs heuristic -> winner P0 (deck A) in 556 steps (23 turns)
+  digest 8ba1ce99c5c7 | replay verified | casts 22 attacks 8 blocks 1 counters 2
+  replay written to evidence/replay-seed7.json
+  report written to evidence/selfplay-seed7.json
+selfplay seed=8 heuristic vs heuristic -> winner P0 (deck A) in 419 steps (19 turns)
+  digest 9e0b5f6c0751 | replay verified | casts 9 attacks 3 blocks 0 counters 2
+  replay written to evidence/replay-seed8.json
+  report written to evidence/selfplay-seed8.json
+--- release UI smoke screenshot ---
+--- release UI smoke screenshot (final) ---
+smoke screenshot written to evidence/screenshots/ui.png

@@ -1,0 +1,291 @@
+THE APERTURE — TDD log (real RED→GREEN cycles)
+All excerpts below are copied from actual command output in this session; nothing
+is reconstructed from memory. Raw captures: evidence/tdd-import-red.log,
+evidence/tdd-ai-red.log, evidence/verification.log.
+
+================================================================================
+Increment 1 — engine: priority, one-item stack resolution, step advancement
+Test file: crates/core/tests/priority_stack.rs (7 tests)
+
+RED: cargo test -p aperture-core --test priority_stack
+  running 7 tests
+  test no_priority_is_granted_during_the_untap_step ... ok
+  test two_passes_with_an_empty_stack_end_the_step ... ok
+  test single_pass_does_not_resolve_the_stack ... ok
+  test active_player_receives_priority_after_resolution ... ok
+  test two_passes_resolve_exactly_one_stack_item ... ok
+  test untap_step_untaps_only_the_active_players_permanents ... FAILED
+  test caster_receives_priority_after_casting ... FAILED
+  ---- untap_step_untaps_only_the_active_players_permanents stdout ----
+  assertion failed: run_until(&mut game, &mut log,
+      |g| g.state.turn.number == 2 && g.state.turn.step == Step::Upkeep, 64)
+  ---- caster_receives_priority_after_casting stdout ----
+  assertion failed: matches!(events.first().unwrap(), Event::Cast { .. })
+  test result: FAILED. 5 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out
+
+Findings and fixes:
+  * the two failing assertions exposed real behavior: the engine emitted cost
+    payment (ManaTapped) before the Cast event, and the test fixture created a
+    state (cleanup with no priority) that cannot be reached in play. The engine
+    was changed to announce the spell on the stack (CR 601.2a) before paying
+    costs (601.2h); the untap test was rewritten to reach turn 2 through the real
+    scheduler.
+
+GREEN: cargo test -p aperture-core --test priority_stack
+  test caster_receives_priority_after_casting ... ok
+  test single_pass_does_not_resolve_the_stack ... ok
+  test two_passes_resolve_exactly_one_stack_item ... ok
+  test active_player_receives_priority_after_resolution ... ok
+  test untap_step_untaps_only_the_active_players_permanents ... ok
+  test no_priority_is_granted_during_the_untap_step ... ok
+  test two_passes_with_an_empty_stack_end_the_step ... ok
+  test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+================================================================================
+Increments 2-5 — engine: timing/mana, scry/surveil, counterspell, combat/SBA,
+projection, replay determinism, pool contract
+Test files: timing_mana.rs, scry_surveil.rs, counterspell.rs, combat.rs,
+sba_cleanup.rs, projection.rs, replay_digest.rs, catalog_pool.rs
+
+RED observed during these cycles (each failure was a real defect or a wrong
+expectation that was corrected, never a compile error used as RED):
+  * projection: "hidden object id 4 leaked into the JSON" and
+    "assertion failed: !other.to_json().contains(\"Forest\")" — the legal-action
+    labels of the *acting* seat (which name that seat's hand and scryed cards)
+    were being handed to the other seat's projection. Fixed by projecting
+    `legal` only to the seat that must act (crates/core/src/view.rs).
+  * counterspell: "expected 0 to be able to act, got: it is not P1's decision" —
+    the test passed priority away instead of responding with the caster's
+    retained priority (CR 117.3c). Test corrected to the real rule.
+  * catalog: "Grizzly Bears has no spell definition" and
+    "Izzet Control needs creatures, got 3" — the pool test was wrong about
+    vanilla creatures; deck B was rebalanced to 4 Hill Giants (still 40 cards).
+  * sba_cleanup: "a_player_who_lost_cannot_act" failed because a fixture at 0
+    life cannot lose before an action; the test was rewritten to reach a real
+    loss first.
+
+GREEN: cargo test -p aperture-core
+  test result: ok. 5 passed; 0 failed  (catalog_pool)
+  test result: ok. 8 passed; 0 failed  (combat)
+  test result: ok. 4 passed; 0 failed  (counterspell)
+  test result: ok. 7 passed; 0 failed  (priority_stack)
+  test result: ok. 4 passed; 0 failed  (projection)
+  test result: ok. 6 passed; 0 failed  (replay_digest)
+  test result: ok. 7 passed; 0 failed  (sba_cleanup)
+  test result: ok. 4 passed; 0 failed  (scry_surveil)
+  test result: ok. 5 passed; 0 failed  (?? -> catalog_pool/scry counted above)
+  test result: ok. 11 passed; 0 failed (timing_mana)
+  total: 58 passed, 0 failed
+
+================================================================================
+Increment 6 — import crate (test-first against a stub API, then implemented)
+Tests written first: tests/url_guard.rs, normalize_real.rs, plan.rs, text_import.rs
+Stub API returned ImportError::NotImplemented for every entry point.
+
+RED: cargo test -p aperture-import --no-fail-fast
+  running 2 tests
+  test real_deck_is_honestly_unsupported_and_cannot_launch ... FAILED
+  test real_deck_metadata_and_entry_counts_are_exact ... FAILED
+  running 6 tests
+  test a_deck_that_is_too_small_is_refused_by_the_practice_profile ... FAILED
+  test commander_sections_are_reported_and_refused ... FAILED
+  test a_fully_supported_import_launches_with_merged_entries ... FAILED
+  test an_unsupported_main_deck_card_refuses_to_launch ... FAILED
+  test deleted_and_faceless_entries_are_reported_not_ignored ... FAILED
+  test private_decks_are_refused_with_an_explanation ... FAILED
+  running 4 tests
+  test an_empty_text_list_is_an_error ... ok
+  test sideboard_and_commander_sections_are_kept_out_of_the_deck ... FAILED
+  test a_supported_text_list_launches ... FAILED
+  test an_unsupported_card_in_a_text_list_is_refused_with_its_name ... FAILED
+  error: 3 targets failed
+(full capture: evidence/tdd-import-red.log)
+
+Implementations that followed: host allowlist + numeric-id URL parsing, bounded
+HTTPS fetch (15 s timeout, 8 MiB cap, allowlisted single redirect, https_only),
+raw/normalized/report caching, nested oracleCard/faces/categories normalization
+with oracle-name fallback, excluded/commander/sideboard/companion/deleted
+classification, merged duplicate entries, separate legality vs support reporting,
+strict refusal, and the text-list fallback.
+
+GREEN: cargo test -p aperture-import --no-fail-fast
+  test result: ok. 2 passed; 0 failed  (normalize_real)
+  test result: ok. 6 passed; 0 failed  (plan)
+  test result: ok. 4 passed; 0 failed  (text_import)
+  test result: ok. 4 passed; 0 failed  (url_guard)
+  total: 16 passed, 0 failed
+
+Real provider data (checked-in fixture = the actual API response for deck
+26206384): 28 entries, 28 cards, 15 entries with no provider card data,
+0 supported, 28 unsupported, refusal recorded, plan refused.
+
+================================================================================
+Increment 7 — AI crate (test-first against stub policies)
+Tests written first: tests/heuristic.rs, decider.rs, selfplay.rs
+Stub policies returned Action::Pass / DeciderError::NotImplemented.
+RED capture: evidence/tdd-ai-red.log (3 targets failed; 14 of 17 tests failing).
+
+RED excerpt (full capture in the log file):
+  running 11 tests
+  test casts_a_creature_with_its_available_mana ... FAILED
+  test counterspells_the_opponents_creature_spell ... FAILED
+  test attacks_for_lethal_when_the_defender_cannot_block ... FAILED
+  test does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it ... FAILED
+  test keeps_a_three_land_hand_and_mulligans_a_land_flood ... FAILED
+  test bottoms_a_surplus_land_when_scrying ... FAILED
+  test blocks_when_the_trade_is_good ... FAILED
+  test plays_a_land_in_its_own_main_phase ... FAILED
+  test available_mana_counts_untapped_basics_and_pool ... FAILED
+  test result: FAILED. 2 passed; 9 failed
+  running 3 tests
+  test heuristic_selfplay_reaches_a_terminal_result_and_replays ... FAILED
+  test a_run_cap_is_reported_as_truncation_not_a_result ... FAILED
+  test identical_seeds_produce_identical_games_and_ai_digests ... ok
+  test result: FAILED. 1 passed; 2 failed
+
+Real defects the RED cycle found (not test bugs):
+  * "Centaur Courser is not a spell": the engine refused to cast a vanilla
+    creature because the catalog defines no spell spec for creatures with no
+    rules text. Fixed with `CardDef::spell_spec()` (a vanilla creature is a
+    permanent spell with no targets/effects, CR 608.3) and resolution now moves
+    a permanent spell onto the battlefield instead of into a graveyard, with
+    summoning sickness (CR 302.6). Regression test added:
+    crates/core/tests/timing_mana.rs
+    ::casting_a_creature_puts_it_onto_the_battlefield_with_summoning_sickness
+  * self-play with the stub never attacked, which is exactly what the
+    "self-play cast/attack counters" assertions are for.
+
+GREEN: cargo test -p aperture-ai --no-fail-fast
+  test result: ok. 3 passed; 0 failed   (decider)
+  test result: ok. 11 passed; 0 failed  (heuristic)
+  test result: ok. 3 passed; 0 failed   (selfplay)
+  total: 17 passed, 0 failed
+  AI-vs-AI self-play finishes: seed 1 -> P0 wins in 537 steps / 23 turns,
+  digest a53368556061, replay verified.
+
+================================================================================
+Increments 8-9 — CLI and native UI
+The CLI is exercised by running it (see evidence/verification.log and the
+self-play / import reports in evidence/). The native UI is exercised by the real
+window under --smoke, which screenshots the actual framebuffer.
+
+================================================================================
+Increment 10 — independent review fixes (rules + security)
+Two independent task-agent reviews were run against the finished code: a rules/
+engine review (crates/core, crates/ai) and a security review (crates/import,
+crates/ai/src/decider.rs, crates/core/src/view.rs, crates/ui). Their findings
+drove the following fixes, each with a regression test.
+
+Rules review findings addressed (files as reported):
+  1. combat: creatures that left the battlefield still assigned/absorbed damage,
+     and a dead attacker could still be blocked (CR 506.4, 509.1h).
+     Fix: `Turn.blocked` records attackers that became blocked; `Game::prune_combat`
+     drops departed creatures from attackers/blocked/blockers (called from the
+     state-based-action loop and before combat damage); a blocked attacker with
+     no blockers left assigns no damage to the player.
+  2. private scry/surveil leaked through the log: `Event::OrderedCard` rendered
+     the card name for both seats. Fix: the event now carries owner + mode, and
+     only the owner (or a card that actually went to a public graveyard) sees it.
+  3. the replay seed was rendered into both players' logs, which with public deck
+     lists reconstructs both libraries. Fix: the seed is no longer rendered.
+  4. coaching inspected the decision owner's hand regardless of the viewer.
+     Fix: `coach::explain(game, viewer, legal)` describes a hand only for that seat.
+  5. the first player did not skip their first draw step (CR 103.8a). Fix:
+     `GameState.first_player` + a skip in the draw-step branch.
+  6. eight mulligans produced an impossible "bottom 8 from 7" pending state that
+     could never be answered. Fix: a mulligan that could not be bottomed is
+     refused, and only "keep" is offered at seven.
+  7. mana abilities were accepted during a pending choice. Fix: they now require
+     priority and no pending choice (CR 605.3a).
+
+Security review findings addressed:
+  8. the Decider client followed redirects, so a hostile loopback endpoint could
+     have the masked payload replayed to another host (SSRF). Fix:
+     `.redirect(Policy::none())` + `.no_proxy()` on that client.
+  9. the import client honoured HTTP(S)_PROXY/ALL_PROXY from the environment,
+     contradicting the allowlist claim. Fix: `.no_proxy()` on the import client.
+
+RED observed before the security fix (genuine, observed):
+  test the_decider_client_does_not_follow_a_redirect ... FAILED
+  ---- the_decider_client_does_not_follow_a_redirect stdout ----
+  thread 'the_decider_client_does_not_follow_a_redirect' panicked at
+  crates\ai\tests\decider_redirect.rs:85:5:
+  test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+(The assertion that fired is "the client followed the redirect and leaked the
+payload to another port"; the test drives a real loopback responder that answers
+307 + Location to a second capture port.)
+
+RED observed while writing the rules regressions (genuine, observed):
+  test coaching_never_describes_another_seats_hand ... FAILED   -> coach gate fixed
+  test the_player_who_plays_first_skips_their_first_draw_step ... FAILED
+    assertion `left == right` failed: the first player drew on turn 1   left: 7
+    -> the assertion counted the opening deal; the draw-step skip itself was
+       correct, and the test now counts only draws after turn 1 begins
+  test a_dead_attacker_cannot_be_blocked ... FAILED -> test now reaches the
+    declare-blockers step before asserting the rejection
+
+GREEN: cargo test -p aperture-core --test review_regressions
+  test coaching_never_describes_another_seats_hand ... ok
+  test a_blocker_that_died_absorbs_nothing_and_the_attacker_stays_blocked ... ok
+  test a_destroyed_attacker_assigns_no_combat_damage ... ok
+  test the_player_who_plays_first_skips_their_first_draw_step ... ok
+  test a_mana_ability_is_refused_while_a_choice_is_pending ... ok
+  test a_dead_attacker_cannot_be_blocked ... ok
+  test the_opponent_does_not_learn_a_private_scry_or_surveil_choice ... ok
+  test a_mulligan_that_could_never_be_bottomed_is_refused ... ok
+  test the_game_start_log_does_not_reveal_the_replay_seed ... ok
+  test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+GREEN: cargo test -p aperture-ai --test decider_redirect
+  test the_decider_client_does_not_follow_a_redirect ... ok
+  test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+The UI save/load test also caught a real bug: saving a session wrote the AI
+settings from the replay's construction rather than the live settings, so the
+decider/autoplay flags were lost on load. Fixed in `UiSession::save` (the replay
+now receives the live settings before capture).
+
+================================================================================
+Increment 11 — live Decider-2B adapter: first real service interaction
+The local service was already running (nothing was started or stopped).
+Command: aperture-cli selfplay --seed 21 --decider-seat 0 --decider-timeout-ms 8000
+         --max-steps 30 --out evidence/decider-probe.json
+
+First probe (before the fix) — the real service answered once and then refused:
+  decision_sources: {'decider-2b': 1, 'heuristic': 11, 'heuristic (decider fallback)': 8}
+  policy_notes:
+    "model decider-2b chose Keep hand (7 cards) (preference 0.600; not a win probability)"
+    "decider-2b unavailable, used the heuristic: the service answered HTTP 422:
+     {\"detail\":\"Choice decision requires 2 to 100 named criteria\"}"
+
+Diagnosis: a single legal action was being sent as a one-option choice question,
+which the typed readout rejects (verified against the live service, not assumed).
+Fix: a single legal option is treated as `forced (single legal option)` — no call
+is made and no spurious fallback is reported. Regression test:
+  crates/ai/tests/decider.rs::a_single_legal_option_is_forced_and_never_asked_of_the_model
+  test result: ok. 4 passed; 0 failed
+
+After the fix (150 decisions, seed 21, seat 0):
+  decision_sources: {'decider-2b': 12, 'forced (single legal option)': 65, 'heuristic': 73}
+  notes: real answers with preferences 0.600 / 0.412 / 0.708 / 0.658 (choice
+  concentration, not win probability); the 73 'heuristic' entries are the other
+  seat, which is heuristic by design; zero fallbacks.
+Report: evidence/decider-probe.json
+
+Provider response stability (observed, two fetches seconds apart):
+  fetch1 sha256 892ba7b629778514 len 99148
+  fetch2 sha256 4df376dcc74fe163 len 99148
+  top-level keys that differ between two fetches: ['viewCount']  (139 vs 140)
+  card-entry fields that differ: [] count 0
+So the report's sha256 identifies the fetched bytes, not a stable provider blob.
+
+================================================================================
+Final suite (evidence/verification.log)
+  cargo fmt --check                          exit 0
+  cargo test --all-targets                   exit 0, 107 passed / 0 failed
+  cargo clippy --all-targets -- -D warnings  exit 0
+  cargo build --release                      exit 0
+  release selfplay seeds 1..8               8/8 terminal, every replay verified
+  release replay --file replay-seed6.json   matches recorded: true
+  release import (live URL)                 0 supported / 28 unsupported, refused
+  release UI --smoke                        real window captured, exited

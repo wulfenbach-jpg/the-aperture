@@ -1,0 +1,21 @@
+[package]
+name = "aperture-ui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Native desktop card table for THE APERTURE (eframe/egui)."
+
+[[bin]]
+name = "aperture"
+path = "src/main.rs"
+
+[dependencies]
+aperture-core = { path = "../core" }
+aperture-import = { path = "../import" }
+aperture-ai = { path = "../ai" }
+eframe = { workspace = true }
+egui = { workspace = true }
+png = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
