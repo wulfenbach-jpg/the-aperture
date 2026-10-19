@@ -17,7 +17,14 @@ use aperture_ui::session::{
 fn session(seed: u64) -> UiSession {
     let deck_a = DeckList::parse_practice("Temur Beats", BUNDLED_A).expect("deck A");
     let deck_b = DeckList::parse_practice("Izzet Control", BUNDLED_B).expect("deck B");
-    UiSession::new(seed, deck_a, deck_b, AiSettings::default(), false, false)
+    UiSession::new(
+        seed,
+        vec![deck_a, deck_b],
+        AiSettings::default(),
+        false,
+        false,
+    )
+    .expect("session")
 }
 
 fn temp_file(name: &str, contents: &str) -> PathBuf {
@@ -40,16 +47,16 @@ fn two_distinct_imported_lists_enter_the_game_and_the_replay() {
     ui.seat_import[1] = Some(b);
     assert!(ui.can_start_imported());
 
-    let (name_a, name_b) = ui.start_imported_match(77).expect("both seats certified");
-    assert_eq!(ui.deck_a.name, name_a);
-    assert_eq!(ui.deck_b.name, name_b);
+    let names = ui.start_imported_match(77).expect("both seats certified");
+    assert_eq!(ui.seats[0].name, names[0]);
+    assert_eq!(ui.seats[1].name, names[1]);
     // The exact planned lists are embedded as replay snapshots.
-    assert_eq!(ui.replay.deck_a, ui.deck_a);
-    assert_eq!(ui.replay.deck_b, ui.deck_b);
+    assert_eq!(ui.replay.seats[0], ui.seats[0]);
+    assert_eq!(ui.replay.seats[1], ui.seats[1]);
     assert_eq!(ui.replay.seed, 77);
     // And they are the lists actually in play (7-card opening hand dealt).
-    assert_eq!(ui.game.state.players[0].deck_name, name_a);
-    assert_eq!(ui.game.state.players[1].deck_name, name_b);
+    assert_eq!(ui.game.state.players[0].deck_name, names[0]);
+    assert_eq!(ui.game.state.players[1].deck_name, names[1]);
     assert_eq!(ui.game.state.players[0].library.len(), 33);
     assert_eq!(ui.game.state.players[1].library.len(), 33);
     assert_eq!(ui.game.revision(), 0);
@@ -151,7 +158,8 @@ fn file_worker_reports_a_missing_path_instead_of_guessing() {
 fn a_stale_worker_completion_never_changes_the_replacement_game() {
     let mut ui = session(35);
     // Give the AI the seat that owns the opening decision (P0's mulligan).
-    ui.ai.ai_seat = P0;
+    ui.ai.human_seat = P1;
+    ui.ai.ai_seats = vec![P0];
     assert_eq!(ui.owner(), Some(P0));
 
     let (release_tx, release_rx) = channel::<()>();
@@ -211,7 +219,8 @@ fn a_stale_worker_completion_never_changes_the_replacement_game() {
 #[test]
 fn a_fresh_worker_completion_is_applied() {
     let mut ui = session(36);
-    ui.ai.ai_seat = P0;
+    ui.ai.human_seat = P1;
+    ui.ai.ai_seats = vec![P0];
     let ran = Arc::new(AtomicBool::new(false));
     let flag = ran.clone();
     assert!(ui.request_ai_decision(move |_view| {
