@@ -160,7 +160,7 @@ impl HeuristicPolicy {
             .map(|c| c.power.unwrap_or(0))
             .max()
             .unwrap_or(0);
-        let chosen = mine
+        let chosen: Vec<ObjectId> = mine
             .iter()
             .filter(|c| {
                 let power = c.power.unwrap_or(0);
@@ -169,7 +169,13 @@ impl HeuristicPolicy {
             })
             .map(|c| c.id)
             .collect();
-        (chosen, Some(target.seat))
+        // An empty declaration must carry `defender: None`; policies never pick
+        // a defender for zero attackers.
+        if chosen.is_empty() {
+            (Vec::new(), None)
+        } else {
+            (chosen, Some(target.seat))
+        }
     }
 
     fn blocks(&self, view: &PlayerView) -> Vec<BlockDecl> {
@@ -259,11 +265,7 @@ impl HeuristicPolicy {
             .opponents
             .iter()
             .filter(|o| !o.eliminated)
-            .filter(|o| {
-                !o.battlefield
-                    .iter()
-                    .any(|c| is_creature(c) && !c.tapped)
-            })
+            .filter(|o| !o.battlefield.iter().any(|c| is_creature(c) && !c.tapped))
             .filter(|o| power < o.life && power + 3 >= o.life)
             .min_by_key(|o| (o.life, o.seat));
         if let Some(_target) = open_target

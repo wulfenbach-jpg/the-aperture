@@ -77,10 +77,7 @@ impl Game {
         Ok(Game::new_logged(seed, decks)?.0)
     }
 
-    pub fn new_logged(
-        seed: u64,
-        decks: &[DeckList],
-    ) -> Result<(Game, Vec<Event>), EngineError> {
+    pub fn new_logged(seed: u64, decks: &[DeckList]) -> Result<(Game, Vec<Event>), EngineError> {
         if !(crate::ids::MIN_PLAYERS..=crate::ids::MAX_PLAYERS).contains(&decks.len()) {
             return Err(EngineError::InvalidSeats {
                 reason: format!(
@@ -437,7 +434,8 @@ impl Game {
             Action::DeclareBlockers { blocks } => self.validate_declare_blockers(player, blocks),
             Action::Mulligan { keep } => match &state.pending {
                 Some(Pending::Mulligan { player: p }) if *p == player => {
-                    if !*keep && state.player(player).mulligans >= mulligan_limit(state.seat_count())
+                    if !*keep
+                        && state.player(player).mulligans >= mulligan_limit(state.seat_count())
                     {
                         return Err(EngineError::illegal(
                             "mulligan",
@@ -1213,7 +1211,9 @@ impl Game {
                 Some(next_active) => self.state.turn.active = next_active,
                 None => {
                     let reason = "no live seat remains to begin a turn (CR 104.4a)".to_string();
-                    self.state.outcome = Some(Outcome::Draw { reason: reason.clone() });
+                    self.state.outcome = Some(Outcome::Draw {
+                        reason: reason.clone(),
+                    });
                     self.state.pending = None;
                     self.state.resolving = None;
                     self.state.turn.priority = None;
@@ -1264,7 +1264,8 @@ impl Game {
                 // The defending seat was chosen in the attacker declaration.
                 let defender = self.state.turn.defender;
                 let defender_ready = defender.is_some_and(|d| {
-                    self.state.is_live(d) && !self.state.turn.attackers.is_empty()
+                    self.state.is_live(d)
+                        && !self.state.turn.attackers.is_empty()
                         && !self.legal_blockers(d).is_empty()
                 });
                 match (defender, defender_ready) {
@@ -1373,7 +1374,11 @@ impl Game {
             .map(|s| s.object)
             .collect();
         self.state.stack.retain(|s| s.controller != p);
-        if self.state.resolving.is_some_and(|r| controlled.contains(&r)) {
+        if self
+            .state
+            .resolving
+            .is_some_and(|r| controlled.contains(&r))
+        {
             self.state.resolving = None;
         }
 
@@ -1471,7 +1476,9 @@ impl Game {
                 0 => {
                     let reason =
                         "all remaining players lost simultaneously (CR 104.4a)".to_string();
-                    self.state.outcome = Some(Outcome::Draw { reason: reason.clone() });
+                    self.state.outcome = Some(Outcome::Draw {
+                        reason: reason.clone(),
+                    });
                     self.state.pending = None;
                     self.state.resolving = None;
                     self.state.turn.priority = None;
@@ -1484,15 +1491,32 @@ impl Game {
                         .live_seats()
                         .next()
                         .expect("one live seat remains");
-                    let reason = "all other players have left the game".to_string();
+                    let loser_reason = self
+                        .state
+                        .players
+                        .iter()
+                        .rfind(|player| player.lost)
+                        .map(|player| {
+                            if player.drew_from_empty {
+                                "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)"
+                                    .to_string()
+                            } else {
+                                "opponent's life total reached 0 or less (CR 704.5a)"
+                                    .to_string()
+                            }
+                        })
+                        .unwrap_or_else(|| "all other players have left the game".to_string());
                     self.state.outcome = Some(Outcome::Win {
                         winner,
-                        reason: reason.clone(),
+                        reason: loser_reason.clone(),
                     });
                     self.state.pending = None;
                     self.state.resolving = None;
                     self.state.turn.priority = None;
-                    events.push(Event::GameOver { winner, reason });
+                    events.push(Event::GameOver {
+                        winner,
+                        reason: loser_reason,
+                    });
                     return;
                 }
                 _ => {}
@@ -1983,9 +2007,7 @@ impl Game {
                     ),
                     rules: vec!["103.5"],
                 }];
-                if self.state.player(*player).mulligans
-                    < mulligan_limit(self.state.seat_count())
-                {
+                if self.state.player(*player).mulligans < mulligan_limit(self.state.seat_count()) {
                     let next_count = self.state.player(*player).mulligans + 1;
                     let bottom = cards_to_bottom(self.state.seat_count(), next_count);
                     out.push(LegalAction {

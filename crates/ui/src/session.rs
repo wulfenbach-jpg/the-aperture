@@ -18,8 +18,8 @@ use aperture_ai::{
 };
 use aperture_core::view::{PendingKind, PlayerView};
 use aperture_core::{
-    Action, AiSettings, BlockDecl, DeckList, Event, Game, ObjectId, PlayerId, Replay,
-    ReplayStep, SessionSave, Submission, Zone,
+    Action, AiSettings, BlockDecl, DeckList, Event, Game, ObjectId, PlayerId, Replay, ReplayStep,
+    SessionSave, Submission, Zone,
 };
 use aperture_import::DeckReport;
 
@@ -602,8 +602,7 @@ impl UiSession {
 
     /// True when a policy should act for `seat` now.
     pub fn seat_is_ai(&self, seat: PlayerId) -> bool {
-        self.ai.seat_is_ai(seat)
-            || (seat == self.human_seat() && self.human_plays_ai_seat)
+        self.ai.seat_is_ai(seat) || (seat == self.human_seat() && self.human_plays_ai_seat)
     }
 
     /// Opt in to or out of the local model. Rebuilds the sync policy, points the

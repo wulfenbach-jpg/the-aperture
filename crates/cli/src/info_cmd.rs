@@ -58,8 +58,7 @@ pub fn decks() -> anyhow::Result<()> {
 pub fn coach(seed: u64, deck_a: &Path, deck_b: &Path) -> anyhow::Result<()> {
     let (a, _) = decks::load(deck_a, decks::BUNDLED_TEMUR, "Temur Beats")?;
     let (b, _) = decks::load(deck_b, decks::BUNDLED_IZZET, "Izzet Control")?;
-    let (game, log) =
-        Game::new_logged(seed, &[a, b]).map_err(|err| anyhow::anyhow!("{err}"))?;
+    let (game, log) = Game::new_logged(seed, &[a, b]).map_err(|err| anyhow::anyhow!("{err}"))?;
     let legal = game.legal_actions();
     println!(
         "coaching for seed {seed} — decision point {} (revision {}, pending: none yet)",

@@ -5,7 +5,7 @@
 use std::collections::BTreeMap;
 use std::time::{Duration, Instant};
 
-use aperture_core::{Event, Game, Outcome, PlayerId, Replay, ReplayStep, Submission};
+use aperture_core::{Action, Event, Game, Outcome, PlayerId, Replay, ReplayStep, Submission};
 
 use crate::Policy;
 
@@ -129,7 +129,9 @@ pub fn play_to_end(
             }
             Err(err) => {
                 // The policy produced something the engine refuses. Fall back to
-                // passing and record why; never mutate the state silently.
+                // passing and record why; never mutate the state silently. A
+                // policy that returns an invalid declaration is a genuine driver
+                // failure, not something the fallback should hide.
                 log.push(Event::Truncated {
                     reason: format!("P{owner} policy action was rejected ({err}); passing instead"),
                 });
@@ -137,7 +139,7 @@ pub fn play_to_end(
                     player: owner,
                     revision: game.revision(),
                     decision: game.decision(),
-                    action: aperture_core::Action::Pass,
+                    action: Action::Pass,
                 };
                 match game.submit(&pass) {
                     Ok(events) => {
