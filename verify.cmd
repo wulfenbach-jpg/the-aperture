@@ -3,7 +3,7 @@ rem Full verification run. Writes evidence\verification.log and evidence JSON.
 setlocal
 cd /d "%~dp0"
 if not exist evidence mkdir evidence
-set LOG=evidence\verification.log
+set LOG=evidence\verification-run.log
 echo === THE APERTURE verification %DATE% %TIME% === > "%LOG%"
 
 echo --- cargo fmt --check --- >> "%LOG%"
@@ -38,4 +38,5 @@ if not exist evidence\screenshots mkdir evidence\screenshots
 target\release\aperture.exe --smoke evidence\screenshots\ui.png >> "%LOG%" 2>&1
 
 echo Verification finished. Log: %LOG%
+echo (the committed run from development is evidence\verification.log)
 endlocal
