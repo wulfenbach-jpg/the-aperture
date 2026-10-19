@@ -132,13 +132,17 @@ fn deleted_and_faceless_entries_are_reported_not_ignored() {
         report.total_cards
     );
     assert!(report.excluded.iter().any(|c| c.name == "Hill Giant"));
+    // The old assertion expected a "no card data" reason. That was invalid:
+    // this faceless entry carries a provider name and layout "normal", so it is
+    // a normal single-face card that is simply not in the supported pool.
     assert!(
         report
             .unsupported
             .iter()
-            .any(|u| u.name == "Mystery Card" && u.reason.contains("no card data"))
+            .any(|u| u.name == "Mystery Card" && u.reason.contains("not in the supported pool"))
     );
-    // The faceless entry is a main-deck card we cannot identify: it must block.
+    // The out-of-pool entry is still a main-deck card the slice cannot play, so
+    // it must block the launch even though it is now correctly identified.
     assert!(!report.launchable);
 }
 

@@ -1,0 +1,56 @@
+{
+  "counts": {
+    "attacks": 0,
+    "blocks": 0,
+    "casts": 1,
+    "counterspells": 0,
+    "damage_events": 0,
+    "events": 326
+  },
+  "decider": "seat 0 uses decider-2b with heuristic fallback",
+  "decision_sources": {
+    "decider-2b": 13,
+    "forced (single legal option)": 51,
+    "heuristic": 56
+  },
+  "deck_a": {
+    "cards": 40,
+    "name": "Temur Beats",
+    "source": "decks/temur-beats.txt"
+  },
+  "deck_b": {
+    "cards": 40,
+    "name": "Izzet Control",
+    "source": "decks/izzet-control.txt"
+  },
+  "final_digest": "976c51fe742cb2feb876c5256bdf5d48ff2665dcd06c1d14596a76cc66aa3bc9",
+  "libraries": {
+    "P0": 30,
+    "P1": 31
+  },
+  "life": {
+    "P0": 20,
+    "P1": 20
+  },
+  "policies": "decider-2b vs heuristic",
+  "policy_notes": [
+    "model decider-2b chose Keep hand (7 cards) (preference 0.701; not a win probability)",
+    "only 1 legal option(s): the choice is forced and no model call was made",
+    "model decider-2b chose Play Mountain (preference 0.458; not a win probability)",
+    "model decider-2b chose Tap Mountain for {R} (preference 0.702; not a win probability)",
+    "model decider-2b chose Tap Mountain for {R} (preference 0.595; not a win probability)"
+  ],
+  "pool_size": 15,
+  "reason": "",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 120,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/1",
+  "seed": 21,
+  "steps": 120,
+  "truncated": "step cap of 120 reached before the game ended",
+  "turns": 6,
+  "winner": null,
+  "winner_label": "none (truncated)"
+}

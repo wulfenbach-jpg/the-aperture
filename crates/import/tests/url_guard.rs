@@ -43,7 +43,12 @@ fn rejects_non_approved_schemes_hosts_and_paths() {
         "https://archidekt.com/deck/26206384",
         "https://archidekt.com/decks/26206384/../../admin",
         "https://archidekt.com/decks/26206384%2f..%2fadmin",
-        "https://archidekt.com/decks/26206384/extra",
+        // More than one trailing slug segment is not a canonical deck link.
+        "https://archidekt.com/decks/12345/a/b",
+        // Path segments that resolve to a different resource.
+        "https://archidekt.com/decks/12345/.",
+        "https://archidekt.com/decks/12345/..",
+        "https://archidekt.com/decks/12345/a%2fb",
         "archidekt.com/decks/26206384",
         "",
         "   ",
@@ -51,6 +56,40 @@ fn rejects_non_approved_schemes_hosts_and_paths() {
     ] {
         assert!(parse_deck_url(input).is_err(), "{input:?} must be rejected");
     }
+}
+
+#[test]
+fn accepts_canonical_slug_query_and_fragment_forms() {
+    // The human link form is `/decks/<id>/<slug>`; the slug is non-authoritative
+    // and ignored, and the request URL is rebuilt from the id only.
+    for input in [
+        "https://archidekt.com/decks/12345/temur-beats",
+        "https://archidekt.com/decks/12345/temur-beats/",
+        "https://archidekt.com/decks/12345?x=1",
+        "https://archidekt.com/decks/12345#frag",
+        // The previously-rejected `.../extra` form is exactly this canonical
+        // slug shape, so it belongs here, not in the rejection list.
+        "https://archidekt.com/decks/26206384/extra",
+        "https://www.archidekt.com/api/decks/12345/temur-beats#frag",
+    ] {
+        let parsed = parse_deck_url(input).unwrap_or_else(|e| panic!("{input} must parse: {e}"));
+        assert!(
+            parsed.url.ends_with(&format!("/decks/{}", parsed.deck_id)),
+            "{input}: {}",
+            parsed.url
+        );
+        assert_eq!(
+            api_url(&parsed),
+            format!("https://archidekt.com/api/decks/{}/", parsed.deck_id),
+            "{input}"
+        );
+    }
+    assert_eq!(
+        parse_deck_url("https://archidekt.com/decks/12345/temur-beats")
+            .unwrap()
+            .deck_id,
+        12345
+    );
 }
 
 #[test]

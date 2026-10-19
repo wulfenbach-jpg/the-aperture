@@ -1581,7 +1581,10 @@ impl Game {
                     damage.push((*attacker, None, power as u32));
                 }
             } else {
-                // CR 510.1c: damage is divided among blockers, lethal first.
+                // CR 510.1c: a blocked creature's controller divides its damage
+                // among the blockers as they choose. This slice is narrower: it
+                // assigns automatically in lethal-first order and exposes no
+                // damage-assignment choice (documented in the coach and README).
                 let mut remaining = power;
                 for (i, blocker) in its_blockers.iter().enumerate() {
                     let assign = if i + 1 == its_blockers.len() {

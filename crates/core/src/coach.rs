@@ -86,7 +86,11 @@ pub static RULE_NOTES: &[(&str, &str)] = &[
     ),
     (
         "510.1c",
-        "A blocked creature assigns its damage to the creatures blocking it, divided as its controller chooses, lethal first.",
+        "A blocked creature assigns its combat damage to the creatures blocking it. With one blocker it assigns all of it; with two or more it divides the damage among them as its controller chooses. There is no lethal-first requirement (the old wording was removed).",
+    ),
+    (
+        "510.1d",
+        "A blocking creature assigns its combat damage to the creatures it blocks, divided as its controller chooses if it blocks two or more.",
     ),
     ("510.2", "All combat damage is dealt simultaneously."),
     (
@@ -236,6 +240,22 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 .to_string(),
             rules: vec!["117.4", "117.5"],
         }),
+    }
+
+    // Bounded-slice simplification, stated so the coaching never teaches it as
+    // the rule: this engine assigns a blocked attacker's damage automatically,
+    // in lethal-first order. CR 510.1c actually lets the attacking player divide
+    // that damage among the blockers however they choose.
+    if state.turn.step.is_combat() && !state.turn.attackers.is_empty() {
+        out.push(Explanation {
+            topic: "combat damage assignment".to_string(),
+            text: format!(
+                "This slice assigns combat damage automatically, in lethal-first order ({} attacker(s), {} declared blocker(s)). That is a bounded simplification of CR 510.1c, which lets the attacking player divide a blocked creature's damage among its blockers however they choose; typed damage assignment is not modeled yet.",
+                state.turn.attackers.len(),
+                state.turn.blockers.len()
+            ),
+            rules: vec!["510.1c", "510.2"],
+        });
     }
 
     if let Some(item) = state.stack.last() {

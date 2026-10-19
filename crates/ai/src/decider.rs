@@ -40,7 +40,12 @@ impl Default for DeciderConfig {
             base_url: "http://127.0.0.1:8765".to_string(),
             model: "decider-2b".to_string(),
             timeout_ms: 4_000,
-            max_len: 512,
+            // The masked projection for a real position runs past 512 tokens
+            // (a live probe measured state_tokens_dropped=54..184 at 512), which
+            // would make every request truncated and therefore refused. 1024 is
+            // the service's packaged default for non-English checkpoints and
+            // stays inside the bounded context the local service advertises.
+            max_len: 1024,
         }
     }
 }
@@ -65,6 +70,10 @@ pub enum DeciderError {
     NoChoice,
     #[error("unknown option key '{0}'")]
     UnknownKey(String),
+    #[error(
+        "the service truncated the state ({detail}); the answer is refused because the model did not see the whole projection"
+    )]
+    Truncated { detail: String },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -140,6 +149,13 @@ pub fn decision_request(view: &PlayerView) -> Result<DecisionRequest, DeciderErr
         })
         .collect();
 
+    let mut life = serde_json::Map::new();
+    life.insert(format!("P{}", view.viewer), json!(view.own_life));
+    life.insert(
+        format!("P{}", aperture_core::opponent(view.viewer)),
+        json!(view.opponent_life),
+    );
+
     let state = json!({
         "game": "Magic: The Gathering practice slice (1v1, 20 life)",
         "you_are": format!("P{}", view.viewer),
@@ -147,7 +163,7 @@ pub fn decision_request(view: &PlayerView) -> Result<DecisionRequest, DeciderErr
         "step": view.step.name(),
         "active_player": format!("P{}", view.active),
         "you_have_priority": view.priority == Some(view.viewer),
-        "life": {"P0": view.own_life, "P1": view.opponent_life},
+        "life": Value::Object(life),
         "your_hand": view.own_hand.iter().map(card_json).collect::<Vec<_>>(),
         "your_hand_count": view.own_hand.len(),
         "your_battlefield": view.own_battlefield.iter().map(card_json).collect::<Vec<_>>(),
@@ -235,6 +251,10 @@ impl DeciderClient {
     }
 
     /// Ask the installed typed readout which offered option to take.
+    ///
+    /// A truncated state means the model did not see the whole projection, so
+    /// the answer is refused with [`DeciderError::Truncated`] even when a valid
+    /// choice is present; the caller then falls back to the heuristic.
     pub fn choose(&self, request: &DecisionRequest) -> Result<ChoiceAnswer, DeciderError> {
         if request.options.is_empty() {
             return Err(DeciderError::NoOptions);
@@ -274,6 +294,34 @@ impl DeciderClient {
         }
         let value: Value =
             serde_json::from_str(&text).map_err(|e| DeciderError::Parse(e.to_string()))?;
+        if let Some(usage) = value.get("usage") {
+            let truncated_flag = usage
+                .get("truncated")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false);
+            let dropped = usage
+                .get("state_tokens_dropped")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0);
+            let truncated_questions: Vec<String> = usage
+                .get("truncated_questions")
+                .and_then(|v| v.as_array())
+                .map(|list| {
+                    list.iter()
+                        .filter_map(|q| q.as_str().map(|s| s.to_string()))
+                        .collect()
+                })
+                .unwrap_or_default();
+            if truncated_flag || dropped > 0 || !truncated_questions.is_empty() {
+                return Err(DeciderError::Truncated {
+                    detail: format!(
+                        "state_tokens_dropped={dropped}, truncated={truncated_flag}, \
+truncated_questions=[{}]",
+                        truncated_questions.join(", ")
+                    ),
+                });
+            }
+        }
         let answer = value
             .get("answers")
             .and_then(|a| a.get("decision"))

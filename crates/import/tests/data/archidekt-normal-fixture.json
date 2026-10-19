@@ -1,0 +1,72 @@
+{
+  "id": 4242,
+  "name": "Fixture Normal Deck",
+  "deckFormat": 0,
+  "private": false,
+  "unlisted": false,
+  "theorycrafted": false,
+  "updatedAt": "2026-10-18T00:00:00.000000Z",
+  "categories": [
+    { "name": "Land", "includedInDeck": true },
+    { "name": "Creature", "includedInDeck": true }
+  ],
+  "cards": [
+    {
+      "id": 1,
+      "quantity": 20,
+      "categories": ["Land"],
+      "companion": false,
+      "deletedAt": null,
+      "modifier": "Normal",
+      "card": {
+        "id": 101,
+        "oracleCard": {
+          "id": 201,
+          "name": "Island",
+          "layout": "normal",
+          "manaCost": null,
+          "types": ["Land"],
+          "faces": []
+        }
+      }
+    },
+    {
+      "id": 2,
+      "quantity": 16,
+      "categories": ["Land"],
+      "companion": false,
+      "deletedAt": null,
+      "modifier": "Normal",
+      "card": {
+        "id": 102,
+        "oracleCard": {
+          "id": 202,
+          "name": "Forest",
+          "layout": "normal",
+          "manaCost": null,
+          "types": ["Land"],
+          "faces": []
+        }
+      }
+    },
+    {
+      "id": 3,
+      "quantity": 4,
+      "categories": ["Creature"],
+      "companion": false,
+      "deletedAt": null,
+      "modifier": "Normal",
+      "card": {
+        "id": 103,
+        "oracleCard": {
+          "id": 203,
+          "name": "Grizzly Bears",
+          "layout": "normal",
+          "manaCost": "{1}{G}",
+          "types": ["Creature"],
+          "faces": []
+        }
+      }
+    }
+  ]
+}

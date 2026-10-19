@@ -1,7 +1,8 @@
 //! Bounded Archidekt import for THE APERTURE.
 //!
 //! Security contract: only `https://archidekt.com/decks/<digits>` (and the
-//! equivalent `/api/decks/<digits>` form) is accepted; the request URL is
+//! equivalent `/api/decks/<digits>` form), optionally followed by a single
+//! non-authoritative human-readable slug, is accepted; the request URL is
 //! rebuilt from the numeric deck id against an allowlisted host, never taken
 //! from the pasted string; redirects are followed at most once and only to an
 //! allowlisted host; the request has a timeout and the body is read through a
@@ -162,11 +163,19 @@ pub fn parse_deck_url(input: &str) -> Result<DeckRef, ImportError> {
         .split('/')
         .filter(|s| !s.is_empty())
         .collect();
-    let id_text = match segments.as_slice() {
-        ["decks", id] | ["api", "decks", id] => *id,
-        [] => return Err(ImportError::BadPath),
+    // `/decks/<id>` or `/api/decks/<id>`, optionally followed by a single
+    // non-authoritative human-readable slug segment (`/decks/12345/temur-beats`).
+    // The slug is ignored: the request URL is rebuilt from the numeric id only.
+    let (id_text, slug) = match segments.as_slice() {
+        ["decks", id] | ["api", "decks", id] => (*id, None),
+        ["decks", id, slug] | ["api", "decks", id, slug] => (*id, Some(*slug)),
         _ => return Err(ImportError::BadPath),
     };
+    if let Some(slug) = slug
+        && (slug == "." || slug == ".." || slug.contains('%'))
+    {
+        return Err(ImportError::BadPath);
+    }
     if id_text.is_empty() || !id_text.chars().all(|c| c.is_ascii_digit()) {
         return Err(ImportError::BadDeckId {
             value: id_text.to_string(),
@@ -352,7 +361,7 @@ pub fn fetch_deck_cached(deck: &DeckRef, cache_dir: &Path) -> Result<Fetch, Impo
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NormEntry {
-    /// Empty when the provider sent no card data for this entry.
+    /// Provider card name; empty only when there is genuinely no card data.
     pub name: String,
     pub faces: Vec<String>,
     pub quantity: u8,
@@ -421,15 +430,33 @@ pub fn normalize(json: &str) -> Result<NormalizedDeck, ImportError> {
         .unwrap_or_default();
 
     let mut entries = Vec::new();
-    for entry in obj
+    for (index, entry) in obj
         .get("cards")
         .and_then(|v| v.as_array())
         .map(|v| v.as_slice())
         .unwrap_or(&[])
+        .iter()
+        .enumerate()
     {
-        let quantity = entry.get("quantity").and_then(|v| v.as_u64()).unwrap_or(0);
+        // Quantities are never silently clamped or skipped: a malformed count
+        // is a hard parse error that names the entry and the offending value.
+        let quantity_value = entry
+            .get("quantity")
+            .ok_or_else(|| ImportError::Parse(format!("card entry {index}: missing quantity")))?;
+        let quantity = quantity_value.as_u64().ok_or_else(|| {
+            ImportError::Parse(format!(
+                "card entry {index}: quantity {quantity_value} is not an unsigned integer"
+            ))
+        })?;
         if quantity == 0 {
-            continue;
+            return Err(ImportError::Parse(format!(
+                "card entry {index}: zero quantity is not a valid card entry"
+            )));
+        }
+        if quantity > u8::MAX as u64 {
+            return Err(ImportError::Parse(format!(
+                "card entry {index}: quantity {quantity} exceeds the supported 1..255 range"
+            )));
         }
         let oracle = entry
             .get("card")
@@ -460,7 +487,7 @@ pub fn normalize(json: &str) -> Result<NormalizedDeck, ImportError> {
                 oracle_name
             },
             faces: face_names,
-            quantity: quantity.min(u8::MAX as u64) as u8,
+            quantity: quantity as u8,
             categories: string_list(entry.get("categories")),
             companion: entry
                 .get("companion")
@@ -597,10 +624,10 @@ fn classify(entry: &NormEntry, excluded: &[String]) -> (EntryStatus, Option<Stri
             Some(format!("category '{name}' is excluded from the deck")),
         );
     }
-    if entry.faces.is_empty() {
+    if entry.name.is_empty() {
         return (
             EntryStatus::Unsupported,
-            Some("provider sent no card data (faces missing): cannot certify support".to_string()),
+            Some("provider sent no card data: cannot certify support".to_string()),
         );
     }
     if entry.faces.len() > 1 || !entry.layout.eq_ignore_ascii_case("normal") {

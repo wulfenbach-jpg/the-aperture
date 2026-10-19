@@ -50,11 +50,41 @@ fn real_deck_is_honestly_unsupported_and_cannot_launch() {
     assert!(!report.launchable);
     let refusal = report.refusal.clone().unwrap_or_default();
     assert!(refusal.contains("supported pool"), "{refusal}");
-    assert!(
-        report
+    // The old assertion expected every faceless entry to be rejected with a
+    // "no card data" reason. That was invalid: a normal single-face card
+    // legitimately arrives with an empty faces array and its name/layout are on
+    // oracleCard, so faceless "normal" cards now get the pool reason, while the
+    // two meld-layout faceless entries are genuinely multi-face.
+    let normal_faceless: Vec<&NormEntry> = deck
+        .entries
+        .iter()
+        .filter(|e| e.faces.is_empty() && e.layout.eq_ignore_ascii_case("normal"))
+        .collect();
+    assert_eq!(normal_faceless.len(), 13, "13 normal faceless entries");
+    for entry in &normal_faceless {
+        let card = report
             .unsupported
             .iter()
-            .any(|u| u.reason.contains("no card data"))
-    );
+            .find(|u| u.name == entry.name)
+            .unwrap_or_else(|| panic!("{} missing from unsupported", entry.name));
+        assert!(
+            card.reason.contains("not in the supported pool"),
+            "{}: {}",
+            entry.name,
+            card.reason
+        );
+    }
+    for name in ["Hanweir Garrison", "Hanweir Battlements"] {
+        let card = report
+            .unsupported
+            .iter()
+            .find(|u| u.name == name)
+            .unwrap_or_else(|| panic!("{name} missing from unsupported"));
+        assert!(
+            card.reason.contains("multi-face"),
+            "{name}: {}",
+            card.reason
+        );
+    }
     assert!(plan_deck(&report).is_err());
 }

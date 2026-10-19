@@ -23,7 +23,7 @@ crates/ui        aperture-ui     eframe/egui card table (bin `aperture`) + lib +
                                  `--smoke` framebuffer capture
 decks/temur-beats.txt            bundled 40-card deck A (Temur Beats)
 decks/izzet-control.txt          bundled 40-card deck B (Izzet Control)
-README.md  HANDOFF.md  launch.cmd  verify.cmd  .gitignore
+README.md  HANDOFF.md  FIX_HANDOFF.md  launch.cmd  verify.cmd  .gitignore
 evidence/  cache/                reports, logs, screenshot; cache is git-ignored
 ```
 
@@ -36,16 +36,21 @@ needed for the required clippy gate).
 | command | exit | result |
 | --- | --- | --- |
 | `cargo fmt --check` | 0 | clean |
-| `cargo test --all-targets` | 0 | **109 passed / 0 failed** (12 test binaries + lib/doc lines) |
+| `cargo test --all-targets` | 0 | **131 passed / 0 failed** (14 test binaries + lib/doc lines) |
 | `cargo clippy --all-targets -- -D warnings` | 0 | clean |
 | `cargo build --release` | 0 | `target/release/aperture.exe`, `target/release/aperture-cli.exe` |
 | `aperture-cli selfplay --seed 1..8` | 0 | 8/8 terminal games, every digest replay-verified |
+| `aperture-cli selfplay --seed 101` | 0 | winner P0 (deck A), 452 steps, 19 turns, digest `233431d963e5`, replay-verified |
+| `aperture-cli selfplay --seed {11,22,…,88} --deck-a izzet --deck-b temur` | 0 | 8/8 terminal, replay-verified, **P1 wins 6 / P0 wins 2** (not a deck-A sweep) |
 | `aperture-cli replay --file evidence/replay-seed6.json` | 0 | `548 action(s) … matches recorded: true, events 1577` |
-| `aperture-cli import --url https://archidekt.com/decks/26206384` | 0 | honoured report, launch refused |
-| `aperture-cli decider-health` | 0 | loopback service reachable |
-| `aperture.exe --smoke evidence/screenshots/ui.png` | 0 | real window rendered, captured, exited |
+| `aperture-cli import --url https://archidekt.com/decks/26206384` | 0 | honoured report, launch refused with true reasons |
+| `aperture-cli decider-health` | 0 | loopback service reachable (`revisions.decider-2b = ff2e5e68…`) |
+| `aperture-cli selfplay --seed 21 --decider-seat 0 --max-steps 120` | 0 | **13 genuine decider-2b decisions, 0 truncation fallbacks** (usage checked) |
+| `aperture.exe --smoke evidence/screenshots/ui-supervisor-fixes.png` | 0 | real window rendered, captured, exited |
+| `aperture.exe --smoke … --deck-a decks/does-not-exist.txt` | 0 | refusal banner + two-seat import panel captured |
 
-Full log: `evidence/verification.log`.
+Full log: `evidence/verification.log`; the supervisor-fix round is in
+`evidence/supervisor-fixes-tdd.log` with its own RED→GREEN records.
 
 ## 3. Self-play (heuristic vs heuristic, bundled decks, final binaries)
 
@@ -71,8 +76,11 @@ state-repetition guard).
 `https://archidekt.com/decks/26206384` → `evidence/import-live.json`:
 
 * 28 card entries / 28 cards: **0 supported, 28 unsupported**, launch refused
-* 15 entries had no provider card data and are listed as unsupported, not guessed
-* 13 multi-face entries (transform/flip/split/meld/modal) refused as not modelled
+* 15 multi-face entries (transform/flip/split/meld) refused as not modelled —
+  including the two `meld` entries that arrive with an empty `faces` array
+* the other 13 entries are ordinary single-face cards (provider `layout:
+  "normal"`, empty `faces`, name on `oracleCard`) and are refused with the true
+  reason *"not in the supported pool (15 cards)"* — never as "no card data"
 * excluded category honored: Maybeboard; provider format code 7 recorded as
   metadata only (this deck has no commander category, and none was invented)
 * response cached: `cache/archidekt-26206384.json` (+ `.normalized.json`, `.report.json`)
@@ -88,17 +96,35 @@ The service was **already running** on `http://127.0.0.1:8765`; nothing was
 started, stopped, restarted or reconfigured. `aperture-cli decider-health`
 reports `accepted: true, reachable: true`.
 
-Bounded real probe (150 decisions, seed 21, seat 0, `evidence/decider-probe.json`):
+Bounded real probe (120 decisions, seed 21, seat 0, `evidence/fix-decider-probe.json`):
 
 ```
-decision_sources: { "decider-2b": 12, "forced (single legal option)": 65, "heuristic": 73 }
-policy_notes: [ "model decider-2b chose Keep hand (7 cards) (preference 0.600; not a win probability)",
-                "model decider-2b chose Play Forest (preference 0.412; …)",
-                "model decider-2b chose Tap Forest for {G} (preference 0.708; …)" ]
+decision_sources: { "decider-2b": 13, "forced (single legal option)": 51, "heuristic": 56 }
+policy_notes: [ "model decider-2b chose Keep hand (7 cards) (preference 0.701; not a win probability)",
+                "model decider-2b chose Play Mountain (preference 0.458; …)",
+                "model decider-2b chose Tap Mountain for {R} (preference 0.702; …)" ]
 ```
 
-* 12 genuine model answers; the 73 `heuristic` decisions are the *other* seat,
-  which is heuristic by design. **Zero** fallbacks in this probe.
+* 13 genuine model answers, each with a **clean `usage`** (no `truncated`, no
+  `state_tokens_dropped`, no `truncated_questions`). The 56 `heuristic`
+  decisions are the *other* seat, which is heuristic by design. **Zero**
+  fallbacks in this probe.
+* **Live finding, now enforced:** the service reports `usage.truncated`,
+  `state_tokens_dropped` and `truncated_questions` when the state does not fit
+  the request budget. `DeciderClient::choose` refuses any such response
+  (`DeciderError::Truncated`) instead of using a choice the model made without
+  seeing the whole projection; the policy then falls back visibly. Probe at the
+  old 512-token budget: every request was truncated
+  (`state_tokens_dropped=54..184`) and was refused — hence
+  `DeciderConfig::default().max_len` is now 1024, which made 13 real answers
+  possible. Tests: `decider_usage::a_truncated_response_is_refused_with_a_truncated_error`,
+  `…_makes_the_policy_fall_back_visibly`, `…a_healthy_response_is_used_by_the_client_and_the_policy`,
+  `…the_default_state_budget_is_large_enough_for_the_masked_projection`.
+* **Live finding, now fixed:** `state.life` was keyed with a literal `P0`/`P1`
+  mapping that is only correct for a P0 viewer, so a P1 viewer was told its own
+  life was the opponent's. It is now keyed by the real absolute seats; test
+  `decider_usage::the_life_object_is_keyed_by_absolute_seat_for_a_p1_viewer`
+  (viewer P1, P0 on 3, P1 on 17).
 * Request shape: `POST /v1/systemone` with `state`, one `choice` question with
   named `criteria`, `model: "decider-2b"`, `max_len`; the answer is read from
   `answers.decision.choice` + `confidence`/`answer_confidence`. Only the masked
@@ -119,7 +145,11 @@ policy_notes: [ "model decider-2b chose Keep hand (7 cards) (preference 0.600; n
 
 Two task-agent reviews ran against the finished code; every finding was addressed
 with a regression test (all in `crates/core/tests/review_regressions.rs` unless
-noted, plus `evidence/tdd.log` recording the observed RED).
+noted, plus `evidence/tdd.log` recording the observed RED). A **third** read-only
+review ran over the supervisor-fix change set; its three findings (save/load still
+synchronous, worker polling stopping after the game ends, `--smoke --decider`
+still able to call the model during capture) were all fixed — details in
+`FIX_HANDOFF.md`.
 
 Rules/engine review (4 high, 3 medium):
 
@@ -202,7 +232,10 @@ verify.cmd                                  the whole verification battery
 ```
 
 UI flags: `--seed N --deck-a <txt> --deck-b <txt> --ai-seat 0|1 --autoplay
---ai-both --decider --smoke OUT.png`.
+--ai-both --decider --smoke OUT.png`. `--deck-a/--deck-b` are used as given: a
+missing or invalid explicit file is refused (banner + Import panel), never
+replaced by the bundled deck. `--smoke` disables the decider for the whole
+capture even with `--decider`.
 
 ## 9. Native UI: what was verified, and what the supervisor should still click
 
@@ -217,8 +250,19 @@ UI flags: `--seed N --deck-a <txt> --deck-b <txt> --ai-seat 0|1 --autoplay
 * Interaction (clicking action buttons, the target picker, the sandbox toggle,
   the import panel, attacker/blocker multi-select, save/load buttons) was
   exercised by tests at the session layer
-  (`crates/ui/tests/session.rs`) but not by an automated click pass — a human
-  should click through those by hand.
+  (`crates/ui/tests/session.rs`, `crates/ui/tests/import_and_async.rs`) but not by
+  an automated click pass — a human should click through those by hand.
+* **Two-seat import screen** (supervisor fixes): a second capture with
+  `--deck-a decks/does-not-exist.txt` shows the refusal banner
+  (*"DECK REFUSED — … Refusing to substitute the bundled practice deck"*) and both
+  seats' URL / pasted-text / file inputs, with **Start imported match** disabled
+  until both are certified. `evidence/screenshots/ui-import-refusal.png`.
+* Every model/network/file operation now runs on a worker thread: the frame
+  callback posts a request and polls `poll_workers`, showing a spinner while
+  work is outstanding. An AI answer is applied only when its session generation,
+  engine revision, decision serial and seat all still match, so a new game (even
+  with the same seed and digest), a load, a branch return, a sandbox edit, an
+  import start or a settings change discards in-flight results.
 
 ## 10. NOT IMPLEMENTED (exact limits)
 
@@ -232,8 +276,12 @@ UI flags: `--seed N --deck-a <txt> --deck-b <txt> --ai-seat 0|1 --autoplay
   (`Object.plus_one_counters`); no layers — a single until-end-of-turn pump only.
 * Object identity is stable across zone changes (real Magic creates a new object
   per zone change); unobservable in this pool but relevant before scaling cards.
-* Damage assignment for a multi-blocked attacker is automatic (lethal-first in
-  object-id order); no manual damage-order UI.
+* Damage assignment for a multi-blocked attacker is automatic and lethal-first.
+  CR 510.1c actually lets the attacking player divide that damage among the
+  blockers as they choose (there is **no** lethal-first requirement); the
+  automatic behavior is a bounded slice simplification, disclosed by the coach
+  (`combat damage assignment` note, CR 510.1c) and covered by
+  `crates/core/tests/combat_teaching.rs`. There is no manual damage-order UI.
 * Cleanup-step priority exception (CR 514.3a) is not implemented; the cleanup
   step never grants priority. Draw-from-empty is a state-based action and is
   implemented (CR 104.3c/704.5b).

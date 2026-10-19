@@ -1,0 +1,106 @@
+# Supervisor acceptance fixes — RED -> GREEN evidence
+# Project: C:/AI/mtg-slice (rules revision 2026-09-25)
+# Baseline: 265fd19, all 109 workspace tests green before these changes.
+
+## Fix 7 (core): CR 510.1c was taught as "lethal first"
+RED (commit-tree code, test crates/core/tests/combat_teaching.rs added first):
+  cmd: `git stash push -- crates/core/src/coach.rs && cargo test -p aperture-core --test combat_teaching`
+  result: FAILED. 0 passed; 2 failed
+    the_5101c_note_does_not_teach_lethal_first_as_the_rule:
+      "the pinned 2026 rule has no lethal-first requirement: A blocked creature assigns its
+       damage to the creatures blocking it, divided as its controller chooses, lethal first."
+    combat_coaching_identifies_the_automatic_assignment_as_a_simplification:
+      "combat coaching must disclose the automatic assignment: [\"priority\", \"board\", \"legal actions\"]"
+GREEN (fix: RULE_NOTES 510.1c rewritten from research/rules-current.txt line 2405, 510.1d added,
+      explain() gains a "combat damage assignment" disclosure citing 510.1c, engine comment
+      reworded to call the automatic lethal-first assignment a slice simplification):
+  cmd: `cargo test -p aperture-core --test combat_teaching`
+  result: ok. 2 passed; 0 failed
+
+## Fixes 1 + 2 (import), by task agent ImportSemantics
+RED: `cargo test -p aperture-import --no-fail-fast`
+  -> normal_cards 0 passed/6 failed; normalize_real 1 failed; plan 5 passed/1 failed; url_guard 4/1
+GREEN: `cargo test -p aperture-import --no-fail-fast`
+  -> normal_cards 6 passed; normalize_real 2; plan 6; text_import 4; url_guard 5; 0 failed (23 passed)
+  `cargo fmt -p aperture-import` (exit 0), re-ran: all pass.
+Root causes fixed: (a) `classify` rejected every entry with `faces == []` as "no card data" even
+for layout "normal" cards whose metadata is on oracleCard; now only a genuinely empty name is
+"no provider data", and multi-face/meld layouts still refuse. (b) `normalize` clamped quantity to
+u8 and silently skipped 0; now a missing/non-integer/0/>255 quantity is an ImportError::Parse with
+the value, and exact values are retained. (c) `parse_deck_url` refused the canonical
+/decks/<id>/<human_slug> link form; now one optional non-authoritative slug segment is accepted,
+still built into the API URL from the numeric id only.
+Note: two pre-existing assertions were provably invalid and were updated with comments saying why
+(url_guard's '/decks/26206384/extra' rejection; normalize_real's "no card data" reason) —
+the real cached deck's faceless entries are 13 normal-layout cards (pool reason) + 2 meld-layout
+cards (multi-face reason).
+
+## Fixes 5 + 6 (ai/decider), by task agent AiDecider
+RED: `cargo test -p aperture-ai --test decider_usage`
+  -> after adding only the new error variant: 3 failed / 1 passed
+     * P1 viewer saw life P1 == 3 (should be 17)
+     * choose() returned a ChoiceAnswer for a response with usage.truncated == true
+     * DeciderPolicy returned DecisionSource::Decider for the truncated response
+GREEN: `cargo test -p aperture-ai`
+  -> decider 4, decider_redirect 1, decider_usage 4, heuristic 11, selfplay 3; 23 passed; 0 failed
+Root causes fixed: (a) `decision_request` keyed `life` with a P0/P1 literal that is only correct for
+a P0 viewer; now keyed by the real absolute seats. (b) `choose` ignored usage.truncated /
+state_tokens_dropped / truncated_questions; now any of them yields DeciderError::Truncated and the
+policy falls back to the visible heuristic instead of using a choice the model made without seeing
+the whole projection.
+
+## Fixes 3 + 4 (UI vertical path + async), integration owner
+RED: `git stash push -- crates/ui/src/{session,app,main}.rs && cargo test -p aperture-ui --test import_and_async`
+  -> does not compile against the pre-fix API (no `seat_import`, `start_imported_match`,
+     `can_start_imported`, `request_import`, `poll_workers`, `import_seat_text`, `load_explicit_deck`):
+     a missing-capability RED, recorded here rather than papered over.
+GREEN: `cargo test -p aperture-ui`
+  -> import_and_async 9 passed; session 7 passed; 0 failed
+What the new tests prove:
+  * two DISTINCT imported lists (Temur Beats for P0, Izzet Control for P1) actually enter the game
+    and the replay snapshots, 7-card hands dealt, revision 0 ("no substitutions").
+  * an out-of-pool list for one seat is REFUSED; `can_start_imported()` is false and
+    `start_imported_match` is an error that leaves the digest unchanged.
+  * the text fallback certifies both seats, and malformed text is refused with a real reason.
+  * a missing/invalid explicitly requested deck file yields an empty list plus
+    "Refusing to substitute the bundled practice deck" (never the bundled list).
+  * an import worker result is applied through `poll_workers`; a missing file path is reported.
+  * `poll_workers` returns promptly while a worker is blocked; after the game is replaced with the
+    SAME seed the released stale completion is discarded ("stale"), digest/revision/pending/replay
+    are all unchanged; a fresh completion is applied (revision advances).
+  * `submit_human` refuses to act for the AI seat and says "not your seat".
+
+## Full gate (rerun after all fixes)
+  cmd: cargo fmt --check -> 0 (clean)
+  cmd: cargo test --all-targets -> 0 (134 passed / 0 failed, 14 test binaries)
+  cmd: cargo clippy --all-targets -- -D warnings -> 0 (clean)
+  cmd: cargo build --release -> 0
+  cmd: target/release/aperture-cli.exe selfplay --seed 101 -> P0 wins, 452 steps, 19 turns,
+       digest 233431d963e5, replay verified (evidence/fix-seed101.json, fix-replay101.json)
+  cmd: selfplay --seed {11,22,...,88} --deck-a izzet-control --deck-b temur-beats
+       -> 8/8 terminal + replay-verified; P1 6 wins, P0 2 wins (both seats can win)
+  cmd: import --url https://archidekt.com/decks/26206384 --plan
+       -> 0 supported / 28 unsupported; 15 multi-face (incl. 2 meld), 13 not-in-pool; refused
+  cmd: decider-health -> reachable (revisions.decider-2b ff2e5e687327eda9ac34e9a3ca84d3f400672c87)
+  cmd: selfplay --seed 21 --decider-seat 0 --max-steps 120
+       -> 13 decider-2b decisions, clean usage, 0 truncation fallbacks
+          (at the old 512-token budget every request was truncated and refused)
+  cmd: aperture.exe --smoke evidence/screenshots/ui-supervisor-fixes.png
+       aperture.exe --smoke evidence/screenshots/ui-import-refusal.png --deck-a decks/does-not-exist.txt
+       -> both captured the real framebuffer and exited
+
+## Independent review round (reviewer task agent FixReview, read-only)
+3 findings, all fixed with regressions (see FIX_HANDOFF.md "Independent review round"):
+  1. save/load still wrote/read files in the frame callback -> moved to workers
+     (RED/GREEN: crates/ui/tests/import_and_async.rs::save_and_load_run_on_workers,
+      a_load_completed_after_the_game_changed_is_discarded)
+  2. worker polling stopped once the game ended (tick_ai early return) -> poll +
+     repaint moved into the always-running frame body
+  3. --smoke --decider could still call the model during capture frames -> the
+     decider is now disabled for the whole smoke run (noted on stderr)
+Noted as intended, not a defect: the import URL guard still accepts an explicit
+:443 (https default; the blocker asked to restrict ports, and :8443 etc. stay
+rejected).
+  cmd: aperture.exe --smoke <tmp>.png --decider
+       -> "smoke mode: Decider-2B calls are disabled for the capture"; run took 1.7s
+          (no model traffic during the capture)

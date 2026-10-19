@@ -1,16 +1,22 @@
 //! The card table: header, both battlefields, stack, hand, legal actions,
-//! coaching, log, pending-choice controls, sandbox, import and save/load.
+//! coaching, log, pending-choice controls, sandbox, per-seat deck import and
+//! save/load. Every model/network/file operation runs on a background worker;
+//! the frame callback never blocks.
 
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
+use aperture_ai::{DeciderClient, DeciderConfig};
 use aperture_core::view::{CardView, PlayerView};
 use aperture_core::{Action, AiSettings, ObjectId, P0, P1, PlayerId, catalog, coach};
 use eframe::egui::{self, RichText};
 
-use crate::session::{BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, block_list, bundled_deck};
+use crate::session::{
+    BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, block_list, bundled_practice, import_seat_file,
+    import_seat_text, import_seat_url, load_explicit_deck,
+};
 use crate::theme;
 
 pub struct Startup {
@@ -18,6 +24,10 @@ pub struct Startup {
     pub seed: u64,
     pub deck_a: PathBuf,
     pub deck_b: PathBuf,
+    /// True when the user explicitly asked for `deck_a`/`deck_b`; an explicit
+    /// path that fails is refused instead of silently replaced.
+    pub deck_a_explicit: bool,
+    pub deck_b_explicit: bool,
     pub ai_seat: u8,
     pub human_autoplay: bool,
     pub autoplay: bool,
@@ -38,15 +48,53 @@ pub struct ApertureApp {
     frame_count: u64,
 }
 
+fn seat_label(seat: PlayerId) -> &'static str {
+    if seat == P0 { "P0" } else { "P1" }
+}
+
+/// Load the startup decks. A built-in default uses the compiled practice
+/// bundle; an explicitly requested path is read (and refused loudly on error).
+fn startup_decks(
+    startup: &Startup,
+) -> (
+    aperture_core::DeckList,
+    aperture_core::DeckList,
+    Option<String>,
+) {
+    let (deck_a, err_a) = if startup.deck_a_explicit {
+        load_explicit_deck(&startup.deck_a, "Temur Beats")
+    } else {
+        (bundled_practice("Temur Beats", BUNDLED_A), None)
+    };
+    let (deck_b, err_b) = if startup.deck_b_explicit {
+        load_explicit_deck(&startup.deck_b, "Izzet Control")
+    } else {
+        (bundled_practice("Izzet Control", BUNDLED_B), None)
+    };
+    let refusal = match (err_a, err_b) {
+        (Some(a), Some(b)) => Some(format!("{a}\n{b}")),
+        (Some(a), None) => Some(a),
+        (None, Some(b)) => Some(b),
+        (None, None) => None,
+    };
+    (deck_a, deck_b, refusal)
+}
+
 impl ApertureApp {
     pub fn new(cc: &eframe::CreationContext<'_>, startup: Startup) -> Self {
         theme::apply(&cc.egui_ctx);
-        let deck_a = bundled_deck(&startup.deck_a, BUNDLED_A, "Temur Beats");
-        let deck_b = bundled_deck(&startup.deck_b, BUNDLED_B, "Izzet Control");
+        let (deck_a, deck_b, deck_refusal) = startup_decks(&startup);
+        // A smoke run never spends its frames on model calls: the decider is
+        // disabled for the whole capture even when --decider was passed, and a
+        // note is printed so the capture is not mistaken for an opt-in run.
+        let use_decider = startup.use_decider && startup.smoke.is_none();
+        if startup.use_decider && startup.smoke.is_some() {
+            eprintln!("smoke mode: Decider-2B calls are disabled for the capture");
+        }
         let ai = AiSettings {
             ai_seat: startup.ai_seat.min(1),
             autoplay: startup.autoplay || startup.smoke.is_some(),
-            use_decider: startup.use_decider,
+            use_decider,
             ..AiSettings::default()
         };
         let mut session = UiSession::new(
@@ -54,9 +102,10 @@ impl ApertureApp {
             deck_a,
             deck_b,
             ai,
-            startup.use_decider,
+            use_decider,
             startup.human_autoplay || startup.smoke.is_some(),
         );
+        session.deck_refusal = deck_refusal.clone();
         // A smoke run should show a developed board, not the opening hand.
         if startup.smoke.is_some() {
             for _ in 0..240 {
@@ -74,7 +123,7 @@ impl ApertureApp {
             smoke_written: Arc::new(AtomicBool::new(false)),
             last_ai_step: Instant::now(),
             show_sandbox: false,
-            show_import: false,
+            show_import: deck_refusal.is_some(),
             show_zones: false,
             show_coach: true,
             frame_count: 0,
@@ -86,15 +135,16 @@ impl ApertureApp {
             return;
         }
         let owner = self.session.owner();
+        let ai_turn = owner.is_some_and(|seat| self.session.seat_is_ai(seat));
         let paced = self.session.ai.autoplay
-            && owner.is_some_and(|seat| self.session.seat_is_ai(seat))
+            && ai_turn
+            && !self.session.ai_busy
             && self.last_ai_step.elapsed() >= Duration::from_millis(600);
-        if paced {
-            self.session.step_ai();
+        if paced && self.session.request_ai_decision_default() {
             self.last_ai_step = Instant::now();
         }
         if self.session.ai.autoplay && !self.session.game.state.is_over() {
-            ctx.request_repaint_after(Duration::from_millis(250));
+            ctx.request_repaint_after(Duration::from_millis(120));
         }
     }
 
@@ -110,10 +160,10 @@ impl ApertureApp {
             aperture_core::view::PendingKind::Mulligan => {
                 ui.horizontal(|ui| {
                     if ui.button("Keep this hand").clicked() {
-                        let _ = self.session.submit(Action::Mulligan { keep: true });
+                        let _ = self.session.submit_human(Action::Mulligan { keep: true });
                     }
                     if ui.button("Mulligan").clicked() {
-                        let _ = self.session.submit(Action::Mulligan { keep: false });
+                        let _ = self.session.submit_human(Action::Mulligan { keep: false });
                     }
                 });
                 theme::muted(
@@ -130,7 +180,9 @@ impl ApertureApp {
                 ui.label(format!("Looking at: {name}"));
                 ui.horizontal(|ui| {
                     if ui.button(format!("Put {name} on top")).clicked() {
-                        let _ = self.session.submit(Action::OrderCard { to_top: true });
+                        let _ = self
+                            .session
+                            .submit_human(Action::OrderCard { to_top: true });
                     }
                     let off_label = match mode {
                         aperture_core::OrderMode::Scry => format!("Put {name} on the bottom"),
@@ -139,15 +191,14 @@ impl ApertureApp {
                         }
                     };
                     if ui.button(off_label).clicked() {
-                        let _ = self.session.submit(Action::OrderCard { to_top: false });
+                        let _ = self
+                            .session
+                            .submit_human(Action::OrderCard { to_top: false });
                     }
                 });
             }
             aperture_core::view::PendingKind::DeclareAttackers => {
-                let legal = self
-                    .session
-                    .game
-                    .legal_attackers(self.session.owner().unwrap_or(P0));
+                let legal = self.session.game.legal_attackers(view.viewer);
                 ui.label("Declare attackers (structured multi-select):");
                 for id in legal {
                     let selected = self.session.selected_attackers.contains(&id);
@@ -174,11 +225,13 @@ impl ApertureApp {
                     .clicked()
                 {
                     let attackers = self.session.selected_attackers.clone();
-                    let _ = self.session.submit(Action::DeclareAttackers { attackers });
+                    let _ = self
+                        .session
+                        .submit_human(Action::DeclareAttackers { attackers });
                 }
             }
             aperture_core::view::PendingKind::DeclareBlockers => {
-                let defender = self.session.owner().unwrap_or(P1);
+                let defender = view.viewer;
                 let blockers = self.session.game.legal_blockers(defender);
                 let attackers = view.attackers.clone();
                 ui.label("Assign blockers:");
@@ -228,7 +281,9 @@ impl ApertureApp {
                     .clicked()
                 {
                     let blocks = block_list(&self.session.selected_blocks);
-                    let _ = self.session.submit(Action::DeclareBlockers { blocks });
+                    let _ = self
+                        .session
+                        .submit_human(Action::DeclareBlockers { blocks });
                 }
             }
             aperture_core::view::PendingKind::Discard { count }
@@ -267,7 +322,7 @@ impl ApertureApp {
                     } else {
                         Action::BottomCards { cards }
                     };
-                    let _ = self.session.submit(action);
+                    let _ = self.session.submit_human(action);
                 }
             }
         }
@@ -352,6 +407,176 @@ impl ApertureApp {
                 });
             });
     }
+
+    /// Per-seat import: URL, pasted text or a text file. Each seat is certified
+    /// on its own; nothing is substituted and nothing is fetched in this frame.
+    fn import_panel(&mut self, ui: &mut egui::Ui) {
+        theme::heading(ui, "Deck import — two seats, each certified on its own");
+        theme::muted(
+            ui,
+            "URL form: https://archidekt.com/decks/<id>[/slug] (host-allowlisted, canonical API built from the id). \
+             Text fallback: paste a list or point at a file. A seat becomes usable only after its exact list passes \
+             the practice profile; unsupported input is refused, never replaced.",
+        );
+        for seat in [P0, P1] {
+            let index = seat as usize;
+            let busy = self.session.import_busy[index];
+            ui.separator();
+            ui.horizontal_wrapped(|ui| {
+                ui.label(
+                    RichText::new(format!(
+                        "{}{}",
+                        seat_label(seat),
+                        if self.session.ai.ai_seat == seat {
+                            " (AI seat)"
+                        } else {
+                            " (your seat)"
+                        }
+                    ))
+                    .color(theme::BRASS)
+                    .strong(),
+                );
+            });
+            ui.horizontal_wrapped(|ui| {
+                ui.label("URL:");
+                ui.add(
+                    egui::TextEdit::singleline(&mut self.session.seat_url[index])
+                        .desired_width(420.0),
+                );
+                if ui
+                    .add_enabled(!busy, egui::Button::new("Import URL"))
+                    .clicked()
+                {
+                    let url = self.session.seat_url[index].clone();
+                    let cache = PathBuf::from("cache");
+                    self.session
+                        .request_import(seat, move || import_seat_url(seat, &url, &cache));
+                }
+            });
+            ui.label("Text fallback (paste a deck list):");
+            ui.add(
+                egui::TextEdit::multiline(&mut self.session.seat_text[index])
+                    .desired_rows(4)
+                    .desired_width(470.0),
+            );
+            ui.horizontal_wrapped(|ui| {
+                if ui
+                    .add_enabled(!busy, egui::Button::new("Import pasted text"))
+                    .clicked()
+                {
+                    let text = self.session.seat_text[index].clone();
+                    let name = format!("P{seat} pasted list");
+                    self.session
+                        .request_import(seat, move || import_seat_text(seat, &name, &text));
+                }
+                ui.label("file:");
+                ui.add(
+                    egui::TextEdit::singleline(&mut self.session.seat_path[index])
+                        .desired_width(280.0),
+                );
+                if ui
+                    .add_enabled(!busy, egui::Button::new("Import file"))
+                    .clicked()
+                {
+                    let path = PathBuf::from(self.session.seat_path[index].clone());
+                    self.session
+                        .request_import(seat, move || import_seat_file(seat, &path));
+                }
+                if busy {
+                    ui.spinner();
+                    ui.label("working…");
+                }
+            });
+            if let Some(err) = &self.session.seat_error[index] {
+                ui.label(RichText::new(format!("ERROR: {err}")).color(theme::BAD));
+            }
+            if let Some(import) = &self.session.seat_import[index] {
+                let (status, color) = if import.certified() {
+                    ("CERTIFIED", theme::GOOD)
+                } else {
+                    ("REFUSED", theme::BAD)
+                };
+                ui.label(
+                    RichText::new(format!(
+                        "{status} — '{}' ({} / {} cards)",
+                        import.name, import.supported, import.total
+                    ))
+                    .color(color)
+                    .strong(),
+                );
+                if let Some(list) = &import.list {
+                    let profile = aperture_core::catalog::pool_size();
+                    ui.label(RichText::new(format!(
+                        "planned list applied verbatim: {} card(s) across {} distinct cards; every card is in the {profile}-card pool",
+                        list.size(),
+                        list.cards.len()
+                    )));
+                }
+                ui.label(RichText::new(import.summary.clone()).monospace().small());
+            }
+        }
+        ui.separator();
+        let ready = self.session.can_start_imported();
+        ui.horizontal_wrapped(|ui| {
+            if ui
+                .add_enabled(ready, egui::Button::new("Start imported match (P0 vs P1)"))
+                .clicked()
+            {
+                let seed = self.session.seed.wrapping_add(1);
+                if let Err(err) = self.session.start_imported_match(seed) {
+                    self.session.message = err;
+                }
+            }
+            if !ready {
+                theme::muted(
+                    ui,
+                    "disabled until BOTH seats are certified (an unsupported deck cannot start)",
+                );
+            }
+        });
+        ui.separator();
+        ui.horizontal_wrapped(|ui| {
+            if ui
+                .add_enabled(
+                    !self.session.health_busy,
+                    egui::Button::new("Check local Decider-2B health"),
+                )
+                .clicked()
+            {
+                let timeout = self.session.ai.decider_timeout_ms;
+                self.session.request_health(move || {
+                    let config = DeciderConfig {
+                        timeout_ms: timeout,
+                        ..DeciderConfig::default()
+                    };
+                    match DeciderClient::new(config) {
+                        Ok(client) => match client.health() {
+                            Ok(true) => {
+                                "decider-2b /health reachable on http://127.0.0.1:8765".to_string()
+                            }
+                            Ok(false) => {
+                                "decider-2b answered, but with an error status".to_string()
+                            }
+                            Err(err) => {
+                                format!("decider-2b unreachable ({err}); heuristic active")
+                            }
+                        },
+                        Err(err) => format!("decider config refused: {err}"),
+                    }
+                });
+            }
+            if self.session.health_busy {
+                ui.spinner();
+            }
+        });
+        if let Some(status) = &self.session.decider_status {
+            ui.label(RichText::new(status).color(theme::BRASS).small());
+        }
+        ui.horizontal_wrapped(|ui| {
+            ui.label("save/load path:");
+            ui.text_edit_singleline(&mut self.session.save_path);
+        });
+    }
 }
 
 fn write_png(path: &std::path::Path, image: &egui::ColorImage) -> std::io::Result<()> {
@@ -392,6 +617,16 @@ impl eframe::App for ApertureApp {
             // palette is (re)asserted over the first frames.
             theme::apply(&ctx);
         }
+        // Finished background work is applied here, on the main thread only.
+        let applied = self.session.poll_workers();
+        if !applied.is_empty() {
+            self.session.busy_note = Some(applied.join("; "));
+        }
+        // Workers keep running after a game ends (import, health, save, load),
+        // so keep the frame loop ticking while any is outstanding.
+        if self.session.worker_busy() {
+            ctx.request_repaint_after(Duration::from_millis(120));
+        }
         self.tick_ai(&ctx);
 
         let human = self.session.human_seat();
@@ -403,34 +638,53 @@ impl eframe::App for ApertureApp {
                 ui.label(RichText::new("THE APERTURE").heading().color(theme::BRASS));
                 theme::muted(ui, crate::session::profile_line());
             });
+            if let Some(refusal) = self.session.deck_refusal.clone() {
+                ui.label(
+                    RichText::new(format!("DECK REFUSED — {refusal}"))
+                        .color(theme::BAD)
+                        .strong(),
+                );
+                theme::muted(
+                    ui,
+                    "Use the Import panel to supply a valid list for each seat, then start the imported match.",
+                );
+            }
             ui.horizontal_wrapped(|ui| {
                 if ui.button("New game").clicked() {
                     let seed = self.session.seed.wrapping_add(1);
                     self.session.new_game(seed);
                 }
                 if ui.button("Pass / next action").clicked() {
-                    let _ = self.session.submit(Action::Pass);
+                    let _ = self.session.submit_human(Action::Pass);
                 }
                 if ui.button("AI step").clicked() {
-                    self.session.step_ai();
+                    self.session.request_ai_decision_default();
                 }
                 ui.checkbox(&mut self.session.ai.autoplay, "AI autoplay");
-                ui.checkbox(
-                    &mut self.session.human_plays_ai_seat,
-                    "Let the AI play my seat too",
-                );
-                if ui.checkbox(&mut self.session.ai.use_decider, "Use local Decider-2B").changed()
-                    && self.session.ai.use_decider
+                if ui
+                    .checkbox(
+                        &mut self.session.human_plays_ai_seat,
+                        "Let the AI play my seat too",
+                    )
+                    .changed()
                 {
-                    self.session.decider_check();
+                    self.session.invalidate_pending_work();
+                }
+                let decider_toggle = ui.checkbox(
+                    &mut self.session.ai.use_decider,
+                    "Use local Decider-2B",
+                );
+                if decider_toggle.changed() {
+                    let on = self.session.ai.use_decider;
+                    self.session.set_use_decider(on);
                 }
                 if ui.button("Save").clicked() {
-                    let path = PathBuf::from(self.session.save_path.clone());
-                    let _ = self.session.save(&path);
+                    self.session
+                        .request_save(PathBuf::from(self.session.save_path.clone()));
                 }
                 if ui.button("Load").clicked() {
-                    let path = PathBuf::from(self.session.save_path.clone());
-                    let _ = self.session.load(&path);
+                    self.session
+                        .request_load(PathBuf::from(self.session.save_path.clone()));
                 }
                 if ui.button("Set branch").clicked() {
                     self.session.set_branch();
@@ -476,7 +730,14 @@ impl eframe::App for ApertureApp {
                 if self.session.ai.use_decider {
                     ui.label(RichText::new("decider-2b opt-in").color(theme::BRASS));
                 }
+                if self.session.worker_busy() {
+                    ui.spinner();
+                    ui.label(RichText::new("background work running").color(theme::BRASS));
+                }
             });
+            if let Some(note) = &self.session.busy_note {
+                ui.label(RichText::new(note).color(theme::MUTED).small());
+            }
             ui.separator();
 
             ui.columns(2, |columns| {
@@ -582,7 +843,7 @@ impl eframe::App for ApertureApp {
                     response.on_hover_text(card.oracle);
                 }
                 if let Some(action) = play {
-                    let _ = self.session.submit(action);
+                    let _ = self.session.submit_human(action);
                 }
                 if self.session.target_pick.is_some() {
                     let (card, options) = self.session.target_pick.clone().unwrap();
@@ -601,7 +862,7 @@ impl eframe::App for ApertureApp {
                             .map(|entry| entry.label.clone())
                             .unwrap_or_else(|| "cast".to_string());
                         if left.button(label).clicked() {
-                            let _ = self.session.submit(action);
+                            let _ = self.session.submit_human(action);
                         }
                     }
                     if left.button("Cancel").clicked() {
@@ -623,13 +884,30 @@ impl eframe::App for ApertureApp {
                     }
                 }
                 if let Some(action) = chosen {
-                    let _ = self.session.submit(action);
+                    let _ = self.session.submit_human(action);
                 }
 
-                if self.session.pending_kind(&view).is_some() {
+                if view.pending_kind.is_some() {
                     right.separator();
-                    let pending_view = view.clone();
-                    self.pending_controls(right, &pending_view);
+                    let pending_seat = owner.unwrap_or(human);
+                    if pending_seat == human {
+                        let pending_view = view.clone();
+                        self.pending_controls(right, &pending_view);
+                    } else {
+                        theme::heading(right, "WAITING ON THE OTHER SEAT");
+                        theme::muted(
+                            right,
+                            format!(
+                                "P{pending_seat} must answer: {}. Your controls are disabled for this decision point.",
+                                view.pending.clone().unwrap_or_default()
+                            ),
+                        );
+                        if self.session.seat_is_ai(pending_seat)
+                            && right.button("Let the AI answer (step)").clicked()
+                        {
+                            self.session.request_ai_decision_default();
+                        }
+                    }
                 }
 
                 if self.show_coach {
@@ -711,28 +989,7 @@ impl eframe::App for ApertureApp {
 
             if self.show_import {
                 ui.separator();
-                theme::heading(ui, "ARCHIDEKT IMPORT (https://archidekt.com/decks/<id> only)");
-                ui.horizontal_wrapped(|ui| {
-                    ui.text_edit_singleline(&mut self.session.import_url);
-                    if ui.button("Import").clicked() {
-                        let cache = PathBuf::from("cache");
-                        self.session.import_url(&cache);
-                    }
-                    theme::muted(
-                        ui,
-                        "a strict refusal is the expected result for decks outside the supported pool",
-                    );
-                });
-                if let Some(report) = &self.session.import_report {
-                    ui.label(RichText::new(report).monospace().small());
-                }
-                if let Some(status) = &self.session.decider_status {
-                    ui.label(RichText::new(status).color(theme::BRASS).small());
-                }
-                ui.horizontal_wrapped(|ui| {
-                    ui.label("save/load path:");
-                    ui.text_edit_singleline(&mut self.session.save_path);
-                });
+                self.import_panel(ui);
             }
 
             if self.frame_count == 1 {

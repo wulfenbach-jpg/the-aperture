@@ -15,6 +15,8 @@ fn parse_options() -> Startup {
         seed: 1,
         deck_a: PathBuf::from("decks/temur-beats.txt"),
         deck_b: PathBuf::from("decks/izzet-control.txt"),
+        deck_a_explicit: false,
+        deck_b_explicit: false,
         ai_seat: 1,
         human_autoplay: false,
         autoplay: false,
@@ -32,11 +34,13 @@ fn parse_options() -> Startup {
             "--deck-a" => {
                 if let Some(value) = args.next() {
                     options.deck_a = PathBuf::from(value);
+                    options.deck_a_explicit = true;
                 }
             }
             "--deck-b" => {
                 if let Some(value) = args.next() {
                     options.deck_b = PathBuf::from(value);
+                    options.deck_b_explicit = true;
                 }
             }
             "--ai-seat" => {
