@@ -457,6 +457,105 @@ impl GameState {
                 });
             }
         }
+        for (index, player) in self.players.iter().enumerate() {
+            let p = index as PlayerId;
+            for (zone, ids) in [
+                (Zone::Library, &player.library),
+                (Zone::Hand, &player.hand),
+                (Zone::Graveyard, &player.graveyard),
+                (Zone::Exile, &player.exile),
+            ] {
+                for id in ids {
+                    let Some(object) = self.objects.get(id) else {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("P{p} {} references missing object {id}", zone.name()),
+                        });
+                    };
+                    if object.owner != p || object.zone != zone {
+                        return Err(EngineError::InvalidState {
+                            reason: format!(
+                                "P{p} {} references object {id} owned by P{} in {}",
+                                zone.name(),
+                                object.owner,
+                                object.zone.name()
+                            ),
+                        });
+                    }
+                }
+            }
+        }
+        for item in &self.stack {
+            let Some(object) = self.objects.get(&item.object) else {
+                return Err(EngineError::InvalidState {
+                    reason: format!("stack references missing object {}", item.object),
+                });
+            };
+            if object.zone != Zone::Stack {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "stack object {} is in the {} zone",
+                        item.object,
+                        object.zone.name()
+                    ),
+                });
+            }
+        }
+        if let Some(resolving) = self.resolving
+            && !self.stack.iter().any(|item| item.object == resolving)
+        {
+            return Err(EngineError::InvalidState {
+                reason: format!("resolving object {resolving} is not on the stack"),
+            });
+        }
+        for id in self.turn.attackers.iter().chain(self.turn.blocked.iter()) {
+            let Some(object) = self.objects.get(id) else {
+                return Err(EngineError::InvalidState {
+                    reason: format!("combat references missing object {id}"),
+                });
+            };
+            if object.zone != Zone::Battlefield {
+                return Err(EngineError::InvalidState {
+                    reason: format!("combat object {id} is not on the battlefield"),
+                });
+            }
+        }
+        for (blocker, attacker) in &self.turn.blockers {
+            for id in [blocker, attacker] {
+                let Some(object) = self.objects.get(id) else {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("combat references missing object {id}"),
+                    });
+                };
+                if object.zone != Zone::Battlefield {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("combat object {id} is not on the battlefield"),
+                    });
+                }
+            }
+        }
+        if let Some(Pending::OrderCard {
+            viewed,
+            index,
+            to_top,
+            ..
+        }) = &self.pending
+        {
+            if viewed.is_empty() || *index >= viewed.len() {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "pending OrderCard index {index} is outside {} viewed card(s)",
+                        viewed.len()
+                    ),
+                });
+            }
+            for id in viewed.iter().chain(to_top.iter()) {
+                if !self.objects.contains_key(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("pending OrderCard references missing object {id}"),
+                    });
+                }
+            }
+        }
         for item in &self.stack {
             if !in_range(item.controller) {
                 return Err(EngineError::InvalidState {

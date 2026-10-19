@@ -194,3 +194,143 @@ fn first_multiplayer_mulligan_is_free_but_the_second_bottoms_one() {
     }
     let _ = &mut log;
 }
+
+#[test]
+fn active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_live_seat() {
+    // CR 800.4a/j/k: P0 (active) leaves mid-turn; the turn continues, a stack
+    // item controlled by P1 still resolves, and the next turn belongs to P1.
+    use aperture_core::state::StackItem;
+
+    let mut game = fixture_n(40, 4)
+        .hand(1, &[CardId::Shock])
+        .battlefield(1, &[CardId::Mountain])
+        .life(P0, 0)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let shock = hand_card(&game, 1, CardId::Shock);
+    game.state.players[1].hand.retain(|id| *id != shock);
+    object_mut(&mut game.state, shock).zone = Zone::Stack;
+    // Resolve Shock through the real stack so the remaining turn has work to do.
+    game.state.stack.push(StackItem {
+        object: shock,
+        controller: 1,
+        targets: vec![Target::Player(2)],
+        cursor: 0,
+    });
+
+    submit_ok(&mut game, P0, Action::Pass);
+    assert!(game.state.player(P0).lost);
+    assert!(game.state.outcome.is_none(), "three live seats remain");
+    assert_eq!(game.state.turn.active, P0, "the turn does not end");
+    assert_eq!(game.state.turn.priority, Some(1), "priority passes to P1");
+    assert_eq!(game.state.stack.len(), 1, "P1's stack object remains");
+
+    submit_ok(&mut game, 1, Action::Pass);
+    submit_ok(&mut game, 2, Action::Pass);
+    submit_ok(&mut game, 3, Action::Pass);
+    assert_eq!(game.state.stack.len(), 0, "one item resolved");
+    assert_eq!(game.state.player(2).life, 18);
+    assert_eq!(game.state.turn.active, P0);
+
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.number == 2,
+        512
+    ));
+    assert_eq!(game.state.turn.active, 1, "next live seat after P0 is P1");
+}
+
+#[test]
+fn four_seat_turn_order_skips_eliminated_seats_and_wraps() {
+    let forests = vec![CardId::Forest; 60];
+    let mut game = fixture_n(41, 4)
+        .library(P0, &forests)
+        .library(2, &forests)
+        .life(1, 0)
+        .life(3, 0)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    submit_ok(&mut game, P0, Action::Pass);
+    assert_eq!(game.state.live_count(), 2);
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.number == 2,
+        512
+    ));
+    assert_eq!(game.state.turn.active, 2, "P1 is skipped");
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.number == 3,
+        512
+    ));
+    assert_eq!(
+        game.state.turn.active, P0,
+        "P3 is skipped and the order wraps"
+    );
+}
+
+#[test]
+fn replay_rejects_a_mismatched_rules_revision() {
+    let (game, _) = Game::new_logged(51, &three_decks()).expect("game");
+    let mut replay = Replay::new(
+        51,
+        game.state.first_player,
+        three_decks(),
+        AiSettings::default(),
+    )
+    .expect("replay");
+    replay.rules_revision = "1999-01-01".to_string();
+    assert!(
+        replay.run().is_err(),
+        "a replay recorded under another rules revision must be rejected"
+    );
+}
+
+#[test]
+fn save_rejects_a_missing_object_reference_and_stale_replay_invariants() {
+    let (game, log) = Game::new_logged(52, &three_decks()).expect("game");
+    let replay = Replay::new(
+        52,
+        game.state.first_player,
+        three_decks(),
+        AiSettings::default(),
+    )
+    .expect("replay");
+    let mut save = SessionSave::capture(&game, replay, log, false);
+
+    // Drop an object still referenced by a zone; refresh the digest so only a
+    // referential-integrity check can catch it.
+    let missing = save.game.player(P0).hand[0];
+    save.game.objects.remove(&missing);
+    save.digest = aperture_core::digest::digest(&save.game);
+    let json = serde_json::to_string(&save).expect("save json");
+    assert!(
+        SessionSave::from_json(&json).is_err(),
+        "a save with a dangling zone reference must be rejected, not panic later"
+    );
+
+    // The embedded replay must agree with the snapshot's rules/first player.
+    let mut stale = SessionSave::capture(
+        &game,
+        Replay::new(
+            52,
+            game.state.first_player,
+            three_decks(),
+            AiSettings::default(),
+        )
+        .expect("replay"),
+        Vec::new(),
+        false,
+    );
+    stale.replay.rules_revision = "1999-01-01".to_string();
+    let json = serde_json::to_string(&stale).expect("stale json");
+    assert!(
+        SessionSave::from_json(&json).is_err(),
+        "a save whose replay targets another rules revision must be rejected"
+    );
+}

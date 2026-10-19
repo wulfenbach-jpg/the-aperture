@@ -58,6 +58,12 @@ pub enum ReplayError {
     SeatOrder { reason: String },
     #[error("recorded first player P{expected} does not match the re-created game's P{got}")]
     FirstPlayerMismatch { expected: PlayerId, got: PlayerId },
+    #[error(
+        "recorded rules revision {recorded} does not match this build's pinned revision {current}"
+    )]
+    RulesRevisionMismatch { recorded: String, current: String },
+    #[error("save invariant violated: {reason}")]
+    Invariant { reason: String },
     #[error("could not construct the recorded game: {source}")]
     Setup {
         #[source]
@@ -131,6 +137,12 @@ impl Replay {
                     "first player P{} is outside the {got}-seat game",
                     self.first_player
                 ),
+            });
+        }
+        if self.rules_revision != crate::RULES_REVISION {
+            return Err(ReplayError::RulesRevisionMismatch {
+                recorded: self.rules_revision.clone(),
+                current: crate::RULES_REVISION.to_string(),
             });
         }
         self.ai
@@ -271,6 +283,23 @@ impl SessionSave {
             return Err(ReplayError::Version {
                 got: self.replay.version,
                 expected: REPLAY_VERSION,
+            });
+        }
+        self.replay.validate()?;
+        if self.replay.first_player != self.game.first_player {
+            return Err(ReplayError::Invariant {
+                reason: format!(
+                    "save first player P{} != replay first player P{}",
+                    self.game.first_player, self.replay.first_player
+                ),
+            });
+        }
+        if self.replay.rules_revision != self.game.rules_revision {
+            return Err(ReplayError::Invariant {
+                reason: format!(
+                    "save rules revision {} != replay rules revision {}",
+                    self.game.rules_revision, self.replay.rules_revision
+                ),
             });
         }
         if self.replay.seats != self.seats {
