@@ -34,10 +34,12 @@ pub enum Action {
     ActivateManaAbility {
         land: ObjectId,
     },
-    /// Structured attacker declaration: "may restrict declarations through
-    /// structured multi-select prompts" (product requirement 4).
+    /// Structured attacker declaration. In the bounded M1 multiplayer model every
+    /// attacker in one declaration attacks the same defending seat; `defender`
+    /// is `None` exactly when no attackers are declared.
     DeclareAttackers {
         attackers: Vec<ObjectId>,
+        defender: Option<PlayerId>,
     },
     DeclareBlockers {
         blocks: Vec<BlockDecl>,

@@ -151,13 +151,13 @@ pub fn decision_request(view: &PlayerView) -> Result<DecisionRequest, DeciderErr
 
     let mut life = serde_json::Map::new();
     life.insert(format!("P{}", view.viewer), json!(view.own_life));
-    life.insert(
-        format!("P{}", aperture_core::opponent(view.viewer)),
-        json!(view.opponent_life),
-    );
+    for opponent in &view.opponents {
+        life.insert(format!("P{}", opponent.seat), json!(opponent.life));
+    }
 
     let state = json!({
-        "game": "Magic: The Gathering practice slice (1v1, 20 life)",
+        "game": "Magic: The Gathering practice slice (2-4 live seats, 20 life)",
+        "seat_count": view.seat_count,
         "you_are": format!("P{}", view.viewer),
         "turn": view.turn_number,
         "step": view.step.name(),
@@ -170,10 +170,15 @@ pub fn decision_request(view: &PlayerView) -> Result<DecisionRequest, DeciderErr
         "your_mana_pool": view.own_mana,
         "your_library_count": view.own_library_count,
         "your_graveyard": view.own_graveyard.iter().map(|c| c.name).collect::<Vec<_>>(),
-        "opponent_battlefield": view.opponent_battlefield.iter().map(card_json).collect::<Vec<_>>(),
-        "opponent_hand_count": view.opponent_hand_count,
-        "opponent_library_count": view.opponent_library_count,
-        "opponent_graveyard": view.opponent_graveyard.iter().map(|c| c.name).collect::<Vec<_>>(),
+        "opponents": view.opponents.iter().map(|o| json!({
+            "seat": format!("P{}", o.seat),
+            "eliminated": o.eliminated,
+            "life": o.life,
+            "hand_count": o.hand_count,
+            "library_count": o.library_count,
+            "battlefield": o.battlefield.iter().map(card_json).collect::<Vec<_>>(),
+            "graveyard": o.graveyard.iter().map(|c| c.name).collect::<Vec<_>>(),
+        })).collect::<Vec<_>>(),
         "stack": view.stack.iter().map(|item| json!({
             "name": item.name,
             "controller": format!("P{}", item.controller),

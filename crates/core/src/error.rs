@@ -9,6 +9,15 @@ pub enum EngineError {
     #[error("the game is already over")]
     GameOver,
 
+    #[error("invalid seat configuration: {reason}")]
+    InvalidSeats { reason: String },
+
+    #[error("seat P{seat} is not part of this game")]
+    UnknownSeat { seat: PlayerId },
+
+    #[error("invalid game state: {reason}")]
+    InvalidState { reason: String },
+
     #[error("no player is entitled to act right now")]
     NoDecisionPoint,
 

@@ -48,8 +48,8 @@ pub struct ApertureApp {
     frame_count: u64,
 }
 
-fn seat_label(seat: PlayerId) -> &'static str {
-    if seat == P0 { "P0" } else { "P1" }
+fn seat_label(seat: PlayerId) -> String {
+    format!("P{seat}")
 }
 
 /// Load the startup decks. A built-in default uses the compiled practice
@@ -92,19 +92,21 @@ impl ApertureApp {
             eprintln!("smoke mode: Decider-2B calls are disabled for the capture");
         }
         let ai = AiSettings {
-            ai_seat: startup.ai_seat.min(1),
+            human_seat: if startup.ai_seat == P0 { P1 } else { P0 },
+            ai_seats: vec![startup.ai_seat.min(1)],
             autoplay: startup.autoplay || startup.smoke.is_some(),
             use_decider,
             ..AiSettings::default()
         };
+        let seats = vec![deck_a, deck_b];
         let mut session = UiSession::new(
             startup.seed,
-            deck_a,
-            deck_b,
+            seats,
             ai,
             use_decider,
             startup.human_autoplay || startup.smoke.is_some(),
-        );
+        )
+        .expect("the native table always starts with two valid seat lists");
         session.deck_refusal = deck_refusal.clone();
         // A smoke run should show a developed board, not the opening hand.
         if startup.smoke.is_some() {
@@ -199,6 +201,20 @@ impl ApertureApp {
             }
             aperture_core::view::PendingKind::DeclareAttackers => {
                 let legal = self.session.game.legal_attackers(view.viewer);
+                let defenders: Vec<PlayerId> = view
+                    .opponents
+                    .iter()
+                    .filter(|o| !o.eliminated)
+                    .map(|o| o.seat)
+                    .collect();
+                if !defenders.is_empty()
+                    && self
+                        .session
+                        .selected_defender
+                        .is_none_or(|seat| !defenders.contains(&seat))
+                {
+                    self.session.selected_defender = defenders.first().copied();
+                }
                 ui.label("Declare attackers (structured multi-select):");
                 for id in legal {
                     let selected = self.session.selected_attackers.contains(&id);
@@ -217,6 +233,16 @@ impl ApertureApp {
                         }
                     }
                 }
+                ui.label("Defending seat:");
+                for defender in defenders {
+                    let selected = self.session.selected_defender == Some(defender);
+                    if ui
+                        .selectable_label(selected, format!("P{defender}"))
+                        .clicked()
+                    {
+                        self.session.selected_defender = Some(defender);
+                    }
+                }
                 if ui
                     .button(format!(
                         "Declare {} attacker(s)",
@@ -225,9 +251,17 @@ impl ApertureApp {
                     .clicked()
                 {
                     let attackers = self.session.selected_attackers.clone();
+                    let defender = if attackers.is_empty() {
+                        None
+                    } else {
+                        self.session.selected_defender
+                    };
                     let _ = self
                         .session
-                        .submit_human(Action::DeclareAttackers { attackers });
+                        .submit_human(Action::DeclareAttackers {
+                            attackers,
+                            defender,
+                        });
                 }
             }
             aperture_core::view::PendingKind::DeclareBlockers => {
@@ -422,7 +456,7 @@ impl ApertureApp {
              Text fallback: paste a list or point at a file. A seat becomes usable only after its exact list passes \
              the practice profile; unsupported input is refused, never replaced.",
         );
-        for seat in [P0, P1] {
+        for seat in 0..self.session.seats.len() as PlayerId {
             let index = seat as usize;
             let busy = self.session.import_busy[index];
             ui.separator();
@@ -431,7 +465,7 @@ impl ApertureApp {
                     RichText::new(format!(
                         "{}{}",
                         seat_label(seat),
-                        if self.session.ai.ai_seat == seat {
+                        if self.session.seat_is_ai(seat) {
                             " (AI seat)"
                         } else {
                             " (your seat)"
@@ -523,7 +557,7 @@ impl ApertureApp {
         let ready = self.session.can_start_imported();
         ui.horizontal_wrapped(|ui| {
             if ui
-                .add_enabled(ready, egui::Button::new("Start imported match (P0 vs P1)"))
+                .add_enabled(ready, egui::Button::new("Start imported match"))
                 .clicked()
             {
                 let seed = self.session.seed.wrapping_add(1);
@@ -725,13 +759,20 @@ impl ApertureApp {
                     ui.label(RichText::new(conclusion).color(theme::GOOD).strong());
                 }
                 ui.label(format!(
-                    "turn {} · {} · active P{} · stack {} · life P0 {} / P1 {} · digest {}",
+                    "turn {} · {} · active P{} · stack {} · {} · digest {}",
                     view.turn_number,
                     view.step.name(),
                     view.active,
                     view.stack.len(),
-                    self.session.game.state.player(P0).life,
-                    self.session.game.state.player(P1).life,
+                    {
+                        let mut life = vec![format!("P{} {}", view.viewer, view.own_life)];
+                        life.extend(
+                            view.opponents
+                                .iter()
+                                .map(|o| format!("P{} {}{}", o.seat, o.life, if o.eliminated { " (out)" } else { "" })),
+                        );
+                        life.join(" / ")
+                    },
                     view.digest
                 ));
                 if self.session.sandbox_modified {
@@ -753,22 +794,27 @@ impl ApertureApp {
             ui.columns(2, |columns| {
                 // ---------------- left: the table
                 let left = &mut columns[0];
-                let opponent = if human == P0 { P1 } else { P0 };
-                let opponent_view = self.session.view(opponent);
-                theme::heading(
-                    left,
-                    &format!(
-                        "OPPONENT  P{opponent}  life {}  hand {}  library {}  graveyard {}  exile {}",
-                        opponent_view.own_life,
-                        opponent_view.own_hand.len(),
-                        opponent_view.own_library_count,
-                        opponent_view.own_graveyard.len(),
-                        opponent_view.own_exile.len()
-                    ),
-                );
-                theme::muted(left, "opponent hand contents are hidden; graveyard and exile are public");
-                let opponent_cards = view.opponent_battlefield.clone();
-                self.battlefield_ui(left, opponent, &opponent_cards, false);
+                let opponents = view.opponents.clone();
+                for opponent in &opponents {
+                    theme::heading(
+                        left,
+                        &format!(
+                            "OPPONENT  P{}  life {}{}  hand {}  library {}  graveyard {}  exile {}",
+                            opponent.seat,
+                            opponent.life,
+                            if opponent.eliminated { "  [LEFT THE GAME]" } else { "" },
+                            opponent.hand_count,
+                            opponent.library_count,
+                            opponent.graveyard.len(),
+                            opponent.exile.len()
+                        ),
+                    );
+                    theme::muted(
+                        left,
+                        "opponent hand contents are hidden; graveyard and exile are public",
+                    );
+                    self.battlefield_ui(left, opponent.seat, &opponent.battlefield, false);
+                }
 
                 theme::heading(left, "STACK");
                 if view.stack.is_empty() {
@@ -1039,19 +1085,27 @@ impl ApertureApp {
             let mut open = true;
             let own_graveyard = view.own_graveyard.clone();
             let own_exile = view.own_exile.clone();
-            let opponent_graveyard = view.opponent_graveyard.clone();
-            let opponent_exile = view.opponent_exile.clone();
+            let opponent_graveyards: Vec<Vec<CardView>> = view
+                .opponents
+                .iter()
+                .map(|o| o.graveyard.clone())
+                .collect();
+            let opponent_exiles: Vec<Vec<CardView>> = view
+                .opponents
+                .iter()
+                .map(|o| o.exile.clone())
+                .collect();
             egui::Window::new("Public zones")
                 .open(&mut open)
                 .resizable(true)
                 .show(&ctx, |ui| {
                     ui.label(RichText::new("Graveyard (public)").color(theme::BRASS));
-                    for card in own_graveyard.iter().chain(opponent_graveyard.iter()) {
+                    for card in own_graveyard.iter().chain(opponent_graveyards.iter().flatten()) {
                         ui.label(Self::card_label(card));
                     }
                     ui.separator();
                     ui.label(RichText::new("Exile (public)").color(theme::BRASS));
-                    for card in own_exile.iter().chain(opponent_exile.iter()) {
+                    for card in own_exile.iter().chain(opponent_exiles.iter().flatten()) {
                         ui.label(Self::card_label(card));
                     }
                 });

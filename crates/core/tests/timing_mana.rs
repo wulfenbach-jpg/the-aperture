@@ -253,7 +253,7 @@ fn stale_submissions_are_rejected() {
         Err(EngineError::StaleDecision { .. })
     ));
     assert_eq!(
-        game.state.turn.passes, 0,
+        game.state.turn.passed, 0,
         "rejected submissions do not advance"
     );
 }

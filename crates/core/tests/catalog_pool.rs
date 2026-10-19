@@ -131,7 +131,7 @@ fn unsupported_card_names_are_rejected_by_the_deck_parser() {
 
 #[test]
 fn game_setup_uses_twenty_life_and_forty_card_decks() {
-    let game = Game::new(1, &deck_a(), &deck_b());
+    let game = Game::new(1, &[deck_a(), deck_b()]).expect("game");
     assert_eq!(game.state.player(P0).life, 20);
     assert_eq!(game.state.player(P1).life, 20);
     assert_eq!(game.state.player(P0).hand_size(), 7);

@@ -10,7 +10,7 @@ pub use decider::{
     OptionSpec, decision_request,
 };
 pub use heuristic::{HeuristicPolicy, available_mana, card_mana_value, land_color, pool_size};
-pub use selfplay::{SelfplayOutcome, play_to_end};
+pub use selfplay::{RunStatus, SelfplayLimits, SelfplayOutcome, play_to_end};
 
 use aperture_core::Action;
 use aperture_core::view::PlayerView;

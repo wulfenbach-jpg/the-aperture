@@ -139,6 +139,10 @@ pub enum Event {
         winner: PlayerId,
         reason: String,
     },
+    /// Engine projection of CR 104.4a, not a Comprehensive Rules term.
+    GameDrawn {
+        reason: String,
+    },
     Truncated {
         reason: String,
     },

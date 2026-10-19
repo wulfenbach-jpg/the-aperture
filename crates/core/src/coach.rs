@@ -48,6 +48,38 @@ pub static RULE_NOTES: &[(&str, &str)] = &[
         "Each time a player would receive priority, state-based actions are performed first, then waiting triggered abilities are put on the stack.",
     ),
     (
+        "103.5c",
+        "In a multiplayer game (and Brawl), a player's first mulligan is free: it does not count toward the cards bottomed or the mulligan limit.",
+    ),
+    (
+        "103.8a",
+        "In a two-player game, the player who plays first skips the draw step of their first turn.",
+    ),
+    (
+        "103.8c",
+        "In all other multiplayer games, no player skips the draw step of their first turn.",
+    ),
+    (
+        "104.4a",
+        "If all the players remaining in a game lose simultaneously, the game is a draw (engine projection: Outcome::Draw).",
+    ),
+    (
+        "800.4a",
+        "When a player leaves the game, all objects they own leave the game and control effects end; if they had priority, the next player in turn order still in the game receives it.",
+    ),
+    (
+        "800.4e",
+        "If combat damage would be assigned to a player who has left the game, that damage isn't assigned.",
+    ),
+    (
+        "800.4j",
+        "If a player leaves during their turn, the turn continues to completion without an active player; priority goes to the next live player, the top object may resolve, or the step/phase may end.",
+    ),
+    (
+        "800.4k",
+        "If a player who has left the game would begin a turn, that turn doesn't begin.",
+    ),
+    (
         "302.6",
         "A creature cannot attack unless it has been under its controller's control continuously since that player's most recent turn began (summoning sickness).",
     ),
@@ -361,21 +393,21 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
     out.push(Explanation {
         topic: "board".to_string(),
         text: format!(
-            "Life: P{} {} / P{} {}. Battlefield: P{} {} permanent(s), P{} {} permanent(s). Hand: P{} {}, P{} {}. Libraries: {} and {} card(s).",
-            crate::ids::P0,
-            state.player(crate::ids::P0).life,
-            crate::ids::P1,
-            state.player(crate::ids::P1).life,
-            crate::ids::P0,
-            state.battlefield(crate::ids::P0).len(),
-            crate::ids::P1,
-            state.battlefield(crate::ids::P1).len(),
-            crate::ids::P0,
-            state.player(crate::ids::P0).hand_size(),
-            crate::ids::P1,
-            state.player(crate::ids::P1).hand_size(),
-            state.player(crate::ids::P0).library.len(),
-            state.player(crate::ids::P1).library.len()
+            "Board (public counts): {}.",
+            (0..state.seat_count() as PlayerId)
+                .map(|p| {
+                    let player = state.player(p);
+                    let status = if player.lost { " [left the game]" } else { "" };
+                    format!(
+                        "P{p}{status}: {} life, {} permanent(s), {} card(s) in hand, {} in library",
+                        player.life,
+                        state.battlefield(p).len(),
+                        player.hand_size(),
+                        player.library.len()
+                    )
+                })
+                .collect::<Vec<_>>()
+                .join("; ")
         ),
         rules: vec!["401.3"],
     });

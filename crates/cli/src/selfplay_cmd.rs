@@ -1,9 +1,11 @@
-//! `selfplay`: one deterministic game under the baseline heuristic (and
-//! optionally the local Decider-2B), recorded as a replay and a JSON report.
+//! `selfplay`: one deterministic 2–4 seat game under the baseline heuristic
+//! (and optionally the local Decider-2B), recorded as a replay and a JSON report.
 
 use std::path::PathBuf;
 
-use aperture_ai::{DeciderConfig, DeciderPolicy, HeuristicPolicy, Policy, play_to_end};
+use aperture_ai::{
+    DeciderConfig, DeciderPolicy, HeuristicPolicy, Policy, RunStatus, SelfplayLimits, play_to_end,
+};
 use aperture_core::{AiSettings, Event, Game, RULES_REVISION, Replay};
 use serde_json::json;
 
@@ -11,9 +13,10 @@ use crate::decks;
 
 pub struct Args {
     pub seed: u64,
-    pub deck_a: PathBuf,
-    pub deck_b: PathBuf,
+    /// One path per seat. Empty means the two bundled practice decks.
+    pub decks: Vec<PathBuf>,
     pub max_steps: usize,
+    pub max_millis: Option<u64>,
     pub decider_seat: Option<u8>,
     pub decider_timeout_ms: u64,
     pub out: Option<PathBuf>,
@@ -21,53 +24,86 @@ pub struct Args {
     pub verbose: bool,
 }
 
+fn bundled_paths() -> Vec<PathBuf> {
+    vec![
+        PathBuf::from("decks/temur-beats.txt"),
+        PathBuf::from("decks/izzet-control.txt"),
+    ]
+}
+
 pub fn run(args: Args) -> anyhow::Result<()> {
-    let (deck_a, source_a) = decks::load(&args.deck_a, decks::BUNDLED_TEMUR, "Temur Beats")?;
-    let (deck_b, source_b) = decks::load(&args.deck_b, decks::BUNDLED_IZZET, "Izzet Control")?;
+    let requested = if args.decks.is_empty() {
+        bundled_paths()
+    } else {
+        args.decks
+    };
+    if !(aperture_core::MIN_PLAYERS..=aperture_core::MAX_PLAYERS).contains(&requested.len()) {
+        anyhow::bail!(
+            "selfplay needs 2..=4 --deck paths (got {})",
+            requested.len()
+        );
+    }
+
+    let mut lists = Vec::with_capacity(requested.len());
+    let mut sources = Vec::with_capacity(requested.len());
+    for (index, path) in requested.iter().enumerate() {
+        let (fallback, name) = if index % 2 == 0 {
+            (decks::BUNDLED_TEMUR, "Temur Beats")
+        } else {
+            (decks::BUNDLED_IZZET, "Izzet Control")
+        };
+        let (deck, source) = decks::load(path, fallback, name)?;
+        lists.push(deck);
+        sources.push(source);
+    }
+    let seats = lists.len();
 
     let ai = AiSettings {
         use_decider: args.decider_seat.is_some(),
         decider_timeout_ms: args.decider_timeout_ms,
-        ai_seat: args.decider_seat.map(|seat| seat.min(1)).unwrap_or(1),
+        human_seat: 0,
+        ai_seats: (0..seats as u8).collect(),
         ..AiSettings::default()
     };
 
-    let mut policies: [Box<dyn Policy>; 2] = [
-        Box::new(HeuristicPolicy::new()),
-        Box::new(HeuristicPolicy::new()),
-    ];
+    let mut policies: Vec<Box<dyn Policy>> = (0..seats)
+        .map(|_| Box::new(HeuristicPolicy::new()) as Box<dyn Policy>)
+        .collect();
     let mut decider_note = None;
     if let Some(seat) = args.decider_seat {
-        let seat = seat.min(1);
-        let config = DeciderConfig {
-            timeout_ms: args.decider_timeout_ms,
-            ..DeciderConfig::default()
-        };
-        match DeciderPolicy::new(config) {
-            Ok(policy) => {
-                policies[seat as usize] = Box::new(policy);
-                decider_note = Some(format!(
-                    "seat {seat} uses decider-2b with heuristic fallback"
-                ));
-            }
-            Err(err) => {
-                decider_note = Some(format!(
-                    "decider request rejected ({err}); both seats use the heuristic"
-                ));
+        if seat as usize >= seats {
+            decider_note = Some(format!(
+                "decider seat {seat} is outside this {seats}-seat game; all seats use the heuristic"
+            ));
+        } else {
+            let config = DeciderConfig {
+                timeout_ms: args.decider_timeout_ms,
+                ..DeciderConfig::default()
+            };
+            match DeciderPolicy::new(config) {
+                Ok(policy) => {
+                    policies[seat as usize] = Box::new(policy);
+                    decider_note =
+                        Some(format!("seat {seat} uses decider-2b with heuristic fallback"));
+                }
+                Err(err) => {
+                    decider_note = Some(format!(
+                        "decider request rejected ({err}); all seats use the heuristic"
+                    ));
+                }
             }
         }
     }
 
-    let mut game = Game::new(args.seed, &deck_a, &deck_b);
-    let mut replay = Replay::new(args.seed, deck_a.clone(), deck_b.clone(), ai.clone());
-    let mut log: Vec<Event> = Vec::new();
-    let outcome = play_to_end(
-        &mut game,
-        &mut policies,
-        args.max_steps,
-        &mut log,
-        &mut replay,
-    );
+    let (mut game, mut log) =
+        Game::new_logged(args.seed, &lists).map_err(|err| anyhow::anyhow!("{err}"))?;
+    let mut replay = Replay::new(args.seed, game.state.first_player, lists.clone(), ai.clone())
+        .map_err(|err| anyhow::anyhow!("{err}"))?;
+    let limits = SelfplayLimits {
+        max_steps: args.max_steps,
+        max_millis: args.max_millis,
+    };
+    let outcome = play_to_end(&mut game, &mut policies, limits, &mut log, &mut replay);
     replay.outcome = game.state.outcome.clone();
     replay.final_digest = game.digest();
 
@@ -103,15 +139,19 @@ pub fn run(args: Args) -> anyhow::Result<()> {
 
     let winner = outcome.winner;
     let winner_label = match winner {
-        Some(aperture_core::P0) => "P0 (deck A)",
-        Some(_) => "P1 (deck B)",
-        None => "none (truncated)",
+        Some(seat) => format!("P{seat}"),
+        None => "none".to_string(),
     };
     let policy_label = policies
         .iter()
         .map(|p| p.name().to_string())
         .collect::<Vec<_>>()
         .join(" vs ");
+    let status = match outcome.status {
+        RunStatus::Terminal => "terminal",
+        RunStatus::Capped => "capped",
+        RunStatus::Failed => "failed",
+    };
 
     // Verify the replay against the live digest before reporting success.
     let replay_check = replay.run();
@@ -120,14 +160,31 @@ pub fn run(args: Args) -> anyhow::Result<()> {
         Err(err) => (false, Some(err.to_string())),
     };
 
+    let seat_json: Vec<_> = lists
+        .iter()
+        .enumerate()
+        .map(|(index, deck)| {
+            json!({
+                "seat": index,
+                "name": deck.name,
+                "source": sources[index],
+                "cards": deck.size(),
+                "life": game.state.player(index as u8).life,
+                "library": game.state.player(index as u8).library.len(),
+            })
+        })
+        .collect();
+
     let report = json!({
-        "schema": "aperture-selfplay/1",
+        "schema": "aperture-selfplay/2",
         "rules_revision": RULES_REVISION,
         "seed": args.seed,
-        "deck_a": {"name": deck_a.name, "source": source_a, "cards": deck_a.size()},
-        "deck_b": {"name": deck_b.name, "source": source_b, "cards": deck_b.size()},
+        "seat_count": seats,
+        "first_player": game.state.first_player,
+        "seats": seat_json,
         "policies": policy_label,
         "decider": decider_note,
+        "status": status,
         "steps": outcome.steps,
         "turns": turns,
         "winner": winner.map(|w| w as u32),
@@ -148,15 +205,15 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             "damage_events": damage,
             "counterspells": counters,
         },
-        "life": {"P0": game.state.player(aperture_core::P0).life, "P1": game.state.player(aperture_core::P1).life},
-        "libraries": {"P0": game.state.player(aperture_core::P0).library.len(), "P1": game.state.player(aperture_core::P1).library.len()},
         "pool_size": aperture_core::catalog::pool_size(),
     });
 
     println!(
-        "selfplay seed={} {} -> winner {} in {} steps ({turns} turns){}",
+        "selfplay seed={} seats={} {} -> status {} winner {} in {} steps ({turns} turns){}",
         args.seed,
+        seats,
         policy_label,
+        status,
         winner_label,
         outcome.steps,
         match &outcome.truncated {
@@ -188,6 +245,9 @@ pub fn run(args: Args) -> anyhow::Result<()> {
     }
     if !replay_matches {
         anyhow::bail!("replay verification failed: {replay_error:?}");
+    }
+    if outcome.status == RunStatus::Failed {
+        anyhow::bail!("selfplay failed: {}", outcome.reason);
     }
     Ok(())
 }

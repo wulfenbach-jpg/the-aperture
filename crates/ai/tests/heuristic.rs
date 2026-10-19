@@ -86,7 +86,7 @@ fn attacks_for_lethal_when_the_defender_cannot_block() {
     let decision = decide(&game, P0);
     let courser = battlefield_card(&game, P0, CardId::CentaurCourser);
     match decision.action {
-        Action::DeclareAttackers { attackers } => assert_eq!(attackers, vec![courser]),
+        Action::DeclareAttackers { attackers, .. } => assert_eq!(attackers, vec![courser]),
         other => panic!("expected an attack, got {other:?}"),
     }
 }
@@ -100,7 +100,7 @@ fn does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it() {
         .build();
     let decision = decide(&game, P0);
     match decision.action {
-        Action::DeclareAttackers { attackers } => {
+        Action::DeclareAttackers { attackers, .. } => {
             assert!(
                 attackers.is_empty(),
                 "a 2/2 should not attack into an untapped 3/3"
@@ -132,6 +132,7 @@ fn blocks_when_the_trade_is_good() {
         P1,
         Action::DeclareAttackers {
             attackers: vec![attacker],
+            defender: Some(P0),
         },
     );
     assert!(run_until(
@@ -306,8 +307,9 @@ fn the_policy_only_sees_masked_information() {
         });
         assert!(!leaked, "hidden object {} leaked into the AI's view", id.0);
     }
-    assert_eq!(view.opponent_hand_count, 1);
-    assert_eq!(view.opponent_library_count, 1);
+    let opponent = view.opponents.first().expect("one opponent");
+    assert_eq!(opponent.hand_count, 1);
+    assert_eq!(opponent.library_count, 1);
     assert_eq!(view.own_library_count, 2);
 
     // The policy's only input is the projection.

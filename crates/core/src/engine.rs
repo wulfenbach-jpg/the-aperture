@@ -20,7 +20,7 @@ use crate::deck::DeckList;
 use crate::digest;
 use crate::error::EngineError;
 use crate::event::Event;
-use crate::ids::{ObjectId, P0, P1, PlayerId, Zone, opponent};
+use crate::ids::{ObjectId, P0, PlayerId, Zone};
 use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::state::{GameState, Object, OrderMode, Outcome, Pending, Player, StackItem, Step, Turn};
@@ -29,10 +29,24 @@ use crate::state::{GameState, Object, OrderMode, Outcome, Pending, Player, Stack
 /// truncation event, never a silently invented result.
 const SETTLE_LIMIT: usize = 20_000;
 const STARTING_HAND: usize = 7;
-/// More mulligans than this could never be bottomed from a seven-card hand.
-const MAX_MULLIGANS: u8 = 7;
 const STARTING_LIFE: i32 = 20;
 const MAX_HAND_SIZE: usize = 7;
+
+/// Total mulligans a player may take: the first is free in multiplayer
+/// (CR 103.5c), so a 3/4-seat player may take eight (bottoming at most seven).
+fn mulligan_limit(seat_count: usize) -> u8 {
+    if seat_count >= 3 { 8 } else { 7 }
+}
+
+/// Cards bottomed for the current London mulligan count. The first multiplayer
+/// mulligan is free (CR 103.5c).
+fn cards_to_bottom(seat_count: usize, mulligans: u8) -> u8 {
+    if seat_count >= 3 {
+        mulligans.saturating_sub(1)
+    } else {
+        mulligans
+    }
+}
 
 #[derive(Debug)]
 pub struct Game {
@@ -56,60 +70,64 @@ fn blank_object(id: ObjectId, card: CardId, owner: PlayerId) -> Object {
 }
 
 impl Game {
-    /// Set up a game: build and shuffle both libraries from the deck lists,
-    /// deal seven, roll for the first player, then await mulligan decisions.
-    pub fn new(seed: u64, deck_a: &DeckList, deck_b: &DeckList) -> Game {
-        Game::new_logged(seed, deck_a, deck_b).0
+    /// Set up a 2–4 seat game: build/shuffle each seat's library, deal seven to
+    /// every seat, roll the first player, then await mulligan decisions in seat
+    /// order. An unsupported seat count is a typed error, never a panic.
+    pub fn new(seed: u64, decks: &[DeckList]) -> Result<Game, EngineError> {
+        Ok(Game::new_logged(seed, decks)?.0)
     }
 
-    pub fn new_logged(seed: u64, deck_a: &DeckList, deck_b: &DeckList) -> (Game, Vec<Event>) {
+    pub fn new_logged(
+        seed: u64,
+        decks: &[DeckList],
+    ) -> Result<(Game, Vec<Event>), EngineError> {
+        if !(crate::ids::MIN_PLAYERS..=crate::ids::MAX_PLAYERS).contains(&decks.len()) {
+            return Err(EngineError::InvalidSeats {
+                reason: format!(
+                    "{} seats supplied; supported range is {}..={}",
+                    decks.len(),
+                    crate::ids::MIN_PLAYERS,
+                    crate::ids::MAX_PLAYERS
+                ),
+            });
+        }
+        let players = decks
+            .iter()
+            .enumerate()
+            .map(|(index, deck)| Player {
+                id: index as PlayerId,
+                name: format!("P{index}"),
+                deck_name: deck.name.clone(),
+                library: Vec::new(),
+                hand: Vec::new(),
+                graveyard: Vec::new(),
+                exile: Vec::new(),
+                life: STARTING_LIFE,
+                mana: ManaPool::default(),
+                mulligans: 0,
+                drew_from_empty: false,
+                lost: false,
+            })
+            .collect();
         let mut state = GameState {
             seed,
             first_player: P0,
             rng: Pcg32::new(seed),
             objects: BTreeMap::new(),
-            players: [
-                Player {
-                    id: P0,
-                    name: "P0".to_string(),
-                    deck_name: deck_a.name.clone(),
-                    library: Vec::new(),
-                    hand: Vec::new(),
-                    graveyard: Vec::new(),
-                    exile: Vec::new(),
-                    life: STARTING_LIFE,
-                    mana: ManaPool::default(),
-                    mulligans: 0,
-                    drew_from_empty: false,
-                    lost: false,
-                },
-                Player {
-                    id: P1,
-                    name: "P1".to_string(),
-                    deck_name: deck_b.name.clone(),
-                    library: Vec::new(),
-                    hand: Vec::new(),
-                    graveyard: Vec::new(),
-                    exile: Vec::new(),
-                    life: STARTING_LIFE,
-                    mana: ManaPool::default(),
-                    mulligans: 0,
-                    drew_from_empty: false,
-                    lost: false,
-                },
-            ],
+            players,
             stack: Vec::new(),
             turn: Turn {
                 number: 1,
                 active: P0,
                 step: Step::Untap,
                 priority: None,
-                passes: 0,
+                passed: 0,
                 lands_played: 0,
                 attackers: Vec::new(),
                 blocked: Vec::new(),
                 blockers: Vec::new(),
                 combat_damage_done: false,
+                defender: None,
             },
             pending: None,
             resolving: None,
@@ -120,7 +138,8 @@ impl Game {
             rules_revision: crate::RULES_REVISION.to_string(),
         };
 
-        for (player, deck) in [(P0, deck_a), (P1, deck_b)] {
+        for (index, deck) in decks.iter().enumerate() {
+            let player = index as PlayerId;
             let mut ids = Vec::with_capacity(deck.size());
             for card in deck.expand() {
                 let id = ObjectId(state.next_object);
@@ -129,17 +148,17 @@ impl Game {
                 ids.push(id);
             }
             state.rng.shuffle(&mut ids);
-            state.players[player as usize].library = ids;
+            state.players[index].library = ids;
         }
 
         let mut game = Game { state };
         let mut events = Vec::new();
-        for player in [P0, P1] {
+        for player in 0..decks.len() as PlayerId {
             for _ in 0..STARTING_HAND {
                 game.draw(player, &mut events);
             }
         }
-        let first = game.state.rng.below(2) as PlayerId;
+        let first = game.state.rng.below(decks.len() as u32) as PlayerId;
         game.state.turn.active = first;
         game.state.first_player = first;
         // Turn 1 exists before the first step change, so it is announced here.
@@ -149,7 +168,14 @@ impl Game {
             active: first,
         });
         game.state.pending = Some(Pending::Mulligan { player: P0 });
-        (game, events)
+        game.state.validate()?;
+        Ok((game, events))
+    }
+
+    /// Validate and wrap a state loaded from a save or built by a fixture.
+    pub fn from_state(state: GameState) -> Result<Game, EngineError> {
+        state.validate()?;
+        Ok(Game { state })
     }
 
     pub fn digest(&self) -> String {
@@ -243,8 +269,11 @@ impl Game {
     }
 
     fn empty_mana_pools(&mut self, events: &mut Vec<Event>) {
-        for p in [P0, P1] {
-            let amount = self.state.players[p as usize].mana.total();
+        for p in 0..self.state.seat_count() as PlayerId {
+            if !self.state.is_live(p) {
+                continue;
+            }
+            let amount = self.state.player(p).mana.total();
             if amount > 0 {
                 self.state.players[p as usize].mana = ManaPool::default();
                 events.push(Event::ManaPoolEmptied { player: p, amount });
@@ -322,6 +351,9 @@ impl Game {
         if self.state.is_over() {
             return Err(EngineError::GameOver);
         }
+        if self.state.try_player(sub.player).is_none() {
+            return Err(EngineError::UnknownSeat { seat: sub.player });
+        }
         if sub.revision != self.state.revision {
             return Err(EngineError::StaleRevision {
                 expected: self.state.revision,
@@ -372,6 +404,9 @@ impl Game {
 
     pub fn validate(&self, player: PlayerId, action: &Action) -> Result<(), EngineError> {
         let state = &self.state;
+        if state.try_player(player).is_none() {
+            return Err(EngineError::UnknownSeat { seat: player });
+        }
         if let Some(pending) = &state.pending {
             if pending.player() != player {
                 return Err(EngineError::NotYourDecision {
@@ -395,18 +430,23 @@ impl Game {
             Action::PlayLand { card } => self.validate_play_land(player, *card),
             Action::CastSpell { card, targets } => self.validate_cast(player, *card, targets),
             Action::ActivateManaAbility { land } => self.validate_mana_ability(player, *land),
-            Action::DeclareAttackers { attackers } => {
-                self.validate_declare_attackers(player, attackers)
-            }
+            Action::DeclareAttackers {
+                attackers,
+                defender,
+            } => self.validate_declare_attackers(player, attackers, *defender),
             Action::DeclareBlockers { blocks } => self.validate_declare_blockers(player, blocks),
             Action::Mulligan { keep } => match &state.pending {
                 Some(Pending::Mulligan { player: p }) if *p == player => {
-                    if !*keep && state.player(player).mulligans >= MAX_MULLIGANS {
+                    if !*keep && state.player(player).mulligans >= mulligan_limit(state.seat_count())
+                    {
                         return Err(EngineError::illegal(
                             "mulligan",
                             format!(
                                 "another mulligan would require bottoming {} cards from a fresh seven; keep instead (CR 103.5)",
-                                state.player(player).mulligans + 1
+                                cards_to_bottom(
+                                    state.seat_count(),
+                                    state.player(player).mulligans + 1
+                                )
                             ),
                         ));
                     }
@@ -552,7 +592,10 @@ impl Game {
         match spec {
             TargetSpec::None => Vec::new(),
             TargetSpec::AnyTarget => {
-                let mut out = vec![Target::Player(P0), Target::Player(P1)];
+                let mut out: Vec<Target> = (0..self.state.seat_count() as PlayerId)
+                    .filter(|p| self.state.is_live(*p))
+                    .map(Target::Player)
+                    .collect();
                 out.extend(
                     self.state
                         .objects
@@ -674,6 +717,7 @@ impl Game {
         &self,
         player: PlayerId,
         attackers: &[ObjectId],
+        defender: Option<PlayerId>,
     ) -> Result<(), EngineError> {
         match &self.state.pending {
             Some(Pending::DeclareAttackers { player: p }) if *p == player => {}
@@ -681,6 +725,27 @@ impl Game {
                 return Err(EngineError::illegal(
                     "declare attackers",
                     "it is not that player's declaration (CR 508.1a)",
+                ));
+            }
+        }
+        if attackers.is_empty() {
+            if defender.is_some() {
+                return Err(EngineError::illegal(
+                    "declare attackers",
+                    "a defending player cannot be chosen when no attackers are declared",
+                ));
+            }
+        } else {
+            let Some(defender) = defender else {
+                return Err(EngineError::illegal(
+                    "declare attackers",
+                    "an attacking declaration must choose one defending player (CR 508.1a)",
+                ));
+            };
+            if defender == player || !self.state.is_live(defender) {
+                return Err(EngineError::illegal(
+                    "declare attackers",
+                    format!("P{defender} is not a legal defending player"),
                 ));
             }
         }
@@ -790,9 +855,10 @@ impl Game {
             Action::PlayLand { card } => self.apply_play_land(player, *card, events),
             Action::CastSpell { card, targets } => self.apply_cast(player, *card, targets, events),
             Action::ActivateManaAbility { land } => self.apply_mana_ability(player, *land, events),
-            Action::DeclareAttackers { attackers } => {
-                self.apply_declare_attackers(player, attackers, events)
-            }
+            Action::DeclareAttackers {
+                attackers,
+                defender,
+            } => self.apply_declare_attackers(player, attackers, *defender, events),
             Action::DeclareBlockers { blocks } => {
                 self.apply_declare_blockers(player, blocks, events)
             }
@@ -805,9 +871,10 @@ impl Game {
 
     fn apply_pass(&mut self, player: PlayerId, events: &mut Vec<Event>) {
         events.push(Event::Pass { player });
-        self.state.turn.passes += 1;
-        if self.state.turn.passes >= 2 {
-            self.state.turn.passes = 0;
+        self.state.turn.passed |= 1u8 << player;
+        let live_mask = self.state.live_mask();
+        if self.state.turn.passed & live_mask == live_mask {
+            self.state.turn.passed = 0;
             if self.state.stack.is_empty() {
                 self.advance_step(events);
             } else {
@@ -815,7 +882,10 @@ impl Game {
                 self.state.turn.priority = None;
             }
         } else {
-            let next = opponent(player);
+            let next = self
+                .state
+                .next_live_seat_after(player)
+                .expect("a live seat remains when a pass round continues");
             self.state.turn.priority = Some(next);
             events.push(Event::Priority { player: next });
         }
@@ -833,7 +903,7 @@ impl Game {
             obj.summoning_sick = false;
         }
         self.state.turn.lands_played += 1;
-        self.state.turn.passes = 0;
+        self.state.turn.passed = 0;
         events.push(Event::LandPlayed {
             player,
             object: card,
@@ -848,7 +918,7 @@ impl Game {
             obj.tapped = true;
             self.state.players[player as usize].mana.add(color, 1);
         }
-        self.state.turn.passes = 0;
+        self.state.turn.passed = 0;
         events.push(Event::ManaTapped {
             player,
             land,
@@ -900,7 +970,7 @@ impl Game {
         });
         self.apply_payment(player, payment, events);
         // CR 117.3c: the caster receives priority after casting.
-        self.state.turn.passes = 0;
+        self.state.turn.passed = 0;
         self.state.turn.priority = Some(player);
         events.push(Event::Priority { player });
     }
@@ -909,6 +979,7 @@ impl Game {
         &mut self,
         player: PlayerId,
         attackers: &[ObjectId],
+        defender: Option<PlayerId>,
         events: &mut Vec<Event>,
     ) {
         self.state.pending = None;
@@ -918,6 +989,8 @@ impl Game {
             }
         }
         self.state.turn.attackers = attackers.to_vec();
+        self.state.turn.defender = defender;
+        self.state.turn.passed = 0;
         events.push(Event::AttackersDeclared {
             player,
             attackers: attackers.to_vec(),
@@ -949,11 +1022,9 @@ impl Game {
             let size = self.state.player(player).hand_size();
             events.push(Event::KeepHand { player, size });
             let mulligans = self.state.player(player).mulligans;
-            if mulligans > 0 {
-                self.state.pending = Some(Pending::BottomCards {
-                    player,
-                    count: mulligans,
-                });
+            let count = cards_to_bottom(self.state.seat_count(), mulligans);
+            if count > 0 {
+                self.state.pending = Some(Pending::BottomCards { player, count });
             } else {
                 self.advance_mulligan_order(player, events);
             }
@@ -998,16 +1069,22 @@ impl Game {
         self.advance_mulligan_order(player, events);
     }
 
-    /// Mulligan decisions are prompted in seat order (P0 then P1). Real Magic
-    /// resolves them simultaneously; the difference is documented.
+    /// Mulligan decisions are prompted in seat order. Real Magic resolves the
+    /// pre-game procedure in APNAP order; the sequential prompt is a documented
+    /// bounded deviation, not a claim of simultaneity.
     fn advance_mulligan_order(&mut self, player: PlayerId, events: &mut Vec<Event>) {
-        if player == P0 {
-            self.state.pending = Some(Pending::Mulligan { player: P1 });
-        } else {
-            self.state.pending = None;
-            events.push(Event::Priority {
-                player: self.state.turn.active,
-            });
+        let next = (player as usize + 1..self.state.seat_count()).next();
+        match next {
+            Some(index) => {
+                self.state.pending = Some(Pending::Mulligan {
+                    player: index as PlayerId,
+                });
+            }
+            None => {
+                self.state.pending = None;
+                let active = self.state.turn.active;
+                self.grant_priority(active, events);
+            }
         }
     }
 
@@ -1085,9 +1162,20 @@ impl Game {
     // ----------------------------------------------------------- scheduler
 
     fn grant_priority(&mut self, player: PlayerId, events: &mut Vec<Event>) {
-        self.state.turn.priority = Some(player);
-        self.state.turn.passes = 0;
-        events.push(Event::Priority { player });
+        // CR 800.4j: if the seat that would receive priority has left the game,
+        // the next live seat in turn order receives it.
+        let recipient = if self.state.is_live(player) {
+            Some(player)
+        } else {
+            self.state.next_live_seat_after(player)
+        };
+        let Some(recipient) = recipient else {
+            self.state.turn.priority = None;
+            return;
+        };
+        self.state.turn.priority = Some(recipient);
+        self.state.turn.passed = 0;
+        events.push(Event::Priority { player: recipient });
     }
 
     /// Drive the game forward until a player must act, the game ends, or a
@@ -1119,18 +1207,32 @@ impl Game {
         let (next, new_turn) = self.state.turn.step.next();
         if new_turn {
             self.state.turn.number += 1;
-            self.state.turn.active = opponent(self.state.turn.active);
+            // CR 800.4k: a departed player's turn does not begin; select the
+            // next actual live seat. Seats are never renumbered.
+            match self.state.next_live_seat_after(self.state.turn.active) {
+                Some(next_active) => self.state.turn.active = next_active,
+                None => {
+                    let reason = "no live seat remains to begin a turn (CR 104.4a)".to_string();
+                    self.state.outcome = Some(Outcome::Draw { reason: reason.clone() });
+                    self.state.pending = None;
+                    self.state.resolving = None;
+                    self.state.turn.priority = None;
+                    events.push(Event::GameDrawn { reason });
+                    return;
+                }
+            }
             self.state.turn.lands_played = 0;
             self.state.turn.attackers.clear();
             self.state.turn.blocked.clear();
             self.state.turn.blockers.clear();
             self.state.turn.combat_damage_done = false;
+            self.state.turn.defender = None;
             let (turn, active) = (self.state.turn.number, self.state.turn.active);
             events.push(Event::TurnBegin { turn, active });
         }
         self.state.turn.step = next;
         self.state.turn.priority = None;
-        self.state.turn.passes = 0;
+        self.state.turn.passed = 0;
         events.push(Event::StepBegin { step: next });
         let active = self.state.turn.active;
         match next {
@@ -1138,10 +1240,12 @@ impl Game {
             Step::Upkeep => self.grant_priority(active, events),
             Step::Draw => {
                 // CR 103.8a: in a two-player game the player who plays first
-                // skips the draw step of their first turn.
-                let first_turn_of_first_player =
-                    self.state.turn.number == 1 && active == self.state.first_player;
-                if !first_turn_of_first_player {
+                // skips the draw step of their first turn. CR 103.8c/800.7: in
+                // other multiplayer games no player skips that draw.
+                let first_turn_of_first_player = self.state.seat_count() == 2
+                    && self.state.turn.number == 1
+                    && active == self.state.first_player;
+                if !first_turn_of_first_player && self.state.is_live(active) {
                     self.draw(active, events); // CR 504.1
                 }
                 self.grant_priority(active, events);
@@ -1157,12 +1261,17 @@ impl Game {
                 }
             }
             Step::DeclareBlockers => {
-                let defender = opponent(active);
-                if self.state.turn.attackers.is_empty() || self.legal_blockers(defender).is_empty()
-                {
-                    self.grant_priority(active, events);
-                } else {
-                    self.state.pending = Some(Pending::DeclareBlockers { player: defender });
+                // The defending seat was chosen in the attacker declaration.
+                let defender = self.state.turn.defender;
+                let defender_ready = defender.is_some_and(|d| {
+                    self.state.is_live(d) && !self.state.turn.attackers.is_empty()
+                        && !self.legal_blockers(d).is_empty()
+                });
+                match (defender, defender_ready) {
+                    (Some(defender), true) => {
+                        self.state.pending = Some(Pending::DeclareBlockers { player: defender });
+                    }
+                    _ => self.grant_priority(active, events),
                 }
             }
             Step::CombatDamage => {
@@ -1173,6 +1282,7 @@ impl Game {
                 self.state.turn.attackers.clear();
                 self.state.turn.blocked.clear();
                 self.state.turn.blockers.clear();
+                self.state.turn.defender = None;
                 self.grant_priority(active, events);
             }
             Step::Cleanup => self.perform_cleanup(events),
@@ -1224,14 +1334,95 @@ impl Game {
         }
     }
 
+    /// Apply CR 800.4a immediately: the player leaves the game, every object
+    /// they own leaves with them into the internal `Zone::Removed`, their
+    /// objects leave the stack, and combat references are pruned. The current
+    /// turn is NOT ended (CR 800.4j); seats are never renumbered.
+    fn leave_game(&mut self, p: PlayerId, events: &mut Vec<Event>) {
+        self.state.players[p as usize].lost = true;
+        self.state.turn.passed &= !(1u8 << p);
+
+        let owned: Vec<ObjectId> = self
+            .state
+            .objects
+            .values()
+            .filter(|o| o.owner == p)
+            .map(|o| o.id)
+            .collect();
+        for id in &owned {
+            if let Some(obj) = self.state.objects.get_mut(id) {
+                obj.zone = Zone::Removed;
+                obj.tapped = false;
+                obj.damage = 0;
+                obj.summoning_sick = false;
+                obj.pump_power = 0;
+                obj.pump_toughness = 0;
+            }
+        }
+        let player = &mut self.state.players[p as usize];
+        player.library.clear();
+        player.hand.clear();
+        player.graveyard.clear();
+        player.exile.clear();
+
+        let controlled: Vec<ObjectId> = self
+            .state
+            .stack
+            .iter()
+            .filter(|s| s.controller == p)
+            .map(|s| s.object)
+            .collect();
+        self.state.stack.retain(|s| s.controller != p);
+        if self.state.resolving.is_some_and(|r| controlled.contains(&r)) {
+            self.state.resolving = None;
+        }
+
+        let alive: Vec<ObjectId> = self
+            .state
+            .objects
+            .values()
+            .filter(|o| o.zone == Zone::Battlefield)
+            .map(|o| o.id)
+            .collect();
+        self.state.turn.attackers.retain(|id| alive.contains(id));
+        self.state
+            .turn
+            .blockers
+            .retain(|(blocker, attacker)| alive.contains(blocker) && alive.contains(attacker));
+        self.state
+            .turn
+            .blocked
+            .retain(|id| self.state.turn.attackers.contains(id));
+
+        if self.state.turn.priority == Some(p) {
+            // CR 800.4a: priority passes to the next live player in turn order.
+            self.state.turn.priority = self.state.next_live_seat_after(p);
+        }
+        if self
+            .state
+            .pending
+            .as_ref()
+            .is_some_and(|pending| pending.player() == p)
+        {
+            self.state.pending = None;
+            self.state.resolving = None;
+        }
+
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{p} leaves the game; all objects owned by P{p} leave the game (CR 800.4a)"
+            ),
+        });
+    }
+
     fn check_sbas(&mut self, events: &mut Vec<Event>) {
         loop {
             let mut changed = false;
-            for p in [P0, P1] {
-                let pl = self.state.player(p);
-                if pl.lost {
+            for p in 0..self.state.seat_count() as PlayerId {
+                if !self.state.is_live(p) {
                     continue;
                 }
+                let pl = self.state.player(p);
                 let reason = if pl.drew_from_empty {
                     Some("attempted to draw from an empty library (CR 704.5b)".to_string())
                 } else if pl.life <= 0 {
@@ -1240,10 +1431,10 @@ impl Game {
                     None
                 };
                 if let Some(reason) = reason {
-                    self.state.players[p as usize].lost = true;
                     events.push(Event::StateBasedAction {
                         description: format!("P{p} loses: {reason}"),
                     });
+                    self.leave_game(p, events);
                     changed = true;
                 }
             }
@@ -1272,27 +1463,39 @@ impl Game {
             if !changed {
                 break;
             }
-            // CR 506.4 + 704.5: anything that just died has left combat.
+            // CR 506.4 + 704.5: anything that just left the battlefield has
+            // left combat.
             self.prune_combat();
-            let p0 = self.state.players[P0 as usize].lost;
-            let p1 = self.state.players[P1 as usize].lost;
-            if p0 || p1 {
-                let (winner, loser) = if p0 { (P1, P0) } else { (P0, P1) };
-                let reason = if self.state.players[loser as usize].drew_from_empty {
-                    "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)"
-                        .to_string()
-                } else {
-                    "opponent's life total reached 0 or less (CR 704.5a)".to_string()
-                };
-                self.state.outcome = Some(Outcome::Win {
-                    winner,
-                    reason: reason.clone(),
-                });
-                self.state.pending = None;
-                self.state.resolving = None;
-                self.state.turn.priority = None;
-                events.push(Event::GameOver { winner, reason });
-                return;
+
+            match self.state.live_count() {
+                0 => {
+                    let reason =
+                        "all remaining players lost simultaneously (CR 104.4a)".to_string();
+                    self.state.outcome = Some(Outcome::Draw { reason: reason.clone() });
+                    self.state.pending = None;
+                    self.state.resolving = None;
+                    self.state.turn.priority = None;
+                    events.push(Event::GameDrawn { reason });
+                    return;
+                }
+                1 => {
+                    let winner = self
+                        .state
+                        .live_seats()
+                        .next()
+                        .expect("one live seat remains");
+                    let reason = "all other players have left the game".to_string();
+                    self.state.outcome = Some(Outcome::Win {
+                        winner,
+                        reason: reason.clone(),
+                    });
+                    self.state.pending = None;
+                    self.state.resolving = None;
+                    self.state.turn.priority = None;
+                    events.push(Event::GameOver { winner, reason });
+                    return;
+                }
+                _ => {}
             }
         }
     }
@@ -1302,7 +1505,7 @@ impl Game {
     fn targets_legal(&self, item: &StackItem) -> bool {
         for target in &item.targets {
             let ok = match target {
-                Target::Player(_) => true,
+                Target::Player(p) => self.state.is_live(*p),
                 Target::Permanent(id) => self
                     .state
                     .try_object(*id)
@@ -1556,8 +1759,7 @@ impl Game {
         self.state.turn.combat_damage_done = true;
         let attackers = self.state.turn.attackers.clone();
         let blockers = self.state.turn.blockers.clone();
-        let active = self.state.turn.active;
-        let defender = opponent(active);
+        let defender = self.state.turn.defender;
         let mut damage: Vec<(ObjectId, Option<ObjectId>, u32)> = Vec::new();
 
         for attacker in &attackers {
@@ -1616,6 +1818,14 @@ impl Game {
         for (source, target, amount) in damage {
             match target {
                 None => {
+                    // CR 800.4e: combat damage is not assigned to a player who
+                    // has left the game.
+                    let Some(defender) = defender else {
+                        continue;
+                    };
+                    if !self.state.is_live(defender) {
+                        continue;
+                    }
                     self.state.players[defender as usize].life -= amount as i32;
                     let life = self.state.players[defender as usize].life;
                     let card = self.state.object(source).card;
@@ -1773,14 +1983,20 @@ impl Game {
                     ),
                     rules: vec!["103.5"],
                 }];
-                if self.state.player(*player).mulligans < MAX_MULLIGANS {
+                if self.state.player(*player).mulligans
+                    < mulligan_limit(self.state.seat_count())
+                {
+                    let next_count = self.state.player(*player).mulligans + 1;
+                    let bottom = cards_to_bottom(self.state.seat_count(), next_count);
                     out.push(LegalAction {
                         action: Action::Mulligan { keep: false },
-                        label: format!(
-                            "Mulligan (would bottom {} card(s))",
-                            self.state.player(*player).mulligans + 1
-                        ),
-                        rules: vec!["103.5"],
+                        label: if bottom == 0 {
+                            "Mulligan (first multiplayer mulligan is free; no cards bottomed)"
+                                .to_string()
+                        } else {
+                            format!("Mulligan (would bottom {bottom} card(s))")
+                        },
+                        rules: vec!["103.5", "103.5c"],
                     });
                 }
                 out
@@ -1797,6 +2013,7 @@ impl Game {
                 let mut out = vec![LegalAction {
                     action: Action::DeclareAttackers {
                         attackers: Vec::new(),
+                        defender: None,
                     },
                     label: "Declare no attackers".to_string(),
                     rules: vec!["508.1a"],
@@ -1806,13 +2023,22 @@ impl Game {
                         .iter()
                         .map(|id| self.state.object(*id).card.name())
                         .collect();
-                    out.push(LegalAction {
-                        action: Action::DeclareAttackers {
-                            attackers: legal.clone(),
-                        },
-                        label: format!("Attack with all eligible creatures ({})", names.join(", ")),
-                        rules: vec!["508.1a", "508.1f"],
-                    });
+                    for defender in 0..self.state.seat_count() as PlayerId {
+                        if defender == *player || !self.state.is_live(defender) {
+                            continue;
+                        }
+                        out.push(LegalAction {
+                            action: Action::DeclareAttackers {
+                                attackers: legal.clone(),
+                                defender: Some(defender),
+                            },
+                            label: format!(
+                                "Attack P{defender} with all eligible creatures ({})",
+                                names.join(", ")
+                            ),
+                            rules: vec!["508.1a", "508.1f"],
+                        });
+                    }
                 }
                 out
             }
@@ -1871,9 +2097,9 @@ impl Game {
                     },
                 ]
             }
-            Pending::Discard { count, .. } => vec![LegalAction {
+            Pending::Discard { player, count } => vec![LegalAction {
                 action: Action::Discard {
-                    cards: self.sample_discard(*count),
+                    cards: self.sample_discard(*player, *count),
                 },
                 label: format!("Discard the last {count} card(s) of hand"),
                 rules: vec!["514.1"],
@@ -1891,9 +2117,8 @@ impl Game {
             .collect()
     }
 
-    fn sample_discard(&self, count: u8) -> Vec<ObjectId> {
-        let active = self.state.turn.active;
-        let hand = &self.state.player(active).hand;
+    fn sample_discard(&self, player: PlayerId, count: u8) -> Vec<ObjectId> {
+        let hand = &self.state.player(player).hand;
         hand.iter()
             .rev()
             .take(count as usize)

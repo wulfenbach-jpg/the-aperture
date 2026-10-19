@@ -46,19 +46,20 @@ pub fn fixture(seed: u64) -> Fixture {
             first_player: P0,
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
-            players: [new_player(P0), new_player(P1)],
+            players: vec![new_player(P0), new_player(P1)],
             stack: Vec::new(),
             turn: Turn {
                 number: 1,
                 active: P0,
                 step: Step::Untap,
                 priority: None,
-                passes: 0,
+                passed: 0,
                 lands_played: 0,
                 attackers: Vec::new(),
                 blocked: Vec::new(),
                 blockers: Vec::new(),
                 combat_damage_done: false,
+                defender: None,
             },
             pending: None,
             resolving: None,
@@ -96,7 +97,7 @@ impl Fixture {
             Zone::Library => self.state.players[p as usize].library.push(id),
             Zone::Graveyard => self.state.players[p as usize].graveyard.push(id),
             Zone::Exile => self.state.players[p as usize].exile.push(id),
-            Zone::Battlefield | Zone::Stack => {}
+            Zone::Battlefield | Zone::Stack | Zone::Removed => {}
         }
         self
     }
@@ -124,7 +125,7 @@ impl Fixture {
         self.state.turn.active = active;
         self.state.turn.step = step;
         self.state.turn.priority = Some(active);
-        self.state.turn.passes = 0;
+        self.state.turn.passed = 0;
         self
     }
 
@@ -208,6 +209,7 @@ pub fn run_until(
                 Pending::Mulligan { .. } => Action::Mulligan { keep: true },
                 Pending::DeclareAttackers { .. } => Action::DeclareAttackers {
                     attackers: Vec::new(),
+                    defender: None,
                 },
                 Pending::DeclareBlockers { .. } => Action::DeclareBlockers { blocks: Vec::new() },
                 Pending::OrderCard { .. } => Action::OrderCard { to_top: true },

@@ -10,7 +10,7 @@ use aperture_core::catalog;
 use aperture_core::mana::{ManaCost, ManaPool};
 use aperture_core::state::Step;
 use aperture_core::view::{CardView, PendingKind, PlayerView, StackView};
-use aperture_core::{Action, BlockDecl, CardId, ManaColor, ObjectId, Target};
+use aperture_core::{Action, BlockDecl, CardId, ManaColor, ObjectId, PlayerId, Target};
 
 use crate::{Decision, Policy};
 
@@ -81,9 +81,13 @@ impl HeuristicPolicy {
             Some(PendingKind::OrderCard { index, .. }) => Action::OrderCard {
                 to_top: self.keep_viewed(view, index),
             },
-            Some(PendingKind::DeclareAttackers) => Action::DeclareAttackers {
-                attackers: self.attackers(view),
-            },
+            Some(PendingKind::DeclareAttackers) => {
+                let (attackers, defender) = self.attackers(view);
+                Action::DeclareAttackers {
+                    attackers,
+                    defender,
+                }
+            }
             Some(PendingKind::DeclareBlockers) => Action::DeclareBlockers {
                 blocks: self.blocks(view),
             },
@@ -109,23 +113,42 @@ impl HeuristicPolicy {
         }
     }
 
-    fn attackers(&self, view: &PlayerView) -> Vec<ObjectId> {
+    fn attackers(&self, view: &PlayerView) -> (Vec<ObjectId>, Option<PlayerId>) {
         let mine: Vec<&CardView> = view
             .own_battlefield
             .iter()
             .filter(|c| is_creature(c) && !c.tapped && !c.summoning_sick)
             .collect();
         if mine.is_empty() {
-            return Vec::new();
+            return (Vec::new(), None);
         }
-        let defenders: Vec<&CardView> = view
-            .opponent_battlefield
+        // Choose the least-defended live opponent, then the lowest life; the
+        // engine validates the choice and the model sees it as a legal option.
+        let target = view
+            .opponents
+            .iter()
+            .filter(|o| !o.eliminated)
+            .min_by_key(|o| {
+                (
+                    o.battlefield
+                        .iter()
+                        .filter(|c| is_creature(c) && !c.tapped)
+                        .count(),
+                    o.life,
+                    o.seat,
+                )
+            });
+        let Some(target) = target else {
+            return (Vec::new(), None);
+        };
+        let defenders: Vec<&CardView> = target
+            .battlefield
             .iter()
             .filter(|c| is_creature(c) && !c.tapped)
             .collect();
         let total_power: i32 = mine.iter().map(|c| c.power.unwrap_or(0)).sum();
-        if defenders.is_empty() || total_power >= view.opponent_life {
-            return mine.iter().map(|c| c.id).collect();
+        if defenders.is_empty() || total_power >= target.life {
+            return (mine.iter().map(|c| c.id).collect(), Some(target.seat));
         }
         let best_def_toughness = defenders
             .iter()
@@ -137,14 +160,16 @@ impl HeuristicPolicy {
             .map(|c| c.power.unwrap_or(0))
             .max()
             .unwrap_or(0);
-        mine.iter()
+        let chosen = mine
+            .iter()
             .filter(|c| {
                 let power = c.power.unwrap_or(0);
                 // Attack if the creature survives and kills (or trades up).
                 power >= best_def_toughness || power > best_def_power
             })
             .map(|c| c.id)
-            .collect()
+            .collect();
+        (chosen, Some(target.seat))
     }
 
     fn blocks(&self, view: &PlayerView) -> Vec<BlockDecl> {
@@ -154,6 +179,11 @@ impl HeuristicPolicy {
             .filter(|c| is_creature(c) && !c.tapped)
             .collect();
         blockers.sort_by_key(|c| (std::cmp::Reverse(c.power.unwrap_or(0)), c.id.0));
+        let enemy_cards: Vec<&CardView> = view
+            .opponents
+            .iter()
+            .flat_map(|o| o.battlefield.iter())
+            .collect();
         let mut out = Vec::new();
         let mut used_attackers: Vec<ObjectId> = Vec::new();
         for blocker in blockers {
@@ -161,11 +191,7 @@ impl HeuristicPolicy {
             let blocker_toughness = blocker.toughness.unwrap_or(0);
             let mut best: Option<(ObjectId, i32)> = None;
             for attacker_id in &view.attackers {
-                let Some(attacker) = view
-                    .opponent_battlefield
-                    .iter()
-                    .find(|c| c.id == *attacker_id)
-                else {
+                let Some(attacker) = enemy_cards.iter().find(|c| c.id == *attacker_id) else {
                     continue;
                 };
                 let survives = blocker_toughness > attacker.power.unwrap_or(0);
@@ -222,34 +248,38 @@ impl HeuristicPolicy {
             return Some(Action::PlayLand { card: land.id });
         }
 
-        // Pump for lethal when the board is open.
-        if !view
-            .opponent_battlefield
+        // Pump for lethal when some opponent's board is open.
+        let power: i32 = view
+            .own_battlefield
             .iter()
-            .any(|c| is_creature(c) && !c.tapped)
+            .filter(|c| is_creature(c) && !c.tapped && !c.summoning_sick)
+            .map(|c| c.power.unwrap_or(0))
+            .sum();
+        let open_target = view
+            .opponents
+            .iter()
+            .filter(|o| !o.eliminated)
+            .filter(|o| {
+                !o.battlefield
+                    .iter()
+                    .any(|c| is_creature(c) && !c.tapped)
+            })
+            .filter(|o| power < o.life && power + 3 >= o.life)
+            .min_by_key(|o| (o.life, o.seat));
+        if let Some(_target) = open_target
+            && let (Some(growth), Some(biggest)) = (
+                find_in_hand(view, CardId::GiantGrowth),
+                view.own_battlefield
+                    .iter()
+                    .filter(|c| is_creature(c) && !c.summoning_sick)
+                    .max_by_key(|c| c.power.unwrap_or(0)),
+            )
+            && affordable(view, &cost_of(CardId::GiantGrowth))
         {
-            let power: i32 = view
-                .own_battlefield
-                .iter()
-                .filter(|c| is_creature(c) && !c.tapped && !c.summoning_sick)
-                .map(|c| c.power.unwrap_or(0))
-                .sum();
-            if power < view.opponent_life
-                && power + 3 >= view.opponent_life
-                && let (Some(growth), Some(biggest)) = (
-                    find_in_hand(view, CardId::GiantGrowth),
-                    view.own_battlefield
-                        .iter()
-                        .filter(|c| is_creature(c) && !c.summoning_sick)
-                        .max_by_key(|c| c.power.unwrap_or(0)),
-                )
-                && affordable(view, &cost_of(CardId::GiantGrowth))
-            {
-                return Some(Action::CastSpell {
-                    card: growth,
-                    targets: vec![Target::Permanent(biggest.id)],
-                });
-            }
+            return Some(Action::CastSpell {
+                card: growth,
+                targets: vec![Target::Permanent(biggest.id)],
+            });
         }
 
         // Biggest affordable creature.
@@ -271,10 +301,15 @@ impl HeuristicPolicy {
             }
         }
 
-        // Removal that kills the biggest creature the opponent has.
-        if let Some(victim) = view
-            .opponent_battlefield
+        // Removal that kills the biggest creature any opponent has.
+        let enemy_cards: Vec<&CardView> = view
+            .opponents
             .iter()
+            .flat_map(|o| o.battlefield.iter())
+            .collect();
+        if let Some(victim) = enemy_cards
+            .iter()
+            .copied()
             .filter(|c| is_creature(c))
             .max_by_key(|c| c.power.unwrap_or(0))
         {
@@ -318,8 +353,9 @@ impl HeuristicPolicy {
 
     fn defensive_action(&self, view: &PlayerView) -> Option<Action> {
         let threat = view
-            .opponent_battlefield
+            .opponents
             .iter()
+            .flat_map(|o| o.battlefield.iter())
             .filter(|c| is_creature(c))
             .max_by_key(|c| c.power.unwrap_or(0))?;
         if threat.power.unwrap_or(0) < view.own_life {

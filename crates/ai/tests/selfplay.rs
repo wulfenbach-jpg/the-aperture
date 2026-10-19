@@ -9,14 +9,29 @@ use common::*;
 
 #[test]
 fn heuristic_selfplay_reaches_a_terminal_result_and_replays() {
-    let mut game = Game::new(4242, &deck_a(), &deck_b());
-    let mut policies: [Box<dyn Policy>; 2] = [
+    let mut game = Game::new(4242, &[deck_a(), deck_b()]).expect("game");
+    let mut policies: Vec<Box<dyn Policy>> = vec![
         Box::new(HeuristicPolicy::new()),
         Box::new(HeuristicPolicy::new()),
     ];
-    let mut replay = Replay::new(4242, deck_a(), deck_b(), AiSettings::default());
+    let mut replay = Replay::new(
+        4242,
+        game.state.first_player,
+        vec![deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
     let mut log = Vec::new();
-    let outcome = play_to_end(&mut game, &mut policies, 4_000, &mut log, &mut replay);
+    let outcome = play_to_end(
+        &mut game,
+        &mut policies,
+        SelfplayLimits {
+            max_steps: 4_000,
+            max_millis: None,
+        },
+        &mut log,
+        &mut replay,
+    );
     assert!(outcome.steps > 0, "the policy must act");
     assert!(
         outcome.truncated.is_none(),
@@ -52,14 +67,29 @@ fn heuristic_selfplay_reaches_a_terminal_result_and_replays() {
 fn identical_seeds_produce_identical_games_and_ai_digests() {
     let mut digests = Vec::new();
     for _ in 0..2 {
-        let mut game = Game::new(99, &deck_a(), &deck_b());
-        let mut policies: [Box<dyn Policy>; 2] = [
+        let mut game = Game::new(99, &[deck_a(), deck_b()]).expect("game");
+        let mut policies: Vec<Box<dyn Policy>> = vec![
             Box::new(HeuristicPolicy::new()),
             Box::new(HeuristicPolicy::new()),
         ];
-        let mut replay = Replay::new(99, deck_a(), deck_b(), AiSettings::default());
+        let mut replay = Replay::new(
+            99,
+            game.state.first_player,
+            vec![deck_a(), deck_b()],
+            AiSettings::default(),
+        )
+        .expect("replay");
         let mut log = Vec::new();
-        let outcome = play_to_end(&mut game, &mut policies, 4_000, &mut log, &mut replay);
+        let outcome = play_to_end(
+            &mut game,
+            &mut policies,
+            SelfplayLimits {
+                max_steps: 4_000,
+                max_millis: None,
+            },
+            &mut log,
+            &mut replay,
+        );
         digests.push((outcome.digest, outcome.steps, outcome.winner));
     }
     assert_eq!(digests[0], digests[1], "self-play must be deterministic");
@@ -67,14 +97,29 @@ fn identical_seeds_produce_identical_games_and_ai_digests() {
 
 #[test]
 fn a_run_cap_is_reported_as_truncation_not_a_result() {
-    let mut game = Game::new(7, &deck_a(), &deck_b());
-    let mut policies: [Box<dyn Policy>; 2] = [
+    let mut game = Game::new(7, &[deck_a(), deck_b()]).expect("game");
+    let mut policies: Vec<Box<dyn Policy>> = vec![
         Box::new(HeuristicPolicy::new()),
         Box::new(HeuristicPolicy::new()),
     ];
-    let mut replay = Replay::new(7, deck_a(), deck_b(), AiSettings::default());
+    let mut replay = Replay::new(
+        7,
+        game.state.first_player,
+        vec![deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
     let mut log = Vec::new();
-    let outcome = play_to_end(&mut game, &mut policies, 25, &mut log, &mut replay);
+    let outcome = play_to_end(
+        &mut game,
+        &mut policies,
+        SelfplayLimits {
+            max_steps: 25,
+            max_millis: None,
+        },
+        &mut log,
+        &mut replay,
+    );
     assert_eq!(outcome.steps, 25);
     assert!(outcome.winner.is_none());
     let reason = outcome.truncated.clone().unwrap_or_default();
