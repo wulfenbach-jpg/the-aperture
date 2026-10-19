@@ -180,7 +180,7 @@ Anything not listed as implemented is unimplemented, not silently approximated.
 | Behavior | Official rule | This slice | Where it is stated/tested |
 | --- | --- | --- | --- |
 | Multiplayer seats | CR 800, 806–810 | Two seats only (M1 adds live seats separately) | `HANDOFF.md` §10, `RULES_REVISION` scope |
-| Starting-player draw skip | CR 800.7: multiplayer starting player does **not** skip | Two-player skip is implemented (CR 103.8a); must become conditional before >2 seats | engine comment, `sba`/timing fixtures |
+| Starting-player draw skip | CR 800.7: multiplayer starting player does **not** skip | Two-player skip is implemented (CR 103.8a); when multiplayer arrives it must be conditional on the configured game size (CR 100.1a/b, 800.1), not on surviving players | engine comment, `sba`/timing fixtures |
 | London mulligan | CR 103.5; CR 800.6 first multiplayer mulligan is free | Two-player London mulligan | `replay_digest.rs` |
 | Combat damage division among blockers | CR 510.1c: the attacking player chooses the division | Automatic lethal-first, no assignment choice | `multi-blocker-damage.json` `bounded_policy`, `combat_teaching.rs` |
 | Cleanup-step priority | CR 514.3a may grant priority when SBAs or triggers apply | Cleanup never grants priority | `HANDOFF.md` §10 |
@@ -205,8 +205,8 @@ the current build, and none may be claimed as covered until its fixtures exist.
 
 | Planned behavior | Official rule | Note |
 | --- | --- | --- |
-| 3–4 seat games draw on turn one | CR 103.8c, 800.7 | Applies only when more than two seats are live; the two-player skip stays. |
-| First multiplayer mulligan is free | CR 103.5c, 800.6 | Free first mulligan does not count toward bottoms or the mulligan limit. |
+| 3–4 player games draw on turn one | CR 103.8c, 800.7; classification: 100.1b, 800.1 | Keyed to the **configured** game size (a game that *begins* with more than two players), not to the number of surviving players. This is fixed at game setup and never switches after an elimination; the two-player skip stays for a game configured for two. |
+| First multiplayer mulligan is free | CR 103.5c, 800.6; classification: 100.1b, 800.1 | Also keyed to the **configured** game size (three or more players at game start), not to survivors. Eliminating a player never grants or removes a free first mulligan mid-game, and the free mulligan does not count toward bottoms or the mulligan limit. |
 | Mulligan limit | CR 103.5 | The slice's limit must be re-checked against the multiplayer count, not assumed from the two-player value. |
 | Mulligan declarations | CR 103.5 | Official play is simultaneous declaration then simultaneous mulligans; sequential prompts remain a disclosed bounded deviation. |
 | Simultaneous loss of all remaining players | CR 104.4a (with 104.4c and 104.5) | Draws project to an engine draw outcome; unexercised by the current card pool. |
