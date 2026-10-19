@@ -23,11 +23,7 @@ fn all_view_ids(view: &PlayerView) -> BTreeSet<u32> {
         }
     }
     for opponent in &view.opponents {
-        for cards in [
-            &opponent.battlefield,
-            &opponent.graveyard,
-            &opponent.exile,
-        ] {
+        for cards in [&opponent.battlefield, &opponent.graveyard, &opponent.exile] {
             for card in cards {
                 ids.insert(card.id.0);
             }

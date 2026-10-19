@@ -74,10 +74,7 @@ pub enum ReplayError {
     #[error("replay ended early: digest {got} != recorded {expected}")]
     DigestMismatch { expected: String, got: String },
     #[error("save digest {stored} does not match its own state {recomputed}")]
-    SaveDigestMismatch {
-        stored: String,
-        recomputed: String,
-    },
+    SaveDigestMismatch { stored: String, recomputed: String },
     #[error("replay/save record is malformed: {detail}")]
     Malformed { detail: String },
 }
@@ -88,10 +85,9 @@ struct VersionProbe {
 }
 
 fn probe_version(text: &str, expected: u32) -> Result<(), ReplayError> {
-    let probe: VersionProbe =
-        serde_json::from_str(text).map_err(|e| ReplayError::Malformed {
-            detail: e.to_string(),
-        })?;
+    let probe: VersionProbe = serde_json::from_str(text).map_err(|e| ReplayError::Malformed {
+        detail: e.to_string(),
+    })?;
     let got = probe.version.ok_or_else(|| ReplayError::Malformed {
         detail: "missing version field".to_string(),
     })?;
@@ -200,10 +196,9 @@ impl Replay {
 
     pub fn from_json(text: &str) -> Result<Self, ReplayError> {
         probe_version(text, REPLAY_VERSION)?;
-        let replay: Replay =
-            serde_json::from_str(text).map_err(|e| ReplayError::Malformed {
-                detail: e.to_string(),
-            })?;
+        let replay: Replay = serde_json::from_str(text).map_err(|e| ReplayError::Malformed {
+            detail: e.to_string(),
+        })?;
         replay.validate()?;
         Ok(replay)
     }
@@ -246,10 +241,9 @@ impl SessionSave {
 
     pub fn from_json(text: &str) -> Result<Self, ReplayError> {
         probe_version(text, SAVE_VERSION)?;
-        let save: SessionSave =
-            serde_json::from_str(text).map_err(|e| ReplayError::Malformed {
-                detail: e.to_string(),
-            })?;
+        let save: SessionSave = serde_json::from_str(text).map_err(|e| ReplayError::Malformed {
+            detail: e.to_string(),
+        })?;
         save.validate()?;
         Ok(save)
     }

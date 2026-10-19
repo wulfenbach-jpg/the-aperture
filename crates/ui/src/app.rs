@@ -256,12 +256,10 @@ impl ApertureApp {
                     } else {
                         self.session.selected_defender
                     };
-                    let _ = self
-                        .session
-                        .submit_human(Action::DeclareAttackers {
-                            attackers,
-                            defender,
-                        });
+                    let _ = self.session.submit_human(Action::DeclareAttackers {
+                        attackers,
+                        defender,
+                    });
                 }
             }
             aperture_core::view::PendingKind::DeclareBlockers => {
@@ -765,13 +763,17 @@ impl ApertureApp {
                     view.active,
                     view.stack.len(),
                     {
-                        let mut life = vec![format!("P{} {}", view.viewer, view.own_life)];
-                        life.extend(
-                            view.opponents
-                                .iter()
-                                .map(|o| format!("P{} {}{}", o.seat, o.life, if o.eliminated { " (out)" } else { "" })),
-                        );
-                        life.join(" / ")
+                        (0..view.seat_count)
+                            .map(|seat| {
+                                let player = &self.session.game.state.players[seat];
+                                format!(
+                                    "P{seat} {}{}",
+                                    player.life,
+                                    if player.lost { " (out)" } else { "" }
+                                )
+                            })
+                            .collect::<Vec<_>>()
+                            .join(" / ")
                     },
                     view.digest
                 ));
@@ -1085,22 +1087,19 @@ impl ApertureApp {
             let mut open = true;
             let own_graveyard = view.own_graveyard.clone();
             let own_exile = view.own_exile.clone();
-            let opponent_graveyards: Vec<Vec<CardView>> = view
-                .opponents
-                .iter()
-                .map(|o| o.graveyard.clone())
-                .collect();
-            let opponent_exiles: Vec<Vec<CardView>> = view
-                .opponents
-                .iter()
-                .map(|o| o.exile.clone())
-                .collect();
+            let opponent_graveyards: Vec<Vec<CardView>> =
+                view.opponents.iter().map(|o| o.graveyard.clone()).collect();
+            let opponent_exiles: Vec<Vec<CardView>> =
+                view.opponents.iter().map(|o| o.exile.clone()).collect();
             egui::Window::new("Public zones")
                 .open(&mut open)
                 .resizable(true)
                 .show(&ctx, |ui| {
                     ui.label(RichText::new("Graveyard (public)").color(theme::BRASS));
-                    for card in own_graveyard.iter().chain(opponent_graveyards.iter().flatten()) {
+                    for card in own_graveyard
+                        .iter()
+                        .chain(opponent_graveyards.iter().flatten())
+                    {
                         ui.label(Self::card_label(card));
                     }
                     ui.separator();
@@ -1159,14 +1158,8 @@ mod viewport_tests {
             use_decider: false,
         };
         let (a, b, _) = startup_decks(&startup);
-        let mut session = UiSession::new(
-            1,
-            vec![a, b],
-            AiSettings::default(),
-            false,
-            false,
-        )
-        .expect("session");
+        let mut session =
+            UiSession::new(1, vec![a, b], AiSettings::default(), false, false).expect("session");
         session.seat_import[0] = Some(import_seat_text(P0, "P0 imported", BUNDLED_A).unwrap());
         session.seat_import[1] = Some(import_seat_text(P1, "P1 imported", BUNDLED_B).unwrap());
         ApertureApp {

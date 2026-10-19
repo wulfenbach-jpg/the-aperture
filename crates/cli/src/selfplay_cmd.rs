@@ -83,8 +83,9 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             match DeciderPolicy::new(config) {
                 Ok(policy) => {
                     policies[seat as usize] = Box::new(policy);
-                    decider_note =
-                        Some(format!("seat {seat} uses decider-2b with heuristic fallback"));
+                    decider_note = Some(format!(
+                        "seat {seat} uses decider-2b with heuristic fallback"
+                    ));
                 }
                 Err(err) => {
                     decider_note = Some(format!(
@@ -97,8 +98,13 @@ pub fn run(args: Args) -> anyhow::Result<()> {
 
     let (mut game, mut log) =
         Game::new_logged(args.seed, &lists).map_err(|err| anyhow::anyhow!("{err}"))?;
-    let mut replay = Replay::new(args.seed, game.state.first_player, lists.clone(), ai.clone())
-        .map_err(|err| anyhow::anyhow!("{err}"))?;
+    let mut replay = Replay::new(
+        args.seed,
+        game.state.first_player,
+        lists.clone(),
+        ai.clone(),
+    )
+    .map_err(|err| anyhow::anyhow!("{err}"))?;
     let limits = SelfplayLimits {
         max_steps: args.max_steps,
         max_millis: args.max_millis,

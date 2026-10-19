@@ -441,7 +441,9 @@ impl GameState {
             let owner = pending.player();
             if !in_range(owner) || !self.is_live(owner) {
                 return Err(EngineError::InvalidState {
-                    reason: format!("pending choice belongs to eliminated/out-of-range seat P{owner}"),
+                    reason: format!(
+                        "pending choice belongs to eliminated/out-of-range seat P{owner}"
+                    ),
                 });
             }
         }
