@@ -17,12 +17,12 @@ fn deck_b() -> DeckList {
 fn session(seed: u64, human_plays_ai_seat: bool) -> UiSession {
     UiSession::new(
         seed,
-        deck_a(),
-        deck_b(),
+        vec![deck_a(), deck_b()],
         AiSettings::default(),
         false,
         human_plays_ai_seat,
     )
+    .expect("session")
 }
 
 fn temp_path(name: &str) -> PathBuf {
@@ -129,11 +129,11 @@ fn a_new_game_resets_the_sandbox_flag_and_keeps_the_decks() {
     let mut ui = session(15, true);
     ui.sandbox(SandboxOp::Draw(1));
     assert!(ui.sandbox_modified);
-    let decks = (ui.deck_a.clone(), ui.deck_b.clone());
+    let decks = (ui.seats[0].clone(), ui.seats[1].clone());
     ui.new_game(16);
     assert!(!ui.sandbox_modified);
     assert!(ui.revealed.is_empty());
-    assert_eq!((ui.deck_a.clone(), ui.deck_b.clone()), decks);
+    assert_eq!((ui.seats[0].clone(), ui.seats[1].clone()), decks);
     assert_eq!(ui.game.state.seed, 16);
 }
 
@@ -174,9 +174,9 @@ fn a_branch_point_restores_the_earlier_position_and_labels_the_boundary() {
 #[test]
 fn the_profile_line_states_the_scope() {
     let line = aperture_ui::session::profile_line();
-    assert!(line.contains("15 cards"), "{line}");
+    assert!(line.contains("2-4 live seats"), "{line}");
     assert!(line.contains("NOT Commander"), "{line}");
-    assert!(line.contains("1v1"), "{line}");
+    assert!(line.contains("native table: 2"), "{line}");
     let _ = CardId::Shock;
     let _ = P1;
 }

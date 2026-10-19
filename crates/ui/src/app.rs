@@ -1159,7 +1159,14 @@ mod viewport_tests {
             use_decider: false,
         };
         let (a, b, _) = startup_decks(&startup);
-        let mut session = UiSession::new(1, a, b, AiSettings::default(), false, false);
+        let mut session = UiSession::new(
+            1,
+            vec![a, b],
+            AiSettings::default(),
+            false,
+            false,
+        )
+        .expect("session");
         session.seat_import[0] = Some(import_seat_text(P0, "P0 imported", BUNDLED_A).unwrap());
         session.seat_import[1] = Some(import_seat_text(P1, "P1 imported", BUNDLED_B).unwrap());
         ApertureApp {
@@ -1181,7 +1188,8 @@ mod viewport_tests {
     fn absolute_life_labels_remain_correct_when_the_human_is_p1() {
         let mut app = imported_app();
         app.show_import = false;
-        app.session.ai.ai_seat = P0;
+        app.session.ai.human_seat = P1;
+        app.session.ai.ai_seats = vec![P0];
         app.session.game.state.players[0].life = 3;
         app.session.game.state.players[1].life = 17;
         let ctx = egui::Context::default();
@@ -1208,7 +1216,7 @@ mod viewport_tests {
             })
             .collect();
         assert!(
-            labels.iter().any(|text| text.contains("life P0 3 / P1 17")),
+            labels.iter().any(|text| text.contains("P0 3 / P1 17")),
             "absolute life labels were swapped for the P1 viewer: {labels:?}"
         );
     }

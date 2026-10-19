@@ -934,7 +934,7 @@ impl UiSession {
 /// Level of the practice profile shown in the UI header.
 pub fn profile_line() -> String {
     format!(
-        "practice slice · supported pool: {} cards · 1v1 · 20 life · London mulligan · NOT Commander",
+        "practice slice · supported pool: {} cards · 2-4 live seats (native table: 2) · 20 life · London mulligan · NOT Commander",
         aperture_core::catalog::pool_size()
     )
 }
