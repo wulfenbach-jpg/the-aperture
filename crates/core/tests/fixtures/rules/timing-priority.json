@@ -1,0 +1,137 @@
+{
+  "schema": "aperture.conformance/1",
+  "rules_revision": "2026-09-25",
+  "source_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+  "cases": [
+    {
+      "id": "timing.sorcery_is_rejected_outside_its_controllers_main_phase",
+      "description": "A sorcery in hand cannot be cast during the beginning-of-combat step.",
+      "rule_refs": ["CR 117.1a", "CR 307.1"],
+      "initial": {
+        "seed": 101,
+        "active": "P0",
+        "step": "BeginCombat",
+        "priority": "P0",
+        "zones": {
+          "P0": {
+            "hand": ["Divination"],
+            "battlefield": ["Island", "Island", "Island"]
+          }
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "cast_spell", "card": "Divination"},
+          "expect": "rejected",
+          "error": {"type": "bad_timing", "name": "Divination"}
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "turn": 1,
+        "step": "BeginCombat",
+        "priority": "P0",
+        "pending": "none",
+        "zones": {
+          "P0": {"hand": ["Divination"], "graveyard": []}
+        }
+      }
+    },
+    {
+      "id": "timing.land_once_then_sorcery_resolves_in_main_phase",
+      "description": "One land may be played this turn; after paying for Divination in the main phase and two passes, it resolves and draws two cards.",
+      "rule_refs": ["CR 117.1a", "CR 305.2", "CR 307.1", "CR 601.2a", "CR 608.2"],
+      "initial": {
+        "seed": 102,
+        "active": "P0",
+        "step": "PrecombatMain",
+        "priority": "P0",
+        "zones": {
+          "P0": {
+            "hand": ["Forest", "Forest", "Divination"],
+            "battlefield": ["Island", "Island", "Island"],
+            "library": ["Forest", "Mountain", "Island", "Forest"]
+          }
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "play_land", "card": "Forest"},
+          "events": [
+            {"type": "LandPlayed", "player": "P0", "card": "Forest"},
+            {"type": "Priority", "player": "P0"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P0",
+          "expect_step": "PrecombatMain"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "play_land", "card": "Forest"},
+          "expect": "rejected",
+          "error": {"type": "illegal", "action": "play land"}
+        },
+        {
+          "player": "P0",
+          "action": {"type": "activate_mana_ability", "land": "Island"},
+          "events": [{"type": "ManaTapped", "player": "P0"}]
+        },
+        {
+          "player": "P0",
+          "action": {"type": "activate_mana_ability", "land": "Island"}
+        },
+        {
+          "player": "P0",
+          "action": {"type": "activate_mana_ability", "land": "Island"}
+        },
+        {
+          "player": "P0",
+          "action": {"type": "cast_spell", "card": "Divination"},
+          "events": [
+            {"type": "Cast", "player": "P0", "card": "Divination"},
+            {"type": "Priority", "player": "P0"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P0"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "events": [{"type": "Pass", "player": "P0"}],
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "events": [
+            {"type": "Pass", "player": "P1"},
+            {"type": "Draw", "player": "P0", "card": "Forest"},
+            {"type": "Draw", "player": "P0", "card": "Mountain"},
+            {"type": "Resolve", "card": "Divination"},
+            {"type": "Destroyed", "card": "Divination"},
+            {"type": "Priority", "player": "P0"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P0"
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "turn": 1,
+        "step": "PrecombatMain",
+        "priority": "P0",
+        "pending": "none",
+        "zones": {
+          "P0": {
+            "hand": ["Forest", "Forest", "Mountain"],
+            "battlefield": ["Island", "Island", "Island", "Forest"],
+            "library": ["Island", "Forest"],
+            "graveyard": ["Divination"]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "schema": "aperture.conformance/1",
+  "rules_revision": "2026-09-25",
+  "source_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+  "cases": [
+    {
+      "id": "sba.lethal_damage_sends_the_creature_to_the_graveyard",
+      "description": "A 2/2 with two damage marked is put into its owner's graveyard before a player receives priority.",
+      "rule_refs": ["CR 704.5g"],
+      "initial": {
+        "seed": 201,
+        "active": "P0",
+        "step": "PrecombatMain",
+        "priority": "P0",
+        "zones": {
+          "P0": {"battlefield": ["Grizzly Bears"]}
+        },
+        "permanents": {
+          "Grizzly Bears": {"damage": 2}
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "events": [
+            {"type": "Pass", "player": "P0"},
+            {"type": "Priority", "player": "P1"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P1",
+          "expect_step": "PrecombatMain"
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "turn": 1,
+        "step": "PrecombatMain",
+        "priority": "P1",
+        "pending": "none",
+        "zones": {
+          "P0": {"battlefield": [], "graveyard": ["Grizzly Bears"]}
+        }
+      }
+    },
+    {
+      "id": "sba.zero_toughness_sends_the_creature_to_the_graveyard",
+      "description": "A creature with toughness 0 or less is put into its owner's graveyard as a state-based action.",
+      "rule_refs": ["CR 704.5f"],
+      "initial": {
+        "seed": 202,
+        "active": "P0",
+        "step": "PrecombatMain",
+        "priority": "P0",
+        "zones": {
+          "P0": {"battlefield": ["Grizzly Bears"]}
+        },
+        "permanents": {
+          "Grizzly Bears": {"pump_toughness": -2}
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "events": [{"type": "Pass", "player": "P0"}],
+          "expect_pending": "none",
+          "expect_priority": "P1"
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "pending": "none",
+        "zones": {
+          "P0": {"battlefield": [], "graveyard": ["Grizzly Bears"]}
+        }
+      }
+    },
+    {
+      "id": "sba.player_at_zero_life_loses_the_game",
+      "description": "A player whose life total is 0 loses when state-based actions are checked.",
+      "rule_refs": ["CR 704.5a", "CR 104.3c"],
+      "initial": {
+        "seed": 203,
+        "active": "P0",
+        "step": "PrecombatMain",
+        "priority": "P0",
+        "life": {"P0": 0, "P1": 20}
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "events": [
+            {"type": "Pass", "player": "P0"},
+            {"type": "GameOver", "winner": "P1"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "none"
+        }
+      ],
+      "expect": {
+        "life": {"P0": 0, "P1": 20},
+        "priority": "none",
+        "pending": "none",
+        "outcome": {"winner": "P1"}
+      }
+    }
+  ]
+}
