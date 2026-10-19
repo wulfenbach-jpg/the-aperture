@@ -411,6 +411,10 @@ impl ApertureApp {
     /// Per-seat import: URL, pasted text or a text file. Each seat is certified
     /// on its own; nothing is substituted and nothing is fetched in this frame.
     fn import_panel(&mut self, ui: &mut egui::Ui) {
+        self.import_panel_contents(ui);
+    }
+
+    fn import_panel_contents(&mut self, ui: &mut egui::Ui) {
         theme::heading(ui, "Deck import — two seats, each certified on its own");
         theme::muted(
             ui,
@@ -608,8 +612,8 @@ fn write_png(path: &std::path::Path, image: &egui::ColorImage) -> std::io::Resul
     Ok(())
 }
 
-impl eframe::App for ApertureApp {
-    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+impl ApertureApp {
+    fn render_ui(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();
         self.frame_count += 1;
         if self.frame_count <= 3 {
@@ -634,6 +638,12 @@ impl eframe::App for ApertureApp {
         let owner = self.session.owner();
 
         egui::CentralPanel::default().show(ui, |ui| {
+            // Scroll the real application content, not only a final panel that
+            // may already start beyond the viewport after the board and log.
+            egui::ScrollArea::vertical()
+                .id_salt("tabletop-content")
+                .auto_shrink([false, false])
+                .show(ui, |ui| {
             ui.horizontal_wrapped(|ui| {
                 ui.label(RichText::new("THE APERTURE").heading().color(theme::BRASS));
                 theme::muted(ui, crate::session::profile_line());
@@ -720,8 +730,8 @@ impl eframe::App for ApertureApp {
                     view.step.name(),
                     view.active,
                     view.stack.len(),
-                    view.own_life,
-                    view.opponent_life,
+                    self.session.game.state.player(P0).life,
+                    self.session.game.state.player(P1).life,
                     view.digest
                 ));
                 if self.session.sandbox_modified {
@@ -1008,6 +1018,7 @@ impl eframe::App for ApertureApp {
                     .color(theme::MUTED),
                 );
             }
+            });
         });
 
         // ------------------------------ floating windows
@@ -1067,5 +1078,137 @@ impl eframe::App for ApertureApp {
             }
             ctx.request_repaint_after(Duration::from_millis(200));
         }
+    }
+}
+
+impl eframe::App for ApertureApp {
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        self.render_ui(ui);
+    }
+}
+
+#[cfg(test)]
+mod viewport_tests {
+    use super::*;
+
+    fn imported_app() -> ApertureApp {
+        let startup = Startup {
+            smoke: None,
+            seed: 1,
+            deck_a: PathBuf::new(),
+            deck_b: PathBuf::new(),
+            deck_a_explicit: false,
+            deck_b_explicit: false,
+            ai_seat: 1,
+            human_autoplay: false,
+            autoplay: false,
+            use_decider: false,
+        };
+        let (a, b, _) = startup_decks(&startup);
+        let mut session = UiSession::new(1, a, b, AiSettings::default(), false, false);
+        session.seat_import[0] = Some(import_seat_text(P0, "P0 imported", BUNDLED_A).unwrap());
+        session.seat_import[1] = Some(import_seat_text(P1, "P1 imported", BUNDLED_B).unwrap());
+        ApertureApp {
+            session,
+            startup,
+            smoke_started: Instant::now(),
+            smoke_requested: false,
+            smoke_written: Arc::new(AtomicBool::new(false)),
+            last_ai_step: Instant::now(),
+            show_sandbox: false,
+            show_import: true,
+            show_zones: false,
+            show_coach: true,
+            frame_count: 0,
+        }
+    }
+
+    #[test]
+    fn absolute_life_labels_remain_correct_when_the_human_is_p1() {
+        let mut app = imported_app();
+        app.show_import = false;
+        app.session.ai.ai_seat = P0;
+        app.session.game.state.players[0].life = 3;
+        app.session.game.state.players[1].life = 17;
+        let ctx = egui::Context::default();
+        let mut output = ctx.run_ui(
+            egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(1400.0, 940.0),
+                )),
+                ..Default::default()
+            },
+            |ui| app.render_ui(ui),
+        );
+        output.textures_delta.clear();
+        let labels: Vec<String> = output
+            .shapes
+            .into_iter()
+            .filter_map(|clipped| {
+                if let egui::Shape::Text(text) = clipped.shape {
+                    Some(text.galley.text().to_owned())
+                } else {
+                    None
+                }
+            })
+            .collect();
+        assert!(
+            labels.iter().any(|text| text.contains("life P0 3 / P1 17")),
+            "absolute life labels were swapped for the P1 viewer: {labels:?}"
+        );
+    }
+
+    #[test]
+    fn imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame() {
+        let mut app = imported_app();
+        let ctx = egui::Context::default();
+        let mut reachable = false;
+        let mut visible_before_scroll = false;
+        for frame in 0..40 {
+            let mut input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(1100.0, 760.0),
+                )),
+                time: Some(frame as f64 / 30.0),
+                ..Default::default()
+            };
+            input
+                .events
+                .push(egui::Event::PointerMoved(egui::pos2(20.0, 200.0)));
+            if frame > 1 {
+                input.events.push(egui::Event::MouseWheel {
+                    unit: egui::MouseWheelUnit::Point,
+                    delta: egui::vec2(0.0, -90.0),
+                    phase: egui::TouchPhase::Move,
+                    source: egui::MouseWheelSource::Unknown,
+                    modifiers: egui::Modifiers::NONE,
+                });
+            }
+            let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+            // This renderer-only test intentionally has no GPU texture backend.
+            output.textures_delta.clear();
+            for clipped in output.shapes {
+                if let egui::Shape::Text(text) = clipped.shape
+                    && text.galley.text().contains("Start imported match")
+                    && clipped.clip_rect.contains_rect(text.visual_bounding_rect())
+                {
+                    if frame <= 1 {
+                        visible_before_scroll = true;
+                    } else {
+                        reachable = true;
+                    }
+                }
+            }
+        }
+        assert!(
+            !visible_before_scroll,
+            "the regression fixture must require scrolling"
+        );
+        assert!(
+            reachable,
+            "the two certified decks' Start button never becomes visible in the actual 1100x760 application frame"
+        );
     }
 }
