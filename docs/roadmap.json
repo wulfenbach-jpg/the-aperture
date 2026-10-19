@@ -1,0 +1,637 @@
+{
+  "repository": "wulfenbach-jpg/the-aperture",
+  "default_branch": "master",
+  "milestones": [
+    {
+      "title": "M0 — Public foundation",
+      "description": "Clean public baseline, FOSS terms, CI, issue-backed kanban, and a pinned rules/conformance process."
+    },
+    {
+      "title": "M1 — Commander-ready multiplayer kernel",
+      "description": "Deterministic 2–4-seat turn order, priority, elimination, private projections and versioned replay. Still not a claim of Commander card support."
+    },
+    {
+      "title": "M2 — Playable Commander vertical slice",
+      "description": "40-life Commander profile, command zone/tax/damage, required mechanics and an explicitly certified starter-deck corpus."
+    },
+    {
+      "title": "M3 — Native table and learning",
+      "description": "A usable four-seat graphical table, complete practice controls, exact two/four-deck import, accessible priority/stack teaching and study branches."
+    },
+    {
+      "title": "M4 — Stronger play, measured",
+      "description": "Budgeted information-safe search, optional local model, paired evaluation and an honestly scoped comparison suite."
+    },
+    {
+      "title": "v1.0 — Release candidate",
+      "description": "Installable, reproducible, reviewed FOSS release with verified curated Commander games and no unsupported universal-coverage claims."
+    }
+  ],
+  "issues": [
+    {
+      "key": "baseline",
+      "milestone": "M0 — Public foundation",
+      "title": "Publish the clean, history-preserving FOSS baseline",
+      "area": "governance",
+      "priority": "P0",
+      "status": "ready",
+      "depends_on": [],
+      "acceptance": [
+        "Publish the existing reachable commit history without squashing or force-pushing.",
+        "Provide MIT OR Apache-2.0 license texts matching Cargo metadata.",
+        "Audit reachable blobs for credentials; document test-only false positives without publishing tokens.",
+        "Read back the remote branch SHA and confirm a clean local worktree."
+      ]
+    },
+    {
+      "key": "ci",
+      "milestone": "M0 — Public foundation",
+      "title": "Run locked Rust quality gates on Linux, Windows and macOS",
+      "area": "quality",
+      "priority": "P1",
+      "status": "ready",
+      "depends_on": [
+        "baseline"
+      ],
+      "acceptance": [
+        "GitHub Actions runs format, all-target tests and Clippy with warnings denied on all three runners.",
+        "Pin third-party actions to immutable commit SHAs and use read-only workflow permissions.",
+        "Verify the exact published revision and record actual CI conclusions, not launch acknowledgements."
+      ]
+    },
+    {
+      "key": "contrib",
+      "milestone": "M0 — Public foundation",
+      "title": "Set contribution, security and third-party asset boundaries",
+      "area": "governance",
+      "priority": "P1",
+      "status": "ready",
+      "depends_on": [
+        "baseline"
+      ],
+      "acceptance": [
+        "Document RED/GREEN development, review, branch ownership and evidence requirements.",
+        "Publish a safe vulnerability-reporting route and prohibit credentials/weights/cache in commits.",
+        "Keep original engine source licensing separate from third-party card text, art, rules and model licenses.",
+        "Make unsupported features and the current practice-only scope prominent."
+      ]
+    },
+    {
+      "key": "board",
+      "milestone": "M0 — Public foundation",
+      "title": "Publish the live issue-backed v1 kanban",
+      "area": "governance",
+      "priority": "P1",
+      "status": "ready",
+      "depends_on": [
+        "baseline"
+      ],
+      "acceptance": [
+        "Create milestone issues with dependencies and executable acceptance criteria.",
+        "Display Backlog, Ready, In progress, Review, Blocked and Done from GitHub issue state/labels.",
+        "Handle search, milestone filtering, API failures and a visibly dated offline snapshot.",
+        "Document status transitions; never require a token in the browser."
+      ]
+    },
+    {
+      "key": "rules",
+      "milestone": "M0 — Public foundation",
+      "title": "Pin rules provenance and build a conformance case format",
+      "area": "engine",
+      "priority": "P1",
+      "status": "ready",
+      "depends_on": [
+        "baseline"
+      ],
+      "acceptance": [
+        "Record the official Comprehensive Rules document revision, source URL and SHA-256 without guessing the latest revision.",
+        "Define fixtures with initial state, actions, expected decisions/events and applicable rule references.",
+        "Seed timing, state-based action, cleanup and multi-blocker damage cases; distinguish intentional simplifications.",
+        "Publish a procedure to review new rules revisions without silently changing old replays."
+      ]
+    },
+    {
+      "key": "seats",
+      "milestone": "M1 — Commander-ready multiplayer kernel",
+      "title": "Generalize state and turn order to 2–4 live seats",
+      "area": "engine",
+      "priority": "P0",
+      "status": "ready",
+      "depends_on": [
+        "rules"
+      ],
+      "acceptance": [
+        "Replace implicit two-player assumptions with validated ordered seats while preserving current two-seat behavior.",
+        "Cover active-player advancement, turn wraparound and eliminated-seat skipping for 2, 3 and 4 seats.",
+        "Reject duplicate/invalid seat configurations without panics or silent repair.",
+        "All existing tests pass; new behavior has retained RED/GREEN evidence."
+      ]
+    },
+    {
+      "key": "priority",
+      "milestone": "M1 — Commander-ready multiplayer kernel",
+      "title": "Implement multiplayer priority and elimination scheduling",
+      "area": "engine",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "seats",
+        "rules"
+      ],
+      "acceptance": [
+        "Rotate priority through all eligible live seats in turn order.",
+        "Resolve exactly one stack object only after every eligible player passes in succession; reset passes on a response.",
+        "Model APNAP ordering as a pending player choice where required, never an AI guess.",
+        "Test active/nonactive player elimination, priority owner elimination and last-player wins."
+      ]
+    },
+    {
+      "key": "views",
+      "milestone": "M1 — Commander-ready multiplayer kernel",
+      "title": "Protect hidden information for every multiplayer viewer",
+      "area": "engine",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "seats"
+      ],
+      "acceptance": [
+        "Project all public opponents without exposing private hands, library order or unentitled pending choices.",
+        "Test every seat with deliberately unequal life totals, hands and library sizes.",
+        "Ensure legal choices and AI observations belong to the acting seat, not the human or a hard-coded opponent.",
+        "Keep public reveal knowledge explicit and scoped; no omniscient evaluator leaks into normal play."
+      ]
+    },
+    {
+      "key": "replay",
+      "milestone": "M1 — Commander-ready multiplayer kernel",
+      "title": "Version multiplayer save and replay without silent corruption",
+      "area": "engine",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "seats",
+        "views"
+      ],
+      "acceptance": [
+        "Store format, ordered seats, exact deck snapshots and replay schema version.",
+        "Choose explicit migration or explicit rejection for old saves; never silently reinterpret seat count.",
+        "Prove deterministic digests for fresh three/four-seat games and save/load/pending-choice round trips.",
+        "Reject malformed replay input with a useful error rather than panic."
+      ]
+    },
+    {
+      "key": "multi-harness",
+      "milestone": "M1 — Commander-ready multiplayer kernel",
+      "title": "Deliver a four-seat headless regression harness",
+      "area": "quality",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "priority",
+        "views",
+        "replay"
+      ],
+      "acceptance": [
+        "Run terminal 2/3/4-seat practice games across fresh paired seeds with bounded timeout handling.",
+        "Verify every emitted replay digest and classify terminal, capped and failed games separately.",
+        "Adapt policy/CLI/UI call sites to the new interfaces without falsely exposing an unsupported Commander toggle.",
+        "Record raw machine-readable results and keep existing native two-seat practice playable."
+      ]
+    },
+    {
+      "key": "legality",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Validate Commander deck profiles and color identity",
+      "area": "commander",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "seats",
+        "rules"
+      ],
+      "acceptance": [
+        "Represent commanders separately and validate the supported 100-card singleton profile with basic-land exceptions.",
+        "Check color identity and commander eligibility from authoritative metadata, including required face rules.",
+        "Handle supported partner/background variants explicitly or refuse them with an exact unsupported reason.",
+        "Report format legality separately from engine/card support; no silent card/deck substitution."
+      ]
+    },
+    {
+      "key": "command-zone",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Implement command zone, commander tax and zone-change choices",
+      "area": "commander",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "legality",
+        "priority"
+      ],
+      "acceptance": [
+        "Start supported commanders in the command zone and track each commander independently.",
+        "Apply commander tax from command-zone casts only, including repeated casts and multiple commanders where supported.",
+        "Model the applicable command-zone replacement/state-based choices with correct timing and object identity.",
+        "Cover refusal, acceptance, resolution failure and replay/save round trips."
+      ]
+    },
+    {
+      "key": "commander-damage",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Track commander combat damage, 40 life and player loss",
+      "area": "commander",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "command-zone",
+        "priority"
+      ],
+      "acceptance": [
+        "Use 40 starting life only for the Commander profile; retain named practice profiles.",
+        "Track combat damage by commander identity and recipient; distinguish it from noncombat damage.",
+        "Test the 21-damage loss condition, control changes, prevention and multiple commanders independently.",
+        "Remove eliminated-player objects and choices according to the pinned rules, including stack corner cases."
+      ]
+    },
+    {
+      "key": "abilities",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Add typed activated and triggered ability scheduling",
+      "area": "engine",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "priority",
+        "rules"
+      ],
+      "acceptance": [
+        "Represent costs, targets, modes and ability sources independently of UI and AI.",
+        "Support required starter-corpus activated/triggered abilities through legal player decisions.",
+        "Test simultaneous triggers/APNAP, mandatory versus optional triggers, missed targets and last-known information.",
+        "Do not use free-form model output as rules code or automatic state-based actions."
+      ]
+    },
+    {
+      "key": "effects",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Add replacement, prevention and layered continuous effects",
+      "area": "engine",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "abilities",
+        "rules"
+      ],
+      "acceptance": [
+        "Define an effect pipeline with explicit dependency/timestamp handling for supported layer interactions.",
+        "Offer affected-player choices when multiple applicable replacements require a choice.",
+        "Cover prevention, destruction versus zero toughness, duration expiry and last-known information.",
+        "Keep unimplemented interaction families explicitly unsupported in certification."
+      ]
+    },
+    {
+      "key": "counters",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Implement counters, tokens, keywords and library operations",
+      "area": "engine",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "abilities",
+        "effects"
+      ],
+      "acceptance": [
+        "Use typed object/player counters, including +1/+1, -1/-1 and required starter-corpus counters.",
+        "Implement token creation/cessation and the keyword set actually required by certified decks.",
+        "Provide untap, draw, mill, scry, surveil, reveal, shuffle and targeted/library choices with correct visibility.",
+        "Test interaction with replacements, triggers, state-based actions, replay and controller changes."
+      ]
+    },
+    {
+      "key": "decks",
+      "milestone": "M2 — Playable Commander vertical slice",
+      "title": "Certify the v1 Commander starter corpus end to end",
+      "area": "commander",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "legality",
+        "command-zone",
+        "commander-damage",
+        "abilities",
+        "effects",
+        "counters"
+      ],
+      "acceptance": [
+        "Publish at least eight explicitly supported 100-card Commander lists spanning different play styles.",
+        "Every included card and required interaction has an implementation and conformance coverage.",
+        "Play four-seat games using exact deck snapshots, never bundled replacements.",
+        "Document per-card/interaction exclusions; arbitrary Archidekt compatibility remains an explicit non-goal until proven."
+      ]
+    },
+    {
+      "key": "table",
+      "milestone": "M3 — Native table and learning",
+      "title": "Build a readable native four-seat Commander table",
+      "area": "ui",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "multi-harness",
+        "command-zone",
+        "commander-damage"
+      ],
+      "acceptance": [
+        "Display all four battlefields, commanders, life, counters, public zones and player status.",
+        "Expose own hand, actionable pending choices and stack/priority ownership without hidden information leaks.",
+        "Keep table and primary controls usable at 1280x720 and on a large monitor; include zoom/inspect and keyboard navigation.",
+        "Verify actual clicks and viewport behavior on the packaged binary, not only a screenshot."
+      ]
+    },
+    {
+      "key": "coach",
+      "milestone": "M3 — Native table and learning",
+      "title": "Teach stack, priority and rules from the actual trace",
+      "area": "ui",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "table",
+        "rules",
+        "abilities"
+      ],
+      "acceptance": [
+        "Explain why actions are legal/illegal using the pinned rule and current decision state.",
+        "Show consecutive passes, response windows, APNAP choices and what resolves next.",
+        "Separate verified rule explanations from strategic suggestions and disclosed simplifications.",
+        "Provide guided walkthrough fixtures and tests for intricate interactions; do not invent model explanations."
+      ]
+    },
+    {
+      "key": "qol",
+      "milestone": "M3 — Native table and learning",
+      "title": "Deliver tabletop-grade practice and zone controls",
+      "area": "ui",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "table",
+        "counters"
+      ],
+      "acceptance": [
+        "Provide searchable/inspectable zones, explicit draw/untap/mill/scry/surveil/reveal controls and counter editors.",
+        "Separate legal-match actions from labelled sandbox overrides that taint the competitive record.",
+        "Keep undo/study behavior honest about hidden information and deterministic random state.",
+        "Use confirmation and meaningful error states for destructive reset/import/load actions."
+      ]
+    },
+    {
+      "key": "import",
+      "milestone": "M3 — Native table and learning",
+      "title": "Make Archidekt import a complete Commander start flow",
+      "area": "import",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "legality",
+        "decks",
+        "table"
+      ],
+      "acceptance": [
+        "Accept canonical public Archidekt URLs for the human and each AI seat with text/file fallbacks.",
+        "Preserve commanders, categories, quantities, side exclusions and exact validated lists.",
+        "Show legality, unsupported mechanics and support counts before enabling match start; retain URL guard/redirect/size limits.",
+        "Keep HTTP/disk work off the frame thread and discard stale imports after session changes."
+      ]
+    },
+    {
+      "key": "accessibility",
+      "milestone": "M3 — Native table and learning",
+      "title": "Harden responsiveness, accessibility and input ergonomics",
+      "area": "ui",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "table",
+        "import"
+      ],
+      "acceptance": [
+        "Provide keyboard/focus operation, scalable text, high contrast and non-color-only status indicators.",
+        "On named reference hardware, target p95 frame time below 33 ms and input response below 100 ms during delayed AI/network work.",
+        "Cover small window, high-DPI, long deck reports, large boards and reduced-motion behavior.",
+        "Record reproducible measurements and manual input evidence; targets are not claimed results until measured."
+      ]
+    },
+    {
+      "key": "study",
+      "milestone": "M3 — Native table and learning",
+      "title": "Add review, study branches and multiplayer persistence",
+      "area": "ui",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "replay",
+        "table",
+        "coach"
+      ],
+      "acceptance": [
+        "Save/load a live four-seat session with pending stack/choice state intact.",
+        "Branch from a replay and compare accepted actions without leaking future/private information by default.",
+        "Offer an explicit postgame omniscient review mode separate from normal policy inputs.",
+        "Keep stale-worker generation guards valid across every load, branch, import and reset."
+      ]
+    },
+    {
+      "key": "search",
+      "milestone": "M4 — Stronger play, measured",
+      "title": "Build budgeted information-set search behind the legal-action API",
+      "area": "ai",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "multi-harness",
+        "decks"
+      ],
+      "acceptance": [
+        "Keep legality and state transitions in the deterministic Rust engine; policies select only offered actions.",
+        "Use reproducible determinizations/information-set search without accessing real opponent hands or future library order.",
+        "Provide cancellation, decision budgets, progressive analysis and a deterministic legal fallback.",
+        "Evaluate improvements against the frozen heuristic rather than equating larger search with stronger play."
+      ]
+    },
+    {
+      "key": "model",
+      "milestone": "M4 — Stronger play, measured",
+      "title": "Integrate the optional local decision model honestly",
+      "area": "ai",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "views",
+        "search"
+      ],
+      "acceptance": [
+        "Use viewer-masked observations and revision/decision/seat/session-generation validation.",
+        "Reject malformed, stale, truncated or illegal outputs and expose a deterministic fallback reason.",
+        "Keep the model optional, offline-capable and separately licensed; do not bundle weights without authorization.",
+        "Report preference concentration separately from calibrated outcome estimates or search evaluations."
+      ]
+    },
+    {
+      "key": "ai-eval",
+      "milestone": "M4 — Stronger play, measured",
+      "title": "Publish paired-seed AI strength and latency evidence",
+      "area": "quality",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "search",
+        "model",
+        "decks"
+      ],
+      "acceptance": [
+        "Use at least 1000 paired games/rotations on the certified corpus with budgets and hardware pinned.",
+        "Report seat/deck bias, terminal versus capped outcomes, wall-clock latency and confidence intervals.",
+        "Gate a stronger-than-baseline claim on a confidence interval above parity for the declared matchup set.",
+        "Store raw reports, versioned configs and verified replay digests; no cherry-picked probes."
+      ]
+    },
+    {
+      "key": "comparison",
+      "milestone": "M4 — Stronger play, measured",
+      "title": "Benchmark the product against existing engines and tabletop apps",
+      "area": "quality",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "coach",
+        "import",
+        "accessibility",
+        "ai-eval"
+      ],
+      "acceptance": [
+        "Select pinned versions of Forge, XMage and relevant graphical tabletop alternatives from primary sources.",
+        "Measure overlapping rules scenarios, certified-deck support, import friction, setup time, accessibility and responsiveness.",
+        "Publish gaps and losing comparisons as well as wins; label unavailable or unexecuted results.",
+        "Define specific superiority claims per measured dimension; never advertise better in every way without evidence."
+      ]
+    },
+    {
+      "key": "strategy-coach",
+      "milestone": "M4 — Stronger play, measured",
+      "title": "Add chess-style move review without false certainty",
+      "area": "ai",
+      "priority": "P1",
+      "status": "backlog",
+      "depends_on": [
+        "coach",
+        "search",
+        "ai-eval"
+      ],
+      "acceptance": [
+        "Rank alternatives using reproducible search under a stated information boundary and compute budget.",
+        "Show candidate lines, uncertainty and practical reasons for alternatives from legal traces.",
+        "Keep engine rule explanations separate from policy preferences; avoid fake win probabilities and forced blunder labels.",
+        "Validate teaching quality on a reviewed interaction/strategy corpus."
+      ]
+    },
+    {
+      "key": "packaging",
+      "milestone": "v1.0 — Release candidate",
+      "title": "Ship reproducible desktop packages and release artifacts",
+      "area": "release",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "table",
+        "decks",
+        "ci"
+      ],
+      "acceptance": [
+        "Build versioned Windows, Linux and macOS artifacts in CI using a locked dependency graph.",
+        "Include licenses, support manifest, bundled certified decks, changelog and checksums.",
+        "Smoke-test downloaded packages in clean working directories without local model services.",
+        "Publish a candidate before stable v1; document platform signing/notarization status honestly."
+      ]
+    },
+    {
+      "key": "platform-qa",
+      "milestone": "v1.0 — Release candidate",
+      "title": "Pass clean-machine platform and accessibility acceptance",
+      "area": "quality",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "packaging",
+        "study",
+        "accessibility"
+      ],
+      "acceptance": [
+        "Exercise import → start → priority/stack choice → save → load → finish on each claimed platform.",
+        "Verify actual native input and supported viewport/high-DPI behavior.",
+        "Test offline use, slow/failed imports, missing model, failed saves and stale background results.",
+        "Keep defects open until the exact packaged revision passes the failing journey."
+      ]
+    },
+    {
+      "key": "security",
+      "milestone": "v1.0 — Release candidate",
+      "title": "Audit dependencies, untrusted inputs and third-party distribution",
+      "area": "release",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "contrib",
+        "import",
+        "packaging"
+      ],
+      "acceptance": [
+        "Run dependency/license and credential audits and triage findings with evidence.",
+        "Fuzz or systematically mutate import/replay/save inputs, URL handling and action validation.",
+        "Review distributed card/rules/art/model content and notices separately from original engine licenses.",
+        "No unresolved high-severity security issues, private data leaks or unlicensed bundled assets at release."
+      ]
+    },
+    {
+      "key": "soak",
+      "milestone": "v1.0 — Release candidate",
+      "title": "Run the Commander conformance and determinism release soak",
+      "area": "quality",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "decks",
+        "multi-harness",
+        "platform-qa"
+      ],
+      "acceptance": [
+        "Run at least 1000 certified four-seat games with declared seed/deck rotation coverage.",
+        "Require zero unexplained panics, accepted illegal actions, hidden-information leaks or replay mismatches.",
+        "Retain capped runs and failures as failures or explicit exclusions, never successful completed games.",
+        "Review conformance results against the pinned rules and publish every remaining supported-scope limitation."
+      ]
+    },
+    {
+      "key": "release",
+      "milestone": "v1.0 — Release candidate",
+      "title": "Approve v1 only after every release gate is evidenced",
+      "area": "release",
+      "priority": "P0",
+      "status": "backlog",
+      "depends_on": [
+        "packaging",
+        "platform-qa",
+        "security",
+        "soak",
+        "comparison",
+        "strategy-coach"
+      ],
+      "acceptance": [
+        "Require closed release blockers and reviewed conformance, UI, AI, security and packaging reports.",
+        "Publish exact support scope, known limitations, migration notes, reproducible benchmarks and source.",
+        "Verify downloadable artifacts/checksums and the final tag/commit before announcing v1.",
+        "Make no universal card-coverage or best-engine claim; superiority claims must link to reproducible comparisons."
+      ]
+    }
+  ]
+}

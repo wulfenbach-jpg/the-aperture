@@ -1,0 +1,435 @@
+{
+  "repository": "wulfenbach-jpg/the-aperture",
+  "generated_at": "2026-10-19T20:56:54.051939+00:00",
+  "issues": [
+    {
+      "number": 33,
+      "title": "Approve v1 only after every release gate is evidenced",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/33",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:release"
+      ],
+      "milestone": "v1.0 — Release candidate"
+    },
+    {
+      "number": 32,
+      "title": "Run the Commander conformance and determinism release soak",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/32",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:quality"
+      ],
+      "milestone": "v1.0 — Release candidate"
+    },
+    {
+      "number": 31,
+      "title": "Audit dependencies, untrusted inputs and third-party distribution",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/31",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:release"
+      ],
+      "milestone": "v1.0 — Release candidate"
+    },
+    {
+      "number": 30,
+      "title": "Pass clean-machine platform and accessibility acceptance",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/30",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:quality"
+      ],
+      "milestone": "v1.0 — Release candidate"
+    },
+    {
+      "number": 29,
+      "title": "Ship reproducible desktop packages and release artifacts",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/29",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:release"
+      ],
+      "milestone": "v1.0 — Release candidate"
+    },
+    {
+      "number": 28,
+      "title": "Add chess-style move review without false certainty",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/28",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:ai"
+      ],
+      "milestone": "M4 — Stronger play, measured"
+    },
+    {
+      "number": 27,
+      "title": "Benchmark the product against existing engines and tabletop apps",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/27",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:quality"
+      ],
+      "milestone": "M4 — Stronger play, measured"
+    },
+    {
+      "number": 26,
+      "title": "Publish paired-seed AI strength and latency evidence",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/26",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:quality"
+      ],
+      "milestone": "M4 — Stronger play, measured"
+    },
+    {
+      "number": 25,
+      "title": "Integrate the optional local decision model honestly",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/25",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:ai"
+      ],
+      "milestone": "M4 — Stronger play, measured"
+    },
+    {
+      "number": 24,
+      "title": "Build budgeted information-set search behind the legal-action API",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/24",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:ai"
+      ],
+      "milestone": "M4 — Stronger play, measured"
+    },
+    {
+      "number": 23,
+      "title": "Add review, study branches and multiplayer persistence",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/23",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:ui"
+      ],
+      "milestone": "M3 — Native table and learning"
+    },
+    {
+      "number": 22,
+      "title": "Harden responsiveness, accessibility and input ergonomics",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/22",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:ui"
+      ],
+      "milestone": "M3 — Native table and learning"
+    },
+    {
+      "number": 21,
+      "title": "Make Archidekt import a complete Commander start flow",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/21",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:import"
+      ],
+      "milestone": "M3 — Native table and learning"
+    },
+    {
+      "number": 20,
+      "title": "Deliver tabletop-grade practice and zone controls",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/20",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:ui"
+      ],
+      "milestone": "M3 — Native table and learning"
+    },
+    {
+      "number": 19,
+      "title": "Teach stack, priority and rules from the actual trace",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/19",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:ui"
+      ],
+      "milestone": "M3 — Native table and learning"
+    },
+    {
+      "number": 18,
+      "title": "Build a readable native four-seat Commander table",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/18",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:ui"
+      ],
+      "milestone": "M3 — Native table and learning"
+    },
+    {
+      "number": 17,
+      "title": "Certify the v1 Commander starter corpus end to end",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/17",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:commander"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 16,
+      "title": "Implement counters, tokens, keywords and library operations",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/16",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 15,
+      "title": "Add replacement, prevention and layered continuous effects",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/15",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P1",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 14,
+      "title": "Add typed activated and triggered ability scheduling",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/14",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 13,
+      "title": "Track commander combat damage, 40 life and player loss",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/13",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:commander"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 12,
+      "title": "Implement command zone, commander tax and zone-change choices",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/12",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:commander"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 11,
+      "title": "Validate Commander deck profiles and color identity",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/11",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:commander"
+      ],
+      "milestone": "M2 — Playable Commander vertical slice"
+    },
+    {
+      "number": 10,
+      "title": "Deliver a four-seat headless regression harness",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/10",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:quality"
+      ],
+      "milestone": "M1 — Commander-ready multiplayer kernel"
+    },
+    {
+      "number": 9,
+      "title": "Version multiplayer save and replay without silent corruption",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/9",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M1 — Commander-ready multiplayer kernel"
+    },
+    {
+      "number": 8,
+      "title": "Protect hidden information for every multiplayer viewer",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/8",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M1 — Commander-ready multiplayer kernel"
+    },
+    {
+      "number": 7,
+      "title": "Implement multiplayer priority and elimination scheduling",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/7",
+      "state": "open",
+      "labels": [
+        "status:backlog",
+        "priority:P0",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M1 — Commander-ready multiplayer kernel"
+    },
+    {
+      "number": 6,
+      "title": "Generalize state and turn order to 2–4 live seats",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/6",
+      "state": "open",
+      "labels": [
+        "status:ready",
+        "priority:P0",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M1 — Commander-ready multiplayer kernel"
+    },
+    {
+      "number": 5,
+      "title": "Pin rules provenance and build a conformance case format",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/5",
+      "state": "open",
+      "labels": [
+        "status:ready",
+        "priority:P1",
+        "scope:v1",
+        "area:engine"
+      ],
+      "milestone": "M0 — Public foundation"
+    },
+    {
+      "number": 4,
+      "title": "Publish the live issue-backed v1 kanban",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/4",
+      "state": "open",
+      "labels": [
+        "status:ready",
+        "priority:P1",
+        "scope:v1",
+        "area:governance"
+      ],
+      "milestone": "M0 — Public foundation"
+    },
+    {
+      "number": 3,
+      "title": "Set contribution, security and third-party asset boundaries",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/3",
+      "state": "open",
+      "labels": [
+        "status:ready",
+        "priority:P1",
+        "scope:v1",
+        "area:governance"
+      ],
+      "milestone": "M0 — Public foundation"
+    },
+    {
+      "number": 2,
+      "title": "Run locked Rust quality gates on Linux, Windows and macOS",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/2",
+      "state": "open",
+      "labels": [
+        "status:ready",
+        "priority:P1",
+        "scope:v1",
+        "area:quality"
+      ],
+      "milestone": "M0 — Public foundation"
+    },
+    {
+      "number": 1,
+      "title": "Publish the clean, history-preserving FOSS baseline",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/issues/1",
+      "state": "open",
+      "labels": [
+        "status:ready",
+        "priority:P0",
+        "scope:v1",
+        "area:governance"
+      ],
+      "milestone": "M0 — Public foundation"
+    }
+  ]
+}

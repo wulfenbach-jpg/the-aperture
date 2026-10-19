@@ -3,6 +3,11 @@
 **practice slice / supported card pool / 1v1 / 20 life / NOT Commander**
 
 An original Rust rules engine, a headless CLI, and a native desktop card table.
+
+**FOSS:** original source is licensed **MIT OR Apache-2.0**. See [LICENSE-MIT](LICENSE-MIT), [LICENSE-APACHE](LICENSE-APACHE), and the [separate third-party content boundaries](ASSETS.md).
+
+**Working toward graphical Commander v1:** [live kanban](https://wulfenbach-jpg.github.io/the-aperture/), [roadmap and release gates](docs/ROADMAP.md), [contributing](CONTRIBUTING.md), and [security reporting](SECURITY.md). Planned support is not current support.
+
 This is a deliberately narrow lab: a small, explicitly implemented card pool with
 real rules scheduling (priority, stack, state-based actions, combat), honest deck
 import, deterministic replay, and trace-backed coaching. It is not a full Magic

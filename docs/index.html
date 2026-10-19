@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'">
+<title>THE APERTURE / v1 workbench</title>
+<style>
+:root{color-scheme:dark;--bg:#141518;--panel:#1c1d21;--card:#24252a;--line:#3b3935;--accent:#b08d57;--ink:#e8e2d4;--muted:#aaa497;--good:#7fbf7f;--warn:#d08a4a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 'Segoe UI',Tahoma,sans-serif}a{color:var(--ink);text-underline-offset:3px}a:hover{color:var(--accent)}button,input,select{font:inherit}button,input,select{min-height:44px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:9px 12px}button{cursor:pointer}button:disabled{cursor:wait;opacity:.55}input{width:100%}button:hover{border-color:var(--accent)}:focus-visible{outline:2px solid var(--accent);outline-offset:3px}header{padding:25px 30px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.eyebrow{font:11px/1.5 Consolas,'Liberation Mono',monospace;letter-spacing:2px;color:var(--accent);text-transform:uppercase}h1{font:30px/1.2 Georgia,'Times New Roman',serif;letter-spacing:1.3px;margin:4px 0}header p{margin:7px 0 0;color:var(--muted);max-width:68ch}nav{display:flex;gap:22px;font-size:13px}main{padding:20px 30px 30px}.scope{margin:0 0 17px;color:var(--muted);font-size:13px}.scope strong{color:var(--warn);font-weight:600}.toolbar{display:grid;grid-template-columns:minmax(220px,1fr) minmax(200px,370px) auto;gap:12px;align-items:end}.toolbar label{display:grid;gap:5px;color:var(--muted);font-size:12px}.summary{display:flex;align-items:baseline;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:15px 0 20px;font:12px/1.6 Consolas,'Liberation Mono',monospace;color:var(--muted)}#source[data-live=true]{color:var(--good)}#source[data-live=false]{color:var(--warn)}#counts{color:var(--ink)}.board{display:grid;grid-template-columns:repeat(6,minmax(220px,1fr));gap:14px;overflow-x:auto;padding-bottom:14px;align-items:start}.column{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:3px}.column h2{margin:0;padding:12px;font-size:13px;font-weight:600;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.column h2 span{color:var(--muted);font:12px Consolas,monospace}.cards{padding:10px;display:grid;gap:10px;align-content:start;max-height:calc(100vh - 330px);min-height:120px;overflow:auto;scrollbar-color:var(--accent) var(--panel)}.ticket{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:12px}.ticket a{display:block;font-weight:600;font-size:13px;line-height:1.55;text-decoration:none;overflow-wrap:anywhere}.ticket a:hover{text-decoration:underline}.ticket small{display:block;font-size:11px;color:var(--muted);margin-top:9px;line-height:1.6}.ticket .tags{font:10px/1.6 Consolas,monospace;letter-spacing:.2px;color:var(--accent);margin:0 0 7px}.ticket .conflict{color:var(--warn)}.column[data-status=done] .ticket{opacity:.8}.empty-column{color:var(--muted);font-size:12px;margin:5px 2px}#empty{padding:25px 0;color:var(--warn)}footer{margin-top:20px;padding-top:17px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);max-width:100ch}footer p{margin:0 0 8px}code{font:12px Consolas,'Liberation Mono',monospace;color:var(--ink)}noscript{display:block;padding:20px;color:var(--warn)}
+@media(max-width:1100px){header,main{padding-left:18px;padding-right:18px}.board{grid-template-columns:repeat(6,245px)}.cards{max-height:60vh}}
+@media(max-width:600px){header,main{padding-left:14px;padding-right:14px}.toolbar{grid-template-columns:1fr}.board{grid-template-columns:1fr;overflow:visible}.cards{max-height:420px;min-height:60px}h1{font-size:26px}nav{gap:18px}.summary{font-size:11px}}
+</style>
+<script src="board.js" defer></script>
+<script src="board-ui.js" defer></script>
+</head>
+<body>
+<header>
+<div><div class="eyebrow">THE APERTURE / engineering</div><h1>v1 workbench</h1><p>Toward a native Commander table. Deterministic rules. Information-safe play. Evidence before claims.</p></div>
+<nav aria-label="Project"><a href="https://github.com/wulfenbach-jpg/the-aperture">Source</a><a href="https://github.com/wulfenbach-jpg/the-aperture/blob/master/docs/ROADMAP.md">Release gates</a><a href="https://github.com/wulfenbach-jpg/the-aperture/issues">Issues</a></nav>
+</header>
+<main>
+<p class="scope"><strong>Current build: practice slice, not Commander.</strong> This board tracks the work required to change that. Original source: MIT OR Apache-2.0.</p>
+<div class="toolbar">
+<label>Search issues, labels or #number<input id="search" type="search" placeholder="priority:P0, replay, #6…" autocomplete="off"></label>
+<label>Milestone<select id="milestone"><option value="">All milestones</option></select></label>
+<button id="refresh" type="button">Refresh from GitHub</button>
+</div>
+<div class="summary" role="status" aria-live="polite"><span id="counts">Loading issues…</span><span id="source">Connecting to public GitHub issues…</span></div>
+<div id="board" class="board" aria-label="Release kanban"></div>
+<p id="empty" hidden>No issues match these filters. Clear the search or choose another milestone.</p>
+<noscript>This live board needs JavaScript. The <a href="https://github.com/wulfenbach-jpg/the-aperture/issues">GitHub issue list</a> contains the same work and acceptance criteria.</noscript>
+<footer><p>Issue state is authoritative. To move a ticket, open it on GitHub and set one <code>status:</code> label, or run <code>python scripts/github-board.py status NUMBER STATUS</code>. Closed issues appear in Done. No token enters this page.</p><p>Live fetch unavailable? A dated repository snapshot is clearly labelled, never passed off as current data. This is an issue-backed board, not GitHub Projects. Full checklists, dependencies and evidence live on each issue.</p></footer>
+</main>
+</body>
+</html>
