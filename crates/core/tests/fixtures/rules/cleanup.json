@@ -1,0 +1,118 @@
+{
+  "schema": "aperture.conformance/1",
+  "rules_revision": "2026-09-25",
+  "source_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+  "cases": [
+    {
+      "id": "cleanup.discard_down_to_maximum_hand_size",
+      "description": "At the beginning of the cleanup step the active player discards down to seven cards.",
+      "rule_refs": ["CR 514.1", "CR 402.2"],
+      "initial": {
+        "seed": 301,
+        "active": "P0",
+        "step": "EndStep",
+        "priority": "P0",
+        "zones": {
+          "P0": {
+            "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Shock", "Shock"]
+          }
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "events": [{"type": "Pass", "player": "P0"}],
+          "expect_pending": "none",
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "events": [
+            {"type": "Pass", "player": "P1"},
+            {"type": "StepBegin", "step": "Cleanup"}
+          ],
+          "expect_pending": "Discard(2)",
+          "expect_priority": "none",
+          "expect_step": "Cleanup"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "discard", "cards": ["Shock", "Shock"]},
+          "events": [
+            {"type": "Discarded", "player": "P0", "card": "Shock"},
+            {"type": "Discarded", "player": "P0", "card": "Shock"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P1",
+          "expect_step": "Upkeep",
+          "expect_turn": 2
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "turn": 2,
+        "step": "Upkeep",
+        "priority": "P1",
+        "pending": "none",
+        "zones": {
+          "P0": {
+            "hand": ["Forest", "Forest", "Forest", "Forest", "Forest", "Forest", "Forest"],
+            "graveyard": ["Shock", "Shock"],
+            "battlefield": []
+          }
+        }
+      }
+    },
+    {
+      "id": "cleanup.removes_marked_damage_and_until_end_of_turn_effects",
+      "description": "The cleanup step removes marked damage and ends until-end-of-turn pump effects, then the next turn begins.",
+      "rule_refs": ["CR 514.2", "CR 500.5"],
+      "initial": {
+        "seed": 302,
+        "active": "P0",
+        "step": "EndStep",
+        "priority": "P0",
+        "zones": {
+          "P0": {"battlefield": ["Grizzly Bears"]}
+        },
+        "permanents": {
+          "Grizzly Bears": {"damage": 1, "pump_power": 3, "pump_toughness": 3}
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "events": [
+            {"type": "Pass", "player": "P1"},
+            {"type": "TurnBegin", "turn": 2, "active": "P1"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P1",
+          "expect_step": "Upkeep",
+          "expect_turn": 2
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "turn": 2,
+        "step": "Upkeep",
+        "priority": "P1",
+        "pending": "none",
+        "zones": {
+          "P0": {"battlefield": ["Grizzly Bears"]}
+        },
+        "battlefield_state": {
+          "Grizzly Bears": {"damage": 0, "pump_power": 0, "pump_toughness": 0}
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "schema": "aperture.conformance/1",
+  "rules_revision": "2026-09-25",
+  "source_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+  "cases": [
+    {
+      "id": "combat.multi_blocked_attacker_splits_damage_lethal_first",
+      "description": "A 6/4 attacker blocked by two 2/2 creatures deals its damage automatically in lethal-first order; all three creatures die from simultaneous damage.",
+      "rule_refs": ["CR 509.1a", "CR 510.1c", "CR 510.2", "CR 704.5g"],
+      "bounded_policy": "CR 510.1c lets the attacking player divide the blocked creature's combat damage among its blockers. This engine assigns that damage automatically in lethal-first order and exposes no assignment choice. The expected 2/4 split below is policy evidence, not a claim that the official choice was exercised.",
+      "initial": {
+        "seed": 401,
+        "active": "P0",
+        "step": "PrecombatMain",
+        "priority": "P0",
+        "zones": {
+          "P0": {"battlefield": ["Craw Wurm"]},
+          "P1": {"battlefield": ["Grizzly Bears", "Runeclaw Bear"]}
+        }
+      },
+      "steps": [
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "expect_step": "BeginCombat",
+          "expect_priority": "P0"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "events": [{"type": "StepBegin", "step": "DeclareAttackers"}],
+          "expect_pending": "DeclareAttackers",
+          "expect_priority": "none"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "declare_attackers", "attackers": ["Craw Wurm"]},
+          "events": [
+            {"type": "AttackersDeclared", "player": "P0", "amount": 1},
+            {"type": "Priority", "player": "P0"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P0"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "events": [{"type": "StepBegin", "step": "DeclareBlockers"}],
+          "expect_pending": "DeclareBlockers",
+          "expect_priority": "none"
+        },
+        {
+          "player": "P1",
+          "action": {
+            "type": "declare_blockers",
+            "blocks": [
+              {"blocker": "Grizzly Bears", "attacker": "Craw Wurm"},
+              {"blocker": "Runeclaw Bear", "attacker": "Craw Wurm"}
+            ]
+          },
+          "events": [
+            {"type": "BlockersDeclared", "player": "P1", "amount": 2},
+            {"type": "Priority", "player": "P0"}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P0"
+        },
+        {
+          "player": "P0",
+          "action": {"type": "pass"},
+          "expect_priority": "P1"
+        },
+        {
+          "player": "P1",
+          "action": {"type": "pass"},
+          "events": [
+            {"type": "Pass", "player": "P1"},
+            {"type": "CombatDamage", "attacker": "Craw Wurm", "blocker": "Grizzly Bears", "amount": 2},
+            {"type": "CombatDamage", "attacker": "Craw Wurm", "blocker": "Runeclaw Bear", "amount": 4},
+            {"type": "CombatDamage", "attacker": "Grizzly Bears", "blocker": "Craw Wurm", "amount": 2},
+            {"type": "CombatDamage", "attacker": "Runeclaw Bear", "blocker": "Craw Wurm", "amount": 2}
+          ],
+          "expect_pending": "none",
+          "expect_priority": "P0",
+          "expect_step": "CombatDamage"
+        }
+      ],
+      "expect": {
+        "life": {"P0": 20, "P1": 20},
+        "turn": 1,
+        "step": "CombatDamage",
+        "priority": "P0",
+        "pending": "none",
+        "zones": {
+          "P0": {"battlefield": [], "graveyard": ["Craw Wurm"]},
+          "P1": {"battlefield": [], "graveyard": ["Grizzly Bears", "Runeclaw Bear"]}
+        }
+      }
+    }
+  ]
+}
