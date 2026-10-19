@@ -25,6 +25,7 @@ fn unblocked_attacker_damages_the_defending_player() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![bear],
+            defender: Some(P1),
         },
     );
     assert!(
@@ -76,6 +77,7 @@ fn summoning_sick_creature_cannot_attack() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![coursers],
+            defender: Some(P1),
         },
     );
     assert!(matches!(err, EngineError::Illegal { .. }), "{err}");
@@ -105,6 +107,7 @@ fn blocking_creatures_trade_and_lethal_damage_is_a_state_based_action() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![courser],
+            defender: Some(P1),
         },
     );
     assert!(run_until(
@@ -167,6 +170,7 @@ fn two_blockers_split_damage_lethal_first_and_all_die() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![wurm],
+            defender: Some(P1),
         },
     );
     assert!(run_until(
@@ -226,6 +230,7 @@ fn a_blocker_can_only_block_one_attacker_and_must_be_untapped() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![bears, courser],
+            defender: Some(P1),
         },
     );
     assert!(run_until(
@@ -307,6 +312,7 @@ fn attackers_are_declared_only_during_the_declare_attackers_step() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![bear],
+            defender: Some(P1),
         },
     );
     assert!(matches!(err, EngineError::Illegal { .. }), "{err}");
@@ -331,6 +337,7 @@ fn combat_damage_happens_once() {
         P0,
         Action::DeclareAttackers {
             attackers: vec![giant],
+            defender: Some(P1),
         },
     );
     assert!(run_until(

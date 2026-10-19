@@ -14,15 +14,23 @@ fn all_view_ids(view: &PlayerView) -> BTreeSet<u32> {
     for cards in [
         &view.own_hand,
         &view.own_battlefield,
-        &view.opponent_battlefield,
         &view.own_graveyard,
-        &view.opponent_graveyard,
         &view.own_exile,
-        &view.opponent_exile,
         &view.pending_viewed,
     ] {
         for card in cards {
             ids.insert(card.id.0);
+        }
+    }
+    for opponent in &view.opponents {
+        for cards in [
+            &opponent.battlefield,
+            &opponent.graveyard,
+            &opponent.exile,
+        ] {
+            for card in cards {
+                ids.insert(card.id.0);
+            }
         }
     }
     for item in &view.stack {
@@ -33,15 +41,16 @@ fn all_view_ids(view: &PlayerView) -> BTreeSet<u32> {
 
 #[test]
 fn libraries_and_the_opponent_hand_are_not_projected() {
-    let mut game = Game::new(7, &deck_a(), &deck_b());
+    let mut game = Game::new(7, &[deck_a(), deck_b()]).expect("game");
     let mut log = Vec::new();
     start_game(&mut game, &mut log);
     let view = game.view_for(P0, &log);
     let json = view.to_json();
 
+    let opponent = view.opponents.first().expect("one opponent");
     assert_eq!(view.own_library_count, 33);
-    assert_eq!(view.opponent_library_count, 33);
-    assert_eq!(view.opponent_hand_count, 7);
+    assert_eq!(opponent.library_count, 33);
+    assert_eq!(opponent.hand_count, 7);
     assert_eq!(view.own_hand.len(), 7);
 
     let visible = all_view_ids(&view);

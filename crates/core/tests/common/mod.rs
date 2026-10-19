@@ -41,25 +41,34 @@ fn new_player(id: PlayerId, name: &str) -> Player {
 }
 
 pub fn fixture(seed: u64) -> Fixture {
+    fixture_n(seed, 2)
+}
+
+/// A valid 2–4 seat fixture with empty zones. Tests fill the seats they use.
+pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
+    assert!((2..=4).contains(&seat_count));
     Fixture {
         state: GameState {
             seed,
             first_player: P0,
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
-            players: [new_player(P0, "P0"), new_player(P1, "P1")],
+            players: (0..seat_count as PlayerId)
+                .map(|id| new_player(id, &format!("P{id}")))
+                .collect(),
             stack: Vec::new(),
             turn: Turn {
                 number: 1,
                 active: P0,
                 step: Step::Untap,
                 priority: None,
-                passes: 0,
+                passed: 0,
                 lands_played: 0,
                 attackers: Vec::new(),
                 blocked: Vec::new(),
                 blockers: Vec::new(),
                 combat_damage_done: false,
+                defender: None,
             },
             pending: None,
             resolving: None,
@@ -97,7 +106,7 @@ impl Fixture {
             Zone::Library => self.state.players[p as usize].library.push(id),
             Zone::Graveyard => self.state.players[p as usize].graveyard.push(id),
             Zone::Exile => self.state.players[p as usize].exile.push(id),
-            Zone::Battlefield | Zone::Stack => {}
+            Zone::Battlefield | Zone::Stack | Zone::Removed => {}
         }
         self
     }
@@ -165,7 +174,7 @@ impl Fixture {
 
 pub fn set_priority(state: &mut GameState, p: Option<PlayerId>) {
     state.turn.priority = p;
-    state.turn.passes = 0;
+    state.turn.passed = 0;
 }
 
 pub fn object_mut(state: &mut GameState, id: ObjectId) -> &mut Object {
@@ -216,6 +225,7 @@ pub fn auto_answer(game: &Game) -> Action {
             Pending::Mulligan { .. } => Action::Mulligan { keep: true },
             Pending::DeclareAttackers { .. } => Action::DeclareAttackers {
                 attackers: Vec::new(),
+                defender: None,
             },
             Pending::DeclareBlockers { .. } => Action::DeclareBlockers { blocks: Vec::new() },
             Pending::OrderCard { .. } => Action::OrderCard { to_top: true },

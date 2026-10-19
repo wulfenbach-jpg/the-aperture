@@ -23,6 +23,7 @@ fn declare_attack(game: &mut Game, log: &mut Vec<Event>, attackers: &[ObjectId])
         game.decision_owner().unwrap(),
         Action::DeclareAttackers {
             attackers: attackers.to_vec(),
+            defender: Some(P1),
         },
     );
 }
@@ -287,7 +288,7 @@ fn the_opponent_does_not_learn_a_private_scry_or_surveil_choice() {
 #[test]
 fn the_game_start_log_does_not_reveal_the_replay_seed() {
     // With public deck lists, the seed alone reconstructs both libraries.
-    let (game, log) = Game::new_logged(987_654_321, &deck_a(), &deck_b());
+    let (game, log) = Game::new_logged(987_654_321, &[deck_a(), deck_b()]).expect("game");
     for seat in [P0, P1] {
         let view = game.view_for(seat, &log);
         assert!(
@@ -333,10 +334,13 @@ fn coaching_never_describes_another_seats_hand() {
 #[test]
 fn the_player_who_plays_first_skips_their_first_draw_step() {
     // CR 103.8a
-    let (mut game, mut log) = Game::new_logged(76, &deck_a(), &deck_b());
+    let (mut game, mut log) = Game::new_logged(76, &[deck_a(), deck_b()]).expect("game");
     run_until(&mut game, &mut log, |g| g.state.pending.is_none(), 32);
     let first = game.state.first_player;
-    let other = aperture_core::opponent(first);
+    let other = game
+        .state
+        .next_live_seat_after(first)
+        .expect("a second live seat");
     assert_eq!(game.state.player(first).hand_size(), 7);
     assert_eq!(game.state.player(first).library.len(), 33);
 
@@ -369,7 +373,7 @@ fn the_player_who_plays_first_skips_their_first_draw_step() {
 #[test]
 fn a_mulligan_that_could_never_be_bottomed_is_refused() {
     // CR 103.5: the London mulligan bottoms one card per mulligan taken.
-    let (mut game, mut log) = Game::new_logged(77, &deck_a(), &deck_b());
+    let (mut game, mut log) = Game::new_logged(77, &[deck_a(), deck_b()]).expect("game");
     for _ in 0..7 {
         assert!(matches!(
             game.state.pending,

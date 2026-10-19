@@ -8,7 +8,7 @@ use common::*;
 
 /// Drive both seats with the fixed scripted policy until a cap is hit.
 fn scripted_game(seed: u64, cap: usize) -> (Game, Vec<Event>, Vec<ReplayStep>) {
-    let (mut game, mut log) = Game::new_logged(seed, &deck_a(), &deck_b());
+    let (mut game, mut log) = Game::new_logged(seed, &[deck_a(), deck_b()]).expect("game");
     let mut steps = Vec::new();
     for _ in 0..cap {
         if game.state.is_over() {
@@ -53,7 +53,7 @@ fn the_same_seed_and_actions_produce_the_same_state_digest() {
 
 #[test]
 fn london_mulligan_bottoms_one_card_per_mulligan() {
-    let (mut game, mut log) = Game::new_logged(1, &deck_a(), &deck_b());
+    let (mut game, mut log) = Game::new_logged(1, &[deck_a(), deck_b()]).expect("game");
     assert!(matches!(
         game.state.pending,
         Some(Pending::Mulligan { player: P0 })
@@ -110,7 +110,7 @@ fn london_mulligan_bottoms_one_card_per_mulligan() {
 
 #[test]
 fn save_and_load_restore_pending_choices_rng_and_ai_settings() {
-    let (mut game, log) = Game::new_logged(5, &deck_a(), &deck_b());
+    let (mut game, log) = Game::new_logged(5, &[deck_a(), deck_b()]).expect("game");
     // Move to a mid-resolution pending scry so the snapshot has real state.
     let mut game = {
         let mut log2 = log.clone();
@@ -122,7 +122,13 @@ fn save_and_load_restore_pending_choices_rng_and_ai_settings() {
     // couple of turns and then snapshot whatever decision point we are at.
     let mut log = Vec::new();
     run_until(&mut game, &mut log, |g| g.state.turn.number >= 3, 200);
-    let mut replay = Replay::new(5, deck_a(), deck_b(), AiSettings::default());
+    let mut replay = Replay::new(
+        5,
+        game.state.first_player,
+        vec![deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
     let save = SessionSave::capture(&game, replay.clone(), log.clone(), false);
     let json = save.to_json();
     let loaded = SessionSave::from_json(&json).expect("save round-trips");
@@ -155,7 +161,13 @@ fn save_and_load_restore_pending_choices_rng_and_ai_settings() {
 #[test]
 fn replaying_a_recorded_game_reproduces_the_digest() {
     let (game, log, steps) = scripted_game(77, 250);
-    let mut replay = Replay::new(77, deck_a(), deck_b(), AiSettings::default());
+    let mut replay = Replay::new(
+        77,
+        game.state.first_player,
+        vec![deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
     for step in steps {
         replay.record(step);
     }
@@ -173,7 +185,13 @@ fn replaying_a_recorded_game_reproduces_the_digest() {
 #[test]
 fn a_tampered_replay_fails_instead_of_inventing_a_result() {
     let (game, _, steps) = scripted_game(88, 40);
-    let mut replay = Replay::new(88, deck_a(), deck_b(), AiSettings::default());
+    let mut replay = Replay::new(
+        88,
+        game.state.first_player,
+        vec![deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
     for step in steps {
         replay.record(step);
     }
@@ -202,10 +220,10 @@ fn a_tampered_replay_fails_instead_of_inventing_a_result() {
 
 #[test]
 fn library_order_comes_from_the_seed_not_from_stored_state() {
-    let a = Game::new(303, &deck_a(), &deck_b());
-    let b = Game::new(303, &deck_a(), &deck_b());
+    let a = Game::new(303, &[deck_a(), deck_b()]).expect("game");
+    let b = Game::new(303, &[deck_a(), deck_b()]).expect("game");
     assert_eq!(a.state.player(P0).library, b.state.player(P0).library);
     assert_eq!(a.digest(), b.digest());
-    let c = Game::new(304, &deck_a(), &deck_b());
+    let c = Game::new(304, &[deck_a(), deck_b()]).expect("game");
     assert_ne!(a.state.player(P0).library, c.state.player(P0).library);
 }

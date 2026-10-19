@@ -18,7 +18,7 @@ use aperture_ai::{
 };
 use aperture_core::view::{PendingKind, PlayerView};
 use aperture_core::{
-    Action, AiSettings, BlockDecl, DeckList, Event, Game, ObjectId, P0, P1, PlayerId, Replay,
+    Action, AiSettings, BlockDecl, DeckList, Event, Game, ObjectId, PlayerId, Replay,
     ReplayStep, SessionSave, Submission, Zone,
 };
 use aperture_import::DeckReport;
@@ -81,8 +81,8 @@ enum WorkerMessage {
 }
 
 /// File formats the UI shows as a label per seat.
-fn seat_label(seat: PlayerId) -> &'static str {
-    if seat == P0 { "P0" } else { "P1" }
+fn seat_label(seat: PlayerId) -> String {
+    format!("P{seat}")
 }
 
 /// Build a `SeatImport` from a provider report: the list is `Some` only when
@@ -162,8 +162,7 @@ pub struct UiSession {
     pub log: Vec<Event>,
     pub replay: Replay,
     pub ai: AiSettings,
-    pub deck_a: DeckList,
-    pub deck_b: DeckList,
+    pub seats: Vec<DeckList>,
     pub seed: u64,
     pub sandbox_modified: bool,
     pub human_plays_ai_seat: bool,
@@ -175,6 +174,7 @@ pub struct UiSession {
     pub message: String,
     pub revealed: Vec<String>,
     pub selected_attackers: Vec<ObjectId>,
+    pub selected_defender: Option<PlayerId>,
     pub selected_blocks: Vec<(ObjectId, ObjectId)>,
     pub selected_cards: Vec<ObjectId>,
     pub target_pick: Option<(ObjectId, Vec<Action>)>,
@@ -186,13 +186,13 @@ pub struct UiSession {
     /// Bumped whenever live work must be invalidated (new game, load, branch
     /// return, sandbox edit, import start, settings change).
     pub generation: u64,
-    /// Per-seat import inputs (human seat first is not assumed: index == seat).
-    pub seat_url: [String; 2],
-    pub seat_text: [String; 2],
-    pub seat_path: [String; 2],
-    pub seat_import: [Option<SeatImport>; 2],
-    pub seat_error: [Option<String>; 2],
-    pub import_busy: [bool; 2],
+    /// Per-seat import inputs (index == seat).
+    pub seat_url: Vec<String>,
+    pub seat_text: Vec<String>,
+    pub seat_path: Vec<String>,
+    pub seat_import: Vec<Option<SeatImport>>,
+    pub seat_error: Vec<Option<String>>,
+    pub import_busy: Vec<bool>,
     pub ai_busy: bool,
     pub health_busy: bool,
     /// A save or load worker is running.
@@ -209,14 +209,22 @@ pub struct UiSession {
 impl UiSession {
     pub fn new(
         seed: u64,
-        deck_a: DeckList,
-        deck_b: DeckList,
+        seats: Vec<DeckList>,
         ai: AiSettings,
         use_decider: bool,
         human_plays_ai_seat: bool,
-    ) -> Self {
-        let (game, log) = Game::new_logged(seed, &deck_a, &deck_b);
-        let mut replay = Replay::new(seed, deck_a.clone(), deck_b.clone(), ai.clone());
+    ) -> Result<Self, String> {
+        let seat_count = seats.len();
+        if !(aperture_core::MIN_PLAYERS..=aperture_core::MAX_PLAYERS).contains(&seat_count) {
+            return Err(format!(
+                "{seat_count} seats supplied; the table supports 2..=4"
+            ));
+        }
+        ai.validate_for(seat_count)?;
+        let (game, log) = Game::new_logged(seed, &seats)
+            .map_err(|err| format!("could not create the game: {err}"))?;
+        let mut replay = Replay::new(seed, game.state.first_player, seats.clone(), ai.clone())
+            .map_err(|err| format!("could not create the replay: {err}"))?;
         replay.steps.clear();
         let config = DeciderConfig {
             timeout_ms: ai.decider_timeout_ms,
@@ -232,13 +240,12 @@ impl UiSession {
         };
         let decider_config = if use_decider { Some(config) } else { None };
         let (worker_tx, worker_rx) = channel();
-        UiSession {
+        Ok(UiSession {
             game,
             log,
             replay,
             ai,
-            deck_a,
-            deck_b,
+            seats,
             seed,
             sandbox_modified: false,
             human_plays_ai_seat,
@@ -249,6 +256,7 @@ impl UiSession {
             message: String::new(),
             revealed: Vec::new(),
             selected_attackers: Vec::new(),
+            selected_defender: None,
             selected_blocks: Vec::new(),
             selected_cards: Vec::new(),
             target_pick: None,
@@ -257,12 +265,12 @@ impl UiSession {
             save_path: "the-aperture-save.json".to_string(),
             branch: None,
             generation: 0,
-            seat_url: [String::new(), String::new()],
-            seat_text: [String::new(), String::new()],
-            seat_path: [String::new(), String::new()],
-            seat_import: [None, None],
-            seat_error: [None, None],
-            import_busy: [false, false],
+            seat_url: vec![String::new(); seat_count],
+            seat_text: vec![String::new(); seat_count],
+            seat_path: vec![String::new(); seat_count],
+            seat_import: vec![None; seat_count],
+            seat_error: vec![None; seat_count],
+            import_busy: vec![false; seat_count],
             ai_busy: false,
             health_busy: false,
             io_busy: false,
@@ -270,7 +278,7 @@ impl UiSession {
             busy_note: None,
             worker_tx,
             worker_rx,
-        }
+        })
     }
 
     // ---------------------------------------------------------------- workers
@@ -283,7 +291,7 @@ impl UiSession {
         self.ai_busy = false;
         self.health_busy = false;
         self.io_busy = false;
-        self.import_busy = [false, false];
+        self.import_busy = vec![false; self.seats.len()];
     }
 
     /// Ask a background thread to compute the current AI decision. `work`
@@ -496,33 +504,40 @@ impl UiSession {
 
     // ------------------------------------------------------------- per-seat import
 
-    /// The two exact planned lists, when both seats are certified.
-    pub fn imported_lists(&self) -> Option<(DeckList, DeckList)> {
-        let a = self.seat_import[0].as_ref()?.list.clone()?;
-        let b = self.seat_import[1].as_ref()?.list.clone()?;
-        Some((a, b))
+    /// The exact planned lists, when every seat is certified.
+    pub fn imported_lists(&self) -> Option<Vec<DeckList>> {
+        let mut lists = Vec::with_capacity(self.seats.len());
+        for seat in 0..self.seats.len() {
+            let import = self.seat_import.get(seat)?.as_ref()?;
+            lists.push(import.list.clone()?);
+        }
+        Some(lists)
     }
 
-    /// "Start imported match" is enabled only when BOTH seats are certified.
+    /// "Start imported match" is enabled only when every seat is certified.
     pub fn can_start_imported(&self) -> bool {
         self.imported_lists().is_some()
     }
 
-    /// Start a fresh match from the two certified imports. The exact planned
-    /// lists are applied with no substitutions, and the new game/replay embed
-    /// them as snapshots.
-    pub fn start_imported_match(&mut self, seed: u64) -> Result<(String, String), String> {
-        let (a, b) = self.imported_lists().ok_or_else(|| {
-            "both seats need a certified deck before an imported match can start".to_string()
+    /// Start a fresh match from the certified imports. The exact planned lists
+    /// are applied with no substitutions, and the new game/replay embed them as
+    /// snapshots.
+    pub fn start_imported_match(&mut self, seed: u64) -> Result<Vec<String>, String> {
+        let lists = self.imported_lists().ok_or_else(|| {
+            "every seat needs a certified deck before an imported match can start".to_string()
         })?;
-        let names = (a.name.clone(), b.name.clone());
-        self.deck_a = a;
-        self.deck_b = b;
+        let names: Vec<String> = lists.iter().map(|deck| deck.name.clone()).collect();
+        self.seats = lists;
         self.deck_refusal = None;
         self.new_game(seed);
         self.message = format!(
-            "started an imported match: '{}' (P0) vs '{}' (P1) — the exact planned lists were applied, no substitutions",
-            names.0, names.1
+            "started an imported match: {} — the exact planned lists were applied, no substitutions",
+            names
+                .iter()
+                .enumerate()
+                .map(|(seat, name)| format!("P{seat} '{name}'"))
+                .collect::<Vec<_>>()
+                .join(" vs ")
         );
         Ok(names)
     }
@@ -562,6 +577,7 @@ impl UiSession {
         self.ai = save.ai.clone();
         self.sandbox_modified = save.sandbox_modified;
         self.selected_attackers.clear();
+        self.selected_defender = None;
         self.selected_blocks.clear();
         self.selected_cards.clear();
         self.target_pick = None;
@@ -581,12 +597,13 @@ impl UiSession {
     }
 
     pub fn human_seat(&self) -> PlayerId {
-        if self.ai.ai_seat == P0 { P1 } else { P0 }
+        self.ai.human_seat
     }
 
     /// True when a policy should act for `seat` now.
     pub fn seat_is_ai(&self, seat: PlayerId) -> bool {
-        seat == self.ai.ai_seat || (seat == self.human_seat() && self.human_plays_ai_seat)
+        self.ai.seat_is_ai(seat)
+            || (seat == self.human_seat() && self.human_plays_ai_seat)
     }
 
     /// Opt in to or out of the local model. Rebuilds the sync policy, points the
@@ -628,6 +645,7 @@ impl UiSession {
                     action,
                 });
                 self.selected_attackers.clear();
+                self.selected_defender = None;
                 self.selected_blocks.clear();
                 self.selected_cards.clear();
                 self.target_pick = None;
@@ -688,21 +706,24 @@ impl UiSession {
         self.invalidate_pending_work();
         self.branch = None;
         self.seed = seed;
-        let (game, log) = Game::new_logged(seed, &self.deck_a, &self.deck_b);
+        let (game, log) = Game::new_logged(seed, &self.seats)
+            .unwrap_or_else(|err| panic!("validated session seats failed to start: {err}"));
         self.game = game;
         self.log = log;
         self.replay = Replay::new(
             seed,
-            self.deck_a.clone(),
-            self.deck_b.clone(),
+            self.game.state.first_player,
+            self.seats.clone(),
             self.ai.clone(),
-        );
+        )
+        .unwrap_or_else(|err| panic!("validated session replay failed: {err}"));
         self.replay.steps.clear();
         self.sandbox_modified = false;
         self.revealed.clear();
         self.message.clear();
         self.note = None;
         self.selected_attackers.clear();
+        self.selected_defender = None;
         self.selected_blocks.clear();
         self.selected_cards.clear();
         self.target_pick = None;
@@ -778,8 +799,7 @@ impl UiSession {
         self.log = save.log.clone();
         self.replay = save.replay.clone();
         self.ai = save.ai.clone();
-        self.deck_a = save.deck_a.clone();
-        self.deck_b = save.deck_b.clone();
+        self.seats = save.seats.clone();
         self.sandbox_modified = save.sandbox_modified;
     }
 
@@ -903,6 +923,9 @@ impl UiSession {
             .map(|outcome| match outcome {
                 aperture_core::Outcome::Win { winner, reason } => {
                     format!("P{winner} wins — {reason}")
+                }
+                aperture_core::Outcome::Draw { reason } => {
+                    format!("the game is a draw — {reason}")
                 }
             })
     }

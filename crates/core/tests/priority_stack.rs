@@ -52,7 +52,7 @@ fn single_pass_does_not_resolve_the_stack() {
     assert_eq!(game.decision_owner(), Some(P1));
     assert_eq!(game.state.stack.len(), 1);
     assert_eq!(game.state.player(P1).life, 20);
-    assert_eq!(game.state.turn.passes, 1);
+    assert_eq!(game.state.turn.passed, 1);
 }
 
 #[test]

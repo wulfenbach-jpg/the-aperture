@@ -1,16 +1,15 @@
 use serde::{Deserialize, Serialize};
 
-/// Seat index. Two seats are exercised; the state model is a fixed array.
+/// Seat index. Seats are ordered and fixed for the whole game; a departed seat
+/// keeps its index and is never renumbered (CR 800.4a, 800.4k).
 pub type PlayerId = u8;
 
 pub const P0: PlayerId = 0;
 pub const P1: PlayerId = 1;
-pub const NUM_PLAYERS: usize = 2;
 
-/// The next player in turn order. Correct only for two seats.
-pub fn opponent(p: PlayerId) -> PlayerId {
-    1 - p
-}
+/// Supported seat range for the multiplayer practice kernel.
+pub const MIN_PLAYERS: usize = 2;
+pub const MAX_PLAYERS: usize = 4;
 
 /// Game-wide object identity. Allocated monotonically and never reused, so an
 /// id stays meaningful across zone changes. (Real Magic creates a new object on
@@ -33,6 +32,12 @@ pub enum Zone {
     Stack,
     Graveyard,
     Exile,
+    /// Internal representation of a card that left the game with its owner
+    /// (CR 800.4a). This is not a game zone: no view, legal-action generator or
+    /// effect may read it. The 800.4a "still controlled objects are exiled"
+    /// clause is unreachable here because this slice has no control-changing
+    /// effects (controller == owner).
+    Removed,
 }
 
 impl Zone {
@@ -44,6 +49,7 @@ impl Zone {
             Zone::Stack => "stack",
             Zone::Graveyard => "graveyard",
             Zone::Exile => "exile",
+            Zone::Removed => "removed from the game",
         }
     }
 }

@@ -14,10 +14,15 @@ pub fn run(file: &Path, verbose: bool) -> anyhow::Result<()> {
         let recomputed = game.digest();
         let integrity = recomputed == save.digest;
         println!(
-            "save {} — deck A '{}' vs deck B '{}'",
+            "save {} — {} seat(s): {}",
             file.display(),
-            save.deck_a.name,
-            save.deck_b.name
+            save.seats.len(),
+            save.seats
+                .iter()
+                .enumerate()
+                .map(|(index, deck)| format!("P{index} '{}'", deck.name))
+                .collect::<Vec<_>>()
+                .join(" vs ")
         );
         println!(
             "  stored digest {} | recomputed {} | {}",
@@ -73,8 +78,9 @@ pub fn run(file: &Path, verbose: bool) -> anyhow::Result<()> {
 
     let replay = Replay::from_json(&text).map_err(|e| anyhow::anyhow!("{e}"))?;
     println!(
-        "replay seed {} — {} action(s), recorded outcome {:?}",
+        "replay seed {} — {} seat(s), {} action(s), recorded outcome {:?}",
         replay.seed,
+        replay.seats.len(),
         replay.steps.len(),
         replay.outcome
     );

@@ -32,15 +32,15 @@ pub use deck::DeckList;
 pub use engine::Game;
 pub use error::EngineError;
 pub use event::Event;
-pub use ids::{ObjectId, P0, P1, PlayerId, Zone, opponent};
+pub use ids::{MAX_PLAYERS, MIN_PLAYERS, ObjectId, P0, P1, PlayerId, Zone};
 pub use mana::{ManaCost, ManaPool};
 pub use replay::{Replay, ReplayError, ReplayStep, SessionSave};
 pub use settings::AiSettings;
 pub use state::{GameState, OrderMode, Outcome, Pending, Step};
-pub use view::PlayerView;
+pub use view::{OpponentView, PlayerView};
 
 /// Comprehensive Rules revision this engine was written against.
 pub const RULES_REVISION: &str = "2026-09-25";
 /// Product label shown in every UI surface; keeps the scope honest.
 pub const PRODUCT_LABEL: &str =
-    "THE APERTURE — practice slice, supported card pool, 1v1, 20 life, NOT Commander";
+    "THE APERTURE — practice slice, supported card pool, 2-4 live seats (native table: 2), 20 life, NOT Commander";

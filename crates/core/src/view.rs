@@ -10,7 +10,7 @@ use crate::card::CardId;
 use crate::digest;
 use crate::engine::Game;
 use crate::event::Event;
-use crate::ids::{ObjectId, PlayerId, Zone, opponent};
+use crate::ids::{ObjectId, PlayerId, Zone};
 use crate::state::{OrderMode, Outcome, Step};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -52,23 +52,33 @@ pub struct StackView {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct OpponentView {
+    pub seat: PlayerId,
+    pub name: String,
+    pub deck_name: String,
+    pub eliminated: bool,
+    pub life: i32,
+    pub hand_count: usize,
+    pub library_count: usize,
+    pub battlefield: Vec<CardView>,
+    pub graveyard: Vec<CardView>,
+    pub exile: Vec<CardView>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PlayerView {
     pub viewer: PlayerId,
     pub viewer_name: String,
-    pub opponent_name: String,
-    pub deck_names: [String; 2],
+    pub seat_count: usize,
+    /// Every other seat, in seat order, including eliminated seats. Hidden
+    /// zones are counts only; eliminated seats project no removed objects.
+    pub opponents: Vec<OpponentView>,
     pub own_hand: Vec<CardView>,
-    pub opponent_hand_count: usize,
     pub own_battlefield: Vec<CardView>,
-    pub opponent_battlefield: Vec<CardView>,
     pub own_graveyard: Vec<CardView>,
-    pub opponent_graveyard: Vec<CardView>,
     pub own_exile: Vec<CardView>,
-    pub opponent_exile: Vec<CardView>,
     pub own_library_count: usize,
-    pub opponent_library_count: usize,
     pub own_life: i32,
-    pub opponent_life: i32,
     pub own_mana: String,
     pub own_mana_pool: crate::mana::ManaPool,
     pub own_lands_in_hand: usize,
@@ -88,7 +98,7 @@ pub struct PlayerView {
     pub pending_index: Option<usize>,
     pub pending_mode: Option<OrderMode>,
     /// Cards the viewer is currently looking at because of a scry/surveil they
-    /// own (CR 701.22a). Empty for the other seat.
+    /// own (CR 701.22a). Empty for every other seat.
     pub pending_viewed: Vec<CardView>,
     pub legal: Vec<LegalAction>,
     pub log: Vec<String>,
@@ -99,16 +109,27 @@ pub struct PlayerView {
 
 impl PlayerView {
     /// Serialize for a model or a log. Contains no library contents and no
-    /// opponent hand contents.
+    /// other seat's hand contents.
     pub fn to_json(&self) -> String {
         serde_json::to_string(self).expect("view serializes")
     }
 
-    pub fn terrains(&self, p: PlayerId) -> &Vec<CardView> {
+    /// The projected public state of one other seat.
+    pub fn opponent_view(&self, seat: PlayerId) -> Option<&OpponentView> {
+        self.opponents.iter().find(|o| o.seat == seat)
+    }
+
+    /// Convenience for the two-seat practice UI/tests. Returns `None` when the
+    /// game has more than one other seat.
+    pub fn sole_opponent(&self) -> Option<&OpponentView> {
+        (self.opponents.len() == 1).then(|| &self.opponents[0])
+    }
+
+    pub fn terrains(&self, p: PlayerId) -> Option<&Vec<CardView>> {
         if p == self.viewer {
-            &self.own_battlefield
+            Some(&self.own_battlefield)
         } else {
-            &self.opponent_battlefield
+            self.opponent_view(p).map(|o| &o.battlefield)
         }
     }
 }
@@ -145,7 +166,7 @@ fn zone_cards(game: &Game, p: PlayerId, zone: Zone) -> Vec<CardView> {
             .map(|o| o.id)
             .collect(),
         Zone::Hand => game.state.player(p).hand.clone(),
-        Zone::Library | Zone::Stack => Vec::new(),
+        Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
     };
     ids.into_iter().map(|id| card_view(game, id)).collect()
 }
@@ -294,6 +315,7 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
         Event::Destroyed { card, .. } => format!("{} is put into a graveyard", card.name()),
         Event::StateBasedAction { description } => format!("state-based action: {description}"),
         Event::GameOver { winner, reason } => format!("Game over — P{winner} wins: {reason}"),
+        Event::GameDrawn { reason } => format!("Game drawn — {reason}"),
         Event::Truncated { reason } => format!("TRUNCATED: {reason}"),
     }
 }
@@ -306,8 +328,7 @@ impl Game {
     /// Projection for one seat. `log` is the session's event trace; it is
     /// rendered with viewer-aware masking.
     pub fn view_for(&self, viewer: PlayerId, log: &[Event]) -> PlayerView {
-        let me = &self.state.players[viewer as usize];
-        let them = &self.state.players[opponent(viewer) as usize];
+        let me = self.state.player(viewer);
         let pending_viewed = match &self.state.pending {
             Some(crate::state::Pending::OrderCard { player, viewed, .. }) if *player == viewer => {
                 viewed.iter().map(|id| card_view(self, *id)).collect()
@@ -322,26 +343,50 @@ impl Game {
         } else {
             log.iter().map(|e| render_event(self, viewer, e)).collect()
         };
+        let opponents = (0..self.state.seat_count() as PlayerId)
+            .filter(|seat| *seat != viewer)
+            .map(|seat| {
+                let player = self.state.player(seat);
+                if player.lost {
+                    OpponentView {
+                        seat,
+                        name: player.name.clone(),
+                        deck_name: player.deck_name.clone(),
+                        eliminated: true,
+                        life: player.life,
+                        hand_count: 0,
+                        library_count: 0,
+                        battlefield: Vec::new(),
+                        graveyard: Vec::new(),
+                        exile: Vec::new(),
+                    }
+                } else {
+                    OpponentView {
+                        seat,
+                        name: player.name.clone(),
+                        deck_name: player.deck_name.clone(),
+                        eliminated: false,
+                        life: player.life,
+                        hand_count: player.hand_size(),
+                        library_count: player.library.len(),
+                        battlefield: zone_cards(self, seat, Zone::Battlefield),
+                        graveyard: zone_cards(self, seat, Zone::Graveyard),
+                        exile: zone_cards(self, seat, Zone::Exile),
+                    }
+                }
+            })
+            .collect();
         PlayerView {
             viewer,
             viewer_name: me.name.clone(),
-            opponent_name: them.name.clone(),
-            deck_names: [
-                self.state.players[0].deck_name.clone(),
-                self.state.players[1].deck_name.clone(),
-            ],
+            seat_count: self.state.seat_count(),
+            opponents,
             own_hand: zone_cards(self, viewer, Zone::Hand),
-            opponent_hand_count: them.hand_size(),
             own_battlefield: zone_cards(self, viewer, Zone::Battlefield),
-            opponent_battlefield: zone_cards(self, opponent(viewer), Zone::Battlefield),
             own_graveyard: zone_cards(self, viewer, Zone::Graveyard),
-            opponent_graveyard: zone_cards(self, opponent(viewer), Zone::Graveyard),
             own_exile: zone_cards(self, viewer, Zone::Exile),
-            opponent_exile: zone_cards(self, opponent(viewer), Zone::Exile),
             own_library_count: me.library.len(),
-            opponent_library_count: them.library.len(),
             own_life: me.life,
-            opponent_life: them.life,
             own_mana: me.mana.render(),
             own_mana_pool: me.mana,
             own_lands_in_hand: me
@@ -407,7 +452,7 @@ impl Game {
             pending_viewed,
             // Legal actions are only projected to the seat that must act: their
             // labels describe that seat's hidden cards (hand contents, scryed
-            // cards), so handing them to the other seat would leak.
+            // cards), so handing them to another seat would leak.
             legal: if self.state.decision_owner() == Some(viewer) {
                 self.legal_actions()
             } else {

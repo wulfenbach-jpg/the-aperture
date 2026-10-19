@@ -2,6 +2,7 @@
 //! output, and real (bounded) Archidekt import.
 
 mod decks;
+mod harness_cmd;
 mod import_cmd;
 mod info_cmd;
 mod replay_cmd;
@@ -24,17 +25,23 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    /// Play one deterministic AI-vs-AI game and report the result.
+    /// Play one deterministic 2-4 seat AI game and report the result.
     Selfplay {
         #[arg(long, default_value_t = 1)]
         seed: u64,
-        #[arg(long, default_value = "decks/temur-beats.txt")]
-        deck_a: PathBuf,
-        #[arg(long, default_value = "decks/izzet-control.txt")]
-        deck_b: PathBuf,
+        /// Seat count when no explicit --deck paths are supplied (2..=4).
+        #[arg(long)]
+        seats: Option<usize>,
+        /// One deck path per seat; repeat 2..=4 times. Defaults to the bundled
+        /// practice decks (cycling A/B for extra seats).
+        #[arg(long = "deck")]
+        deck: Vec<PathBuf>,
         #[arg(long, default_value_t = 4000)]
         max_steps: usize,
-        /// Use the local Decider-2B service for this seat (0 or 1).
+        /// Wall-clock bound for the run, milliseconds.
+        #[arg(long)]
+        max_millis: Option<u64>,
+        /// Use the local Decider-2B service for this seat (0..=3).
         #[arg(long)]
         decider_seat: Option<u8>,
         #[arg(long, default_value_t = 4000)]
@@ -48,6 +55,23 @@ pub enum Command {
         /// Print every event.
         #[arg(long)]
         verbose: bool,
+    },
+    /// Run bounded 2/3/4-seat headless games with paired seeds and verify every
+    /// replay digest. Exit 0 all terminal, 2 capped but no failure, 1 failure.
+    Harness {
+        /// Comma-separated seat counts (default 2,3,4).
+        #[arg(long, default_value = "2,3,4")]
+        seats: String,
+        #[arg(long, default_value_t = 1)]
+        seed_base: u64,
+        #[arg(long, default_value_t = 4)]
+        games_per_seat: usize,
+        #[arg(long, default_value_t = 4000)]
+        max_steps: usize,
+        #[arg(long)]
+        max_millis: Option<u64>,
+        #[arg(long, default_value = "evidence/m1-harness.json")]
+        out: PathBuf,
     },
     /// Verify a save file or replay file: re-run it and compare digests.
     Replay {
@@ -105,25 +129,68 @@ fn main() -> anyhow::Result<()> {
     match cli.command {
         Command::Selfplay {
             seed,
-            deck_a,
-            deck_b,
+            seats,
+            deck,
             max_steps,
+            max_millis,
             decider_seat,
             decider_timeout_ms,
             out,
             replay_out,
             verbose,
-        } => selfplay_cmd::run(selfplay_cmd::Args {
-            seed,
-            deck_a,
-            deck_b,
+        } => {
+            let mut decks = deck;
+            if decks.is_empty() {
+                let seat_count = seats.unwrap_or(2);
+                let paths = [
+                    PathBuf::from("decks/temur-beats.txt"),
+                    PathBuf::from("decks/izzet-control.txt"),
+                ];
+                for index in 0..seat_count {
+                    decks.push(paths[index % 2].clone());
+                }
+            } else if let Some(seat_count) = seats
+                && seat_count != decks.len()
+            {
+                return Err(anyhow::anyhow!(
+                    "--seats {seat_count} needs exactly {seat_count} --deck path(s), got {}",
+                    decks.len()
+                ));
+            }
+            selfplay_cmd::run(selfplay_cmd::Args {
+                seed,
+                decks,
+                max_steps,
+                max_millis,
+                decider_seat,
+                decider_timeout_ms,
+                out,
+                replay_out,
+                verbose,
+            })
+        }
+        Command::Harness {
+            seats,
+            seed_base,
+            games_per_seat,
             max_steps,
-            decider_seat,
-            decider_timeout_ms,
+            max_millis,
             out,
-            replay_out,
-            verbose,
-        }),
+        } => {
+            let seats: Vec<usize> = seats
+                .split(',')
+                .map(|part| part.trim().parse::<usize>())
+                .collect::<Result<_, _>>()
+                .map_err(|_| anyhow::anyhow!("--seats must be comma-separated integers"))?;
+            harness_cmd::run(harness_cmd::Args {
+                seats,
+                seed_base,
+                games_per_seat,
+                max_steps,
+                max_millis,
+                out,
+            })
+        }
         Command::Replay { file, verbose } => replay_cmd::run(&file, verbose),
         Command::Import {
             url,
