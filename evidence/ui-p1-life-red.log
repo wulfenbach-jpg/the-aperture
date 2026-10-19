@@ -1,0 +1,19 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\mtg-slice\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.87s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-215ca78a97a23f64.exe)
+
+running 1 test
+
+thread 'app::viewport_tests::absolute_life_labels_remain_correct_when_the_human_is_p1' (23940) panicked at crates\ui\src\app.rs:1144:9:
+absolute life labels were swapped for the P1 viewer: ["THE APERTURE", "practice slice · supported pool: 15 cards · 1v1 · 20 life · London mulligan · NOT Commander", "New game", "Pass / next action", "AI step", "AI autoplay", "Let the AI play my seat too", "Use local Decider-2B", "Save", "Load", "Set branch", "Return to branch", "Coaching", "Sandbox", "Import", "Zones", "WAITING: P0: keep or mulligan the opening hand (CR 103.5)", "turn 1 · untap step · active P0 · stack 0 · life P0 17 / P1 3 · digest 1c91ee9e6a63", "OPPONENT  P0  life 3  hand 7  library 33  graveyard 0  exile 0", "opponent hand contents are hidden; graveyard and exile are public", "(no permanents)", "STACK", "(stack empty)", "YOU  P1  life 17  hand 7  library 33  mana (empty)", "graveyard 0 · exile 0 · lands played this turn 0 · mulligans 0", "(no permanents)", "YOUR HAND", "Mountain", "Island", "Island", "Consider  {U}", "Opt  {U}", "Island", "Hill Giant  {3}{R}  3/3", "LEGAL ACTIONS — only these are accepted", "no legal action for your seat right now", "WAITING ON THE OTHER SEAT", "P0 must answer: P0: keep or mulligan the opening hand (CR 103.5). Your controls are disabled for this decision point.", "Let the AI answer (step)", "COACHING (derived from the engine trace)", "[priority] Turn 1 — P0 is the active player. P0 must answer a pending choice in the untap step.", "[pending choice] P0: keep or mulligan the opening hand (CR 103.5)", "    CR 103.5: Opening hands: a player may mulligan; the London mulligan draws a fresh seven and then puts a number of cards on the bottom equal to the mulligans taken.", "[board] Life: P0 3 / P1 17. Battlefield: P0 0 permanent(s), P1 0 permanent(s). Hand: P0 7, P1 7. Libraries: 33 and 33 card(s).", "[legal actions] 0 legal action(s) generated for the current decision point.", "    CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller's main phase with an empty stack.", "LOG (viewer-masked)", "— Turn 1: P0 —", "Game start — P0 plays first", "P1 draws Hill Giant", "P1 draws Island", "P1 draws Opt", "P1 draws Consider", "P1 draws Island", "P1 draws Island", "P1 draws Mountain", "P0 draws a card", "P0 draws a card", "P0 draws a card", "P0 draws a card", "P0 draws a card", "P0 draws a card", "P0 draws a card", "rules revision 2026-09-25 · pool 15 cards · deterministic replay + digest · model off (heuristic)"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::viewport_tests::absolute_life_labels_remain_correct_when_the_human_is_p1 ... FAILED
+
+failures:
+
+failures:
+    app::viewport_tests::absolute_life_labels_remain_correct_when_the_human_is_p1
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.18s
+
+error: test failed, to rerun pass `-p aperture-ui --lib`

@@ -1,0 +1,33 @@
+Working...
+```json
+{
+  "passed": true,
+  "security_concerns": [],
+  "logic_errors": [
+    {
+      "severity": "non-blocking",
+      "item": "app.rs:418 `.max_height(ui.available_height().max(80.0))` is a no-op.",
+      "detail": "egui 0.37 scroll_area.rs:843-845 computes `outer_size = available_rect.size().at_most(max_size)`, and `max_size` is read nowhere else (only assignment sites 492/503). With max_height = max(available, 80) >= available, the clamp never fires, so `max_height(...)` behaves identically to the default Vec2::INFINITY. The intended 'never smaller than 80pt' floor is not achieved; the effective floor comes from egui itself (scroll_area.rs:469 `min_scrolled_size: Vec2::splat(64.0)`, applied at :854-857). Also note `.max(80.0)` is inert when available_height is 0, the exact small-viewport case it appears to guard."
+    }
+  ],
+  "suggestions": [
+    {
+      "item": "Real-frame reachability is not demonstrated by the committed test (test validity).",
+      "detail": "app.rs:1084-1157 renders only `import_panel` inside `ctx.run_ui`, so the panel gets the whole 900x360 root Ui. In the app the panel is the last section of `CentralPanel` (app.rs:646, closed at :1021), preceded by the toolbar and `ui.columns(2)` whose right column holds fixed-height ScrollAreas (`coach` max 240 at :917, `log` max 200 at :945) plus battlefield/hand blocks. When those already fill the viewport, egui clamps available height to 0 (layout.rs:433-441 `available_from_cursor_max_rect`, 'the available shouldn't be negative'), so the new ScrollArea is created at the cursor y (>= panel bottom) with inner height max(0,64) — entirely outside the parent clip rect, nothing painted. The wheel path (scroll_area.rs:1320-1324) only needs `ui.rect_contains_pointer(outer_rect)`, and context.rs:3656-3681 never intersects the clip rect, so the user can scroll an invisible 8px strip below the panel content without ever seeing the Start button. Mitigations: wrap the CentralPanel body (or the bottom sections) in one outer ScrollArea, or exercise the real frame in the regression test. The 900x360 viewport is also below the app's enforced minimum (main.rs:80 `with_min_inner_size([1100.0, 760.0])`), i.e. a size a user cannot reach."
+    },
+    {
+      "item": "auto_shrink([false, false]) (app.rs:419) makes the panel always claim all remaining height.",
+      "detail": "Anything laid out after the import panel is pushed below the fold; currently that is only the first-frame rules/pool footer (app.rs:1005). `auto_shrink([false, true])` would hug short content while still scrolling when the panel overflows. No widget order/nesting regression otherwise — verified there is no enclosing vertical ScrollArea, and egui TextEdit does not consume wheel events (text_edit/*.rs has no MouseWheel handling), and the pre-registered background drag sense (scroll_area.rs:930-947) means text selection inside the panel's TextEdits is not hijacked by drag-to-scroll."
+    },
+    {
+      "item": "Test hardening: assert the button is NOT reachable before scrolling (frame 0/1, no wheel).",
+      "detail": "As written, `reachable` only proves eventual visibility. Sensitivity to the fix is nevertheless real: the panel content (~600pt: heading + wrapped intro + 2 seats each with URL row, 4-row multiline, buttons, certification report + Start/health rows) exceeds 360pt, so app.rs:1153 can only pass via actual wheel scrolling, and the red log confirms the same test fails without the ScrollArea."
+    },
+    {
+      "item": "Evidence provenance: evidence/viewport-red.log panics at `crates\\ui\\src\\app.rs:116:9`.",
+      "detail": "In the committed revision the identical assertion sits at app.rs:1153 (module at :1084), so the red log was produced from an intermediate file layout and cannot be reproduced from the committed tree. The failure mechanism is consistent, but re-record the red log against a scratch patch of the committed revision if byte-exact evidence is required."
+    }
+  ],
+  "summary": "Diff reviewed in full: +87/-0 in crates/ui/src/app.rs only — `import_panel` (app.rs:413) now delegates to `import_panel_contents` (:423) through `egui::ScrollArea::vertical()` (id_salt \"two-seat-deck-import\", :417-420), plus a new `#[cfg(test)] mod viewport_tests` (:1084) that renders the panel in a 900x360 root Ui, feeds PointerMoved + 90pt MouseWheel events, and requires the \"Start imported match\" text shape to fall fully inside its clip rect. Behaviourally the wrap is a strict improvement: the panel already received only the remaining panel height, so previously its ~600pt content was clipped with no way to scroll; now it scrolls whenever any part of the panel is on screen. No new dependencies, no unsafe, no network/file/import-certification changes, no visibility widening, no nested ScrollArea introduced (the panel contains only buttons/TextEdits), and the test's direct `seat_import` injection is test-only. Checks run: `cargo test -p aperture-ui --lib` -> 1 passed (new test); `cargo test --workspace` -> 135 passed / 0 failed (baseline 134 + 1); `cargo fmt --check` clean; `cargo clippy -p aperture-ui --all-targets -- -D warnings` clean. Non-blocking findings: the `.max(80.0)` floor is dead arithmetic (egui clamps by the available rect; `min_scrolled_size` 64 already applies), and the test's isolated 360pt viewport is below the app's 1100x760 minimum and does not prove reachability once the sections above consume the panel height (available_height clamps to 0 -> area sits outside the clip rect, wheel hit-test is geometric and unclipped, so the controls can remain invisible in that extreme)."
+}
+```

@@ -1,0 +1,97 @@
+{
+  "gates": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.44266840000636876,
+      "log": "supervisor-fmt.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--all-targets"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.888646900013555,
+      "log": "supervisor-test.log",
+      "tests_passed": 136,
+      "tests_failed": 0
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.8338037999928929,
+      "log": "supervisor-clippy.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--release"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.7125533000216819,
+      "log": "supervisor-build.log"
+    }
+  ],
+  "heuristic_games": 16,
+  "heuristic_terminal_games": 16,
+  "replays_matched": 16,
+  "model_probe_decision_sources": {
+    "decider-2b": 15,
+    "forced (single legal option)": 50,
+    "heuristic": 55
+  },
+  "model_probe_step_cap": "step cap of 120 reached before the game ended",
+  "model_probe_winner": null,
+  "model_health": {
+    "status": "ok",
+    "loaded": [
+      "decider-2b"
+    ],
+    "revisions": {
+      "decider-2b": "ff2e5e687327eda9ac34e9a3ca84d3f400672c87"
+    },
+    "device": "vulkan",
+    "device_is_preference": false,
+    "checkpoint_devices": {
+      "decider-2b": "vulkan"
+    },
+    "cpu_fallbacks": {
+      "decider-2b": {
+        "count": 0,
+        "last_reason": null
+      }
+    }
+  },
+  "artifacts": [
+    {
+      "name": "aperture.exe",
+      "bytes": 17480192,
+      "sha256": "e84a0db4f60786593980377744941b5271b083a3e7ceb64792640f50b73b90a1"
+    },
+    {
+      "name": "aperture-cli.exe",
+      "bytes": 3802112,
+      "sha256": "89ac2213acc5a510737616f8867a45f824783e71cf47279763bb46535b2852ee"
+    },
+    {
+      "name": "TheAperture-Windows.zip",
+      "bytes": 9038158,
+      "sha256": "9f961939dce8ad38365cb084ecae6bb9c71c3d8c6182ee9ad3ef0400fce92b6b"
+    }
+  ],
+  "archive": "C:\\AI\\mtg-slice\\dist\\TheAperture-Windows.zip"
+}

@@ -1,0 +1,420 @@
+{
+  "source": "https://archidekt.com/decks/26206384",
+  "provider": "archidekt",
+  "deck_id": 26206384,
+  "deck_name": "TTS Test Suite",
+  "format_code": 7,
+  "total_cards": 28,
+  "recognized_cards": 28,
+  "supported_cards": 0,
+  "unsupported_cards": 28,
+  "entries": [
+    {
+      "name": "Hanweir Watchkeep // Bane of Hanweir",
+      "quantity": 1,
+      "categories": [
+        "Creature"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled"
+    },
+    {
+      "name": "Budoka Gardener // Dokai, Weaver of Life",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled"
+    },
+    {
+      "name": "The Sentry, Golden Guardian",
+      "quantity": 1,
+      "categories": [
+        "Tokens"
+      ],
+      "status": "Unsupported",
+      "detail": "'The Sentry, Golden Guardian' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+      "quantity": 1,
+      "categories": [
+        "Recursion"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Liliana, Heretical Healer / Liliana, Defiant Necromancer): not modeled"
+    },
+    {
+      "name": "Hanweir Militia Captain // Westvale Cult Leader",
+      "quantity": 1,
+      "categories": [
+        "Tokens"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Hanweir Militia Captain / Westvale Cult Leader): not modeled"
+    },
+    {
+      "name": "Hanweir Lancer",
+      "quantity": 1,
+      "categories": [
+        "Creature"
+      ],
+      "status": "Unsupported",
+      "detail": "'Hanweir Lancer' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Aberrant Researcher // Perfected Form",
+      "quantity": 1,
+      "categories": [
+        "Mill"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Aberrant Researcher / Perfected Form): not modeled"
+    },
+    {
+      "name": "Golden Guardian // Gold-Forge Garrison",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Golden Guardian / Gold-Forge Garrison): not modeled"
+    },
+    {
+      "name": "Garruk Relentless // Garruk, the Veil-Cursed",
+      "quantity": 1,
+      "categories": [
+        "Tokens"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Garruk Relentless / Garruk, the Veil-Cursed): not modeled"
+    },
+    {
+      "name": "Hanweir Garrison",
+      "quantity": 1,
+      "categories": [
+        "Tokens"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'meld, faces: ): not modeled"
+    },
+    {
+      "name": "Hanweir Battlements",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'meld, faces: ): not modeled"
+    },
+    {
+      "name": "Who // What // When // Where // Why",
+      "quantity": 1,
+      "categories": [
+        "Removal"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'split, faces: Who / Why): not modeled"
+    },
+    {
+      "name": "Claim // Fame",
+      "quantity": 1,
+      "categories": [
+        "Recursion"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'split, faces: Claim / Fame): not modeled"
+    },
+    {
+      "name": "Brightclimb Pathway // Grimclimb Pathway",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'modal_dfc, faces: Brightclimb Pathway / Grimclimb Pathway): not modeled"
+    },
+    {
+      "name": "Kongming, \"Sleeping Dragon\"",
+      "quantity": 1,
+      "categories": [
+        "Anthem"
+      ],
+      "status": "Unsupported",
+      "detail": "'Kongming, \"Sleeping Dragon\"' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Abian, Luvion Usurper",
+      "quantity": 1,
+      "categories": [
+        "Planeswalker"
+      ],
+      "status": "Unsupported",
+      "detail": "'Abian, Luvion Usurper' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Wear // Tear",
+      "quantity": 1,
+      "categories": [
+        "Removal"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'split, faces: Wear / Tear): not modeled"
+    },
+    {
+      "name": "Emeritus of Ideation // Ancestral Recall",
+      "quantity": 1,
+      "categories": [
+        "Creature"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'prepare, faces: Emeritus of Ideation / Ancestral Recall): not modeled"
+    },
+    {
+      "name": "Tovolar's Huntmaster // Tovolar's Packleader",
+      "quantity": 1,
+      "categories": [
+        "Tokens"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Tovolar's Huntmaster / Tovolar's Packleader): not modeled"
+    },
+    {
+      "name": "Commander's Authority",
+      "quantity": 1,
+      "categories": [
+        "Tokens"
+      ],
+      "status": "Unsupported",
+      "detail": "'Commander's Authority' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "\"Rumors of My Death . . .\"",
+      "quantity": 1,
+      "categories": [
+        "Enchantment"
+      ],
+      "status": "Unsupported",
+      "detail": "'\"Rumors of My Death . . .\"' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "1996 World Champion",
+      "quantity": 1,
+      "categories": [
+        "Summon"
+      ],
+      "status": "Unsupported",
+      "detail": "'1996 World Champion' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "70,000 Light-Years from Home",
+      "quantity": 1,
+      "categories": [
+        "Sorcery"
+      ],
+      "status": "Unsupported",
+      "detail": "'70,000 Light-Years from Home' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Liliana Vess",
+      "quantity": 1,
+      "categories": [
+        "Tutor"
+      ],
+      "status": "Unsupported",
+      "detail": "'Liliana Vess' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "B.F.M. (Big Furry Monster)",
+      "quantity": 1,
+      "categories": [
+        "Creature"
+      ],
+      "status": "Unsupported",
+      "detail": "'B.F.M. (Big Furry Monster)' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Very Cryptic Command",
+      "quantity": 1,
+      "categories": [
+        "Instant"
+      ],
+      "status": "Unsupported",
+      "detail": "'Very Cryptic Command' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Very Cryptic Command",
+      "quantity": 1,
+      "categories": [
+        "Instant"
+      ],
+      "status": "Unsupported",
+      "detail": "'Very Cryptic Command' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Very Cryptic Command",
+      "quantity": 1,
+      "categories": [
+        "Instant"
+      ],
+      "status": "Unsupported",
+      "detail": "'Very Cryptic Command' is not in the supported pool (15 cards)"
+    }
+  ],
+  "unsupported": [
+    {
+      "name": "Hanweir Watchkeep // Bane of Hanweir",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled"
+    },
+    {
+      "name": "Budoka Gardener // Dokai, Weaver of Life",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled"
+    },
+    {
+      "name": "The Sentry, Golden Guardian",
+      "quantity": 1,
+      "reason": "'The Sentry, Golden Guardian' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Liliana, Heretical Healer // Liliana, Defiant Necromancer",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Liliana, Heretical Healer / Liliana, Defiant Necromancer): not modeled"
+    },
+    {
+      "name": "Hanweir Militia Captain // Westvale Cult Leader",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Hanweir Militia Captain / Westvale Cult Leader): not modeled"
+    },
+    {
+      "name": "Hanweir Lancer",
+      "quantity": 1,
+      "reason": "'Hanweir Lancer' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Aberrant Researcher // Perfected Form",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Aberrant Researcher / Perfected Form): not modeled"
+    },
+    {
+      "name": "Golden Guardian // Gold-Forge Garrison",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Golden Guardian / Gold-Forge Garrison): not modeled"
+    },
+    {
+      "name": "Garruk Relentless // Garruk, the Veil-Cursed",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Garruk Relentless / Garruk, the Veil-Cursed): not modeled"
+    },
+    {
+      "name": "Hanweir Garrison",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'meld, faces: ): not modeled"
+    },
+    {
+      "name": "Hanweir Battlements",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'meld, faces: ): not modeled"
+    },
+    {
+      "name": "Who // What // When // Where // Why",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'split, faces: Who / Why): not modeled"
+    },
+    {
+      "name": "Claim // Fame",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'split, faces: Claim / Fame): not modeled"
+    },
+    {
+      "name": "Brightclimb Pathway // Grimclimb Pathway",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'modal_dfc, faces: Brightclimb Pathway / Grimclimb Pathway): not modeled"
+    },
+    {
+      "name": "Kongming, \"Sleeping Dragon\"",
+      "quantity": 1,
+      "reason": "'Kongming, \"Sleeping Dragon\"' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Abian, Luvion Usurper",
+      "quantity": 1,
+      "reason": "'Abian, Luvion Usurper' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Wear // Tear",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'split, faces: Wear / Tear): not modeled"
+    },
+    {
+      "name": "Emeritus of Ideation // Ancestral Recall",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'prepare, faces: Emeritus of Ideation / Ancestral Recall): not modeled"
+    },
+    {
+      "name": "Tovolar's Huntmaster // Tovolar's Packleader",
+      "quantity": 1,
+      "reason": "multi-face card (layout 'transform, faces: Tovolar's Huntmaster / Tovolar's Packleader): not modeled"
+    },
+    {
+      "name": "Commander's Authority",
+      "quantity": 1,
+      "reason": "'Commander's Authority' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "\"Rumors of My Death . . .\"",
+      "quantity": 1,
+      "reason": "'\"Rumors of My Death . . .\"' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "1996 World Champion",
+      "quantity": 1,
+      "reason": "'1996 World Champion' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "70,000 Light-Years from Home",
+      "quantity": 1,
+      "reason": "'70,000 Light-Years from Home' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Liliana Vess",
+      "quantity": 1,
+      "reason": "'Liliana Vess' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "B.F.M. (Big Furry Monster)",
+      "quantity": 1,
+      "reason": "'B.F.M. (Big Furry Monster)' is not in the supported pool (15 cards)"
+    },
+    {
+      "name": "Very Cryptic Command",
+      "quantity": 3,
+      "reason": "'Very Cryptic Command' is not in the supported pool (15 cards)"
+    }
+  ],
+  "excluded": [],
+  "excluded_categories": [
+    "Maybeboard"
+  ],
+  "sideboard": [],
+  "commander": [],
+  "companion": [],
+  "legality": [
+    "practice profile: exactly 40 main-deck cards (found 28)",
+    "at most 4 copies of each nonbasic card (basics unlimited)",
+    "every card must be in the supported pool (15 cards)",
+    "1v1, 20 life, London mulligan: Commander is not implemented"
+  ],
+  "launchable": false,
+  "refusal": "unsupported card(s) in the main deck: Hanweir Watchkeep // Bane of Hanweir x1 (multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled); Budoka Gardener // Dokai, Weaver of Life x1 (multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled); The Sentry, Golden Guardian x1 ('The Sentry, Golden Guardian' is not in the supported pool (15 cards)) (+23 more) — the supported pool has 15 cards; unsupported cards are refused, never substituted",
+  "raw_sha256": "6e65d631062e41106440a64a45a1acb0afac1ee4c478e3e85b10ccff279d91db",
+  "cached_path": "cache\\archidekt-26206384.json",
+  "notes": [
+    "excluded categories honored: Maybeboard",
+    "provider deck format code Some(7) is recorded as metadata; only the 1v1 practice profile is validated",
+    "normalized deck cached at cache\\archidekt-26206384.normalized.json",
+    "report cached at cache\\archidekt-26206384.report.json"
+  ]
+}

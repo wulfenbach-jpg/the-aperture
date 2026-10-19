@@ -1,0 +1,19 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\mtg-slice\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.43s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-215ca78a97a23f64.exe)
+
+running 1 test
+
+thread 'app::viewport_tests::imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame' (20164) panicked at crates\ui\src\app.rs:1159:9:
+the two certified decks' Start button never becomes visible in the actual 1100x760 application frame
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test app::viewport_tests::imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame ... FAILED
+
+failures:
+
+failures:
+    app::viewport_tests::imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.57s
+
+error: test failed, to rerun pass `-p aperture-ui --lib`

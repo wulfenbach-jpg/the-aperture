@@ -1,0 +1,3059 @@
+{
+  "version": 1,
+  "seed": 101,
+  "deck_a": {
+    "name": "Temur Beats",
+    "cards": [
+      [
+        "Forest",
+        9
+      ],
+      [
+        "Mountain",
+        8
+      ],
+      [
+        "GrizzlyBears",
+        4
+      ],
+      [
+        "RuneclawBear",
+        4
+      ],
+      [
+        "CentaurCourser",
+        4
+      ],
+      [
+        "HillGiant",
+        3
+      ],
+      [
+        "CrawWurm",
+        2
+      ],
+      [
+        "GiantGrowth",
+        2
+      ],
+      [
+        "LightningStrike",
+        2
+      ],
+      [
+        "Shock",
+        2
+      ]
+    ]
+  },
+  "deck_b": {
+    "name": "Izzet Control",
+    "cards": [
+      [
+        "Island",
+        12
+      ],
+      [
+        "Mountain",
+        5
+      ],
+      [
+        "Counterspell",
+        4
+      ],
+      [
+        "Divination",
+        4
+      ],
+      [
+        "Opt",
+        4
+      ],
+      [
+        "Consider",
+        3
+      ],
+      [
+        "HillGiant",
+        4
+      ],
+      [
+        "Shock",
+        2
+      ],
+      [
+        "LightningStrike",
+        2
+      ]
+    ]
+  },
+  "rules_revision": "2026-09-25",
+  "ai": {
+    "enabled": true,
+    "autoplay": false,
+    "ai_seat": 1,
+    "use_decider": false,
+    "decider_timeout_ms": 4000
+  },
+  "steps": [
+    {
+      "player": 0,
+      "revision": 0,
+      "decision": 0,
+      "action": {
+        "Mulligan": {
+          "keep": true
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 1,
+      "decision": 1,
+      "action": {
+        "Mulligan": {
+          "keep": true
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 2,
+      "decision": 2,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 3,
+      "decision": 3,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 4,
+      "decision": 4,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 5,
+      "decision": 5,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 6,
+      "decision": 6,
+      "action": {
+        "PlayLand": {
+          "card": 17
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 7,
+      "decision": 7,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 8,
+      "decision": 8,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 9,
+      "decision": 9,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 10,
+      "decision": 10,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 11,
+      "decision": 11,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 12,
+      "decision": 12,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 13,
+      "decision": 13,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 14,
+      "decision": 14,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 15,
+      "decision": 15,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 16,
+      "decision": 16,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 17,
+      "decision": 17,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 18,
+      "decision": 18,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 19,
+      "decision": 19,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 20,
+      "decision": 20,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 21,
+      "decision": 21,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 22,
+      "decision": 22,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 23,
+      "decision": 23,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 24,
+      "decision": 24,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 25,
+      "decision": 25,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 26,
+      "decision": 26,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 27,
+      "decision": 27,
+      "action": {
+        "PlayLand": {
+          "card": 57
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 28,
+      "decision": 28,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 29,
+      "decision": 29,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 30,
+      "decision": 30,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 31,
+      "decision": 31,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 32,
+      "decision": 32,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 33,
+      "decision": 33,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 34,
+      "decision": 34,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 35,
+      "decision": 35,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 36,
+      "decision": 36,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 37,
+      "decision": 37,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 38,
+      "decision": 38,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 39,
+      "decision": 39,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 40,
+      "decision": 40,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 41,
+      "decision": 41,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 42,
+      "decision": 42,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 43,
+      "decision": 43,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 44,
+      "decision": 44,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 45,
+      "decision": 45,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 46,
+      "decision": 46,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 47,
+      "decision": 47,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 48,
+      "decision": 48,
+      "action": {
+        "PlayLand": {
+          "card": 11
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 49,
+      "decision": 49,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 50,
+      "decision": 50,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 51,
+      "decision": 51,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 52,
+      "decision": 52,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 53,
+      "decision": 53,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 54,
+      "decision": 54,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 55,
+      "decision": 55,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 56,
+      "decision": 56,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 57,
+      "decision": 57,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 58,
+      "decision": 58,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 59,
+      "decision": 59,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 60,
+      "decision": 60,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 61,
+      "decision": 61,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 62,
+      "decision": 62,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 63,
+      "decision": 63,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 64,
+      "decision": 64,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 65,
+      "decision": 65,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 66,
+      "decision": 66,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 67,
+      "decision": 67,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 68,
+      "decision": 68,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 69,
+      "decision": 69,
+      "action": {
+        "PlayLand": {
+          "card": 41
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 70,
+      "decision": 70,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 71,
+      "decision": 71,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 72,
+      "decision": 72,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 73,
+      "decision": 73,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 74,
+      "decision": 74,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 75,
+      "decision": 75,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 76,
+      "decision": 76,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 77,
+      "decision": 77,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 78,
+      "decision": 78,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 79,
+      "decision": 79,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 80,
+      "decision": 80,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 81,
+      "decision": 81,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 82,
+      "decision": 82,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 83,
+      "decision": 83,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 84,
+      "decision": 84,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 85,
+      "decision": 85,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 86,
+      "decision": 86,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 87,
+      "decision": 87,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 88,
+      "decision": 88,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 89,
+      "decision": 89,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 90,
+      "decision": 90,
+      "action": {
+        "PlayLand": {
+          "card": 1
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 91,
+      "decision": 91,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 92,
+      "decision": 92,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 93,
+      "decision": 93,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 94,
+      "decision": 94,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 95,
+      "decision": 95,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 96,
+      "decision": 96,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 97,
+      "decision": 97,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 98,
+      "decision": 98,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 99,
+      "decision": 99,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 100,
+      "decision": 100,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 101,
+      "decision": 101,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 102,
+      "decision": 102,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 103,
+      "decision": 103,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 104,
+      "decision": 104,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 105,
+      "decision": 105,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 106,
+      "decision": 106,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 107,
+      "decision": 107,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 108,
+      "decision": 108,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 109,
+      "decision": 109,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 110,
+      "decision": 110,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 111,
+      "decision": 111,
+      "action": {
+        "PlayLand": {
+          "card": 48
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 112,
+      "decision": 112,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 113,
+      "decision": 113,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 114,
+      "decision": 114,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 115,
+      "decision": 115,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 116,
+      "decision": 116,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 117,
+      "decision": 117,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 118,
+      "decision": 118,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 119,
+      "decision": 119,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 120,
+      "decision": 120,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 121,
+      "decision": 121,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 122,
+      "decision": 122,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 123,
+      "decision": 123,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 124,
+      "decision": 124,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 125,
+      "decision": 125,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 126,
+      "decision": 126,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 127,
+      "decision": 127,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 128,
+      "decision": 128,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 129,
+      "decision": 129,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 130,
+      "decision": 130,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 131,
+      "decision": 131,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 132,
+      "decision": 132,
+      "action": {
+        "PlayLand": {
+          "card": 12
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 133,
+      "decision": 133,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 134,
+      "decision": 134,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 135,
+      "decision": 135,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 136,
+      "decision": 136,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 137,
+      "decision": 137,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 138,
+      "decision": 138,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 139,
+      "decision": 139,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 140,
+      "decision": 140,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 141,
+      "decision": 141,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 142,
+      "decision": 142,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 143,
+      "decision": 143,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 144,
+      "decision": 144,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 145,
+      "decision": 145,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 146,
+      "decision": 146,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 147,
+      "decision": 147,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 148,
+      "decision": 148,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 149,
+      "decision": 149,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 150,
+      "decision": 150,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 151,
+      "decision": 151,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 152,
+      "decision": 152,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 153,
+      "decision": 153,
+      "action": {
+        "PlayLand": {
+          "card": 50
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 154,
+      "decision": 154,
+      "action": {
+        "CastSpell": {
+          "card": 75,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 155,
+      "decision": 155,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 156,
+      "decision": 156,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 157,
+      "decision": 157,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 158,
+      "decision": 158,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 159,
+      "decision": 159,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 160,
+      "decision": 160,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 161,
+      "decision": 161,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 162,
+      "decision": 162,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 163,
+      "decision": 163,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 164,
+      "decision": 164,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 165,
+      "decision": 165,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 166,
+      "decision": 166,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 167,
+      "decision": 167,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 168,
+      "decision": 168,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 169,
+      "decision": 169,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 170,
+      "decision": 170,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 171,
+      "decision": 171,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 172,
+      "decision": 172,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 173,
+      "decision": 173,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 174,
+      "decision": 174,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 175,
+      "decision": 175,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 176,
+      "decision": 176,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 177,
+      "decision": 177,
+      "action": {
+        "PlayLand": {
+          "card": 6
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 178,
+      "decision": 178,
+      "action": {
+        "CastSpell": {
+          "card": 29,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 179,
+      "decision": 179,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 180,
+      "decision": 180,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 181,
+      "decision": 181,
+      "action": {
+        "CastSpell": {
+          "card": 37,
+          "targets": [
+            {
+              "Permanent": 75
+            }
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 182,
+      "decision": 182,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 183,
+      "decision": 183,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 184,
+      "decision": 184,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 185,
+      "decision": 185,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 186,
+      "decision": 186,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 187,
+      "decision": 187,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 188,
+      "decision": 188,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 189,
+      "decision": 189,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 190,
+      "decision": 190,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 191,
+      "decision": 191,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 192,
+      "decision": 192,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 193,
+      "decision": 193,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 194,
+      "decision": 194,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 195,
+      "decision": 195,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 196,
+      "decision": 196,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 197,
+      "decision": 197,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 198,
+      "decision": 198,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 199,
+      "decision": 199,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 200,
+      "decision": 200,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 201,
+      "decision": 201,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 202,
+      "decision": 202,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 203,
+      "decision": 203,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 204,
+      "decision": 204,
+      "action": {
+        "CastSpell": {
+          "card": 73,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 205,
+      "decision": 205,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 206,
+      "decision": 206,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 207,
+      "decision": 207,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 208,
+      "decision": 208,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 209,
+      "decision": 209,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 210,
+      "decision": 210,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 211,
+      "decision": 211,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 212,
+      "decision": 212,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 213,
+      "decision": 213,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 214,
+      "decision": 214,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 215,
+      "decision": 215,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 216,
+      "decision": 216,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 217,
+      "decision": 217,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 218,
+      "decision": 218,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 219,
+      "decision": 219,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 220,
+      "decision": 220,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 221,
+      "decision": 221,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 222,
+      "decision": 222,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 223,
+      "decision": 223,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 224,
+      "decision": 224,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 225,
+      "decision": 225,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 226,
+      "decision": 226,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 227,
+      "decision": 227,
+      "action": {
+        "CastSpell": {
+          "card": 28,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 228,
+      "decision": 228,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 229,
+      "decision": 229,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 230,
+      "decision": 230,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 231,
+      "decision": 231,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 232,
+      "decision": 232,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 233,
+      "decision": 233,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 234,
+      "decision": 234,
+      "action": {
+        "DeclareAttackers": {
+          "attackers": [
+            29
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 235,
+      "decision": 235,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 236,
+      "decision": 236,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 237,
+      "decision": 237,
+      "action": {
+        "DeclareBlockers": {
+          "blocks": [
+            {
+              "blocker": 73,
+              "attacker": 29
+            }
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 238,
+      "decision": 238,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 239,
+      "decision": 239,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 240,
+      "decision": 240,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 241,
+      "decision": 241,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 242,
+      "decision": 242,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 243,
+      "decision": 243,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 244,
+      "decision": 244,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 245,
+      "decision": 245,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 246,
+      "decision": 246,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 247,
+      "decision": 247,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 248,
+      "decision": 248,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 249,
+      "decision": 249,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 250,
+      "decision": 250,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 251,
+      "decision": 251,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 252,
+      "decision": 252,
+      "action": {
+        "CastSpell": {
+          "card": 76,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 253,
+      "decision": 253,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 254,
+      "decision": 254,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 255,
+      "decision": 255,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 256,
+      "decision": 256,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 257,
+      "decision": 257,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 258,
+      "decision": 258,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 259,
+      "decision": 259,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 260,
+      "decision": 260,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 261,
+      "decision": 261,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 262,
+      "decision": 262,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 263,
+      "decision": 263,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 264,
+      "decision": 264,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 265,
+      "decision": 265,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 266,
+      "decision": 266,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 267,
+      "decision": 267,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 268,
+      "decision": 268,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 269,
+      "decision": 269,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 270,
+      "decision": 270,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 271,
+      "decision": 271,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 272,
+      "decision": 272,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 273,
+      "decision": 273,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 274,
+      "decision": 274,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 275,
+      "decision": 275,
+      "action": {
+        "PlayLand": {
+          "card": 16
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 276,
+      "decision": 276,
+      "action": {
+        "CastSpell": {
+          "card": 34,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 277,
+      "decision": 277,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 278,
+      "decision": 278,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 279,
+      "decision": 279,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 280,
+      "decision": 280,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 281,
+      "decision": 281,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 282,
+      "decision": 282,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 283,
+      "decision": 283,
+      "action": {
+        "DeclareAttackers": {
+          "attackers": [
+            28
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 284,
+      "decision": 284,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 285,
+      "decision": 285,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 286,
+      "decision": 286,
+      "action": {
+        "DeclareBlockers": {
+          "blocks": [
+            {
+              "blocker": 76,
+              "attacker": 28
+            }
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 287,
+      "decision": 287,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 288,
+      "decision": 288,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 289,
+      "decision": 289,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 290,
+      "decision": 290,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 291,
+      "decision": 291,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 292,
+      "decision": 292,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 293,
+      "decision": 293,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 294,
+      "decision": 294,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 295,
+      "decision": 295,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 296,
+      "decision": 296,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 297,
+      "decision": 297,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 298,
+      "decision": 298,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 299,
+      "decision": 299,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 300,
+      "decision": 300,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 301,
+      "decision": 301,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 302,
+      "decision": 302,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 303,
+      "decision": 303,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 304,
+      "decision": 304,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 305,
+      "decision": 305,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 306,
+      "decision": 306,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 307,
+      "decision": 307,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 308,
+      "decision": 308,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 309,
+      "decision": 309,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 310,
+      "decision": 310,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 311,
+      "decision": 311,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 312,
+      "decision": 312,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 313,
+      "decision": 313,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 314,
+      "decision": 314,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 315,
+      "decision": 315,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 316,
+      "decision": 316,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 317,
+      "decision": 317,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 318,
+      "decision": 318,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 319,
+      "decision": 319,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 320,
+      "decision": 320,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 321,
+      "decision": 321,
+      "action": {
+        "PlayLand": {
+          "card": 13
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 322,
+      "decision": 322,
+      "action": {
+        "CastSpell": {
+          "card": 30,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 323,
+      "decision": 323,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 324,
+      "decision": 324,
+      "action": {
+        "CastSpell": {
+          "card": 60,
+          "targets": [
+            {
+              "Spell": 30
+            }
+          ]
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 325,
+      "decision": 325,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 326,
+      "decision": 326,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 327,
+      "decision": 327,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 328,
+      "decision": 328,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 329,
+      "decision": 329,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 330,
+      "decision": 330,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 331,
+      "decision": 331,
+      "action": {
+        "DeclareAttackers": {
+          "attackers": [
+            34
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 332,
+      "decision": 332,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 333,
+      "decision": 333,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 334,
+      "decision": 334,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 335,
+      "decision": 335,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 336,
+      "decision": 336,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 337,
+      "decision": 337,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 338,
+      "decision": 338,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 339,
+      "decision": 339,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 340,
+      "decision": 340,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 341,
+      "decision": 341,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 342,
+      "decision": 342,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 343,
+      "decision": 343,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 344,
+      "decision": 344,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 345,
+      "decision": 345,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 346,
+      "decision": 346,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 347,
+      "decision": 347,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 348,
+      "decision": 348,
+      "action": {
+        "PlayLand": {
+          "card": 52
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 349,
+      "decision": 349,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 350,
+      "decision": 350,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 351,
+      "decision": 351,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 352,
+      "decision": 352,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 353,
+      "decision": 353,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 354,
+      "decision": 354,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 355,
+      "decision": 355,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 356,
+      "decision": 356,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 357,
+      "decision": 357,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 358,
+      "decision": 358,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 359,
+      "decision": 359,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 360,
+      "decision": 360,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 361,
+      "decision": 361,
+      "action": {
+        "CastSpell": {
+          "card": 70,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 362,
+      "decision": 362,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 363,
+      "decision": 363,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 364,
+      "decision": 364,
+      "action": {
+        "OrderCard": {
+          "to_top": false
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 365,
+      "decision": 365,
+      "action": {
+        "CastSpell": {
+          "card": 71,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 366,
+      "decision": 366,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 367,
+      "decision": 367,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 368,
+      "decision": 368,
+      "action": {
+        "OrderCard": {
+          "to_top": true
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 369,
+      "decision": 369,
+      "action": {
+        "CastSpell": {
+          "card": 69,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 370,
+      "decision": 370,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 371,
+      "decision": 371,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 372,
+      "decision": 372,
+      "action": {
+        "OrderCard": {
+          "to_top": false
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 373,
+      "decision": 373,
+      "action": {
+        "CastSpell": {
+          "card": 66,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 374,
+      "decision": 374,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 375,
+      "decision": 375,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 376,
+      "decision": 376,
+      "action": {
+        "OrderCard": {
+          "to_top": true
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 377,
+      "decision": 377,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 378,
+      "decision": 378,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 379,
+      "decision": 379,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 380,
+      "decision": 380,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 381,
+      "decision": 381,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 382,
+      "decision": 382,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 383,
+      "decision": 383,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 384,
+      "decision": 384,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 385,
+      "decision": 385,
+      "action": {
+        "CastSpell": {
+          "card": 33,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 386,
+      "decision": 386,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 387,
+      "decision": 387,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 388,
+      "decision": 388,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 389,
+      "decision": 389,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 390,
+      "decision": 390,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 391,
+      "decision": 391,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 392,
+      "decision": 392,
+      "action": {
+        "DeclareAttackers": {
+          "attackers": [
+            34
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 393,
+      "decision": 393,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 394,
+      "decision": 394,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 395,
+      "decision": 395,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 396,
+      "decision": 396,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 397,
+      "decision": 397,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 398,
+      "decision": 398,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 399,
+      "decision": 399,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 400,
+      "decision": 400,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 401,
+      "decision": 401,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 402,
+      "decision": 402,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 403,
+      "decision": 403,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 404,
+      "decision": 404,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 405,
+      "decision": 405,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 406,
+      "decision": 406,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 407,
+      "decision": 407,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 408,
+      "decision": 408,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 409,
+      "decision": 409,
+      "action": {
+        "PlayLand": {
+          "card": 43
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 410,
+      "decision": 410,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 411,
+      "decision": 411,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 412,
+      "decision": 412,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 413,
+      "decision": 413,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 414,
+      "decision": 414,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 415,
+      "decision": 415,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 416,
+      "decision": 416,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 417,
+      "decision": 417,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 418,
+      "decision": 418,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 419,
+      "decision": 419,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 420,
+      "decision": 420,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 421,
+      "decision": 421,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 422,
+      "decision": 422,
+      "action": {
+        "CastSpell": {
+          "card": 68,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 423,
+      "decision": 423,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 424,
+      "decision": 424,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 425,
+      "decision": 425,
+      "action": {
+        "OrderCard": {
+          "to_top": false
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 426,
+      "decision": 426,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 427,
+      "decision": 427,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 428,
+      "decision": 428,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 429,
+      "decision": 429,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 430,
+      "decision": 430,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 431,
+      "decision": 431,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 432,
+      "decision": 432,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 433,
+      "decision": 433,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 434,
+      "decision": 434,
+      "action": {
+        "PlayLand": {
+          "card": 14
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 435,
+      "decision": 435,
+      "action": {
+        "CastSpell": {
+          "card": 32,
+          "targets": []
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 436,
+      "decision": 436,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 437,
+      "decision": 437,
+      "action": {
+        "CastSpell": {
+          "card": 61,
+          "targets": [
+            {
+              "Spell": 32
+            }
+          ]
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 438,
+      "decision": 438,
+      "action": {
+        "CastSpell": {
+          "card": 59,
+          "targets": [
+            {
+              "Spell": 32
+            }
+          ]
+        }
+      }
+    },
+    {
+      "player": 1,
+      "revision": 439,
+      "decision": 439,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 440,
+      "decision": 440,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 441,
+      "decision": 441,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 442,
+      "decision": 442,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 443,
+      "decision": 443,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 444,
+      "decision": 444,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 445,
+      "decision": 445,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 446,
+      "decision": 446,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 447,
+      "decision": 447,
+      "action": {
+        "DeclareAttackers": {
+          "attackers": [
+            33,
+            34
+          ]
+        }
+      }
+    },
+    {
+      "player": 0,
+      "revision": 448,
+      "decision": 448,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 449,
+      "decision": 449,
+      "action": "Pass"
+    },
+    {
+      "player": 0,
+      "revision": 450,
+      "decision": 450,
+      "action": "Pass"
+    },
+    {
+      "player": 1,
+      "revision": 451,
+      "decision": 451,
+      "action": "Pass"
+    }
+  ],
+  "outcome": {
+    "Win": {
+      "winner": 0,
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)"
+    }
+  },
+  "truncated": null,
+  "final_digest": "233431d963e5a5d49645ef19184ec287a6afbcf2bf3614a9894f276acf855fd5"
+}

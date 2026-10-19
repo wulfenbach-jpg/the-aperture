@@ -1,0 +1,56 @@
+{
+  "counts": {
+    "attacks": 0,
+    "blocks": 0,
+    "casts": 3,
+    "counterspells": 0,
+    "damage_events": 0,
+    "events": 333
+  },
+  "decider": "seat 1 uses decider-2b with heuristic fallback",
+  "decision_sources": {
+    "decider-2b": 15,
+    "forced (single legal option)": 50,
+    "heuristic": 55
+  },
+  "deck_a": {
+    "cards": 40,
+    "name": "Temur Beats",
+    "source": "decks/temur-beats.txt"
+  },
+  "deck_b": {
+    "cards": 40,
+    "name": "Izzet Control",
+    "source": "decks/izzet-control.txt"
+  },
+  "final_digest": "850cfd5eb34974d22595e73503c4409efcdd8ab527a5d6150ed1c0e609d9a012",
+  "libraries": {
+    "P0": 31,
+    "P1": 27
+  },
+  "life": {
+    "P0": 20,
+    "P1": 20
+  },
+  "policies": "heuristic vs decider-2b",
+  "policy_notes": [
+    "model decider-2b chose Keep hand (7 cards) (preference 0.676; not a win probability)",
+    "only 1 legal option(s): the choice is forced and no model call was made",
+    "model decider-2b chose Play Island (preference 0.275; not a win probability)",
+    "model decider-2b chose Cast Opt (preference 0.442; not a win probability)",
+    "model decider-2b chose Put Shock on the bottom (preference 0.633; not a win probability)"
+  ],
+  "pool_size": 15,
+  "reason": "",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 120,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/1",
+  "seed": 121,
+  "steps": 120,
+  "truncated": "step cap of 120 reached before the game ended",
+  "turns": 5,
+  "winner": null,
+  "winner_label": "none (truncated)"
+}

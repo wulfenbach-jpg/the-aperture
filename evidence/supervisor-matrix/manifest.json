@@ -1,0 +1,1173 @@
+{
+  "source_revision": "e972335ebd91ddac86f48750a46c91a9fe96ae0d",
+  "runs": [
+    {
+      "seed": 101,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "101",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=101 heuristic vs heuristic -> winner P0 (deck A) in 452 steps (19 turns)\n  digest 233431d963e5 | replay verified | casts 18 attacks 5 blocks 2 counters 2\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.0950235000345856,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 101 \u2014 452 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 233431d963e5 | matches recorded: true | events 1296\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 5,
+          "blocks": 2,
+          "casts": 18,
+          "counterspells": 2,
+          "damage_events": 9,
+          "events": 1292
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 452
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "233431d963e5a5d49645ef19184ec287a6afbcf2bf3614a9894f276acf855fd5",
+        "libraries": {
+          "P0": 24,
+          "P1": 18
+        },
+        "life": {
+          "P0": 20,
+          "P1": -4
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 452,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 101,
+        "steps": 452,
+        "truncated": null,
+        "turns": 19,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 101,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "101",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=101 heuristic vs heuristic -> winner P1 (deck B) in 379 steps (16 turns)\n  digest f77483b1f2f5 | replay verified | casts 14 attacks 5 blocks 2 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\101-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.09467289998428896,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 101 \u2014 379 action(s), recorded outcome Some(Win { winner: 1, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest f77483b1f2f5 | matches recorded: true | events 1094\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 5,
+          "blocks": 2,
+          "casts": 14,
+          "counterspells": 1,
+          "damage_events": 12,
+          "events": 1092
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 379
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "f77483b1f2f5dcb775448463a29e21f5dd5f645bc47f33e1926f7707f7d4f3fa",
+        "libraries": {
+          "P0": 19,
+          "P1": 25
+        },
+        "life": {
+          "P0": -3,
+          "P1": 20
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 379,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 101,
+        "steps": 379,
+        "truncated": null,
+        "turns": 16,
+        "winner": 1,
+        "winner_label": "P1 (deck B)"
+      }
+    },
+    {
+      "seed": 102,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "102",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=102 heuristic vs heuristic -> winner P1 (deck B) in 431 steps (19 turns)\n  digest 181c13a9831c | replay verified | casts 11 attacks 5 blocks 2 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.09427299996605143,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 102 \u2014 431 action(s), recorded outcome Some(Win { winner: 1, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 181c13a9831c | matches recorded: true | events 1233\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 5,
+          "blocks": 2,
+          "casts": 11,
+          "counterspells": 1,
+          "damage_events": 12,
+          "events": 1238
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 431
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "181c13a9831c71ba63ff83ae98db2ed96aabcb31d03300b53e45eae85ca37f87",
+        "libraries": {
+          "P0": 25,
+          "P1": 20
+        },
+        "life": {
+          "P0": -1,
+          "P1": 20
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 431,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 102,
+        "steps": 431,
+        "truncated": null,
+        "turns": 19,
+        "winner": 1,
+        "winner_label": "P1 (deck B)"
+      }
+    },
+    {
+      "seed": 102,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "102",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=102 heuristic vs heuristic -> winner P1 (deck B) in 333 steps (15 turns)\n  digest 29c7e062783d | replay verified | casts 7 attacks 3 blocks 0 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\102-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.08466719998978078,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 102 \u2014 333 action(s), recorded outcome Some(Win { winner: 1, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 29c7e062783d | matches recorded: true | events 945\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 3,
+          "blocks": 0,
+          "casts": 7,
+          "counterspells": 1,
+          "damage_events": 6,
+          "events": 947
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 333
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "29c7e062783d2ab01a184079e64eab1b5af50fab23ff558efe317a17b7a399f4",
+        "libraries": {
+          "P0": 25,
+          "P1": 26
+        },
+        "life": {
+          "P0": -7,
+          "P1": 20
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 333,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 102,
+        "steps": 333,
+        "truncated": null,
+        "turns": 15,
+        "winner": 1,
+        "winner_label": "P1 (deck B)"
+      }
+    },
+    {
+      "seed": 103,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "103",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=103 heuristic vs heuristic -> winner P0 (deck A) in 485 steps (21 turns)\n  digest ecdaa18792a0 | replay verified | casts 17 attacks 4 blocks 0 counters 2\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.0960147000150755,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 103 \u2014 485 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest ecdaa18792a0 | matches recorded: true | events 1394\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 4,
+          "blocks": 0,
+          "casts": 17,
+          "counterspells": 2,
+          "damage_events": 12,
+          "events": 1403
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 485
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "ecdaa18792a03d8f0049eb89e02e9e0ab3e6b09ee8a74a94728fc3e6020b65df",
+        "libraries": {
+          "P0": 23,
+          "P1": 15
+        },
+        "life": {
+          "P0": 20,
+          "P1": -2
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 485,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 103,
+        "steps": 485,
+        "truncated": null,
+        "turns": 21,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 103,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "103",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=103 heuristic vs heuristic -> winner P0 (deck A) in 626 steps (25 turns)\n  digest c0613f036333 | replay verified | casts 30 attacks 8 blocks 1 counters 2\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\103-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.1282640999997966,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 103 \u2014 626 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest c0613f036333 | matches recorded: true | events 1793\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 8,
+          "blocks": 1,
+          "casts": 30,
+          "counterspells": 2,
+          "damage_events": 17,
+          "events": 1797
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 626
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "c0613f036333a7c55ea9876e3a25a4e300906faacc6843ab673e5e7f07f4447b",
+        "libraries": {
+          "P0": 5,
+          "P1": 21
+        },
+        "life": {
+          "P0": 16,
+          "P1": -7
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 626,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 103,
+        "steps": 626,
+        "truncated": null,
+        "turns": 25,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 104,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "104",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=104 heuristic vs heuristic -> winner P0 (deck A) in 546 steps (24 turns)\n  digest 2f36c4be4e89 | replay verified | casts 16 attacks 4 blocks 0 counters 2\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.11261750000994653,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 104 \u2014 546 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 2f36c4be4e89 | matches recorded: true | events 1533\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 4,
+          "blocks": 0,
+          "casts": 16,
+          "counterspells": 2,
+          "damage_events": 10,
+          "events": 1542
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 546
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "2f36c4be4e897742e62f61f2e8b92929f1836ce593c2af82565f2b070e7e4e3b",
+        "libraries": {
+          "P0": 21,
+          "P1": 17
+        },
+        "life": {
+          "P0": 20,
+          "P1": -2
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 546,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 104,
+        "steps": 546,
+        "truncated": null,
+        "turns": 24,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 104,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "104",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=104 heuristic vs heuristic -> winner P1 (deck B) in 244 steps (11 turns)\n  digest e973a4c62d53 | replay verified | casts 6 attacks 4 blocks 0 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\104-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.06660570000531152,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 104 \u2014 244 action(s), recorded outcome Some(Win { winner: 1, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest e973a4c62d53 | matches recorded: true | events 707\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 4,
+          "blocks": 0,
+          "casts": 6,
+          "counterspells": 1,
+          "damage_events": 10,
+          "events": 703
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 244
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "e973a4c62d532232a99f804707259420cbddd39f15160142b398f51c341ca635",
+        "libraries": {
+          "P0": 28,
+          "P1": 28
+        },
+        "life": {
+          "P0": -1,
+          "P1": 20
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 244,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 104,
+        "steps": 244,
+        "truncated": null,
+        "turns": 11,
+        "winner": 1,
+        "winner_label": "P1 (deck B)"
+      }
+    },
+    {
+      "seed": 105,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "105",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=105 heuristic vs heuristic -> winner P0 (deck A) in 244 steps (11 turns)\n  digest 5b0c45cacf7f | replay verified | casts 6 attacks 4 blocks 0 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.076630900031887,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 105 \u2014 244 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 5b0c45cacf7f | matches recorded: true | events 704\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 4,
+          "blocks": 0,
+          "casts": 6,
+          "counterspells": 1,
+          "damage_events": 9,
+          "events": 700
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 244
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "5b0c45cacf7ff2897b11e3fef0b41820e92ee704399fa028aa4f73a45b59ae23",
+        "libraries": {
+          "P0": 28,
+          "P1": 28
+        },
+        "life": {
+          "P0": 20,
+          "P1": 0
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 244,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 105,
+        "steps": 244,
+        "truncated": null,
+        "turns": 11,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 105,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "105",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=105 heuristic vs heuristic -> winner P0 (deck A) in 386 steps (17 turns)\n  digest 043213a5115b | replay verified | casts 11 attacks 5 blocks 0 counters 2\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\105-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.09589370002504438,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 105 \u2014 386 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 043213a5115b | matches recorded: true | events 1101\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 5,
+          "blocks": 0,
+          "casts": 11,
+          "counterspells": 2,
+          "damage_events": 9,
+          "events": 1103
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 386
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "043213a5115b53f53d8b58ae801075ceed2accf0eb928ac94cd4a7fa0a80af56",
+        "libraries": {
+          "P0": 21,
+          "P1": 25
+        },
+        "life": {
+          "P0": 20,
+          "P1": -4
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 386,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 105,
+        "steps": 386,
+        "truncated": null,
+        "turns": 17,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 106,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "106",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=106 heuristic vs heuristic -> winner P0 (deck A) in 355 steps (15 turns)\n  digest dd57bac8593a | replay verified | casts 13 attacks 2 blocks 0 counters 2\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.09009539999533445,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 106 \u2014 355 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest dd57bac8593a | matches recorded: true | events 1013\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 2,
+          "blocks": 0,
+          "casts": 13,
+          "counterspells": 2,
+          "damage_events": 5,
+          "events": 1011
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 355
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "dd57bac8593a931bc0b29fbb127a7778dc59ec30d759d14e075ae022ac922f87",
+        "libraries": {
+          "P0": 26,
+          "P1": 22
+        },
+        "life": {
+          "P0": 20,
+          "P1": 0
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 355,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 106,
+        "steps": 355,
+        "truncated": null,
+        "turns": 15,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 106,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "106",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=106 heuristic vs heuristic -> winner P1 (deck B) in 436 steps (18 turns)\n  digest 4adf77e6b5ac | replay verified | casts 19 attacks 5 blocks 2 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\106-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.09807210002327338,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 106 \u2014 436 action(s), recorded outcome Some(Win { winner: 1, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 4adf77e6b5ac | matches recorded: true | events 1272\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 5,
+          "blocks": 2,
+          "casts": 19,
+          "counterspells": 1,
+          "damage_events": 16,
+          "events": 1272
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 436
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "4adf77e6b5acc5a2acaf5ae8dad914cf31acb35b22479c9c0323f20c49206abe",
+        "libraries": {
+          "P0": 19,
+          "P1": 25
+        },
+        "life": {
+          "P0": -3,
+          "P1": 20
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 436,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 106,
+        "steps": 436,
+        "truncated": null,
+        "turns": 18,
+        "winner": 1,
+        "winner_label": "P1 (deck B)"
+      }
+    },
+    {
+      "seed": 107,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "107",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=107 heuristic vs heuristic -> winner P0 (deck A) in 457 steps (21 turns)\n  digest da70333c6d19 | replay verified | casts 7 attacks 3 blocks 0 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.10007089999271557,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 107 \u2014 457 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest da70333c6d19 | matches recorded: true | events 1276\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 3,
+          "blocks": 0,
+          "casts": 7,
+          "counterspells": 1,
+          "damage_events": 8,
+          "events": 1292
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 457
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "da70333c6d193264246f32fc35677153946dc86967b7d0ab96d32af7db0edb8e",
+        "libraries": {
+          "P0": 23,
+          "P1": 23
+        },
+        "life": {
+          "P0": 20,
+          "P1": -8
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 457,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 107,
+        "steps": 457,
+        "truncated": null,
+        "turns": 21,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 107,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "107",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=107 heuristic vs heuristic -> winner P0 (deck A) in 444 steps (21 turns)\n  digest 52da3e3fb1fb | replay verified | casts 2 attacks 4 blocks 0 counters 0\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\107-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.09233099996345118,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 107 \u2014 444 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 52da3e3fb1fb | matches recorded: true | events 1222\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 4,
+          "blocks": 0,
+          "casts": 2,
+          "counterspells": 0,
+          "damage_events": 7,
+          "events": 1238
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 444
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "52da3e3fb1fbf69fe09fe7cd7b855cf9a43510aa25c3ceab8bfbfb68a88b8dd9",
+        "libraries": {
+          "P0": 23,
+          "P1": 23
+        },
+        "life": {
+          "P0": 20,
+          "P1": -1
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 444,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 107,
+        "steps": 444,
+        "truncated": null,
+        "turns": 21,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 108,
+      "swapped": false,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "108",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-normal.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-normal-replay.json"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=108 heuristic vs heuristic -> winner P0 (deck A) in 385 steps (17 turns)\n  digest 33cb8d1b5dfe | replay verified | casts 11 attacks 5 blocks 2 counters 1\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-normal-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-normal.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.08222779998322949,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 108 \u2014 385 action(s), recorded outcome Some(Win { winner: 0, reason: \"opponent's life total reached 0 or less (CR 704.5a)\" })\n  replayed digest 33cb8d1b5dfe | matches recorded: true | events 1112\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 5,
+          "blocks": 2,
+          "casts": 11,
+          "counterspells": 1,
+          "damage_events": 14,
+          "events": 1108
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 385
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/temur-beats.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/izzet-control.txt"
+        },
+        "final_digest": "33cb8d1b5dfe15d64763998fccc5ba79bead18a8b3daba868d5d60e73ea96f4f",
+        "libraries": {
+          "P0": 25,
+          "P1": 25
+        },
+        "life": {
+          "P0": 20,
+          "P1": -4
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 385,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 108,
+        "steps": 385,
+        "truncated": null,
+        "turns": 17,
+        "winner": 0,
+        "winner_label": "P0 (deck A)"
+      }
+    },
+    {
+      "seed": 108,
+      "swapped": true,
+      "command": [
+        "C:\\AI\\mtg-slice\\target\\release\\aperture-cli.exe",
+        "selfplay",
+        "--seed",
+        "108",
+        "--out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-swapped.json",
+        "--replay-out",
+        "C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-swapped-replay.json",
+        "--deck-a",
+        "decks/izzet-control.txt",
+        "--deck-b",
+        "decks/temur-beats.txt"
+      ],
+      "exit": 0,
+      "stdout": "selfplay seed=108 heuristic vs heuristic -> winner P1 (deck B) in 871 steps (37 turns)\n  digest 159d1ece74a8 | replay verified | casts 36 attacks 7 blocks 3 counters 4\n  replay written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-swapped-replay.json\n  report written to C:\\AI\\mtg-slice\\evidence\\supervisor-matrix\\108-swapped.json\n",
+      "stderr": "",
+      "elapsed_seconds": 0.1302803000435233,
+      "replay": {
+        "exit": 0,
+        "stdout": "replay seed 108 \u2014 871 action(s), recorded outcome Some(Win { winner: 1, reason: \"opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)\" })\n  replayed digest 159d1ece74a8 | matches recorded: true | events 2476\n",
+        "stderr": ""
+      },
+      "report": {
+        "counts": {
+          "attacks": 7,
+          "blocks": 3,
+          "casts": 36,
+          "counterspells": 4,
+          "damage_events": 15,
+          "events": 2480
+        },
+        "decider": null,
+        "decision_sources": {
+          "heuristic": 871
+        },
+        "deck_a": {
+          "cards": 40,
+          "name": "Temur Beats",
+          "source": "decks/izzet-control.txt"
+        },
+        "deck_b": {
+          "cards": 40,
+          "name": "Izzet Control",
+          "source": "decks/temur-beats.txt"
+        },
+        "final_digest": "159d1ece74a8af4685def7b375426e2d1a9d6a09b757c7e98862782dac6e8873",
+        "libraries": {
+          "P0": 0,
+          "P1": 15
+        },
+        "life": {
+          "P0": 18,
+          "P1": 11
+        },
+        "policies": "heuristic vs heuristic",
+        "policy_notes": [],
+        "pool_size": 15,
+        "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+        "replay_digest_matches": true,
+        "replay_error": null,
+        "replay_steps": 871,
+        "rules_revision": "2026-09-25",
+        "schema": "aperture-selfplay/1",
+        "seed": 108,
+        "steps": 871,
+        "truncated": null,
+        "turns": 37,
+        "winner": 1,
+        "winner_label": "P1 (deck B)"
+      }
+    }
+  ]
+}
