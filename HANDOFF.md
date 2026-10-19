@@ -36,7 +36,7 @@ needed for the required clippy gate).
 | command | exit | result |
 | --- | --- | --- |
 | `cargo fmt --check` | 0 | clean |
-| `cargo test --all-targets` | 0 | **107 passed / 0 failed** across 26 result lines (11 test binaries + lib/doc targets) |
+| `cargo test --all-targets` | 0 | **109 passed / 0 failed** (12 test binaries + lib/doc lines) |
 | `cargo clippy --all-targets -- -D warnings` | 0 | clean |
 | `cargo build --release` | 0 | `target/release/aperture.exe`, `target/release/aperture-cli.exe` |
 | `aperture-cli selfplay --seed 1..8` | 0 | 8/8 terminal games, every digest replay-verified |
@@ -170,6 +170,22 @@ Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur Courser,
 Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike, Counterspell,
 Divination, Opt, Consider — `aperture-cli pool` prints this list plus the
 not-implemented notice.
+
+## 7b. Study flow: branch points
+
+The UI has **Set branch** / **Return to branch**. A branch point stores the full
+state, event log, replay, AI settings and sandbox flag, and prints the
+hidden-information boundary explicitly:
+
+> branch point set at turn N … · Hidden-information boundary: returning here
+> restores only what was known at that moment; anything revealed later (draws,
+> scries, the opponent's plays after it) is out of scope again.
+
+Returning rewinds the board, log and replay to that moment, so a replayed line is
+never graded with information the player did not have. Test:
+`crates/ui/tests/session.rs::a_branch_point_restores_the_earlier_position_and_labels_the_boundary`
+(and `return_to_branch` refuses when no branch point was set, rather than
+inventing one).
 
 ## 8. How to run
 

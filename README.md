@@ -28,7 +28,10 @@ implementation and it says so everywhere it matters.
   viewer-masked log, pending-choice controls, sandbox tools, Archidekt import,
   save/load, and deterministic digests.
 * **Deterministic replay**: seed + deck snapshots + accepted actions reproduce the
-  same canonical SHA-256 state digest.
+  same canonical SHA-256 state digest. Save/load round-trips preserve the pending
+  choice, the RNG position and the AI mode, and **Set branch / Return to branch**
+  rewinds to a labelled study point (the hidden-information boundary is stated in
+  the message).
 * **Bounded Archidekt import**: `https://archidekt.com/decks/<digits>` only, with
   a host allowlist, numeric-id request construction, timeout, size cap, one
   allowlisted redirect maximum, on-disk caching, and strict refusal of anything

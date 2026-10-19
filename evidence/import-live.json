@@ -409,7 +409,7 @@
   ],
   "launchable": false,
   "refusal": "unsupported card(s) in the main deck: Hanweir Watchkeep // Bane of Hanweir x1 (multi-face card (layout 'transform, faces: Hanweir Watchkeep / Bane of Hanweir): not modeled); Budoka Gardener // Dokai, Weaver of Life x1 (multi-face card (layout 'flip, faces: Budoka Gardener / Dokai, Weaver of Life): not modeled); The Sentry, Golden Guardian x1 (provider sent no card data (faces missing): cannot certify support) (+23 more) — the supported pool has 15 cards; unsupported cards are refused, never substituted",
-  "raw_sha256": "860db74daa904ecdf0f6ee8116d8dd127e3e9eaa6fa85eb17eb4e935b1de4f72",
+  "raw_sha256": "2769b51ae9964e6f4af2b81cf91d1f9f2cc2e48b9f3e08ce73bfa4bda124c7fd",
   "cached_path": "cache\\archidekt-26206384.json",
   "notes": [
     "excluded categories honored: Maybeboard",

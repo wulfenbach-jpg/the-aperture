@@ -432,12 +432,27 @@ impl eframe::App for ApertureApp {
                     let path = PathBuf::from(self.session.save_path.clone());
                     let _ = self.session.load(&path);
                 }
+                if ui.button("Set branch").clicked() {
+                    self.session.set_branch();
+                }
+                if ui.button("Return to branch").clicked()
+                    && let Err(err) = self.session.return_to_branch()
+                {
+                    self.session.message = err;
+                }
                 ui.checkbox(&mut self.show_coach, "Coaching");
                 ui.checkbox(&mut self.show_sandbox, "Sandbox");
                 ui.checkbox(&mut self.show_import, "Import");
                 ui.checkbox(&mut self.show_zones, "Zones");
             });
             ui.horizontal_wrapped(|ui| {
+                if let Some((label, _)) = &self.session.branch {
+                    ui.label(
+                        RichText::new(format!("branch: {label}"))
+                            .color(theme::BRASS)
+                            .small(),
+                    );
+                }
                 if let Some(pending) = &view.pending {
                     ui.label(RichText::new(format!("WAITING: {pending}")).color(theme::WARN));
                 } else if let Some(owner) = owner {

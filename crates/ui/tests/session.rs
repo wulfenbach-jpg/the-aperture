@@ -138,6 +138,40 @@ fn a_new_game_resets_the_sandbox_flag_and_keeps_the_decks() {
 }
 
 #[test]
+fn a_branch_point_restores_the_earlier_position_and_labels_the_boundary() {
+    let mut ui = session(17, true);
+    ui.step_ai();
+    let branch_digest = ui.game.digest();
+    let branch_log = ui.log.len();
+    let branch_step = ui.game.state.turn.step;
+    ui.set_branch();
+    assert!(ui.branch.is_some());
+    assert!(
+        ui.message.contains("Hidden-information boundary"),
+        "{}",
+        ui.message
+    );
+
+    // Play on, then return: everything after the branch point is discarded.
+    for _ in 0..25 {
+        if ui.game.state.is_over() {
+            break;
+        }
+        ui.step_ai();
+    }
+    assert_ne!(ui.game.digest(), branch_digest);
+    ui.return_to_branch().expect("a branch point exists");
+    assert_eq!(ui.game.digest(), branch_digest);
+    assert_eq!(ui.log.len(), branch_log, "the log is rewound too");
+    assert_eq!(ui.game.state.turn.step, branch_step);
+    assert!(ui.message.contains("branch point"));
+
+    // Without a branch point the button cannot fabricate one.
+    let mut fresh = session(18, false);
+    assert!(fresh.return_to_branch().is_err());
+}
+
+#[test]
 fn the_profile_line_states_the_scope() {
     let line = aperture_ui::session::profile_line();
     assert!(line.contains("15 cards"), "{line}");

@@ -43,6 +43,8 @@ pub struct UiSession {
     pub import_report: Option<String>,
     pub decider_status: Option<String>,
     pub save_path: String,
+    /// Branch/study point: a full snapshot plus the label shown to the user.
+    pub branch: Option<(String, SessionSave)>,
 }
 
 impl UiSession {
@@ -88,6 +90,7 @@ impl UiSession {
                         import_report: None,
                         decider_status: None,
                         save_path: "the-aperture-save.json".to_string(),
+                        branch: None,
                     };
                 }
             }
@@ -118,7 +121,52 @@ impl UiSession {
             import_report: None,
             decider_status: None,
             save_path: "the-aperture-save.json".to_string(),
+            branch: None,
         }
+    }
+
+    /// Mark the current position as a study branch point.
+    pub fn set_branch(&mut self) {
+        self.replay.ai = self.ai.clone();
+        let digest = self.game.digest();
+        let label = format!(
+            "turn {} {} · digest {} · {} logged event(s)",
+            self.game.state.turn.number,
+            self.game.state.turn.step.name(),
+            &digest[..12],
+            self.log.len()
+        );
+        let save = SessionSave::capture(
+            &self.game,
+            self.replay.clone(),
+            self.log.clone(),
+            self.sandbox_modified,
+        );
+        self.branch = Some((label.clone(), save));
+        self.message = format!(
+            "branch point set at {label}. Hidden-information boundary: returning here restores only what was known at that moment; anything revealed later (draws, scries, the opponent's plays after it) is out of scope again."
+        );
+    }
+
+    /// Return to the branch point, discarding everything played after it.
+    pub fn return_to_branch(&mut self) -> Result<(), String> {
+        let Some((label, save)) = self.branch.clone() else {
+            return Err("no branch point has been set".to_string());
+        };
+        self.game = save.game();
+        self.log = save.log.clone();
+        self.replay = save.replay.clone();
+        self.ai = save.ai.clone();
+        self.sandbox_modified = save.sandbox_modified;
+        self.selected_attackers.clear();
+        self.selected_blocks.clear();
+        self.selected_cards.clear();
+        self.target_pick = None;
+        self.note = None;
+        self.message = format!(
+            "returned to the branch point at {label}; the board, log and replay are back to that moment"
+        );
+        Ok(())
     }
 
     pub fn view(&self, seat: PlayerId) -> PlayerView {
@@ -194,6 +242,7 @@ impl UiSession {
     }
 
     pub fn new_game(&mut self, seed: u64) {
+        self.branch = None;
         self.seed = seed;
         let (game, log) = Game::new_logged(seed, &self.deck_a, &self.deck_b);
         self.game = game;
