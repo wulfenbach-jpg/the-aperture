@@ -958,7 +958,7 @@ impl Game {
                 self.advance_mulligan_order(player, events);
             }
         } else {
-            let cards: Vec<ObjectId> = self.state.players[player as usize].hand.drain(..).collect();
+            let cards = std::mem::take(&mut self.state.players[player as usize].hand);
             let mut library = std::mem::take(&mut self.state.players[player as usize].library);
             for card in cards {
                 if let Some(obj) = self.objects_mut(card) {
