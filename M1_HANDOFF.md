@@ -1,7 +1,63 @@
 # THE APERTURE — M1 execution handoff
 
-Status date: 2026-10-19. This is a working handoff for the bounded OMP run, not a
-release note or a claim that M1 is complete.
+## Integration 3-1 candidate (current — supersedes the historical sections below)
+
+This candidate integrates the independently reviewed Kernel sequence
+`63094a6, c57e79c, 5892783, 4c127b4, 878e28d, c1bd36f, 2f907f1` (frozen review
+head `2f907f1ba822cfd120ae91b59e4d4d1a88808863`, review6 `passed=true`, no
+security or logic findings) onto the published rules/CI preparation
+`62359b2`. The equivalent `f3211fd` CI cherry-pick was skipped because
+`e18a471`/`62359b2` already contain the same `mem::take` fix.
+
+The retained rules conformance harness was adapted to the reviewed API — seat
+vectors, `Turn.passed`, and `Action::DeclareAttackers { defender }` — without
+removing any existing case, rule reference or assertion: all 8 cases across the
+same four fixture files still run, with the two-seat fixtures deriving their
+only live opponent when no defender is named and refusing an implicit defender
+when multiple opponents are live.
+
+Verification for this candidate (full raw logs in `run33/integration3-1/`):
+
+- `cargo fmt --check` — exit 0
+- `cargo test --all-targets --locked` — 160 passed, 0 failed, 0 ignored
+- `cargo clippy --all-targets --locked -- -D warnings` — exit 0
+- `cargo build --release --locked` — exit 0
+- retained conformance suite — 5 test functions / 8 cases, exit 0
+- paired harness, seed base 4100 — 12/12 terminal, 0 capped, 0 failed, all replay
+  digests verified, exit 0
+- capped probe, seed base 4200, `--max-steps 5` — 6/6 capped, exit 2, all replay
+  digests verified
+
+Scope and limitations, explicitly unresolved:
+
+- **Not Commander.** The pool remains 15 cards; 2–4 seats are headless/CLI only;
+  the native table remains two-seat practice.
+- APNAP simultaneous multi-player choices (CR 101.4) remain unsupported and
+  unexercised.
+- The masked-digest test covers P0 and P2, not every viewer; all-viewer coverage
+  is still missing.
+- `RunStatus::Failed` classification exists but is not covered by a permanent
+  harness test; the failing branch was exercised only through the repaired
+  empty-attack regression history.
+- No OS-level pointer/keyboard automation was performed; UI changes were
+  verified by deterministic worker-message tests and all-target tests.
+- Replay v2/save v3 change serialized two-seat digests once; older versions are
+  rejected explicitly rather than migrated.
+- This candidate is local only: no push, no PR update, no merge, no issue
+  closure, and no claim that M1 is complete.
+
+The historical sections below are preserved verbatim from the supervisor-reviewed
+partial handoff. Their older status statements (`62359b2` as the final
+deliverable, Kernel at `4c127b4`/not integrated, local head `9acf247`) are
+superseded by this section; they are retained so the corrections and evidence
+trail are not lost.
+
+# THE APERTURE — M1 execution handoff
+
+Status date: 2026-10-19. Supervisor-finalized partial handoff, not M1 completion.
+The supervisor corrections to this file are deliberately uncommitted. Local
+integration commit 9acf247 is also unpushed; public PR head remains 62359b2.
+The authoritative machine-readable snapshot is scratch/aperture-v1-setup/m1-summary.json.
 
 ## Remote checkpoint
 
@@ -24,16 +80,16 @@ until reviewed Kernel/Rules commits are integrated coherently.
 The final deliverable of this bounded run is the **reviewed CI + rules
 preparation at the public head `62359b2`**, still open as PR 34 with all four
 required contexts green. The Kernel multiplayer migration is **not integrated
-and not published**: it is preserved as coherent local commit `5892783` on
-`aperture/kernel` (plus in-flight uncommitted work), and its remaining gates are
+and not published**: it is preserved as clean local commit `4c127b4` on
+`aperture/kernel`, and its remaining gates are
 unmet or unverified.
 
 | Item | Status |
 | --- | --- |
 | Public remote/PR head | `62359b24a84ddcca56dc9daab33054d6ff7479f5` — CI-green, `CLEAN` |
-| Local integration head | `a771273` — configured-seat docs correction plus this handoff; **unpushed draft** |
-| Kernel local head | `5892783` on `aperture/kernel` — reviewed, **not integrated, not pushed** |
-| Kernel job-2 verification | in progress at run end (native UI input, binary build, active-departure/4-seat boundary tests) |
+|| Local integration head | `9acf247` — unpushed draft; supervisor corrections to handoff uncommitted |
+|| Kernel local head | `4c127b4` on `aperture/kernel` — reviewed, **not integrated, not pushed** |
+|| Kernel job-2 verification | settled; OS-level native input and release build still missing |
 | M1 acceptance #6–#10 | **open**; not delivered by this run |
 
 Dispatch ledger: **9 dispatches against the conservative 8-job limit**
@@ -153,7 +209,7 @@ After that publication, the integration owner corrected one wording issue in
 and the free first mulligan are keyed to the **configured** game size (a game
 that *begins* with more than two players; CR 100.1b, 800.1), never to the number
 of surviving players after an elimination, and the draw-skip row says the same.
-That correction and this handoff are committed locally as `a771273`, which
+That correction and the worker handoff are committed locally as `9acf247`, which
 remains intentionally unpushed; the public head stays `62359b2`.
 
 ## Open work — not implemented
@@ -164,27 +220,30 @@ An ownership/API contract was proposed and accepted for discussion (including
 the CR 800.4 active-departure correction and fixed-size pass tracking). That
 contract is a proposal, not implementation.
 
-The Kernel branch `aperture/kernel` contains a local cherry-pick of the CI fix
-(`f3211fd`) plus the 2–4 seat migration in `63094a6`, `c57e79c` and `5892783`,
-with further in-flight uncommitted work at run end. **None of it is integrated
-or pushed.** Its state at the final gate was:
+The Kernel branch `aperture/kernel` contains the CI fix and migration through
+clean commit `4c127b4407652483ddece481fc9f84a3a1173fdf`. None is integrated or
+pushed. Supervisor verification of this exact local head:
 
 - `cargo check --workspace --all-targets --locked`, `cargo fmt --check`,
-  `cargo clippy --all-targets --locked -- -D warnings`: pass at `5892783`.
-- `cargo test --workspace --all-targets --locked`: 143 passed / 0 failed
-  (136 pre-M1 plus 7 new M1 boundary tests).
+  `cargo clippy --all-targets --locked -- -D warnings`: passed; supervisor
+  independently reran fmt, tests and Clippy successfully.
+- `cargo test --workspace --all-targets --locked`: 147 passed / 0 failed.
 - Independent gatekeeper harness `--seats 2,3,4 --seed-base 900
   --games-per-seat 2`: 12 terminal, 0 capped, 0 failed, all replay digests
   verified, exit 0 — after the empty-attack fix. The same harness failed 4/12
   including a 2-seat regression at `c57e79c`; that fix is verified.
-- **Still missing/unverified at run end:** actual native UI input smoke, binary
-  build evidence on the integrated head, and Kernel's promised
-  active-departure/4-seat boundary tests beyond the seven landed.
-- **Review blockers not resolved:** `Replay::validate`/`run` never check
-  `rules_revision`; `SessionSave::validate` does not validate the embedded
-  replay, rules revisions or first player; `GameState::validate` does not
-  verify referenced object IDs, so a self-consistent malformed save can panic
-  later in `state.object()`.
+- Supervisor fresh paired/rotated harness: seed-base 1200, seats 2/3/4,
+  games-per-seat 2: 12 terminal, 0 capped, 0 failed; every replay digest matched.
+- Earlier replay/save/object-reference review blockers were repaired at 4c127b4
+  and checked by Gatekeeper. New tests include active-departure and four-seat
+  turn order. Do not confuse historical 5892783 findings with the final head.
+- Still missing: OS-level native UI input, release build, conformance-fixture
+  API migration/integration and exact-head cross-platform CI for Kernel.
+  Worker native rendering and egui injected-input tests do not prove OS input.
+- All worker turns settled; supervisor exited Vibe (mode none, three worker
+  tombstones persisted) and terminated the outer process. No worker resumed.
+- Final live quota was only 4% Codex five-hour remaining (96% used). The earlier
+  cached 18% snapshot was stale. No further dispatch is permitted in this run.
 
 M1 acceptance #6–#10 — 2–4 live seats, multiplayer priority/elimination,
 all-seat hidden-information projections, versioned replay and a four-seat

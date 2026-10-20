@@ -1,6 +1,6 @@
 # THE APERTURE — a practice slice of Magic: The Gathering
 
-**practice slice / supported card pool / 1v1 / 20 life / NOT Commander**
+**practice slice / supported card pool / headless 2–4 seats / native 2-seat practice / 20 life / NOT Commander**
 
 An original Rust rules engine, a headless CLI, and a native desktop card table.
 
@@ -26,15 +26,32 @@ implementation and it says so everywhere it matters.
   Lightning Strike, Counterspell, Divination, Opt, Consider.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
-* **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `import`,
-  `import-txt`, `pool`, `decks`, `coach`, `decider-health`.
+* **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `harness`,
+  `import`, `import-txt`, `pool`, `decks`, `coach`, `decider-health`.
+* **2–4-seat headless candidate (M1, partial and unreleased):** ordered seats,
+  turn wraparound/skipping after elimination, all-live priority pass tracking,
+  masked per-seat projections, bounded one-defender combat declarations,
+  replay v2/save v3 and a `harness` command that runs paired 2/3/4-seat seeds and
+  verifies every replay digest. Terminal, capped and failed runs are reported
+  separately. This is **not** Commander support: the native table remains a
+  two-seat practice surface, APNAP simultaneous multi-player choices remain
+  unsupported/unexercised, and the pool is still the same 15 cards.
+* **Versioned persistence:** replay v2 embeds ordered seat deck snapshots and the
+  recorded first player; save v3 embeds the game, replay, seat snapshots, AI
+  settings and digest. Older replay/save versions are rejected explicitly rather
+  than silently reinterpreted, and a recorded `rules_revision` must match this
+  build before a replay runs.
 * **Native desktop UI** (`aperture`): dark charcoal/brass card table with both
   battlefields, stack view, own hand, legal-action buttons, coaching panel,
   viewer-masked log, pending-choice controls, sandbox tools, **two-seat deck
   import**, save/load, and deterministic digests. Every model, network and file
   operation runs on a background worker with a visible busy state; the frame
   callback never blocks, and a worker result is applied only while its session
-  generation, engine revision, decision serial and seat all still match.
+  generation, engine revision, decision serial and seat all still match. The
+  native table intentionally remains the two-seat practice surface; 3/4-seat play
+  is headless/CLI only in this candidate.
+  An accepted action invalidates any in-flight load, so a delayed file read can
+  never overwrite the board the player just changed.
 * **Two-seat import / play** (UI): each seat has its own Archidekt URL box, a
   pasted-text fallback and a text-file fallback. Each import is certified on its
   own (name, supported/total counts, practice-profile line, refusal reason);
