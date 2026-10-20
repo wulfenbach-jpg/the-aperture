@@ -249,9 +249,13 @@ impl HeuristicPolicy {
     }
 
     fn main_phase_action(&self, view: &PlayerView) -> Option<Action> {
-        // Land drop first (CR 701.18a).
+        // Land drop first (CR 701.18a), but only when the engine actually
+        // offers it: one land per turn (CR 305.2) and no other timing blocker.
         if let Some(land) = view.own_hand.iter().find(|c| c.card.def().is_land()) {
-            return Some(Action::PlayLand { card: land.id });
+            let action = Action::PlayLand { card: land.id };
+            if view.legal.iter().any(|legal| legal.action == action) {
+                return Some(action);
+            }
         }
 
         // Pump for lethal when some opponent's board is open.

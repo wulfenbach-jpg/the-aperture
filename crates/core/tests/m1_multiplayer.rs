@@ -11,6 +11,47 @@ fn three_decks() -> Vec<DeckList> {
     vec![deck_a(), deck_b(), deck_a()]
 }
 
+/// Same public board/counts for every viewer, different hidden library
+/// identities/order. Hands, battlefields and life totals are deliberately
+/// unequal across seats.
+fn hidden_state_game(seat_count: usize, flipped: bool) -> Game {
+    let mut fixture = fixture_n(80 + seat_count as u64, seat_count);
+    for seat in 0..seat_count {
+        let player = seat as PlayerId;
+        let hand = [
+            CardId::Forest,
+            CardId::Island,
+            CardId::Mountain,
+            CardId::Shock,
+        ];
+        let hand_count = seat % 4 + 1;
+        fixture = fixture.hand(player, &hand[..hand_count]);
+        let library_a = [
+            CardId::Forest,
+            CardId::Island,
+            CardId::Mountain,
+            CardId::Shock,
+            CardId::Opt,
+        ];
+        let library_b = [
+            CardId::Opt,
+            CardId::Shock,
+            CardId::Mountain,
+            CardId::Island,
+            CardId::Forest,
+        ];
+        let library_count = seat % 4 + 2;
+        let library = if flipped {
+            &library_b[..library_count]
+        } else {
+            &library_a[..library_count]
+        };
+        fixture = fixture.library(player, library);
+        fixture = fixture.life(player, 20 - (seat as i32) * 3);
+    }
+    fixture.main(P0, Step::PrecombatMain).build()
+}
+
 /// Submit an accepted action and record the exact revision/decision identity in
 /// a replay, so a save can be checked against its embedded action sequence.
 fn submit_recorded(game: &mut Game, replay: &mut Replay, player: PlayerId, action: Action) {
@@ -620,4 +661,43 @@ fn save_rejects_a_tampered_embedded_replay() {
         SessionSave::from_json(&tampered).is_err(),
         "a save whose embedded replay diverges from its state must be rejected"
     );
+}
+
+#[test]
+fn all_viewers_ignore_hidden_state_for_2_3_4_seats() {
+    for seats in [2usize, 3, 4] {
+        let a = hidden_state_game(seats, false);
+        let b = hidden_state_game(seats, true);
+        assert_ne!(
+            a.digest(),
+            b.digest(),
+            "{seats}-seat full states really differ"
+        );
+        let owner = a.state.decision_owner().expect("P0 has priority");
+        for viewer in 0..seats as PlayerId {
+            let view_a = a.view_for(viewer, &[]);
+            let view_b = b.view_for(viewer, &[]);
+            assert_eq!(
+                view_a.to_json(),
+                view_b.to_json(),
+                "P{viewer} observation changed with hidden state in a {seats}-seat game"
+            );
+            assert_eq!(
+                view_a.digest, view_b.digest,
+                "P{viewer} digest is an oracle in a {seats}-seat game"
+            );
+            assert_eq!(
+                view_a.legal.is_empty(),
+                viewer != owner,
+                "only the decision owner may receive legal actions"
+            );
+            assert_eq!(view_a.opponents.len(), seats - 1);
+        }
+        assert_eq!(
+            a.state.player(P0).life,
+            20,
+            "unequal life totals are deliberate"
+        );
+        assert!(a.state.player(3.min(seats as u8 - 1)).life < 20);
+    }
 }
