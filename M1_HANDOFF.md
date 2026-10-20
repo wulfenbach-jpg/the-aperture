@@ -1,5 +1,54 @@
 # THE APERTURE — M1 execution handoff
 
+## Run66 branch candidate — current scope, not M1 acceptance
+
+This section supersedes the status statements in every historical section
+below, including their old use of “current.” The historical text and raw
+evidence are retained, not rewritten as proof for this increment.
+
+The branch now contains starting-player-ordered CR 103.5 declaration rounds,
+deferred redraws and paid London bottoms before the next round. It also adds
+one real card, Crack the Earth, bringing the bounded pool to 16 while leaving
+the bundled decks unchanged. Its public, fixed-set APNAP sacrifice choices are
+engine-issued, collected in active-player turn order and applied as a batch.
+Pending labels/kinds and coaching respect entitlement; another seat receives
+generic waiting status, not priority or the detailed choice prompt.
+
+Replay v3/save v4 serialize the round and sacrifice queue and explicitly reject
+the previous published replay v2/save v3. Typed validation checks anchored
+orders, complete paid-bottom progress, resolving effect cursors and answer
+prefixes. Certified saves still require their embedded replay to reproduce
+the state; sandbox saves remain visibly uncertified.
+
+Owner verification after the second repair (`run66/owner2/` raw artifacts):
+
+- Format, all-target locked tests, Clippy with warnings denied and release
+  build exit 0; 195 tests pass, none fail.
+- The unchanged five-violation review35 probe, three-violation review66 probe
+  and owner coaching-label probe now exit 0. Their actual failing logs remain
+  preserved separately; passing the old tests alone did not approve a repair.
+- Fresh paired normal-pool harness seed base 19000: 12 terminal games, all 12
+  replay digests match. Separate step/time bounds each produce six capped
+  games with matching digests and exit 2, not wins or failed games.
+- Real heuristic Crack-deck games at seeds 19302/19303/19304 finish with
+  2/3/4 seats, respectively; their replays contain 16/36/64 accepted sacrifice
+  choices and independently reproduce the recorded digests. Earlier 4000- and
+  5000-step capped runs stay classified as capped.
+
+The failed independent reviews and native false-priority/coaching-label
+finding are part of the audit trail. A further independent actual-candidate
+review, final native input/read-back and exact-head CI remain publication
+gates, not facts inferred from the test count. Exact accepted hashes and
+remote check results belong in the native-card handoff and PR evidence.
+
+Limitations remain: only this one public fixed-set APNAP producer, no generic
+hidden-zone or restarting APNAP, native two-seat practice only, no Commander,
+no Arcane/splice interactions, and automatic lethal-first combat assignment.
+The failed harness classifier fixture is synthetic; legal-pool draw coverage
+and broad historical implementation-first work are not relabelled as genuine
+RED/GREEN. No merge, master write, issue closure or full M1 acceptance is
+authorized by this handoff.
+
 ## Integration 3-4 candidate (current — supersedes 3-1 and the historical sections below)
 
 Integration 3-4 adds the independently reviewed gap commit

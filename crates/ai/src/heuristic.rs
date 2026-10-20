@@ -91,6 +91,11 @@ impl HeuristicPolicy {
             Some(PendingKind::DeclareBlockers) => Action::DeclareBlockers {
                 blocks: self.blocks(view),
             },
+            Some(PendingKind::ApnapSacrifice) => view
+                .legal
+                .first()
+                .map(|legal| legal.action.clone())
+                .unwrap_or(Action::Pass),
             None => self.priority_action(view),
         }
     }
@@ -256,6 +261,27 @@ impl HeuristicPolicy {
             if view.legal.iter().any(|legal| legal.action == action) {
                 return Some(action);
             }
+        }
+
+        // Cast Crack the Earth when the engine offers it and an opponent has a
+        // permanent; the policy only picks an existing legal option.
+        if view
+            .opponents
+            .iter()
+            .any(|opponent| !opponent.eliminated && !opponent.battlefield.is_empty())
+            && let Some(legal) = view.legal.iter().find(|legal| {
+                matches!(
+                    &legal.action,
+                    Action::CastSpell { card, .. }
+                        if view
+                            .own_hand
+                            .iter()
+                            .any(|view_card| view_card.id == *card
+                                && view_card.card == CardId::CrackTheEarth)
+                )
+            })
+        {
+            return Some(legal.action.clone());
         }
 
         // Pump for lethal when some opponent's board is open.

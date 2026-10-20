@@ -59,6 +59,11 @@ pub enum Action {
     Discard {
         cards: Vec<ObjectId>,
     },
+    /// Answer Crack the Earth's APNAP sacrifice queue. `None` is legal only for
+    /// a seat with no controlled permanents (the choice is forced but explicit).
+    ChooseSacrifice {
+        permanent: Option<ObjectId>,
+    },
 }
 
 impl Action {
@@ -74,6 +79,7 @@ impl Action {
             Action::BottomCards { .. } => "bottom cards",
             Action::OrderCard { .. } => "order card",
             Action::Discard { .. } => "discard",
+            Action::ChooseSacrifice { .. } => "choose sacrifice",
         }
     }
 }

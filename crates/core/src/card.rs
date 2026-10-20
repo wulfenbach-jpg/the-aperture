@@ -78,6 +78,8 @@ pub enum Effect {
     CounterTargetSpell,
     /// Target creature gets +P/+T until end of turn.
     Pump(i32, i32),
+    /// Each player simultaneously sacrifices a permanent of their choice.
+    EachPlayerSacrifice,
 }
 
 impl Effect {
@@ -89,6 +91,7 @@ impl Effect {
             Effect::Damage(n) => format!("deal {n} damage to the target"),
             Effect::CounterTargetSpell => "counter target spell".to_string(),
             Effect::Pump(p, t) => format!("target creature gets {p:+}/{t:+} until end of turn"),
+            Effect::EachPlayerSacrifice => "each player sacrifices a permanent".to_string(),
         }
     }
 }
@@ -184,6 +187,7 @@ pub enum CardId {
     Divination,
     Opt,
     Consider,
+    CrackTheEarth,
 }
 
 impl CardId {

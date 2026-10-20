@@ -17,8 +17,8 @@ use crate::ids::{MAX_PLAYERS, MIN_PLAYERS, PlayerId};
 use crate::settings::AiSettings;
 use crate::state::Outcome;
 
-pub const REPLAY_VERSION: u32 = 2;
-pub const SAVE_VERSION: u32 = 3;
+pub const REPLAY_VERSION: u32 = 3;
+pub const SAVE_VERSION: u32 = 4;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReplayStep {

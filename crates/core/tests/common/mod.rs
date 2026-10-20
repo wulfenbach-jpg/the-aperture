@@ -71,6 +71,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
                 defender: None,
             },
             pending: None,
+            mulligan: None,
             resolving: None,
             next_object: 1,
             revision: 0,
@@ -228,6 +229,12 @@ pub fn auto_answer(game: &Game) -> Action {
                 defender: None,
             },
             Pending::DeclareBlockers { .. } => Action::DeclareBlockers { blocks: Vec::new() },
+            Pending::ApnapSacrifice { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| matches!(legal.action, Action::ChooseSacrifice { .. }))
+                .map(|legal| legal.action)
+                .expect("an APNAP sacrifice option is offered"),
             Pending::OrderCard { .. } => Action::OrderCard { to_top: true },
             Pending::BottomCards { .. } | Pending::Discard { .. } => game
                 .legal_actions()

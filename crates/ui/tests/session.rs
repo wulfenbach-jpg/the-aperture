@@ -199,3 +199,113 @@ fn sandbox_modified_save_roundtrip_preserves_the_uncertified_flag() {
     assert_eq!(other.game.digest(), digest);
     let _ = std::fs::remove_file(&path);
 }
+
+fn crack_deck() -> DeckList {
+    DeckList::new(
+        "Crack practice",
+        vec![(CardId::CrackTheEarth, 4), (CardId::Mountain, 36)],
+    )
+}
+
+fn crack_seed(decks: &[DeckList]) -> u64 {
+    for seed in 0..1_000u64 {
+        let (game, _) = aperture_core::Game::new_logged(seed, decks).expect("game");
+        let target = game.state.first_player;
+        let hand = &game.state.player(target).hand;
+        let has_crack = hand
+            .iter()
+            .any(|id| game.state.object(*id).card == CardId::CrackTheEarth);
+        let has_mountain = hand
+            .iter()
+            .any(|id| game.state.object(*id).card == CardId::Mountain);
+        if has_crack && has_mountain {
+            return seed;
+        }
+    }
+    panic!("a seed with Crack the Earth and Mountain");
+}
+
+#[test]
+fn native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human() {
+    let deck = crack_deck();
+    let decks = vec![deck.clone(), deck];
+    let seed = crack_seed(&decks);
+    let ai = AiSettings {
+        enabled: false,
+        human_seat: P0,
+        ai_seats: Vec::new(),
+        ..AiSettings::default()
+    };
+    let mut ui = UiSession::new(seed, decks, ai, false, false).expect("session");
+    let order = ui
+        .game
+        .state
+        .mulligan
+        .as_ref()
+        .expect("mulligan state")
+        .order
+        .clone();
+    for _ in order {
+        ui.submit(Action::Mulligan { keep: true })
+            .expect("opening hand kept");
+    }
+    let target = ui.game.state.first_player;
+    let mut guard = 0;
+    while !(ui.game.state.turn.active == target
+        && ui.game.state.turn.step == aperture_core::Step::PrecombatMain
+        && ui.game.state.turn.priority == Some(target)
+        && ui.game.state.stack.is_empty())
+    {
+        ui.submit(Action::Pass).expect("pass");
+        guard += 1;
+        assert!(guard < 64);
+    }
+    let mountain = ui
+        .game
+        .state
+        .player(target)
+        .hand
+        .iter()
+        .copied()
+        .find(|id| ui.game.state.object(*id).card == CardId::Mountain)
+        .expect("Mountain");
+    ui.submit(Action::PlayLand { card: mountain })
+        .expect("land");
+    ui.submit(Action::ActivateManaAbility { land: mountain })
+        .expect("mana");
+    let crack = ui
+        .game
+        .state
+        .player(target)
+        .hand
+        .iter()
+        .copied()
+        .find(|id| ui.game.state.object(*id).card == CardId::CrackTheEarth)
+        .expect("Crack");
+    ui.submit(Action::CastSpell {
+        card: crack,
+        targets: Vec::new(),
+    })
+    .expect("cast");
+    while !matches!(
+        ui.game.state.pending,
+        Some(aperture_core::Pending::ApnapSacrifice { .. })
+    ) {
+        ui.submit(Action::Pass).expect("pass");
+    }
+    let chooser = ui.owner().expect("chooser");
+    let choice = ui
+        .game
+        .legal_actions()
+        .into_iter()
+        .find(|legal| matches!(legal.action, Action::ChooseSacrifice { .. }))
+        .expect("a sacrifice choice is generated")
+        .action;
+    ui.ai.human_seat = if chooser == P0 { P1 } else { P0 };
+    assert!(ui.submit_human(choice.clone()).is_err());
+    ui.ai.human_seat = chooser;
+    ui.submit_human(choice).expect("entitled human answers");
+    assert_ne!(ui.owner(), Some(chooser), "the queue advanced");
+    let (replayed, _) = ui.replay.run().expect("the session replay reproduces");
+    assert_eq!(replayed.digest(), ui.game.digest());
+}

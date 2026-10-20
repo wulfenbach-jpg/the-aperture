@@ -23,7 +23,9 @@ use crate::event::Event;
 use crate::ids::{ObjectId, P0, PlayerId, Zone};
 use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
-use crate::state::{GameState, Object, OrderMode, Outcome, Pending, Player, StackItem, Step, Turn};
+use crate::state::{
+    GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, StackItem, Step, Turn,
+};
 
 /// Safety bound on scheduler iterations inside one submission. Reaching it is a
 /// truncation event, never a silently invented result.
@@ -127,6 +129,7 @@ impl Game {
                 defender: None,
             },
             pending: None,
+            mulligan: None,
             resolving: None,
             next_object: 1,
             revision: 0,
@@ -164,7 +167,28 @@ impl Game {
             turn: 1,
             active: first,
         });
-        game.state.pending = Some(Pending::Mulligan { player: P0 });
+        // CR 103.5: declarations start with the starting player, then turn
+        // order. All seats are live at game start.
+        let mut order = vec![first];
+        while order.len() < decks.len() {
+            let next = game
+                .state
+                .next_live_seat_after(*order.last().expect("order is not empty"))
+                .expect("all seats are live at game start");
+            order.push(next);
+        }
+        game.state.mulligan = Some(MulliganRound {
+            round: 1,
+            eligible: order.clone(),
+            previous_mulliganers: Vec::new(),
+            kept: Vec::new(),
+            order,
+            cursor: 0,
+            declarations: BTreeMap::new(),
+            bottom_queue: Vec::new(),
+            bottomed: Vec::new(),
+        });
+        game.state.pending = Some(Pending::Mulligan { player: first });
         game.state.validate()?;
         Ok((game, events))
     }
@@ -483,6 +507,38 @@ impl Game {
                 _ => Err(EngineError::illegal(
                     "discard",
                     "no cleanup discard is pending (CR 514.1)",
+                )),
+            },
+            Action::ChooseSacrifice { permanent } => match &state.pending {
+                Some(Pending::ApnapSacrifice { player: p, .. }) if *p == player => {
+                    let permanents = self.controlled_permanents(player);
+                    match permanent {
+                        Some(id) => {
+                            let object = state.try_object(*id).ok_or(EngineError::UnknownObject)?;
+                            if object.zone != Zone::Battlefield || object.controller != player {
+                                return Err(EngineError::WrongZone {
+                                    name: object.card.name(),
+                                    zone: "battlefield controlled by the choosing player",
+                                });
+                            }
+                            if !permanents.contains(id) {
+                                return Err(EngineError::illegal(
+                                    "choose sacrifice",
+                                    "that permanent is not controlled by the choosing seat",
+                                ));
+                            }
+                            Ok(())
+                        }
+                        None if permanents.is_empty() => Ok(()),
+                        None => Err(EngineError::illegal(
+                            "choose sacrifice",
+                            "a controlled permanent exists, so one must be chosen (CR 701.21a)",
+                        )),
+                    }
+                }
+                _ => Err(EngineError::illegal(
+                    "choose sacrifice",
+                    "no simultaneous sacrifice choice is pending (CR 101.4)",
                 )),
             },
         }
@@ -864,6 +920,9 @@ impl Game {
             Action::BottomCards { cards } => self.apply_bottom(player, cards, events),
             Action::OrderCard { to_top } => self.apply_order_card(player, *to_top, events),
             Action::Discard { cards } => self.apply_discard(player, cards, events),
+            Action::ChooseSacrifice { permanent } => {
+                self.apply_apnap_sacrifice(player, *permanent, events)
+            }
         }
     }
 
@@ -1016,19 +1075,43 @@ impl Game {
     }
 
     fn apply_mulligan(&mut self, player: PlayerId, keep: bool, events: &mut Vec<Event>) {
+        let seat_count = self.state.seat_count();
+        let (order, cursor) = {
+            let Some(mulligan) = self.state.mulligan.as_mut() else {
+                return;
+            };
+            mulligan.declarations.insert(player, keep);
+            mulligan.cursor += 1;
+            (mulligan.order.clone(), mulligan.cursor)
+        };
         if keep {
             let size = self.state.player(player).hand_size();
             events.push(Event::KeepHand { player, size });
-            let mulligans = self.state.player(player).mulligans;
-            let count = cards_to_bottom(self.state.seat_count(), mulligans);
-            if count > 0 {
-                self.state.pending = Some(Pending::BottomCards { player, count });
-            } else {
-                self.advance_mulligan_order(player, events);
-            }
-        } else {
-            let cards = std::mem::take(&mut self.state.players[player as usize].hand);
-            let mut library = std::mem::take(&mut self.state.players[player as usize].library);
+        }
+        if cursor < order.len() {
+            self.state.pending = Some(Pending::Mulligan {
+                player: order[cursor],
+            });
+            return;
+        }
+
+        // Every eligible seat has declared. Execute this round's mulligans as
+        // one deterministic batch in turn order; no seat sees a new hand or
+        // makes a bottom choice before the batch completes.
+        let declarations = self
+            .state
+            .mulligan
+            .as_ref()
+            .map(|mulligan| mulligan.declarations.clone())
+            .unwrap_or_default();
+        let mulliganers: Vec<PlayerId> = order
+            .iter()
+            .copied()
+            .filter(|seat| declarations.get(seat) == Some(&false))
+            .collect();
+        for seat in &mulliganers {
+            let cards = std::mem::take(&mut self.state.players[*seat as usize].hand);
+            let mut library = std::mem::take(&mut self.state.players[*seat as usize].library);
             for card in cards {
                 if let Some(obj) = self.objects_mut(card) {
                     obj.zone = Zone::Library;
@@ -1036,14 +1119,37 @@ impl Game {
                 library.push(card);
             }
             self.state.rng.shuffle(&mut library);
-            self.state.players[player as usize].library = library;
-            self.state.players[player as usize].mulligans += 1;
-            let count = self.state.players[player as usize].mulligans;
-            events.push(Event::Mulligan { player, count });
+            self.state.players[*seat as usize].library = library;
+            self.state.players[*seat as usize].mulligans += 1;
+            let count = self.state.players[*seat as usize].mulligans;
+            events.push(Event::Mulligan {
+                player: *seat,
+                count,
+            });
             for _ in 0..STARTING_HAND {
-                self.draw(player, events);
+                self.draw(*seat, events);
             }
-            self.state.pending = Some(Pending::Mulligan { player });
+        }
+
+        // London bottoming is part of taking the mulligan (CR 103.5): queue the
+        // mulliganers who owe bottoms, then collect those choices without
+        // disturbing the declaration-round order.
+        let bottom_queue: Vec<PlayerId> = mulliganers
+            .iter()
+            .copied()
+            .filter(|seat| cards_to_bottom(seat_count, self.state.player(*seat).mulligans) > 0)
+            .collect();
+        if let Some(mulligan) = self.state.mulligan.as_mut() {
+            mulligan.bottom_queue = bottom_queue.clone();
+        }
+        if let Some(first) = bottom_queue.first().copied() {
+            let count = cards_to_bottom(seat_count, self.state.player(first).mulligans);
+            self.state.pending = Some(Pending::BottomCards {
+                player: first,
+                count,
+            });
+        } else {
+            self.begin_next_mulligan_round(mulliganers, events);
         }
     }
 
@@ -1063,27 +1169,74 @@ impl Game {
             player,
             count: cards.len(),
         });
-        self.state.pending = None;
-        self.advance_mulligan_order(player, events);
+
+        let remaining = {
+            let Some(mulligan) = self.state.mulligan.as_mut() else {
+                return;
+            };
+            if mulligan.bottom_queue.first() == Some(&player) {
+                mulligan.bottom_queue.remove(0);
+                mulligan.bottomed.push(player);
+            }
+            mulligan.bottom_queue.clone()
+        };
+        if let Some(next) = remaining.first().copied() {
+            let count = cards_to_bottom(self.state.seat_count(), self.state.player(next).mulligans);
+            self.state.pending = Some(Pending::BottomCards {
+                player: next,
+                count,
+            });
+        } else {
+            let mulliganers = self
+                .state
+                .mulligan
+                .as_ref()
+                .map(|mulligan| {
+                    mulligan
+                        .order
+                        .iter()
+                        .copied()
+                        .filter(|seat| mulligan.declarations.get(seat) == Some(&false))
+                        .collect()
+                })
+                .unwrap_or_default();
+            self.begin_next_mulligan_round(mulliganers, events);
+        }
     }
 
-    /// Mulligan decisions are prompted in seat order. Real Magic resolves the
-    /// pre-game procedure in APNAP order; the sequential prompt is a documented
-    /// bounded deviation, not a claim of simultaneity.
-    fn advance_mulligan_order(&mut self, player: PlayerId, events: &mut Vec<Event>) {
-        let next = (player as usize + 1..self.state.seat_count()).next();
-        match next {
-            Some(index) => {
-                self.state.pending = Some(Pending::Mulligan {
-                    player: index as PlayerId,
-                });
-            }
-            None => {
-                self.state.pending = None;
-                let active = self.state.turn.active;
-                self.grant_priority(active, events);
-            }
+    /// Start the next declaration round for exactly the seats that mulliganed;
+    /// kept hands are locked out. With no mulliganers the opening procedure is
+    /// complete and the first priority of turn 1 is granted.
+    fn begin_next_mulligan_round(&mut self, next_order: Vec<PlayerId>, events: &mut Vec<Event>) {
+        if next_order.is_empty() {
+            self.state.mulligan = None;
+            self.state.pending = None;
+            let active = self.state.turn.active;
+            self.grant_priority(active, events);
+            return;
         }
+        let first = {
+            let mulligan = self
+                .state
+                .mulligan
+                .as_mut()
+                .expect("a mulligan round exists while starting the next one");
+            for seat in &mulligan.order {
+                if mulligan.declarations.get(seat) == Some(&true) && !mulligan.kept.contains(seat) {
+                    mulligan.kept.push(*seat);
+                }
+            }
+            mulligan.round += 1;
+            mulligan.previous_mulliganers = next_order.clone();
+            mulligan.eligible = next_order.clone();
+            mulligan.order = next_order;
+            mulligan.cursor = 0;
+            mulligan.declarations.clear();
+            mulligan.bottom_queue.clear();
+            mulligan.bottomed.clear();
+            mulligan.order[0]
+        };
+        self.state.pending = Some(Pending::Mulligan { player: first });
     }
 
     fn apply_order_card(&mut self, player: PlayerId, to_top: bool, events: &mut Vec<Event>) {
@@ -1180,13 +1333,43 @@ impl Game {
     /// pending choice blocks progress.
     fn settle(&mut self, events: &mut Vec<Event>) {
         for _ in 0..SETTLE_LIMIT {
+            // No SBA or priority runs for normal play while a choice is
+            // outstanding (CR 608.2d). Externally injected sandbox departures
+            // still need to purge/resume the queue; this path cannot occur
+            // through the legal action interface because no effect changes life
+            // during the Crack the Earth choice.
+            if self.state.pending.is_some() {
+                let injected_departure = self
+                    .state
+                    .players
+                    .iter()
+                    .any(|player| !player.lost && (player.life <= 0 || player.drew_from_empty));
+                if injected_departure {
+                    self.check_sbas(events);
+                }
+                return;
+            }
+            // While a spell is resolving, its instructions complete before SBAs
+            // or any priority. SBAs run after resolution, before the next
+            // player would actually receive priority (CR 608.2, 117.5).
+            if self.state.resolving.is_some() {
+                self.advance_resolution(events);
+                if self.state.is_over() || self.state.pending.is_some() {
+                    return;
+                }
+                // The spell has finished resolving: run SBAs before granting the
+                // active player priority (CR 117.5, 704.4).
+                self.check_sbas(events);
+                if self.state.is_over() || self.state.pending.is_some() {
+                    return;
+                }
+                let active = self.state.turn.active;
+                self.grant_priority(active, events);
+                continue;
+            }
             self.check_sbas(events);
             if self.state.is_over() || self.state.pending.is_some() {
                 return;
-            }
-            if self.state.resolving.is_some() {
-                self.advance_resolution(events);
-                continue;
             }
             if self.state.turn.priority.is_none() {
                 self.advance_step(events);
@@ -1403,14 +1586,42 @@ impl Game {
             // CR 800.4a: priority passes to the next live player in turn order.
             self.state.turn.priority = self.state.next_live_seat_after(p);
         }
-        if self
-            .state
-            .pending
-            .as_ref()
-            .is_some_and(|pending| pending.player() == p)
-        {
-            self.state.pending = None;
-            self.state.resolving = None;
+        match self.state.pending.take() {
+            Some(Pending::ApnapSacrifice {
+                mut order,
+                mut choices,
+                ..
+            }) => {
+                if order.contains(&p) || choices.contains_key(&p) {
+                    order.retain(|seat| *seat != p);
+                    choices.remove(&p);
+                    if let Some(next) = order.first().copied() {
+                        self.state.pending = Some(Pending::ApnapSacrifice {
+                            player: next,
+                            order,
+                            choices,
+                        });
+                    } else {
+                        // The departing seat was the last required answer:
+                        // apply the remaining public choices as one batch.
+                        self.apply_apnap_choices(&choices, events);
+                    }
+                } else {
+                    self.state.pending = Some(Pending::ApnapSacrifice {
+                        player: order.first().copied().unwrap_or(p),
+                        order,
+                        choices,
+                    });
+                }
+            }
+            Some(pending) => {
+                if pending.player() == p {
+                    self.state.resolving = None;
+                } else {
+                    self.state.pending = Some(pending);
+                }
+            }
+            None => {}
         }
 
         events.push(Event::StateBasedAction {
@@ -1607,13 +1818,104 @@ impl Game {
         }
     }
 
-    fn finish_resolution(&mut self, events: &mut Vec<Event>) {
-        // CR 117.3b: the active player receives priority after a spell resolves.
-        let active = self.state.turn.active;
-        self.grant_priority(active, events);
+    fn finish_resolution(&mut self, _events: &mut Vec<Event>) {
+        // Priority is granted by settle() only after resolution completes and
+        // SBAs have run (CR 117.5, 704.4). No Priority event is emitted here.
+        self.state.turn.priority = None;
     }
 
     /// Returns true when the effect created a pending decision.
+    fn controlled_permanents(&self, player: PlayerId) -> Vec<ObjectId> {
+        self.state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
+            .map(|object| object.id)
+            .collect()
+    }
+
+    /// Circular APNAP order anchored at `anchor`, restricted to `eligible`.
+    fn apnap_order_from(&self, anchor: PlayerId, eligible: &[PlayerId]) -> Vec<PlayerId> {
+        let mut order = Vec::with_capacity(eligible.len());
+        for offset in 0..self.state.seat_count() {
+            let seat = ((anchor as usize + offset) % self.state.seat_count()) as PlayerId;
+            if eligible.contains(&seat) {
+                order.push(seat);
+            }
+        }
+        order
+    }
+
+    fn begin_apnap_sacrifice(&mut self, _events: &mut Vec<Event>) {
+        let anchor = self.state.turn.active;
+        let eligible: Vec<PlayerId> = self.state.live_seats().collect();
+        if eligible.is_empty() {
+            return;
+        }
+        let order = self.apnap_order_from(anchor, &eligible);
+        if let Some(player) = order.first().copied() {
+            self.state.pending = Some(Pending::ApnapSacrifice {
+                player,
+                order,
+                choices: BTreeMap::new(),
+            });
+        }
+    }
+
+    fn apply_apnap_sacrifice(
+        &mut self,
+        player: PlayerId,
+        permanent: Option<ObjectId>,
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::ApnapSacrifice {
+            mut order,
+            mut choices,
+            ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        events.push(Event::SacrificeChosen { player, permanent });
+        if order.first() == Some(&player) {
+            order.remove(0);
+        }
+        choices.insert(player, permanent);
+        match order.first().copied() {
+            Some(next) => {
+                self.state.pending = Some(Pending::ApnapSacrifice {
+                    player: next,
+                    order,
+                    choices,
+                });
+            }
+            None => self.apply_apnap_choices(&choices, events),
+        }
+    }
+
+    /// Apply all collected choices as one deterministic batch. No SBA or
+    /// priority runs between individual sacrifices; resolution continues after
+    /// the batch through the normal scheduler.
+    fn apply_apnap_choices(
+        &mut self,
+        choices: &BTreeMap<PlayerId, Option<ObjectId>>,
+        events: &mut Vec<Event>,
+    ) {
+        let anchor = self.state.turn.active;
+        let eligible: Vec<PlayerId> = choices.keys().copied().collect();
+        for seat in self.apnap_order_from(anchor, &eligible) {
+            let Some(Some(id)) = choices.get(&seat) else {
+                continue;
+            };
+            let valid = self.state.try_object(*id).is_some_and(|object| {
+                object.zone == Zone::Battlefield && object.controller == seat
+            });
+            if valid {
+                self.move_to_graveyard(*id, events);
+            }
+        }
+    }
+
     fn apply_effect(&mut self, effect: Effect, item: &StackItem, events: &mut Vec<Event>) -> bool {
         let controller = item.controller;
         match effect {
@@ -1673,6 +1975,10 @@ impl Game {
                     }
                 }
                 false
+            }
+            Effect::EachPlayerSacrifice => {
+                self.begin_apnap_sacrifice(events);
+                self.state.pending.is_some()
             }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
@@ -2126,6 +2432,27 @@ impl Game {
                 label: format!("Discard the last {count} card(s) of hand"),
                 rules: vec!["514.1"],
             }],
+            Pending::ApnapSacrifice { player, .. } => {
+                let permanents = self.controlled_permanents(*player);
+                if permanents.is_empty() {
+                    vec![LegalAction {
+                        action: Action::ChooseSacrifice { permanent: None },
+                        label: "Sacrifice nothing (no permanents)".to_string(),
+                        rules: vec!["101.4", "701.21a"],
+                    }]
+                } else {
+                    permanents
+                        .into_iter()
+                        .map(|id| LegalAction {
+                            action: Action::ChooseSacrifice {
+                                permanent: Some(id),
+                            },
+                            label: format!("Sacrifice {}", self.describe_object(id)),
+                            rules: vec!["101.4", "701.21a"],
+                        })
+                        .collect()
+                }
+            }
         }
     }
 

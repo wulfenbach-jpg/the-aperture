@@ -54,34 +54,41 @@ fn the_same_seed_and_actions_produce_the_same_state_digest() {
 #[test]
 fn london_mulligan_bottoms_one_card_per_mulligan() {
     let (mut game, mut log) = Game::new_logged(1, &[deck_a(), deck_b()]).expect("game");
-    assert!(matches!(
-        game.state.pending,
-        Some(Pending::Mulligan { player: P0 })
-    ));
-    assert_eq!(game.state.player(P0).hand_size(), 7);
-    let events = submit_ok(&mut game, P0, Action::Mulligan { keep: false });
+    let order = game
+        .state
+        .mulligan
+        .as_ref()
+        .expect("opening mulligan state")
+        .order
+        .clone();
+    let first = order[0];
+    let second = order[1];
+    assert_eq!(game.decision_owner(), Some(first));
+    assert_eq!(game.state.player(first).hand_size(), 7);
+
+    submit_ok(&mut game, first, Action::Mulligan { keep: false });
+    assert_eq!(
+        game.state.player(first).hand_size(),
+        7,
+        "no redraw before the other seat declares"
+    );
+    let events = submit_ok(&mut game, second, Action::Mulligan { keep: true });
     assert!(events.iter().any(|e| matches!(
         e,
         Event::Mulligan {
-            player: P0,
+            player,
             count: 1
-        }
+        } if *player == first
     )));
-    assert_eq!(game.state.player(P0).mulligans, 1);
+    assert_eq!(game.state.player(first).mulligans, 1);
     assert_eq!(
-        game.state.player(P0).hand_size(),
+        game.state.player(first).hand_size(),
         7,
-        "a fresh seven is drawn"
+        "a fresh seven is drawn at batch execution"
     );
-    assert!(matches!(
-        game.state.pending,
-        Some(Pending::Mulligan { player: P0 })
-    ));
-
-    submit_ok(&mut game, P0, Action::Mulligan { keep: true });
     match &game.state.pending {
         Some(Pending::BottomCards { player, count }) => {
-            assert_eq!(*player, P0);
+            assert_eq!(*player, first);
             assert_eq!(*count, 1);
         }
         other => panic!("expected a bottoming decision, got {other:?}"),
@@ -92,18 +99,18 @@ fn london_mulligan_bottoms_one_card_per_mulligan() {
         Action::BottomCards { cards } => cards.clone(),
         other => panic!("unexpected action {other:?}"),
     };
-    submit_ok(&mut game, P0, Action::BottomCards { cards: chosen });
-    assert_eq!(game.state.player(P0).hand_size(), 6);
-    assert_eq!(game.state.player(P0).library.len(), 34);
-    assert!(matches!(
+    submit_ok(&mut game, first, Action::BottomCards { cards: chosen });
+    assert_eq!(game.state.player(first).hand_size(), 6);
+    assert_eq!(game.state.player(first).library.len(), 34);
+    assert_eq!(
         game.state.pending,
-        Some(Pending::Mulligan { player: P1 })
-    ));
+        Some(Pending::Mulligan { player: first })
+    );
 
-    submit_ok(&mut game, P1, Action::Mulligan { keep: true });
+    submit_ok(&mut game, first, Action::Mulligan { keep: true });
     assert_eq!(game.state.pending, None);
-    assert_eq!(game.state.player(P1).hand_size(), 7);
-    assert_eq!(game.state.player(P1).library.len(), 33);
+    assert_eq!(game.state.player(second).hand_size(), 7);
+    assert_eq!(game.state.player(second).library.len(), 33);
     assert!(game.state.turn.priority.is_some(), "turn 1 can begin");
     log.clear();
 }
@@ -112,7 +119,7 @@ fn london_mulligan_bottoms_one_card_per_mulligan() {
 fn save_and_load_restore_pending_choices_rng_and_ai_settings() {
     let (game, log) = Game::new_logged(5, &[deck_a(), deck_b()]).expect("game");
     assert!(
-        matches!(game.state.pending, Some(Pending::Mulligan { player: P0 })),
+        matches!(game.state.pending, Some(Pending::Mulligan { .. })),
         "the opening mulligan is a pending choice with the RNG position"
     );
     let mut replay = Replay::new(

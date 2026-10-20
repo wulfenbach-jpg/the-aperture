@@ -21,9 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported pool (15 real cards)**: Island, Mountain, Forest, Grizzly Bears,
-  Runeclaw Bear, Centaur Courser, Craw Wurm, Hill Giant, Giant Growth, Shock,
-  Lightning Strike, Counterspell, Divination, Opt, Consider.
+* **Supported branch-candidate pool (16 real cards)**: Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike, Counterspell, Divination, Opt, Consider, and **Crack the Earth** (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No other card or ability is added. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
 * **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `harness`,
@@ -31,16 +29,21 @@ implementation and it says so everywhere it matters.
 * **2–4-seat headless candidate (M1, partial and unreleased):** ordered seats,
   turn wraparound/skipping after elimination, all-live priority pass tracking,
   masked per-seat projections, bounded one-defender combat declarations,
-  replay v2/save v3 and a `harness` command that runs paired 2/3/4-seat seeds and
-  verifies every replay digest. Terminal, capped and failed runs are reported
-  separately. This is **not** Commander support: the native table remains a
-  two-seat practice surface, APNAP simultaneous multi-player choices remain
-  unsupported/unexercised, and the pool is still the same 15 cards.
-* **Versioned persistence:** replay v2 embeds ordered seat deck snapshots and the
-  recorded first player; save v3 embeds the game, replay, seat snapshots, AI
-  settings and digest. Older replay/save versions are rejected explicitly rather
-  than silently reinterpreted, and a recorded `rules_revision` must match this
-  build before a replay runs.
+  replay v3/save v4 and a `harness` command that runs
+  paired 2/3/4-seat seeds and verifies every replay digest. Terminal, capped and
+  failed runs are reported separately. This is **not** Commander support: the
+  native table remains a two-seat practice surface. This branch implements
+  CR 103.5 starting-player mulligan rounds and one bounded, real fixed-set
+  public sacrifice producer (Crack the Earth); independent review and exact-head
+  CI remain delivery gates, not an automatic M1 acceptance. Generic APNAP hidden-zone choices,
+  dynamic/restarting APNAP, native 3/4-seat tables and Arcane/splice
+  interactions remain unsupported.
+* **Versioned persistence:** replay v3 embeds ordered seat deck snapshots and the
+  recorded first player; save v4 embeds the game, replay, seat snapshots, AI
+  settings and digest, including the mulligan round and sacrifice queue.
+  Older replay/save versions are rejected explicitly rather than silently
+  reinterpreted, and a recorded `rules_revision` must match this build before a
+  replay runs. The pinned rules revision is unchanged.
 * **Native desktop UI** (`aperture`): dark charcoal/brass card table with both
   battlefields, stack view, own hand, legal-action buttons, coaching panel,
   viewer-masked log, pending-choice controls, sandbox tools, **two-seat deck
@@ -122,14 +125,16 @@ probability. See HANDOFF.md for the tested/untested status of that path.
 ## What is explicitly NOT implemented
 
 Commander (any form), networked multiplayer or native multiplayer beyond the
-two-seat table (3/4 seats are headless/CLI only and APNAP simultaneous choices
-are unsupported), triggered abilities, activated abilities other
+two-seat table (3/4 seats are headless/CLI only), generic hidden-zone APNAP or
+dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
+Earth sacrifice candidate, triggered abilities, activated abilities other
 than basic-land mana abilities, static abilities, replacement/prevention effects,
 tokens, planeswalkers, counters as rules objects, milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
-layers beyond a single until-end-of-turn pump, and any card outside the pool of
-15. Unsupported decks are refused at import rather than silently substituted.
-`pool` prints the same list.
+layers beyond a single until-end-of-turn pump, Arcane/splice interactions, and any
+card outside this branch candidate's 16-card pool.
+Unsupported decks are refused at import rather than silently substituted.
+`pool` prints the implemented list.
 
 **Combat damage assignment is narrowed.** CR 510.1c lets the attacking player
 divide a blocked creature's damage among its blockers as they choose; this slice
