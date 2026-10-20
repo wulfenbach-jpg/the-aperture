@@ -1,6 +1,53 @@
 # THE APERTURE — M1 execution handoff
 
-## Integration 3-1 candidate (current — supersedes the historical sections below)
+## Integration 3-4 candidate (current — supersedes 3-1 and the historical sections below)
+
+Integration 3-4 adds the independently reviewed gap commit
+`fa95094714f5724a814cc144e3c5b8526055e772` on top of `15fcd86`, integrated
+here as `612a352`. It adds all-viewer masked-digest noninterference, sandbox
+save/load round-trip coverage, CLI harness classifier/exit-code tests, and the
+actual AI land-drop entitlement fix. That fix carries genuine pre-fix RED in
+`run33/gaps3-2/ai-entitlement-red.log` (exit 101: P1 played a land outside the
+legal action set); the GREEN run restricts `PlayLand` to an exact `view.legal`
+action. No later unreviewed Kernel commit and no new APNAP or mulligan mechanics
+were integrated.
+
+Verification for this candidate (raw logs in `run33/integration3-4/`):
+
+- `cargo fmt --check` — exit 0
+- `cargo test --all-targets --locked` — 166 passed, 0 failed, 0 ignored
+- `cargo clippy --all-targets --locked -- -D warnings` — exit 0
+- `cargo build --release --locked` — exit 0
+- retained conformance suite — 5 test functions / 8 cases, exit 0
+- paired harness, seed base 6100 — 12/12 terminal, 0 capped, 0 failed, all replay
+  digests verified, exit 0
+- step-capped probe, seed base 6200, `--max-steps 5` — 6/6 capped, exit 2, all
+  replay digests verified
+- time-capped probe, seed base 6300, `--max-millis 1` — 6/6 capped, exit 2, all
+  replay digests verified
+
+Scope and limitations, explicitly unresolved:
+
+- **Not Commander.** The pool remains 15 cards; 2–4 seats are headless/CLI only;
+  the native table remains two-seat practice.
+- APNAP simultaneous multi-player choices (CR 101.4) remain unsupported and
+  unexercised.
+- CR 103.5 mulligan declarations still start at P0 rather than the starting
+  player, and remain sequential rather than simultaneous. This is a known
+  bounded deviation, not fixed by this candidate.
+- The `RunStatus::Failed` classifier test is explicitly a synthetic
+  classifier/exit-code test, not a failed real game; terminal harness rows are
+  therefore not proof that no policy action was ever rejected internally.
+- Native input evidence from the owner's `run33/integration-native-input.json`
+  exercise belongs to the earlier `15fcd86` candidate; it is not claimed here as
+  a new-head exercise, and no OS-level pointer/keyboard automation was performed.
+- Replay v2/save v3 change serialized two-seat digests once; older versions are
+  rejected explicitly rather than migrated.
+- This candidate is local only: no push, no PR update, no merge, no issue
+  closure, and no claim that M1 is complete.
+
+### Integration 3-1 candidate (previous — superseded by 3-4)
+
 
 This candidate integrates the independently reviewed Kernel sequence
 `63094a6, c57e79c, 5892783, 4c127b4, 878e28d, c1bd36f, 2f907f1` (frozen review
