@@ -62,3 +62,14 @@ fn an_unsupported_card_in_a_text_list_is_refused_with_its_name() {
 fn an_empty_text_list_is_an_error() {
     assert!(import_text("Empty", "\n// nothing here\n").is_err());
 }
+
+#[test]
+fn crack_the_earth_is_certified_by_text_import() {
+    let text = "Deck\n4 Crack the Earth\n36 Mountain\n";
+    let (list, report) = import_text("Crack practice", text).expect("Crack the Earth imports");
+    assert_eq!(list.size(), 40);
+    assert!(report.launchable);
+    assert_eq!(report.supported_cards, 40);
+    assert_eq!(report.unsupported_cards, 0);
+    assert!(list.render().contains("Crack the Earth"));
+}

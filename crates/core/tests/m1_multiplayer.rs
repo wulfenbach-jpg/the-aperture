@@ -214,11 +214,13 @@ fn three_seat_replay_and_save_round_trip_and_v1_is_rejected() {
     assert_eq!(parsed.game().digest(), game.digest());
     assert_eq!(parsed.seats.len(), 3);
 
-    let mut old = serde_json::to_value(&replay).expect("json");
-    old["version"] = serde_json::json!(1);
-    match Replay::from_json(&serde_json::to_string(&old).unwrap()) {
-        Err(ReplayError::Version { got: 1, .. }) => {}
-        other => panic!("expected an explicit version rejection, got {other:?}"),
+    for old_version in [1u32, 2] {
+        let mut old = serde_json::to_value(&replay).expect("json");
+        old["version"] = serde_json::json!(old_version);
+        match Replay::from_json(&serde_json::to_string(&old).unwrap()) {
+            Err(ReplayError::Version { got, expected: 3 }) if got == old_version => {}
+            other => panic!("expected an explicit replay-v{old_version} rejection, got {other:?}"),
+        }
     }
     assert!(matches!(
         Replay::from_json("{"),
@@ -228,27 +230,51 @@ fn three_seat_replay_and_save_round_trip_and_v1_is_rejected() {
 
 #[test]
 fn first_multiplayer_mulligan_is_free_but_the_second_bottoms_one() {
-    // CR 103.5c
-    let (mut game, mut log) = Game::new_logged(31, &three_decks()).expect("game");
-    submit_ok(&mut game, P0, Action::Mulligan { keep: false });
-    assert_eq!(game.state.player(P0).mulligans, 1);
-    submit_ok(&mut game, P0, Action::Mulligan { keep: true });
+    // CR 103.5/103.5c: declare in starting-player order, execute the batch,
+    // then the free first mulligan bottoms nothing and the second bottoms one.
+    let (mut game, _) = Game::new_logged(31, &three_decks()).expect("game");
+    let order = game
+        .state
+        .mulligan
+        .as_ref()
+        .expect("opening mulligan state")
+        .order
+        .clone();
+    let first = order[0];
+    submit_ok(&mut game, first, Action::Mulligan { keep: false });
+    for player in order.iter().copied().skip(1) {
+        submit_ok(&mut game, player, Action::Mulligan { keep: true });
+    }
+    assert_eq!(game.state.player(first).mulligans, 1);
     assert_eq!(
         game.state.pending,
-        Some(Pending::Mulligan { player: 1 }),
-        "the free first mulligan bottoms no cards"
+        Some(Pending::Mulligan { player: first }),
+        "the free first mulligan bottoms no cards; only the mulliganer declares again"
     );
-    submit_ok(&mut game, 1, Action::Mulligan { keep: false });
-    submit_ok(&mut game, 1, Action::Mulligan { keep: false });
-    submit_ok(&mut game, 1, Action::Mulligan { keep: true });
+
+    submit_ok(&mut game, first, Action::Mulligan { keep: false });
+    assert_eq!(game.state.player(first).mulligans, 2);
     match &game.state.pending {
         Some(Pending::BottomCards { player, count }) => {
-            assert_eq!(*player, 1);
-            assert_eq!(*count, 1);
+            assert_eq!(*player, first);
+            assert_eq!(*count, 1, "the second multiplayer mulligan bottoms one");
         }
         other => panic!("expected one card on the bottom, got {other:?}"),
     }
-    let _ = &mut log;
+    let bottom = game
+        .legal_actions()
+        .into_iter()
+        .find(|legal| matches!(legal.action, Action::BottomCards { .. }))
+        .expect("a bottom action is offered")
+        .action;
+    submit_ok(&mut game, first, bottom);
+    assert_eq!(
+        game.state.pending,
+        Some(Pending::Mulligan { player: first }),
+        "the next declaration round still belongs to the mulliganer"
+    );
+    submit_ok(&mut game, first, Action::Mulligan { keep: true });
+    assert_eq!(game.state.pending, None);
 }
 
 #[test]
@@ -519,7 +545,7 @@ fn four_seat_eliminated_seat_projects_no_hidden_information() {
 }
 
 #[test]
-fn save_v2_is_rejected_explicitly() {
+fn save_v3_is_rejected_explicitly() {
     let (game, log) = Game::new_logged(62, &three_decks()).expect("game");
     let replay = Replay::new(
         62,
@@ -530,13 +556,13 @@ fn save_v2_is_rejected_explicitly() {
     .expect("replay");
     let save = SessionSave::capture(&game, replay, log, false);
     let mut value = serde_json::to_value(&save).expect("save json");
-    value["version"] = serde_json::json!(2);
+    value["version"] = serde_json::json!(3);
     match SessionSave::from_json(&serde_json::to_string(&value).expect("json")) {
         Err(ReplayError::Version {
-            got: 2,
-            expected: 3,
+            got: 3,
+            expected: 4,
         }) => {}
-        other => panic!("expected an explicit save-v2 rejection, got {other:?}"),
+        other => panic!("expected an explicit save-v3 rejection, got {other:?}"),
     }
 }
 
@@ -643,7 +669,14 @@ fn save_rejects_a_tampered_embedded_replay() {
         AiSettings::default(),
     )
     .expect("replay");
-    for player in [P0, 1, 2] {
+    let order = game
+        .state
+        .mulligan
+        .as_ref()
+        .expect("opening mulligan state")
+        .order
+        .clone();
+    for player in order {
         submit_recorded(
             &mut game,
             &mut replay,
@@ -700,4 +733,279 @@ fn all_viewers_ignore_hidden_state_for_2_3_4_seats() {
         );
         assert!(a.state.player(3.min(seats as u8 - 1)).life < 20);
     }
+}
+
+#[test]
+fn mulligan_declarations_start_with_the_starting_player_and_do_not_redraw_early() {
+    for seats in 2..=4usize {
+        let decks = vec![deck_a(); seats];
+        let (seed, mut game) = (0..200u64)
+            .map(|seed| (seed, Game::new(seed, &decks).expect("game")))
+            .find(|(_, game)| game.state.first_player != 0)
+            .expect("a seed where a non-P0 seat starts");
+        let first = game.state.first_player;
+        assert_eq!(
+            game.decision_owner(),
+            Some(first),
+            "{seats}-seat seed {seed}: declarations must start with P{first}"
+        );
+        let before = game.state.player(first).hand.clone();
+        let mulligans = game.state.player(first).mulligans;
+        submit_ok(&mut game, first, Action::Mulligan { keep: false });
+        assert_eq!(
+            game.state.player(first).hand,
+            before,
+            "{seats}-seat seed {seed}: no redraw before every eligible seat declares"
+        );
+        assert_eq!(
+            game.state.player(first).mulligans,
+            mulligans,
+            "{seats}-seat seed {seed}: mulligan count changes only at batch execution"
+        );
+        let next = game.state.next_live_seat_after(first).expect("next seat");
+        assert_eq!(
+            game.decision_owner(),
+            Some(next),
+            "{seats}-seat seed {seed}: next declaration follows turn order"
+        );
+    }
+}
+
+#[test]
+fn mulligan_rounds_wrap_and_lock_kept_hands() {
+    let (mut game, _) = Game::new_logged(32, &three_decks()).expect("game");
+    let order = game
+        .state
+        .mulligan
+        .as_ref()
+        .expect("mulligan state")
+        .order
+        .clone();
+    assert_eq!(order[0], game.state.first_player);
+    for window in order.windows(2) {
+        assert_eq!(
+            game.state.next_live_seat_after(window[0]),
+            Some(window[1]),
+            "declaration order follows turn order and wraps"
+        );
+    }
+    let kept = order[0];
+    let mulliganer = order[1];
+    let other = order[2];
+    let kept_hand = game.state.player(kept).hand.clone();
+    let other_hand = game.state.player(other).hand.clone();
+    submit_ok(&mut game, kept, Action::Mulligan { keep: true });
+    submit_ok(&mut game, mulliganer, Action::Mulligan { keep: false });
+    submit_ok(&mut game, other, Action::Mulligan { keep: true });
+    assert_eq!(game.state.player(mulliganer).mulligans, 1);
+    assert_eq!(game.state.player(kept).hand, kept_hand);
+    assert_eq!(game.state.player(other).hand, other_hand);
+    assert_eq!(
+        game.state.pending,
+        Some(Pending::Mulligan { player: mulliganer })
+    );
+    submit_ok(&mut game, mulliganer, Action::Mulligan { keep: true });
+    assert_eq!(game.state.pending, None);
+    assert_eq!(game.state.player(kept).hand, kept_hand);
+    assert_eq!(game.state.player(other).hand, other_hand);
+}
+
+#[test]
+fn wrong_seat_mulligan_is_rejected_without_mutation() {
+    let (mut game, _) = Game::new_logged(33, &three_decks()).expect("game");
+    let owner = game.decision_owner().expect("opening declarer");
+    let wrong = (owner + 1) % 3;
+    let digest = game.digest();
+    let revision = game.revision();
+    let pending = game.state.pending.clone();
+    let err = submit_err(&mut game, wrong, Action::Mulligan { keep: true });
+    assert!(matches!(err, EngineError::NotYourDecision { .. }), "{err}");
+    assert_eq!(game.digest(), digest);
+    assert_eq!(game.revision(), revision);
+    assert_eq!(game.state.pending, pending);
+}
+
+#[test]
+fn mulligan_intermediate_and_bottom_states_save_and_replay() {
+    let decks = vec![deck_a(), deck_b()];
+    let (mut game, _) = Game::new_logged(34, &decks).expect("game");
+    let mut replay =
+        Replay::new(34, game.state.first_player, decks, AiSettings::default()).expect("replay");
+    let order = game
+        .state
+        .mulligan
+        .as_ref()
+        .expect("mulligan state")
+        .order
+        .clone();
+    let first = order[0];
+    let second = order[1];
+    submit_recorded(
+        &mut game,
+        &mut replay,
+        first,
+        Action::Mulligan { keep: false },
+    );
+    submit_recorded(
+        &mut game,
+        &mut replay,
+        second,
+        Action::Mulligan { keep: true },
+    );
+    assert!(matches!(
+        game.state.pending,
+        Some(Pending::BottomCards { player, .. }) if player == first
+    ));
+    let save = SessionSave::capture(&game, replay.clone(), Vec::new(), false);
+    let parsed = SessionSave::from_json(&save.to_json()).expect("intermediate save round-trips");
+    assert_eq!(parsed.game().digest(), game.digest());
+    let (replayed, _) = replay.run().expect("intermediate replay reproduces");
+    assert_eq!(replayed.state, game.state);
+
+    let bottom = game
+        .legal_actions()
+        .into_iter()
+        .find(|legal| matches!(legal.action, Action::BottomCards { .. }))
+        .expect("bottom is offered")
+        .action;
+    submit_recorded(&mut game, &mut replay, first, bottom);
+    assert_eq!(
+        game.state.pending,
+        Some(Pending::Mulligan { player: first })
+    );
+    let save = SessionSave::capture(&game, replay.clone(), Vec::new(), false);
+    let parsed = SessionSave::from_json(&save.to_json()).expect("next-round save round-trips");
+    assert_eq!(parsed.game().digest(), game.digest());
+    let (replayed, _) = replay.run().expect("next-round replay reproduces");
+    assert_eq!(replayed.state, game.state);
+}
+
+#[test]
+fn save_rejects_malformed_mulligan_state() {
+    let decks = vec![deck_a(), deck_b()];
+    let (game, log) = Game::new_logged(35, &decks).expect("game");
+    let replay =
+        Replay::new(35, game.state.first_player, decks, AiSettings::default()).expect("replay");
+    let save = SessionSave::capture(&game, replay, log, false);
+    let mut value = serde_json::to_value(&save).expect("save json");
+    value["game"]["mulligan"]["cursor"] = serde_json::json!(99);
+    let json = serde_json::to_string(&value).expect("json");
+    assert!(
+        SessionSave::from_json(&json).is_err(),
+        "malformed mulligan state must be rejected, not silently accepted"
+    );
+}
+
+#[test]
+fn mulligan_validation_rejects_malformed_first_rounds() {
+    let (game, _) = Game::new_logged(301, &three_decks()).expect("game");
+    let mut reversed = game.state.clone();
+    if let Some(mulligan) = &mut reversed.mulligan {
+        mulligan.order.reverse();
+    }
+    assert!(
+        reversed.validate().is_err(),
+        "a reversed first-round mulligan order must be rejected"
+    );
+
+    let mut missing = game.state.clone();
+    if let Some(mulligan) = &mut missing.mulligan {
+        mulligan.order.pop();
+    }
+    assert!(
+        missing.validate().is_err(),
+        "a first-round order missing a live seat must be rejected"
+    );
+
+    let mut round_zero = game.state.clone();
+    if let Some(mulligan) = &mut round_zero.mulligan {
+        mulligan.round = 0;
+    }
+    assert!(round_zero.validate().is_err(), "round 0 is invalid");
+}
+
+#[test]
+fn later_mulligan_round_reversal_is_rejected_independently_of_metadata() {
+    let (mut game, _) = Game::new_logged(305, &three_decks()).expect("game");
+    let order = game.state.mulligan.as_ref().unwrap().order.clone();
+    submit_ok(&mut game, order[0], Action::Mulligan { keep: false });
+    submit_ok(&mut game, order[1], Action::Mulligan { keep: false });
+    submit_ok(&mut game, order[2], Action::Mulligan { keep: true });
+    let mut reversed = game.state.clone();
+    if let Some(mulligan) = &mut reversed.mulligan {
+        mulligan.eligible.reverse();
+        mulligan.previous_mulliganers = mulligan.eligible.clone();
+        mulligan.order = mulligan.eligible.clone();
+    }
+    if let Some(Pending::Mulligan { player }) = &mut reversed.pending {
+        *player = reversed.mulligan.as_ref().unwrap().order[0];
+    }
+    assert!(
+        reversed.validate().is_err(),
+        "a reversed later-round order must be rejected from the starting-player anchor"
+    );
+}
+
+#[test]
+fn paid_bottom_count_and_hand_shape_are_validated() {
+    // Two-seat first mulligans are paid; both seats owe one bottom.
+    let (mut game, _) = Game::new_logged(306, &[deck_a(), deck_b()]).expect("game");
+    let order = game.state.mulligan.as_ref().unwrap().order.clone();
+    for seat in order.clone() {
+        submit_ok(&mut game, seat, Action::Mulligan { keep: false });
+    }
+    match &game.state.pending {
+        Some(Pending::BottomCards { count, .. }) => assert_eq!(*count, 1),
+        other => panic!("expected a paid bottom, got {other:?}"),
+    }
+
+    let mut zero = game.state.clone();
+    if let Some(Pending::BottomCards { count, .. }) = &mut zero.pending {
+        *count = 0;
+    }
+    assert!(
+        zero.validate().is_err(),
+        "BottomCards count 0 must be rejected"
+    );
+
+    let mut forged = game.state.clone();
+    if let Some(mulligan) = &mut forged.mulligan {
+        mulligan.bottomed = vec![order[0]];
+        mulligan.bottom_queue = vec![order[1]];
+    }
+    if let Some(Pending::BottomCards { player, count }) = &mut forged.pending {
+        *player = order[1];
+        *count = 1;
+    }
+    assert!(
+        forged.validate().is_err(),
+        "a bottomed seat with an unbottomed hand must be rejected"
+    );
+}
+
+#[test]
+fn mulligan_round_counter_must_match_eligible_mulligan_counts() {
+    let (mut game, _) = Game::new_logged(307, &three_decks()).expect("game");
+    let order = game.state.mulligan.as_ref().unwrap().order.clone();
+    submit_ok(&mut game, order[0], Action::Mulligan { keep: false });
+    submit_ok(&mut game, order[1], Action::Mulligan { keep: false });
+    submit_ok(&mut game, order[2], Action::Mulligan { keep: true });
+    let mut forged = game.state.clone();
+    if let Some(mulligan) = &mut forged.mulligan {
+        mulligan.round = 3;
+    }
+    assert!(
+        forged.validate().is_err(),
+        "round 3 with eligible mulligan counts of 1 must be rejected"
+    );
+
+    // A legitimate mixed round: one seat mulligans again, the other keeps.
+    let mut mixed = game;
+    let order = mixed.state.mulligan.as_ref().unwrap().order.clone();
+    submit_ok(&mut mixed, order[0], Action::Mulligan { keep: false });
+    submit_ok(&mut mixed, order[1], Action::Mulligan { keep: true });
+    mixed
+        .state
+        .validate()
+        .expect("mixed keep/mulligan round is valid");
 }

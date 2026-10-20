@@ -350,3 +350,53 @@ fn heuristic_observes_the_acting_seat_and_returns_a_legal_action() {
         log.extend(events);
     }
 }
+
+#[test]
+fn heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice() {
+    let mut game = fixture(9)
+        .battlefield(P0, &[CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bear = battlefield_card(&game, P0, CardId::GrizzlyBears);
+    game.state.pending = Some(Pending::ApnapSacrifice {
+        player: P0,
+        order: vec![P0, 1],
+        choices: std::collections::BTreeMap::new(),
+    });
+    let view = game.view_for(P0, &[]);
+    let mut policy = HeuristicPolicy::new();
+    let decision = policy.decide(&view);
+    assert!(matches!(
+        decision.action,
+        Action::ChooseSacrifice {
+            permanent: Some(id)
+        } if id == bear
+    ));
+    assert!(
+        view.legal
+            .iter()
+            .any(|legal| legal.action == decision.action)
+    );
+}
+
+#[test]
+fn heuristic_casts_crack_the_earth_through_its_legal_option() {
+    let game = fixture(20)
+        .hand(P0, &[CardId::CrackTheEarth])
+        .battlefield(P0, &[CardId::Mountain])
+        .battlefield(1, &[CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let decision = decide(&game, P0);
+    assert!(
+        matches!(
+            decision.action,
+            Action::CastSpell {
+                card: id,
+                targets: ref t
+            } if id == hand_card(&game, P0, CardId::CrackTheEarth) && t.is_empty()
+        ),
+        "expected a legal Crack the Earth cast, got {:?}",
+        decision.action
+    );
+}

@@ -318,6 +318,24 @@ impl ApertureApp {
                         .submit_human(Action::DeclareBlockers { blocks });
                 }
             }
+            aperture_core::view::PendingKind::ApnapSacrifice => {
+                ui.label("Choose one of your permanents to sacrifice:");
+                let choices: Vec<(Action, String)> = view
+                    .legal
+                    .iter()
+                    .filter_map(|legal| match &legal.action {
+                        Action::ChooseSacrifice { .. } => {
+                            Some((legal.action.clone(), legal.label.clone()))
+                        }
+                        _ => None,
+                    })
+                    .collect();
+                for (action, label) in choices {
+                    if ui.button(label).clicked() {
+                        let _ = self.session.submit_human(action);
+                    }
+                }
+            }
             aperture_core::view::PendingKind::Discard { count }
             | aperture_core::view::PendingKind::BottomCards { count } => {
                 let is_discard = matches!(kind, aperture_core::view::PendingKind::Discard { .. });
@@ -752,7 +770,16 @@ impl ApertureApp {
                 if let Some(pending) = &view.pending {
                     ui.label(RichText::new(format!("WAITING: {pending}")).color(theme::WARN));
                 } else if let Some(owner) = owner {
-                    ui.label(format!("P{owner} holds priority"));
+                    if owner == human || view.priority == Some(owner) {
+                        ui.label(format!("P{owner} holds priority"));
+                    } else {
+                        ui.label(
+                            RichText::new(format!(
+                                "Waiting on P{owner} (no player has priority)"
+                            ))
+                            .color(theme::WARN),
+                        );
+                    }
                 } else if let Some(conclusion) = self.session.conclude() {
                     ui.label(RichText::new(conclusion).color(theme::GOOD).strong());
                 }
@@ -945,27 +972,30 @@ impl ApertureApp {
                     let _ = self.session.submit_human(action);
                 }
 
-                if view.pending_kind.is_some() {
+                if let Some(owner) = owner
+                    && owner != human
+                {
                     right.separator();
-                    let pending_seat = owner.unwrap_or(human);
-                    if pending_seat == human {
-                        let pending_view = view.clone();
-                        self.pending_controls(right, &pending_view);
+                    theme::heading(right, &format!("WAITING ON P{owner}"));
+                    if view.priority == Some(owner) {
+                        theme::muted(right, format!("P{owner} holds priority."));
                     } else {
-                        theme::heading(right, "WAITING ON THE OTHER SEAT");
                         theme::muted(
                             right,
                             format!(
-                                "P{pending_seat} must answer: {}. Your controls are disabled for this decision point.",
-                                view.pending.clone().unwrap_or_default()
+                                "P{owner} has a pending decision; details are private to that seat. No player has priority."
                             ),
                         );
-                        if self.session.seat_is_ai(pending_seat)
-                            && right.button("Let the AI answer (step)").clicked()
-                        {
-                            self.session.request_ai_decision_default();
-                        }
                     }
+                    if self.session.seat_is_ai(owner)
+                        && right.button("Let the AI answer (step)").clicked()
+                    {
+                        self.session.request_ai_decision_default();
+                    }
+                } else if view.pending_kind.is_some() {
+                    right.separator();
+                    let pending_view = view.clone();
+                    self.pending_controls(right, &pending_view);
                 }
 
                 if self.show_coach {
@@ -1143,6 +1173,7 @@ impl eframe::App for ApertureApp {
 #[cfg(test)]
 mod viewport_tests {
     use super::*;
+    use aperture_core::{CardId, DeckList, Game, Step};
 
     fn imported_app() -> ApertureApp {
         let startup = Startup {
@@ -1264,6 +1295,167 @@ mod viewport_tests {
         assert!(
             reachable,
             "the two certified decks' Start button never becomes visible in the actual 1100x760 application frame"
+        );
+    }
+    fn partial_apnap_app() -> ApertureApp {
+        let deck = DeckList::new(
+            "Native APNAP partial",
+            vec![(CardId::Mountain, 20), (CardId::CrackTheEarth, 20)],
+        );
+        let decks = vec![deck.clone(), deck];
+        let seed = (0..1_000u64)
+            .find(|seed| {
+                let game = Game::new(*seed, &decks).expect("game");
+                game.state.first_player == P0
+                    && game
+                        .state
+                        .player(P0)
+                        .hand
+                        .iter()
+                        .any(|id| game.state.object(*id).card == CardId::CrackTheEarth)
+                    && game
+                        .state
+                        .player(P0)
+                        .hand
+                        .iter()
+                        .any(|id| game.state.object(*id).card == CardId::Mountain)
+            })
+            .expect("seed with Mountain and Crack");
+        let ai = AiSettings {
+            enabled: true,
+            autoplay: false,
+            human_seat: P0,
+            ai_seats: vec![P1],
+            ..AiSettings::default()
+        };
+        let mut session = UiSession::new(seed, decks, ai, false, false).expect("session");
+        while matches!(
+            session.game.state.pending,
+            Some(aperture_core::Pending::Mulligan { .. })
+        ) {
+            session
+                .submit(Action::Mulligan { keep: true })
+                .expect("keep");
+        }
+        let mut guard = 0;
+        while !(session.game.state.turn.step == Step::PrecombatMain
+            && session.game.state.turn.priority == Some(P0)
+            && session.game.state.stack.is_empty())
+        {
+            session.submit(Action::Pass).expect("pass");
+            guard += 1;
+            assert!(guard < 64);
+        }
+        let mountain = *session
+            .game
+            .state
+            .player(P0)
+            .hand
+            .iter()
+            .find(|id| session.game.state.object(**id).card == CardId::Mountain)
+            .expect("Mountain");
+        session
+            .submit(Action::PlayLand { card: mountain })
+            .expect("land");
+        let crack = *session
+            .game
+            .state
+            .player(P0)
+            .hand
+            .iter()
+            .find(|id| session.game.state.object(**id).card == CardId::CrackTheEarth)
+            .expect("Crack");
+        session
+            .submit(Action::CastSpell {
+                card: crack,
+                targets: Vec::new(),
+            })
+            .expect("cast");
+        while !matches!(
+            session.game.state.pending,
+            Some(aperture_core::Pending::ApnapSacrifice { .. })
+        ) {
+            session.submit(Action::Pass).expect("pass");
+        }
+        let choice = session
+            .game
+            .legal_actions()
+            .into_iter()
+            .find(|legal| matches!(legal.action, Action::ChooseSacrifice { .. }))
+            .expect("sacrifice choice")
+            .action;
+        session.submit(choice).expect("answer P0");
+        let startup = Startup {
+            smoke: None,
+            seed,
+            deck_a: PathBuf::new(),
+            deck_b: PathBuf::new(),
+            deck_a_explicit: false,
+            deck_b_explicit: false,
+            ai_seat: 1,
+            human_autoplay: false,
+            autoplay: false,
+            use_decider: false,
+        };
+        ApertureApp {
+            session,
+            startup,
+            smoke_started: Instant::now(),
+            smoke_requested: false,
+            smoke_written: Arc::new(AtomicBool::new(false)),
+            last_ai_step: Instant::now(),
+            show_sandbox: false,
+            show_import: false,
+            show_zones: false,
+            show_coach: true,
+            frame_count: 0,
+        }
+    }
+
+    #[test]
+    fn partial_apnap_shows_generic_waiting_without_the_owner_label() {
+        let mut app = partial_apnap_app();
+        assert_eq!(app.session.owner(), Some(P1));
+        assert_eq!(app.session.game.state.turn.priority, None);
+        let ctx = egui::Context::default();
+        let mut output = ctx.run_ui(
+            egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(1100.0, 760.0),
+                )),
+                ..Default::default()
+            },
+            |ui| app.render_ui(ui),
+        );
+        output.textures_delta.clear();
+        let labels: Vec<String> = output
+            .shapes
+            .into_iter()
+            .filter_map(|clipped| match clipped.shape {
+                egui::Shape::Text(text) => Some(text.galley.text().to_owned()),
+                _ => None,
+            })
+            .collect();
+        assert!(
+            labels
+                .iter()
+                .any(|text| text.contains("Waiting on P1 (no player has priority)")),
+            "generic waiting status missing: {labels:?}"
+        );
+        assert!(
+            !labels.iter().any(|text| text.contains("P1 holds priority")),
+            "false priority claim shown: {labels:?}"
+        );
+        assert!(
+            !labels
+                .iter()
+                .any(|text| text.contains("choose a permanent to sacrifice")),
+            "unentitled APNAP label shown: {labels:?}"
+        );
+        assert!(
+            labels.iter().any(|text| text.contains("Let the AI answer")),
+            "AI step control missing: {labels:?}"
         );
     }
 }

@@ -40,6 +40,7 @@ pub enum PendingKind {
     DeclareBlockers,
     OrderCard { index: usize, mode: OrderMode },
     Discard { count: u8 },
+    ApnapSacrifice,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -289,6 +290,16 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
                 format!("P{player} discards a card")
             }
         }
+        Event::SacrificeChosen { player, permanent } => match permanent {
+            Some(id) => format!(
+                "P{player} chooses {} to sacrifice",
+                game.state
+                    .try_object(*id)
+                    .map(|object| object.card.name())
+                    .unwrap_or("a permanent")
+            ),
+            None => format!("P{player} has nothing to sacrifice"),
+        },
         Event::AttackersDeclared { player, attackers } => {
             if attackers.is_empty() {
                 format!("P{player} declares no attackers")
@@ -337,6 +348,10 @@ impl Game {
             }
             _ => Vec::new(),
         };
+        let pending_for_viewer = self.state.pending.as_ref().filter(|pending| match pending {
+            crate::state::Pending::ApnapSacrifice { player, .. } => *player == viewer,
+            _ => true,
+        });
         let rendered: Vec<String> = if log.len() > LOG_LINES {
             log[log.len() - LOG_LINES..]
                 .iter()
@@ -419,8 +434,8 @@ impl Game {
             active: self.state.turn.active,
             step: self.state.turn.step,
             priority: self.state.turn.priority,
-            pending: self.state.pending.as_ref().map(|p| p.describe()),
-            pending_kind: self.state.pending.as_ref().map(|p| match p {
+            pending: pending_for_viewer.map(|p| p.describe()),
+            pending_kind: pending_for_viewer.map(|p| match p {
                 crate::state::Pending::Mulligan { .. } => PendingKind::Mulligan,
                 crate::state::Pending::BottomCards { count, .. } => {
                     PendingKind::BottomCards { count: *count }
@@ -434,6 +449,7 @@ impl Game {
                 crate::state::Pending::Discard { count, .. } => {
                     PendingKind::Discard { count: *count }
                 }
+                crate::state::Pending::ApnapSacrifice { .. } => PendingKind::ApnapSacrifice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })

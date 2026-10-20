@@ -324,10 +324,21 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 OrderMode::Surveil => vec!["701.25a"],
             },
             Pending::Discard { .. } => vec!["514.1"],
+            Pending::ApnapSacrifice { .. } => vec!["101.4", "701.21a"],
+        };
+        let text = if matches!(pending, Pending::ApnapSacrifice { .. })
+            && pending.player() != viewer
+        {
+            format!(
+                "P{} has a simultaneous sacrifice choice pending; details are private to that seat.",
+                pending.player()
+            )
+        } else {
+            pending.describe()
         };
         out.push(Explanation {
             topic: "pending choice".to_string(),
-            text: pending.describe(),
+            text,
             rules,
         });
     }

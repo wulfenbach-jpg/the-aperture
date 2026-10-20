@@ -900,5 +900,6 @@ fn pending_name(pending: Option<&Pending>) -> &'static str {
         Some(Pending::OrderCard { .. }) => "OrderCard",
         Some(Pending::Discard { count: 2, .. }) => "Discard(2)",
         Some(Pending::Discard { .. }) => "Discard",
+        Some(Pending::ApnapSacrifice { .. }) => "ApnapSacrifice",
     }
 }

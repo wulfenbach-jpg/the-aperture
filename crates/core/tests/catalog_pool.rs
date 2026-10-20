@@ -87,6 +87,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::CounterTargetSpell => {
                     assert_eq!(spec.target, TargetSpec::Spell, "{}", card.name)
                 }
+                Effect::EachPlayerSacrifice => {
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name)
+                }
             }
         }
         // The card's own reminder text is consistent with its cost.

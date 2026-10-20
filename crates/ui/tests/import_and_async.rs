@@ -157,10 +157,11 @@ fn file_worker_reports_a_missing_path_instead_of_guessing() {
 #[test]
 fn a_stale_worker_completion_never_changes_the_replacement_game() {
     let mut ui = session(35);
-    // Give the AI the seat that owns the opening decision (P0's mulligan).
-    ui.ai.human_seat = P1;
-    ui.ai.ai_seats = vec![P0];
-    assert_eq!(ui.owner(), Some(P0));
+    // Give the AI whichever seat owns the opening declaration.
+    let opening = ui.owner().expect("opening declarer");
+    ui.ai.human_seat = if opening == P0 { P1 } else { P0 };
+    ui.ai.ai_seats = vec![opening];
+    assert_eq!(ui.owner(), Some(opening));
 
     let (release_tx, release_rx) = channel::<()>();
     let (running_tx, running_rx) = channel::<()>();
@@ -211,7 +212,7 @@ fn a_stale_worker_completion_never_changes_the_replacement_game() {
     assert_eq!(ui.game.revision(), 0);
     assert_eq!(
         ui.game.state.pending,
-        Some(Pending::Mulligan { player: P0 })
+        Some(Pending::Mulligan { player: opening })
     );
     assert!(ui.replay.steps.is_empty(), "no action was recorded");
 }
@@ -219,8 +220,9 @@ fn a_stale_worker_completion_never_changes_the_replacement_game() {
 #[test]
 fn a_fresh_worker_completion_is_applied() {
     let mut ui = session(36);
-    ui.ai.human_seat = P1;
-    ui.ai.ai_seats = vec![P0];
+    let opening = ui.owner().expect("opening declarer");
+    ui.ai.human_seat = if opening == P0 { P1 } else { P0 };
+    ui.ai.ai_seats = vec![opening];
     let ran = Arc::new(AtomicBool::new(false));
     let flag = ran.clone();
     assert!(ui.request_ai_decision(move |_view| {

@@ -1,4 +1,4 @@
-//! The supported card pool. Fifteen real cards; every printed ability is
+//! The supported card pool. Sixteen real cards; every printed ability is
 //! implemented. Card text is the short functional Oracle wording.
 //!
 //! Deliberate exclusions (documented in HANDOFF.md): no triggered abilities, no
@@ -15,6 +15,7 @@ const SHOCK: &[Effect] = &[Effect::Damage(2)];
 const STRIKE: &[Effect] = &[Effect::Damage(3)];
 const COUNTER: &[Effect] = &[Effect::CounterTargetSpell];
 const GROWTH: &[Effect] = &[Effect::Pump(3, 3)];
+const SACRIFICE_ALL: &[Effect] = &[Effect::EachPlayerSacrifice];
 
 const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
@@ -43,7 +44,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 15] = [
+pub static CARDS: [CardDef; 16] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -125,6 +126,12 @@ pub static CARDS: [CardDef; 15] = [
         type_line: "Instant", power: None, toughness: None,
         oracle: "Surveil 1. Draw a card.",
         spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: SURVEIL_ONE_DRAW })
+    ),
+    card!(
+        CrackTheEarth, "Crack the Earth", cost: Some("{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery — Arcane", power: None, toughness: None,
+        oracle: "Each player sacrifices a permanent of their choice.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: SACRIFICE_ALL })
     ),
 ];
 

@@ -10,6 +10,8 @@ The source license does **not** relicense Magic card names/text/art, official ru
 
 The existing provider JSON fixture is an integration test snapshot, not a bundled card database or a claim of content ownership. Do not expand fixtures into a scraped art/text collection. Packaging requires a separate third-party content review and an explicit support manifest.
 
+The working-tree candidate references the official Gatherer page for **Crack the Earth** (<https://gatherer.wizards.com/BOK/en-us/98/crack-the-earth>) to record its name, `{R}` cost, Sorcery — Arcane type and one-line Oracle text. The captured source file lives in the run scratch directory, not the repository; its provenance hash is recorded in [docs/rules-reference.md](docs/rules-reference.md). No card art or full card database is bundled, and the bundled practice decks are unchanged.
+
 ## Release policy
 
 * Prefer original graphical surfaces and user-supplied or separately permitted assets.

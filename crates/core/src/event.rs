@@ -114,6 +114,12 @@ pub enum Event {
         player: PlayerId,
         card: CardId,
     },
+    /// Public APNAP choice; the permanent is not sacrificed until every live
+    /// seat has answered.
+    SacrificeChosen {
+        player: PlayerId,
+        permanent: Option<ObjectId>,
+    },
     AttackersDeclared {
         player: PlayerId,
         attackers: Vec<ObjectId>,

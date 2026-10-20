@@ -3,8 +3,8 @@
 This document pins the Magic: The Gathering Comprehensive Rules revision this
 engine was written against, defines the executable conformance-case format used
 to keep rule behavior honest, and states exactly which behaviors are the official
-rule and which are deliberate, disclosed simplifications of the bounded
-two-seat practice slice described in [ROADMAP.md](ROADMAP.md).
+rule and which are deliberate, disclosed simplifications of the bounded practice
+slice described in [ROADMAP.md](ROADMAP.md).
 
 It is not a copy of the Comprehensive Rules. The complete third-party document
 is deliberately **not** bundled in this repository; only its provenance and
@@ -37,6 +37,27 @@ Invoke-WebRequest 'https://media.wizards.com/2026/downloads/MagicCompRules%20202
 
 Re-downloading and hashing is the only provenance check; a search-engine snippet,
 a mirror, or an assistant's memory is not an acceptable source.
+
+### Bounded card/source addition (branch candidate)
+
+The branch candidate implements one additional real card, **Crack the Earth**,
+bringing the candidate runtime pool from 15 to 16. It adds no other card,
+ability, trigger, Commander profile or native multiplayer surface, and the two
+bundled practice decks are unchanged.
+
+| Field | Value |
+| --- | --- |
+| Official card page | <https://gatherer.wizards.com/BOK/en-us/98/crack-the-earth> |
+| Captured source | `run35/crack-the-earth-official.txt` in the run scratch directory (not bundled in the repository) |
+| Captured-file SHA-256 | `fa92b2dd888e51aa7a5bdcad7fa99fc1c70c3d8648d9e7f6375aceec5afd6777` (the capture header also records `06ffaf75f6131eb22fd0711e2da1fe6f060ad0a16b87d8d880944ce12757e1af` for the fetched body) |
+| Name / cost / type | Crack the Earth; `{R}`; Sorcery — Arcane |
+| Oracle text | “Each player sacrifices a permanent of their choice.” |
+| Art | Not bundled; no card art is added to the repository |
+
+The Arcane subtype is descriptive only in this slice; splice and other Arcane
+interactions are unsupported. The candidate's sacrifice pipeline is a single
+fixed-set public effect: it does not certify generic hidden-zone choices,
+restarting/dependent APNAP choices, or any other CR 101.4 producer.
 
 ## 2. Executable conformance cases
 
@@ -173,48 +194,50 @@ These eight cases are two-seat practice-slice evidence. They are not a claim of
 complete rule coverage; each milestone adds cases with the cards and mechanics
 it actually certifies.
 
-## 3. Official rule vs. bounded policy
+## 3. Official rule vs. current bounded scope
 
 Anything not listed as implemented is unimplemented, not silently approximated.
+The current branch candidate has 2–4 ordered headless seats, first-turn draw
+policy, departure handling, masking, persistence replay v3/save v4, the harness,
+ordered mulligan rounds and one fixed-set sacrifice/APNAP producer. Rows marked
+**candidate** describe this branch, not an accepted M1 release. Independent
+candidate review and exact-head checks are delivery gates; passing them does
+not certify unsupported formats or complete rule coverage.
 
-| Behavior | Official rule | This slice | Where it is stated/tested |
+| Behavior | Official rule | Current bounded status | Where it is stated/tested |
 | --- | --- | --- | --- |
-| Multiplayer seats | CR 800, 806–810 | Two seats only (M1 adds live seats separately) | `HANDOFF.md` §10, `RULES_REVISION` scope |
-| Starting-player draw skip | CR 800.7: multiplayer starting player does **not** skip | Two-player skip is implemented (CR 103.8a); when multiplayer arrives it must be conditional on the configured game size (CR 100.1a/b, 800.1), not on surviving players | engine comment, `sba`/timing fixtures |
-| London mulligan | CR 103.5; CR 800.6 first multiplayer mulligan is free | Two-player London mulligan | `replay_digest.rs` |
-| Combat damage division among blockers | CR 510.1c: the attacking player chooses the division | Automatic lethal-first, no assignment choice | `multi-blocker-damage.json` `bounded_policy`, `combat_teaching.rs` |
-| Cleanup-step priority | CR 514.3a may grant priority when SBAs or triggers apply | Cleanup never grants priority | `HANDOFF.md` §10 |
-| Object identity across zones | CR 400.7: a new object is created per zone change | Identity is stable | `HANDOFF.md` §10 |
-| Counters | CR 122 | Stored/displayed only; no rules math | `state.rs` comment |
-| Triggers, activated abilities, statics, replacement/prevention, tokens, layers | CR 603, 602, 604, 614, 111, 613 | Not implemented (only basic-land mana abilities exist) | `catalog.rs`, `HANDOFF.md` §10 |
-| APNAP simultaneous choices | CR 101.4 | No supported effect or pending choice creates a simultaneous multi-player choice; declared attackers/blockers, mulligan, bottom, discard and scry/surveil are single-seat decisions | this document; must not be claimed as covered |
-| Combat damage to a departed player | CR 800.4e: not assigned | Not applicable while only two seats exist | handed to the M1 seat/elimination work |
-| Departed active player / turn completion | CR 800.4a, 800.4j, 800.4k | Not applicable while only two seats exist | handed to the M1 seat/elimination work |
+| Multiplayer seats | CR 800, 806–810 | Ordered 2–4 seats in the headless/CLI candidate; the native table remains two-seat practice. Turn order skips eliminated seats without renumbering. | `m1_multiplayer.rs`, `HANDOFF.md` |
+| Starting-player draw skip | CR 103.8a (two-player) and 103.8c/800.7 (other multiplayer) | Keyed to the **configured** game size: the two-player starting player skips the first draw; 3/4-seat games do not. A game that begins with more than two seats does not switch policy after an elimination. | engine comments, `m1_multiplayer.rs` |
+| London mulligan | CR 103.5, 103.5c | **Branch candidate:** declarations start with the starting player and rotate in turn order; all eligible seats declare before any redraw; each mulligan redraws then bottoms before the next declaration round; kept hands are locked; the first 3/4-seat mulligan is free; limits are 8 for 3/4 seats and 7 for two seats. Bottom collection remains sequential after the batch, so simultaneous execution is not claimed. | candidate `mulligan` tests; `MULLIGAN_RULE_CORRECTION.md` |
+| Fixed-set public sacrifice / bounded APNAP | CR 101.4, 101.4b, 608.2d, 701.21a | **Branch candidate:** only Crack the Earth produces this choice. The order is the active player then turn order, skipping departed seats; each live seat chooses one controlled permanent (or the engine-forced `None` when it controls none). All choices are collected before any permanent leaves; then valid chosen permanents move to their owners' graveyards as one deterministic batch. Sacrifice is not destroy or targeting, and no SBA/priority interleaves. This is not generic CR 101.4 support. | candidate APNAP/sacrifice tests; `APNAP_CONTRACT.md` |
+| Hidden-zone/dependent APNAP choices | CR 101.4a, 101.4d | Unsupported and not claimed: the only candidate producer has public, fixed-set choices and cannot create a dependent/restarting choice. | this document; `APNAP_CONTRACT.md` |
+| Combat damage division among blockers | CR 510.1c | Automatic lethal-first, one defending seat per declaration, no manual assignment or per-attacker defender split. | `multi-blocker-damage.json` `bounded_policy`, `combat_teaching.rs` |
+| Cleanup-step priority | CR 514.3a | Cleanup never grants priority. | `HANDOFF.md` |
+| Object identity across zones | CR 400.7 | Identity is stable. | `HANDOFF.md` |
+| Counters | CR 122 | Stored/displayed only; no rules math. | `state.rs` comment |
+| Triggers, activated abilities, statics, replacement/prevention, tokens, layers | CR 603, 602, 604, 614, 111, 613 | Not implemented (only basic-land mana abilities exist). | `catalog.rs`, `HANDOFF.md` |
+| Combat damage to a departed player | CR 800.4e | Not assigned; the current candidate preserves this on departure. | `m1_multiplayer.rs` |
+| Departed active player / turn completion | CR 800.4a, 800.4j, 800.4k | Implemented in the 2–4-seat candidate: the turn continues without an active player, priority passes to the next live seat, and a departed player's would-be turn does not begin. | `m1_multiplayer.rs`, `HANDOFF.md` |
+| Simultaneous loss of all remaining players | CR 104.4a (with 104.4c, 104.5) | Engine draw projection; unexercised by the current pool. | `HANDOFF.md` |
 
-The first-player draw skip is the one two-player-only rule that becomes
-*incorrect* (not merely incomplete) with more seats: CR 103.8c says that in all
-other multiplayer games no player skips the draw step of their first turn
-(restated by CR 800.7). That change must arrive with the multiplayer scheduler
-and its own fixtures, not by editing the two-player expectation.
+### Persistence candidate
 
-### M1 migration notes (planned, not yet implemented)
+This branch writes replay v3/save v4 so the mulligan round and sacrifice queue
+serialize exactly. The previous published candidate (`74df9a6`) wrote replay
+v2/save v3; those and older files are explicitly rejected, never reinterpreted.
+The pinned `RULES_REVISION` remains `2026-09-25`; schema versioning is separate
+from rules provenance. The branch remains a candidate subject to independent
+review and exact-head verification, not an accepted M1 release.
 
-These are pinned citations for the multiplayer work, recorded here so the
-two-seat evidence is never silently rewritten. None of them is implemented in
-the current build, and none may be claimed as covered until its fixtures exist.
+### Unsupported formats and disclosures
 
-| Planned behavior | Official rule | Note |
-| --- | --- | --- |
-| 3–4 player games draw on turn one | CR 103.8c, 800.7; classification: 100.1b, 800.1 | Keyed to the **configured** game size (a game that *begins* with more than two players), not to the number of surviving players. This is fixed at game setup and never switches after an elimination; the two-player skip stays for a game configured for two. |
-| First multiplayer mulligan is free | CR 103.5c, 800.6; classification: 100.1b, 800.1 | Also keyed to the **configured** game size (three or more players at game start), not to survivors. Eliminating a player never grants or removes a free first mulligan mid-game, and the free mulligan does not count toward bottoms or the mulligan limit. |
-| Mulligan limit | CR 103.5 | The slice's limit must be re-checked against the multiplayer count, not assumed from the two-player value. |
-| Mulligan declarations | CR 103.5 | Official play is simultaneous declaration then simultaneous mulligans; sequential prompts remain a disclosed bounded deviation. |
-| Simultaneous loss of all remaining players | CR 104.4a (with 104.4c and 104.5) | Draws project to an engine draw outcome; unexercised by the current card pool. |
-| APNAP ordered choices | CR 101.4 | No supported effect or pending choice creates a simultaneous multi-player choice, so this stays explicitly unsupported/unexercised. |
-| Seat departure mid-turn | CR 800.4a, 800.4j, 800.4k | Turn continues without an active player; see the handoff for the internal removed-zone representation. |
-
-Two-Headed Giant, shared team turns and non-London variants are out of scope and
-must not be implemented or implied by these notes.
+Two-Headed Giant, shared team turns, non-London mulligan variants, Commander,
+card art, native 3/4-seat tables and Arcane/splice interactions are out of scope.
+Generic hidden-zone APNAP and dynamically restarting APNAP are not implemented,
+and the single Crack the Earth producer must not be presented as full CR 101.4
+coverage. The existing eight conformance cases remain two-seat evidence and are
+retained unchanged; they do not certify the new card, mulligan round or
+sacrifice pipeline.
 
 ## 4. Reviewing a new rules revision
 

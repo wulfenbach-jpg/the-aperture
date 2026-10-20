@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
-use crate::card::CardId;
+use crate::card::{CardId, Effect};
 use crate::error::EngineError;
 use crate::ids::{MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
 use crate::mana::ManaPool;
@@ -129,6 +129,37 @@ pub enum Pending {
         player: PlayerId,
         count: u8,
     },
+    /// Crack the Earth's simultaneous sacrifice queue. `order` is the remaining
+    /// unchosen live seats in APNAP order; `choices` holds public answers.
+    ApnapSacrifice {
+        player: PlayerId,
+        order: Vec<PlayerId>,
+        choices: BTreeMap<PlayerId, Option<ObjectId>>,
+    },
+}
+
+/// One declaration round of the pre-game mulligan procedure (CR 103.5).
+/// Declarations are collected in starting-player turn order; only after the
+/// whole round is collected are the mulligans executed as one batch.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct MulliganRound {
+    pub round: u8,
+    /// Exact eligible seats for this round (previous mulliganers after round 1).
+    pub eligible: Vec<PlayerId>,
+    /// Seats that mulliganed in the previous round; empty in round 1.
+    pub previous_mulliganers: Vec<PlayerId>,
+    /// Seats locked in by a keep declaration across all rounds.
+    pub kept: Vec<PlayerId>,
+    /// Eligible seats in starting-player APNAP order (equal to `eligible`).
+    pub order: Vec<PlayerId>,
+    /// Index of the next seat that must declare.
+    pub cursor: usize,
+    /// `true` = keep, `false` = mulligan, for seats `order[..cursor]`.
+    pub declarations: BTreeMap<PlayerId, bool>,
+    /// Mulliganers whose post-redraw London bottom choice is still pending.
+    pub bottom_queue: Vec<PlayerId>,
+    /// Mulliganers whose bottom choice was already collected this batch.
+    pub bottomed: Vec<PlayerId>,
 }
 
 impl Pending {
@@ -139,7 +170,8 @@ impl Pending {
             | Pending::DeclareAttackers { player }
             | Pending::DeclareBlockers { player }
             | Pending::OrderCard { player, .. }
-            | Pending::Discard { player, .. } => *player,
+            | Pending::Discard { player, .. }
+            | Pending::ApnapSacrifice { player, .. } => *player,
         }
     }
 
@@ -184,6 +216,9 @@ impl Pending {
             }
             Pending::Discard { player, count } => {
                 format!("P{player}: discard {count} card(s) down to maximum hand size (CR 514.1)")
+            }
+            Pending::ApnapSacrifice { player, .. } => {
+                format!("P{player}: choose a permanent to sacrifice (CR 101.4, 701.21a)")
             }
         }
     }
@@ -312,6 +347,9 @@ pub struct GameState {
     pub stack: Vec<StackItem>,
     pub turn: Turn,
     pub pending: Option<Pending>,
+    /// Pre-game mulligan declaration/execution state (CR 103.5). `None` after
+    /// the opening procedure finishes.
+    pub mulligan: Option<MulliganRound>,
     /// Object id of the stack item currently resolving (CR 608.2), if any.
     pub resolving: Option<ObjectId>,
     pub next_object: u32,
@@ -446,6 +484,379 @@ impl GameState {
                     ),
                 });
             }
+            if let Pending::ApnapSacrifice {
+                player,
+                order,
+                choices,
+            } = pending
+            {
+                if order.is_empty() || order[0] != *player {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP pending player is not the first remaining seat".to_string(),
+                    });
+                }
+                let mut seen: Vec<PlayerId> = Vec::new();
+                for seat in order {
+                    if !in_range(*seat) || !self.is_live(*seat) || seen.contains(seat) {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("APNAP order contains invalid/duplicate P{seat}"),
+                        });
+                    }
+                    seen.push(*seat);
+                }
+                let mut chosen_objects: Vec<ObjectId> = Vec::new();
+                for (seat, choice) in choices {
+                    if !in_range(*seat)
+                        || !self.is_live(*seat)
+                        || order.contains(seat)
+                        || seen.contains(seat)
+                    {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("APNAP choices contain invalid seat P{seat}"),
+                        });
+                    }
+                    seen.push(*seat);
+                    match choice {
+                        Some(id) => {
+                            let Some(object) = self.objects.get(id) else {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!("APNAP choice references missing object {id}"),
+                                });
+                            };
+                            if object.zone != Zone::Battlefield || object.controller != *seat {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!(
+                                        "APNAP choice {id} is not controlled by P{seat}"
+                                    ),
+                                });
+                            }
+                            if chosen_objects.contains(id) {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!("APNAP choice {id} was chosen twice"),
+                                });
+                            }
+                            chosen_objects.push(*id);
+                        }
+                        None => {
+                            if !self.battlefield(*seat).is_empty() {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!(
+                                        "P{seat} chose None while controlling a permanent"
+                                    ),
+                                });
+                            }
+                        }
+                    }
+                }
+                let mut live: Vec<PlayerId> = self.live_seats().collect();
+                live.sort_unstable();
+                seen.sort_unstable();
+                if seen != live {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP order+choices do not cover every live seat".to_string(),
+                    });
+                }
+                let anchor = self.turn.active;
+                let mut full: Vec<PlayerId> = Vec::new();
+                for offset in 0..n {
+                    let seat = ((anchor as usize + offset) % n) as PlayerId;
+                    if self.is_live(seat) {
+                        full.push(seat);
+                    }
+                }
+                let answered: Vec<PlayerId> = full.iter().copied().take(choices.len()).collect();
+                let mut choice_seats: Vec<PlayerId> = choices.keys().copied().collect();
+                choice_seats.sort_unstable();
+                let mut prefix = answered.clone();
+                prefix.sort_unstable();
+                if choice_seats != prefix {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP answers are not a prefix of active-anchored turn order"
+                            .to_string(),
+                    });
+                }
+                let expected: Vec<PlayerId> = full.iter().copied().skip(choices.len()).collect();
+                if *order != expected {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP order is not the remaining active-anchored suffix"
+                            .to_string(),
+                    });
+                }
+                let Some(resolving) = self.resolving else {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP queue is not bound to a resolving spell".to_string(),
+                    });
+                };
+                let Some(top) = self.stack.last() else {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP queue has no stack source".to_string(),
+                    });
+                };
+                let source_ok = top.object == resolving
+                    && self
+                        .object(resolving)
+                        .card
+                        .def()
+                        .spell_spec()
+                        .and_then(|spec| {
+                            spec.effects
+                                .iter()
+                                .position(|effect| *effect == Effect::EachPlayerSacrifice)
+                        })
+                        .is_some_and(|index| top.cursor as usize == index + 1);
+                if !source_ok {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "APNAP queue source/cursor is not a resolving Crack the Earth effect"
+                                .to_string(),
+                    });
+                }
+            }
+        }
+        if let Some(mulligan) = &self.mulligan {
+            if mulligan.round == 0 {
+                return Err(EngineError::InvalidState {
+                    reason: "mulligan round 0 is invalid".to_string(),
+                });
+            }
+            if mulligan.eligible.is_empty() || mulligan.order != mulligan.eligible {
+                return Err(EngineError::InvalidState {
+                    reason: "mulligan order must exactly equal the eligible set".to_string(),
+                });
+            }
+            let mut seen: Vec<PlayerId> = Vec::new();
+            for seat in &mulligan.order {
+                if !in_range(*seat) || !self.is_live(*seat) || seen.contains(seat) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("mulligan order contains invalid/duplicate P{seat}"),
+                    });
+                }
+                seen.push(*seat);
+            }
+            let mut live: Vec<PlayerId> = self.live_seats().collect();
+            live.sort_unstable();
+            if mulligan.round == 1 {
+                if !mulligan.previous_mulliganers.is_empty() || !mulligan.kept.is_empty() {
+                    return Err(EngineError::InvalidState {
+                        reason: "first mulligan round cannot carry kept/previous seats".to_string(),
+                    });
+                }
+                let mut expected: Vec<PlayerId> = Vec::new();
+                for offset in 0..n {
+                    let seat = ((self.first_player as usize + offset) % n) as PlayerId;
+                    if self.is_live(seat) {
+                        expected.push(seat);
+                    }
+                }
+                if mulligan.eligible != expected {
+                    return Err(EngineError::InvalidState {
+                        reason: "first mulligan round must start at the starting player and cover every live seat"
+                            .to_string(),
+                    });
+                }
+            } else {
+                if mulligan.previous_mulliganers != mulligan.eligible {
+                    return Err(EngineError::InvalidState {
+                        reason: "later mulligan round is not exactly the previous mulliganers"
+                            .to_string(),
+                    });
+                }
+                let mut accounted = mulligan.kept.clone();
+                accounted.extend(mulligan.eligible.iter().copied());
+                accounted.sort_unstable();
+                accounted.dedup();
+                if accounted != live {
+                    return Err(EngineError::InvalidState {
+                        reason: "kept + eligible seats must cover exactly every live seat"
+                            .to_string(),
+                    });
+                }
+                if mulligan
+                    .kept
+                    .iter()
+                    .any(|seat| !self.is_live(*seat) || mulligan.eligible.contains(seat))
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "kept seats must be live and disjoint from eligible seats"
+                            .to_string(),
+                    });
+                }
+                if mulligan
+                    .eligible
+                    .iter()
+                    .any(|seat| self.player(*seat).mulligans == 0)
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "later-round eligible seats must have taken a mulligan".to_string(),
+                    });
+                }
+            }
+            let mut expected_order: Vec<PlayerId> = Vec::new();
+            for offset in 0..n {
+                let seat = ((self.first_player as usize + offset) % n) as PlayerId;
+                if self.is_live(seat) && mulligan.eligible.contains(&seat) {
+                    expected_order.push(seat);
+                }
+            }
+            if mulligan.order != expected_order {
+                return Err(EngineError::InvalidState {
+                    reason: "mulligan order is not the starting-player anchored eligible sequence"
+                        .to_string(),
+                });
+            }
+            if mulligan.cursor > mulligan.order.len()
+                || mulligan.declarations.len() != mulligan.cursor
+            {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "mulligan cursor {} does not match {} declaration(s)",
+                        mulligan.cursor,
+                        mulligan.declarations.len()
+                    ),
+                });
+            }
+            for (seat, keep) in &mulligan.declarations {
+                if !mulligan.order[..mulligan.cursor].contains(seat) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("mulligan declaration for undeclared seat P{seat}"),
+                    });
+                }
+                if *keep && mulligan.bottom_queue.iter().any(|queued| queued == seat) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("kept seat P{seat} is still awaiting a bottom choice"),
+                    });
+                }
+            }
+            match &self.pending {
+                Some(Pending::Mulligan { player }) => {
+                    if !mulligan.bottom_queue.is_empty() || !mulligan.bottomed.is_empty() {
+                        return Err(EngineError::InvalidState {
+                            reason: "declaration phase cannot carry a bottom queue".to_string(),
+                        });
+                    }
+                    if mulligan.cursor >= mulligan.order.len()
+                        || mulligan.order[mulligan.cursor] != *player
+                    {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("mulligan pending P{player} is not the next declarer"),
+                        });
+                    }
+                    if mulligan.eligible.iter().any(|seat| {
+                        self.player(*seat).mulligans as u16 != (mulligan.round - 1) as u16
+                    }) {
+                        return Err(EngineError::InvalidState {
+                            reason: "declaration-phase mulligan counts must equal round - 1"
+                                .to_string(),
+                        });
+                    }
+                }
+                Some(Pending::BottomCards { player, count }) => {
+                    if mulligan.cursor != mulligan.order.len()
+                        || mulligan.declarations.len() != mulligan.order.len()
+                    {
+                        return Err(EngineError::InvalidState {
+                            reason: "bottom phase requires every eligible seat to have declared"
+                                .to_string(),
+                        });
+                    }
+                    let paid = |mulligans: u8| {
+                        if n >= 3 {
+                            mulligans.saturating_sub(1)
+                        } else {
+                            mulligans
+                        }
+                    };
+                    let paid_count = paid(self.player(*player).mulligans);
+                    if paid_count == 0 || *count != paid_count {
+                        return Err(EngineError::InvalidState {
+                            reason: format!(
+                                "BottomCards count {count} does not match paid mulligans {paid_count}"
+                            ),
+                        });
+                    }
+                    for seat in &mulligan.order {
+                        let expected = match mulligan.declarations.get(seat) {
+                            Some(false) => mulligan.round as u16,
+                            Some(true) => (mulligan.round - 1) as u16,
+                            None => {
+                                return Err(EngineError::InvalidState {
+                                    reason: "bottom phase has an undeclared eligible seat"
+                                        .to_string(),
+                                });
+                            }
+                        };
+                        if self.player(*seat).mulligans as u16 != expected {
+                            return Err(EngineError::InvalidState {
+                                reason:
+                                    "bottom-phase mulligan counts do not match keep/mulligan declarations"
+                                        .to_string(),
+                            });
+                        }
+                    }
+                    let owed: Vec<PlayerId> = mulligan
+                        .order
+                        .iter()
+                        .copied()
+                        .filter(|seat| {
+                            mulligan.declarations.get(seat) == Some(&false)
+                                && paid(self.player(*seat).mulligans) > 0
+                        })
+                        .collect();
+                    let mut combined = mulligan.bottomed.clone();
+                    combined.extend(mulligan.bottom_queue.iter().copied());
+                    if combined != owed {
+                        return Err(EngineError::InvalidState {
+                            reason:
+                                "paid bottom queue is not the complete ordered remaining suffix"
+                                    .to_string(),
+                        });
+                    }
+                    if mulligan.bottom_queue.first() != Some(player) {
+                        return Err(EngineError::InvalidState {
+                            reason: format!(
+                                "bottom pending P{player} is not the next bottom choice"
+                            ),
+                        });
+                    }
+                    let starting_hand = |seat: PlayerId| {
+                        let player = self.player(seat);
+                        (player.hand.len() + player.library.len()).min(7)
+                    };
+                    for seat in &mulligan.bottomed {
+                        let expected = starting_hand(*seat)
+                            .saturating_sub(paid(self.player(*seat).mulligans) as usize);
+                        if self.player(*seat).hand.len() != expected {
+                            return Err(EngineError::InvalidState {
+                                reason: format!(
+                                    "P{seat} is marked bottomed but its hand size is not the paid-bottom result"
+                                ),
+                            });
+                        }
+                    }
+                    for seat in &mulligan.bottom_queue {
+                        if self.player(*seat).hand.len() != starting_hand(*seat) {
+                            return Err(EngineError::InvalidState {
+                                reason: format!(
+                                    "P{seat} is awaiting a bottom but its hand is not the redrawn hand"
+                                ),
+                            });
+                        }
+                    }
+                }
+                _ => {
+                    return Err(EngineError::InvalidState {
+                        reason: "mulligan state without a mulligan/bottom pending choice"
+                            .to_string(),
+                    });
+                }
+            }
+        } else if matches!(
+            self.pending,
+            Some(Pending::Mulligan { .. } | Pending::BottomCards { .. })
+        ) {
+            return Err(EngineError::InvalidState {
+                reason: "mulligan pending choice without mulligan state".to_string(),
+            });
         }
         for object in self.objects.values() {
             if !in_range(object.owner) || !in_range(object.controller) {

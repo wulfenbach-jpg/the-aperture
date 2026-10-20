@@ -372,17 +372,51 @@ fn the_player_who_plays_first_skips_their_first_draw_step() {
 
 #[test]
 fn a_mulligan_that_could_never_be_bottomed_is_refused() {
-    // CR 103.5: the London mulligan bottoms one card per mulligan taken.
-    let (mut game, mut log) = Game::new_logged(77, &[deck_a(), deck_b()]).expect("game");
-    for _ in 0..7 {
-        assert!(matches!(
-            game.state.pending,
-            Some(Pending::Mulligan { player: P0 })
-        ));
-        submit_ok(&mut game, P0, Action::Mulligan { keep: false });
+    // CR 103.5/103.5c: the starting player declares first; the other seat
+    // declares, then the batch redraws/bottoms. After seven two-player
+    // mulligans the hand is empty and only keeping is legal.
+    let (mut game, _) = Game::new_logged(77, &[deck_a(), deck_b()]).expect("game");
+    let target = game.state.first_player;
+    for expected in 1..=7u8 {
+        let order = game
+            .state
+            .mulligan
+            .as_ref()
+            .expect("mulligan state")
+            .order
+            .clone();
+        for seat in order {
+            submit_ok(
+                &mut game,
+                seat,
+                Action::Mulligan {
+                    keep: seat != target,
+                },
+            );
+        }
+        match &game.state.pending {
+            Some(Pending::BottomCards { player, count }) => {
+                assert_eq!(*player, target);
+                assert_eq!(*count, expected);
+                let cards = game
+                    .legal_actions()
+                    .into_iter()
+                    .find_map(|legal| match legal.action {
+                        Action::BottomCards { cards } => Some(cards),
+                        _ => None,
+                    })
+                    .expect("a bottom action is offered");
+                submit_ok(&mut game, target, Action::BottomCards { cards });
+            }
+            other => panic!("expected bottoming {expected}, got {other:?}"),
+        }
     }
-    assert_eq!(game.state.player(P0).mulligans, 7);
-    assert_eq!(game.state.player(P0).hand_size(), 7);
+    assert_eq!(game.state.player(target).mulligans, 7);
+    assert_eq!(game.state.player(target).hand_size(), 0);
+    assert!(matches!(
+        game.state.pending,
+        Some(Pending::Mulligan { player }) if player == target
+    ));
 
     let offered = game.legal_actions();
     assert_eq!(
@@ -392,35 +426,17 @@ fn a_mulligan_that_could_never_be_bottomed_is_refused() {
     );
     let before = game.digest();
     let decision = game.decision();
-    let err = submit_err(&mut game, P0, Action::Mulligan { keep: false });
+    let err = submit_err(&mut game, target, Action::Mulligan { keep: false });
     assert!(matches!(err, EngineError::Illegal { .. }), "{err}");
     assert_eq!(game.digest(), before, "a refused mulligan changes nothing");
     assert_eq!(game.decision(), decision);
 
-    // Keeping completes: seven cards must go to the bottom, and then the game
-    // continues instead of deadlocking.
-    submit_ok(&mut game, P0, Action::Mulligan { keep: true });
-    let cards = match &game.state.pending {
-        Some(Pending::BottomCards { count, .. }) => {
-            assert_eq!(*count, 7);
-            game.state.player(P0).hand.clone()
-        }
-        other => panic!("expected a bottoming decision, got {other:?}"),
-    };
-    submit_ok(&mut game, P0, Action::BottomCards { cards });
-    assert_eq!(game.state.player(P0).hand_size(), 0);
-    assert!(matches!(
-        game.state.pending,
-        Some(Pending::Mulligan { player: P1 })
-    ));
-    submit_ok(&mut game, P1, Action::Mulligan { keep: true });
-    assert!(run_until(
-        &mut game,
-        &mut log,
-        |g| g.state.turn.priority.is_some() || g.state.is_over(),
-        128
-    ));
-    assert!(!game.state.is_over());
+    submit_ok(&mut game, target, Action::Mulligan { keep: true });
+    assert_eq!(game.state.pending, None);
+    assert!(
+        game.state.turn.priority.is_some(),
+        "the game continues instead of deadlocking"
+    );
 }
 
 #[test]
@@ -475,4 +491,50 @@ fn a_mana_ability_is_refused_while_a_choice_is_pending() {
             .all(|a| !matches!(a.action, Action::ActivateManaAbility { .. })),
         "no mana ability is offered during a pending choice"
     );
+}
+
+#[test]
+fn a_resolved_spell_runs_sbas_before_priority_is_granted() {
+    let mut game = fixture(308)
+        .hand(P0, &[CardId::LightningStrike])
+        .battlefield(P0, &[CardId::Mountain, CardId::Mountain])
+        .battlefield(P1, &[CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bear = battlefield_card(&game, P1, CardId::GrizzlyBears);
+    let strike = hand_card(&game, P0, CardId::LightningStrike);
+    let mut events = submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: strike,
+            targets: vec![Target::Permanent(bear)],
+        },
+    );
+    events.extend(submit_ok(&mut game, P0, Action::Pass));
+    events.extend(submit_ok(&mut game, P1, Action::Pass));
+    let resolve = events
+        .iter()
+        .position(|event| matches!(event, Event::Resolve { .. }))
+        .expect("the spell resolves");
+    let destroyed = events
+        .iter()
+        .enumerate()
+        .skip(resolve)
+        .find(|(_, event)| matches!(event, Event::Destroyed { object, .. } if *object == bear))
+        .map(|(index, _)| index)
+        .expect("the lethally damaged bear dies");
+    let priority = events
+        .iter()
+        .enumerate()
+        .skip(resolve)
+        .find(|(_, event)| matches!(event, Event::Priority { .. }))
+        .map(|(index, _)| index)
+        .expect("priority is granted after resolution");
+    assert!(
+        destroyed < priority,
+        "SBAs must run before priority after a spell resolves: {events:?}"
+    );
+    assert_eq!(game.state.turn.priority, Some(P0));
+    assert_eq!(game.state.object(bear).zone, Zone::Graveyard);
 }
