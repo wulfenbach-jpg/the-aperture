@@ -334,3 +334,224 @@ fn save_rejects_a_missing_object_reference_and_stale_replay_invariants() {
         "a save whose replay targets another rules revision must be rejected"
     );
 }
+
+#[test]
+fn four_seat_unequal_views_keep_pending_choices_owner_only() {
+    let mut game = fixture_n(60, 4)
+        .hand(P0, &[CardId::Opt])
+        .battlefield(P0, &[CardId::Island])
+        .library(P0, &[CardId::Forest, CardId::Island])
+        .hand(1, &[CardId::Forest, CardId::Forest])
+        .library(1, &[CardId::Island, CardId::Island, CardId::Island])
+        .hand(
+            2,
+            &[CardId::Shock, CardId::Shock, CardId::Shock, CardId::Shock],
+        )
+        .library(2, &[CardId::Mountain])
+        .hand(3, &[CardId::GrizzlyBears])
+        .library(3, &[CardId::Forest, CardId::Forest, CardId::Forest])
+        .life(1, 9)
+        .life(2, 4)
+        .life(3, 1)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let opt = hand_card(&game, P0, CardId::Opt);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: opt,
+            targets: Vec::new(),
+        },
+    );
+    for player in [P0, 1, 2, 3] {
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    assert!(
+        matches!(
+            game.state.pending,
+            Some(Pending::OrderCard { player: P0, .. })
+        ),
+        "Opt's scry is pending for P0"
+    );
+
+    let p0 = game.view_for(P0, &[]);
+    assert_eq!(p0.seat_count, 4);
+    assert_eq!(p0.opponents.len(), 3);
+    assert_eq!(p0.pending_viewed.len(), 1, "owner sees the looked-at card");
+    assert_eq!(p0.legal.len(), 2, "owner gets the order choices");
+    assert_eq!(p0.opponent_view(1).expect("P1").life, 9);
+    assert_eq!(p0.opponent_view(2).expect("P2").life, 4);
+    assert_eq!(p0.opponent_view(3).expect("P3").life, 1);
+
+    let viewed = p0.pending_viewed[0].id.0;
+    for seat in [1, 2, 3] {
+        let view = game.view_for(seat, &[]);
+        assert!(
+            view.pending_viewed.is_empty(),
+            "P{seat} must not see the card"
+        );
+        assert!(view.legal.is_empty(), "P{seat} has no decision");
+        assert!(
+            view.pending
+                .as_deref()
+                .is_some_and(|text| text.contains("P0")),
+            "P{seat} sees only that P0 must choose"
+        );
+        let json = view.to_json();
+        assert!(
+            !json.contains(&format!("\"id\":{},", viewed)),
+            "the scry card leaked into P{seat}'s JSON"
+        );
+    }
+
+    let p0_json = p0.to_json();
+    let hidden: Vec<ObjectId> = game
+        .state
+        .player(1)
+        .hand
+        .iter()
+        .chain(game.state.player(2).library.iter())
+        .chain(game.state.player(3).hand.iter())
+        .copied()
+        .collect();
+    for id in hidden {
+        assert!(
+            !p0_json.contains(&format!("\"id\":{},", id.0)),
+            "another seat's hidden object {} leaked into P0's JSON",
+            id.0
+        );
+    }
+}
+
+#[test]
+fn four_seat_eliminated_seat_projects_no_hidden_information() {
+    let mut game = fixture_n(61, 4)
+        .hand(3, &[CardId::Forest, CardId::Forest])
+        .library(3, &[CardId::Island, CardId::Island])
+        .battlefield(3, &[CardId::GrizzlyBears])
+        .life(3, 0)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let hidden: Vec<ObjectId> = game
+        .state
+        .player(3)
+        .hand
+        .iter()
+        .chain(game.state.player(3).library.iter())
+        .copied()
+        .collect();
+    submit_ok(&mut game, P0, Action::Pass);
+    assert!(game.state.player(3).lost);
+    assert_eq!(game.state.live_count(), 3);
+    let p0 = game.view_for(P0, &[]);
+    let eliminated = p0.opponent_view(3).expect("P3 projected as eliminated");
+    assert!(eliminated.eliminated);
+    assert_eq!(eliminated.hand_count, 0);
+    assert_eq!(eliminated.library_count, 0);
+    assert!(eliminated.battlefield.is_empty());
+    assert!(eliminated.graveyard.is_empty());
+    assert!(eliminated.exile.is_empty());
+    let json = p0.to_json();
+    for id in hidden {
+        assert!(
+            !json.contains(&format!("\"id\":{},", id.0)),
+            "eliminated seat's hidden object {} leaked",
+            id.0
+        );
+    }
+}
+
+#[test]
+fn save_v2_is_rejected_explicitly() {
+    let (game, log) = Game::new_logged(62, &three_decks()).expect("game");
+    let replay = Replay::new(
+        62,
+        game.state.first_player,
+        three_decks(),
+        AiSettings::default(),
+    )
+    .expect("replay");
+    let save = SessionSave::capture(&game, replay, log, false);
+    let mut value = serde_json::to_value(&save).expect("save json");
+    value["version"] = serde_json::json!(2);
+    match SessionSave::from_json(&serde_json::to_string(&value).expect("json")) {
+        Err(ReplayError::Version {
+            got: 2,
+            expected: 3,
+        }) => {}
+        other => panic!("expected an explicit save-v2 rejection, got {other:?}"),
+    }
+}
+
+#[test]
+fn pending_choice_survives_a_save_round_trip() {
+    let mut game = fixture_n(63, 4)
+        .hand(P0, &[CardId::Opt])
+        .battlefield(P0, &[CardId::Island])
+        .library(P0, &[CardId::Forest, CardId::Island])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let opt = hand_card(&game, P0, CardId::Opt);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: opt,
+            targets: Vec::new(),
+        },
+    );
+    for player in [P0, 1, 2, 3] {
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    let replay = Replay::new(
+        63,
+        game.state.first_player,
+        vec![deck_a(), deck_b(), deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
+    let save = SessionSave::capture(&game, replay, Vec::new(), false);
+    let parsed = SessionSave::from_json(&save.to_json()).expect("pending save round-trips");
+    assert_eq!(parsed.game.pending, game.state.pending);
+    assert_eq!(parsed.game().digest(), game.digest());
+}
+
+#[test]
+fn a_response_resets_the_priority_pass_mask() {
+    let mut game = fixture_n(64, 3)
+        .hand(P0, &[CardId::Shock])
+        .hand(1, &[CardId::Shock])
+        .battlefield(P0, &[CardId::Mountain])
+        .battlefield(1, &[CardId::Mountain])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let p0_shock = hand_card(&game, P0, CardId::Shock);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: p0_shock,
+            targets: vec![Target::Player(2)],
+        },
+    );
+    submit_ok(&mut game, P0, Action::Pass);
+    assert_eq!(game.state.turn.passed, 0b001);
+    let p1_shock = hand_card(&game, 1, CardId::Shock);
+    submit_ok(
+        &mut game,
+        1,
+        Action::CastSpell {
+            card: p1_shock,
+            targets: vec![Target::Player(P0)],
+        },
+    );
+    assert_eq!(game.state.turn.passed, 0, "a response clears prior passes");
+    assert_eq!(game.decision_owner(), Some(1));
+
+    submit_ok(&mut game, 1, Action::Pass);
+    submit_ok(&mut game, 2, Action::Pass);
+    submit_ok(&mut game, P0, Action::Pass);
+    assert_eq!(game.state.stack.len(), 1, "only the top item resolved");
+    assert_eq!(game.state.player(P0).life, 18);
+}
