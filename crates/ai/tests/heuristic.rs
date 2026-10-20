@@ -317,3 +317,36 @@ fn the_policy_only_sees_masked_information() {
     let decision = policy.decide(&view);
     assert_eq!(decision.source, DecisionSource::Heuristic);
 }
+
+#[test]
+fn heuristic_observes_the_acting_seat_and_returns_a_legal_action() {
+    let (mut game, mut log) =
+        Game::new_logged(4301, &[deck_a(), deck_b(), deck_a()]).expect("three-seat game");
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.pending.is_none() && g.state.turn.priority.is_some(),
+        64
+    ));
+    for _ in 0..30 {
+        if game.state.is_over() {
+            break;
+        }
+        let owner = game.decision_owner().expect("a decision point");
+        let view = game.view_for(owner, &log);
+        let mut policy = HeuristicPolicy::new();
+        let decision = policy.decide(&view);
+        assert!(
+            view.legal
+                .iter()
+                .any(|legal| legal.action == decision.action),
+            "P{owner} policy returned {:?} outside masked legal options {:?}",
+            decision.action,
+            view.legal.iter().map(|l| &l.action).collect::<Vec<_>>()
+        );
+        let events = game
+            .submit_action(owner, decision.action.clone())
+            .expect("heuristic action is engine-legal");
+        log.extend(events);
+    }
+}

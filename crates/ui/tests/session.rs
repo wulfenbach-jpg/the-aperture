@@ -180,3 +180,22 @@ fn the_profile_line_states_the_scope() {
     let _ = CardId::Shock;
     let _ = P1;
 }
+
+#[test]
+fn sandbox_modified_save_roundtrip_preserves_the_uncertified_flag() {
+    let mut ui = session(19, false);
+    ui.sandbox(SandboxOp::Draw(1));
+    assert!(ui.sandbox_modified);
+    let digest = ui.game.digest();
+    let path = temp_path("sandbox-roundtrip");
+    ui.save(&path).expect("sandbox save succeeds");
+
+    let mut other = session(20, false);
+    other.load(&path).expect("sandbox load succeeds");
+    assert!(
+        other.sandbox_modified,
+        "the uncertified flag must survive save/load"
+    );
+    assert_eq!(other.game.digest(), digest);
+    let _ = std::fs::remove_file(&path);
+}
