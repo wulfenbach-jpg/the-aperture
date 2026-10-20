@@ -144,12 +144,28 @@ struct StepExpectation {
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 enum ActionSpec {
     Pass,
-    PlayLand { card: String },
-    CastSpell { card: String },
-    ActivateManaAbility { land: String },
-    DeclareAttackers { attackers: Vec<String> },
-    DeclareBlockers { blocks: Vec<BlockSpec> },
-    Discard { cards: Vec<String> },
+    PlayLand {
+        card: String,
+    },
+    CastSpell {
+        card: String,
+    },
+    ActivateManaAbility {
+        land: String,
+    },
+    DeclareAttackers {
+        attackers: Vec<String>,
+        /// Required when more than one opponent is live; omitted in the
+        /// two-seat fixtures, where the only live opponent is unambiguous.
+        #[serde(default)]
+        defender: Option<String>,
+    },
+    DeclareBlockers {
+        blocks: Vec<BlockSpec>,
+    },
+    Discard {
+        cards: Vec<String>,
+    },
 }
 
 #[derive(Debug, Deserialize)]
@@ -391,7 +407,7 @@ fn build_initial(initial: &Initial, case: &str) -> Game {
         .priority
         .as_ref()
         .map(|name| parse_player(name, case));
-    game.state.turn.passes = 0;
+    game.state.turn.passed = 0;
     game.state.turn.lands_played = 0;
     for (name, state) in &initial.permanents {
         let object = unique_permanent(&game, name, case);
@@ -451,15 +467,36 @@ fn resolve_action(game: &Game, actor: PlayerId, spec: &ActionSpec, context: &str
         ActionSpec::ActivateManaAbility { land } => Action::ActivateManaAbility {
             land: take_untapped_named(game, actor, land, context),
         },
-        ActionSpec::DeclareAttackers { attackers } => {
+        ActionSpec::DeclareAttackers {
+            attackers,
+            defender,
+        } => {
             let mut used = BTreeSet::new();
+            let ids: Vec<ObjectId> = attackers
+                .iter()
+                .map(|name| {
+                    take_named_used(game, actor, Zone::Battlefield, name, &mut used, context)
+                })
+                .collect();
+            let defender = match defender {
+                Some(name) => Some(parse_player(name, context)),
+                None if ids.is_empty() => None,
+                None => {
+                    let mut live = game.state.live_seats().filter(|seat| *seat != actor);
+                    let only = live.next().unwrap_or_else(|| {
+                        panic!("{context}: no live opponent for the attack declaration")
+                    });
+                    if live.next().is_some() {
+                        panic!(
+                            "{context}: declare_attackers must name a defender when multiple opponents are live"
+                        );
+                    }
+                    Some(only)
+                }
+            };
             Action::DeclareAttackers {
-                attackers: attackers
-                    .iter()
-                    .map(|name| {
-                        take_named_used(game, actor, Zone::Battlefield, name, &mut used, context)
-                    })
-                    .collect(),
+                attackers: ids,
+                defender,
             }
         }
         ActionSpec::DeclareBlockers { blocks } => {
@@ -478,7 +515,7 @@ fn resolve_action(game: &Game, actor: PlayerId, spec: &ActionSpec, context: &str
                         ),
                         attacker: take_named(
                             game,
-                            opponent(actor),
+                            opponent_of(game, actor, context),
                             Zone::Battlefield,
                             &block.attacker,
                             context,
@@ -791,6 +828,18 @@ fn assert_card_order(game: &Game, actual: &[ObjectId], expected: &[String], cont
         .collect();
     let expected_names: Vec<&str> = expected.iter().map(String::as_str).collect();
     assert_eq!(actual_names, expected_names, "{context} (order matters)");
+}
+
+fn opponent_of(game: &Game, actor: PlayerId, context: &str) -> PlayerId {
+    let mut live = game.state.live_seats().filter(|seat| *seat != actor);
+    let only = live
+        .next()
+        .unwrap_or_else(|| panic!("{context}: no live opponent"));
+    assert!(
+        live.next().is_none(),
+        "{context}: two-seat helper used with multiple live opponents"
+    );
+    only
 }
 
 fn parse_player(name: &str, context: &str) -> PlayerId {
