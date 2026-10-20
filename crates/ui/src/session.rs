@@ -636,6 +636,9 @@ impl UiSession {
         };
         match self.game.submit(&submission) {
             Ok(events) => {
+                // An accepted action changes the game, so any in-flight load
+                // (or AI/import/health result) captured before it is stale.
+                self.invalidate_pending_work();
                 self.log.extend(events);
                 self.replay.record(ReplayStep {
                     player: owner,
@@ -984,4 +987,65 @@ pub fn block_list(pairs: &[(ObjectId, ObjectId)]) -> Vec<BlockDecl> {
             attacker: *attacker,
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_session(seed: u64) -> UiSession {
+        let a = DeckList::parse_practice("Temur Beats", BUNDLED_A).expect("deck A");
+        let b = DeckList::parse_practice("Izzet Control", BUNDLED_B).expect("deck B");
+        UiSession::new(seed, vec![a, b], AiSettings::default(), false, false)
+            .expect("two-seat session")
+    }
+
+    /// Deterministic delayed-load regression: the load message is enqueued with
+    /// the generation observed before an accepted action, then released after
+    /// that action. The action must invalidate it, so the current game, log,
+    /// replay and decision survive and the user sees a stale-load reason.
+    #[test]
+    fn an_accepted_action_invalidates_an_in_flight_load() {
+        let mut ui = test_session(71);
+        let other = test_session(72);
+        let delayed = SessionSave::capture(
+            &other.game,
+            other.replay.clone(),
+            other.log.clone(),
+            other.sandbox_modified,
+        );
+
+        let stale_generation = ui.generation;
+        assert!(
+            ui.submit(Action::Mulligan { keep: true }).is_ok(),
+            "the opening keep must be accepted"
+        );
+        let digest_after = ui.game.digest();
+        let decision_after = ui.game.decision();
+        let log_after = ui.log.len();
+        let replay_after = ui.replay.steps.len();
+
+        ui.worker_tx
+            .send(WorkerMessage::Load {
+                generation: stale_generation,
+                path: PathBuf::from("delayed-load.json"),
+                result: Ok(Box::new(delayed)),
+            })
+            .expect("queue the delayed load");
+        let applied = ui.poll_workers();
+
+        assert!(
+            ui.busy_note.as_deref().unwrap_or("").contains("stale load"),
+            "expected a stale-load reason, got {:?}",
+            ui.busy_note
+        );
+        assert_eq!(ui.game.digest(), digest_after, "state was overwritten");
+        assert_eq!(ui.game.decision(), decision_after, "decision moved");
+        assert_eq!(ui.log.len(), log_after, "log was replaced");
+        assert_eq!(ui.replay.steps.len(), replay_after, "replay was replaced");
+        assert!(
+            applied.iter().all(|line| !line.starts_with("loaded ")),
+            "a stale load must not report success: {applied:?}"
+        );
+    }
 }
