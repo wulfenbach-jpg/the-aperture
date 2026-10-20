@@ -11,6 +11,21 @@ fn three_decks() -> Vec<DeckList> {
     vec![deck_a(), deck_b(), deck_a()]
 }
 
+/// Submit an accepted action and record the exact revision/decision identity in
+/// a replay, so a save can be checked against its embedded action sequence.
+fn submit_recorded(game: &mut Game, replay: &mut Replay, player: PlayerId, action: Action) {
+    let revision = game.revision();
+    let decision = game.decision();
+    game.submit_action(player, action.clone())
+        .expect("recorded action is accepted");
+    replay.record(ReplayStep {
+        player,
+        revision,
+        decision,
+        action,
+    });
+}
+
 #[test]
 fn three_seat_game_has_valid_ordered_seats_and_no_panic() {
     let (game, _) = Game::new_logged(3, &three_decks()).expect("three-seat game");
@@ -486,32 +501,15 @@ fn save_v2_is_rejected_explicitly() {
 
 #[test]
 fn pending_choice_survives_a_save_round_trip() {
-    let mut game = fixture_n(63, 4)
-        .hand(P0, &[CardId::Opt])
-        .battlefield(P0, &[CardId::Island])
-        .library(P0, &[CardId::Forest, CardId::Island])
-        .main(P0, Step::PrecombatMain)
-        .build();
-    let opt = hand_card(&game, P0, CardId::Opt);
-    submit_ok(
-        &mut game,
-        P0,
-        Action::CastSpell {
-            card: opt,
-            targets: Vec::new(),
-        },
+    let decks = vec![deck_a(), deck_b(), deck_a(), deck_b()];
+    let (game, log) = Game::new_logged(63, &decks).expect("game");
+    assert!(
+        matches!(game.state.pending, Some(Pending::Mulligan { player: P0 })),
+        "the opening mulligan is a pending choice"
     );
-    for player in [P0, 1, 2, 3] {
-        submit_ok(&mut game, player, Action::Pass);
-    }
-    let replay = Replay::new(
-        63,
-        game.state.first_player,
-        vec![deck_a(), deck_b(), deck_a(), deck_b()],
-        AiSettings::default(),
-    )
-    .expect("replay");
-    let save = SessionSave::capture(&game, replay, Vec::new(), false);
+    let replay =
+        Replay::new(63, game.state.first_player, decks, AiSettings::default()).expect("replay");
+    let save = SessionSave::capture(&game, replay, log, false);
     let parsed = SessionSave::from_json(&save.to_json()).expect("pending save round-trips");
     assert_eq!(parsed.game.pending, game.state.pending);
     assert_eq!(parsed.game().digest(), game.digest());
@@ -554,4 +552,72 @@ fn a_response_resets_the_priority_pass_mask() {
     submit_ok(&mut game, P0, Action::Pass);
     assert_eq!(game.state.stack.len(), 1, "only the top item resolved");
     assert_eq!(game.state.player(P0).life, 18);
+}
+
+#[test]
+fn masked_projection_digest_does_not_depend_on_hidden_state() {
+    // Same public board/counts, different hidden P1 hand and library order.
+    let a = fixture_n(70, 3)
+        .hand(P0, &[CardId::Shock])
+        .battlefield(P0, &[CardId::Mountain])
+        .hand(1, &[CardId::Forest])
+        .library(1, &[CardId::Island])
+        .hand(2, &[CardId::Forest])
+        .library(2, &[CardId::Island])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let b = fixture_n(70, 3)
+        .hand(P0, &[CardId::Shock])
+        .battlefield(P0, &[CardId::Mountain])
+        .hand(1, &[CardId::Island])
+        .library(1, &[CardId::Forest])
+        .hand(2, &[CardId::Forest])
+        .library(2, &[CardId::Island])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    assert_ne!(a.digest(), b.digest(), "the full states really differ");
+
+    for viewer in [P0, 2] {
+        let view_a = a.view_for(viewer, &[]);
+        let view_b = b.view_for(viewer, &[]);
+        assert_eq!(
+            view_a.to_json(),
+            view_b.to_json(),
+            "P{viewer}'s serialized observation changed with hidden state"
+        );
+        assert_eq!(
+            view_a.digest, view_b.digest,
+            "P{viewer}'s view digest is an oracle over hidden state"
+        );
+    }
+}
+
+#[test]
+fn save_rejects_a_tampered_embedded_replay() {
+    let (mut game, _) = Game::new_logged(71, &three_decks()).expect("game");
+    let mut replay = Replay::new(
+        71,
+        game.state.first_player,
+        three_decks(),
+        AiSettings::default(),
+    )
+    .expect("replay");
+    for player in [P0, 1, 2] {
+        submit_recorded(
+            &mut game,
+            &mut replay,
+            player,
+            Action::Mulligan { keep: true },
+        );
+    }
+    assert!(game.state.pending.is_none(), "all opening hands are kept");
+    let save = SessionSave::capture(&game, replay, Vec::new(), false);
+    let mut value = serde_json::to_value(&save).expect("save json");
+    value["replay"]["steps"][0]["action"] =
+        serde_json::to_value(Action::Mulligan { keep: false }).expect("action json");
+    let tampered = serde_json::to_string(&value).expect("tampered json");
+    assert!(
+        SessionSave::from_json(&tampered).is_err(),
+        "a save whose embedded replay diverges from its state must be rejected"
+    );
 }

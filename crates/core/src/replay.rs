@@ -319,6 +319,31 @@ impl SessionSave {
                 recomputed,
             });
         }
+
+        // A non-sandbox save must be exactly the state its embedded action
+        // sequence produces. `Replay::run` is bounded by the step list and is
+        // called on the load worker, never the UI frame thread.
+        if !self.sandbox_modified {
+            const MAX_SAVE_REPLAY_STEPS: usize = 1_000_000;
+            if self.replay.steps.len() > MAX_SAVE_REPLAY_STEPS {
+                return Err(ReplayError::Malformed {
+                    detail: format!(
+                        "embedded replay has {} steps (limit {MAX_SAVE_REPLAY_STEPS})",
+                        self.replay.steps.len()
+                    ),
+                });
+            }
+            let (replayed, _) = self.replay.run()?;
+            if replayed.state != self.game {
+                return Err(ReplayError::Invariant {
+                    reason: format!(
+                        "embedded replay produced digest {} but the saved state is {}",
+                        replayed.digest(),
+                        crate::digest::digest(&self.game)
+                    ),
+                });
+            }
+        }
         Ok(())
     }
 
