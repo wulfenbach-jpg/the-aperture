@@ -2,6 +2,7 @@
 //! round-trip, and the AI step gate.
 
 use std::path::PathBuf;
+use std::time::{Duration, Instant};
 
 use aperture_core::{Action, AiSettings, CardId, DeckList, ObjectId, P0, P1};
 use aperture_ui::session::{BUNDLED_A, BUNDLED_B, SandboxOp, UiSession};
@@ -308,4 +309,105 @@ fn native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human(
     assert_ne!(ui.owner(), Some(chooser), "the queue advanced");
     let (replayed, _) = ui.replay.run().expect("the session replay reproduces");
     assert_eq!(replayed.digest(), ui.game.digest());
+}
+
+#[test]
+fn background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state() {
+    let deck = crack_deck();
+    let decks = vec![deck.clone(), deck];
+    let seed = crack_seed(&decks);
+    let ai = AiSettings {
+        enabled: false,
+        human_seat: P0,
+        ai_seats: Vec::new(),
+        ..AiSettings::default()
+    };
+    let mut ui = UiSession::new(seed, decks, ai, false, false).expect("session");
+    while matches!(
+        ui.game.state.pending,
+        Some(aperture_core::Pending::Mulligan { .. })
+    ) {
+        ui.submit(Action::Mulligan { keep: true }).expect("keep");
+    }
+    let mut guard = 0;
+    while !(ui.game.state.turn.step == aperture_core::Step::PrecombatMain
+        && ui.game.state.turn.priority == Some(P0)
+        && ui.game.state.stack.is_empty())
+    {
+        ui.submit(Action::Pass).expect("pass");
+        guard += 1;
+        assert!(guard < 64);
+    }
+    let mountain = *ui
+        .game
+        .state
+        .player(P0)
+        .hand
+        .iter()
+        .find(|id| ui.game.state.object(**id).card == CardId::Mountain)
+        .expect("Mountain");
+    ui.submit(Action::PlayLand { card: mountain })
+        .expect("land");
+    let crack = *ui
+        .game
+        .state
+        .player(P0)
+        .hand
+        .iter()
+        .find(|id| ui.game.state.object(**id).card == CardId::CrackTheEarth)
+        .expect("Crack");
+    ui.submit(Action::CastSpell {
+        card: crack,
+        targets: Vec::new(),
+    })
+    .expect("cast");
+    while !matches!(
+        ui.game.state.pending,
+        Some(aperture_core::Pending::ApnapSacrifice { .. })
+    ) {
+        ui.submit(Action::Pass).expect("pass");
+    }
+    let choice = ui
+        .game
+        .legal_actions()
+        .into_iter()
+        .find(|legal| matches!(legal.action, Action::ChooseSacrifice { .. }))
+        .expect("choice")
+        .action;
+    ui.submit(choice).expect("partial answer");
+
+    let valid = temp_path("apnap-valid");
+    ui.save(&valid).expect("valid save");
+    let mut json: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(&valid).unwrap()).unwrap();
+    let source = json["game"]["resolving"].as_u64().expect("resolving");
+    json["game"]["objects"]
+        .as_object_mut()
+        .expect("objects")
+        .remove(&source.to_string());
+    let malformed = temp_path("apnap-malformed");
+    std::fs::write(&malformed, serde_json::to_string(&json).unwrap()).unwrap();
+
+    let digest = ui.game.digest();
+    let replay_steps = ui.replay.steps.len();
+    let ai_before = ui.ai.clone();
+    ui.request_load(malformed.clone());
+    let deadline = Instant::now() + Duration::from_secs(10);
+    while ui.io_busy && Instant::now() < deadline {
+        ui.poll_workers();
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    assert!(!ui.io_busy, "a malformed load must clear io_busy");
+    assert!(
+        ui.message.contains("load failed") || ui.message.contains("missing"),
+        "useful error missing: {}",
+        ui.message
+    );
+    assert_eq!(ui.game.digest(), digest);
+    assert_eq!(ui.replay.steps.len(), replay_steps);
+    assert_eq!(ui.ai, ai_before);
+
+    ui.load(&valid).expect("valid APNAP load still works");
+    let _ = std::fs::remove_file(&valid);
+    let _ = std::fs::remove_file(&malformed);
 }
