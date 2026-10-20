@@ -592,9 +592,13 @@ impl GameState {
                         reason: "APNAP queue has no stack source".to_string(),
                     });
                 };
+                let Some(source) = self.objects.get(&resolving) else {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("APNAP queue source object {resolving} is missing"),
+                    });
+                };
                 let source_ok = top.object == resolving
-                    && self
-                        .object(resolving)
+                    && source
                         .card
                         .def()
                         .spell_spec()

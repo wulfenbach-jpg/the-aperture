@@ -734,3 +734,36 @@ fn coach_does_not_print_an_unentitled_apnap_choice_label() {
         "P0 must not receive P1's private APNAP choice label: {explanations:?}"
     );
 }
+
+#[test]
+fn malformed_apnap_save_with_missing_source_returns_typed_error_not_panic() {
+    let mut game = fixture_n(310, 3)
+        .hand(P0, &[CardId::CrackTheEarth])
+        .battlefield(P0, &[CardId::Mountain])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let mut events = Vec::new();
+    cast_to_pending(&mut game, P0, &mut events);
+    let source = game.state.resolving.expect("resolving Crack source");
+    let replay = Replay::new(
+        310,
+        game.state.first_player,
+        vec![deck_a(), deck_b(), deck_a()],
+        AiSettings::default(),
+    )
+    .expect("replay shell");
+    let save = SessionSave::capture(&game, replay, Vec::new(), false);
+    assert!(game.state.validate().is_ok(), "valid certified control");
+    let mut malformed = save.clone();
+    malformed.game.objects.remove(&source);
+    let json = serde_json::to_string(&malformed).expect("json");
+    let err = std::panic::catch_unwind(|| SessionSave::from_json(&json));
+    assert!(
+        err.is_ok(),
+        "missing APNAP source must not unwind the validator"
+    );
+    assert!(
+        err.unwrap().is_err(),
+        "missing APNAP source must return a typed error"
+    );
+}
