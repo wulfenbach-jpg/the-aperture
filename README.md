@@ -121,7 +121,9 @@ probability. See HANDOFF.md for the tested/untested status of that path.
 
 ## What is explicitly NOT implemented
 
-Commander (any form), multiplayer, triggered abilities, activated abilities other
+Commander (any form), networked multiplayer or native multiplayer beyond the
+two-seat table (3/4 seats are headless/CLI only and APNAP simultaneous choices
+are unsupported), triggered abilities, activated abilities other
 than basic-land mana abilities, static abilities, replacement/prevention effects,
 tokens, planeswalkers, counters as rules objects, milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
