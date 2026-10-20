@@ -103,6 +103,8 @@ pub struct PlayerView {
     pub legal: Vec<LegalAction>,
     pub log: Vec<String>,
     pub outcome: Option<Outcome>,
+    /// Digest of this masked projection only. It is not the full engine-state
+    /// digest and must never be used as an oracle over hidden zones.
     pub digest: String,
     pub rules_revision: String,
 }
@@ -376,7 +378,7 @@ impl Game {
                 }
             })
             .collect();
-        PlayerView {
+        let mut view = PlayerView {
             viewer,
             viewer_name: me.name.clone(),
             seat_count: self.state.seat_count(),
@@ -460,8 +462,21 @@ impl Game {
             },
             log: rendered,
             outcome: self.state.outcome.clone(),
-            digest: digest::short_digest(&self.state),
+            digest: String::new(),
             rules_revision: self.state.rules_revision.clone(),
-        }
+        };
+        view.digest = masked_digest(&view);
+        view
     }
+}
+
+/// Digest over the serialized masked projection only. The `digest` field is
+/// empty while hashing, so the result is deterministic and cannot encode hidden
+/// identifiers, contents or library order.
+fn masked_digest(view: &PlayerView) -> String {
+    let json = serde_json::to_string(view).expect("view serializes");
+    digest::digest_bytes(json.as_bytes())
+        .chars()
+        .take(12)
+        .collect()
 }

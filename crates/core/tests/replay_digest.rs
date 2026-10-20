@@ -110,18 +110,11 @@ fn london_mulligan_bottoms_one_card_per_mulligan() {
 
 #[test]
 fn save_and_load_restore_pending_choices_rng_and_ai_settings() {
-    let (mut game, log) = Game::new_logged(5, &[deck_a(), deck_b()]).expect("game");
-    // Move to a mid-resolution pending scry so the snapshot has real state.
-    let mut game = {
-        let mut log2 = log.clone();
-        start_game(&mut game, &mut log2);
-        game
-    };
-    // Put an Opt into P0's hand deterministically by using a fixture-free
-    // route: cast whatever instant is available is not guaranteed, so drive a
-    // couple of turns and then snapshot whatever decision point we are at.
-    let mut log = Vec::new();
-    run_until(&mut game, &mut log, |g| g.state.turn.number >= 3, 200);
+    let (game, log) = Game::new_logged(5, &[deck_a(), deck_b()]).expect("game");
+    assert!(
+        matches!(game.state.pending, Some(Pending::Mulligan { player: P0 })),
+        "the opening mulligan is a pending choice with the RNG position"
+    );
     let mut replay = Replay::new(
         5,
         game.state.first_player,
