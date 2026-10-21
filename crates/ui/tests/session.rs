@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 use aperture_core::{Action, AiSettings, CardId, DeckList, ObjectId, P0, P1};
-use aperture_ui::session::{BUNDLED_A, BUNDLED_B, SandboxOp, UiSession};
+use aperture_ui::session::{BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, load_explicit_deck};
 
 fn deck_a() -> DeckList {
     DeckList::parse_practice("Temur Beats", BUNDLED_A).expect("deck A")
@@ -410,4 +410,43 @@ fn background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state() {
     ui.load(&valid).expect("valid APNAP load still works");
     let _ = std::fs::remove_file(&valid);
     let _ = std::fs::remove_file(&malformed);
+}
+
+#[test]
+fn native_startup_refuses_a_commander_text_file_instead_of_flattening_it() {
+    // The native startup/file consumer uses `load_explicit_deck`. A file with a
+    // `Commander:` header must be refused with a visible reason and an empty
+    // list; the bundled practice deck must never be substituted silently.
+    let path = temp_path("commander-launder");
+    std::fs::write(&path, "Commander:\n1 Grizzly Bears\nDeck:\n39 Forest\n").unwrap();
+    let (list, refusal) = load_explicit_deck(&path, "launder");
+    assert!(
+        list.cards.is_empty(),
+        "no Commander card may become a practice deck"
+    );
+    let refusal = refusal.expect("the startup consumer must explain the refusal");
+    assert!(refusal.to_lowercase().contains("commander"), "{refusal}");
+    assert!(refusal.contains("practice"), "{refusal}");
+    std::fs::remove_file(&path).ok();
+}
+
+#[test]
+fn native_startup_refuses_parenthesized_commander_headers() {
+    let path = temp_path("commander-paren");
+    std::fs::write(&path, "Commander (1):\n1 Grizzly Bears\nDeck:\n39 Forest\n").unwrap();
+    let (list, refusal) = load_explicit_deck(&path, "launder");
+    assert!(list.cards.is_empty());
+    let refusal = refusal.expect("the startup consumer must explain the refusal");
+    assert!(refusal.to_lowercase().contains("section") || refusal.contains("header"));
+    std::fs::remove_file(&path).ok();
+}
+
+#[test]
+fn native_startup_still_accepts_a_valid_mainboard_prefixed_file() {
+    let path = temp_path("mainboard");
+    std::fs::write(&path, "Mainboard:\n1 Grizzly Bears\n39 Forest\n").unwrap();
+    let (list, refusal) = load_explicit_deck(&path, "mainboard practice");
+    assert_eq!(list.size(), 40);
+    assert!(refusal.is_none(), "{refusal:?}");
+    std::fs::remove_file(&path).ok();
 }
