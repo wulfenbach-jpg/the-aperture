@@ -1522,15 +1522,21 @@ pub fn analyze_snapshots(
         if all_basic {
             continue;
         }
-        if entries
-            .iter()
-            .any(|(card_index, _)| index.cards[*card_index].type_line.is_none())
-        {
+        // A non-basic duplicate is only proven illegal after ruling out
+        // card-specific allowances. Missing rules text is not evidence that
+        // no allowance exists (an empty, present string is valid metadata).
+        if entries.iter().any(|(card_index, _)| {
+            let card = &index.cards[*card_index];
+            card.type_line
+                .as_deref()
+                .is_none_or(|type_line| !type_line_is_known(type_line))
+                || card.oracle_text.is_none()
+        }) {
             findings.push(Finding {
                 code: "CMD-SINGLETON".to_string(),
                 status: LegalityStatus::NotCertified,
                 message: format!(
-                    "singleton cannot be certified for '{name}': type metadata is incomplete"
+                    "singleton cannot be certified for '{name}': type or Oracle rules-text metadata is incomplete or unusable"
                 ),
             });
             continue;

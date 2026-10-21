@@ -80,6 +80,98 @@ fn run(args: &[&str]) -> Output {
 }
 
 #[test]
+fn commander_check_returns_2_for_duplicates_with_incomplete_oracle_text() {
+    let original: Value = serde_json::from_str(
+        &std::fs::read_to_string(fixtures().join("cards-scryfall.json")).unwrap(),
+    )
+    .unwrap();
+    for name in ["Relentless Rats", "Grizzly Bears"] {
+        for text in [None, Some(Value::Null), Some(json!(7))] {
+            let mut snapshot = original.clone();
+            let mut cards: Vec<Value> = snapshot["raw_cards_jsonl"]
+                .as_str()
+                .unwrap()
+                .lines()
+                .map(|line| serde_json::from_str(line).unwrap())
+                .collect();
+            let card = cards.iter_mut().find(|card| card["name"] == name).unwrap();
+            let duplicate =
+                json!({"name": card["name"], "oracle_id": card["oracle_id"], "quantity": 2});
+            match text {
+                Some(value) => card["oracle_text"] = value,
+                None => {
+                    card.as_object_mut().unwrap().remove("oracle_text");
+                }
+            }
+            let raw = cards
+                .iter()
+                .map(|card| serde_json::to_string(card).unwrap())
+                .collect::<Vec<_>>()
+                .join("\n")
+                + "\n";
+            snapshot["provenance"]["kind"] = json!("synthetic");
+            snapshot["provenance"]["provider"] = json!("synthetic");
+            snapshot["provenance"]["source"] = json!("R100-1 CLI mutation, not captured metadata");
+            snapshot["provenance"]["raw_sha256"] = json!(sha256_hex(raw.as_bytes()));
+            snapshot["provenance"]["cards_sha256"] = json!(sha256_hex(raw.as_bytes()));
+            snapshot["raw_cards_jsonl"] = json!(raw);
+            let commander = if name == "Relentless Rats" {
+                (
+                    "Vito, Thorn of the Dusk Rose",
+                    "7336a541-3ae9-4ab2-acb8-f574c0a5b3a9",
+                )
+            } else {
+                OM
+            };
+            let land = if name == "Relentless Rats" {
+                ("Swamp", "56719f6a-1a6c-4c0a-8d21-18f7d7350b68")
+            } else {
+                FOREST
+            };
+            let cards_path = temp_file("incomplete-singleton-cards", &snapshot.to_string());
+            let deck_path = temp_file(
+                "incomplete-singleton-deck",
+                &deck(vec![entry(commander, 1)], vec![duplicate, entry(land, 97)]),
+            );
+            let out = run(&[
+                "commander-check",
+                "--deck",
+                deck_path.to_str().unwrap(),
+                "--cards",
+                cards_path.to_str().unwrap(),
+                "--json",
+            ]);
+            std::fs::remove_file(cards_path).unwrap();
+            std::fs::remove_file(deck_path).unwrap();
+            assert_eq!(
+                out.status.code(),
+                Some(2),
+                "{name}: {}",
+                String::from_utf8_lossy(&out.stdout)
+            );
+            let report: Value = serde_json::from_slice(&out.stdout).unwrap();
+            assert_eq!(report["status"], "not_certified");
+            assert_eq!(report["deck"]["total"], 100);
+            assert_eq!(report["gameplay"]["available"], false);
+            assert!(
+                report["findings"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|f| f["code"] == "CMD-SINGLETON" && f["status"] == "not_certified")
+            );
+            assert!(
+                !report["findings"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|f| f["code"] == "CMD-SINGLETON" && f["status"] == "illegal")
+            );
+        }
+    }
+}
+
+#[test]
 fn commander_check_returns_0_for_a_legal_but_unplayable_deck() {
     let cards = fixtures().join("cards-scryfall.json");
     let deck = fixtures().join("deck-legal-100.json");
