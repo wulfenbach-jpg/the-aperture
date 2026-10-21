@@ -1,0 +1,107 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "not_certified",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 3
+  },
+  "commanders": [
+    {
+      "name": "Omnath, Locus of Mana",
+      "oracle_id": "9da896e1-2256-425b-b801-1ae6f0470559",
+      "color_identity": [
+        "G"
+      ],
+      "layout": "normal",
+      "eligibility": "not_certified",
+      "reason": "card metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-21T05:25:44Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "d17ad3f51c150fb7d17b60c4d24fb54bda721eb7613d182786f77ba958131fe2",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Omnath, Locus of Mana",
+        "oracle_id": "9da896e1-2256-425b-b801-1ae6f0470559",
+        "reason": "card metadata is incomplete"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-METADATA",
+      "status": "not_certified",
+      "message": "card 'Omnath, Locus of Mana' metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+    },
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY-VARIANT",
+      "status": "not_certified",
+      "message": "commander 'Omnath, Locus of Mana': card metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-IDENTITY",
+      "status": "not_certified",
+      "message": "the commander's color identity is not certifiable from complete metadata"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "offline-test-snapshot",
+      "source": "constructed from real captured Scryfall identities; no network",
+      "captured_at": "2026-10-21T05:25:44Z",
+      "raw_sha256": "06886b386158fe3cdcc86535713b0c5d2e8fd0eb4f4dc71a7646d75fc563054f"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/bulk-data",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261020210200.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-21T05:25:44Z",
+      "cards_sha256": "d17ad3f51c150fb7d17b60c4d24fb54bda721eb7613d182786f77ba958131fe2",
+      "raw_sha256": "d17ad3f51c150fb7d17b60c4d24fb54bda721eb7613d182786f77ba958131fe2"
+    }
+  }
+}

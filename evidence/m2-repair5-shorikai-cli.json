@@ -1,0 +1,103 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "not_certified",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 2
+  },
+  "commanders": [
+    {
+      "name": "Shorikai, Genesis Engine",
+      "oracle_id": "e2962883-6daf-4a84-af73-917afc73092c",
+      "color_identity": [
+        "U",
+        "W"
+      ],
+      "layout": "normal",
+      "eligibility": "not_certified",
+      "reason": "Vehicle commander (CR 903.3 category; power/toughness eligibility not modelled) is outside the front-face legendary-creature baseline"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-21T05:25:44Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "be0986d4d77d78de9bfaf28bbfcf82b0d74b14dc8047574629312d82425aef98",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Shorikai, Genesis Engine",
+        "oracle_id": "e2962883-6daf-4a84-af73-917afc73092c",
+        "reason": "not in the implemented 16-card practice pool"
+      },
+      {
+        "name": "Wastes",
+        "oracle_id": "05d24b0c-904a-46b6-b42a-96a4d91a0dd4",
+        "reason": "not in the implemented 16-card practice pool"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY-VARIANT",
+      "status": "not_certified",
+      "message": "commander 'Shorikai, Genesis Engine': Vehicle commander (CR 903.3 category; power/toughness eligibility not modelled) is outside the front-face legendary-creature baseline"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "offline-test-snapshot",
+      "source": "constructed from frozen real Scryfall identities; no network",
+      "captured_at": "2026-10-21T05:49:00Z",
+      "raw_sha256": "885c472cf5123e85643a415e27bea4cbc52f39363c019b2eedab096a96a58ccd"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/bulk-data",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261020210200.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-21T05:25:44Z",
+      "cards_sha256": "be0986d4d77d78de9bfaf28bbfcf82b0d74b14dc8047574629312d82425aef98",
+      "raw_sha256": "3d38a800eec6b24a7418d52f541a1cf94e5185d3988f551db57622007a25e6e7"
+    }
+  }
+}

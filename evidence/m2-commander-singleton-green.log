@@ -1,0 +1,11 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.73s
+     Running tests\commander_singleton_tracer.rs (target\debug\deps\commander_singleton_tracer-997f672cb0ade70b.exe)
+
+running 3 tests
+test repeated_basic_lands_are_exempt ... ok
+test duplicate_nonbasic_cards_are_illegal ... ok
+test card_specific_allowances_are_not_certified_not_illegal ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

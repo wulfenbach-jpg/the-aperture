@@ -1,0 +1,120 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.27s
+     Running tests\commander_adversarial.rs (target\debug\deps\commander_adversarial-e508b7c203433019.exe)
+
+running 3 tests
+test an_unknown_type_line_token_is_not_certified ... FAILED
+test a_null_oracle_text_on_a_commander_is_not_certified ... FAILED
+test conflicting_metadata_for_the_same_oracle_id_is_not_certified_in_any_order ... FAILED
+
+failures:
+
+---- an_unknown_type_line_token_is_not_certified stdout ----
+
+thread 'an_unknown_type_line_token_is_not_certified' (27992) panicked at crates\import\tests\commander_adversarial.rs:79:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Omnath, Locus of Mana' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-SINGLETON",
+        status: Legal,
+        message: "no duplicate non-basic English names",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+
+---- a_null_oracle_text_on_a_commander_is_not_certified stdout ----
+
+thread 'a_null_oracle_text_on_a_commander_is_not_certified' (30032) panicked at crates\import\tests\commander_adversarial.rs:70:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Omnath, Locus of Mana' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-SINGLETON",
+        status: Legal,
+        message: "no duplicate non-basic English names",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- conflicting_metadata_for_the_same_oracle_id_is_not_certified_in_any_order stdout ----
+
+thread 'conflicting_metadata_for_the_same_oracle_id_is_not_certified_in_any_order' (16340) panicked at crates\import\tests\commander_adversarial.rs:55:9:
+assertion `left == right` failed: conflicting same-oracle metadata must not depend on array order: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Omnath, Locus of Mana' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-SINGLETON",
+        status: Legal,
+        message: "no duplicate non-basic English names",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+
+
+failures:
+    a_null_oracle_text_on_a_commander_is_not_certified
+    an_unknown_type_line_token_is_not_certified
+    conflicting_metadata_for_the_same_oracle_id_is_not_certified_in_any_order
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_adversarial`

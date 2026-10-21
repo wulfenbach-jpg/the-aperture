@@ -1,0 +1,160 @@
+frozen_at=2026-10-21T05:48:33Z
+head=f7772b963cca155228ccfa85ba0f7431543fcd4d
+tests=239 passed, 0 failed
+--- git status (checkout scope; evidence excluded from hash list) ---
+ M ASSETS.md
+ M Cargo.lock
+ M README.md
+ M crates/cli/Cargo.toml
+ M crates/cli/src/main.rs
+ M crates/core/src/deck.rs
+ M crates/import/src/lib.rs
+ M crates/ui/tests/session.rs
+ M docs/ROADMAP.md
+?? M2_ISSUE11_HANDOFF.md
+?? crates/cli/src/commander_cmd.rs
+?? crates/cli/tests/
+?? crates/core/tests/practice_commander_guard.rs
+?? crates/import/src/commander.rs
+?? crates/import/tests/commander_acceptance.rs
+?? crates/import/tests/commander_adversarial.rs
+?? crates/import/tests/commander_edges.rs
+?? crates/import/tests/commander_identity_tracer.rs
+?? crates/import/tests/commander_laundering.rs
+?? crates/import/tests/commander_legal_tracer.rs
+?? crates/import/tests/commander_metadata_tracer.rs
+?? crates/import/tests/commander_singleton_tracer.rs
+?? crates/import/tests/commander_zones_tracer.rs
+?? crates/import/tests/fixtures/
+?? docs/commander-legality.md
+--- source/test/fixture hashes ---
+60d0cf3f6606d04d326a36d5f43269ff79b134ad32e62d5972fdceaaefbd0c66  Cargo.lock
+1ae384c77d45ae5b876a9ecccbf2eb91d45be62a3d27c8645fe6cf1de3cc4f18  crates/cli/Cargo.toml
+3e86d639d1c5ecaa398e8a6bc8db05013da58bf103c37d67b08e9987dafa21a7  crates/cli/src/main.rs
+a638a8ae62367e9753cb8725e8429034e251818b57b75024235d73303e22fe9f  crates/cli/src/commander_cmd.rs
+03975acc643279561bcfe222a74c40dc2cf2b34c64581f7b638a718090b71e98  crates/cli/tests/commander_check.rs
+5b5e51881974b6329e41327127e1313052900cad4bdc144be6c7dfa55f5233bb  crates/core/src/deck.rs
+309c39a9a71f61965f6bbb2470ac01670dade539d9134ca5d1eeb821c58421fa  crates/core/tests/practice_commander_guard.rs
+22243099c55878668083997e13129a482f953a1f3205b8c863ea4146a0eeb491  crates/import/src/lib.rs
+2515d6756ea5ca20bc0de475cef6a23f4884d496665697d9d965c9f95b891536  crates/import/src/commander.rs
+f9a0fea8ed3b6dc484b2ba7845b314996fe87cdfb6d311e51c3b0a1c7124c6da  crates/import/tests/commander_acceptance.rs
+7d7fa4551f2afeca22c490a24f0737d48a20ba4b6386c9167c38475f147bd037  crates/import/tests/commander_adversarial.rs
+d1b5c4629817038da77bae44ea9437c9be510a700f36e6b43bea66bfb0efdf93  crates/import/tests/commander_edges.rs
+64a80c352587c8a32fd8e01e4738494931e299215662cf7a8af286f20faf5e84  crates/import/tests/commander_identity_tracer.rs
+da61449da8e4dde4f80e2553b3187b8b9a2568b8fa22e744bc0dde30c88fd361  crates/import/tests/commander_laundering.rs
+cc9a7eb347048c41a58e50c4c13d41e69b581d3362f18478012d5632ce1c1aa3  crates/import/tests/commander_legal_tracer.rs
+c9f084abf1a938f8da30f3332676ccc46771ece5b405926d861c743051bf308c  crates/import/tests/commander_metadata_tracer.rs
+820bb0ef91ee9a81dfe9b8d7ccb6930664cff9a7032567b3f3c71bf5fb617baa  crates/import/tests/commander_singleton_tracer.rs
+9165314b1cdec56734f35db874c6b1915f919eb1c1d7ef5441b5f6c2ccefb0e7  crates/import/tests/commander_zones_tracer.rs
+741e026cf7e819976c359261c05c7882d4c764519374d5b6842081193d5ae083  crates/import/tests/fixtures/commander/real/cards-scryfall.json
+3f5795c975cc62269e672e8b3294f7f49f6b78b1144e155a7c31d8fc701dac36  crates/import/tests/fixtures/commander/real/deck-legal-100.json
+91c3eb2530dc129f52a986f8a2b9be0815d5bd5c331b59e127976d5b2275eb23  crates/import/tests/fixtures/commander/real/manifest.json
+136f1282bb0ac12e1e7da4c157126496c3580e0ea02553ede8c4f7f2018bf259  crates/ui/tests/session.rs
+e5f9f98d1e60dacb0f69bcdd169f48cc981119af1321dbba9e7818c84606fd44  README.md
+c7f364bb3569cbc178acd772e99989d60253560a50c383fd50e404e54153ccc1  docs/ROADMAP.md
+c752b33d62212eb0fc9eb4263c882402e662c2513d87968c8eefa406fa546618  ASSETS.md
+85ef262cb32ee3d40ab11b4c7447407a5cbec9354a785a951daa9051d7b7f2be  docs/commander-legality.md
+7a33b750fabcd341ddea345273b8b33a6d494fbc2d5d16e7609f7c7751522b1c  M2_ISSUE11_HANDOFF.md
+--- gates ---
+workspace tests passed=239, failed=0
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.47s
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `release` profile [optimized] target(s) in 9.00s
+--- release smoke (post-fix) ---
+legal_exit=0
+illegal_exit=1
+nc_exit=2
+selfplay seed=101 seats=2 heuristic vs heuristic -> status terminal winner P0 in 414 steps (17 turns)
+  digest 7f6f573d4b20 | replay verified | casts 18 attacks 6 blocks 2 counters 2
+  report written to evidence/m2-practice-selfplay101.json
+selfplay_exit=0
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+harness_exit=0
+--- supplied probe rerun (post-fix) ---
+[
+  {
+    "probe": "valid-control",
+    "returncode": 0,
+    "status": "legal",
+    "findings": []
+  },
+  {
+    "probe": "conflicting-same-oracle-append",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-AMBIGUOUS-IDENTITY",
+        "status": "not_certified",
+        "message": "card objects sharing oracle_id '9da896e1-2256-425b-b801-1ae6f0470559' disagree on relevant metadata (name/type/layout/color/legality/text/faces)"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  },
+  {
+    "probe": "conflicting-same-oracle-prepend",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-AMBIGUOUS-IDENTITY",
+        "status": "not_certified",
+        "message": "card objects sharing oracle_id '9da896e1-2256-425b-b801-1ae6f0470559' disagree on relevant metadata (name/type/layout/color/legality/text/faces)"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  },
+  {
+    "probe": "commander-null-oracle-text",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-METADATA",
+        "status": "not_certified",
+        "message": "card 'Omnath, Locus of Mana' metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+      },
+      {
+        "code": "CMD-ELIGIBILITY-VARIANT",
+        "status": "not_certified",
+        "message": "commander 'Omnath, Locus of Mana': card metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  },
+  {
+    "probe": "commander-unknown-type-token",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-METADATA",
+        "status": "not_certified",
+        "message": "card 'Omnath, Locus of Mana' metadata is incomplete: type_line 'Fictional Legendary Creature' contains an unknown supertype/type token"
+      },
+      {
+        "code": "CMD-ELIGIBILITY-VARIANT",
+        "status": "not_certified",
+        "message": "commander 'Omnath, Locus of Mana': card metadata is incomplete: type_line 'Fictional Legendary Creature' contains an unknown supertype/type token"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  }
+]

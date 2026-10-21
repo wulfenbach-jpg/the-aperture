@@ -1,0 +1,12 @@
+{
+  "schema": "aperture.commander-deck.v1",
+  "provenance": {
+    "kind": "constructed",
+    "provider": "offline-test-snapshot",
+    "source": "constructed from real captured Scryfall identities; no network",
+    "captured_at": "2026-10-21T05:25:44Z",
+    "raw_sha256": "06886b386158fe3cdcc86535713b0c5d2e8fd0eb4f4dc71a7646d75fc563054f",
+    "note": "raw_sha256 covers the exact UTF-8 bytes of raw_deck; this is a constructed legality test deck, not a captured provider deck."
+  },
+  "raw_deck": "{\"commanders\":[{\"name\":\"Omnath, Locus of Mana\",\"oracle_id\":\"9da896e1-2256-425b-b801-1ae6f0470559\",\"quantity\":1}],\"companions\":[],\"excluded\":[],\"library\":[{\"name\":\"Forest\",\"oracle_id\":\"b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6\",\"quantity\":98},{\"name\":\"Grizzly Bears\",\"oracle_id\":\"14c8f55d-d177-4c25-a931-ebeb9e6062a0\",\"quantity\":1}],\"sideboard\":[]}"
+}

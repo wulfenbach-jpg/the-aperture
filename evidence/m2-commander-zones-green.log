@@ -1,0 +1,10 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.06s
+     Running tests\commander_zones_tracer.rs (target\debug\deps\commander_zones_tracer-a2d7aadf2be2da39.exe)
+
+running 2 tests
+test a_companion_is_not_certified_and_not_counted ... ok
+test a_sideboard_is_not_certified_and_not_counted ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

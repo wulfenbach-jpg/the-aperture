@@ -4,7 +4,8 @@
 
 Build a FOSS, native Rust **single-player Commander simulator**: one human against up to three AI seats, original graphical table, exact Archidekt imports, deterministic rules/replay and trace-backed rules assistance. Keep the rules engine, masked observations, policy/search and renderer separate. Models choose legal actions; they do not perform state-based actions or decide what the rules are.
 
-**Today:** a 15-card two-seat, 20-life practice slice. **Target v1:** four-seat Commander on an explicitly certified starter corpus, not a promise of arbitrary-card support. Eight certified 100-card decks is the proposed release-corpus gate. Wider card coverage grows through conformance tests and support manifests, not name-based guesses.
+**Today:** a 15-card two-seat, 20-life practice slice plus offline Commander
+deck-profile legality analysis (not playable Commander). **Target v1:** four-seat Commander on an explicitly certified starter corpus, not a promise of arbitrary-card support. Eight certified 100-card decks is the proposed release-corpus gate. Wider card coverage grows through conformance tests and support manifests, not name-based guesses.
 
 “Better in every way” is the ambition, not a current fact. Translate it into measured dimensions: correct supported interactions, import-to-play friction, native readability, responsiveness, accessibility, strategic play, review tools, reproducibility and FOSS distribution. Publish losses and coverage gaps alongside wins. Never compare a restricted corpus with a full engine as though their scope were equal.
 

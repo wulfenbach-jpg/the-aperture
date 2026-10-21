@@ -1,0 +1,85 @@
+warning: function `is_basic_land` is never used
+   --> crates\import\src\commander.rs:817:4
+    |
+817 | fn is_basic_land(type_line: &str) -> bool {
+    |    ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-import` (lib) generated 1 warning
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.16s
+     Running tests\commander_singleton_tracer.rs (target\debug\deps\commander_singleton_tracer-997f672cb0ade70b.exe)
+
+running 3 tests
+test repeated_basic_lands_are_exempt ... ok
+test card_specific_allowances_are_not_certified_not_illegal ... FAILED
+test duplicate_nonbasic_cards_are_illegal ... FAILED
+
+failures:
+
+---- card_specific_allowances_are_not_certified_not_illegal stdout ----
+
+thread 'card_specific_allowances_are_not_certified_not_illegal' (23040) panicked at crates\import\tests\commander_singleton_tracer.rs:43:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Vito, Thorn of the Dusk Rose' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- duplicate_nonbasic_cards_are_illegal stdout ----
+
+thread 'duplicate_nonbasic_cards_are_illegal' (19952) panicked at crates\import\tests\commander_singleton_tracer.rs:36:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Omnath, Locus of Mana' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: Illegal
+
+
+failures:
+    card_specific_allowances_are_not_certified_not_illegal
+    duplicate_nonbasic_cards_are_illegal
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_singleton_tracer`

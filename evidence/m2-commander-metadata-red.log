@@ -1,0 +1,167 @@
+warning: field `oracle_text` is never read
+   --> crates\import\src\commander.rs:368:5
+    |
+361 | struct CardMeta {
+    |        -------- field in this struct
+...
+368 |     oracle_text: Option<String>,
+    |     ^^^^^^^^^^^
+    |
+    = note: `CardMeta` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `0` is never read
+   --> crates\import\src\commander.rs:383:15
+    |
+383 |     Ambiguous(String),
+    |     --------- ^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `Resolution` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+383 -     Ambiguous(String),
+383 +     Ambiguous(()),
+    |
+
+warning: function `is_basic_land` is never used
+   --> crates\import\src\commander.rs:746:4
+    |
+746 | fn is_basic_land(type_line: &str) -> bool {
+    |    ^^^^^^^^^^^^^
+
+warning: `aperture-import` (lib) generated 3 warnings
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.21s
+     Running tests\commander_metadata_tracer.rs (target\debug\deps\commander_metadata_tracer-770dc63cc9121bd8.exe)
+
+running 4 tests
+test missing_card_metadata_is_not_certified_not_guessed_legal ... FAILED
+test a_partner_commander_is_not_certified ... FAILED
+test a_non_normal_library_card_is_not_certified_with_face_evidence ... FAILED
+test a_pregame_chosen_color_commander_is_not_certified ... FAILED
+
+failures:
+
+---- missing_card_metadata_is_not_certified_not_guessed_legal stdout ----
+
+thread 'missing_card_metadata_is_not_certified_not_guessed_legal' (37044) panicked at crates\import\tests\commander_metadata_tracer.rs:57:5:
+[
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Omnath, Locus of Mana' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-MISSING",
+        status: NotCertified,
+        message: "'Mystery Card' has no usable legalities.commander status",
+    },
+]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_partner_commander_is_not_certified stdout ----
+
+thread 'a_partner_commander_is_not_certified' (37388) panicked at crates\import\tests\commander_metadata_tracer.rs:64:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Thrasios, Triton Hero' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+
+---- a_non_normal_library_card_is_not_certified_with_face_evidence stdout ----
+
+thread 'a_non_normal_library_card_is_not_certified_with_face_evidence' (38420) panicked at crates\import\tests\commander_metadata_tracer.rs:80:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Talrand, Sky Summoner' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+
+---- a_pregame_chosen_color_commander_is_not_certified stdout ----
+
+thread 'a_pregame_chosen_color_commander_is_not_certified' (37636) panicked at crates\import\tests\commander_metadata_tracer.rs:72:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Faceless One' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+
+
+failures:
+    a_non_normal_library_card_is_not_certified_with_face_evidence
+    a_partner_commander_is_not_certified
+    a_pregame_chosen_color_commander_is_not_certified
+    missing_card_metadata_is_not_certified_not_guessed_legal
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_metadata_tracer`

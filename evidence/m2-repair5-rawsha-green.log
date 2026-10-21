@@ -1,0 +1,10 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.23s
+     Running tests\commander_laundering.rs (target\debug\deps\commander_laundering-1d4f34d5276f5a27.exe)
+
+running 1 test
+test raw_sha256_must_bind_the_embedded_card_bytes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.03s
+

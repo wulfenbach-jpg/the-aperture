@@ -1,0 +1,11 @@
+{
+  "schema": "aperture.commander-deck.v1",
+  "provenance": {
+    "kind": "constructed",
+    "provider": "offline-smoke",
+    "source": "partner text regression",
+    "captured_at": "2026-10-21T05:20:00Z",
+    "raw_sha256": "338b0cf9f77bedfbc768404ae82fb95758d297d14935cf3cdedeba5ed76be48c"
+  },
+  "raw_deck": "{\"commanders\":[{\"name\":\"Thrasios, Triton Hero\",\"oracle_id\":\"3d867016-2601-4a37-a73d-308898d3bd37\",\"quantity\":1}],\"companions\":[],\"excluded\":[],\"library\":[{\"name\":\"Forest\",\"oracle_id\":\"b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6\",\"quantity\":99}],\"sideboard\":[]}"
+}

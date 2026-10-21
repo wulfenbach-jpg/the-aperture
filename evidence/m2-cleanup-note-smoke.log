@@ -1,0 +1,4 @@
+=== legal control (expect 0) ===
+exit=0
+=== digest tamper refusal (expect 2) ===
+exit=2

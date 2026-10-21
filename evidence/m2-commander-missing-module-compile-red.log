@@ -1,0 +1,71 @@
+   Compiling smallvec v1.16.3
+   Compiling windows-sys v0.61.2
+   Compiling syn v3.0.9
+   Compiling log v0.4.34
+   Compiling synstructure v0.14.0
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.3
+   Compiling thiserror v2.0.21
+   Compiling zerovec v0.11.8
+   Compiling zerotrie v0.2.5
+   Compiling tinystr v0.8.4
+   Compiling potential_utf v0.1.6
+   Compiling icu_collections v2.3.0
+   Compiling icu_locale_core v2.3.0
+   Compiling serde v1.0.229
+   Compiling icu_provider v2.3.1
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling schannel v0.1.30
+   Compiling native-tls v0.2.18
+   Compiling tokio v1.53.3
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling hyper v1.12.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower v0.5.3
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+error[E0432]: unresolved import `aperture_import::commander`
+  --> crates\import\tests\commander_legality.rs:10:22
+   |
+10 | use aperture_import::commander::{
+   |                      ^^^^^^^^^ could not find `commander` in `aperture_import`
+
+error[E0277]: the trait bound `Array<u8, UInt<UInt<UInt<UInt<..., ...>, ...>, ...>, ...>>: LowerHex` is not satisfied
+  --> crates\import\tests\commander_legality.rs:62:21
+   |
+62 |     format!("{:x}", Sha256::digest(bytes))
+   |              ----   ^^^^^^^^^^^^^^^^^^^^^ the trait `LowerHex` is not implemented for `Array<u8, UInt<UInt<UInt<UInt<UInt<..., ...>, ...>, ...>, ...>, ...>>`
+   |              |
+   |              required by this formatting parameter
+   |
+   = help: the following other types implement trait `LowerHex`:
+             &T
+             &mut T
+             Saturating<T>
+             Wrapping<T>
+             bytes::bytes::Bytes
+             bytes::bytes_mut::BytesMut
+             compiler_builtins::math::libm_math::support::big::i256
+             compiler_builtins::math::libm_math::support::big::u256
+           and 14 others
+   = note: the full name for the type has been written to 'C:\AI\aperture-worktrees\issue-11\target\debug\deps\commander_legality-fc8c4c850b126036.long-type-15815488994377890081.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+Some errors have detailed explanations: E0277, E0432.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `aperture-import` (test "commander_legality") due to 2 previous errors

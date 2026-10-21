@@ -1,0 +1,89 @@
+warning: variable does not need to be mutable
+   --> crates\import\src\commander.rs:809:9
+    |
+809 |     let mut refs: Vec<(&DeckEntry, bool)> = deck
+    |         ----^^^^
+    |         |
+    |         help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `oracle_text` is never read
+   --> crates\import\src\commander.rs:368:5
+    |
+361 | struct CardMeta {
+    |        -------- field in this struct
+...
+368 |     oracle_text: Option<String>,
+    |     ^^^^^^^^^^^
+    |
+    = note: `CardMeta` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `0` is never read
+   --> crates\import\src\commander.rs:383:15
+    |
+383 |     Ambiguous(String),
+    |     --------- ^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `Resolution` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+383 -     Ambiguous(String),
+383 +     Ambiguous(()),
+    |
+
+warning: function `is_basic_land` is never used
+   --> crates\import\src\commander.rs:746:4
+    |
+746 | fn is_basic_land(type_line: &str) -> bool {
+    |    ^^^^^^^^^^^^^
+
+warning: `aperture-import` (lib) generated 4 warnings (run `cargo fix --lib -p aperture-import` to apply 1 suggestion)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.16s
+     Running tests\commander_identity_tracer.rs (target\debug\deps\commander_identity_tracer-2f5fd352d933456f.exe)
+
+running 1 test
+test an_off_color_library_card_is_illegal ... FAILED
+
+failures:
+
+---- an_off_color_library_card_is_illegal stdout ----
+
+thread 'an_off_color_library_card_is_illegal' (39336) panicked at crates\import\tests\commander_identity_tracer.rs:33:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Omnath, Locus of Mana' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: Illegal
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    an_off_color_library_card_is_illegal
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_identity_tracer`

@@ -1,0 +1,11 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.27s
+     Running tests\commander_adversarial.rs (target\debug\deps\commander_adversarial-e508b7c203433019.exe)
+
+running 3 tests
+test an_unknown_type_line_token_is_not_certified ... ok
+test a_null_oracle_text_on_a_commander_is_not_certified ... ok
+test conflicting_metadata_for_the_same_oracle_id_is_not_certified_in_any_order ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+

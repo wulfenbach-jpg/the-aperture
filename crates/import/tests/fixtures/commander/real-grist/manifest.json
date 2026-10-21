@@ -1,0 +1,17 @@
+{
+  "schema": "aperture.fixture-manifest.v1",
+  "kind": "real",
+  "source": "https://api.scryfall.com/cards/named?exact=Grist%2C%20the%20Hunger%20Tide",
+  "captured_at": "2026-10-21T05:25:44Z",
+  "license_note": "Card name, type line and Oracle text are Wizards of the Coast content; minimal interoperability test object from Scryfall. No images or prices are used.",
+  "grist_oracle_id": "0efb0d7e-dea0-4817-a243-15066e9ef333",
+  "grist_rule": "Legendary planeswalker whose static ability makes it a 1/1 Insect creature as long as it isn't on the battlefield; eligible as a commander but this slice must refuse the zone-dependent class as not_certified.",
+  "cards_sha256": "19ad7367228bc47c15847552bb2b83c76a1f0055410478f99fa8c6d9da6ce1e2",
+  "deck_raw_sha256": "4f3da726b7e773d4c9a8daae8d8c2143bc3eb7c0e662443214455b391b99e424",
+  "wrapper_sha256": {
+    "cards.json": "68ab2b5eaf360d1115ad0edd7ad5f2da9565aa47f22d9da8106e25d217b5214b",
+    "deck.json": "01448f2ef0018057e32edbd283e21fc6be8dcb8079ff8db7be103981466021b2"
+  },
+  "note": "grist-cards.json is an adversarial extension of the real bulk subset using the real API card named Grist; originals under real/ are untouched.",
+  "raw_sha256_note": "raw_sha256 and cards_sha256 bind the exact embedded raw_cards_jsonl bytes; no unverified full-bulk digest is claimed."
+}

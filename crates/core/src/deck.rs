@@ -52,9 +52,11 @@ impl DeckList {
             .sum()
     }
 
-    /// Parse the practice list format: `1 Card Name`, `// comment`, blank
-    /// lines, and section headers (`Deck`, `Sideboard`, `Commander`) which the
-    /// practice profile does not use.
+    /// Parse the practice list format: `1 Card Name`, `//`/`#` comments, blank
+    /// lines, and the practice `Deck`/`Mainboard` grouping header. Commander,
+    /// companion, sideboard and maybeboard sections are refused explicitly
+    /// because silently flattening them would turn a Commander list into a
+    /// 40-card practice deck.
     pub fn parse_practice(name: &str, text: &str) -> Result<DeckList, String> {
         let mut cards: Vec<(CardId, u8)> = Vec::new();
         for (lineno, raw) in text.lines().enumerate() {
@@ -62,8 +64,26 @@ impl DeckList {
             if line.is_empty() || line.starts_with("//") || line.starts_with('#') {
                 continue;
             }
-            if line.ends_with(':') || line.eq_ignore_ascii_case("deck") {
-                continue;
+            // Only actual card lines and the acknowledged `Deck`/`Mainboard`
+            // grouping headers are accepted. Every other non-card line is an
+            // unknown section header and is refused, including forms such as
+            // `Commander (1):`, `Sideboard (15):` and `Mainboard (40):` that
+            // previously slipped through and flattened a Commander list into a
+            // practice deck.
+            let header = line.trim_end_matches(':').trim();
+            let starts_with_quantity = line
+                .chars()
+                .next()
+                .map(|c| c.is_ascii_digit())
+                .unwrap_or(false);
+            if !starts_with_quantity {
+                if header.eq_ignore_ascii_case("deck") || header.eq_ignore_ascii_case("mainboard") {
+                    continue;
+                }
+                return Err(format!(
+                    "line {}: unknown section header '{header}'; the 40-card practice profile only accepts 'Deck' or 'Mainboard' headers and refuses Commander/companion/sideboard sections",
+                    lineno + 1
+                ));
             }
             let mut parts = line.split_whitespace();
             let qty = parts

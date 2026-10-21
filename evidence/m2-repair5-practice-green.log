@@ -1,0 +1,11 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.54s
+     Running tests\practice_commander_guard.rs (target\debug\deps\practice_commander_guard-6c3e7f3d208eb9d7.exe)
+
+running 3 tests
+test commander_section_is_refused_by_the_practice_parser ... ok
+test companion_and_sideboard_sections_are_refused_by_the_practice_parser ... ok
+test the_bundled_practice_lists_still_parse_at_exactly_forty_cards ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

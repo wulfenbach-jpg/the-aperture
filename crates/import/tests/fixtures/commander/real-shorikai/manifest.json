@@ -1,0 +1,10 @@
+{
+  "schema": "aperture.fixture-manifest.v1",
+  "kind": "constructed-real-identities",
+  "source": "constructed from the frozen real Scryfall subset; Shorikai, Genesis Engine and Wastes identities",
+  "captured_at": "2026-10-21T05:49:00Z",
+  "deck_raw_sha256": "885c472cf5123e85643a415e27bea4cbc52f39363c019b2eedab096a96a58ccd",
+  "wrapper_sha256": "571ac99acb84cd78423084b20ef8ece0bc610cc8d9b28df0bea567f836b47a6b",
+  "rule": "CR 903.3 permits a Vehicle commander with power/toughness. This slice must classify the unsupported Vehicle category as not_certified, never illegal.",
+  "license_note": "Card names and type lines are Wizards of the Coast content; test-only interoperability fixture."
+}

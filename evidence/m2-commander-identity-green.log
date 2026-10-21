@@ -1,0 +1,43 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+warning: field `oracle_text` is never read
+   --> crates\import\src\commander.rs:368:5
+    |
+361 | struct CardMeta {
+    |        -------- field in this struct
+...
+368 |     oracle_text: Option<String>,
+    |     ^^^^^^^^^^^
+    |
+    = note: `CardMeta` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: field `0` is never read
+   --> crates\import\src\commander.rs:383:15
+    |
+383 |     Ambiguous(String),
+    |     --------- ^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `Resolution` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+383 -     Ambiguous(String),
+383 +     Ambiguous(()),
+    |
+
+warning: function `is_basic_land` is never used
+   --> crates\import\src\commander.rs:746:4
+    |
+746 | fn is_basic_land(type_line: &str) -> bool {
+    |    ^^^^^^^^^^^^^
+
+warning: `aperture-import` (lib) generated 3 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.29s
+     Running tests\commander_identity_tracer.rs (target\debug\deps\commander_identity_tracer-2f5fd352d933456f.exe)
+
+running 1 test
+test an_off_color_library_card_is_illegal ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

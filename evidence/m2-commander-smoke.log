@@ -1,0 +1,54 @@
+=== commander-check legal (expect 0) ===
+Commander analysis: legal (1 commander + 99 library = 100 cards)
+  commander: Omnath, Locus of Mana [G] legal (front-face legendary creature)
+  format legality: legal as of 2026-10-21T05:25:44Z (age 0 days, stale: false)
+  engine support: unsupported
+    unsupported: Omnath, Locus of Mana (not in the implemented 16-card practice pool)
+  playable Commander game: NO — command zone and commander return rules are not implemented; commander tax is not implemented; 40 starting life is not implemented; 21 commander combat damage is not implemented; Commander multiplayer seat semantics are not implemented
+  [legal] CMD-COMMANDER-COUNT: exactly one commander
+  [legal] CMD-ELIGIBILITY: commander 'Omnath, Locus of Mana' is a front-face legendary creature
+  [legal] CMD-COUNT-100: 100 cards including 1 commander(s) and 99 library cards
+  [legal] CMD-SINGLETON: no duplicate non-basic English names
+  [legal] CMD-FORMAT-LEGAL: every referenced card is legal in Commander as of the recorded snapshot
+exit=0
+=== commander-check illegal (expect 1) ===
+Commander analysis: illegal (1 commander + 99 library = 100 cards)
+  commander: Omnath, Locus of Mana [G] legal (front-face legendary creature)
+  format legality: legal as of 2026-10-21T05:25:44Z (age 0 days, stale: false)
+  engine support: unsupported
+    unsupported: Omnath, Locus of Mana (not in the implemented 16-card practice pool)
+  playable Commander game: NO — command zone and commander return rules are not implemented; commander tax is not implemented; 40 starting life is not implemented; 21 commander combat damage is not implemented; Commander multiplayer seat semantics are not implemented
+  [legal] CMD-COMMANDER-COUNT: exactly one commander
+  [legal] CMD-ELIGIBILITY: commander 'Omnath, Locus of Mana' is a front-face legendary creature
+  [legal] CMD-COUNT-100: 100 cards including 1 commander(s) and 99 library cards
+  [illegal] CMD-IDENTITY: 'Island' has color identity [U] outside the commander's [G] (offending: U) (CR 903.5c)
+  [illegal] CMD-BASIC-LAND-TYPE: 'Island' has basic land type(s) that could produce [U] outside the commander's identity (CR 903.5d)
+  [legal] CMD-SINGLETON: no duplicate non-basic English names
+  [legal] CMD-FORMAT-LEGAL: every referenced card is legal in Commander as of the recorded snapshot
+exit=1
+=== commander-check not_certified (expect 2) ===
+Commander analysis: not_certified (2 commander + 98 library = 100 cards)
+  commander: Thrasios, Triton Hero [GU] not_certified (multi-commander eligibility is not certified)
+  commander: Tymna the Weaver [BW] not_certified (multi-commander eligibility is not certified)
+  format legality: legal as of 2026-10-21T05:25:44Z (age 0 days, stale: false)
+  engine support: unsupported
+    unsupported: Thrasios, Triton Hero (not in the implemented 16-card practice pool)
+    unsupported: Tymna the Weaver (not in the implemented 16-card practice pool)
+  playable Commander game: NO — command zone and commander return rules are not implemented; commander tax is not implemented; 40 starting life is not implemented; 21 commander combat damage is not implemented; Commander multiplayer seat semantics are not implemented
+  [not_certified] CMD-COMMANDER-COUNT: 2 commanders: every 2+ commander variant is conservatively not_certified
+  [legal] CMD-COUNT-100: 100 cards including 2 commander(s) and 98 library cards
+  [not_certified] CMD-IDENTITY: library color identity requires exactly one certifiable commander
+  [legal] CMD-SINGLETON: no duplicate non-basic English names
+  [legal] CMD-FORMAT-LEGAL: every referenced card is legal in Commander as of the recorded snapshot
+exit=2
+=== practice selfplay refuses Commander text (expect nonzero) ===
+Error: evidence/m2-commander-launder.txt: line 1: the 40-card practice profile does not support a 'Commander' section; Commander/companion/sideboard text cannot be loaded as a practice deck
+exit=1
+=== existing practice selfplay seed 101 ===
+selfplay seed=101 seats=2 heuristic vs heuristic -> status terminal winner P0 in 414 steps (17 turns)
+  digest 7f6f573d4b20 | replay verified | casts 18 attacks 6 blocks 2 counters 2
+  report written to evidence/m2-practice-selfplay101.json
+exit=0
+=== fresh 2/3/4-seat harness + replay verification ===
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+exit=0

@@ -1,0 +1,91 @@
+frozen_at=2026-10-21T06:08:24Z
+head=f7772b963cca155228ccfa85ba0f7431543fcd4d
+tests=251 passed, 0 failed
+--- git status (checkout scope; evidence excluded from hash list) ---
+ M ASSETS.md
+ M Cargo.lock
+ M README.md
+ M crates/cli/Cargo.toml
+ M crates/cli/src/main.rs
+ M crates/core/src/deck.rs
+ M crates/import/src/lib.rs
+ M crates/ui/tests/session.rs
+ M docs/ROADMAP.md
+?? M2_ISSUE11_HANDOFF.md
+?? crates/cli/src/commander_cmd.rs
+?? crates/cli/tests/
+?? crates/core/tests/practice_commander_guard.rs
+?? crates/import/src/commander.rs
+?? crates/import/tests/commander_acceptance.rs
+?? crates/import/tests/commander_adversarial.rs
+?? crates/import/tests/commander_edges.rs
+?? crates/import/tests/commander_grist.rs
+?? crates/import/tests/commander_identity_tracer.rs
+?? crates/import/tests/commander_laundering.rs
+?? crates/import/tests/commander_legal_tracer.rs
+?? crates/import/tests/commander_metadata_tracer.rs
+?? crates/import/tests/commander_shorikai.rs
+?? crates/import/tests/commander_singleton_tracer.rs
+?? crates/import/tests/commander_zones_tracer.rs
+?? crates/import/tests/fixtures/
+?? docs/commander-legality.md
+--- source/test/fixture hashes ---
+60d0cf3f6606d04d326a36d5f43269ff79b134ad32e62d5972fdceaaefbd0c66  Cargo.lock
+1ae384c77d45ae5b876a9ecccbf2eb91d45be62a3d27c8645fe6cf1de3cc4f18  crates/cli/Cargo.toml
+3e86d639d1c5ecaa398e8a6bc8db05013da58bf103c37d67b08e9987dafa21a7  crates/cli/src/main.rs
+a638a8ae62367e9753cb8725e8429034e251818b57b75024235d73303e22fe9f  crates/cli/src/commander_cmd.rs
+6c5d59a9c90e24be8e67caf1bf087c380ac36ea17000b1eac56ca428d40207d2  crates/cli/tests/commander_check.rs
+2095fe9c252a30c285dfdd55a7de3cc1f6c27b31cfdabe1864aafd8ca249a3cb  crates/core/src/deck.rs
+160bfcca4e4a6a69e4506972a5db79a4af63e42542b81d0891695509dc7c8751  crates/core/tests/practice_commander_guard.rs
+22243099c55878668083997e13129a482f953a1f3205b8c863ea4146a0eeb491  crates/import/src/lib.rs
+258a9404b4bc7b9165abd0510f69f70449eede853f20a07fbcf95932120bf66e  crates/import/src/commander.rs
+a8ad565341bd48c9a7ee2accfdd50068b1bb335d36e505bc985c405ef815d091  crates/import/tests/commander_acceptance.rs
+d9d01c1e17cf4ebc7a4389bba91b6f16110a56257c7c98f941380347afcce972  crates/import/tests/commander_adversarial.rs
+d1b5c4629817038da77bae44ea9437c9be510a700f36e6b43bea66bfb0efdf93  crates/import/tests/commander_edges.rs
+d7740ff352fd54b1327b1f5a6aa06b30f33dc3707cc855450cc3461ce69cc74a  crates/import/tests/commander_grist.rs
+64a80c352587c8a32fd8e01e4738494931e299215662cf7a8af286f20faf5e84  crates/import/tests/commander_identity_tracer.rs
+0853813d57891d43c034391ff727a79270f33bced71a556473f7ff65950237ec  crates/import/tests/commander_laundering.rs
+cc9a7eb347048c41a58e50c4c13d41e69b581d3362f18478012d5632ce1c1aa3  crates/import/tests/commander_legal_tracer.rs
+c9f084abf1a938f8da30f3332676ccc46771ece5b405926d861c743051bf308c  crates/import/tests/commander_metadata_tracer.rs
+ac752c8e0f656a6f667a2e9cdcb032452cd9c7ac20c60709e937b69c1b5b8380  crates/import/tests/commander_shorikai.rs
+820bb0ef91ee9a81dfe9b8d7ccb6930664cff9a7032567b3f3c71bf5fb617baa  crates/import/tests/commander_singleton_tracer.rs
+9165314b1cdec56734f35db874c6b1915f919eb1c1d7ef5441b5f6c2ccefb0e7  crates/import/tests/commander_zones_tracer.rs
+a6c679e32b60cf6ab1a564d638a5489f5236bb53aad5504da4e37f0e1aa11681  crates/import/tests/fixtures/commander/real/cards-scryfall.json
+3f5795c975cc62269e672e8b3294f7f49f6b78b1144e155a7c31d8fc701dac36  crates/import/tests/fixtures/commander/real/deck-legal-100.json
+5c8f5c656a8f093b5f437d92a9312a8c7dfebe7f4daec7cf0dcbdc5295f7f829  crates/import/tests/fixtures/commander/real/manifest.json
+68ab2b5eaf360d1115ad0edd7ad5f2da9565aa47f22d9da8106e25d217b5214b  crates/import/tests/fixtures/commander/real-grist/cards.json
+01448f2ef0018057e32edbd283e21fc6be8dcb8079ff8db7be103981466021b2  crates/import/tests/fixtures/commander/real-grist/deck.json
+668a888ecb3800ffb8236a4b2668feecd3c6015daa44d783b7bd2425066f6540  crates/import/tests/fixtures/commander/real-grist/manifest.json
+571ac99acb84cd78423084b20ef8ece0bc610cc8d9b28df0bea567f836b47a6b  crates/import/tests/fixtures/commander/real-shorikai/deck.json
+b81ccf261948054000ce91e49c9c5f7cb01ca702350ebcb361ca9af065958652  crates/import/tests/fixtures/commander/real-shorikai/manifest.json
+7f0b6def7c21a49d7cd77548ede5a60d49e54eb34b80ea95bfc5e3dcbd3f6bf0  crates/ui/tests/session.rs
+e5f9f98d1e60dacb0f69bcdd169f48cc981119af1321dbba9e7818c84606fd44  README.md
+c7f364bb3569cbc178acd772e99989d60253560a50c383fd50e404e54153ccc1  docs/ROADMAP.md
+c752b33d62212eb0fc9eb4263c882402e662c2513d87968c8eefa406fa546618  ASSETS.md
+917b8c8e481bef9e38a1a694a060811a201b893daf7ff3540defe535f8c62c81  docs/commander-legality.md
+c02359c7e894c76cce37407393bfe79609084c2e14e2223cdb2a1fc68f6f3c89  M2_ISSUE11_HANDOFF.md
+--- gates ---
+workspace tests passed=251, failed=0
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.43s
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `release` profile [optimized] target(s) in 16.35s
+--- CLI controls ---
+=== Mainboard valid40 coach (expect 0) ===
+exit=0
+=== Mainboard valid40 selfplay (must not be refused) ===
+selfplay seed=1 seats=2 heuristic vs heuristic -> status capped winner none in 5 steps (1 turns) TRUNCATED: step cap of 5 reached before the game ended
+  digest 2e1d92d165ea | replay verified | casts 0 attacks 0 blocks 0 counters 0
+exit=0
+=== Commander (1) refusal (expect 1) ===
+Error: evidence/m2-repair5-paren-header.txt: line 1: unknown section header 'Commander (1)'; the 40-card practice profile only accepts 'Deck' or 'Mainboard' headers and refuses Commander/companion/sideboard sections
+exit=1
+=== original valid40 practice ===
+exit=0
+=== Grist/Shorikai/probes ===
+grist=2
+shorikai=2
+[('valid-control', 0, 'legal'), ('conflicting-same-oracle-append', 2, 'not_certified'), ('conflicting-same-oracle-prepend', 2, 'not_certified'), ('commander-null-oracle-text', 2, 'not_certified'), ('commander-unknown-type-token', 2, 'not_certified')]
+=== harness ===
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+exit=0

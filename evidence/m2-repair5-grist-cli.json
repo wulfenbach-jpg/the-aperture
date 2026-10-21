@@ -1,0 +1,98 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "not_certified",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 3
+  },
+  "commanders": [
+    {
+      "name": "Grist, the Hunger Tide",
+      "oracle_id": "0efb0d7e-dea0-4817-a243-15066e9ef333",
+      "color_identity": [
+        "B",
+        "G"
+      ],
+      "layout": "normal",
+      "eligibility": "not_certified",
+      "reason": "zone-dependent/type-altering off-battlefield commander eligibility (CR 903.3) is not certified in this slice"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-21T05:25:44Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "19ad7367228bc47c15847552bb2b83c76a1f0055410478f99fa8c6d9da6ce1e2",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Grist, the Hunger Tide",
+        "oracle_id": "0efb0d7e-dea0-4817-a243-15066e9ef333",
+        "reason": "not in the implemented 16-card practice pool"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY-VARIANT",
+      "status": "not_certified",
+      "message": "commander 'Grist, the Hunger Tide': zone-dependent/type-altering off-battlefield commander eligibility (CR 903.3) is not certified in this slice"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "offline-test-snapshot",
+      "source": "constructed from real captured Scryfall identities; no network",
+      "captured_at": "2026-10-21T05:25:44Z",
+      "raw_sha256": "4f3da726b7e773d4c9a8daae8d8c2143bc3eb7c0e662443214455b391b99e424"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/bulk-data",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261020210200.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-21T05:25:44Z",
+      "cards_sha256": "19ad7367228bc47c15847552bb2b83c76a1f0055410478f99fa8c6d9da6ce1e2",
+      "raw_sha256": "3d38a800eec6b24a7418d52f541a1cf94e5185d3988f551db57622007a25e6e7"
+    }
+  }
+}

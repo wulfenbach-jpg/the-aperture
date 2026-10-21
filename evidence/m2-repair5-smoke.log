@@ -1,0 +1,14 @@
+=== Grist CLI (expect 2 not_certified) ===
+exit=2
+status not_certified eligibility not_certified reason zone-dependent/type-altering off-battlefield commander eligibility (CR 903.3) is not certified in this slice
+=== Shorikai CLI (expect 2 not_certified) ===
+exit=2
+status not_certified eligibility not_certified reason Vehicle commander (CR 903.3 category; power/toughness eligibility not modelled) is outside the front-face legendary-creature baseline
+=== regression probes ===
+[('valid-control', 0, 'legal'), ('conflicting-same-oracle-append', 2, 'not_certified'), ('conflicting-same-oracle-prepend', 2, 'not_certified'), ('commander-null-oracle-text', 2, 'not_certified'), ('commander-unknown-type-token', 2, 'not_certified')]
+=== legal/illegal/NC smoke ===
+legal_exit=0
+illegal_exit=1
+selfplay_exit=0
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+harness_exit=0

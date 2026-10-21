@@ -1,0 +1,280 @@
+{
+  "counts": {
+    "capped": 0,
+    "failed": 0,
+    "terminal": 12,
+    "total": 12
+  },
+  "games_per_seat": 2,
+  "max_millis": null,
+  "max_steps": 4000,
+  "rows": [
+    {
+      "decision_sources": {
+        "heuristic": 463
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "c87547a62b1a5184e6bb04f0df2f1871baba8c5db1e7ca4e63c96fb01bbbf0b1",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 2,
+      "seed": 1,
+      "status": "terminal",
+      "steps": 463,
+      "truncated": null,
+      "turns": 19,
+      "winner": 0
+    },
+    {
+      "decision_sources": {
+        "heuristic": 462
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "a632d246e3f5c2bea4eec5ebdbc2219775cf9681ef74cd7be9f0575a6e18c15b",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 2,
+      "seed": 2,
+      "status": "terminal",
+      "steps": 462,
+      "truncated": null,
+      "turns": 19,
+      "winner": 1
+    },
+    {
+      "decision_sources": {
+        "heuristic": 539
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "04442dceedbf428dff5b058d3b431a6e98c778e69dea9de3737e2ddece46ec31",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 2,
+      "seed": 3,
+      "status": "terminal",
+      "steps": 539,
+      "truncated": null,
+      "turns": 23,
+      "winner": 0
+    },
+    {
+      "decision_sources": {
+        "heuristic": 427
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "2f55f4ef55706229c75c90ea70a40e9c9cb0120b119a2b33f03e827af192e58f",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 2,
+      "seed": 4,
+      "status": "terminal",
+      "steps": 427,
+      "truncated": null,
+      "turns": 18,
+      "winner": 1
+    },
+    {
+      "decision_sources": {
+        "heuristic": 858
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "c43204bbcc678618445879288248a90b20e2ec940d926f16f97ba2212c75beef",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 3,
+      "seed": 1,
+      "status": "terminal",
+      "steps": 858,
+      "truncated": null,
+      "turns": 26,
+      "winner": 2
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1257
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "14df239d733593f5d03758125a0c16e2b57014c1c59ab11a4e98c09aa74b14c9",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 3,
+      "seed": 2,
+      "status": "terminal",
+      "steps": 1257,
+      "truncated": null,
+      "turns": 37,
+      "winner": 1
+    },
+    {
+      "decision_sources": {
+        "heuristic": 994
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "de98794b31d817b7aaa60a038bc31b3f6630bb5fd76cf0c9ae46ec5b1c48d5e3",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 3,
+      "seed": 3,
+      "status": "terminal",
+      "steps": 994,
+      "truncated": null,
+      "turns": 29,
+      "winner": 2
+    },
+    {
+      "decision_sources": {
+        "heuristic": 843
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "d4e0668c68b4289a219809449847693704b34e81bd1d5cd7df1a82a5f3358c21",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 3,
+      "seed": 4,
+      "status": "terminal",
+      "steps": 843,
+      "truncated": null,
+      "turns": 25,
+      "winner": 0
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1300
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "106755c72cbf22aaf274164e7d1232b83316e1ecb6553498a548e7934f85e0fa",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 4,
+      "seed": 1,
+      "status": "terminal",
+      "steps": 1300,
+      "truncated": null,
+      "turns": 32,
+      "winner": 2
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1304
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "261ca29058c4e667e7be0b3201974bb09b491b016af90adea4c1b78b55c0475f",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 4,
+      "seed": 2,
+      "status": "terminal",
+      "steps": 1304,
+      "truncated": null,
+      "turns": 33,
+      "winner": 1
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1317
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "e4a143a2f58dec3c86ab8e5d1a238e3b067e5fb684ef81dd171cb07f60ccb7f9",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 4,
+      "seed": 3,
+      "status": "terminal",
+      "steps": 1317,
+      "truncated": null,
+      "turns": 31,
+      "winner": 2
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1453
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "572907ac7033f72a8d3c774038fd057b3c181b6e57e008480ee36f18ca98e2d3",
+      "reason": "opponent's life total reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 4,
+      "seed": 4,
+      "status": "terminal",
+      "steps": 1453,
+      "truncated": null,
+      "turns": 34,
+      "winner": 1
+    }
+  ],
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-harness/1",
+  "seed_base": 1
+}

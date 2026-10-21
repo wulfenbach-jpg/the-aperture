@@ -1,0 +1,20 @@
+=== probes ===
+[('valid-control', 0, 'legal'), ('conflicting-same-oracle-append', 2, 'not_certified'), ('conflicting-same-oracle-prepend', 2, 'not_certified'), ('commander-null-oracle-text', 2, 'not_certified'), ('commander-unknown-type-token', 2, 'not_certified')]
+=== legal/illegal/NC ===
+legal_exit=0
+illegal_exit=1
+nc_exit=2
+=== Grist/Shorikai ===
+grist_exit=2
+shorikai_exit=2
+=== header bypass ===
+Error: evidence/m2-repair5-paren-header.txt: line 1: unknown section header 'Commander (1)'; the 40-card practice profile only accepts a 'Deck' header and refuses Commander/companion/sideboard sections
+header_exit=1
+=== fake raw_sha256 ===
+fake_rawsha_exit=2
+=== partner text empty keywords ===
+partner_text_exit=2
+=== practice smoke ===
+selfplay_exit=0
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+harness_exit=0
