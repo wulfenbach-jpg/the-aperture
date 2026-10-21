@@ -125,6 +125,12 @@ Missing metadata can never produce `legal` and cannot by itself produce
   ("a deck can have any number / up to N cards named ...") are
   `not_certified`, never falsely illegal. Interchangeable-name/unknown static
   deck-construction text is `not_certified`.
+  A non-basic duplicate with missing, null or non-string Oracle text, or
+  incomplete/unusable type metadata, is also `not_certified`: absence of
+  metadata cannot rule out a card-specific allowance. An explicitly present
+  empty rules-text string is valid. Independently proven count, ban or other
+  violations still produce `illegal`; the Basic Land exemption does not depend
+  on rules text.
 * **CR 903.3:** baseline commander is a front-face **legendary creature**.
   Vehicles and Spacecraft are CR-legal commander categories but this slice does
   not model their power/toughness/zone semantics; they are detected from the
