@@ -1,0 +1,91 @@
+   Compiling windows-sys v0.61.2
+   Compiling syn v3.0.9
+   Compiling synstructure v0.14.0
+   Compiling bytemuck_derive v1.12.1
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.3
+   Compiling bytemuck v1.25.2
+   Compiling thiserror v2.0.21
+   Compiling zerovec v0.11.8
+   Compiling zerotrie v0.2.5
+   Compiling naga-types v30.0.1
+   Compiling gpu-allocator v0.28.0
+   Compiling font-types v0.12.7
+   Compiling color v0.3.3
+   Compiling emath v0.37.0
+   Compiling image v0.25.10
+   Compiling wgpu-types v30.0.1
+   Compiling naga v30.0.1
+   Compiling ecolor v0.37.0
+   Compiling read-fonts v0.41.0
+   Compiling tinystr v0.8.4
+   Compiling potential_utf v0.1.6
+   Compiling peniko v0.6.1
+   Compiling icu_collections v2.3.0
+   Compiling icu_locale_core v2.3.0
+   Compiling vello_common v0.2.0
+   Compiling serde v1.0.229
+   Compiling icu_provider v2.3.1
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling url v2.5.8
+   Compiling schannel v0.1.30
+   Compiling arboard v3.7.0
+   Compiling tokio v1.53.3
+   Compiling native-tls v0.2.18
+   Compiling webbrowser v1.2.4
+   Compiling skrifa v0.44.0
+   Compiling harfrust v0.12.0
+   Compiling fontique v0.11.1
+   Compiling hyper v1.12.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower v0.5.3
+   Compiling hyper-util v0.1.21
+   Compiling tower-http v0.6.11
+   Compiling glifo v0.3.0
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling hyper-tls v0.6.0
+   Compiling wgpu-hal v30.0.1
+   Compiling reqwest v0.13.5
+   Compiling vello_cpu v0.2.0
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ai)
+   Compiling epaint v0.37.0
+   Compiling egui v0.37.0
+   Compiling egui_system_font_provider v0.37.0
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
+   Compiling egui-winit v0.37.0
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.37.0
+   Compiling eframe v0.37.0
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 47.08s
+     Running tests\session.rs (target\debug\deps\session-1cbe4b4ea6bb9ae6.exe)
+
+running 11 tests
+test the_profile_line_states_the_scope ... ok
+test a_new_game_resets_the_sandbox_flag_and_keeps_the_decks ... ok
+test native_startup_refuses_a_commander_text_file_instead_of_flattening_it ... ok
+test the_ai_steps_only_for_its_own_seat ... ok
+test an_illegal_action_is_refused_and_leaves_the_state_identical ... ok
+test sandbox_tools_change_the_state_and_void_certified_play ... ok
+test native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human ... ok
+test a_branch_point_restores_the_earlier_position_and_labels_the_boundary ... ok
+test sandbox_modified_save_roundtrip_preserves_the_uncertified_flag ... ok
+test save_and_load_round_trip_preserves_pending_choices_rng_and_ai_mode ... ok
+test background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+

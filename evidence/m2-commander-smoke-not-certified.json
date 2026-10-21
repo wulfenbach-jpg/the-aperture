@@ -1,0 +1,11 @@
+{
+  "schema": "aperture.commander-deck.v1",
+  "provenance": {
+    "kind": "constructed",
+    "provider": "offline-smoke",
+    "source": "smoke scenario",
+    "captured_at": "2026-10-21T05:20:00Z",
+    "raw_sha256": "6de6524dabb4e8f7a195f215637ba245ba9f319bcdf2240811567ce7032a2ed5"
+  },
+  "raw_deck": "{\"commanders\":[{\"name\":\"Thrasios, Triton Hero\",\"oracle_id\":\"3d867016-2601-4a37-a73d-308898d3bd37\",\"quantity\":1},{\"name\":\"Tymna the Weaver\",\"oracle_id\":\"d15642e4-e61c-4d29-af48-de837991245e\",\"quantity\":1}],\"companions\":[],\"excluded\":[],\"library\":[{\"name\":\"Forest\",\"oracle_id\":\"b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6\",\"quantity\":98}],\"sideboard\":[]}"
+}

@@ -1,0 +1,18 @@
+=== Mainboard valid40 coach (expect 0) ===
+exit=0
+=== Mainboard valid40 selfplay (must not be refused) ===
+selfplay seed=1 seats=2 heuristic vs heuristic -> status capped winner none in 5 steps (1 turns) TRUNCATED: step cap of 5 reached before the game ended
+  digest 2e1d92d165ea | replay verified | casts 0 attacks 0 blocks 0 counters 0
+exit=0
+=== Commander (1) refusal (expect 1) ===
+Error: evidence/m2-repair5-paren-header.txt: line 1: unknown section header 'Commander (1)'; the 40-card practice profile only accepts 'Deck' or 'Mainboard' headers and refuses Commander/companion/sideboard sections
+exit=1
+=== original valid40 practice ===
+exit=0
+=== Grist/Shorikai/probes ===
+grist=2
+shorikai=2
+[('valid-control', 0, 'legal'), ('conflicting-same-oracle-append', 2, 'not_certified'), ('conflicting-same-oracle-prepend', 2, 'not_certified'), ('commander-null-oracle-text', 2, 'not_certified'), ('commander-unknown-type-token', 2, 'not_certified')]
+=== harness ===
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+exit=0

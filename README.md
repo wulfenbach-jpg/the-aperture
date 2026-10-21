@@ -25,7 +25,8 @@ implementation and it says so everywhere it matters.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
 * **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `harness`,
-  `import`, `import-txt`, `pool`, `decks`, `coach`, `decider-health`.
+  `import`, `import-txt`, `commander-check`, `pool`, `decks`, `coach`,
+  `decider-health`.
 * **2–4-seat headless candidate (M1, partial and unreleased):** ordered seats,
   turn wraparound/skipping after elimination, all-live priority pass tracking,
   masked per-seat projections, bounded one-defender combat declarations,
@@ -38,6 +39,18 @@ implementation and it says so everywhere it matters.
   CI remain delivery gates, not an automatic M1 acceptance. Generic APNAP hidden-zone choices,
   dynamic/restarting APNAP, native 3/4-seat tables and Arcane/splice
   interactions remain unsupported.
+* **Offline Commander profile analysis (#11, analysis only):**
+  `aperture-cli commander-check --deck <deck-snapshot.json> --cards
+  <cards-snapshot.json> [--json] [--out <report.json>]` validates the
+  100-card/singleton profile (with the Basic-Land-supertype exemption), one
+  front-face legendary-creature commander, color identity, the basic-land-type
+  restriction, recorded ban status, and engine/card support **separately**.
+  It is deterministic and offline; snapshots bind their exact embedded bytes
+  with SHA-256 provenance. Unknown, incomplete, ambiguous, non-normal or
+  unsupported metadata is `not_certified`, never guessed legal; format
+  `legal` never means playable. All 2+ commander variants and every non-normal
+  layout are refused as `not_certified`. See
+  [docs/commander-legality.md](docs/commander-legality.md).
 * **Versioned persistence:** replay v3 embeds ordered seat deck snapshots and the
   recorded first player; save v4 embeds the game, replay, seat snapshots, AI
   settings and digest, including the mulligan round and sacrifice queue.
@@ -124,7 +137,9 @@ probability. See HANDOFF.md for the tested/untested status of that path.
 
 ## What is explicitly NOT implemented
 
-Commander (any form), networked multiplayer or native multiplayer beyond the
+Playable Commander (any form) — only the offline deck-profile analyzer above
+exists; command zone/return, commander tax, 40 life, 21 commander damage and
+Commander multiplayer are absent — networked multiplayer or native multiplayer beyond the
 two-seat table (3/4 seats are headless/CLI only), generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
 Earth sacrifice candidate, triggered abilities, activated abilities other
@@ -134,7 +149,9 @@ targets, multi-face cards (transform/split/meld/modal), sideboard/companion play
 layers beyond a single until-end-of-turn pump, Arcane/splice interactions, and any
 card outside this branch candidate's 16-card pool.
 Unsupported decks are refused at import rather than silently substituted.
-`pool` prints the implemented list.
+The 40-card practice file loader also refuses `Commander:`/`Companion:`/
+`Sideboard:` text instead of flattening it into a practice deck. `pool` prints
+the implemented list.
 
 **Combat damage assignment is narrowed.** CR 510.1c lets the attacking player
 divide a blocked creature's damage among its blockers as they choose; this slice

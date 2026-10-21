@@ -21,6 +21,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use thiserror::Error;
 
+pub mod commander;
+
 use aperture_core::catalog;
 use aperture_core::deck::DeckList;
 use aperture_core::digest;

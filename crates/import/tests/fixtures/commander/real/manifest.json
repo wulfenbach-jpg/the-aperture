@@ -1,0 +1,327 @@
+{
+  "schema": "aperture.fixture-manifest.v1",
+  "kind": "real",
+  "source": "Scryfall oracle_cards bulk, downloaded 2026-10-20T21:02Z",
+  "captured_at": "2026-10-21T05:25:44Z",
+  "license_note": "Card names and Oracle text are Wizards of the Coast content. This is a minimal interoperability test subset, not a redistributable card database. Scryfall is the metadata source. No images or prices are used.",
+  "selection": "exact English oracle names; first matching oracle_cards line each",
+  "cards_sha256": "be0986d4d77d78de9bfaf28bbfcf82b0d74b14dc8047574629312d82425aef98",
+  "cards_hash_domain": "SHA-256 over the exact UTF-8 bytes of raw_cards_jsonl (selected JSONL lines joined by newline plus one trailing newline)",
+  "raw_sha256_note": "raw_sha256 and cards_sha256 both bind the exact embedded raw_cards_jsonl bytes. No full-bulk artifact digest is verified or presented as candidate provenance.",
+  "deck_fixture_note": "deck-legal-100.json is a constructed legality test deck using these real card identities; it is not a captured third-party deck.",
+  "cards": [
+    {
+      "name": "Omnath, Locus of Mana",
+      "oracle_id": "9da896e1-2256-425b-b801-1ae6f0470559",
+      "layout": "normal",
+      "bulk_line_index": 23900,
+      "bulk_line_sha256": "f7517c634d159a4a0d379ff7cec872d9a418f2130be100ea6b08ac799e6da07f",
+      "bulk_line_bytes": 5149
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "layout": "normal",
+      "bulk_line_index": 27165,
+      "bulk_line_sha256": "b05d85797ad7e6a43097f127e641837a98bb1aa41d46eb93de12966c13e8eda4",
+      "bulk_line_bytes": 5505
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "layout": "normal",
+      "bulk_line_index": 27075,
+      "bulk_line_sha256": "e6c388e08135d6974c9ffed56ac255fdf89b90944d92211fcf5613eb90ee8770",
+      "bulk_line_bytes": 4987
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "layout": "normal",
+      "bulk_line_index": 24871,
+      "bulk_line_sha256": "42164f50c321bed93616d0b5ce4525e057d9edb2e7e3c4ba9c974d5d828a9284",
+      "bulk_line_bytes": 5039
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "layout": "normal",
+      "bulk_line_index": 13063,
+      "bulk_line_sha256": "f9b3d5d8f0371849252e1cee026cf4508b113476e9ddcca8b55e29d6405ac180",
+      "bulk_line_bytes": 4982
+    },
+    {
+      "name": "Wastes",
+      "oracle_id": "05d24b0c-904a-46b6-b42a-96a4d91a0dd4",
+      "layout": "normal",
+      "bulk_line_index": 926,
+      "bulk_line_sha256": "25d92974d90a8ad0599defafd14ad13cfbdd6142a0db37801791315d4afba150",
+      "bulk_line_bytes": 5317
+    },
+    {
+      "name": "Breeding Pool",
+      "oracle_id": "20283c4a-f1f0-42f0-bc08-6da87474426b",
+      "layout": "normal",
+      "bulk_line_index": 4896,
+      "bulk_line_sha256": "0cb255e9c5b4635ffdc08bc6d14b045915264d4e66b1563430a0ab5e5650dd25",
+      "bulk_line_bytes": 4994
+    },
+    {
+      "name": "Command Tower",
+      "oracle_id": "0895c9b7-ae7d-4bb3-af17-3b75deb50a25",
+      "layout": "normal",
+      "bulk_line_index": 1323,
+      "bulk_line_sha256": "3294913a4eba8f0cf2e15505edb49f05bfe1fbb20a0639efded236ad9a14a4ff",
+      "bulk_line_bytes": 5486
+    },
+    {
+      "name": "Sol Ring",
+      "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+      "layout": "normal",
+      "bulk_line_index": 16187,
+      "bulk_line_sha256": "8390e895e57424220ceef1900e1c4032074227ac49f7ba50c52627383ab9d7f0",
+      "bulk_line_bytes": 5035
+    },
+    {
+      "name": "Grizzly Bears",
+      "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+      "layout": "normal",
+      "bulk_line_index": 3199,
+      "bulk_line_sha256": "9c6699c0fc1ef9b0133fb9fdbb54528305729434e145ef81dd5b10339b4271ed",
+      "bulk_line_bytes": 5048
+    },
+    {
+      "name": "Atraxa, Praetors' Voice",
+      "oracle_id": "7e6b9b59-cd68-4e3c-827b-38833c92d6eb",
+      "layout": "normal",
+      "bulk_line_index": 19173,
+      "bulk_line_sha256": "acb24310dbe500a248ddb01946e9a496b89503270f22d2105755e30a090c4c8c",
+      "bulk_line_bytes": 5491
+    },
+    {
+      "name": "Talrand, Sky Summoner",
+      "oracle_id": "ea1eb902-a23c-44ff-9169-19baf71de238",
+      "layout": "normal",
+      "bulk_line_index": 35539,
+      "bulk_line_sha256": "cf0c55c21051f5a1781a0307b6a3ee27a4e6c699397d1576dd80bc4d7fa274ab",
+      "bulk_line_bytes": 5703
+    },
+    {
+      "name": "Tymna the Weaver",
+      "oracle_id": "d15642e4-e61c-4d29-af48-de837991245e",
+      "layout": "normal",
+      "bulk_line_index": 31755,
+      "bulk_line_sha256": "6383791c2d73a30f49c24672938c518250e0f30e8777d637e53acc414b9e875b",
+      "bulk_line_bytes": 5157
+    },
+    {
+      "name": "Thrasios, Triton Hero",
+      "oracle_id": "3d867016-2601-4a37-a73d-308898d3bd37",
+      "layout": "normal",
+      "bulk_line_index": 9320,
+      "bulk_line_sha256": "dfe0c6544959c4cdd2065092849ef4dd0310e3ca1ff3121b3f7266bcb2fbc800",
+      "bulk_line_bytes": 5228
+    },
+    {
+      "name": "Wilson, Refined Grizzly",
+      "oracle_id": "d2766fd7-5cf9-4037-9f34-9ae3982c613a",
+      "layout": "normal",
+      "bulk_line_index": 31925,
+      "bulk_line_sha256": "1b9acff43646e3a4be2738b92ca1de856b9099773afb8760c5fbc0b47ae6cd6d",
+      "bulk_line_bytes": 5320
+    },
+    {
+      "name": "Raised by Giants",
+      "oracle_id": "1682cf24-17a3-49ad-8b6f-9b7f13ebf53c",
+      "layout": "normal",
+      "bulk_line_index": 3438,
+      "bulk_line_sha256": "29cc083074a7ac8152c1528198e5adbb4d1b9d9af8c67cfff293ac87727cf5f3",
+      "bulk_line_bytes": 5294
+    },
+    {
+      "name": "Valki, God of Lies // Tibalt, Cosmic Impostor",
+      "oracle_id": "907ae517-22d5-4ac7-bc3a-3f4d5eaeeb57",
+      "layout": "modal_dfc",
+      "bulk_line_index": 21873,
+      "bulk_line_sha256": "4d36a0ee1e0d404125780f1ccfb39ca09bdc6e9b101ad1ea98e64e70629fcf4f",
+      "bulk_line_bytes": 8080
+    },
+    {
+      "name": "Esika, God of the Tree // The Prismatic Bridge",
+      "oracle_id": "92023a5d-a143-4950-a71b-d736e6b8e959",
+      "layout": "modal_dfc",
+      "bulk_line_index": 22114,
+      "bulk_line_sha256": "05bbf12dd2070fa10fa7c0c2518a875a6b3b48ee238eb368f9f8af23a2fcb723",
+      "bulk_line_bytes": 7573
+    },
+    {
+      "name": "Bosh, Iron Golem",
+      "oracle_id": "2fb6f65f-a0fb-4d45-be1b-d6405e61d47a",
+      "layout": "normal",
+      "bulk_line_index": 7149,
+      "bulk_line_sha256": "808d8c298481285f3f19842239df9583424af649b7cfa10806f737c4b06e3fd8",
+      "bulk_line_bytes": 5175
+    },
+    {
+      "name": "Wort, the Raidmother",
+      "oracle_id": "d6b67c7e-3b24-4f60-8e3a-c6ca45229d7f",
+      "layout": "normal",
+      "bulk_line_index": 32614,
+      "bulk_line_sha256": "93ccf244b3b383f0cb82186a155f959e7fccad3657cfe1d426365f6ee011d6f4",
+      "bulk_line_bytes": 5813
+    },
+    {
+      "name": "Golos, Tireless Pilgrim",
+      "oracle_id": "efe9c3e0-7315-408e-9903-9d25a681039b",
+      "layout": "normal",
+      "bulk_line_index": 36502,
+      "bulk_line_sha256": "04519189d7f953dc63a1c8100a05c1dbdabfcc88c5eb9879829b65416d1ae770",
+      "bulk_line_bytes": 5418
+    },
+    {
+      "name": "Lurrus of the Dream-Den",
+      "oracle_id": "3bc757c1-3adb-4321-8832-8e1cc9e687f7",
+      "layout": "normal",
+      "bulk_line_index": 9029,
+      "bulk_line_sha256": "ffdbb4069985ca7c10bce827693f6ba8e34be6ba0f0996947bf7ffda27c7cf37",
+      "bulk_line_bytes": 5506
+    },
+    {
+      "name": "Relentless Rats",
+      "oracle_id": "104ea189-14cd-420f-afdc-57b0f827ab8e",
+      "layout": "normal",
+      "bulk_line_index": 2491,
+      "bulk_line_sha256": "444605f425f8928833ced6e82812d34e992ea04a7cde8622899278813b001770",
+      "bulk_line_bytes": 5020
+    },
+    {
+      "name": "Rat Colony",
+      "oracle_id": "ec77d23b-0165-450d-9aae-73b755163753",
+      "layout": "normal",
+      "bulk_line_index": 35927,
+      "bulk_line_sha256": "85c9def38fba256c44cbee2881b834cf682e6303bfa9ca2e4be413be954d6ebb",
+      "bulk_line_bytes": 5074
+    },
+    {
+      "name": "Seven Dwarves",
+      "oracle_id": "526ca4a9-3f50-4f7a-8169-2bda95792401",
+      "layout": "normal",
+      "bulk_line_index": 12454,
+      "bulk_line_sha256": "2006b63ff99833844c787d7683089f038b5f819b40a34c152b5fb8795cabe060",
+      "bulk_line_bytes": 5795
+    },
+    {
+      "name": "Civilized Scholar // Homicidal Brute",
+      "oracle_id": "8662c9be-2244-4ea3-bf80-31a117f40a59",
+      "layout": "transform",
+      "bulk_line_index": 20355,
+      "bulk_line_sha256": "285d47fe61825bafc2b34518e7620ef1c53e2ecee0b572a4269e0153e3987416",
+      "bulk_line_bytes": 7768
+    },
+    {
+      "name": "Delver of Secrets // Insectile Aberration",
+      "oracle_id": "edd531b9-f615-4399-8c8c-1c5e18c4acbf",
+      "layout": "transform",
+      "bulk_line_index": 36163,
+      "bulk_line_sha256": "e5147327416f2e4ab87ba2b0ab9e0cb8d726ccbcb7f122efd4a5bf0ba9f3949f",
+      "bulk_line_bytes": 7723
+    },
+    {
+      "name": "Shorikai, Genesis Engine",
+      "oracle_id": "e2962883-6daf-4a84-af73-917afc73092c",
+      "layout": "normal",
+      "bulk_line_index": 34396,
+      "bulk_line_sha256": "0f756062c3b570199b5acd1d252cccc1c42e725ce12e020cea3bb2b0dab31745",
+      "bulk_line_bytes": 5808
+    },
+    {
+      "name": "Karlach, Fury of Avernus",
+      "oracle_id": "037355be-71e7-4866-80a6-80352c304970",
+      "layout": "normal",
+      "bulk_line_index": 555,
+      "bulk_line_sha256": "5f7a810f1778f8bec2d092a974a9e6c05443fea88431d6b40ce003f4d4d5782c",
+      "bulk_line_bytes": 5501
+    },
+    {
+      "name": "Faceless One",
+      "oracle_id": "ef220170-c01a-4ca5-b887-f248c50227ee",
+      "layout": "normal",
+      "bulk_line_index": 36382,
+      "bulk_line_sha256": "a07cef05ae0d52f69ccdee0b07e067aa98c1332a242efc057c876dc0ad17dc79",
+      "bulk_line_bytes": 5255
+    },
+    {
+      "name": "Daretti, Scrap Savant",
+      "oracle_id": "ea9f4de3-fc35-435a-8dff-a5657d14a9bd",
+      "layout": "normal",
+      "bulk_line_index": 35626,
+      "bulk_line_sha256": "420d3cd354f599ef8dea1e83c1c369f208a8eded0629bbdcebffb5d4905f30bd",
+      "bulk_line_bytes": 5984
+    },
+    {
+      "name": "Mox Amber",
+      "oracle_id": "7a43bd27-fdd8-41f0-9bc4-92568f3408f1",
+      "layout": "normal",
+      "bulk_line_index": 18536,
+      "bulk_line_sha256": "2541f5a9eb5d0f010b1bb5a9722181ce76f9d67df0be826cb36c1fabf0cf1497",
+      "bulk_line_bytes": 5062
+    },
+    {
+      "name": "Cheatyface",
+      "oracle_id": "d6202ce1-8dbc-4aa5-8d62-5fe4005fa3d9",
+      "layout": "normal",
+      "bulk_line_index": 32515,
+      "bulk_line_sha256": "505ff4641afe88f2f928866bdbfbb34e0e155c919c9fedefdfabb99a4daae194",
+      "bulk_line_bytes": 4986
+    },
+    {
+      "name": "Black Lotus",
+      "oracle_id": "5089ec1a-f881-4d55-af14-5d996171203b",
+      "layout": "normal",
+      "bulk_line_index": 12175,
+      "bulk_line_sha256": "d306797838593b30660c19cfa999bf338f6f8810f2dcdccc7b4ff9d41de239ce",
+      "bulk_line_bytes": 5393
+    },
+    {
+      "name": "Ancestral Recall",
+      "oracle_id": "550c74d4-1fcb-406a-b02a-639a760a4380",
+      "layout": "normal",
+      "bulk_line_index": 12856,
+      "bulk_line_sha256": "1700b8253e59480cd5e36a33614bbb8a088a8c62a8aacfd9b5008bca0ded7826",
+      "bulk_line_bytes": 4899
+    },
+    {
+      "name": "Gitaxian Probe",
+      "oracle_id": "1d67f5ff-1fce-45e5-b6a1-416c569351e2",
+      "layout": "normal",
+      "bulk_line_index": 4515,
+      "bulk_line_sha256": "4b1fa659762511cd773a048469bf5dd900bd096e1dff9b0a067ba41219842f60",
+      "bulk_line_bytes": 5073
+    },
+    {
+      "name": "Kozilek, Butcher of Truth",
+      "oracle_id": "7b8528b0-71eb-4c9e-bed9-aa2d2e84038f",
+      "layout": "normal",
+      "bulk_line_index": 18721,
+      "bulk_line_sha256": "c80234604a8c556de29d273e85561d02770c0bc6de2e16559a697207fb0b2b89",
+      "bulk_line_bytes": 5488
+    },
+    {
+      "name": "Vito, Thorn of the Dusk Rose",
+      "oracle_id": "7336a541-3ae9-4ab2-acb8-f574c0a5b3a9",
+      "layout": "normal",
+      "bulk_line_index": 17451,
+      "bulk_line_sha256": "5f32166d79b44f6f7c831ecb4b738bfcaa923a9e9e0b35eb1eb3601961252fd3",
+      "bulk_line_bytes": 5389
+    },
+    {
+      "name": "Dragon's Approach",
+      "oracle_id": "47e191f7-6314-4875-b5ee-57e5daf089c4",
+      "layout": "normal",
+      "bulk_line_index": 10852,
+      "bulk_line_sha256": "4f76716321cae1c14ac01e3b66ba3c8e527039689c2d71e86e5f51922cc25525",
+      "bulk_line_bytes": 5331
+    }
+  ],
+  "source_download_sha256_recorded_unverified": "3d38a800eec6b24a7418d52f541a1cf94e5185d3988f551db57622007a25e6e7"
+}

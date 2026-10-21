@@ -1,0 +1,7 @@
+captured_at=2026-10-21T05:50:26Z
+head=f7772b963cca155228ccfa85ba0f7431543fcd4d
+2515d6756ea5ca20bc0de475cef6a23f4884d496665697d9d965c9f95b891536  crates/import/src/commander.rs
+5b5e51881974b6329e41327127e1313052900cad4bdc144be6c7dfa55f5233bb  crates/core/src/deck.rs
+741e026cf7e819976c359261c05c7882d4c764519374d5b6842081193d5ae083  crates/import/tests/fixtures/commander/real/cards-scryfall.json
+3f5795c975cc62269e672e8b3294f7f49f6b78b1144e155a7c31d8fc701dac36  crates/import/tests/fixtures/commander/real/deck-legal-100.json
+91c3eb2530dc129f52a986f8a2b9be0815d5bd5c331b59e127976d5b2275eb23  crates/import/tests/fixtures/commander/real/manifest.json

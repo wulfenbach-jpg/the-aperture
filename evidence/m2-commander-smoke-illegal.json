@@ -1,0 +1,11 @@
+{
+  "schema": "aperture.commander-deck.v1",
+  "provenance": {
+    "kind": "constructed",
+    "provider": "offline-smoke",
+    "source": "smoke scenario",
+    "captured_at": "2026-10-21T05:20:00Z",
+    "raw_sha256": "f27d23882408b4a1eb65cc24edcd5965d8a02dd214a2256dc8a55b9be7651c53"
+  },
+  "raw_deck": "{\"commanders\":[{\"name\":\"Omnath, Locus of Mana\",\"oracle_id\":\"9da896e1-2256-425b-b801-1ae6f0470559\",\"quantity\":1}],\"companions\":[],\"excluded\":[],\"library\":[{\"name\":\"Forest\",\"oracle_id\":\"b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6\",\"quantity\":98},{\"name\":\"Island\",\"oracle_id\":\"b2c6aa39-2d2a-459c-a555-fb48ba993373\",\"quantity\":1}],\"sideboard\":[]}"
+}

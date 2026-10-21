@@ -1,0 +1,12 @@
+{
+  "schema": "aperture.commander-deck.v1",
+  "provenance": {
+    "kind": "constructed",
+    "provider": "offline-test-snapshot",
+    "source": "constructed from frozen real Scryfall identities; no network",
+    "captured_at": "2026-10-21T05:49:00Z",
+    "raw_sha256": "885c472cf5123e85643a415e27bea4cbc52f39363c019b2eedab096a96a58ccd",
+    "note": "Shorikai vehicle eligibility probe"
+  },
+  "raw_deck": "{\"commanders\":[{\"name\":\"Shorikai, Genesis Engine\",\"oracle_id\":\"e2962883-6daf-4a84-af73-917afc73092c\",\"quantity\":1}],\"companions\":[],\"excluded\":[],\"library\":[{\"name\":\"Wastes\",\"oracle_id\":\"05d24b0c-904a-46b6-b42a-96a4d91a0dd4\",\"quantity\":99}],\"sideboard\":[]}"
+}

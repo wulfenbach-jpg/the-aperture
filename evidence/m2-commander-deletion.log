@@ -1,0 +1,13 @@
+ M Cargo.lock
+ M crates/cli/Cargo.toml
+ M crates/ui/tests/session.rs
+?? crates/cli/tests/
+?? crates/core/tests/practice_commander_guard.rs
+?? crates/import/tests/commander_legality.rs.design
+?? crates/import/tests/fixtures/
+?? evidence/m2-commander-api-red.log
+?? evidence/m2-commander-compile.log
+?? evidence/m2-commander-deletion.log
+?? evidence/m2-commander-practice-red.log
+?? evidence/m2-commander-upfront-implementation-violation.rs.txt
+ls: cannot access 'crates/import/src/commander.rs': No such file or directory

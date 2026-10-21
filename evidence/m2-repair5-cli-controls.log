@@ -1,0 +1,12 @@
+=== practice parenthesized header (expect nonzero) ===
+Error: evidence/m2-repair5-paren-header.txt: line 1: unknown section header 'Commander (1)'; the 40-card practice profile only accepts a 'Deck' header and refuses Commander/companion/sideboard sections
+exit=1
+=== fake/zero raw_sha256 (expect 2) ===
+exit=2
+commander-check: invalid Commander input: raw_sha256 does not match the exact raw_cards_jsonl bytes (computed be0986d4d77d78de9bfaf28bbfcf82b0d74b14dc8047574629312d82425aef98); a detached full-artifact claim is not accepted
+=== partner text empty keywords (expect 2 not_certified) ===
+exit=2
+not_certified not_certified unsupported commander variant 'partner' in rules text
+=== Grist/Shorikai controls ===
+grist_exit=2
+shorikai_exit=2

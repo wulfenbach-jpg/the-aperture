@@ -1,0 +1,12 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ai)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.11s
+     Running tests\session.rs (target\debug\deps\session-1cbe4b4ea6bb9ae6.exe)
+
+running 1 test
+test native_startup_refuses_parenthesized_commander_headers ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+

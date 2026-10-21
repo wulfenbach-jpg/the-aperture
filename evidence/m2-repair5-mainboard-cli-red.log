@@ -1,0 +1,23 @@
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.13s
+     Running tests\commander_check.rs (target\debug\deps\commander_check-d50921c792f080ec.exe)
+
+running 1 test
+test a_valid_mainboard_prefixed_practice_file_still_loads_and_plays ... FAILED
+
+failures:
+
+---- a_valid_mainboard_prefixed_practice_file_still_loads_and_plays stdout ----
+
+thread 'a_valid_mainboard_prefixed_practice_file_still_loads_and_plays' (4828) panicked at crates\cli\tests\commander_check.rs:280:5:
+Mainboard-prefixed valid practice list must load: Error: C:\Users\alex3\AppData\Local\Temp\aperture-cli-mainboard-39628-1792562760889497300.json: line 1: unknown section header 'Mainboard'; the 40-card practice profile only accepts a 'Deck' header and refuses Commander/companion/sideboard sections
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    a_valid_mainboard_prefixed_practice_file_still_loads_and_plays
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.56s
+
+error: test failed, to rerun pass `-p aperture-cli --test commander_check`

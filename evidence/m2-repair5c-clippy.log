@@ -1,0 +1,6 @@
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Checking aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.43s

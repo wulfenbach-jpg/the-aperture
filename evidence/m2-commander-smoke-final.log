@@ -1,0 +1,9 @@
+legal_exit=0
+illegal_exit=1
+nc_exit=2
+selfplay seed=101 seats=2 heuristic vs heuristic -> status terminal winner P0 in 414 steps (17 turns)
+  digest 7f6f573d4b20 | replay verified | casts 18 attacks 6 blocks 2 counters 2
+  report written to evidence/m2-practice-selfplay101.json
+selfplay_exit=0
+harness: 12 run(s) — terminal 12, capped 0, failed 0 → evidence/m2-harness.json
+harness_exit=0

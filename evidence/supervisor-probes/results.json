@@ -1,0 +1,86 @@
+[
+  {
+    "probe": "valid-control",
+    "returncode": 0,
+    "status": "legal",
+    "findings": []
+  },
+  {
+    "probe": "conflicting-same-oracle-append",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-AMBIGUOUS-IDENTITY",
+        "status": "not_certified",
+        "message": "card objects sharing oracle_id '9da896e1-2256-425b-b801-1ae6f0470559' disagree on relevant metadata (name/type/layout/color/legality/text/faces)"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  },
+  {
+    "probe": "conflicting-same-oracle-prepend",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-AMBIGUOUS-IDENTITY",
+        "status": "not_certified",
+        "message": "card objects sharing oracle_id '9da896e1-2256-425b-b801-1ae6f0470559' disagree on relevant metadata (name/type/layout/color/legality/text/faces)"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  },
+  {
+    "probe": "commander-null-oracle-text",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-METADATA",
+        "status": "not_certified",
+        "message": "card 'Omnath, Locus of Mana' metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+      },
+      {
+        "code": "CMD-ELIGIBILITY-VARIANT",
+        "status": "not_certified",
+        "message": "commander 'Omnath, Locus of Mana': card metadata is incomplete: 'oracle_text' is null; semantics cannot be certified"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  },
+  {
+    "probe": "commander-unknown-type-token",
+    "returncode": 2,
+    "status": "not_certified",
+    "findings": [
+      {
+        "code": "CMD-METADATA",
+        "status": "not_certified",
+        "message": "card 'Omnath, Locus of Mana' metadata is incomplete: type_line 'Fictional Legendary Creature' contains an unknown supertype/type token"
+      },
+      {
+        "code": "CMD-ELIGIBILITY-VARIANT",
+        "status": "not_certified",
+        "message": "commander 'Omnath, Locus of Mana': card metadata is incomplete: type_line 'Fictional Legendary Creature' contains an unknown supertype/type token"
+      },
+      {
+        "code": "CMD-IDENTITY",
+        "status": "not_certified",
+        "message": "the commander's color identity is not certifiable from complete metadata"
+      }
+    ]
+  }
+]

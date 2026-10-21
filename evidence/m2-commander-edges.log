@@ -1,0 +1,25 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+warning: constant `WASTES` is never used
+  --> crates\import\tests\commander_edges.rs:17:7
+   |
+17 | const WASTES: (&str, &str) = ("Wastes", "05d24b0c-904a-46b6-b42a-96a4d91a0dd4");
+   |       ^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-import` (test "commander_edges") generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.19s
+     Running tests\commander_edges.rs (target\debug\deps\commander_edges-526d726f7b37762a.exe)
+
+running 8 tests
+test missing_color_identity_is_not_certified ... ok
+test the_basic_supertype_must_precede_the_type_separator ... ok
+test a_restricted_legality_value_is_not_certified ... ok
+test empty_color_identity_does_not_excuse_a_basic_land_type ... ok
+test a_banned_commander_is_illegal_even_when_engine_unsupported ... ok
+test a_non_normal_commander_is_not_certified ... ok
+test zero_commanders_is_illegal ... ok
+test every_two_commander_variant_is_not_certified ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

@@ -1,6 +1,7 @@
 //! THE APERTURE headless CLI: offline self-play, replay verification, coaching
 //! output, and real (bounded) Archidekt import.
 
+mod commander_cmd;
 mod decks;
 mod harness_cmd;
 mod import_cmd;
@@ -117,6 +118,20 @@ pub enum Command {
         #[arg(long, default_value = "decks/izzet-control.txt")]
         deck_b: PathBuf,
     },
+    /// Analyze an offline Commander deck snapshot. Format legality only; never
+    /// starts a game. Exit 0 legal, 1 illegal, 2 not_certified/input error.
+    CommanderCheck {
+        #[arg(long)]
+        deck: PathBuf,
+        #[arg(long)]
+        cards: PathBuf,
+        /// Print the versioned report JSON.
+        #[arg(long)]
+        json: bool,
+        /// Write the report JSON here (same bytes as --json stdout).
+        #[arg(long)]
+        out: Option<PathBuf>,
+    },
     /// Check whether the optional local Decider-2B service is reachable.
     DeciderHealth {
         #[arg(long, default_value = "http://127.0.0.1:8765")]
@@ -209,6 +224,14 @@ fn main() -> anyhow::Result<()> {
             deck_a,
             deck_b,
         } => info_cmd::coach(seed, &deck_a, &deck_b),
+        Command::CommanderCheck {
+            deck,
+            cards,
+            json,
+            out,
+        } => {
+            std::process::exit(commander_cmd::run(&deck, &cards, json, out.as_deref()));
+        }
         Command::DeciderHealth { base_url } => import_cmd::decider_health(&base_url),
     }
 }

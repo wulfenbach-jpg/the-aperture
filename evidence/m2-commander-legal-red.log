@@ -1,0 +1,30 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.02s
+     Running tests\commander_legal_tracer.rs (target\debug\deps\commander_legal_tracer-67c4c9e845dc40d0.exe)
+
+running 1 test
+test a_legal_100_card_deck_is_legal_but_not_playable ... FAILED
+
+failures:
+
+---- a_legal_100_card_deck_is_legal_but_not_playable stdout ----
+
+thread 'a_legal_100_card_deck_is_legal_but_not_playable' (33180) panicked at crates\import\tests\commander_legal_tracer.rs:13:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-TRACER",
+        status: NotCertified,
+        message: "snapshots parsed; legality rules are not implemented in this tracer",
+    },
+]
+  left: NotCertified
+ right: Legal
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    a_legal_100_card_deck_is_legal_but_not_playable
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_legal_tracer`

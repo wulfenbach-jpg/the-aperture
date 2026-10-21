@@ -1,0 +1,22 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.30s
+     Running tests\commander_laundering.rs (target\debug\deps\commander_laundering-1d4f34d5276f5a27.exe)
+
+running 1 test
+test raw_sha256_must_bind_the_embedded_card_bytes ... FAILED
+
+failures:
+
+---- raw_sha256_must_bind_the_embedded_card_bytes stdout ----
+
+thread 'raw_sha256_must_bind_the_embedded_card_bytes' (38772) panicked at crates\import\tests\commander_laundering.rs:43:5:
+a detached/zero raw_sha256 must not be presented as provenance
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    raw_sha256_must_bind_the_embedded_card_bytes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_laundering`

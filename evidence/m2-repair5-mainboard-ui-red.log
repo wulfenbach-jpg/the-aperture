@@ -1,0 +1,24 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.99s
+     Running tests\session.rs (target\debug\deps\session-1cbe4b4ea6bb9ae6.exe)
+
+running 1 test
+test native_startup_still_accepts_a_valid_mainboard_prefixed_file ... FAILED
+
+failures:
+
+---- native_startup_still_accepts_a_valid_mainboard_prefixed_file stdout ----
+
+thread 'native_startup_still_accepts_a_valid_mainboard_prefixed_file' (10384) panicked at crates\ui\tests\session.rs:449:5:
+assertion `left == right` failed
+  left: 0
+ right: 40
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    native_startup_still_accepts_a_valid_mainboard_prefixed_file
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 12 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-ui --test session`

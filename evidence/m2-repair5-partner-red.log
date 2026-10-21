@@ -1,0 +1,50 @@
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.36s
+     Running tests\commander_adversarial.rs (target\debug\deps\commander_adversarial-e508b7c203433019.exe)
+
+running 1 test
+test partner_rules_text_without_keywords_is_still_not_certified ... FAILED
+
+failures:
+
+---- partner_rules_text_without_keywords_is_still_not_certified stdout ----
+
+thread 'partner_rules_text_without_keywords_is_still_not_certified' (35664) panicked at crates\import\tests\commander_adversarial.rs:143:5:
+assertion `left == right` failed: [
+    Finding {
+        code: "CMD-COMMANDER-COUNT",
+        status: Legal,
+        message: "exactly one commander",
+    },
+    Finding {
+        code: "CMD-ELIGIBILITY",
+        status: Legal,
+        message: "commander 'Thrasios, Triton Hero' is a front-face legendary creature",
+    },
+    Finding {
+        code: "CMD-COUNT-100",
+        status: Legal,
+        message: "100 cards including 1 commander(s) and 99 library cards",
+    },
+    Finding {
+        code: "CMD-SINGLETON",
+        status: Legal,
+        message: "no duplicate non-basic English names",
+    },
+    Finding {
+        code: "CMD-FORMAT-LEGAL",
+        status: Legal,
+        message: "every referenced card is legal in Commander as of the recorded snapshot",
+    },
+]
+  left: Legal
+ right: NotCertified
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    partner_rules_text_without_keywords_is_still_not_certified
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.07s
+
+error: test failed, to rerun pass `-p aperture-import --test commander_adversarial`

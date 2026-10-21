@@ -1,0 +1,12 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\ai)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\import)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-11\crates\cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.44s
+     Running tests\commander_check.rs (target\debug\deps\commander_check-d50921c792f080ec.exe)
+
+running 1 test
+test parenthesized_section_headers_are_refused_by_real_consumers ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.58s
+
