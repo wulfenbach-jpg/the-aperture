@@ -19,6 +19,7 @@ const THRASIOS: (&str, &str) = (
     "3d867016-2601-4a37-a73d-308898d3bd37",
 );
 const TYMNA: (&str, &str) = ("Tymna the Weaver", "d15642e4-e61c-4d29-af48-de837991245e");
+const FACELESS: (&str, &str) = ("Faceless One", "ef220170-c01a-4ca5-b887-f248c50227ee");
 
 fn fixtures() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../import/tests/fixtures/commander/real")
@@ -388,4 +389,36 @@ fn a_valid_mainboard_prefixed_practice_file_still_loads_and_plays() {
         !stderr.contains("unknown section header"),
         "Mainboard-prefixed list must not be refused as an unknown header: {stderr}"
     );
+}
+
+#[test]
+fn pregame_chosen_color_commander_exits_2_without_false_color_illegal() {
+    let cards = fixtures().join("cards-scryfall.json");
+    let chosen = temp_file(
+        "pregame-color",
+        &deck(vec![entry(FACELESS, 1)], vec![entry(FOREST, 99)]),
+    );
+    let out = run(&[
+        "commander-check",
+        "--deck",
+        chosen.to_str().unwrap(),
+        "--cards",
+        cards.to_str().unwrap(),
+        "--json",
+    ]);
+    assert_eq!(
+        out.status.code(),
+        Some(2),
+        "stderr: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let report: Value = serde_json::from_slice(&out.stdout).unwrap();
+    assert_eq!(report["status"], "not_certified");
+    let color_illegal = report["findings"].as_array().unwrap().iter().any(|f| {
+        matches!(
+            f["code"].as_str(),
+            Some("CMD-IDENTITY") | Some("CMD-BASIC-LAND-TYPE")
+        ) && f["status"] == "illegal"
+    });
+    assert!(!color_illegal, "{report}");
 }
