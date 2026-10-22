@@ -978,6 +978,14 @@ fn is_background(type_line: &str) -> bool {
         .unwrap_or(false)
 }
 
+/// CR 903.4b: choosing a color before the game affects color identity during
+/// deck construction. Class-based predicate, independent of other unsupported
+/// variant markers (Background/Partner) and never card-name based.
+fn pregame_color_choice(card: &CardMeta) -> bool {
+    let text = card.oracle_text.clone().unwrap_or_default().to_lowercase();
+    text.contains("before the game begins") && text.contains("choose a color")
+}
+
 fn variant_marker(card: &CardMeta) -> Option<String> {
     for keyword in &card.keywords {
         if keyword == "partner"
@@ -1378,7 +1386,15 @@ pub fn analyze_snapshots(
     }
 
     // Color identity (CR 903.5c) and basic land types (CR 903.5d).
-    let commander_identity: Option<Vec<String>> = if single {
+    let chosen_color_unresolved = if single {
+        match &resolutions[0] {
+            Resolution::Found(card_index) => pregame_color_choice(&index.cards[*card_index]),
+            _ => false,
+        }
+    } else {
+        false
+    };
+    let commander_identity: Option<Vec<String>> = if single && !chosen_color_unresolved {
         match &resolutions[0] {
             Resolution::Found(card_index) => {
                 let card = &index.cards[*card_index];
@@ -1393,7 +1409,14 @@ pub fn analyze_snapshots(
     } else {
         None
     };
-    if single && commander_identity.is_none() {
+    if single && chosen_color_unresolved {
+        findings.push(Finding {
+            code: "CMD-IDENTITY".to_string(),
+            status: LegalityStatus::NotCertified,
+            message: "pregame chosen color (CR 903.4b) is unresolved; color identity and dependent 903.5c/903.5d checks cannot be certified"
+                .to_string(),
+        });
+    } else if single && commander_identity.is_none() {
         findings.push(Finding {
             code: "CMD-IDENTITY".to_string(),
             status: LegalityStatus::NotCertified,
