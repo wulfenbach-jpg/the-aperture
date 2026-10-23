@@ -2156,7 +2156,15 @@ impl Game {
                 }
             }
             Step::CombatDamage => {
+                // CR 510.2/117.5/704.3: damage is dealt, then all applicable
+                // SBAs (including CR 903.9a commander-return choices) complete
+                // before any player receives priority. A pending choice grants
+                // the single post-answer priority from the answer path.
                 self.deal_combat_damage(events);
+                self.check_sbas(events);
+                if self.state.pending.is_some() || self.state.is_over() {
+                    return;
+                }
                 self.grant_priority(active, events);
             }
             Step::EndCombat => {
