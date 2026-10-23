@@ -98,6 +98,12 @@ impl DeckList {
                     lineno + 1
                 )
             })?;
+            if card.is_supported_commander() {
+                return Err(format!(
+                    "line {}: '{card_name}' is commander-only in the command-zone practice profile; it cannot be in an ordinary starting library because the legend rule is not modeled",
+                    lineno + 1
+                ));
+            }
             match cards.iter_mut().find(|(c, _)| *c == card) {
                 Some((_, n)) => *n = n.saturating_add(qty),
                 None => cards.push((card, qty)),

@@ -55,9 +55,19 @@ pub fn decks() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn coach(seed: u64, deck_a: &Path, deck_b: &Path) -> anyhow::Result<()> {
-    let (a, _) = decks::load(deck_a, decks::BUNDLED_TEMUR, "Temur Beats")?;
-    let (b, _) = decks::load(deck_b, decks::BUNDLED_IZZET, "Izzet Control")?;
+pub fn coach(seed: u64, deck_a: Option<&Path>, deck_b: Option<&Path>) -> anyhow::Result<()> {
+    let (a, _) = decks::load(
+        deck_a.unwrap_or(Path::new("decks/temur-beats.txt")),
+        decks::BUNDLED_TEMUR,
+        "Temur Beats",
+        deck_a.is_some(),
+    )?;
+    let (b, _) = decks::load(
+        deck_b.unwrap_or(Path::new("decks/izzet-control.txt")),
+        decks::BUNDLED_IZZET,
+        "Izzet Control",
+        deck_b.is_some(),
+    )?;
     let (game, log) = Game::new_logged(seed, &[a, b]).map_err(|err| anyhow::anyhow!("{err}"))?;
     let legal = game.legal_actions();
     println!(

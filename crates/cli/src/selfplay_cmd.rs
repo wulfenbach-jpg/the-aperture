@@ -22,6 +22,8 @@ pub struct Args {
     pub out: Option<PathBuf>,
     pub replay_out: Option<PathBuf>,
     pub verbose: bool,
+    pub commanders: Vec<(aperture_core::PlayerId, aperture_core::CardId)>,
+    pub deck_explicit: bool,
 }
 
 fn bundled_paths() -> Vec<PathBuf> {
@@ -52,7 +54,7 @@ pub fn run(args: Args) -> anyhow::Result<()> {
         } else {
             (decks::BUNDLED_IZZET, "Izzet Control")
         };
-        let (deck, source) = decks::load(path, fallback, name)?;
+        let (deck, source) = decks::load(path, fallback, name, args.deck_explicit)?;
         lists.push(deck);
         sources.push(source);
     }
@@ -96,14 +98,41 @@ pub fn run(args: Args) -> anyhow::Result<()> {
         }
     }
 
-    let (mut game, mut log) =
-        Game::new_logged(args.seed, &lists).map_err(|err| anyhow::anyhow!("{err}"))?;
-    let mut replay = Replay::new(
-        args.seed,
-        game.state.first_player,
-        lists.clone(),
-        ai.clone(),
-    )
+    let (mut game, mut log) = if args.commanders.is_empty() {
+        Game::new_logged(args.seed, &lists)
+    } else {
+        if args.commanders.len() != lists.len() {
+            anyhow::bail!(
+                "--command-zone-practice needs exactly one --commander per deck ({} commander(s), {} deck(s))",
+                args.commanders.len(),
+                lists.len()
+            );
+        }
+        Game::new_command_zone_logged(args.seed, &lists, &args.commanders)
+    }
+    .map_err(|err| anyhow::anyhow!("{err}"))?;
+    let mut replay = if args.commanders.is_empty() {
+        Replay::new(
+            args.seed,
+            game.state.first_player,
+            lists.clone(),
+            ai.clone(),
+        )
+    } else {
+        Replay::new_command_zone(
+            args.seed,
+            game.state.first_player,
+            lists.clone(),
+            args.commanders
+                .iter()
+                .map(|(seat, card)| aperture_core::CommanderSetup {
+                    seat: *seat,
+                    card: *card,
+                })
+                .collect(),
+            ai.clone(),
+        )
+    }
     .map_err(|err| anyhow::anyhow!("{err}"))?;
     let limits = SelfplayLimits {
         max_steps: args.max_steps,
@@ -212,6 +241,11 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             "counterspells": counters,
         },
         "pool_size": aperture_core::catalog::pool_size(),
+        "profile": if args.commanders.is_empty() { "practice-20" } else { "command-zone-practice-20" },
+        "commanders": args.commanders.iter().map(|(seat, card)| json!({
+            "seat": seat,
+            "card": card.name(),
+        })).collect::<Vec<_>>(),
     });
 
     println!(

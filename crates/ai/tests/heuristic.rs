@@ -216,6 +216,7 @@ fn bottoms_a_surplus_land_when_scrying() {
                 owner: P0,
                 controller: P0,
                 zone: Zone::Battlefield,
+                commander: None,
                 tapped: false,
                 damage: 0,
                 summoning_sick: false,
@@ -397,6 +398,63 @@ fn heuristic_casts_crack_the_earth_through_its_legal_option() {
             } if id == hand_card(&game, P0, CardId::CrackTheEarth) && t.is_empty()
         ),
         "expected a legal Crack the Earth cast, got {:?}",
+        decision.action
+    );
+}
+
+#[test]
+fn heuristic_uses_legal_command_zone_casts_instead_of_passing() {
+    use aperture_ai::{HeuristicPolicy, Policy};
+    use aperture_core::{Action, CardId, DeckList, Game, ObjectId, P0, P1, Zone};
+    let decks = vec![
+        DeckList::parse_practice("A", "40 Forest\n").expect("A"),
+        DeckList::parse_practice("B", "40 Forest\n").expect("B"),
+    ];
+    let mut game = Game::new_command_zone(
+        77,
+        &decks,
+        &[
+            (P0, CardId::IsamaruHoundOfKonda),
+            (P1, CardId::IsamaruHoundOfKonda),
+        ],
+    )
+    .expect("setup");
+    game.state.mulligan = None;
+    game.state.pending = None;
+    game.state.turn.active = P0;
+    game.state.turn.step = aperture_core::Step::PrecombatMain;
+    game.state.turn.priority = Some(P0);
+    // Isolate the commander choice: no hand land drop is available.
+    game.state.players[P0 as usize].hand.clear();
+    let id = ObjectId(game.state.next_object);
+    game.state.next_object += 1;
+    game.state.objects.insert(
+        id,
+        aperture_core::state::Object {
+            id,
+            card: CardId::Plains,
+            owner: P0,
+            controller: P0,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+        },
+    );
+    let view = game.view_for(P0, &[]);
+    let commander = view.own_command_zone[0].id;
+    assert!(view.legal.iter().any(|legal| matches!(
+        &legal.action,
+        Action::CastSpell { card, .. } if *card == commander
+    )));
+    let decision = HeuristicPolicy::new().decide(&view);
+    assert!(
+        matches!(decision.action, Action::CastSpell { card, .. } if card == commander),
+        "the heuristic must use the engine's legal command-zone cast, got {:?}",
         decision.action
     );
 }

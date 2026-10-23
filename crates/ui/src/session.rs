@@ -782,9 +782,11 @@ impl UiSession {
         thread::spawn(move || {
             let result = (|| -> Result<Box<SessionSave>, String> {
                 let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
-                SessionSave::from_json(&text)
-                    .map_err(|e| e.to_string())
-                    .map(Box::new)
+                let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
+                if save.game.command_zone_practice {
+                    return Err("the native table does not support the command-zone practice profile yet; use aperture-cli selfplay --command-zone-practice".to_string());
+                }
+                Ok(Box::new(save))
             })();
             let _ = tx.send(WorkerMessage::Load {
                 generation,
@@ -824,6 +826,9 @@ impl UiSession {
     pub fn load(&mut self, path: &Path) -> Result<(), String> {
         let text = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
         let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
+        if save.game.command_zone_practice {
+            return Err("the native table does not support the command-zone practice profile yet; use aperture-cli selfplay --command-zone-practice".to_string());
+        }
         self.apply_save(&save);
         self.message = format!(
             "loaded {} — digest {} (stored {}), {} action(s) in the replay",

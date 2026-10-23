@@ -318,6 +318,54 @@ impl ApertureApp {
                         .submit_human(Action::DeclareBlockers { blocks });
                 }
             }
+            aperture_core::view::PendingKind::CommanderReplacement => {
+                ui.label("Commander replacement choice (CR 903.9b):");
+                let choices: Vec<(Action, String)> = view
+                    .legal
+                    .iter()
+                    .filter_map(|legal| match &legal.action {
+                        Action::AnswerCommanderReplacement { .. } => {
+                            Some((legal.action.clone(), legal.label.clone()))
+                        }
+                        _ => None,
+                    })
+                    .collect();
+                for (action, label) in choices {
+                    if ui.button(label).clicked() {
+                        let _ = self.session.submit_human(action);
+                    }
+                }
+            }
+            aperture_core::view::PendingKind::CommanderDraw => {
+                ui.label("Commander draw replacement choice (CR 903.9b):");
+                for legal in view
+                    .legal
+                    .iter()
+                    .filter(|legal| matches!(legal.action, Action::AnswerCommanderDraw { .. }))
+                {
+                    if ui.button(legal.label.clone()).clicked() {
+                        let _ = self.session.submit_human(legal.action.clone());
+                    }
+                }
+            }
+            aperture_core::view::PendingKind::CommanderReturn => {
+                ui.label("Commander return choice (CR 903.9a):");
+                let choices: Vec<(Action, String)> = view
+                    .legal
+                    .iter()
+                    .filter_map(|legal| match &legal.action {
+                        Action::AnswerCommanderReturn { .. } => {
+                            Some((legal.action.clone(), legal.label.clone()))
+                        }
+                        _ => None,
+                    })
+                    .collect();
+                for (action, label) in choices {
+                    if ui.button(label).clicked() {
+                        let _ = self.session.submit_human(action);
+                    }
+                }
+            }
             aperture_core::view::PendingKind::ApnapSacrifice => {
                 ui.label("Choose one of your permanents to sacrifice:");
                 let choices: Vec<(Action, String)> = view
@@ -1373,7 +1421,10 @@ mod viewport_tests {
             .expect("cast");
         while !matches!(
             session.game.state.pending,
-            Some(aperture_core::Pending::ApnapSacrifice { .. })
+            Some(
+                aperture_core::Pending::ApnapSacrifice { .. }
+                    | aperture_core::Pending::CommanderReturn { .. },
+            )
         ) {
             session.submit(Action::Pass).expect("pass");
         }

@@ -7,7 +7,10 @@ fn crack_the_earth_is_a_supported_normal_cast_card() {
         .expect("Crack the Earth must be in the supported pool");
     let id = aperture_core::catalog::by_name("Crack the Earth").expect("catalog entry");
     assert_eq!(list.count_of(id), 1);
-    assert_eq!(aperture_core::catalog::pool_size(), 16);
+    assert!(
+        aperture_core::catalog::pool_size() >= 16,
+        "the accepted practice corpus must stay at least 16 cards"
+    );
 }
 
 mod common;

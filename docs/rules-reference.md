@@ -54,6 +54,25 @@ bundled practice decks are unchanged.
 | Oracle text | “Each player sacrifices a permanent of their choice.” |
 | Art | Not bundled; no card art is added to the repository |
 
+### Command-zone practice source additions
+
+The explicit command-zone practice profile adds five sourced cards (captured
+2026-10-22 from official Gatherer pages by the independent Rules assignment;
+Oracle text and costs are recorded in `Rules-1-result.json`):
+
+| Card | Cost | Oracle |
+| --- | --- | --- |
+| Isamaru, Hound of Konda | `{W}` | vanilla 2/2 Legendary Creature — Dog; the only supported commander |
+| Plains | — | Basic Land — Plains |
+| Unsummon | `{U}` | Return target creature to its owner's hand. |
+| Time Ebb | `{2}{U}` | Put target creature on top of its owner's library. |
+| Swords to Plowshares | `{W}` | Exile target creature. Its controller gains life equal to its power. |
+
+The profile is **not** a Commander format implementation. It keeps 20 life and
+one Isamaru per seat, refuses Isamaru in ordinary starting libraries (no legend
+rule), and does not claim 903.4 color identity, 903.5 deck construction, 903.10
+commander damage, 40 life, partners, meld/merge, or multi-commander variants.
+
 The Arcane subtype is descriptive only in this slice; splice and other Arcane
 interactions are unsupported. The candidate's sacrifice pipeline is a single
 fixed-set public effect: it does not certify generic hidden-zone choices,

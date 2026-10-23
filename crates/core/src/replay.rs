@@ -17,8 +17,8 @@ use crate::ids::{MAX_PLAYERS, MIN_PLAYERS, PlayerId};
 use crate::settings::AiSettings;
 use crate::state::Outcome;
 
-pub const REPLAY_VERSION: u32 = 3;
-pub const SAVE_VERSION: u32 = 4;
+pub const REPLAY_VERSION: u32 = 4;
+pub const SAVE_VERSION: u32 = 5;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReplayStep {
@@ -28,6 +28,14 @@ pub struct ReplayStep {
     pub action: Action,
 }
 
+/// Explicit per-seat commander designation in the command-zone practice
+/// profile. Saved with the replay so setup is never inferred.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CommanderSetup {
+    pub seat: PlayerId,
+    pub card: crate::card::CardId,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Replay {
     pub version: u32,
@@ -35,6 +43,9 @@ pub struct Replay {
     pub first_player: PlayerId,
     /// Ordered seat snapshots; index == seat. The length is the seat count.
     pub seats: Vec<DeckList>,
+    /// Empty for ordinary 20-life practice. Non-empty means the explicit
+    /// command-zone practice profile with exactly one card per seat.
+    pub commanders: Vec<CommanderSetup>,
     pub rules_revision: String,
     pub ai: AiSettings,
     pub steps: Vec<ReplayStep>,
@@ -115,6 +126,7 @@ impl Replay {
             seed,
             first_player,
             seats,
+            commanders: Vec::new(),
             rules_revision: crate::RULES_REVISION.to_string(),
             ai,
             steps: Vec::new(),
@@ -126,10 +138,53 @@ impl Replay {
         Ok(replay)
     }
 
+    pub fn new_command_zone(
+        seed: u64,
+        first_player: PlayerId,
+        seats: Vec<DeckList>,
+        commanders: Vec<CommanderSetup>,
+        ai: AiSettings,
+    ) -> Result<Self, ReplayError> {
+        let mut replay = Replay::new(seed, first_player, seats, ai)?;
+        replay.commanders = commanders;
+        replay.validate()?;
+        Ok(replay)
+    }
+
     fn validate(&self) -> Result<(), ReplayError> {
         let got = self.seats.len();
         if !(MIN_PLAYERS..=MAX_PLAYERS).contains(&got) {
             return Err(ReplayError::SeatCount { got });
+        }
+        if !self.commanders.is_empty() {
+            if self.commanders.len() != got {
+                return Err(ReplayError::SeatOrder {
+                    reason: format!(
+                        "{} commander spec(s) for {got} seat(s); exactly one per seat is required",
+                        self.commanders.len()
+                    ),
+                });
+            }
+            for seat in 0..got as PlayerId {
+                let entries: Vec<&CommanderSetup> = self
+                    .commanders
+                    .iter()
+                    .filter(|setup| setup.seat == seat)
+                    .collect();
+                if entries.len() != 1 {
+                    return Err(ReplayError::SeatOrder {
+                        reason: format!("P{seat} must have exactly one commander"),
+                    });
+                }
+                if !entries[0].card.is_supported_commander() {
+                    return Err(ReplayError::SeatOrder {
+                        reason: format!(
+                            "{} is not in the supported command-zone practice commander profile",
+                            entries[0].card.name()
+                        ),
+                    });
+                }
+            }
         }
         if self.first_player as usize >= got {
             return Err(ReplayError::SeatOrder {
@@ -163,8 +218,17 @@ impl Replay {
             });
         }
         self.validate()?;
-        let (mut game, mut log) = Game::new_logged(self.seed, &self.seats)
-            .map_err(|source| ReplayError::Setup { source })?;
+        let (mut game, mut log) = if self.commanders.is_empty() {
+            Game::new_logged(self.seed, &self.seats)
+        } else {
+            let specs: Vec<(PlayerId, crate::card::CardId)> = self
+                .commanders
+                .iter()
+                .map(|setup| (setup.seat, setup.card))
+                .collect();
+            Game::new_command_zone_logged(self.seed, &self.seats, &specs)
+        }
+        .map_err(|source| ReplayError::Setup { source })?;
         if game.state.first_player != self.first_player {
             return Err(ReplayError::FirstPlayerMismatch {
                 expected: self.first_player,
@@ -286,6 +350,26 @@ impl SessionSave {
             });
         }
         self.replay.validate()?;
+        let expected_setup: Vec<(crate::ids::PlayerId, crate::card::CardId)> = self
+            .replay
+            .commanders
+            .iter()
+            .filter(|setup| self.game.is_live(setup.seat))
+            .map(|setup| (setup.seat, setup.card))
+            .collect();
+        let actual_setup: Vec<(crate::ids::PlayerId, crate::card::CardId)> = self
+            .game
+            .commanders
+            .iter()
+            .map(|registry| (registry.owner, registry.card))
+            .collect();
+        if self.game.command_zone_practice != !self.replay.commanders.is_empty()
+            || expected_setup != actual_setup
+        {
+            return Err(ReplayError::Invariant {
+                reason: "saved commander setup does not match the game registry".to_string(),
+            });
+        }
         if self.replay.first_player != self.game.first_player {
             return Err(ReplayError::Invariant {
                 reason: format!(

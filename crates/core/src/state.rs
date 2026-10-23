@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card::{CardId, Effect};
 use crate::error::EngineError;
-use crate::ids::{MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
+use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
 use crate::mana::ManaPool;
 use crate::rng::Pcg32;
 
@@ -136,6 +136,54 @@ pub enum Pending {
         order: Vec<PlayerId>,
         choices: BTreeMap<PlayerId, Option<ObjectId>>,
     },
+    /// CR 903.9a: the owner decides whether a commander that entered a
+    /// graveyard/exile since the last SBA check returns to the command zone.
+    CommanderReturn {
+        /// Complete canonical APNAP queue. Answered entries remain public until
+        /// the final owner answers, then the batch is applied together.
+        order: Vec<CommanderReturnEntry>,
+        /// Number of leading entries already answered.
+        cursor: usize,
+        /// `true` = accept command-zone return, aligned with `order[..cursor]`.
+        answers: Vec<bool>,
+    },
+    /// CR 903.9b: the owner decides whether a commander that would move to hand
+    /// or library is put into the command zone instead. The resolving spell is
+    /// suspended on this exact source/cursor.
+    CommanderReplacement {
+        player: PlayerId,
+        commander: CommanderId,
+        object: ObjectId,
+        from_zone: Zone,
+        destination: Zone,
+        source: ObjectId,
+        cursor: u8,
+    },
+    /// CR 903.9b on a library->hand draw. `remaining` is the number of further
+    /// cards that still must be drawn by the effect; `resume` distinguishes the
+    /// draw step from a resolving Draw(n) effect so continuation is exact.
+    CommanderDraw {
+        player: PlayerId,
+        commander: CommanderId,
+        object: ObjectId,
+        remaining: u8,
+        resume: DrawResume,
+    },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum DrawResume {
+    Step,
+    Effect { source: ObjectId, cursor: u8 },
+}
+
+/// One exact CR 903.9a owner choice.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CommanderReturnEntry {
+    pub player: PlayerId,
+    pub commander: CommanderId,
+    pub object: ObjectId,
+    pub zone: Zone,
 }
 
 /// One declaration round of the pre-game mulligan procedure (CR 103.5).
@@ -172,6 +220,9 @@ impl Pending {
             | Pending::OrderCard { player, .. }
             | Pending::Discard { player, .. }
             | Pending::ApnapSacrifice { player, .. } => *player,
+            Pending::CommanderReturn { order, cursor, .. } => order[*cursor].player,
+            Pending::CommanderReplacement { player, .. } => *player,
+            Pending::CommanderDraw { player, .. } => *player,
         }
     }
 
@@ -220,6 +271,36 @@ impl Pending {
             Pending::ApnapSacrifice { player, .. } => {
                 format!("P{player}: choose a permanent to sacrifice (CR 101.4, 701.21a)")
             }
+            Pending::CommanderReturn { order, cursor, .. } => {
+                let current = &order[*cursor];
+                format!(
+                    "P{}: commander {} is in {} and may return to the command zone (CR 903.9a; {}/{} answered)",
+                    current.player,
+                    current.object,
+                    current.zone.name(),
+                    cursor,
+                    order.len()
+                )
+            }
+            Pending::CommanderDraw {
+                player,
+                object,
+                remaining,
+                ..
+            } => format!(
+                "P{player}: commander {object} would be drawn; put it into the command zone instead? (CR 903.9b, {remaining} more draw(s) pending)"
+            ),
+            Pending::CommanderReplacement {
+                player,
+                object,
+                from_zone,
+                destination,
+                ..
+            } => format!(
+                "P{player}: commander {object} in the {} may be put into the command zone instead of the {} (CR 903.9b)",
+                from_zone.name(),
+                destination.name()
+            ),
         }
     }
 }
@@ -231,6 +312,8 @@ pub struct Object {
     pub owner: PlayerId,
     pub controller: PlayerId,
     pub zone: Zone,
+    /// Stable commander identity when this object represents a commander card.
+    pub commander: Option<CommanderId>,
     pub tapped: bool,
     /// Damage marked this turn (CR 120.3); cleared in cleanup (CR 514.2).
     pub damage: u32,
@@ -271,6 +354,22 @@ pub struct StackItem {
     pub cursor: u8,
 }
 
+/// Stable registry entry for one physical commander card. The per-zone object
+/// id changes on every zone transition; `CommanderId` never does.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Commander {
+    pub id: CommanderId,
+    pub owner: PlayerId,
+    pub card: CardId,
+    /// Current per-zone object. Re-keyed on every commander zone transition.
+    pub object: ObjectId,
+    /// Successful paid casts from the command zone (CR 903.8).
+    pub casts_from_command_zone: u32,
+    /// Armed when the commander entered a graveyard/exile and has not yet been
+    /// offered the CR 903.9a choice. Cleared when the choice is answered.
+    pub return_eligible: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Player {
     pub id: PlayerId,
@@ -280,6 +379,7 @@ pub struct Player {
     pub hand: Vec<ObjectId>,
     pub graveyard: Vec<ObjectId>,
     pub exile: Vec<ObjectId>,
+    pub command_zone: Vec<ObjectId>,
     pub life: i32,
     pub mana: ManaPool,
     pub mulligans: u8,
@@ -341,6 +441,11 @@ pub struct GameState {
     pub first_player: PlayerId,
     pub rng: Pcg32,
     pub objects: BTreeMap<ObjectId, Object>,
+    /// Stable per-physical-commander registry; empty for ordinary practice
+    /// games and exactly one entry per seat for command-zone practice.
+    pub commanders: Vec<Commander>,
+    /// True only for the explicit named command-zone practice profile.
+    pub command_zone_practice: bool,
     /// Ordered seats. `players.len()` is the only seat-count source; seats are
     /// never renumbered when a player leaves the game.
     pub players: Vec<Player>,
@@ -476,6 +581,20 @@ impl GameState {
             });
         }
         if let Some(pending) = &self.pending {
+            // Structural bounds must be checked before `player()` indexes the
+            // canonical queue; malformed saves are typed errors, never panics.
+            if let Pending::CommanderReturn {
+                order,
+                cursor,
+                answers,
+            } = pending
+                && (order.is_empty() || *cursor >= order.len() || answers.len() != *cursor)
+            {
+                return Err(EngineError::InvalidState {
+                    reason: "commander return cursor/answers are not a valid non-empty prefix"
+                        .to_string(),
+                });
+            }
             let owner = pending.player();
             if !in_range(owner) || !self.is_live(owner) {
                 return Err(EngineError::InvalidState {
@@ -862,6 +981,255 @@ impl GameState {
                 reason: "mulligan pending choice without mulligan state".to_string(),
             });
         }
+        if let Some(Pending::CommanderReturn {
+            order,
+            cursor,
+            answers,
+        }) = &self.pending
+        {
+            if order.is_empty() || *cursor >= order.len() || answers.len() != *cursor {
+                return Err(EngineError::InvalidState {
+                    reason: "commander return cursor/answers are not a valid prefix".to_string(),
+                });
+            }
+            let n = self.seat_count();
+            let anchor = self.turn.active;
+            let mut seen_commanders: Vec<CommanderId> = Vec::new();
+            let mut seen_owners: Vec<PlayerId> = Vec::new();
+            let mut offsets: Vec<usize> = Vec::new();
+            for entry in order {
+                if !self.is_live(entry.player) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("commander return owner P{} is not live", entry.player),
+                    });
+                }
+                if seen_commanders.contains(&entry.commander) || seen_owners.contains(&entry.player)
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander return queue duplicates a commander or owner"
+                            .to_string(),
+                    });
+                }
+                seen_commanders.push(entry.commander);
+                seen_owners.push(entry.player);
+                let Some(registry) = self.commanders.iter().find(|c| c.id == entry.commander)
+                else {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("commander return references missing {}", entry.commander),
+                    });
+                };
+                if registry.owner != entry.player
+                    || registry.object != entry.object
+                    || !registry.return_eligible
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander return entry does not match an armed registry"
+                            .to_string(),
+                    });
+                }
+                let Some(object) = self.objects.get(&entry.object) else {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("commander return object {} is missing", entry.object),
+                    });
+                };
+                if object.zone != entry.zone || !matches!(entry.zone, Zone::Graveyard | Zone::Exile)
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander return object/zone is stale".to_string(),
+                    });
+                }
+                offsets.push((entry.player as usize + n - anchor as usize) % n);
+            }
+            if offsets.windows(2).any(|pair| pair[0] >= pair[1]) {
+                return Err(EngineError::InvalidState {
+                    reason: "commander return queue is not in active-anchored APNAP order"
+                        .to_string(),
+                });
+            }
+            let armed: Vec<CommanderId> = self
+                .commanders
+                .iter()
+                .filter(|commander| {
+                    commander.return_eligible
+                        && self.objects.get(&commander.object).is_some_and(|object| {
+                            matches!(object.zone, Zone::Graveyard | Zone::Exile)
+                        })
+                })
+                .map(|commander| commander.id)
+                .collect();
+            let mut expected = armed.clone();
+            let mut actual = seen_commanders.clone();
+            expected.sort_unstable();
+            actual.sort_unstable();
+            if expected != actual {
+                return Err(EngineError::InvalidState {
+                    reason: "commander return queue does not exactly cover every armed commander"
+                        .to_string(),
+                });
+            }
+        }
+        match &self.pending {
+            Some(Pending::CommanderReplacement {
+                player,
+                commander,
+                object,
+                from_zone,
+                destination,
+                source,
+                cursor,
+            }) => {
+                if !matches!(destination, Zone::Hand | Zone::Library) {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement destination is not hand/library".to_string(),
+                    });
+                }
+                let Some(registry) = self.commanders.iter().find(|c| c.id == *commander) else {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement references a missing commander".to_string(),
+                    });
+                };
+                if registry.owner != *player || registry.object != *object {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement registry/object mismatch".to_string(),
+                    });
+                }
+                let Some(current) = self.objects.get(object) else {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement object is missing".to_string(),
+                    });
+                };
+                if current.zone != *from_zone || *from_zone != Zone::Battlefield {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement from_zone is stale".to_string(),
+                    });
+                }
+                let Some(top) = self.stack.last() else {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement has no stack source".to_string(),
+                    });
+                };
+                if top.object != *source || top.cursor != *cursor || self.resolving != Some(*source)
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement source/cursor does not match resolution"
+                            .to_string(),
+                    });
+                }
+                let produced_destination = cursor.checked_sub(1).and_then(|index| {
+                    self.objects
+                        .get(source)
+                        .and_then(|object| object.card.def().spell_spec())
+                        .and_then(|spec| spec.effects.get(index as usize))
+                        .and_then(|effect| match effect {
+                            Effect::ReturnToHand => Some(Zone::Hand),
+                            Effect::PutOnTopOfLibrary => Some(Zone::Library),
+                            _ => None,
+                        })
+                });
+                if produced_destination != Some(*destination)
+                    || top.targets.as_slice() != [crate::action::Target::Permanent(*object)]
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander replacement does not match its producer effect/target"
+                            .to_string(),
+                    });
+                }
+            }
+            Some(Pending::CommanderDraw {
+                player,
+                commander,
+                object,
+                remaining,
+                resume,
+            }) => {
+                let Some(registry) = self.commanders.iter().find(|c| c.id == *commander) else {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander draw references a missing commander".to_string(),
+                    });
+                };
+                if registry.owner != *player || registry.object != *object {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander draw registry/object mismatch".to_string(),
+                    });
+                }
+                let Some(current) = self.objects.get(object) else {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander draw object is missing".to_string(),
+                    });
+                };
+                if current.zone != Zone::Library
+                    || !in_range(*player)
+                    || self.player(*player).library.first() != Some(object)
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: "commander draw object is not the top of its owner's library"
+                            .to_string(),
+                    });
+                }
+                match resume {
+                    DrawResume::Step => {
+                        if self.turn.step != Step::Draw
+                            || self.turn.active != *player
+                            || *remaining != 0
+                            || self.resolving.is_some()
+                            || !self.stack.is_empty()
+                        {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw step resume context is stale".to_string(),
+                            });
+                        }
+                    }
+                    DrawResume::Effect { source, cursor } => {
+                        let Some(top) = self.stack.last() else {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw has no stack source".to_string(),
+                            });
+                        };
+                        if top.object != *source
+                            || top.cursor != *cursor
+                            || self.resolving != Some(*source)
+                            || *cursor == 0
+                            || top.controller != *player
+                        {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw source/cursor does not match resolution"
+                                    .to_string(),
+                            });
+                        }
+                        let Some(item) = self.stack.last() else {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw source is missing".to_string(),
+                            });
+                        };
+                        let Some(spec) = self
+                            .objects
+                            .get(source)
+                            .and_then(|o| o.card.def().spell_spec())
+                        else {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw source is not a spell".to_string(),
+                            });
+                        };
+                        let index = (*cursor as usize) - 1;
+                        let Some(Effect::Draw(n)) = spec.effects.get(index) else {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw cursor is not a Draw effect".to_string(),
+                            });
+                        };
+                        // The cursor indexes instructions, not cards drawn.
+                        // Opt/Consider draw after a preceding Scry/Surveil.
+                        if *remaining >= *n {
+                            return Err(EngineError::InvalidState {
+                                reason: "commander draw remaining count does not match Draw(n)"
+                                    .to_string(),
+                            });
+                        }
+                        let _ = item;
+                    }
+                }
+            }
+            _ => {}
+        }
         for object in self.objects.values() {
             if !in_range(object.owner) || !in_range(object.controller) {
                 return Err(EngineError::InvalidState {
@@ -872,6 +1240,140 @@ impl GameState {
                 });
             }
         }
+        // Bidirectional container/identity checks. The list->object pass below
+        // is not enough: a duplicated or missing zone entry, a key/object id
+        // mismatch, or a rewound allocator must be rejected, including sandbox
+        // saves.
+        let mut list_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
+        for player in &self.players {
+            for ids in [
+                &player.library,
+                &player.hand,
+                &player.graveyard,
+                &player.exile,
+                &player.command_zone,
+            ] {
+                for id in ids {
+                    *list_counts.entry(*id).or_insert(0) += 1;
+                }
+            }
+        }
+        let mut stack_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
+        for item in &self.stack {
+            *stack_counts.entry(item.object).or_insert(0) += 1;
+        }
+        for (key, object) in &self.objects {
+            if *key != object.id {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "object map key {} does not equal object.id {}",
+                        key, object.id
+                    ),
+                });
+            }
+            let listed = list_counts.get(key).copied().unwrap_or(0);
+            let stacked = stack_counts.get(key).copied().unwrap_or(0);
+            let ok = match object.zone {
+                Zone::Battlefield | Zone::Removed => listed == 0 && stacked == 0,
+                Zone::Stack => listed == 0 && stacked == 1,
+                Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
+                    listed == 1 && stacked == 0
+                }
+            };
+            if !ok {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "object {key} in {} has {listed} zone-list and {stacked} stack container entr(ies); exactly one matching container is required",
+                        object.zone.name()
+                    ),
+                });
+            }
+        }
+        if self.objects.keys().any(|id| id.0 >= self.next_object) {
+            return Err(EngineError::InvalidState {
+                reason: format!(
+                    "next_object {} does not exceed every allocated object id",
+                    self.next_object
+                ),
+            });
+        }
+        if self.command_zone_practice {
+            if self.commanders.len() != self.live_count() {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "command-zone practice needs one commander per live seat; {} registry entr(ies) for {} live seat(s)",
+                        self.commanders.len(),
+                        self.live_count()
+                    ),
+                });
+            }
+            for seat in self.live_seats() {
+                if self.commanders.iter().filter(|c| c.owner == seat).count() != 1 {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("live P{seat} does not have exactly one commander"),
+                    });
+                }
+            }
+        } else if !self.commanders.is_empty()
+            || self
+                .players
+                .iter()
+                .any(|player| !player.command_zone.is_empty())
+        {
+            return Err(EngineError::InvalidState {
+                reason: "ordinary practice game carries command-zone state".to_string(),
+            });
+        }
+        let mut seen: Vec<CommanderId> = Vec::new();
+        for commander in &self.commanders {
+            if !in_range(commander.owner) {
+                return Err(EngineError::InvalidState {
+                    reason: format!("{} has out-of-range owner", commander.id),
+                });
+            }
+            if !commander.card.is_supported_commander() {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "{} is not in the supported commander profile",
+                        commander.card.name()
+                    ),
+                });
+            }
+            if seen.contains(&commander.id) {
+                return Err(EngineError::InvalidState {
+                    reason: format!("duplicate commander identity {}", commander.id),
+                });
+            }
+            seen.push(commander.id);
+            let Some(object) = self.objects.get(&commander.object) else {
+                return Err(EngineError::InvalidState {
+                    reason: format!("{} points at a missing object", commander.id),
+                });
+            };
+            if object.commander != Some(commander.id)
+                || object.owner != commander.owner
+                || object.card != commander.card
+                || object.zone == Zone::Removed
+            {
+                return Err(EngineError::InvalidState {
+                    reason: format!("{} registry/object mismatch", commander.id),
+                });
+            }
+        }
+        for object in self.objects.values() {
+            if let Some(id) = object.commander {
+                let Some(registry) = self.commanders.iter().find(|c| c.id == id) else {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("object {} carries missing commander {id}", object.id),
+                    });
+                };
+                if registry.object != object.id {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("object {} is not the current object for {id}", object.id),
+                    });
+                }
+            }
+        }
         for (index, player) in self.players.iter().enumerate() {
             let p = index as PlayerId;
             for (zone, ids) in [
@@ -879,6 +1381,7 @@ impl GameState {
                 (Zone::Hand, &player.hand),
                 (Zone::Graveyard, &player.graveyard),
                 (Zone::Exile, &player.exile),
+                (Zone::Command, &player.command_zone),
             ] {
                 for id in ids {
                     let Some(object) = self.objects.get(id) else {

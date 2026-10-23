@@ -13,7 +13,14 @@ pub fn load(
     path: &Path,
     fallback: &str,
     fallback_name: &str,
+    explicit: bool,
 ) -> anyhow::Result<(DeckList, String)> {
+    if !path.exists() && explicit {
+        anyhow::bail!(
+            "explicitly requested deck {} does not exist or is not readable; refusing to substitute the bundled practice deck",
+            path.display()
+        );
+    }
     if path.exists() {
         let text = std::fs::read_to_string(path)?;
         let list = DeckList::parse_practice(fallback_name, &text)
@@ -23,4 +30,19 @@ pub fn load(
     let list = DeckList::parse_practice(fallback_name, fallback)
         .map_err(|e| anyhow::anyhow!("bundled {fallback_name}: {e}"))?;
     Ok((list, format!("bundled:{fallback_name}")))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn an_explicit_missing_deck_path_is_not_replaced_by_the_bundle() {
+        let path = Path::new("evidence/issue12/definitely-no-such-deck.txt");
+        let result = load(path, BUNDLED_TEMUR, "Temur Beats", true);
+        assert!(
+            result.is_err(),
+            "an explicit missing path must be refused, not silently replaced: {result:?}"
+        );
+    }
 }

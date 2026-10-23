@@ -325,6 +325,10 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             },
             Pending::Discard { .. } => vec!["514.1"],
             Pending::ApnapSacrifice { .. } => vec!["101.4", "701.21a"],
+            Pending::CommanderReturn { .. } => vec!["903.9a"],
+            Pending::CommanderReplacement { .. } | Pending::CommanderDraw { .. } => {
+                vec!["903.9b"]
+            }
         };
         let text = if matches!(pending, Pending::ApnapSacrifice { .. })
             && pending.player() != viewer

@@ -59,6 +59,12 @@ pub enum EngineError {
 
     #[error("only basic lands have a mana ability in this slice")]
     NotAManaSource,
+
+    #[error("{card} is not in the supported command-zone practice commander profile")]
+    UnsupportedCommander { card: CardId },
+
+    #[error("invalid command-zone practice setup: {reason}")]
+    InvalidCommanderSetup { reason: String },
 }
 
 impl EngineError {
