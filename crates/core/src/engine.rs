@@ -2066,7 +2066,16 @@ impl Game {
     fn advance_step(&mut self, events: &mut Vec<Event>) {
         // CR 500.5: unspent mana empties as the step or phase ends.
         self.empty_mana_pools(events);
-        let (next, new_turn) = self.state.turn.step.next();
+        // CR 514.3a: when cleanup has granted priority, a completed pass round
+        // repeats the same cleanup step through the normal step machinery so
+        // StepBegin, mana emptying, cleanup actions and settle/SBA handling all
+        // run again. The ordinary no-priority cleanup fast path still advances.
+        let (next, new_turn) =
+            if self.state.turn.step == Step::Cleanup && self.state.turn.priority.is_some() {
+                (Step::Cleanup, false)
+            } else {
+                self.state.turn.step.next()
+            };
         if new_turn {
             self.state.turn.number += 1;
             // CR 800.4k: a departed player's turn does not begin; select the
