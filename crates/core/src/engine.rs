@@ -1939,10 +1939,18 @@ impl Game {
         // All cards decided: put the kept ones on top in the order they were
         // looked at, and the rest on the bottom (scry) / already in the
         // graveyard (surveil), CR 701.22a / 701.25a.
+        // Surveyed cards (including a re-keyed commander) may already have left
+        // the library. Never dereference a historical ObjectId; only cards still
+        // in the library and not kept belong on the bottom.
         let bottom: Vec<ObjectId> = viewed
             .iter()
-            .filter(|v| !kept.contains(v) && self.state.object(**v).zone == Zone::Library)
-            .copied()
+            .filter(|v| !kept.contains(v))
+            .filter_map(|v| {
+                self.state
+                    .try_object(*v)
+                    .filter(|object| object.zone == Zone::Library)
+                    .map(|_| *v)
+            })
             .collect();
         let mut library = std::mem::take(&mut self.state.players[player as usize].library);
         let mut new_library = kept;

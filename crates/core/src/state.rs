@@ -1258,6 +1258,122 @@ impl GameState {
                 }
             }
         }
+        // Cards looked at by a pending scry/surveil are drained from the
+        // library list but remain Library-zone objects held by the pending
+        // choice. Count those virtual holdings exactly once.
+        let mut held_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
+        if let Some(Pending::OrderCard {
+            player,
+            viewed,
+            index,
+            to_top,
+            mode,
+            ..
+        }) = &self.pending
+        {
+            if viewed.is_empty() || *index >= viewed.len() {
+                return Err(EngineError::InvalidState {
+                    reason: "pending OrderCard index is outside its viewed cards".to_string(),
+                });
+            }
+            let Some(resolving) = self.resolving else {
+                return Err(EngineError::InvalidState {
+                    reason: "pending OrderCard has no resolving source".to_string(),
+                });
+            };
+            let Some(top) = self.stack.last() else {
+                return Err(EngineError::InvalidState {
+                    reason: "pending OrderCard has no stack source".to_string(),
+                });
+            };
+            if top.object != resolving || top.controller != *player || top.cursor == 0 {
+                return Err(EngineError::InvalidState {
+                    reason: "pending OrderCard source/controller/cursor is stale".to_string(),
+                });
+            }
+            let Some(spec) = self
+                .objects
+                .get(&resolving)
+                .and_then(|object| object.card.def().spell_spec())
+            else {
+                return Err(EngineError::InvalidState {
+                    reason: "pending OrderCard source is not a spell".to_string(),
+                });
+            };
+            let executed = top.cursor as usize - 1;
+            let expected_count = match spec.effects.get(executed) {
+                Some(Effect::Scry(n)) if *mode == OrderMode::Scry => *n,
+                Some(Effect::Surveil(n)) if *mode == OrderMode::Surveil => *n,
+                _ => {
+                    return Err(EngineError::InvalidState {
+                        reason: "pending OrderCard mode does not match its resolving effect"
+                            .to_string(),
+                    });
+                }
+            };
+            if expected_count != 1 || viewed.len() != expected_count as usize {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "pending OrderCard viewed count {} does not match supported {expected_count}-card ordering effect",
+                        viewed.len()
+                    ),
+                });
+            }
+            if to_top.iter().any(|id| !viewed[..*index].contains(id)) {
+                return Err(EngineError::InvalidState {
+                    reason: "pending OrderCard to_top contains an unanswered/current card"
+                        .to_string(),
+                });
+            }
+            let mut seen_viewed: Vec<ObjectId> = Vec::new();
+            for (position, id) in viewed.iter().enumerate() {
+                if seen_viewed.contains(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("pending OrderCard repeats viewed object {id}"),
+                    });
+                }
+                seen_viewed.push(*id);
+                let processed = position < *index;
+                let kept_by_choice = to_top.contains(id);
+                match self.objects.get(id) {
+                    Some(object) if object.owner == *player && object.zone == Zone::Library => {
+                        *held_counts.entry(*id).or_insert(0) += 1;
+                    }
+                    None if processed && !kept_by_choice && *mode == OrderMode::Surveil => {
+                        // A surveyed card (possibly a re-keyed commander) has
+                        // already left the library; the historical id is not a
+                        // live container reference.
+                    }
+                    Some(object)
+                        if processed
+                            && !kept_by_choice
+                            && *mode == OrderMode::Scry
+                            && object.owner == *player
+                            && object.zone == Zone::Library =>
+                    {
+                        *held_counts.entry(*id).or_insert(0) += 1;
+                    }
+                    _ => {
+                        return Err(EngineError::InvalidState {
+                            reason: format!(
+                                "pending OrderCard object {id} is not a valid library holding owned by P{player}"
+                            ),
+                        });
+                    }
+                }
+            }
+            let mut seen_top: Vec<ObjectId> = Vec::new();
+            for id in to_top {
+                if seen_top.contains(id) || !seen_viewed.contains(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!(
+                            "pending OrderCard to_top {id} is duplicate or not among viewed cards"
+                        ),
+                    });
+                }
+                seen_top.push(*id);
+            }
+        }
         let mut stack_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
         for item in &self.stack {
             *stack_counts.entry(item.object).or_insert(0) += 1;
@@ -1272,12 +1388,14 @@ impl GameState {
                 });
             }
             let listed = list_counts.get(key).copied().unwrap_or(0);
+            let held = held_counts.get(key).copied().unwrap_or(0);
             let stacked = stack_counts.get(key).copied().unwrap_or(0);
             let ok = match object.zone {
-                Zone::Battlefield | Zone::Removed => listed == 0 && stacked == 0,
-                Zone::Stack => listed == 0 && stacked == 1,
-                Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
-                    listed == 1 && stacked == 0
+                Zone::Battlefield | Zone::Removed => listed == 0 && held == 0 && stacked == 0,
+                Zone::Stack => listed == 0 && held == 0 && stacked == 1,
+                Zone::Library => listed + held == 1 && stacked == 0,
+                Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
+                    listed == 1 && held == 0 && stacked == 0
                 }
             };
             if !ok {
