@@ -1266,6 +1266,14 @@ impl Game {
         card: ObjectId,
         targets: &[Target],
     ) -> Result<(), EngineError> {
+        // A pending choice means no player has priority. Refuse at the action
+        // validator even if a forged/unvalidated state still carries priority.
+        if self.state.pending.is_some() {
+            return Err(EngineError::illegal(
+                "cast spell",
+                "a pending choice must be answered before any spell is cast (CR 608.2d)",
+            ));
+        }
         let obj = self
             .state
             .try_object(card)
@@ -2011,6 +2019,9 @@ impl Game {
     /// pending choice blocks progress.
     fn settle(&mut self, events: &mut Vec<Event>) {
         for _ in 0..SETTLE_LIMIT {
+            if self.state.is_over() {
+                return;
+            }
             // No SBA or priority runs for normal play while a choice is
             // outstanding (CR 608.2d). Externally injected sandbox departures
             // still need to purge/resume the queue; this path cannot occur
@@ -2375,6 +2386,9 @@ impl Game {
     }
 
     fn check_sbas(&mut self, events: &mut Vec<Event>) {
+        if self.state.is_over() {
+            return;
+        }
         loop {
             let mut changed = false;
             for p in 0..self.state.seat_count() as PlayerId {

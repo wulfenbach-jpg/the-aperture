@@ -581,6 +581,12 @@ impl GameState {
             });
         }
         if let Some(pending) = &self.pending {
+            if self.turn.priority.is_some() {
+                return Err(EngineError::InvalidState {
+                    reason: "a pending choice cannot coexist with a priority holder (CR 608.2d)"
+                        .to_string(),
+                });
+            }
             // Structural bounds must be checked before `player()` indexes the
             // canonical queue; malformed saves are typed errors, never panics.
             if let Pending::CommanderReturn {
