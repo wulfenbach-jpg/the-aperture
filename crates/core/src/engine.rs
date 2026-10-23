@@ -1121,6 +1121,14 @@ impl Game {
     }
 
     fn validate_play_land(&self, player: PlayerId, card: ObjectId) -> Result<(), EngineError> {
+        // A pending choice (including CR 903.9a commander return) is not
+        // priority. Reject special actions before any card/land-limit checks.
+        if self.state.pending.is_some() || self.state.turn.priority != Some(player) {
+            return Err(EngineError::illegal(
+                "play land",
+                "a pending choice is unresolved; no player has priority (CR 305.1, 608.2d)",
+            ));
+        }
         let obj = self
             .state
             .try_object(card)
