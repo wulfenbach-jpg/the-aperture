@@ -2101,10 +2101,17 @@ impl Game {
                 let first_turn_of_first_player = self.state.seat_count() == 2
                     && self.state.turn.number == 1
                     && active == self.state.first_player;
-                if !first_turn_of_first_player && self.state.is_live(active) {
-                    self.draw(active, events); // CR 504.1
+                let suspended = if !first_turn_of_first_player && self.state.is_live(active) {
+                    self.draw(active, events) // CR 504.1
+                } else {
+                    false
+                };
+                if !suspended {
+                    // CR 504.2: priority follows the completed draw. When a
+                    // commander draw replacement is pending (903.9b), the
+                    // answer handler grants it exactly once after the choice.
+                    self.grant_priority(active, events);
                 }
-                self.grant_priority(active, events);
             }
             Step::PrecombatMain | Step::PostcombatMain | Step::BeginCombat | Step::EndStep => {
                 self.grant_priority(active, events);
