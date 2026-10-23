@@ -64,6 +64,20 @@ pub enum Action {
     ChooseSacrifice {
         permanent: Option<ObjectId>,
     },
+    /// CR 903.9a state-based action: return the commander from graveyard/exile
+    /// to the command zone, or leave it where it is.
+    AnswerCommanderReturn {
+        to_command_zone: bool,
+    },
+    /// CR 903.9b replacement choice: put the commander into the command zone
+    /// instead of its hand/library destination.
+    AnswerCommanderReplacement {
+        to_command_zone: bool,
+    },
+    /// CR 903.9b replacement on a draw.
+    AnswerCommanderDraw {
+        to_command_zone: bool,
+    },
 }
 
 impl Action {
@@ -80,6 +94,9 @@ impl Action {
             Action::OrderCard { .. } => "order card",
             Action::Discard { .. } => "discard",
             Action::ChooseSacrifice { .. } => "choose sacrifice",
+            Action::AnswerCommanderReturn { .. } => "commander return choice",
+            Action::AnswerCommanderReplacement { .. } => "commander replacement choice",
+            Action::AnswerCommanderDraw { .. } => "commander draw replacement choice",
         }
     }
 }

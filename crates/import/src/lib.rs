@@ -643,6 +643,13 @@ fn classify(entry: &NormEntry, excluded: &[String]) -> (EntryStatus, Option<Stri
         );
     }
     match catalog::by_name(&entry.name) {
+        Some(card) if card.is_supported_commander() => (
+            EntryStatus::Unsupported,
+            Some(format!(
+                "'{}' is commander-only in the command-zone practice profile; it cannot be certified as an ordinary practice library card (the legend rule is not modeled)",
+                entry.name
+            )),
+        ),
         Some(_) => (EntryStatus::Supported, None),
         None => (
             EntryStatus::Unsupported,
@@ -947,6 +954,12 @@ pub fn plan_deck(report: &DeckReport) -> Result<DeckList, ImportError> {
                 entry.name
             )));
         };
+        if id.is_supported_commander() {
+            return Err(ImportError::NotLaunchable(format!(
+                "'{}' is commander-only; it cannot be launched as an ordinary practice deck",
+                entry.name
+            )));
+        }
         match cards.iter_mut().find(|(c, _)| *c == id) {
             Some((_, quantity)) => *quantity = quantity.saturating_add(entry.quantity),
             None => cards.push((id, entry.quantity)),

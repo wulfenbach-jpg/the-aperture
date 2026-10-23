@@ -24,7 +24,8 @@ use crate::ids::{ObjectId, P0, PlayerId, Zone};
 use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::state::{
-    GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, StackItem, Step, Turn,
+    DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, StackItem,
+    Step, Turn,
 };
 
 /// Safety bound on scheduler iterations inside one submission. Reaching it is a
@@ -62,6 +63,7 @@ fn blank_object(id: ObjectId, card: CardId, owner: PlayerId) -> Object {
         owner,
         controller: owner,
         zone: Zone::Library,
+        commander: None,
         tapped: false,
         damage: 0,
         summoning_sick: false,
@@ -79,6 +81,85 @@ impl Game {
         Ok(Game::new_logged(seed, decks)?.0)
     }
 
+    /// Build the explicit command-zone practice profile: an ordinary practice
+    /// game plus exactly one separate commander card per seat, starting in that
+    /// seat's command zone (CR 903.6). The commander is NOT part of the library
+    /// snapshot; callers must supply one supported commander per seat.
+    pub fn new_command_zone(
+        seed: u64,
+        decks: &[DeckList],
+        commanders: &[(PlayerId, CardId)],
+    ) -> Result<Game, EngineError> {
+        Ok(Game::new_command_zone_logged(seed, decks, commanders)?.0)
+    }
+
+    pub fn new_command_zone_logged(
+        seed: u64,
+        decks: &[DeckList],
+        commanders: &[(PlayerId, CardId)],
+    ) -> Result<(Game, Vec<Event>), EngineError> {
+        let (mut game, events) = Game::new_logged(seed, decks)?;
+        if commanders.len() != decks.len() {
+            return Err(EngineError::InvalidCommanderSetup {
+                reason: format!(
+                    "{} commander spec(s) for {} seat(s); exactly one per seat is required",
+                    commanders.len(),
+                    decks.len()
+                ),
+            });
+        }
+        let mut seen: Vec<PlayerId> = Vec::new();
+        for (seat, card) in commanders {
+            if (*seat as usize) >= decks.len() {
+                return Err(EngineError::InvalidCommanderSetup {
+                    reason: format!("P{seat} is outside this {}-seat game", decks.len()),
+                });
+            }
+            if seen.contains(seat) {
+                return Err(EngineError::InvalidCommanderSetup {
+                    reason: format!(
+                        "P{seat} has more than one commander; multi-commander variants are unsupported"
+                    ),
+                });
+            }
+            seen.push(*seat);
+            if !card.is_supported_commander() {
+                return Err(EngineError::UnsupportedCommander { card: *card });
+            }
+        }
+        for seat in 0..decks.len() as PlayerId {
+            if !seen.contains(&seat) {
+                return Err(EngineError::InvalidCommanderSetup {
+                    reason: format!("P{seat} has no commander; one per seat is required"),
+                });
+            }
+        }
+
+        game.state.command_zone_practice = true;
+        for (index, (seat, card)) in commanders.iter().enumerate() {
+            let commander_id = crate::ids::CommanderId(index as u32 + 1);
+            let object_id = ObjectId(game.state.next_object);
+            game.state.next_object += 1;
+            let mut object = blank_object(object_id, *card, *seat);
+            object.zone = Zone::Command;
+            object.commander = Some(commander_id);
+            game.state.objects.insert(object_id, object);
+            game.state.players[*seat as usize]
+                .command_zone
+                .push(object_id);
+            game.state.commanders.push(crate::state::Commander {
+                id: commander_id,
+                owner: *seat,
+                card: *card,
+                object: object_id,
+                casts_from_command_zone: 0,
+                return_eligible: false,
+            });
+        }
+        game.state.validate()?;
+        Ok((game, events))
+    }
+
     pub fn new_logged(seed: u64, decks: &[DeckList]) -> Result<(Game, Vec<Event>), EngineError> {
         if !(crate::ids::MIN_PLAYERS..=crate::ids::MAX_PLAYERS).contains(&decks.len()) {
             return Err(EngineError::InvalidSeats {
@@ -89,6 +170,13 @@ impl Game {
                     crate::ids::MAX_PLAYERS
                 ),
             });
+        }
+        for deck in decks {
+            for card in deck.expand() {
+                if card.is_supported_commander() {
+                    return Err(EngineError::UnsupportedCommander { card });
+                }
+            }
         }
         let players = decks
             .iter()
@@ -101,6 +189,7 @@ impl Game {
                 hand: Vec::new(),
                 graveyard: Vec::new(),
                 exile: Vec::new(),
+                command_zone: Vec::new(),
                 life: STARTING_LIFE,
                 mana: ManaPool::default(),
                 mulligans: 0,
@@ -113,6 +202,8 @@ impl Game {
             first_player: P0,
             rng: Pcg32::new(seed),
             objects: BTreeMap::new(),
+            commanders: Vec::new(),
+            command_zone_practice: false,
             players,
             stack: Vec::new(),
             turn: Turn {
@@ -284,6 +375,43 @@ impl Game {
         })
     }
 
+    /// Total mana cost of casting `card` from its current zone. A command-zone
+    /// cast adds {2} per previous command-zone cast (CR 903.8); generic-mana
+    /// overflow is a typed refusal, never a silent wrap.
+    fn effective_cost(&self, card: ObjectId) -> Result<ManaCost, EngineError> {
+        let object = self.state.object(card);
+        let mut cost = object.card.mana_cost().unwrap_or_else(ManaCost::empty);
+        if object.zone == Zone::Command
+            && let Some(commander) = object.commander
+        {
+            let registry = self
+                .state
+                .commanders
+                .iter()
+                .find(|registry| registry.id == commander)
+                .ok_or(EngineError::InvalidCommanderSetup {
+                    reason: format!("object {} carries an unknown commander", card),
+                })?;
+            let tax = registry
+                .casts_from_command_zone
+                .checked_mul(2)
+                .and_then(|tax| u8::try_from(tax).ok())
+                .ok_or_else(|| {
+                    EngineError::illegal(
+                        "cast spell",
+                        "commander tax exceeds the supported generic mana range",
+                    )
+                })?;
+            cost.generic = cost.generic.checked_add(tax).ok_or_else(|| {
+                EngineError::illegal(
+                    "cast spell",
+                    "commander tax makes the generic cost overflow",
+                )
+            })?;
+        }
+        Ok(cost)
+    }
+
     fn apply_payment(&mut self, p: PlayerId, payment: Payment, events: &mut Vec<Event>) {
         self.tap_for(&payment.taps, events);
         self.state.players[p as usize].mana = payment.remaining;
@@ -302,66 +430,371 @@ impl Game {
         }
     }
 
-    fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
-        let (owner, card) = match self.state.try_object(id) {
-            Some(o) => (o.owner, o.card),
-            None => return,
-        };
-        if let Some(obj) = self.objects_mut(id) {
-            obj.zone = Zone::Graveyard;
-            obj.tapped = false;
-            obj.damage = 0;
-            obj.summoning_sick = false;
-            obj.pump_power = 0;
-            obj.pump_toughness = 0;
+    /// Remove an object from its containers without changing its zone identity.
+    /// Callers that move a commander then insert it back with `insert_object`,
+    /// which allocates a fresh ObjectId (CR 400.7).
+    fn detach_object(&mut self, id: ObjectId) -> Option<Object> {
+        let object = self.state.objects.remove(&id)?;
+        for player in &mut self.state.players {
+            player.library.retain(|c| *c != id);
+            player.hand.retain(|c| *c != id);
+            player.graveyard.retain(|c| *c != id);
+            player.exile.retain(|c| *c != id);
+            player.command_zone.retain(|c| *c != id);
         }
-        self.state.players[owner as usize].graveyard.push(id);
-        events.push(Event::Destroyed { object: id, card });
+        self.state.turn.attackers.retain(|c| *c != id);
+        self.state.turn.blocked.retain(|c| *c != id);
+        self.state
+            .turn
+            .blockers
+            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+        Some(object)
+    }
+
+    /// Insert an object into `zone`, re-keying commander objects. The stable
+    /// commander registry then points at the new object; stale target ids do not
+    /// follow (CR 400.7, 903.3).
+    fn insert_object(&mut self, mut object: Object, zone: Zone) -> ObjectId {
+        let owner = object.owner;
+        let commander = object.commander;
+        let old_id = object.id;
+        let new_id = if commander.is_some() {
+            let id = ObjectId(self.state.next_object);
+            self.state.next_object += 1;
+            object.id = id;
+            id
+        } else {
+            old_id
+        };
+        object.zone = zone;
+        if commander.is_some() {
+            // A zone change creates a new object (CR 400.7): no previous
+            // battlefield-only memory may follow the commander.
+            object.plus_one_counters = 0;
+            if matches!(
+                zone,
+                Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command
+            ) {
+                object.controller = object.owner;
+                object.tapped = false;
+                object.damage = 0;
+                object.summoning_sick = false;
+                object.pump_power = 0;
+                object.pump_toughness = 0;
+            }
+        }
+        if let Some(commander) = commander
+            && let Some(registry) = self
+                .state
+                .commanders
+                .iter_mut()
+                .find(|registry| registry.id == commander)
+        {
+            registry.object = new_id;
+            // CR 903.9a: arm the owner choice exactly for a move into
+            // graveyard/exile; leaving those zones clears it.
+            registry.return_eligible = matches!(zone, Zone::Graveyard | Zone::Exile);
+        }
+        match zone {
+            Zone::Library => self.state.players[owner as usize].library.push(new_id),
+            Zone::Hand => self.state.players[owner as usize].hand.push(new_id),
+            Zone::Graveyard => self.state.players[owner as usize].graveyard.push(new_id),
+            Zone::Exile => self.state.players[owner as usize].exile.push(new_id),
+            Zone::Command => self.state.players[owner as usize].command_zone.push(new_id),
+            Zone::Battlefield | Zone::Stack | Zone::Removed => {}
+        }
+        self.state.objects.insert(new_id, object);
+        new_id
+    }
+
+    /// CR 903.9b: a commander moving to hand/library is replaced before the
+    /// move. The owner chooses; the resolving spell is suspended at the exact
+    /// source/cursor so the continuation is deterministic.
+    fn begin_commander_replacement(
+        &mut self,
+        id: ObjectId,
+        destination: Zone,
+        item: &StackItem,
+    ) -> bool {
+        let Some(object) = self.state.try_object(id) else {
+            return false;
+        };
+        let Some(commander) = object.commander else {
+            return false;
+        };
+        let Some(registry) = self
+            .state
+            .commanders
+            .iter()
+            .find(|registry| registry.id == commander)
+        else {
+            return false;
+        };
+        self.state.pending = Some(Pending::CommanderReplacement {
+            player: registry.owner,
+            commander,
+            object: id,
+            from_zone: object.zone,
+            destination,
+            source: item.object,
+            cursor: item.cursor + 1,
+        });
+        self.state.turn.priority = None;
+        true
+    }
+
+    fn apply_commander_draw(
+        &mut self,
+        player: PlayerId,
+        to_command_zone: bool,
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::CommanderDraw {
+            object,
+            remaining,
+            resume,
+            ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        let target_zone = if to_command_zone {
+            Zone::Command
+        } else {
+            Zone::Hand
+        };
+        if let Some(mut moved) = self.detach_object(object) {
+            moved.tapped = false;
+            moved.damage = 0;
+            moved.summoning_sick = false;
+            moved.pump_power = 0;
+            moved.pump_toughness = 0;
+            let card = moved.card;
+            let new_id = self.insert_object(moved, target_zone);
+            if to_command_zone {
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "P{player} replaces the draw and puts commander {new_id} into the command zone (CR 903.9b)"
+                    ),
+                });
+            } else {
+                events.push(Event::Draw {
+                    player,
+                    object: new_id,
+                    card,
+                });
+            }
+        }
+        match resume {
+            DrawResume::Step => {
+                let active = self.state.turn.active;
+                self.grant_priority(active, events);
+            }
+            DrawResume::Effect { .. } => {
+                for index in 0..remaining {
+                    if self.draw_with_resume(player, resume, remaining - index - 1, events) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    fn apply_commander_replacement(
+        &mut self,
+        player: PlayerId,
+        to_command_zone: bool,
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::CommanderReplacement {
+            commander,
+            object,
+            destination,
+            ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        let target_zone = if to_command_zone {
+            Zone::Command
+        } else {
+            destination
+        };
+        let Some(mut moved) = self.detach_object(object) else {
+            return;
+        };
+        moved.tapped = false;
+        moved.damage = 0;
+        moved.summoning_sick = false;
+        moved.pump_power = 0;
+        moved.pump_toughness = 0;
+        let card = moved.card;
+        if target_zone == Zone::Library {
+            let owner = moved.owner;
+            let new_id = self.insert_object(moved, Zone::Library);
+            let library = &mut self.state.players[owner as usize].library;
+            library.retain(|id| *id != new_id);
+            library.insert(0, new_id);
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "P{player} puts commander {new_id} on top of their library (CR 903.9b)"
+                ),
+            });
+        } else {
+            let new_id = self.insert_object(moved, target_zone);
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "P{player} puts commander {new_id} into the {} (CR 903.9b)",
+                    target_zone.name()
+                ),
+            });
+        }
+        let _ = (commander, card);
+    }
+
+    fn move_to_top_of_library(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+        let Some(mut object) = self.detach_object(id) else {
+            return;
+        };
+        let owner = object.owner;
+        let card = object.card;
+        object.tapped = false;
+        object.damage = 0;
+        object.summoning_sick = false;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        let new_id = self.insert_object(object, Zone::Library);
+        let library = &mut self.state.players[owner as usize].library;
+        library.retain(|id| *id != new_id);
+        library.insert(0, new_id);
+        events.push(Event::StateBasedAction {
+            description: format!("{card} ({new_id}) is put on top of its owner's library"),
+        });
+    }
+
+    fn move_to_exile(&mut self, id: ObjectId, events: &mut Vec<Event>) -> Option<ObjectId> {
+        let object = self.detach_object(id)?;
+        let card = object.card;
+        let new_id = self.insert_object(object, Zone::Exile);
+        events.push(Event::StateBasedAction {
+            description: format!("{card} ({new_id}) is exiled"),
+        });
+        Some(new_id)
+    }
+
+    fn move_to_hand(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+        let Some(mut object) = self.detach_object(id) else {
+            return;
+        };
+        let card = object.card;
+        object.tapped = false;
+        object.damage = 0;
+        object.summoning_sick = false;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        let new_id = self.insert_object(object, Zone::Hand);
+        events.push(Event::StateBasedAction {
+            description: format!("{card} ({new_id}) is returned to its owner's hand"),
+        });
+    }
+
+    fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+        let Some(mut object) = self.detach_object(id) else {
+            return;
+        };
+        let card = object.card;
+        object.tapped = false;
+        object.damage = 0;
+        object.summoning_sick = false;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        let new_id = self.insert_object(object, Zone::Graveyard);
+        events.push(Event::Destroyed {
+            object: new_id,
+            card,
+        });
     }
 
     fn enter_battlefield(&mut self, id: ObjectId, controller: PlayerId, events: &mut Vec<Event>) {
-        let card = match self.state.try_object(id) {
-            Some(o) => o.card,
-            None => return,
+        let Some(mut object) = self.detach_object(id) else {
+            return;
         };
+        let card = object.card;
         let is_creature = card.def().is_creature();
-        if let Some(obj) = self.objects_mut(id) {
-            obj.zone = Zone::Battlefield;
-            obj.controller = controller;
-            obj.tapped = false;
-            obj.damage = 0;
-            // CR 302.6: summoning sickness applies until the controller's next
-            // untap step.
-            obj.summoning_sick = is_creature;
-            obj.pump_power = 0;
-            obj.pump_toughness = 0;
-        }
+        object.controller = controller;
+        object.tapped = false;
+        object.damage = 0;
+        // CR 302.6: summoning sickness applies until the controller's next
+        // untap step.
+        object.summoning_sick = is_creature;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        let new_id = self.insert_object(object, Zone::Battlefield);
         events.push(Event::PermanentEntered {
-            object: id,
+            object: new_id,
             card,
             controller,
         });
     }
 
-    fn draw(&mut self, p: PlayerId, events: &mut Vec<Event>) {
+    fn draw(&mut self, p: PlayerId, events: &mut Vec<Event>) -> bool {
+        self.draw_with_resume(p, DrawResume::Step, 0, events)
+    }
+
+    /// Draw one card. If the top card is a commander, CR 903.9b suspends the
+    /// draw before the move and records the exact resume context.
+    fn draw_with_resume(
+        &mut self,
+        p: PlayerId,
+        resume: DrawResume,
+        remaining: u8,
+        events: &mut Vec<Event>,
+    ) -> bool {
         let next = self.state.players[p as usize].library.first().copied();
         match next {
             Some(id) => {
-                self.state.players[p as usize].library.remove(0);
-                self.state.players[p as usize].hand.push(id);
-                if let Some(obj) = self.objects_mut(id) {
-                    obj.zone = Zone::Hand;
+                if let Some(object) = self.state.try_object(id)
+                    && let Some(commander) = object.commander
+                    && self.state.pending.is_none()
+                {
+                    let owner = self
+                        .state
+                        .commanders
+                        .iter()
+                        .find(|registry| registry.id == commander)
+                        .map(|registry| registry.owner)
+                        .unwrap_or(p);
+                    self.state.pending = Some(Pending::CommanderDraw {
+                        player: owner,
+                        commander,
+                        object: id,
+                        remaining,
+                        resume,
+                    });
+                    self.state.turn.priority = None;
+                    return true;
                 }
-                let card = self.state.object(id).card;
+                let Some(mut object) = self.detach_object(id) else {
+                    return false;
+                };
+                let card = object.card;
+                object.tapped = false;
+                object.damage = 0;
+                object.summoning_sick = false;
+                object.pump_power = 0;
+                object.pump_toughness = 0;
+                let new_id = self.insert_object(object, Zone::Hand);
                 events.push(Event::Draw {
                     player: p,
-                    object: id,
+                    object: new_id,
                     card,
                 });
+                false
             }
             None => {
                 self.state.players[p as usize].drew_from_empty = true;
                 events.push(Event::DrewFromEmpty { player: p });
+                false
             }
         }
     }
@@ -541,6 +974,149 @@ impl Game {
                     "no simultaneous sacrifice choice is pending (CR 101.4)",
                 )),
             },
+            Action::AnswerCommanderDraw { .. } => match &state.pending {
+                Some(Pending::CommanderDraw {
+                    player: owner,
+                    commander,
+                    object,
+                    resume,
+                    ..
+                }) if *owner == player => {
+                    let registry = state
+                        .commanders
+                        .iter()
+                        .find(|registry| registry.id == *commander)
+                        .ok_or(EngineError::InvalidCommanderSetup {
+                            reason: "draw choice references an unknown commander".to_string(),
+                        })?;
+                    if registry.owner != player || registry.object != *object {
+                        return Err(EngineError::illegal(
+                            "commander draw choice",
+                            "the choice no longer matches the commander registry",
+                        ));
+                    }
+                    if state.player(player).library.first() != Some(object) {
+                        return Err(EngineError::illegal(
+                            "commander draw choice",
+                            "the commander is no longer the top card of that library",
+                        ));
+                    }
+                    if let DrawResume::Effect { source, cursor } = resume {
+                        let Some(top) = state.stack.last() else {
+                            return Err(EngineError::illegal(
+                                "commander draw choice",
+                                "the resolving draw source is gone",
+                            ));
+                        };
+                        if top.object != *source
+                            || top.cursor != *cursor
+                            || state.resolving != Some(*source)
+                        {
+                            return Err(EngineError::illegal(
+                                "commander draw choice",
+                                "the draw source/cursor no longer matches",
+                            ));
+                        }
+                    }
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "commander draw choice",
+                    "no commander draw replacement is pending (CR 903.9b)",
+                )),
+            },
+            Action::AnswerCommanderReplacement { .. } => match &state.pending {
+                Some(Pending::CommanderReplacement {
+                    player: owner,
+                    commander,
+                    object,
+                    from_zone,
+                    destination,
+                    source,
+                    cursor,
+                }) if *owner == player => {
+                    let registry = state
+                        .commanders
+                        .iter()
+                        .find(|registry| registry.id == *commander)
+                        .ok_or(EngineError::InvalidCommanderSetup {
+                            reason: "replacement choice references an unknown commander"
+                                .to_string(),
+                        })?;
+                    if registry.owner != player
+                        || registry.object != *object
+                        || !matches!(destination, Zone::Hand | Zone::Library)
+                        || state.object(*object).zone != *from_zone
+                    {
+                        return Err(EngineError::illegal(
+                            "commander replacement choice",
+                            "the choice no longer matches the commander registry/object",
+                        ));
+                    }
+                    let Some(top) = state.stack.last() else {
+                        return Err(EngineError::illegal(
+                            "commander replacement choice",
+                            "the resolving source is no longer on the stack",
+                        ));
+                    };
+                    if top.object != *source
+                        || top.cursor != *cursor
+                        || state.resolving != Some(*source)
+                    {
+                        return Err(EngineError::illegal(
+                            "commander replacement choice",
+                            "the source/cursor no longer matches the suspended resolution",
+                        ));
+                    }
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "commander replacement choice",
+                    "no commander replacement choice is pending (CR 903.9b)",
+                )),
+            },
+            Action::AnswerCommanderReturn { to_command_zone } => {
+                let _ = to_command_zone;
+                match &state.pending {
+                    Some(Pending::CommanderReturn { order, cursor, .. })
+                        if *cursor < order.len() && order[*cursor].player == player =>
+                    {
+                        let current = &order[*cursor];
+                        let registry = state
+                            .commanders
+                            .iter()
+                            .find(|registry| registry.id == current.commander)
+                            .ok_or(EngineError::InvalidCommanderSetup {
+                                reason: "return choice references an unknown commander".to_string(),
+                            })?;
+                        if registry.object != current.object
+                            || !registry.return_eligible
+                            || registry.owner != current.player
+                        {
+                            return Err(EngineError::illegal(
+                                "commander return choice",
+                                "the choice no longer matches the commander registry",
+                            ));
+                        }
+                        let object = state
+                            .try_object(current.object)
+                            .ok_or(EngineError::UnknownObject)?;
+                        if object.zone != current.zone
+                            || !matches!(current.zone, Zone::Graveyard | Zone::Exile)
+                        {
+                            return Err(EngineError::illegal(
+                                "commander return choice",
+                                "the commander is no longer in that graveyard/exile object",
+                            ));
+                        }
+                        Ok(())
+                    }
+                    _ => Err(EngineError::illegal(
+                        "commander return choice",
+                        "no commander return choice is pending (CR 903.9a)",
+                    )),
+                }
+            }
         }
     }
 
@@ -687,7 +1263,29 @@ impl Game {
             .try_object(card)
             .ok_or(EngineError::UnknownObject)?;
         let def = obj.card.def();
-        if obj.zone != Zone::Hand || obj.owner != player {
+        let from_command_zone = obj.zone == Zone::Command;
+        if from_command_zone {
+            let Some(commander) = obj.commander else {
+                return Err(EngineError::WrongZone {
+                    name: def.name,
+                    zone: "hand or its owner's command zone",
+                });
+            };
+            let registry = self
+                .state
+                .commanders
+                .iter()
+                .find(|c| c.id == commander)
+                .ok_or(EngineError::InvalidCommanderSetup {
+                    reason: format!("object {} carries an unknown commander", card),
+                })?;
+            if obj.owner != player || registry.owner != player {
+                return Err(EngineError::illegal(
+                    "cast spell",
+                    "only the commander's owner may cast it from the command zone (CR 903.8)",
+                ));
+            }
+        } else if obj.zone != Zone::Hand || obj.owner != player {
             return Err(EngineError::WrongZone {
                 name: def.name,
                 zone: "hand of the acting player",
@@ -723,7 +1321,7 @@ impl Game {
                 });
             }
         }
-        let cost = def.mana_cost().unwrap_or_else(ManaCost::empty);
+        let cost = self.effective_cost(card)?;
         self.plan_payment(player, &cost)?;
         Ok(())
     }
@@ -923,6 +1521,15 @@ impl Game {
             Action::ChooseSacrifice { permanent } => {
                 self.apply_apnap_sacrifice(player, *permanent, events)
             }
+            Action::AnswerCommanderReturn { to_command_zone } => {
+                self.apply_commander_return(player, *to_command_zone, events)
+            }
+            Action::AnswerCommanderReplacement { to_command_zone } => {
+                self.apply_commander_replacement(player, *to_command_zone, events)
+            }
+            Action::AnswerCommanderDraw { to_command_zone } => {
+                self.apply_commander_draw(player, *to_command_zone, events)
+            }
         }
     }
 
@@ -984,6 +1591,53 @@ impl Game {
         events.push(Event::Priority { player });
     }
 
+    /// CR 601.2a + 400.7: move a hand/command-zone card to the stack. A
+    /// commander gets a fresh ObjectId; stale references never follow it.
+    fn move_object_to_stack(
+        &mut self,
+        player: PlayerId,
+        card: ObjectId,
+        commander: Option<crate::ids::CommanderId>,
+    ) -> ObjectId {
+        self.state.players[player as usize]
+            .hand
+            .retain(|c| *c != card);
+        self.state.players[player as usize]
+            .command_zone
+            .retain(|c| *c != card);
+        let mut object = self
+            .state
+            .objects
+            .remove(&card)
+            .expect("cast object exists in its zone");
+        let new_id = if commander.is_some() {
+            let id = ObjectId(self.state.next_object);
+            self.state.next_object += 1;
+            object.id = id;
+            if let Some(registry) = self
+                .state
+                .commanders
+                .iter_mut()
+                .find(|registry| Some(registry.id) == commander)
+            {
+                registry.object = id;
+            }
+            id
+        } else {
+            card
+        };
+        object.zone = Zone::Stack;
+        object.controller = player;
+        object.tapped = false;
+        object.damage = 0;
+        object.summoning_sick = false;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        object.plus_one_counters = 0;
+        self.state.objects.insert(new_id, object);
+        new_id
+    }
+
     fn apply_cast(
         &mut self,
         player: PlayerId,
@@ -991,29 +1645,36 @@ impl Game {
         targets: &[Target],
         events: &mut Vec<Event>,
     ) {
-        let (card_id, cost) = {
+        let (card_id, from_command_zone, commander_id) = {
             let obj = self.state.object(card);
-            (
-                obj.card,
-                obj.card.mana_cost().unwrap_or_else(ManaCost::empty),
-            )
+            (obj.card, obj.zone == Zone::Command, obj.commander)
         };
+        let cost = self
+            .effective_cost(card)
+            .expect("validated command-zone cost still computes");
         let payment = self
             .plan_payment(player, &cost)
             .expect("validated payment still plans");
         // CR 601.2a: move the card to the stack; CR 601.2h: pay costs.
-        self.state.players[player as usize]
-            .hand
-            .retain(|c| *c != card);
-        if let Some(obj) = self.objects_mut(card) {
-            obj.zone = Zone::Stack;
-        }
+        let stack_object = self.move_object_to_stack(player, card, commander_id);
         self.state.stack.push(StackItem {
-            object: card,
+            object: stack_object,
             controller: player,
             targets: targets.to_vec(),
             cursor: 0,
         });
+        if from_command_zone
+            && let Some(commander) = commander_id
+            && let Some(registry) = self
+                .state
+                .commanders
+                .iter_mut()
+                .find(|registry| registry.id == commander)
+        {
+            // CR 903.8: the count changes when the commander is cast, never at
+            // resolution, and only for a command-zone cast.
+            registry.casts_from_command_zone += 1;
+        }
         let target_labels = targets
             .iter()
             .map(|t| self.describe_target(*t))
@@ -1021,7 +1682,7 @@ impl Game {
         // CR 601.2a: the spell is on the stack before costs are paid (601.2h).
         events.push(Event::Cast {
             player,
-            object: card,
+            object: stack_object,
             card: card_id,
             targets: target_labels,
         });
@@ -1154,17 +1815,16 @@ impl Game {
     }
 
     fn apply_bottom(&mut self, player: PlayerId, cards: &[ObjectId], events: &mut Vec<Event>) {
-        let mut library = std::mem::take(&mut self.state.players[player as usize].library);
         for card in cards {
-            self.state.players[player as usize]
-                .hand
-                .retain(|c| c != card);
-            if let Some(obj) = self.objects_mut(*card) {
-                obj.zone = Zone::Library;
+            if let Some(mut object) = self.detach_object(*card) {
+                object.tapped = false;
+                object.damage = 0;
+                object.summoning_sick = false;
+                object.pump_power = 0;
+                object.pump_toughness = 0;
+                self.insert_object(object, Zone::Library);
             }
-            library.push(*card);
         }
-        self.state.players[player as usize].library = library;
         events.push(Event::Bottom {
             player,
             count: cards.len(),
@@ -1294,14 +1954,16 @@ impl Game {
     fn apply_discard(&mut self, player: PlayerId, cards: &[ObjectId], events: &mut Vec<Event>) {
         self.state.pending = None;
         for card in cards {
-            let card_id = self.state.object(*card).card;
-            self.state.players[player as usize]
-                .hand
-                .retain(|c| c != card);
-            if let Some(obj) = self.objects_mut(*card) {
-                obj.zone = Zone::Graveyard;
-            }
-            self.state.players[player as usize].graveyard.push(*card);
+            let Some(mut object) = self.detach_object(*card) else {
+                continue;
+            };
+            let card_id = object.card;
+            object.tapped = false;
+            object.damage = 0;
+            object.summoning_sick = false;
+            object.pump_power = 0;
+            object.pump_toughness = 0;
+            self.insert_object(object, Zone::Graveyard);
             events.push(Event::Discarded {
                 player,
                 card: card_id,
@@ -1346,6 +2008,9 @@ impl Game {
                     .any(|player| !player.lost && (player.life <= 0 || player.drew_from_empty));
                 if injected_departure {
                     self.check_sbas(events);
+                    if self.state.pending.is_none() && !self.state.is_over() {
+                        self.grant_priority(self.state.turn.active, events);
+                    }
                 }
                 return;
             }
@@ -1536,6 +2201,7 @@ impl Game {
         for id in &owned {
             if let Some(obj) = self.state.objects.get_mut(id) {
                 obj.zone = Zone::Removed;
+                obj.commander = None;
                 obj.tapped = false;
                 obj.damage = 0;
                 obj.summoning_sick = false;
@@ -1548,6 +2214,7 @@ impl Game {
         player.hand.clear();
         player.graveyard.clear();
         player.exile.clear();
+        player.command_zone.clear();
 
         let controlled: Vec<ObjectId> = self
             .state
@@ -1557,6 +2224,9 @@ impl Game {
             .map(|s| s.object)
             .collect();
         self.state.stack.retain(|s| s.controller != p);
+        self.state
+            .commanders
+            .retain(|commander| commander.owner != p);
         if self
             .state
             .resolving
@@ -1587,6 +2257,39 @@ impl Game {
             self.state.turn.priority = self.state.next_live_seat_after(p);
         }
         match self.state.pending.take() {
+            Some(Pending::CommanderReturn {
+                order,
+                cursor,
+                answers,
+            }) => {
+                let mut kept = Vec::new();
+                let mut kept_answers = Vec::new();
+                let mut kept_cursor = 0;
+                for (index, entry) in order.iter().enumerate() {
+                    if entry.player == p {
+                        continue;
+                    }
+                    if index < cursor {
+                        kept_cursor += 1;
+                        kept_answers.push(answers[index]);
+                    }
+                    kept.push(entry.clone());
+                }
+                if !kept.is_empty() {
+                    if kept_cursor == kept.len() {
+                        self.apply_commander_return_batch(&kept, &kept_answers, events);
+                    } else {
+                        self.state.pending = Some(Pending::CommanderReturn {
+                            order: kept,
+                            cursor: kept_cursor,
+                            answers: kept_answers,
+                        });
+                    }
+                }
+            }
+            Some(
+                pending @ (Pending::CommanderReplacement { .. } | Pending::CommanderDraw { .. }),
+            ) if pending.player() == p => {}
             Some(Pending::ApnapSacrifice {
                 mut order,
                 mut choices,
@@ -1676,6 +2379,98 @@ impl Game {
                 changed = true;
             }
 
+            // Terminal outcomes are resolved in the same SBA event before any
+            // commander-return choice: once one live seat (or none) remains,
+            // an irrelevant return choice must not defer GameOver.
+            match self.state.live_count() {
+                0 => {
+                    let reason =
+                        "all remaining players lost simultaneously (CR 104.4a)".to_string();
+                    self.state.outcome = Some(Outcome::Draw {
+                        reason: reason.clone(),
+                    });
+                    self.state.pending = None;
+                    self.state.resolving = None;
+                    self.state.turn.priority = None;
+                    events.push(Event::GameDrawn { reason });
+                    return;
+                }
+                1 => {
+                    let winner = self
+                        .state
+                        .live_seats()
+                        .next()
+                        .expect("one live seat remains");
+                    let loser_reason = self
+                        .state
+                        .players
+                        .iter()
+                        .rfind(|player| player.lost)
+                        .map(|player| {
+                            if player.drew_from_empty {
+                                "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)".to_string()
+                            } else {
+                                "opponent's life total reached 0 or less (CR 704.5a)".to_string()
+                            }
+                        })
+                        .unwrap_or_else(|| "all other players have left the game".to_string());
+                    self.state.outcome = Some(Outcome::Win {
+                        winner,
+                        reason: loser_reason.clone(),
+                    });
+                    self.state.pending = None;
+                    self.state.resolving = None;
+                    self.state.turn.priority = None;
+                    events.push(Event::GameOver {
+                        winner,
+                        reason: loser_reason,
+                    });
+                    return;
+                }
+                _ => {}
+            }
+
+            // CR 903.9a: after all other simultaneous SBAs, collect the exact
+            // armed commander moves in APNAP order. No priority is granted
+            // until the whole SBA event (including these choices) finishes.
+            if self.state.pending.is_none() {
+                let anchor = self.state.turn.active;
+                let n = self.state.seat_count();
+                let mut entries: Vec<crate::state::CommanderReturnEntry> = self
+                    .state
+                    .commanders
+                    .iter()
+                    .filter(|commander| commander.return_eligible)
+                    .filter_map(|commander| {
+                        let object = self.state.try_object(commander.object)?;
+                        if matches!(object.zone, Zone::Graveyard | Zone::Exile) {
+                            Some(crate::state::CommanderReturnEntry {
+                                player: commander.owner,
+                                commander: commander.id,
+                                object: commander.object,
+                                zone: object.zone,
+                            })
+                        } else {
+                            None
+                        }
+                    })
+                    .collect();
+                if !entries.is_empty() {
+                    entries.sort_by_key(|entry| (entry.player as usize + n - anchor as usize) % n);
+                    self.state.pending = Some(Pending::CommanderReturn {
+                        order: entries,
+                        cursor: 0,
+                        answers: Vec::new(),
+                    });
+                    self.state.turn.priority = None;
+                    self.state.resolving = None;
+                    return;
+                }
+            }
+            // Restored original scheduler termination/outcome semantics: an
+            // outstanding legacy pending choice (for example an injected APNAP
+            // departure) must not keep this loop spinning, and it must not
+            // prevent loss/outcome handling.
             if !changed {
                 break;
             }
@@ -1862,6 +2657,90 @@ impl Game {
         }
     }
 
+    fn apply_commander_return(
+        &mut self,
+        player: PlayerId,
+        to_command_zone: bool,
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::CommanderReturn {
+            order,
+            cursor,
+            mut answers,
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        if cursor >= order.len() || order[cursor].player != player {
+            return;
+        }
+        answers.push(to_command_zone);
+        let next = cursor + 1;
+        if next < order.len() {
+            // Collect every owner's answer before applying any move.
+            self.state.pending = Some(Pending::CommanderReturn {
+                order,
+                cursor: next,
+                answers,
+            });
+            return;
+        }
+        self.apply_commander_return_batch(&order, &answers, events);
+        // An SBA choice is not a pass. Finish all SBAs before restoring the
+        // active player's priority in the SAME step (CR 117.5, 704.3).
+        self.check_sbas(events);
+        if self.state.pending.is_none() && !self.state.is_over() {
+            self.grant_priority(self.state.turn.active, events);
+        }
+    }
+
+    fn apply_commander_return_batch(
+        &mut self,
+        order: &[crate::state::CommanderReturnEntry],
+        answers: &[bool],
+        events: &mut Vec<Event>,
+    ) {
+        // Final answer received: apply the whole SBA batch together in APNAP
+        // order. No priority is granted between these moves.
+        for (entry, accept) in order.iter().zip(answers.iter()) {
+            if *accept {
+                if let Some(mut object) = self.detach_object(entry.object) {
+                    object.tapped = false;
+                    object.damage = 0;
+                    object.summoning_sick = false;
+                    object.pump_power = 0;
+                    object.pump_toughness = 0;
+                    let new_id = self.insert_object(object, Zone::Command);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{} puts commander {} into the command zone from the {} (CR 903.9a)",
+                            entry.player,
+                            new_id,
+                            entry.zone.name()
+                        ),
+                    });
+                }
+            } else {
+                if let Some(registry) = self
+                    .state
+                    .commanders
+                    .iter_mut()
+                    .find(|registry| registry.id == entry.commander)
+                {
+                    registry.return_eligible = false;
+                }
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "P{} declines to return commander {} from the {} (CR 903.9a)",
+                        entry.player,
+                        entry.object,
+                        entry.zone.name()
+                    ),
+                });
+            }
+        }
+    }
+
     fn apply_apnap_sacrifice(
         &mut self,
         player: PlayerId,
@@ -1920,8 +2799,19 @@ impl Game {
         let controller = item.controller;
         match effect {
             Effect::Draw(n) => {
-                for _ in 0..n {
-                    self.draw(controller, events);
+                for index in 0..n {
+                    let remaining = n - index - 1;
+                    if self.draw_with_resume(
+                        controller,
+                        DrawResume::Effect {
+                            source: item.object,
+                            cursor: item.cursor + 1,
+                        },
+                        remaining,
+                        events,
+                    ) {
+                        return true;
+                    }
                 }
                 false
             }
@@ -1979,6 +2869,53 @@ impl Game {
             Effect::EachPlayerSacrifice => {
                 self.begin_apnap_sacrifice(events);
                 self.state.pending.is_some()
+            }
+            Effect::ReturnToHand => {
+                for target in &item.targets {
+                    if let Target::Permanent(id) = target {
+                        if self.begin_commander_replacement(*id, Zone::Hand, item) {
+                            return true;
+                        }
+                        self.move_to_hand(*id, events);
+                    }
+                }
+                false
+            }
+            Effect::PutOnTopOfLibrary => {
+                for target in &item.targets {
+                    if let Target::Permanent(id) = target {
+                        if self.begin_commander_replacement(*id, Zone::Library, item) {
+                            return true;
+                        }
+                        self.move_to_top_of_library(*id, events);
+                    }
+                }
+                false
+            }
+            Effect::ExileAndGainLife => {
+                for target in &item.targets {
+                    if let Target::Permanent(id) = target {
+                        let (controller, power, card) = match self.state.try_object(*id) {
+                            Some(object) => (object.controller, object.power(), object.card),
+                            None => continue,
+                        };
+                        let exiled = self.move_to_exile(*id, events);
+                        self.state.players[controller as usize].life += power;
+                        let life = self.state.players[controller as usize].life;
+                        events.push(Event::LifeChange {
+                            player: controller,
+                            delta: power,
+                            life,
+                        });
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "{card} is exiled; P{controller} gains {power} life (now {life})"
+                            ),
+                        });
+                        let _ = exiled;
+                    }
+                }
+                false
             }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
@@ -2252,8 +3189,10 @@ impl Game {
             }
         }
 
-        // Spells, one entry per legal target.
-        let hand: Vec<ObjectId> = self.state.player(player).hand.clone();
+        // Spells, one entry per legal target. Command-zone commanders are cast
+        // by their owner (CR 903.8).
+        let mut hand: Vec<ObjectId> = self.state.player(player).hand.clone();
+        hand.extend(self.state.player(player).command_zone.iter().copied());
         for id in hand {
             if self.state.object(id).card.def().is_land() {
                 continue;
@@ -2267,8 +3206,13 @@ impl Game {
                     continue;
                 }
                 let name = self.state.object(id).card.name();
+                let from_command = self.state.object(id).zone == Zone::Command;
                 let label = if targets.is_empty() {
-                    format!("Cast {name}")
+                    if from_command {
+                        format!("Cast commander {name} from the command zone")
+                    } else {
+                        format!("Cast {name}")
+                    }
                 } else {
                     let rendered: Vec<String> =
                         targets.iter().map(|t| self.describe_target(*t)).collect();
@@ -2452,6 +3396,78 @@ impl Game {
                         })
                         .collect()
                 }
+            }
+            Pending::CommanderDraw { object, .. } => vec![
+                LegalAction {
+                    action: Action::AnswerCommanderDraw {
+                        to_command_zone: true,
+                    },
+                    label: format!(
+                        "Put commander {} into the command zone instead of drawing it (CR 903.9b)",
+                        self.describe_object(*object)
+                    ),
+                    rules: vec!["903.9b"],
+                },
+                LegalAction {
+                    action: Action::AnswerCommanderDraw {
+                        to_command_zone: false,
+                    },
+                    label: format!("Draw commander {} into hand", self.describe_object(*object)),
+                    rules: vec!["903.9b"],
+                },
+            ],
+            Pending::CommanderReplacement {
+                destination,
+                object,
+                ..
+            } => vec![
+                LegalAction {
+                    action: Action::AnswerCommanderReplacement {
+                        to_command_zone: true,
+                    },
+                    label: format!(
+                        "Put commander {} into the command zone instead (CR 903.9b)",
+                        self.describe_object(*object)
+                    ),
+                    rules: vec!["903.9b"],
+                },
+                LegalAction {
+                    action: Action::AnswerCommanderReplacement {
+                        to_command_zone: false,
+                    },
+                    label: format!(
+                        "Put commander {} into the {}",
+                        self.describe_object(*object),
+                        destination.name()
+                    ),
+                    rules: vec!["903.9b"],
+                },
+            ],
+            Pending::CommanderReturn { order, cursor, .. } => {
+                let current = &order[*cursor];
+                vec![
+                    LegalAction {
+                        action: Action::AnswerCommanderReturn {
+                            to_command_zone: true,
+                        },
+                        label: format!(
+                            "Return commander {} to the command zone (CR 903.9a)",
+                            self.describe_object(current.object)
+                        ),
+                        rules: vec!["903.9a"],
+                    },
+                    LegalAction {
+                        action: Action::AnswerCommanderReturn {
+                            to_command_zone: false,
+                        },
+                        label: format!(
+                            "Leave commander {} in the {}",
+                            self.describe_object(current.object),
+                            current.zone.name()
+                        ),
+                        rules: vec!["903.9a"],
+                    },
+                ]
             }
         }
     }

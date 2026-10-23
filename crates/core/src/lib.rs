@@ -32,11 +32,11 @@ pub use deck::DeckList;
 pub use engine::Game;
 pub use error::EngineError;
 pub use event::Event;
-pub use ids::{MAX_PLAYERS, MIN_PLAYERS, ObjectId, P0, P1, PlayerId, Zone};
+pub use ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, P0, P1, PlayerId, Zone};
 pub use mana::{ManaCost, ManaPool};
-pub use replay::{Replay, ReplayError, ReplayStep, SessionSave};
+pub use replay::{CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave};
 pub use settings::AiSettings;
-pub use state::{GameState, OrderMode, Outcome, Pending, Step};
+pub use state::{Commander, DrawResume, GameState, OrderMode, Outcome, Pending, Step};
 pub use view::{OpponentView, PlayerView};
 
 /// Comprehensive Rules revision this engine was written against.

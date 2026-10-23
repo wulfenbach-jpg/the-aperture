@@ -16,6 +16,9 @@ const STRIKE: &[Effect] = &[Effect::Damage(3)];
 const COUNTER: &[Effect] = &[Effect::CounterTargetSpell];
 const GROWTH: &[Effect] = &[Effect::Pump(3, 3)];
 const SACRIFICE_ALL: &[Effect] = &[Effect::EachPlayerSacrifice];
+const RETURN_HAND: &[Effect] = &[Effect::ReturnToHand];
+const TOP_LIBRARY: &[Effect] = &[Effect::PutOnTopOfLibrary];
+const SWORDS: &[Effect] = &[Effect::ExileAndGainLife];
 
 const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
@@ -44,7 +47,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 16] = [
+pub static CARDS: [CardDef; 21] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -132,6 +135,34 @@ pub static CARDS: [CardDef; 16] = [
         type_line: "Sorcery — Arcane", power: None, toughness: None,
         oracle: "Each player sacrifices a permanent of their choice.",
         spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: SACRIFICE_ALL })
+    ),
+    card!(
+        Plains, "Plains", cost: None, kinds: LAND, basic: Some(ManaColor::White),
+        type_line: "Basic Land — Plains", power: None, toughness: None,
+        oracle: "({T}: Add {W}.)", spell: None
+    ),
+    card!(
+        IsamaruHoundOfKonda, "Isamaru, Hound of Konda", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Dog", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        Unsummon, "Unsummon", cost: Some("{U}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Return target creature to its owner's hand.",
+        spell: Some(SpellSpec { target: TargetSpec::Creature, instant: true, effects: RETURN_HAND })
+    ),
+    card!(
+        TimeEbb, "Time Ebb", cost: Some("{2}{U}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Put target creature on top of its owner's library.",
+        spell: Some(SpellSpec { target: TargetSpec::Creature, instant: false, effects: TOP_LIBRARY })
+    ),
+    card!(
+        SwordsToPlowshares, "Swords to Plowshares", cost: Some("{W}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Exile target creature. Its controller gains life equal to its power.",
+        spell: Some(SpellSpec { target: TargetSpec::Creature, instant: true, effects: SWORDS })
     ),
 ];
 

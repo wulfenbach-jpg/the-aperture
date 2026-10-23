@@ -80,6 +80,13 @@ pub enum Effect {
     Pump(i32, i32),
     /// Each player simultaneously sacrifices a permanent of their choice.
     EachPlayerSacrifice,
+    /// Return the target creature to its owner's hand.
+    ReturnToHand,
+    /// Put the target creature on top of its owner's library.
+    PutOnTopOfLibrary,
+    /// Exile the target creature, then its controller gains life equal to its
+    /// power as last known (Swords to Plowshares).
+    ExileAndGainLife,
 }
 
 impl Effect {
@@ -92,6 +99,14 @@ impl Effect {
             Effect::CounterTargetSpell => "counter target spell".to_string(),
             Effect::Pump(p, t) => format!("target creature gets {p:+}/{t:+} until end of turn"),
             Effect::EachPlayerSacrifice => "each player sacrifices a permanent".to_string(),
+            Effect::ReturnToHand => "return the target creature to its owner's hand".to_string(),
+            Effect::PutOnTopOfLibrary => {
+                "put the target creature on top of its owner's library".to_string()
+            }
+            Effect::ExileAndGainLife => {
+                "exile the target creature; its controller gains life equal to its power"
+                    .to_string()
+            }
         }
     }
 }
@@ -188,6 +203,11 @@ pub enum CardId {
     Opt,
     Consider,
     CrackTheEarth,
+    Plains,
+    IsamaruHoundOfKonda,
+    Unsummon,
+    TimeEbb,
+    SwordsToPlowshares,
 }
 
 impl CardId {
@@ -201,6 +221,13 @@ impl CardId {
 
     pub fn mana_cost(self) -> Option<crate::mana::ManaCost> {
         self.def().mana_cost()
+    }
+
+    /// Explicit command-zone practice allow-list. This is deliberately narrower
+    /// than CR 903.3: no general legendary/Vehicle/Spacecraft support exists in
+    /// this slice.
+    pub fn is_supported_commander(self) -> bool {
+        matches!(self, CardId::IsamaruHoundOfKonda)
     }
 }
 

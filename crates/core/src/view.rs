@@ -41,6 +41,9 @@ pub enum PendingKind {
     OrderCard { index: usize, mode: OrderMode },
     Discard { count: u8 },
     ApnapSacrifice,
+    CommanderReturn,
+    CommanderReplacement,
+    CommanderDraw,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -50,6 +53,21 @@ pub struct StackView {
     pub name: &'static str,
     pub controller: PlayerId,
     pub targets: Vec<String>,
+}
+
+/// Public command-zone information. The registry's current ObjectId is NOT
+/// projected; only a commander actually in the public command zone appears.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CommanderView {
+    pub id: crate::ids::CommanderId,
+    pub owner: PlayerId,
+    pub card: CardId,
+    pub name: &'static str,
+    /// `Some` only for public zones. Hand and library are always redacted for
+    /// every viewer; the stable CommanderId/owner/card/tax stay public.
+    pub zone: Option<Zone>,
+    pub casts_from_command_zone: u32,
+    pub tax: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -64,6 +82,7 @@ pub struct OpponentView {
     pub battlefield: Vec<CardView>,
     pub graveyard: Vec<CardView>,
     pub exile: Vec<CardView>,
+    pub command_zone: Vec<CardView>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -78,6 +97,9 @@ pub struct PlayerView {
     pub own_battlefield: Vec<CardView>,
     pub own_graveyard: Vec<CardView>,
     pub own_exile: Vec<CardView>,
+    pub own_command_zone: Vec<CardView>,
+    /// Public stable commander identities and command-zone cast tax.
+    pub commanders: Vec<CommanderView>,
     pub own_library_count: usize,
     pub own_life: i32,
     pub own_mana: String,
@@ -169,6 +191,7 @@ fn zone_cards(game: &Game, p: PlayerId, zone: Zone) -> Vec<CardView> {
             .map(|o| o.id)
             .collect(),
         Zone::Hand => game.state.player(p).hand.clone(),
+        Zone::Command => game.state.player(p).command_zone.clone(),
         Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
     };
     ids.into_iter().map(|id| card_view(game, id)).collect()
@@ -376,6 +399,7 @@ impl Game {
                         battlefield: Vec::new(),
                         graveyard: Vec::new(),
                         exile: Vec::new(),
+                        command_zone: Vec::new(),
                     }
                 } else {
                     OpponentView {
@@ -389,6 +413,7 @@ impl Game {
                         battlefield: zone_cards(self, seat, Zone::Battlefield),
                         graveyard: zone_cards(self, seat, Zone::Graveyard),
                         exile: zone_cards(self, seat, Zone::Exile),
+                        command_zone: zone_cards(self, seat, Zone::Command),
                     }
                 }
             })
@@ -402,6 +427,28 @@ impl Game {
             own_battlefield: zone_cards(self, viewer, Zone::Battlefield),
             own_graveyard: zone_cards(self, viewer, Zone::Graveyard),
             own_exile: zone_cards(self, viewer, Zone::Exile),
+            own_command_zone: zone_cards(self, viewer, Zone::Command),
+            commanders: self
+                .state
+                .commanders
+                .iter()
+                .map(|commander| CommanderView {
+                    id: commander.id,
+                    owner: commander.owner,
+                    card: commander.card,
+                    name: commander.card.name(),
+                    zone: match self.state.object(commander.object).zone {
+                        Zone::Command
+                        | Zone::Battlefield
+                        | Zone::Stack
+                        | Zone::Graveyard
+                        | Zone::Exile => Some(self.state.object(commander.object).zone),
+                        Zone::Hand | Zone::Library | Zone::Removed => None,
+                    },
+                    casts_from_command_zone: commander.casts_from_command_zone,
+                    tax: commander.casts_from_command_zone.saturating_mul(2),
+                })
+                .collect(),
             own_library_count: me.library.len(),
             own_life: me.life,
             own_mana: me.mana.render(),
@@ -450,6 +497,11 @@ impl Game {
                     PendingKind::Discard { count: *count }
                 }
                 crate::state::Pending::ApnapSacrifice { .. } => PendingKind::ApnapSacrifice,
+                crate::state::Pending::CommanderReturn { .. } => PendingKind::CommanderReturn,
+                crate::state::Pending::CommanderReplacement { .. } => {
+                    PendingKind::CommanderReplacement
+                }
+                crate::state::Pending::CommanderDraw { .. } => PendingKind::CommanderDraw,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })

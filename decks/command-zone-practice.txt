@@ -1,0 +1,9 @@
+// Command-zone practice library. The commander is supplied separately, so it
+// is deliberately NOT in this list. 20 life; not a Commander-legal deck.
+12 Plains
+8 Forest
+8 Island
+4 Grizzly Bears
+4 Centaur Courser
+2 Unsummon
+2 Swords to Plowshares

@@ -18,6 +18,18 @@ pub const MAX_PLAYERS: usize = 4;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct ObjectId(pub u32);
 
+/// Stable identity of one physical commander card. This is an attribute of the
+/// card, not a characteristic of the current zone object (CR 903.3), so it
+/// survives every zone transition.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub struct CommanderId(pub u32);
+
+impl std::fmt::Display for CommanderId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "commander#{}", self.0)
+    }
+}
+
 impl std::fmt::Display for ObjectId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "#{}", self.0)
@@ -32,6 +44,8 @@ pub enum Zone {
     Stack,
     Graveyard,
     Exile,
+    /// The command zone (CR 903.6, 903.8). Public information.
+    Command,
     /// Internal representation of a card that left the game with its owner
     /// (CR 800.4a). This is not a game zone: no view, legal-action generator or
     /// effect may read it. The 800.4a "still controlled objects are exiled"
@@ -49,6 +63,7 @@ impl Zone {
             Zone::Stack => "stack",
             Zone::Graveyard => "graveyard",
             Zone::Exile => "exile",
+            Zone::Command => "command zone",
             Zone::Removed => "removed from the game",
         }
     }

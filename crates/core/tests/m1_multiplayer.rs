@@ -214,11 +214,11 @@ fn three_seat_replay_and_save_round_trip_and_v1_is_rejected() {
     assert_eq!(parsed.game().digest(), game.digest());
     assert_eq!(parsed.seats.len(), 3);
 
-    for old_version in [1u32, 2] {
+    for old_version in [1u32, 2, 3] {
         let mut old = serde_json::to_value(&replay).expect("json");
         old["version"] = serde_json::json!(old_version);
         match Replay::from_json(&serde_json::to_string(&old).unwrap()) {
-            Err(ReplayError::Version { got, expected: 3 }) if got == old_version => {}
+            Err(ReplayError::Version { got, expected: 4 }) if got == old_version => {}
             other => panic!("expected an explicit replay-v{old_version} rejection, got {other:?}"),
         }
     }
@@ -560,7 +560,7 @@ fn save_v3_is_rejected_explicitly() {
     match SessionSave::from_json(&serde_json::to_string(&value).expect("json")) {
         Err(ReplayError::Version {
             got: 3,
-            expected: 4,
+            expected: 5,
         }) => {}
         other => panic!("expected an explicit save-v3 rejection, got {other:?}"),
     }

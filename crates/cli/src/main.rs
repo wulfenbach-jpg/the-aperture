@@ -56,6 +56,14 @@ pub enum Command {
         /// Print every event.
         #[arg(long)]
         verbose: bool,
+        /// Explicit command-zone practice profile (20 life, one supported
+        /// commander per seat, NOT full Commander).
+        #[arg(long = "command-zone-practice")]
+        command_zone_practice: bool,
+        /// One `SEAT:CARD` commander spec per seat; requires
+        /// --command-zone-practice. Example: `0:Isamaru, Hound of Konda`.
+        #[arg(long = "commander")]
+        commander: Vec<String>,
     },
     /// Run bounded 2/3/4-seat headless games with paired seeds and verify every
     /// replay digest. Exit 0 all terminal, 2 capped but no failure, 1 failure.
@@ -113,10 +121,10 @@ pub enum Command {
     Coach {
         #[arg(long, default_value_t = 1)]
         seed: u64,
-        #[arg(long, default_value = "decks/temur-beats.txt")]
-        deck_a: PathBuf,
-        #[arg(long, default_value = "decks/izzet-control.txt")]
-        deck_b: PathBuf,
+        #[arg(long)]
+        deck_a: Option<PathBuf>,
+        #[arg(long)]
+        deck_b: Option<PathBuf>,
     },
     /// Analyze an offline Commander deck snapshot. Format legality only; never
     /// starts a game. Exit 0 legal, 1 illegal, 2 not_certified/input error.
@@ -153,7 +161,39 @@ fn main() -> anyhow::Result<()> {
             out,
             replay_out,
             verbose,
+            command_zone_practice,
+            commander,
         } => {
+            if command_zone_practice != !commander.is_empty() {
+                return Err(anyhow::anyhow!(
+                    "--command-zone-practice needs exactly one --commander SEAT:CARD per seat, and --commander cannot be used without the profile flag"
+                ));
+            }
+            let mut commanders: Vec<(aperture_core::PlayerId, aperture_core::CardId)> = Vec::new();
+            for spec in &commander {
+                let (seat, name) = spec.split_once(':').ok_or_else(|| {
+                    anyhow::anyhow!("--commander must be SEAT:CARD, got '{spec}'")
+                })?;
+                let seat: u8 = seat.trim().parse().map_err(|_| {
+                    anyhow::anyhow!("--commander seat must be a number, got '{seat}'")
+                })?;
+                let name = name.trim();
+                let card = aperture_core::catalog::by_name(name)
+                    .ok_or_else(|| anyhow::anyhow!("'{name}' is not a supported card name"))?;
+                if !card.is_supported_commander() {
+                    return Err(anyhow::anyhow!(
+                        "{} is not in the supported command-zone practice commander profile; multi-commander variants are unsupported",
+                        card.name()
+                    ));
+                }
+                if commanders.iter().any(|(existing, _)| *existing == seat) {
+                    return Err(anyhow::anyhow!(
+                        "P{seat} has more than one --commander; multi-commander variants are unsupported"
+                    ));
+                }
+                commanders.push((seat, card));
+            }
+            let deck_explicit = !deck.is_empty();
             let mut decks = deck;
             if decks.is_empty() {
                 let seat_count = seats.unwrap_or(2);
@@ -182,6 +222,8 @@ fn main() -> anyhow::Result<()> {
                 out,
                 replay_out,
                 verbose,
+                commanders,
+                deck_explicit,
             })
         }
         Command::Harness {
@@ -223,7 +265,7 @@ fn main() -> anyhow::Result<()> {
             seed,
             deck_a,
             deck_b,
-        } => info_cmd::coach(seed, &deck_a, &deck_b),
+        } => info_cmd::coach(seed, deck_a.as_deref(), deck_b.as_deref()),
         Command::CommanderCheck {
             deck,
             cards,

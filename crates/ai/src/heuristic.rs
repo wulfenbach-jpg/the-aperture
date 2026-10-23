@@ -91,7 +91,12 @@ impl HeuristicPolicy {
             Some(PendingKind::DeclareBlockers) => Action::DeclareBlockers {
                 blocks: self.blocks(view),
             },
-            Some(PendingKind::ApnapSacrifice) => view
+            Some(
+                PendingKind::ApnapSacrifice
+                | PendingKind::CommanderReturn
+                | PendingKind::CommanderReplacement
+                | PendingKind::CommanderDraw,
+            ) => view
                 .legal
                 .first()
                 .map(|legal| legal.action.clone())
@@ -261,6 +266,23 @@ impl HeuristicPolicy {
             if view.legal.iter().any(|legal| legal.action == action) {
                 return Some(action);
             }
+        }
+
+        // Command-zone practice: the engine's legal CastSpell action already
+        // includes commander tax and timing. Use it as the authority instead of
+        // re-deriving a base cost that would ignore tax.
+        if let Some(action) = view.legal.iter().find_map(|legal| match &legal.action {
+            Action::CastSpell { card, .. }
+                if view
+                    .own_command_zone
+                    .iter()
+                    .any(|view_card| view_card.id == *card) =>
+            {
+                Some(legal.action.clone())
+            }
+            _ => None,
+        }) {
+            return Some(action);
         }
 
         // Cast Crack the Earth when the engine offers it and an opponent has a

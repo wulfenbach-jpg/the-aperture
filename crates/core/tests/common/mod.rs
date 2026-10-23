@@ -32,6 +32,7 @@ fn new_player(id: PlayerId, name: &str) -> Player {
         hand: Vec::new(),
         graveyard: Vec::new(),
         exile: Vec::new(),
+        command_zone: Vec::new(),
         life: 20,
         mana: ManaPool::default(),
         mulligans: 0,
@@ -53,6 +54,8 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             first_player: P0,
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
+            commanders: Vec::new(),
+            command_zone_practice: false,
             players: (0..seat_count as PlayerId)
                 .map(|id| new_player(id, &format!("P{id}")))
                 .collect(),
@@ -94,6 +97,7 @@ impl Fixture {
                 owner: p,
                 controller: p,
                 zone,
+                commander: None,
                 tapped: false,
                 damage: 0,
                 summoning_sick: false,
@@ -107,7 +111,7 @@ impl Fixture {
             Zone::Library => self.state.players[p as usize].library.push(id),
             Zone::Graveyard => self.state.players[p as usize].graveyard.push(id),
             Zone::Exile => self.state.players[p as usize].exile.push(id),
-            Zone::Battlefield | Zone::Stack | Zone::Removed => {}
+            Zone::Battlefield | Zone::Stack | Zone::Command | Zone::Removed => {}
         }
         self
     }
@@ -236,6 +240,15 @@ pub fn auto_answer(game: &Game) -> Action {
                 .map(|legal| legal.action)
                 .expect("an APNAP sacrifice option is offered"),
             Pending::OrderCard { .. } => Action::OrderCard { to_top: true },
+            Pending::CommanderReturn { .. } => Action::AnswerCommanderReturn {
+                to_command_zone: true,
+            },
+            Pending::CommanderReplacement { .. } => Action::AnswerCommanderReplacement {
+                to_command_zone: true,
+            },
+            Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
+                to_command_zone: true,
+            },
             Pending::BottomCards { .. } | Pending::Discard { .. } => game
                 .legal_actions()
                 .into_iter()
