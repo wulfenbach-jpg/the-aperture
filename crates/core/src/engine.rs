@@ -2109,9 +2109,15 @@ impl Game {
                     });
                 if injected_departure {
                     self.check_sbas(events);
-                    if self.state.pending.is_none() && !self.state.is_over() {
-                        self.grant_priority(self.state.turn.active, events);
+                    if self.state.is_over() || self.state.pending.is_some() {
+                        return;
                     }
+                    if self.state.resolving.is_some() {
+                        // The departure applied surviving choices; finish the
+                        // original resolution before any priority (CR 704.4).
+                        continue;
+                    }
+                    self.grant_priority(self.state.turn.active, events);
                 }
                 return;
             }
@@ -2539,10 +2545,28 @@ impl Game {
                         source_left: provenance,
                     });
                 } else {
-                    // No chooser remains: either the recorded instruction is
-                    // complete or no valid provenance exists. Cancel cleanly.
-                    self.state.pending = None;
-                    self.state.resolving = None;
+                    // The final unanswered participant left. Apply the
+                    // surviving public choices exactly once, then let the
+                    // original resolution finish before any priority. A present
+                    // source stays on the stack at its recorded cursor for
+                    // settle() to complete; a departed source has no stack item
+                    // and is finished here.
+                    let source_on_stack = self.state.resolving.is_some_and(|resolving| {
+                        self.state
+                            .stack
+                            .last()
+                            .is_some_and(|item| item.object == resolving)
+                    });
+                    if source_on_stack || provenance.is_some() {
+                        self.apply_apnap_choices(&choices, events);
+                        self.state.pending = None;
+                        if !source_on_stack {
+                            self.state.resolving = None;
+                        }
+                    } else {
+                        self.state.pending = None;
+                        self.state.resolving = None;
+                    }
                 }
             }
             Some(pending) => {

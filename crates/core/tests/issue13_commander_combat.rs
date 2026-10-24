@@ -2183,3 +2183,175 @@ fn survivor_owned_source_exiled_but_queue_continues() {
     assert!(game.state.validate().is_ok());
     let _ = events;
 }
+
+/// R166-1 source-present branch: the final unanswered participant leaves after
+/// two survivors recorded choices; apply them exactly once, finish the original
+/// Crack the Earth resolution (no orphan stack/cursor), then grant priority.
+#[test]
+fn last_unanswered_departure_applies_surviving_choices_before_priority() {
+    let mut game = fixture_n(166, 3)
+        .hand(P0, &[CardId::CrackTheEarth])
+        .battlefield(P0, &[CardId::Mountain, CardId::Forest])
+        .battlefield(1, &[CardId::GrizzlyBears])
+        .battlefield(2, &[CardId::Forest])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let forest = battlefield_card(&game, P0, CardId::Forest);
+    let bear = battlefield_card(&game, 1, CardId::GrizzlyBears);
+    let crack = hand_card(&game, P0, CardId::CrackTheEarth);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: crack,
+            targets: Vec::new(),
+        },
+    );
+    for _ in 0..8 {
+        if matches!(game.state.pending, Some(Pending::ApnapSacrifice { .. })) {
+            break;
+        }
+        let p = game.decision_owner().unwrap();
+        submit_ok(&mut game, p, Action::Pass);
+    }
+    submit_ok(
+        &mut game,
+        P0,
+        Action::ChooseSacrifice {
+            permanent: Some(forest),
+        },
+    );
+    game.state.players[2].life = 0;
+    let events = submit_ok(
+        &mut game,
+        1,
+        Action::ChooseSacrifice {
+            permanent: Some(bear),
+        },
+    );
+    assert!(game.state.player(2).lost);
+    assert_eq!(game.state.object(forest).zone, Zone::Graveyard);
+    assert_eq!(game.state.object(bear).zone, Zone::Graveyard);
+    assert!(game.state.pending.is_none());
+    assert!(game.state.resolving.is_none());
+    assert!(game.state.stack.is_empty(), "no orphan Crack stack/cursor");
+    assert_eq!(
+        events
+            .iter()
+            .filter(|e| matches!(
+                e,
+                Event::Destroyed {
+                    card: CardId::CrackTheEarth,
+                    ..
+                }
+            ))
+            .count(),
+        1
+    );
+    let resolved = events
+        .iter()
+        .position(|e| {
+            matches!(
+                e,
+                Event::Resolve {
+                    card: CardId::CrackTheEarth,
+                    ..
+                }
+            )
+        })
+        .expect("Crack resolved");
+    let priority = events
+        .iter()
+        .position(|e| matches!(e, Event::Priority { .. }))
+        .expect("priority");
+    assert!(resolved < priority, "resolution completes before priority");
+    assert!(game.state.validate().is_ok());
+}
+
+/// R166-1 source-left branch: source is survivor-owned and exiled while P0
+/// departs; the final unanswered P2 leaves after P1 records a choice. Apply the
+/// surviving choice once, complete the recorded instruction, settle one terminal
+/// outcome with no stack/resolving orphan.
+#[test]
+fn last_unanswered_departure_with_departed_source_applies_choices_once() {
+    let mut game = fixture_n(167, 3)
+        .hand(P0, &[CardId::CrackTheEarth])
+        .battlefield(P0, &[CardId::Mountain, CardId::Forest])
+        .battlefield(1, &[CardId::GrizzlyBears])
+        .battlefield(2, &[CardId::Forest])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let forest = battlefield_card(&game, P0, CardId::Forest);
+    let bear = battlefield_card(&game, 1, CardId::GrizzlyBears);
+    let crack = hand_card(&game, P0, CardId::CrackTheEarth);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: crack,
+            targets: Vec::new(),
+        },
+    );
+    for _ in 0..8 {
+        if matches!(game.state.pending, Some(Pending::ApnapSacrifice { .. })) {
+            break;
+        }
+        let p = game.decision_owner().unwrap();
+        submit_ok(&mut game, p, Action::Pass);
+    }
+    let source = game.state.resolving.expect("resolving Crack");
+    {
+        let object = game.state.objects.get_mut(&source).expect("source");
+        object.owner = 1;
+        object.controller = P0;
+    }
+    game.state.players[0].life = 0;
+    let mut events = submit_ok(
+        &mut game,
+        P0,
+        Action::ChooseSacrifice {
+            permanent: Some(forest),
+        },
+    );
+    assert!(game.state.player(P0).lost);
+    assert_eq!(game.state.object(source).zone, Zone::Exile);
+    game.state.players[2].life = 0;
+    events.extend(submit_ok(
+        &mut game,
+        1,
+        Action::ChooseSacrifice {
+            permanent: Some(bear),
+        },
+    ));
+    assert!(game.state.player(2).lost);
+    assert!(matches!(
+        game.state.outcome,
+        Some(Outcome::Win { winner: 1, .. })
+    ));
+    assert_eq!(game.state.object(bear).zone, Zone::Graveyard);
+    assert_eq!(
+        game.state.object(forest).zone,
+        Zone::Removed,
+        "departed P0 permanent left the game"
+    );
+    assert!(game.state.pending.is_none());
+    assert!(game.state.resolving.is_none());
+    assert!(game.state.stack.is_empty());
+    assert_eq!(
+        events
+            .iter()
+            .filter(|e| matches!(e, Event::GameOver { .. }))
+            .count(),
+        1
+    );
+    let terminal = events
+        .iter()
+        .position(|e| matches!(e, Event::GameOver { .. }))
+        .expect("terminal");
+    assert!(
+        !events[terminal..]
+            .iter()
+            .any(|e| matches!(e, Event::Priority { .. }))
+    );
+    assert!(game.state.validate().is_ok());
+}
