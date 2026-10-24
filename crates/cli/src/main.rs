@@ -60,6 +60,10 @@ pub enum Command {
         /// commander per seat, NOT full Commander).
         #[arg(long = "command-zone-practice")]
         command_zone_practice: bool,
+        /// Explicit BOUNDED Commander-combat practice profile (40 life, one
+        /// supported commander per seat, NOT the Commander format).
+        #[arg(long = "commander-combat-practice")]
+        commander_combat_practice: bool,
         /// One `SEAT:CARD` commander spec per seat; requires
         /// --command-zone-practice. Example: `0:Isamaru, Hound of Konda`.
         #[arg(long = "commander")]
@@ -162,11 +166,23 @@ fn main() -> anyhow::Result<()> {
             replay_out,
             verbose,
             command_zone_practice,
+            commander_combat_practice,
             commander,
         } => {
-            if command_zone_practice != !commander.is_empty() {
+            let profile = match (command_zone_practice, commander_combat_practice) {
+                (true, true) => {
+                    return Err(anyhow::anyhow!(
+                        "--command-zone-practice and --commander-combat-practice are mutually exclusive explicit profiles"
+                    ));
+                }
+                (true, false) => aperture_core::Profile::CommandZone20,
+                (false, true) => aperture_core::Profile::CommanderCombat40,
+                (false, false) => aperture_core::Profile::Practice20,
+            };
+            if profile.has_command_zone() != !commander.is_empty() {
                 return Err(anyhow::anyhow!(
-                    "--command-zone-practice needs exactly one --commander SEAT:CARD per seat, and --commander cannot be used without the profile flag"
+                    "{} needs exactly one --commander SEAT:CARD per seat, and --commander cannot be used without an explicit command-zone profile flag",
+                    profile.label()
                 ));
             }
             let mut commanders: Vec<(aperture_core::PlayerId, aperture_core::CardId)> = Vec::new();
@@ -223,6 +239,7 @@ fn main() -> anyhow::Result<()> {
                 replay_out,
                 verbose,
                 commanders,
+                profile,
                 deck_explicit,
             })
         }

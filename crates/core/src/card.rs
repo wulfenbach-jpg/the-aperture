@@ -87,6 +87,9 @@ pub enum Effect {
     /// Exile the target creature, then its controller gains life equal to its
     /// power as last known (Swords to Plowshares).
     ExileAndGainLife,
+    /// Full combat damage prevention for the rest of this turn (Fog). Partial
+    /// prevention and redirection are not modelled.
+    PreventAllCombatDamageThisTurn,
 }
 
 impl Effect {
@@ -106,6 +109,9 @@ impl Effect {
             Effect::ExileAndGainLife => {
                 "exile the target creature; its controller gains life equal to its power"
                     .to_string()
+            }
+            Effect::PreventAllCombatDamageThisTurn => {
+                "prevent all combat damage that would be dealt this turn".to_string()
             }
         }
     }
@@ -208,6 +214,7 @@ pub enum CardId {
     Unsummon,
     TimeEbb,
     SwordsToPlowshares,
+    Fog,
 }
 
 impl CardId {

@@ -93,6 +93,10 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::ReturnToHand | Effect::PutOnTopOfLibrary | Effect::ExileAndGainLife => {
                     assert_eq!(spec.target, TargetSpec::Creature, "{}", card.name)
                 }
+                Effect::PreventAllCombatDamageThisTurn => {
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                    assert!(spec.instant, "{} prevention is an instant", card.name);
+                }
             }
         }
         // The card's own reminder text is consistent with its cost.

@@ -36,7 +36,10 @@ pub use ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, P0, P1, PlayerId,
 pub use mana::{ManaCost, ManaPool};
 pub use replay::{CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave};
 pub use settings::AiSettings;
-pub use state::{Commander, DrawResume, GameState, OrderMode, Outcome, Pending, Step};
+pub use state::{
+    Commander, CommanderDamageEntry, DrawResume, GameState, OrderMode, Outcome, Pending, Profile,
+    Step,
+};
 pub use view::{OpponentView, PlayerView};
 
 /// Comprehensive Rules revision this engine was written against.

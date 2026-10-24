@@ -48,7 +48,10 @@ pub fn fixture(seed: u64) -> Fixture {
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
             commanders: Vec::new(),
-            command_zone_practice: false,
+            profile: Profile::Practice20,
+            commander_damage: Vec::new(),
+            retired_commanders: Vec::new(),
+            prevent_all_combat_damage_turn: None,
             players: vec![new_player(P0), new_player(P1)],
             stack: Vec::new(),
             turn: Turn {

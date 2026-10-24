@@ -218,7 +218,8 @@ fn three_seat_replay_and_save_round_trip_and_v1_is_rejected() {
         let mut old = serde_json::to_value(&replay).expect("json");
         old["version"] = serde_json::json!(old_version);
         match Replay::from_json(&serde_json::to_string(&old).unwrap()) {
-            Err(ReplayError::Version { got, expected: 4 }) if got == old_version => {}
+            Err(ReplayError::Version { got, expected })
+                if got == old_version && expected == aperture_core::replay::REPLAY_VERSION => {}
             other => panic!("expected an explicit replay-v{old_version} rejection, got {other:?}"),
         }
     }
@@ -560,7 +561,7 @@ fn save_v3_is_rejected_explicitly() {
     match SessionSave::from_json(&serde_json::to_string(&value).expect("json")) {
         Err(ReplayError::Version {
             got: 3,
-            expected: 5,
+            expected: aperture_core::replay::SAVE_VERSION,
         }) => {}
         other => panic!("expected an explicit save-v3 rejection, got {other:?}"),
     }

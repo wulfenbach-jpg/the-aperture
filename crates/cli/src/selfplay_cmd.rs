@@ -23,6 +23,7 @@ pub struct Args {
     pub replay_out: Option<PathBuf>,
     pub verbose: bool,
     pub commanders: Vec<(aperture_core::PlayerId, aperture_core::CardId)>,
+    pub profile: aperture_core::Profile,
     pub deck_explicit: bool,
 }
 
@@ -98,40 +99,53 @@ pub fn run(args: Args) -> anyhow::Result<()> {
         }
     }
 
-    let (mut game, mut log) = if args.commanders.is_empty() {
-        Game::new_logged(args.seed, &lists)
-    } else {
-        if args.commanders.len() != lists.len() {
-            anyhow::bail!(
-                "--command-zone-practice needs exactly one --commander per deck ({} commander(s), {} deck(s))",
-                args.commanders.len(),
-                lists.len()
-            );
+    let commander_setup: Vec<aperture_core::CommanderSetup> = args
+        .commanders
+        .iter()
+        .map(|(seat, card)| aperture_core::CommanderSetup {
+            seat: *seat,
+            card: *card,
+        })
+        .collect();
+    if args.profile.has_command_zone() && args.commanders.len() != lists.len() {
+        anyhow::bail!(
+            "{} needs exactly one --commander per deck ({} commander(s), {} deck(s))",
+            args.profile.label(),
+            args.commanders.len(),
+            lists.len()
+        );
+    }
+    let (mut game, mut log) = match args.profile {
+        aperture_core::Profile::Practice20 => Game::new_logged(args.seed, &lists),
+        aperture_core::Profile::CommandZone20 => {
+            Game::new_command_zone_logged(args.seed, &lists, &args.commanders)
         }
-        Game::new_command_zone_logged(args.seed, &lists, &args.commanders)
+        aperture_core::Profile::CommanderCombat40 => {
+            Game::new_commander_combat_logged(args.seed, &lists, &args.commanders)
+        }
     }
     .map_err(|err| anyhow::anyhow!("{err}"))?;
-    let mut replay = if args.commanders.is_empty() {
-        Replay::new(
+    let mut replay = match args.profile {
+        aperture_core::Profile::Practice20 => Replay::new(
             args.seed,
             game.state.first_player,
             lists.clone(),
             ai.clone(),
-        )
-    } else {
-        Replay::new_command_zone(
+        ),
+        aperture_core::Profile::CommandZone20 => Replay::new_command_zone(
             args.seed,
             game.state.first_player,
             lists.clone(),
-            args.commanders
-                .iter()
-                .map(|(seat, card)| aperture_core::CommanderSetup {
-                    seat: *seat,
-                    card: *card,
-                })
-                .collect(),
+            commander_setup,
             ai.clone(),
-        )
+        ),
+        aperture_core::Profile::CommanderCombat40 => Replay::new_commander_combat(
+            args.seed,
+            game.state.first_player,
+            lists.clone(),
+            commander_setup,
+            ai.clone(),
+        ),
     }
     .map_err(|err| anyhow::anyhow!("{err}"))?;
     let limits = SelfplayLimits {
@@ -169,6 +183,29 @@ pub fn run(args: Args) -> anyhow::Result<()> {
     let counters = log
         .iter()
         .filter(|e| matches!(e, Event::Countered { .. }))
+        .count();
+    // Terminal rows are pruned when a recipient leaves, so final acceptance
+    // reporting derives aggregate totals and the loss count from typed events.
+    let mut commander_totals: std::collections::BTreeMap<(u32, u8), u32> =
+        std::collections::BTreeMap::new();
+    for event in &log {
+        if let Event::CommanderDamage {
+            commander,
+            recipient,
+            amount,
+            ..
+        } = event
+        {
+            *commander_totals
+                .entry((commander.0, *recipient))
+                .or_insert(0) += *amount;
+        }
+    }
+    let commander_losses = log
+        .iter()
+        .filter(
+            |event| matches!(event, Event::GameOver { reason, .. } if reason.contains("903.10a")),
+        )
         .count();
     let turns = game.state.turn.number;
 
@@ -239,9 +276,25 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             "blocks": blocks,
             "damage_events": damage,
             "counterspells": counters,
+            "commander_damage_events": log
+                .iter()
+                .filter(|event| matches!(event, Event::CommanderDamage { .. }))
+                .count(),
+            "commander_damage_losses": commander_losses,
         },
+        "commander_damage_totals": commander_totals.iter().map(|((commander, recipient), amount)| json!({
+            "commander": commander,
+            "recipient": recipient,
+            "total": amount,
+        })).collect::<Vec<_>>(),
         "pool_size": aperture_core::catalog::pool_size(),
-        "profile": if args.commanders.is_empty() { "practice-20" } else { "command-zone-practice-20" },
+        "profile": args.profile.label(),
+        "starting_life": args.profile.starting_life(),
+        "commander_damage": game.state.commander_damage.iter().map(|entry| json!({
+            "commander": entry.commander.0,
+            "recipient": entry.recipient,
+            "amount": entry.amount,
+        })).collect::<Vec<_>>(),
         "commanders": args.commanders.iter().map(|(seat, card)| json!({
             "seat": seat,
             "card": card.name(),

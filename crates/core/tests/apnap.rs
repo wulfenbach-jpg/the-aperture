@@ -44,6 +44,7 @@ fn pending_parts(game: &Game) -> (PlayerId, Vec<PlayerId>, usize) {
             player,
             order,
             choices,
+            ..
         }) => (*player, order.clone(), choices.len()),
         other => panic!("expected an APNAP sacrifice queue, got {other:?}"),
     }
@@ -697,6 +698,7 @@ fn apnap_validation_rejects_rewound_source_and_nonprefix_answers() {
         player,
         order,
         choices,
+        ..
     }) = &mut out_of_prefix.pending
     {
         // Pretend P2 answered while P0 remains first: choices must be a prefix.

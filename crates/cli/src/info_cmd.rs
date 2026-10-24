@@ -12,7 +12,7 @@ pub fn pool() -> anyhow::Result<()> {
         catalog::pool_size()
     );
     println!(
-        "practice profile: 1v1, 20 life, 40-card decks, London mulligan. Commander: NOT implemented.\n"
+        "practice profile: 1v1, 20 life, 40-card decks, London mulligan. Explicit command-zone profiles: command-zone-practice-20 and bounded commander-combat-practice-40 (40 starting life, commander combat-damage ledger, CR 903.10a 21-damage loss, and Fog full combat prevention this turn; partial prevention/redirection NOT implemented). Commander format: NOT implemented.\n"
     );
     for card in catalog::all() {
         let kind = card
@@ -35,7 +35,7 @@ pub fn pool() -> anyhow::Result<()> {
         );
     }
     println!(
-        "\nnot implemented (refused at import): triggers, other activated abilities, static abilities, replacement effects, tokens, counters in the rules layer, milling, tutoring, multi-face cards, any card outside this pool."
+        "\nnot implemented (refused at import): triggers, other activated abilities, static abilities, replacement effects, tokens, counters in the rules layer, milling, tutoring, multi-face cards, any card outside this 22-card pool; partial prevention and redirection are not modelled."
     );
     Ok(())
 }

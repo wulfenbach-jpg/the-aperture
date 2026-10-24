@@ -1,4 +1,4 @@
-//! The supported card pool. Sixteen real cards; every printed ability is
+//! The supported card pool. Twenty-two real cards; every printed ability is
 //! implemented. Card text is the short functional Oracle wording.
 //!
 //! Deliberate exclusions (documented in HANDOFF.md): no triggered abilities, no
@@ -19,6 +19,7 @@ const SACRIFICE_ALL: &[Effect] = &[Effect::EachPlayerSacrifice];
 const RETURN_HAND: &[Effect] = &[Effect::ReturnToHand];
 const TOP_LIBRARY: &[Effect] = &[Effect::PutOnTopOfLibrary];
 const SWORDS: &[Effect] = &[Effect::ExileAndGainLife];
+const PREVENT_COMBAT: &[Effect] = &[Effect::PreventAllCombatDamageThisTurn];
 
 const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
@@ -47,7 +48,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 21] = [
+pub static CARDS: [CardDef; 22] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -163,6 +164,12 @@ pub static CARDS: [CardDef; 21] = [
         type_line: "Instant", power: None, toughness: None,
         oracle: "Exile target creature. Its controller gains life equal to its power.",
         spell: Some(SpellSpec { target: TargetSpec::Creature, instant: true, effects: SWORDS })
+    ),
+    card!(
+        Fog, "Fog", cost: Some("{G}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Prevent all combat damage that would be dealt this turn.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: PREVENT_COMBAT })
     ),
 ];
 

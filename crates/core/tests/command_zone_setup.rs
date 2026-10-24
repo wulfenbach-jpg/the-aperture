@@ -2,7 +2,7 @@
 //! supported-commander acceptance because the command-zone fields are introduced
 //! by the implementation that follows the RED run.
 
-use aperture_core::{CardId, DeckList, Game, P0, P1};
+use aperture_core::{CardId, DeckList, Game, P0, P1, Profile};
 
 fn decks() -> Vec<DeckList> {
     vec![
@@ -39,7 +39,12 @@ fn commanders_start_independently_in_the_command_zone() {
         ],
     )
     .expect("supported setup");
-    assert!(game.state.command_zone_practice);
+    assert_eq!(game.state.profile, Profile::CommandZone20);
+    assert_eq!(
+        game.state.player(P0).life,
+        20,
+        "named profile stays 20 life"
+    );
     for seat in [P0, P1] {
         let player = game.state.player(seat);
         assert_eq!(player.command_zone.len(), 1);
@@ -861,7 +866,7 @@ fn command_zone_replay_and_save_round_trip_the_explicit_setup() {
     let (rebuilt, _) = replay.run().expect("replay with digest");
     assert_eq!(rebuilt.digest(), game.digest());
     assert_eq!(rebuilt.state.commanders.len(), 2);
-    assert!(rebuilt.state.command_zone_practice);
+    assert_eq!(rebuilt.state.profile, Profile::CommandZone20);
 
     let save = SessionSave::capture(&game, replay.clone(), Vec::new(), false);
     let json = save.to_json();
