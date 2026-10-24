@@ -13,12 +13,12 @@ use crate::deck::DeckList;
 use crate::engine::Game;
 use crate::error::EngineError;
 use crate::event::Event;
-use crate::ids::{MAX_PLAYERS, MIN_PLAYERS, PlayerId};
+use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, PlayerId};
 use crate::settings::AiSettings;
-use crate::state::Outcome;
+use crate::state::{Outcome, Profile};
 
-pub const REPLAY_VERSION: u32 = 4;
-pub const SAVE_VERSION: u32 = 5;
+pub const REPLAY_VERSION: u32 = 5;
+pub const SAVE_VERSION: u32 = 9;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ReplayStep {
@@ -46,6 +46,9 @@ pub struct Replay {
     /// Empty for ordinary 20-life practice. Non-empty means the explicit
     /// command-zone practice profile with exactly one card per seat.
     pub commanders: Vec<CommanderSetup>,
+    /// Explicit named profile, serialized so starting life and command-zone
+    /// semantics are never inferred from the presence of commanders alone.
+    pub profile: Profile,
     pub rules_revision: String,
     pub ai: AiSettings,
     pub steps: Vec<ReplayStep>,
@@ -127,6 +130,7 @@ impl Replay {
             first_player,
             seats,
             commanders: Vec::new(),
+            profile: Profile::Practice20,
             rules_revision: crate::RULES_REVISION.to_string(),
             ai,
             steps: Vec::new(),
@@ -147,6 +151,21 @@ impl Replay {
     ) -> Result<Self, ReplayError> {
         let mut replay = Replay::new(seed, first_player, seats, ai)?;
         replay.commanders = commanders;
+        replay.profile = Profile::CommandZone20;
+        replay.validate()?;
+        Ok(replay)
+    }
+
+    pub fn new_commander_combat(
+        seed: u64,
+        first_player: PlayerId,
+        seats: Vec<DeckList>,
+        commanders: Vec<CommanderSetup>,
+        ai: AiSettings,
+    ) -> Result<Self, ReplayError> {
+        let mut replay = Replay::new(seed, first_player, seats, ai)?;
+        replay.commanders = commanders;
+        replay.profile = Profile::CommanderCombat40;
         replay.validate()?;
         Ok(replay)
     }
@@ -156,7 +175,7 @@ impl Replay {
         if !(MIN_PLAYERS..=MAX_PLAYERS).contains(&got) {
             return Err(ReplayError::SeatCount { got });
         }
-        if !self.commanders.is_empty() {
+        if self.profile.has_command_zone() {
             if self.commanders.len() != got {
                 return Err(ReplayError::SeatOrder {
                     reason: format!(
@@ -185,6 +204,10 @@ impl Replay {
                     });
                 }
             }
+        } else if !self.commanders.is_empty() {
+            return Err(ReplayError::SeatOrder {
+                reason: format!("{} cannot carry a commander setup", self.profile.label()),
+            });
         }
         if self.first_player as usize >= got {
             return Err(ReplayError::SeatOrder {
@@ -218,15 +241,17 @@ impl Replay {
             });
         }
         self.validate()?;
-        let (mut game, mut log) = if self.commanders.is_empty() {
-            Game::new_logged(self.seed, &self.seats)
-        } else {
-            let specs: Vec<(PlayerId, crate::card::CardId)> = self
-                .commanders
-                .iter()
-                .map(|setup| (setup.seat, setup.card))
-                .collect();
-            Game::new_command_zone_logged(self.seed, &self.seats, &specs)
+        let specs: Vec<(PlayerId, crate::card::CardId)> = self
+            .commanders
+            .iter()
+            .map(|setup| (setup.seat, setup.card))
+            .collect();
+        let (mut game, mut log) = match self.profile {
+            Profile::Practice20 => Game::new_logged(self.seed, &self.seats),
+            Profile::CommandZone20 => Game::new_command_zone_logged(self.seed, &self.seats, &specs),
+            Profile::CommanderCombat40 => {
+                Game::new_commander_combat_logged(self.seed, &self.seats, &specs)
+            }
         }
         .map_err(|source| ReplayError::Setup { source })?;
         if game.state.first_player != self.first_player {
@@ -363,12 +388,51 @@ impl SessionSave {
             .iter()
             .map(|registry| (registry.owner, registry.card))
             .collect();
-        if self.game.command_zone_practice != !self.replay.commanders.is_empty()
-            || expected_setup != actual_setup
-        {
+        if self.game.profile != self.replay.profile || expected_setup != actual_setup {
             return Err(ReplayError::Invariant {
-                reason: "saved commander setup does not match the game registry".to_string(),
+                reason: format!(
+                    "saved profile {:?}/commander setup does not match the game profile {:?}/registry",
+                    self.replay.profile, self.game.profile
+                ),
             });
+        }
+        // Identity binding: setup assigned CommanderId(i+1) by the supplied
+        // replay commander order, not seat+1. Bind every live id to that
+        // original seat+card, and every retired id to an original seat that has
+        // actually departed. This rejects 1<->2 swaps and wrong-owner retirements
+        // without inventing a per-id owner table.
+        if self.game.profile.has_command_zone() {
+            for (index, setup) in self.replay.commanders.iter().enumerate() {
+                let id = CommanderId(index as u32 + 1);
+                if let Some(live) = self.game.commanders.iter().find(|c| c.id == id) {
+                    if live.owner != setup.seat || live.card != setup.card {
+                        return Err(ReplayError::Invariant {
+                            reason: format!(
+                                "saved live {id} is bound to P{} {} but the original setup entry {index} is P{} {}",
+                                live.owner,
+                                live.card.name(),
+                                setup.seat,
+                                setup.card.name()
+                            ),
+                        });
+                    }
+                } else if self.game.retired_commanders.contains(&id) {
+                    if self.game.is_live(setup.seat) {
+                        return Err(ReplayError::Invariant {
+                            reason: format!(
+                                "saved {id} is retired but its original owner P{} is still live",
+                                setup.seat
+                            ),
+                        });
+                    }
+                } else {
+                    return Err(ReplayError::Invariant {
+                        reason: format!(
+                            "saved identity {id} is neither live nor retired in the original setup"
+                        ),
+                    });
+                }
+            }
         }
         if self.replay.first_player != self.game.first_player {
             return Err(ReplayError::Invariant {

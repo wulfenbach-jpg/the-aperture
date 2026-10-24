@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::card::{CardId, ManaColor};
-use crate::ids::{ObjectId, PlayerId};
+use crate::ids::{CommanderId, ObjectId, PlayerId};
 use crate::state::{OrderMode, Step};
 
 /// Rules-visible event trace. Events are the coaching source of truth and the
@@ -132,6 +132,29 @@ pub enum Event {
         attacker: ObjectId,
         attacker_card: CardId,
         blocker: Option<(ObjectId, CardId)>,
+        amount: u32,
+    },
+    /// Typed CR 903.10a credit: combat damage actually dealt to a player by one
+    /// stable commander identity, plus the resulting cumulative total.
+    CommanderDamage {
+        commander: CommanderId,
+        card: CardId,
+        recipient: PlayerId,
+        amount: u32,
+        total: u32,
+    },
+    /// Full Fog-style combat damage prevention became active for this turn.
+    PreventAllCombatDamage {
+        turn: u32,
+        card: CardId,
+    },
+    /// One combat-damage instance was prevented before any life, marked damage
+    /// or commander-ledger credit (CR 615.6).
+    CombatDamagePrevented {
+        source: ObjectId,
+        card: CardId,
+        recipient: Option<PlayerId>,
+        permanent: Option<ObjectId>,
         amount: u32,
     },
     Destroyed {

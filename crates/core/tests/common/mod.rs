@@ -55,7 +55,10 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
             commanders: Vec::new(),
-            command_zone_practice: false,
+            profile: Profile::Practice20,
+            commander_damage: Vec::new(),
+            retired_commanders: Vec::new(),
+            prevent_all_combat_damage_turn: None,
             players: (0..seat_count as PlayerId)
                 .map(|id| new_player(id, &format!("P{id}")))
                 .collect(),

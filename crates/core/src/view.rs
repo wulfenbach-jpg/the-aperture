@@ -70,6 +70,15 @@ pub struct CommanderView {
     pub tax: u32,
 }
 
+/// Public cumulative commander-damage row (CR 903.10a); commander identities
+/// and damage totals are public information.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct CommanderDamageView {
+    pub commander: crate::ids::CommanderId,
+    pub recipient: PlayerId,
+    pub amount: u32,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct OpponentView {
     pub seat: PlayerId,
@@ -100,6 +109,8 @@ pub struct PlayerView {
     pub own_command_zone: Vec<CardView>,
     /// Public stable commander identities and command-zone cast tax.
     pub commanders: Vec<CommanderView>,
+    /// Public cumulative commander combat damage (CR 903.10a).
+    pub commander_damage: Vec<CommanderDamageView>,
     pub own_library_count: usize,
     pub own_life: i32,
     pub own_mana: String,
@@ -348,6 +359,27 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             Some((_, card)) => format!("{amount} combat damage to {}", card.name()),
             None => format!("{amount} combat damage to a player"),
         },
+        Event::CommanderDamage {
+            commander,
+            recipient,
+            amount,
+            total,
+            ..
+        } => format!(
+            "{amount} commander combat damage from {commander} to P{recipient} (cumulative {total}, CR 903.10a)"
+        ),
+        Event::PreventAllCombatDamage { turn, card } => {
+            format!(
+                "{} prevents all combat damage this turn (turn {turn})",
+                card.name()
+            )
+        }
+        Event::CombatDamagePrevented {
+            amount, recipient, ..
+        } => match recipient {
+            Some(player) => format!("{amount} combat damage to P{player} is prevented"),
+            None => format!("{amount} combat damage to a permanent is prevented"),
+        },
         Event::Destroyed { card, .. } => format!("{} is put into a graveyard", card.name()),
         Event::StateBasedAction { description } => format!("state-based action: {description}"),
         Event::GameOver { winner, reason } => format!("Game over — P{winner} wins: {reason}"),
@@ -447,6 +479,16 @@ impl Game {
                     },
                     casts_from_command_zone: commander.casts_from_command_zone,
                     tax: commander.casts_from_command_zone.saturating_mul(2),
+                })
+                .collect(),
+            commander_damage: self
+                .state
+                .commander_damage
+                .iter()
+                .map(|entry| CommanderDamageView {
+                    commander: entry.commander,
+                    recipient: entry.recipient,
+                    amount: entry.amount,
                 })
                 .collect(),
             own_library_count: me.library.len(),

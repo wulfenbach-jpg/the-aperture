@@ -1,0 +1,10 @@
+{
+  "status": "terminal",
+  "steps": 3372,
+  "starting_life": 40,
+  "commander_damage_events": 33,
+  "commander_loss_events": 3,
+  "separate_replay_exit": 0,
+  "replay_digest_matches": true,
+  "packaged_binary_executed": true
+}

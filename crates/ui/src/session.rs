@@ -783,8 +783,11 @@ impl UiSession {
             let result = (|| -> Result<Box<SessionSave>, String> {
                 let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
                 let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
-                if save.game.command_zone_practice {
-                    return Err("the native table does not support the command-zone practice profile yet; use aperture-cli selfplay --command-zone-practice".to_string());
+                if save.game.profile.has_command_zone() {
+                    return Err(format!(
+                        "the native table does not support the {} profile yet; use aperture-cli selfplay",
+                        save.game.profile.label()
+                    ));
                 }
                 Ok(Box::new(save))
             })();
@@ -826,8 +829,11 @@ impl UiSession {
     pub fn load(&mut self, path: &Path) -> Result<(), String> {
         let text = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
         let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
-        if save.game.command_zone_practice {
-            return Err("the native table does not support the command-zone practice profile yet; use aperture-cli selfplay --command-zone-practice".to_string());
+        if save.game.profile.has_command_zone() {
+            return Err(format!(
+                "the native table does not support the {} profile yet; use aperture-cli selfplay",
+                save.game.profile.label()
+            ));
         }
         self.apply_save(&save);
         self.message = format!(

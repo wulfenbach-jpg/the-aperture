@@ -135,6 +135,9 @@ pub enum Pending {
         player: PlayerId,
         order: Vec<PlayerId>,
         choices: BTreeMap<PlayerId, Option<ObjectId>>,
+        /// Serialized last-known-source provenance after 800.4a removed/exiled
+        /// the represented source while survivors still owe APNAP choices.
+        source_left: Option<ApnapSourceLeft>,
     },
     /// CR 903.9a: the owner decides whether a commander that entered a
     /// graveyard/exile since the last SBA check returns to the command zone.
@@ -169,6 +172,20 @@ pub enum Pending {
         remaining: u8,
         resume: DrawResume,
     },
+}
+
+/// Strong serialized provenance for an APNAP source that left the game while
+/// its each-player instruction was suspended (CR 800.4a + 608.2h).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ApnapSourceLeft {
+    pub source: ObjectId,
+    pub card: CardId,
+    /// Instruction cursor recorded when the queue was created.
+    pub cursor: u8,
+    pub prior_controller: PlayerId,
+    pub owner: PlayerId,
+    pub departed: PlayerId,
+    pub zone: Zone,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -303,6 +320,57 @@ impl Pending {
             ),
         }
     }
+}
+
+/// Explicit named game profile. There is no implicit switch: every profile
+/// records the starting life it uses. The two existing 20-life profiles keep
+/// their accepted names and behavior.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Profile {
+    /// Ordinary practice: 2–4 seats, 20 life, no command zone.
+    Practice20,
+    /// Named command-zone practice: one supported commander per seat, 20 life.
+    CommandZone20,
+    /// Named BOUNDED Commander-combat practice: one supported commander per
+    /// seat starting at 40 life. Not the Commander format: no 100-card
+    /// construction, partners, legend rule or native Commander table.
+    CommanderCombat40,
+}
+
+impl Profile {
+    pub const fn starting_life(self) -> i32 {
+        match self {
+            Profile::Practice20 | Profile::CommandZone20 => 20,
+            Profile::CommanderCombat40 => 40,
+        }
+    }
+
+    pub const fn has_command_zone(self) -> bool {
+        matches!(self, Profile::CommandZone20 | Profile::CommanderCombat40)
+    }
+
+    pub const fn is_commander_combat(self) -> bool {
+        matches!(self, Profile::CommanderCombat40)
+    }
+
+    pub const fn label(self) -> &'static str {
+        match self {
+            Profile::Practice20 => "practice-20",
+            Profile::CommandZone20 => "command-zone-practice-20",
+            Profile::CommanderCombat40 => "commander-combat-practice-40",
+        }
+    }
+}
+
+/// One cumulative CR 903.10 commander-damage row, keyed by the stable
+/// commander identity and the recipient seat. Never keyed by the transient
+/// `ObjectId`, the card id or a controller: the designation is an attribute of
+/// the card and survives every zone change (CR 903.3).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CommanderDamageEntry {
+    pub commander: CommanderId,
+    pub recipient: PlayerId,
+    pub amount: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -444,8 +512,19 @@ pub struct GameState {
     /// Stable per-physical-commander registry; empty for ordinary practice
     /// games and exactly one entry per seat for command-zone practice.
     pub commanders: Vec<Commander>,
-    /// True only for the explicit named command-zone practice profile.
-    pub command_zone_practice: bool,
+    /// Explicit named profile; the only source of starting life and of whether
+    /// a command zone exists.
+    pub profile: Profile,
+    /// Cumulative commander combat damage, canonical order by
+    /// `(commander, recipient)`. Empty outside `Profile::CommanderCombat40`.
+    pub commander_damage: Vec<CommanderDamageEntry>,
+    /// Commander identities whose owner has left the game. Historic damage by
+    /// these identities stays in `commander_damage` (CR 903.10a is over the
+    /// course of the game); this registry only keeps the ledger source-valid.
+    pub retired_commanders: Vec<CommanderId>,
+    /// Turn for which a full Fog-style combat-damage shield is active. Cleared
+    /// in cleanup (CR 514.2); serialized so save/replay preserve it exactly.
+    pub prevent_all_combat_damage_turn: Option<u32>,
     /// Ordered seats. `players.len()` is the only seat-count source; seats are
     /// never renumbered when a player leaves the game.
     pub players: Vec<Player>,
@@ -518,6 +597,54 @@ impl GameState {
             return Some(index as PlayerId);
         }
         None
+    }
+
+    /// Cumulative combat damage `commander` has dealt to `recipient`
+    /// (CR 903.10a). Zero when no row exists.
+    pub fn commander_damage_dealt(&self, commander: CommanderId, recipient: PlayerId) -> u32 {
+        self.commander_damage
+            .iter()
+            .find(|entry| entry.commander == commander && entry.recipient == recipient)
+            .map(|entry| entry.amount)
+            .unwrap_or(0)
+    }
+
+    /// Record combat damage dealt to a player by a commander's stable identity.
+    /// Rows stay canonical so save/replay and digest output are deterministic.
+    pub fn add_commander_damage(
+        &mut self,
+        commander: CommanderId,
+        recipient: PlayerId,
+        amount: u32,
+    ) {
+        if amount == 0 {
+            return;
+        }
+        match self
+            .commander_damage
+            .iter_mut()
+            .find(|entry| entry.commander == commander && entry.recipient == recipient)
+        {
+            Some(entry) => entry.amount = entry.amount.saturating_add(amount),
+            None => {
+                self.commander_damage.push(CommanderDamageEntry {
+                    commander,
+                    recipient,
+                    amount,
+                });
+                self.commander_damage
+                    .sort_unstable_by_key(|entry| (entry.commander.0, entry.recipient));
+            }
+        }
+    }
+
+    /// Prune ledger rows only for a recipient who left the game (their loss is
+    /// already settled). Rows for a commander whose owner left are historic:
+    /// no further damage can arrive, but prior damage is not erased.
+    pub fn prune_commander_damage(&mut self) {
+        let live = self.live_mask();
+        self.commander_damage
+            .retain(|entry| live & (1u8 << entry.recipient) != 0);
     }
 
     /// Reject invalid seat/state configurations with a typed error instead of a
@@ -613,6 +740,7 @@ impl GameState {
                 player,
                 order,
                 choices,
+                source_left,
             } = pending
             {
                 if order.is_empty() || order[0] != *player {
@@ -712,31 +840,53 @@ impl GameState {
                         reason: "APNAP queue is not bound to a resolving spell".to_string(),
                     });
                 };
-                let Some(top) = self.stack.last() else {
-                    return Err(EngineError::InvalidState {
-                        reason: "APNAP queue has no stack source".to_string(),
-                    });
-                };
                 let Some(source) = self.objects.get(&resolving) else {
                     return Err(EngineError::InvalidState {
                         reason: format!("APNAP queue source object {resolving} is missing"),
                     });
                 };
-                let source_ok = top.object == resolving
-                    && source
-                        .card
-                        .def()
-                        .spell_spec()
-                        .and_then(|spec| {
-                            spec.effects
-                                .iter()
-                                .position(|effect| *effect == Effect::EachPlayerSacrifice)
+                let crack_index = source.card.def().spell_spec().and_then(|spec| {
+                    spec.effects
+                        .iter()
+                        .position(|effect| *effect == Effect::EachPlayerSacrifice)
+                });
+                let source_ok = match source_left {
+                    None => {
+                        // Normal suspended queue: exact source on top of stack
+                        // with the recorded Crack cursor.
+                        self.stack.last().is_some_and(|top| {
+                            top.object == resolving
+                                && crack_index.is_some_and(|index| top.cursor as usize == index + 1)
                         })
-                        .is_some_and(|index| top.cursor as usize == index + 1);
+                    }
+                    Some(provenance) => {
+                        // Strong serialized provenance: no phantom stack entry,
+                        // exact object/card/cursor/owner/controller/departure
+                        // facts, and a legitimate 800.4a source zone.
+                        provenance.source == resolving
+                            && !self.stack.iter().any(|item| item.object == resolving)
+                            && provenance.card == source.card
+                            && provenance.card.def().spell_spec().is_some_and(|spec| {
+                                provenance.cursor >= 1
+                                    && spec.effects.get(provenance.cursor as usize - 1)
+                                        == Some(&Effect::EachPlayerSacrifice)
+                            })
+                            && provenance.prior_controller == provenance.departed
+                            && !self.is_live(provenance.departed)
+                            && provenance.owner == source.owner
+                            && provenance.prior_controller == source.controller
+                            && provenance.zone == source.zone
+                            && match provenance.zone {
+                                Zone::Removed => provenance.owner == provenance.departed,
+                                Zone::Exile => provenance.owner != provenance.departed,
+                                _ => false,
+                            }
+                    }
+                };
                 if !source_ok {
                     return Err(EngineError::InvalidState {
                         reason:
-                            "APNAP queue source/cursor is not a resolving Crack the Earth effect"
+                            "APNAP queue source/cursor/provenance is not a resolving Crack the Earth effect"
                                 .to_string(),
                     });
                 }
@@ -1236,6 +1386,16 @@ impl GameState {
             }
             _ => {}
         }
+        if let Some(turn) = self.prevent_all_combat_damage_turn
+            && turn != self.turn.number
+        {
+            return Err(EngineError::InvalidState {
+                reason: format!(
+                    "combat-damage shield is for turn {turn} but the state is turn {}",
+                    self.turn.number
+                ),
+            });
+        }
         for object in self.objects.values() {
             if !in_range(object.owner) || !in_range(object.controller) {
                 return Err(EngineError::InvalidState {
@@ -1421,11 +1581,12 @@ impl GameState {
                 ),
             });
         }
-        if self.command_zone_practice {
+        if self.profile.has_command_zone() {
             if self.commanders.len() != self.live_count() {
                 return Err(EngineError::InvalidState {
                     reason: format!(
-                        "command-zone practice needs one commander per live seat; {} registry entr(ies) for {} live seat(s)",
+                        "{} needs one commander per live seat; {} registry entr(ies) for {} live seat(s)",
+                        self.profile.label(),
                         self.commanders.len(),
                         self.live_count()
                     ),
@@ -1446,6 +1607,125 @@ impl GameState {
         {
             return Err(EngineError::InvalidState {
                 reason: "ordinary practice game carries command-zone state".to_string(),
+            });
+        }
+        if !self.profile.is_commander_combat() && !self.commander_damage.is_empty() {
+            return Err(EngineError::InvalidState {
+                reason: format!(
+                    "{} cannot carry commander combat damage",
+                    self.profile.label()
+                ),
+            });
+        }
+        let mut seen_damage: Vec<(CommanderId, PlayerId)> = Vec::new();
+        let mut previous: Option<(CommanderId, PlayerId)> = None;
+        for entry in &self.commander_damage {
+            if entry.amount == 0 || entry.amount >= 21 {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "{} -> P{} carries {} damage; a settled live game must be 1..=20",
+                        entry.commander, entry.recipient, entry.amount
+                    ),
+                });
+            }
+            if !in_range(entry.recipient) || !self.is_live(entry.recipient) {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "{} damage recipient P{} is eliminated/out-of-range",
+                        entry.commander, entry.recipient
+                    ),
+                });
+            }
+            let live_source = self
+                .commanders
+                .iter()
+                .any(|commander| commander.id == entry.commander);
+            if !live_source && !self.retired_commanders.contains(&entry.commander) {
+                return Err(EngineError::InvalidState {
+                    reason: format!("commander damage references unknown {}", entry.commander),
+                });
+            }
+            let key = (entry.commander, entry.recipient);
+            if seen_damage.contains(&key) {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "duplicate commander damage row for {} -> P{}",
+                        entry.commander, entry.recipient
+                    ),
+                });
+            }
+            if previous.is_some_and(|previous| previous >= key) {
+                return Err(EngineError::InvalidState {
+                    reason: "commander damage rows are not in canonical order".to_string(),
+                });
+            }
+            previous = Some(key);
+            seen_damage.push(key);
+        }
+        for (index, retired) in self.retired_commanders.iter().enumerate() {
+            if self.commanders.iter().any(|live| live.id == *retired) {
+                return Err(EngineError::InvalidState {
+                    reason: format!("retired {} is still in the live registry", retired),
+                });
+            }
+            if index > 0 && self.retired_commanders[index - 1] >= *retired {
+                return Err(EngineError::InvalidState {
+                    reason: "retired commander ids are not strictly ascending".to_string(),
+                });
+            }
+        }
+        // Provenance partition: setup allocates exactly CommanderId 1..=seat_count,
+        // one per original seat, and every identity ends either live or retired.
+        // A fabricated/out-of-range/omitted id therefore fails, with no per-id
+        // owner table and no special case.
+        if self.profile.has_command_zone() {
+            // At most four seats, so identity provenance is a fixed u8 mask:
+            // no heap allocation or sort on the success path.
+            let mut mask = 0u8;
+            let mut add = |id: CommanderId| -> Result<(), EngineError> {
+                let raw = id.0;
+                if raw == 0 || raw > n as u32 {
+                    return Err(EngineError::InvalidState {
+                        reason: format!(
+                            "commander identity {id} is outside the original 1..={n} seat allocation"
+                        ),
+                    });
+                }
+                let bit = 1u8 << (raw - 1);
+                if mask & bit != 0 {
+                    return Err(EngineError::InvalidState {
+                        reason: format!(
+                            "commander identity {id} appears more than once across live/retired"
+                        ),
+                    });
+                }
+                mask |= bit;
+                Ok(())
+            };
+            for commander in &self.commanders {
+                add(commander.id)?;
+            }
+            for retired in &self.retired_commanders {
+                add(*retired)?;
+            }
+            let expected = if n == 8 {
+                u8::MAX
+            } else {
+                (1u16 << n) as u8 - 1
+            };
+            if mask != expected {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "commander identity provenance mask {mask:#04x} != expected {expected:#04x}; every original seat identity must be live or retired exactly once"
+                    ),
+                });
+            }
+        } else if !self.retired_commanders.is_empty() {
+            return Err(EngineError::InvalidState {
+                reason: format!(
+                    "{} cannot carry retired commander identities",
+                    self.profile.label()
+                ),
             });
         }
         let mut seen: Vec<CommanderId> = Vec::new();
@@ -1542,7 +1822,15 @@ impl GameState {
                 });
             }
         }
+        let source_left_apnap = matches!(
+            &self.pending,
+            Some(Pending::ApnapSacrifice {
+                source_left: Some(provenance),
+                ..
+            }) if self.resolving == Some(provenance.source)
+        );
         if let Some(resolving) = self.resolving
+            && !source_left_apnap
             && !self.stack.iter().any(|item| item.object == resolving)
         {
             return Err(EngineError::InvalidState {

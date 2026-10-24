@@ -363,6 +363,7 @@ fn heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice() {
         player: P0,
         order: vec![P0, 1],
         choices: std::collections::BTreeMap::new(),
+        source_left: None,
     });
     let view = game.view_for(P0, &[]);
     let mut policy = HeuristicPolicy::new();

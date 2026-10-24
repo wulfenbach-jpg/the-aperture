@@ -68,6 +68,20 @@ Oracle text and costs are recorded in `Rules-1-result.json`):
 | Time Ebb | `{2}{U}` | Put target creature on top of its owner's library. |
 | Swords to Plowshares | `{W}` | Exile target creature. Its controller gains life equal to its power. |
 
+### Prevention source addition (branch candidate)
+
+The branch candidate adds one full-combat-prevention instant, bringing the
+runtime pool to 22. It is not a partial-prevention or redirection implementation.
+
+| Field | Value |
+| --- | --- |
+| Official card page | <https://gatherer.wizards.com/J21/en-us/46/fog> |
+| Captured source | `continuity/m2-commander-damage/evidence/kernel/fog-j21-46-gatherer.html` |
+| Captured-file SHA-256 | `9e4af7c994548182e49851bf5ef162c0dd7888020ea8c5a03652417a4419c4fd` |
+| Name / cost / type | Fog; `{G}`; Instant |
+| Oracle text | “Prevent all combat damage that would be dealt this turn.” |
+| Art | Not bundled |
+
 The profile is **not** a Commander format implementation. It keeps 20 life and
 one Isamaru per seat, refuses Isamaru in ordinary starting libraries (no legend
 rule), and does not claim 903.4 color identity, 903.5 deck construction, 903.10
@@ -217,7 +231,7 @@ it actually certifies.
 
 Anything not listed as implemented is unimplemented, not silently approximated.
 The current branch candidate has 2–4 ordered headless seats, first-turn draw
-policy, departure handling, masking, persistence replay v3/save v4, the harness,
+policy, departure handling, masking, persistence replay v5/save v8, the harness,
 ordered mulligan rounds and one fixed-set sacrifice/APNAP producer. Rows marked
 **candidate** describe this branch, not an accepted M1 release. Independent
 candidate review and exact-head checks are delivery gates; passing them does
@@ -234,14 +248,15 @@ not certify unsupported formats or complete rule coverage.
 | Cleanup-step priority | CR 514.3a | Cleanup never grants priority. | `HANDOFF.md` |
 | Object identity across zones | CR 400.7 | Identity is stable. | `HANDOFF.md` |
 | Counters | CR 122 | Stored/displayed only; no rules math. | `state.rs` comment |
-| Triggers, activated abilities, statics, replacement/prevention, tokens, layers | CR 603, 602, 604, 614, 111, 613 | Not implemented (only basic-land mana abilities exist). | `catalog.rs`, `HANDOFF.md` |
+| Fog full combat prevention | CR 614.1a, 615.1, 615.6 | **Branch candidate:** Fog sets one turn-scoped shield; every combat-damage instance to players and permanents is prevented before life/marked damage/commander-ledger credit, with a typed `CombatDamagePrevented` event. Cleanup clears the shield. Partial prevention/redirection and generic replacement effects are not implemented. | `catalog.rs`, `issue13_commander_combat.rs` |
+| Triggers, activated abilities, statics, replacement/partial prevention, tokens, layers | CR 603, 602, 604, 614, 111, 613 | Not implemented (only basic-land mana abilities exist; Fog is the only prevention effect). | `catalog.rs`, `HANDOFF.md` |
 | Combat damage to a departed player | CR 800.4e | Not assigned; the current candidate preserves this on departure. | `m1_multiplayer.rs` |
 | Departed active player / turn completion | CR 800.4a, 800.4j, 800.4k | Implemented in the 2–4-seat candidate: the turn continues without an active player, priority passes to the next live seat, and a departed player's would-be turn does not begin. | `m1_multiplayer.rs`, `HANDOFF.md` |
 | Simultaneous loss of all remaining players | CR 104.4a (with 104.4c, 104.5) | Engine draw projection; unexercised by the current pool. | `HANDOFF.md` |
 
 ### Persistence candidate
 
-This branch writes replay v3/save v4 so the mulligan round and sacrifice queue
+This branch writes replay v5/save v8 so the mulligan round, sacrifice queue,
 serialize exactly. The previous published candidate (`74df9a6`) wrote replay
 v2/save v3; those and older files are explicitly rejected, never reinterpreted.
 The pinned `RULES_REVISION` remains `2026-09-25`; schema versioning is separate

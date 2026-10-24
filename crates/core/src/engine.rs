@@ -24,15 +24,14 @@ use crate::ids::{ObjectId, P0, PlayerId, Zone};
 use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::state::{
-    DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, StackItem,
-    Step, Turn,
+    DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, Profile,
+    StackItem, Step, Turn,
 };
 
 /// Safety bound on scheduler iterations inside one submission. Reaching it is a
 /// truncation event, never a silently invented result.
 const SETTLE_LIMIT: usize = 20_000;
 const STARTING_HAND: usize = 7;
-const STARTING_LIFE: i32 = 20;
 const MAX_HAND_SIZE: usize = 7;
 
 /// Total mulligans a player may take: the first is free in multiplayer
@@ -98,7 +97,50 @@ impl Game {
         decks: &[DeckList],
         commanders: &[(PlayerId, CardId)],
     ) -> Result<(Game, Vec<Event>), EngineError> {
-        let (mut game, events) = Game::new_logged(seed, decks)?;
+        Game::new_profile_logged(seed, decks, Profile::CommandZone20, commanders)
+    }
+
+    /// Build the explicit BOUNDED Commander-combat practice profile: 40 starting
+    /// life and one supported commander per seat in the command zone. This is
+    /// not the Commander format (no 100-card construction, partners, legend rule
+    /// or native table). The commander-damage ledger is added by its own slice.
+    pub fn new_commander_combat(
+        seed: u64,
+        decks: &[DeckList],
+        commanders: &[(PlayerId, CardId)],
+    ) -> Result<Game, EngineError> {
+        Ok(Game::new_commander_combat_logged(seed, decks, commanders)?.0)
+    }
+
+    pub fn new_commander_combat_logged(
+        seed: u64,
+        decks: &[DeckList],
+        commanders: &[(PlayerId, CardId)],
+    ) -> Result<(Game, Vec<Event>), EngineError> {
+        Game::new_profile_logged(seed, decks, Profile::CommanderCombat40, commanders)
+    }
+
+    fn new_profile_logged(
+        seed: u64,
+        decks: &[DeckList],
+        profile: Profile,
+        commanders: &[(PlayerId, CardId)],
+    ) -> Result<(Game, Vec<Event>), EngineError> {
+        if profile.has_command_zone() && commanders.is_empty() {
+            return Err(EngineError::InvalidCommanderSetup {
+                reason: format!("{} needs exactly one commander per seat", profile.label()),
+            });
+        }
+        let (base, events) = Game::new_base_logged(seed, decks, profile)?;
+        let mut game = base;
+        if !profile.has_command_zone() {
+            if !commanders.is_empty() {
+                return Err(EngineError::InvalidCommanderSetup {
+                    reason: format!("{} does not carry a command zone", profile.label()),
+                });
+            }
+            return Ok((game, events));
+        }
         if commanders.len() != decks.len() {
             return Err(EngineError::InvalidCommanderSetup {
                 reason: format!(
@@ -135,7 +177,6 @@ impl Game {
             }
         }
 
-        game.state.command_zone_practice = true;
         for (index, (seat, card)) in commanders.iter().enumerate() {
             let commander_id = crate::ids::CommanderId(index as u32 + 1);
             let object_id = ObjectId(game.state.next_object);
@@ -161,6 +202,14 @@ impl Game {
     }
 
     pub fn new_logged(seed: u64, decks: &[DeckList]) -> Result<(Game, Vec<Event>), EngineError> {
+        Game::new_profile_logged(seed, decks, Profile::Practice20, &[])
+    }
+
+    fn new_base_logged(
+        seed: u64,
+        decks: &[DeckList],
+        profile: Profile,
+    ) -> Result<(Game, Vec<Event>), EngineError> {
         if !(crate::ids::MIN_PLAYERS..=crate::ids::MAX_PLAYERS).contains(&decks.len()) {
             return Err(EngineError::InvalidSeats {
                 reason: format!(
@@ -190,7 +239,7 @@ impl Game {
                 graveyard: Vec::new(),
                 exile: Vec::new(),
                 command_zone: Vec::new(),
-                life: STARTING_LIFE,
+                life: profile.starting_life(),
                 mana: ManaPool::default(),
                 mulligans: 0,
                 drew_from_empty: false,
@@ -203,7 +252,10 @@ impl Game {
             rng: Pcg32::new(seed),
             objects: BTreeMap::new(),
             commanders: Vec::new(),
-            command_zone_practice: false,
+            profile,
+            commander_damage: Vec::new(),
+            retired_commanders: Vec::new(),
+            prevent_all_combat_damage_turn: None,
             players,
             stack: Vec::new(),
             turn: Turn {
@@ -280,7 +332,11 @@ impl Game {
             bottomed: Vec::new(),
         });
         game.state.pending = Some(Pending::Mulligan { player: first });
-        game.state.validate()?;
+        // Command-zone profiles add their registry after this base setup, so
+        // validation is deferred to new_profile_logged for those profiles.
+        if !profile.has_command_zone() {
+            game.state.validate()?;
+        }
         Ok((game, events))
     }
 
@@ -441,6 +497,11 @@ impl Game {
             player.graveyard.retain(|c| *c != id);
             player.exile.retain(|c| *c != id);
             player.command_zone.retain(|c| *c != id);
+        }
+        // A represented card changing zone leaves the stack in the same move.
+        self.state.stack.retain(|item| item.object != id);
+        if self.state.resolving == Some(id) {
+            self.state.resolving = None;
         }
         self.state.turn.attackers.retain(|c| *c != id);
         self.state.turn.blocked.retain(|c| *c != id);
@@ -1566,8 +1627,12 @@ impl Game {
                 .state
                 .next_live_seat_after(player)
                 .expect("a live seat remains when a pass round continues");
-            self.state.turn.priority = Some(next);
-            events.push(Event::Priority { player: next });
+            if self.pending_loss_exists() {
+                self.state.turn.priority = None;
+            } else {
+                self.state.turn.priority = Some(next);
+                events.push(Event::Priority { player: next });
+            }
         }
     }
 
@@ -1999,6 +2064,10 @@ impl Game {
     // ----------------------------------------------------------- scheduler
 
     fn grant_priority(&mut self, player: PlayerId, events: &mut Vec<Event>) {
+        if self.pending_loss_exists() {
+            self.state.turn.priority = None;
+            return;
+        }
         // CR 800.4j: if the seat that would receive priority has left the game,
         // the next live seat in turn order receives it.
         let recipient = if self.state.is_live(player) {
@@ -2028,11 +2097,16 @@ impl Game {
             // through the legal action interface because no effect changes life
             // during the Crack the Earth choice.
             if self.state.pending.is_some() {
-                let injected_departure = self
-                    .state
-                    .players
-                    .iter()
-                    .any(|player| !player.lost && (player.life <= 0 || player.drew_from_empty));
+                let injected_departure =
+                    self.state.players.iter().enumerate().any(|(seat, player)| {
+                        !player.lost
+                            && (player.life <= 0
+                                || player.drew_from_empty
+                                || (self.state.profile.is_commander_combat()
+                                    && self.state.commander_damage.iter().any(|entry| {
+                                        entry.recipient as usize == seat && entry.amount >= 21
+                                    })))
+                    });
                 if injected_departure {
                     self.check_sbas(events);
                     if self.state.pending.is_none() && !self.state.is_over() {
@@ -2064,7 +2138,12 @@ impl Game {
                 return;
             }
             if self.state.turn.priority.is_none() {
-                self.advance_step(events);
+                if self.state.turn.step.grants_priority() {
+                    let active = self.state.turn.active;
+                    self.grant_priority(active, events);
+                } else {
+                    self.advance_step(events);
+                }
                 continue;
             }
             return;
@@ -2138,7 +2217,15 @@ impl Game {
                     // CR 504.2: priority follows the completed draw. When a
                     // commander draw replacement is pending (903.9b), the
                     // answer handler grants it exactly once after the choice.
-                    self.grant_priority(active, events);
+                    //
+                    // CR 704.5b/117.5: an empty-library draw is a state-based
+                    // loss. The settle loop must run SBAs (and settle GameOver)
+                    // before any player receives priority. Granting priority
+                    // here emitted the inherited D-1 false Priority event
+                    // between the draw and the loss.
+                    if !self.state.player(active).drew_from_empty {
+                        self.grant_priority(active, events);
+                    }
                 }
             }
             Step::PrecombatMain | Step::PostcombatMain | Step::BeginCombat | Step::EndStep => {
@@ -2215,6 +2302,9 @@ impl Game {
 
     fn finish_cleanup(&mut self, events: &mut Vec<Event>) {
         let mut changed = false;
+        if self.state.prevent_all_combat_damage_turn.take().is_some() {
+            changed = true;
+        }
         for obj in self.state.objects.values_mut() {
             if obj.zone == Zone::Battlefield {
                 if obj.damage > 0 || obj.pump_power != 0 || obj.pump_toughness != 0 {
@@ -2239,6 +2329,20 @@ impl Game {
     /// objects leave the stack, and combat references are pruned. The current
     /// turn is NOT ended (CR 800.4j); seats are never renumbered.
     fn leave_game(&mut self, p: PlayerId, events: &mut Vec<Event>) {
+        let apnap_source = match &self.state.pending {
+            Some(Pending::ApnapSacrifice { .. }) => self.state.resolving.and_then(|id| {
+                let object = self.state.objects.get(&id)?;
+                let cursor = self
+                    .state
+                    .stack
+                    .iter()
+                    .find(|item| item.object == id)
+                    .map(|item| item.cursor)
+                    .unwrap_or(1);
+                Some((id, object.card, cursor, object.controller, object.owner))
+            }),
+            _ => None,
+        };
         self.state.players[p as usize].lost = true;
         self.state.turn.passed &= !(1u8 << p);
 
@@ -2267,21 +2371,74 @@ impl Game {
         player.exile.clear();
         player.command_zone.clear();
 
-        let controlled: Vec<ObjectId> = self
+        // (a) Owned stack objects already left via the owned-object clause;
+        // drop only their stack entries. A survivor-owned represented card is
+        // NOT silently deleted here.
+        self.state.stack.retain(|item| {
+            self.state
+                .objects
+                .get(&item.object)
+                .is_some_and(|object| object.zone != Zone::Removed)
+        });
+        // (b) Control-changing effects end: none are modeled (no card in this
+        // pool grants control), so a modeled current-control fact is not
+        // silently reverted and no effect-end history is claimed.
+        // (c) Non-card stack objects controlled by the loser cease to exist:
+        // every stack object here is represented by a card, so there are none.
+        // (d) Any object still controlled by the departing player is exiled.
+        let still_controlled: Vec<ObjectId> = self
             .state
-            .stack
-            .iter()
-            .filter(|s| s.controller == p)
-            .map(|s| s.object)
+            .objects
+            .values()
+            .filter(|o| o.owner != p && o.controller == p && o.zone != Zone::Removed)
+            .map(|o| o.id)
             .collect();
-        self.state.stack.retain(|s| s.controller != p);
+        for id in still_controlled {
+            self.move_to_exile(id, events);
+        }
+        let retired: Vec<crate::ids::CommanderId> = self
+            .state
+            .commanders
+            .iter()
+            .filter(|commander| commander.owner == p)
+            .map(|commander| commander.id)
+            .collect();
+        self.state.retired_commanders.extend(retired);
+        self.state.retired_commanders.sort_unstable();
+        self.state.retired_commanders.dedup();
         self.state
             .commanders
             .retain(|commander| commander.owner != p);
-        if self
-            .state
-            .resolving
-            .is_some_and(|r| controlled.contains(&r))
+        // Minimal ledger consistency (not the full 800.4a slice): the
+        // departed recipient's rows are settled; historic rows for a retired
+        // commander remain so later saves still validate.
+        self.state.prune_commander_damage();
+        let source_left_apnap = matches!(
+            &self.state.pending,
+            Some(Pending::ApnapSacrifice {
+                source_left: Some(provenance),
+                ..
+            }) if self.state.resolving == Some(provenance.source)
+        ) || (matches!(
+            &self.state.pending,
+            Some(Pending::ApnapSacrifice {
+                source_left: None,
+                ..
+            })
+        ) && self.state.resolving.is_some_and(|r| {
+            self.state
+                .objects
+                .get(&r)
+                .is_some_and(|object| object.zone == Zone::Removed)
+        }));
+        if !source_left_apnap
+            && self.state.resolving.is_some_and(|r| {
+                self.state
+                    .objects
+                    .get(&r)
+                    .is_none_or(|object| object.zone == Zone::Removed)
+                    || !self.state.stack.iter().any(|item| item.object == r)
+            })
         {
             self.state.resolving = None;
         }
@@ -2344,28 +2501,48 @@ impl Game {
             Some(Pending::ApnapSacrifice {
                 mut order,
                 mut choices,
+                source_left: existing_source_left,
                 ..
             }) => {
+                // CR 608.2/608.2h/704.4: an already-resolving each-player
+                // instruction continues for surviving choosers even if its
+                // represented source left via 800.4a. Serialize the exact
+                // last-known-source provenance; a bare Removed/Exile object is
+                // never accepted by validation.
+                let provenance = existing_source_left.or_else(|| {
+                    apnap_source.and_then(|(id, card, cursor, controller, owner)| {
+                        let object = self.state.objects.get(&id)?;
+                        let zone = object.zone;
+                        if !matches!(zone, Zone::Removed | Zone::Exile) || controller != p {
+                            return None;
+                        }
+                        Some(crate::state::ApnapSourceLeft {
+                            source: id,
+                            card,
+                            cursor,
+                            prior_controller: controller,
+                            owner,
+                            departed: p,
+                            zone,
+                        })
+                    })
+                });
                 if order.contains(&p) || choices.contains_key(&p) {
                     order.retain(|seat| *seat != p);
                     choices.remove(&p);
-                    if let Some(next) = order.first().copied() {
-                        self.state.pending = Some(Pending::ApnapSacrifice {
-                            player: next,
-                            order,
-                            choices,
-                        });
-                    } else {
-                        // The departing seat was the last required answer:
-                        // apply the remaining public choices as one batch.
-                        self.apply_apnap_choices(&choices, events);
-                    }
-                } else {
+                }
+                if let Some(next) = order.first().copied() {
                     self.state.pending = Some(Pending::ApnapSacrifice {
-                        player: order.first().copied().unwrap_or(p),
+                        player: next,
                         order,
                         choices,
+                        source_left: provenance,
                     });
+                } else {
+                    // No chooser remains: either the recorded instruction is
+                    // complete or no valid provenance exists. Cancel cleanly.
+                    self.state.pending = None;
+                    self.state.resolving = None;
                 }
             }
             Some(pending) => {
@@ -2378,11 +2555,37 @@ impl Game {
             None => {}
         }
 
+        // The canonical resolver pointer is the serialized provenance source;
+        // validation checks its card/zone/owner/controller/departure facts.
+        if let Some(Pending::ApnapSacrifice {
+            source_left: Some(provenance),
+            ..
+        }) = &self.state.pending
+        {
+            self.state.resolving = Some(provenance.source);
+        }
         events.push(Event::StateBasedAction {
             description: format!(
                 "P{p} leaves the game; all objects owned by P{p} leave the game (CR 800.4a)"
             ),
         });
+    }
+
+    /// True when a live seat already satisfies a player-loss SBA from the
+    /// current state. Priority must not be granted before the next SBA check
+    /// (CR 117.5); injected/sandbox positions can expose this directly.
+    fn pending_loss_exists(&self) -> bool {
+        self.state.players.iter().enumerate().any(|(seat, player)| {
+            !player.lost
+                && (player.life <= 0
+                    || player.drew_from_empty
+                    || (self.state.profile.is_commander_combat()
+                        && self
+                            .state
+                            .commander_damage
+                            .iter()
+                            .any(|entry| entry.recipient as usize == seat && entry.amount >= 21)))
+        })
     }
 
     fn check_sbas(&mut self, events: &mut Vec<Event>) {
@@ -2391,6 +2594,10 @@ impl Game {
         }
         loop {
             let mut changed = false;
+            // Reasons are captured before leave_game prunes the departed
+            // recipient's ledger rows, so a commander-damage GameOver reason
+            // survives the settlement.
+            let mut loss_reasons: Vec<(PlayerId, String)> = Vec::new();
             for p in 0..self.state.seat_count() as PlayerId {
                 if !self.state.is_live(p) {
                     continue;
@@ -2400,16 +2607,35 @@ impl Game {
                     Some("attempted to draw from an empty library (CR 704.5b)".to_string())
                 } else if pl.life <= 0 {
                     Some(format!("life total is {} (CR 704.5a)", pl.life))
+                } else if self.state.profile.is_commander_combat() {
+                    self.state
+                        .commander_damage
+                        .iter()
+                        .filter(|entry| entry.recipient == p && entry.amount >= 21)
+                        .max_by_key(|entry| entry.amount)
+                        .map(|entry| {
+                            format!(
+                                "was dealt {} combat damage by {} (CR 903.10a)",
+                                entry.amount, entry.commander
+                            )
+                        })
                 } else {
                     None
                 };
                 if let Some(reason) = reason {
-                    events.push(Event::StateBasedAction {
-                        description: format!("P{p} loses: {reason}"),
-                    });
-                    self.leave_game(p, events);
-                    changed = true;
+                    loss_reasons.push((p, reason));
                 }
+            }
+            // CR 704.3: all applicable losses are one simultaneous SBA set from
+            // the pre-SBA state. Record every reason, then depart in seat order.
+            for (p, reason) in &loss_reasons {
+                events.push(Event::StateBasedAction {
+                    description: format!("P{p} loses: {reason}"),
+                });
+            }
+            for (p, _) in &loss_reasons {
+                self.leave_game(*p, events);
+                changed = true;
             }
 
             let dying: Vec<ObjectId> = self
@@ -2455,19 +2681,25 @@ impl Game {
                         .live_seats()
                         .next()
                         .expect("one live seat remains");
-                    let loser_reason = self
-                        .state
-                        .players
+                    let loser_reason = if loss_reasons
                         .iter()
-                        .rfind(|player| player.lost)
-                        .map(|player| {
-                            if player.drew_from_empty {
-                                "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)".to_string()
-                            } else {
-                                "opponent's life total reached 0 or less (CR 704.5a)".to_string()
-                            }
-                        })
-                        .unwrap_or_else(|| "all other players have left the game".to_string());
+                        .any(|(_, reason)| reason.contains("903.10a"))
+                    {
+                        "opponent was dealt 21+ combat damage by one commander (CR 903.10a)"
+                            .to_string()
+                    } else if loss_reasons
+                        .iter()
+                        .any(|(_, reason)| reason.contains("704.5b"))
+                    {
+                        "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)".to_string()
+                    } else if loss_reasons
+                        .iter()
+                        .any(|(_, reason)| reason.contains("704.5a"))
+                    {
+                        "opponents' life totals reached 0 or less (CR 704.5a)".to_string()
+                    } else {
+                        "all other players have left the game".to_string()
+                    };
                     self.state.outcome = Some(Outcome::Win {
                         winner,
                         reason: loser_reason.clone(),
@@ -2613,7 +2845,6 @@ impl Game {
             let def = card.def();
             let Some(spec) = def.spell_spec() else {
                 self.move_to_graveyard(item.object, events);
-                self.state.stack.pop();
                 self.state.resolving = None;
                 return;
             };
@@ -2627,7 +2858,6 @@ impl Game {
                         .to_string(),
                 });
                 self.move_to_graveyard(item.object, events);
-                self.state.stack.pop();
                 self.state.resolving = None;
                 self.finish_resolution(events);
                 return;
@@ -2645,7 +2875,6 @@ impl Game {
                 } else {
                     self.move_to_graveyard(item.object, events);
                 }
-                self.state.stack.pop();
                 self.state.resolving = None;
                 self.finish_resolution(events);
                 return;
@@ -2707,6 +2936,7 @@ impl Game {
                 player,
                 order,
                 choices: BTreeMap::new(),
+                source_left: None,
             });
         }
     }
@@ -2804,6 +3034,7 @@ impl Game {
         let Some(Pending::ApnapSacrifice {
             mut order,
             mut choices,
+            source_left,
             ..
         }) = self.state.pending.take()
         else {
@@ -2820,6 +3051,7 @@ impl Game {
                     player: next,
                     order,
                     choices,
+                    source_left,
                 });
             }
             None => self.apply_apnap_choices(&choices, events),
@@ -2846,6 +3078,14 @@ impl Game {
             if valid {
                 self.move_to_graveyard(*id, events);
             }
+        }
+        if self.state.resolving.is_some_and(|resolving| {
+            self.state
+                .objects
+                .get(&resolving)
+                .is_none_or(|object| object.zone == Zone::Removed)
+        }) {
+            self.state.resolving = None;
         }
     }
 
@@ -2969,6 +3209,15 @@ impl Game {
                         let _ = exiled;
                     }
                 }
+                false
+            }
+            Effect::PreventAllCombatDamageThisTurn => {
+                self.state.prevent_all_combat_damage_turn = Some(self.state.turn.number);
+                let card = self.state.object(item.object).card;
+                events.push(Event::PreventAllCombatDamage {
+                    turn: self.state.turn.number,
+                    card,
+                });
                 false
             }
             Effect::CounterTargetSpell => {
@@ -3136,7 +3385,24 @@ impl Game {
         }
 
         // CR 510.2: all combat damage is dealt simultaneously.
+        let shield_active =
+            self.state.prevent_all_combat_damage_turn == Some(self.state.turn.number);
         for (source, target, amount) in damage {
+            if shield_active {
+                let card = self.state.object(source).card;
+                let (recipient, permanent) = match target {
+                    None => (defender, None),
+                    Some(victim) => (None, Some(victim)),
+                };
+                events.push(Event::CombatDamagePrevented {
+                    source,
+                    card,
+                    recipient,
+                    permanent,
+                    amount,
+                });
+                continue;
+            }
             match target {
                 None => {
                     // CR 800.4e: combat damage is not assigned to a player who
@@ -3166,6 +3432,24 @@ impl Game {
                         delta: -(amount as i32),
                         life,
                     });
+                    // CR 903.10a: only combat damage actually dealt to a player
+                    // by a commander credits the ledger, keyed by the stable
+                    // CommanderId + recipient. Control changes and fresh zone
+                    // ObjectIds never change the key; noncombat damage and
+                    // damage to permanents never reach this branch.
+                    if self.state.profile.is_commander_combat()
+                        && let Some(commander) = self.state.object(source).commander
+                    {
+                        self.state.add_commander_damage(commander, defender, amount);
+                        let total = self.state.commander_damage_dealt(commander, defender);
+                        events.push(Event::CommanderDamage {
+                            commander,
+                            card,
+                            recipient: defender,
+                            amount,
+                            total,
+                        });
+                    }
                 }
                 Some(victim) => {
                     if let Some(obj) = self.objects_mut(victim) {
