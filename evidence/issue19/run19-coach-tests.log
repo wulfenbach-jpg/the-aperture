@@ -1,0 +1,62 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-19\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.19s
+     Running tests\apnap.rs (target\debug\deps\apnap-5a2aca43e2960b70.exe)
+
+running 17 tests
+test crack_the_earth_is_a_supported_normal_cast_card ... ok
+test apnap_skips_an_already_lost_seat ... ok
+test apnap_validation_rejects_rewound_source_and_nonprefix_answers ... ok
+test counterspell_prevents_the_apnap_queue ... ok
+test departing_active_current_chooser_purges_its_answer_and_resumes ... ok
+test departing_participant_is_purged_and_remaining_answers_resume ... ok
+test apnap_order_anchors_at_nonzero_active_and_wraps ... ok
+test last_live_seat_outcome_discards_the_pending_queue ... ok
+test malformed_apnap_queue_is_rejected_by_state_validation ... ok
+test coach_does_not_print_an_unentitled_apnap_choice_label ... ok
+test real_crack_the_earth_cast_defers_all_sacrifices_until_the_last_answer ... ok
+test apnap_rejections_leave_the_queue_unchanged ... ok
+test apnap_pending_label_and_kind_are_owner_only ... ok
+test malformed_apnap_save_with_missing_source_returns_typed_error_not_panic ... ok
+test malformed_apnap_pending_save_is_rejected ... ok
+test apnap_pending_view_keeps_choices_public_and_hidden_state_masked ... ok
+test intermediate_apnap_queue_save_and_replay_round_trip ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests\coach_trace.rs (target\debug\deps\coach_trace-388e7bae00ff51b7.exe)
+
+running 7 tests
+test the_1014_note_states_apnap_order ... ok
+test walkthrough_new_game_pass_round_states_the_next_resolution ... ok
+test walkthrough_consecutive_passes_are_listed_seat_by_seat ... ok
+test walkthrough_categories_are_separate_and_strategy_is_absent_by_design ... ok
+test walkthrough_cast_opens_a_response_window_and_names_what_resolves ... ok
+test walkthrough_apnap_pending_teaches_apnap_order_and_keeps_private_choices_private ... ok
+test coaching_of_a_non_decision_seat_never_describes_anothers_hand ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\combat_teaching.rs (target\debug\deps\combat_teaching-f5ac5cda8164ad14.exe)
+
+running 2 tests
+test the_5101c_note_does_not_teach_lethal_first_as_the_rule ... ok
+test combat_coaching_identifies_the_automatic_assignment_as_a_simplification ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\review_regressions.rs (target\debug\deps\review_regressions-1fac10977250e2b5.exe)
+
+running 10 tests
+test a_resolved_spell_runs_sbas_before_priority_is_granted ... ok
+test a_destroyed_attacker_assigns_no_combat_damage ... ok
+test a_blocker_that_died_absorbs_nothing_and_the_attacker_stays_blocked ... ok
+test coaching_never_describes_another_seats_hand ... ok
+test a_dead_attacker_cannot_be_blocked ... ok
+test the_player_who_plays_first_skips_their_first_draw_step ... ok
+test a_mana_ability_is_refused_while_a_choice_is_pending ... ok
+test the_opponent_does_not_learn_a_private_scry_or_surveil_choice ... ok
+test the_game_start_log_does_not_reveal_the_replay_seed ... ok
+test a_mulligan_that_could_never_be_bottomed_is_refused ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

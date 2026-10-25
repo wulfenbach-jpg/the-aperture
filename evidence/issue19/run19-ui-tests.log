@@ -1,0 +1,145 @@
+   Compiling windows-sys v0.61.2
+   Compiling syn v3.0.9
+   Compiling synstructure v0.14.0
+   Compiling bytemuck_derive v1.12.1
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.6
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.3
+   Compiling bytemuck v1.25.2
+   Compiling thiserror v2.0.21
+   Compiling zerotrie v0.2.5
+   Compiling zerovec v0.11.8
+   Compiling naga-types v30.0.1
+   Compiling gpu-allocator v0.28.0
+   Compiling naga v30.0.1
+   Compiling font-types v0.12.7
+   Compiling color v0.3.3
+   Compiling wgpu-types v30.0.1
+   Compiling emath v0.37.0
+   Compiling image v0.25.10
+   Compiling ecolor v0.37.0
+   Compiling read-fonts v0.41.0
+   Compiling tinystr v0.8.4
+   Compiling potential_utf v0.1.6
+   Compiling peniko v0.6.1
+   Compiling icu_locale_core v2.3.0
+   Compiling icu_collections v2.3.0
+   Compiling vello_common v0.2.0
+   Compiling icu_provider v2.3.1
+   Compiling serde v1.0.229
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-19\crates\core)
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling mio v1.2.4
+   Compiling socket2 v0.6.5
+   Compiling schannel v0.1.30
+   Compiling webbrowser v1.2.4
+   Compiling arboard v3.7.0
+   Compiling tokio v1.53.3
+   Compiling native-tls v0.2.18
+   Compiling skrifa v0.44.0
+   Compiling harfrust v0.12.0
+   Compiling fontique v0.11.1
+   Compiling hyper v1.12.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower v0.5.3
+   Compiling hyper-util v0.1.21
+   Compiling tower-http v0.6.11
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling wgpu-hal v30.0.1
+   Compiling glifo v0.3.0
+   Compiling vello_cpu v0.2.0
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling epaint v0.37.0
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-19\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-19\crates\ai)
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
+   Compiling egui v0.37.0
+   Compiling egui_system_font_provider v0.37.0
+   Compiling egui-winit v0.37.0
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.37.0
+   Compiling eframe v0.37.0
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-19\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 49.16s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-215ca78a97a23f64.exe)
+
+running 11 tests
+test app::viewport_tests::explicit_startup_decks_override_the_bounded_default ... ok
+test app::viewport_tests::command_zone_inspection_does_not_invent_a_battlefield_location ... ok
+test session::tests::an_accepted_action_invalidates_an_in_flight_load ... ok
+test app::viewport_tests::absolute_life_labels_remain_correct_when_the_human_is_p1 ... ok
+test app::viewport_tests::four_seat_panels_and_primary_actions_are_actually_visible_at_1280x720 ... ok
+test app::viewport_tests::four_seat_panels_are_visible_at_a_large_viewport ... ok
+test app::viewport_tests::partial_apnap_shows_generic_waiting_without_the_owner_label ... ok
+test app::viewport_tests::four_seat_panels_are_visible_at_the_minimum_viewport ... ok
+test app::viewport_tests::a_pending_table_selection_is_not_overwritten_by_the_live_table ... ok
+test app::viewport_tests::imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame ... ok
+test app::viewport_tests::real_clicks_start_a_four_seat_bounded_table ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.81s
+
+     Running unittests src\main.rs (target\debug\deps\aperture-419ccd7872a45bfb.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\import_and_async.rs (target\debug\deps\import_and_async-90497e3f99cbb574.exe)
+
+running 11 tests
+test text_fallback_certifies_both_seats_and_rejects_bad_input ... ok
+test two_distinct_imported_lists_enter_the_game_and_the_replay ... ok
+test a_missing_or_invalid_explicit_deck_file_is_refused_not_substituted ... ok
+test an_unsupported_import_cannot_start_an_imported_match ... ok
+test the_ui_cannot_submit_an_action_for_the_other_seat ... ok
+test a_fresh_worker_completion_is_applied ... ok
+test a_stale_worker_completion_never_changes_the_replacement_game ... ok
+test file_worker_reports_a_missing_path_instead_of_guessing ... ok
+test import_worker_result_is_applied_through_the_poll ... ok
+test a_load_completed_after_the_game_changed_is_discarded ... ok
+test save_and_load_run_on_workers ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\session.rs (target\debug\deps\session-1cbe4b4ea6bb9ae6.exe)
+
+running 19 tests
+test a_new_game_resets_the_sandbox_flag_and_keeps_the_decks ... ok
+test native_startup_refuses_parenthesized_commander_headers ... ok
+test bounded_forty_life_profile_has_one_public_commander_per_seat ... ok
+test ordinary_default_seats_stay_temur_izzet ... ok
+test native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human ... ok
+test an_illegal_action_is_refused_and_leaves_the_state_identical ... ok
+test native_startup_refuses_a_commander_text_file_instead_of_flattening_it ... ok
+test native_startup_still_accepts_a_valid_mainboard_prefixed_file ... ok
+test the_ai_steps_only_for_its_own_seat ... ok
+test native_table_starts_four_ordinary_seats_and_retains_them_on_a_new_game ... ok
+test the_profile_line_states_the_scope ... ok
+test sandbox_tools_change_the_state_and_void_certified_play ... ok
+test a_branch_point_restores_the_earlier_position_and_labels_the_boundary ... ok
+test sandbox_modified_save_roundtrip_preserves_the_uncertified_flag ... ok
+test four_seat_load_resizes_the_native_import_controls ... ok
+test save_and_load_round_trip_preserves_pending_choices_rng_and_ai_mode ... ok
+test bounded_forty_life_four_seat_save_load_round_trips ... ok
+test default_four_seat_bounded_libraries_actually_cast_isamaru ... ok
+test background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+   Doc-tests aperture_ui
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
