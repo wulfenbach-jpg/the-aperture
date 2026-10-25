@@ -1,0 +1,82 @@
+﻿{
+    "steps":  1,
+    "saved_digest":  "f05c25867f617ba052b55344e621721c655f636cc0f1d133d93055aa42415f3f",
+    "profile":  "CommanderCombat40",
+    "seats":  4,
+    "events":  [
+                   {
+                       "observed":  [
+                                        "WAITING: P0: keep or mulligan the opening hand (CR 103.5)",
+                                        "· 2 seats · profile practice-20 (20 life) · turn 1 · untap step · active P0 · stack 0 · digest 7320a6aeb55b"
+                                    ],
+                       "action":  "4 seats"
+                   },
+                   {
+                       "observed":  [
+                                        "WAITING: P0: keep or mulligan the opening hand (CR 103.5)",
+                                        "· 2 seats · profile practice-20 (20 life) · turn 1 · untap step · active P0 · stack 0 · digest 7320a6aeb55b"
+                                    ],
+                       "action":  "bounded 40 life · Isamaru each seat"
+                   },
+                   {
+                       "observed":  [
+                                        "WAITING: P0: keep or mulligan the opening hand (CR 103.5)",
+                                        "P0 40 / P1 40 / P2 40 / P3 40",
+                                        "· 4 seats · profile commander-combat-practice-40 (40 life) · turn 1 · untap step · active P0 · stack 0 · digest 4c06e11b82ad",
+                                        "started a 4-seat table, profile commander-combat-practice-40 (40 life); human P0, other seats heuristic AI"
+                                    ],
+                       "action":  "Start new table with these options"
+                   },
+                   {
+                       "observed":  [
+                                        "WAITING: P1: keep or mulligan the opening hand (CR 103.5)",
+                                        "P0 40 / P1 40 / P2 40 / P3 40",
+                                        "· 4 seats · profile commander-combat-practice-40 (40 life) · turn 1 · untap step · active P0 · stack 0 · digest fa5c80fdea20",
+                                        "WAITING ON P1"
+                                    ],
+                       "action":  "Keep this hand"
+                   },
+                   {
+                       "observed":  [
+                                        "WAITING: P1: keep or mulligan the opening hand (CR 103.5)",
+                                        "P0 40 / P1 40 / P2 40 / P3 40",
+                                        "· 4 seats · profile commander-combat-practice-40 (40 life) · turn 1 · untap step · active P0 · stack 0 · digest fa5c80fdea20",
+                                        "saved to the-aperture-save.json (digest f05c25867f61)",
+                                        "WAITING ON P1",
+                                        "saved to the-aperture-save.json (digest f05c25867f61)"
+                                    ],
+                       "action":  "Save (S)"
+                   },
+                   {
+                       "observed":  [
+                                        "WAITING: P0: keep or mulligan the opening hand (CR 103.5)",
+                                        "P0 40 / P1 40 / P2 40 / P3 40",
+                                        "· 4 seats · profile commander-combat-practice-40 (40 life) · turn 1 · untap step · active P0 · stack 0 · digest 835d0299b23b",
+                                        "saved to the-aperture-save.json (digest f05c25867f61)"
+                                    ],
+                       "action":  "New game"
+                   },
+                   {
+                       "observed":  [
+                                        "WAITING: P1: keep or mulligan the opening hand (CR 103.5)",
+                                        "P0 40 / P1 40 / P2 40 / P3 40",
+                                        "· 4 seats · profile commander-combat-practice-40 (40 life) · turn 1 · untap step · active P0 · stack 0 · digest fa5c80fdea20",
+                                        "loaded the-aperture-save.json — digest f05c25867f61 (stored f05c25867f61), 1 action(s) in the replay",
+                                        "WAITING ON P1",
+                                        "loaded the-aperture-save.json — digest f05c25867f61 (stored f05c25867f61), 1 action(s) in the replay"
+                                    ],
+                       "action":  "Load (L)"
+                   }
+               ],
+    "pending":  {
+                    "Mulligan":  {
+                                     "player":  1
+                                 }
+                },
+    "pid":  45844,
+    "window":  2364006,
+    "load_readback":  [
+                          "loaded the-aperture-save.json — digest f05c25867f61 (stored f05c25867f61), 1 action(s) in the replay",
+                          "loaded the-aperture-save.json — digest f05c25867f61 (stored f05c25867f61), 1 action(s) in the replay"
+                      ]
+}

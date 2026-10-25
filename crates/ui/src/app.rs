@@ -1,7 +1,11 @@
-//! The card table: header, both battlefields, stack, hand, legal actions,
-//! coaching, log, pending-choice controls, sandbox, per-seat deck import and
-//! save/load. Every model/network/file operation runs on a background worker;
-//! the frame callback never blocks.
+//! The card table: header, real 2x2 seat panels for 2-4 seats, stack, own hand,
+//! legal actions, coaching, log, pending-choice controls, sandbox, per-seat deck
+//! import and save/load. Every model/network/file operation runs on a background
+//! worker; the frame callback never blocks.
+//!
+//! The renderer reads player-authored card data only from the engine's masked
+//! `PlayerView`. Opponents contribute counts and public zones (battlefield,
+//! graveyard, exile, command zone), never hand or library contents.
 
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -10,12 +14,12 @@ use std::time::{Duration, Instant};
 
 use aperture_ai::{DeciderClient, DeciderConfig};
 use aperture_core::view::{CardView, PlayerView};
-use aperture_core::{Action, AiSettings, ObjectId, P0, P1, PlayerId, catalog, coach};
+use aperture_core::{Action, AiSettings, ObjectId, P0, PlayerId, Profile, Zone, catalog, coach};
 use eframe::egui::{self, RichText};
 
 use crate::session::{
-    BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, block_list, bundled_practice, import_seat_file,
-    import_seat_text, import_seat_url, load_explicit_deck,
+    SandboxOp, UiSession, block_list, import_seat_file, import_seat_text, import_seat_url,
+    load_explicit_deck,
 };
 use crate::theme;
 
@@ -32,6 +36,12 @@ pub struct Startup {
     pub human_autoplay: bool,
     pub autoplay: bool,
     pub use_decider: bool,
+    /// Initial native table size (2..=4).
+    pub seats: u8,
+    /// Initial explicit named profile.
+    pub profile: Profile,
+    /// Optional initial window size for smoke captures and viewport checks.
+    pub window: Option<(f32, f32)>,
 }
 
 pub struct ApertureApp {
@@ -45,11 +55,36 @@ pub struct ApertureApp {
     show_import: bool,
     show_zones: bool,
     show_coach: bool,
+    show_help: bool,
+    /// Table setup controls; kept in sync with the live table.
+    setup_seats: u8,
+    setup_profile: Profile,
+    /// Last live settings the controls were synced from. Comparing these
+    /// (instead of overwriting the controls every frame) preserves a user's
+    /// pending selection until they start the new table.
+    observed_seats: u8,
+    observed_profile: Profile,
+    /// Which public zone the user asked to inspect.
+    zone_inspect: Option<(PlayerId, Zone)>,
+    zoom: f32,
     frame_count: u64,
 }
 
 fn seat_label(seat: PlayerId) -> String {
     format!("P{seat}")
+}
+
+fn zone_label(zone: Zone) -> &'static str {
+    match zone {
+        Zone::Battlefield => "battlefield",
+        Zone::Hand => "hand",
+        Zone::Library => "library",
+        Zone::Graveyard => "graveyard",
+        Zone::Exile => "exile",
+        Zone::Command => "command",
+        Zone::Stack => "stack",
+        Zone::Removed => "removed",
+    }
 }
 
 /// Load the startup decks. A built-in default uses the compiled practice
@@ -61,15 +96,18 @@ fn startup_decks(
     aperture_core::DeckList,
     Option<String>,
 ) {
+    let defaults =
+        UiSession::bundled_seats_for_profile(startup.seats.clamp(2, 4) as usize, startup.profile)
+            .expect("the native table supports 2..=4 bundled seats");
     let (deck_a, err_a) = if startup.deck_a_explicit {
         load_explicit_deck(&startup.deck_a, "Temur Beats")
     } else {
-        (bundled_practice("Temur Beats", BUNDLED_A), None)
+        (defaults[0].clone(), None)
     };
     let (deck_b, err_b) = if startup.deck_b_explicit {
         load_explicit_deck(&startup.deck_b, "Izzet Control")
     } else {
-        (bundled_practice("Izzet Control", BUNDLED_B), None)
+        (defaults[1].clone(), None)
     };
     let refusal = match (err_a, err_b) {
         (Some(a), Some(b)) => Some(format!("{a}\n{b}")),
@@ -80,10 +118,114 @@ fn startup_decks(
     (deck_a, deck_b, refusal)
 }
 
+/// Public data for one seat panel, assembled from the masked view.
+struct SeatPanelData {
+    seat: PlayerId,
+    name: String,
+    deck_name: String,
+    life: i32,
+    hand_count: usize,
+    library_count: usize,
+    eliminated: bool,
+    battlefield: Vec<CardView>,
+    hand: Vec<CardView>,
+    graveyard: Vec<CardView>,
+    exile: Vec<CardView>,
+    command_zone: Vec<CardView>,
+}
+
+impl SeatPanelData {
+    fn from_view(view: &PlayerView, seats: &[aperture_core::DeckList], seat: PlayerId) -> Self {
+        if seat == view.viewer {
+            SeatPanelData {
+                seat,
+                name: view.viewer_name.clone(),
+                deck_name: seats
+                    .get(seat as usize)
+                    .map(|deck| deck.name.clone())
+                    .unwrap_or_default(),
+                life: view.own_life,
+                hand_count: view.own_hand.len(),
+                library_count: view.own_library_count,
+                eliminated: view.own_eliminated,
+                battlefield: view.own_battlefield.clone(),
+                hand: view.own_hand.clone(),
+                graveyard: view.own_graveyard.clone(),
+                exile: view.own_exile.clone(),
+                command_zone: view.own_command_zone.clone(),
+            }
+        } else if let Some(opponent) = view.opponent_view(seat) {
+            SeatPanelData {
+                seat,
+                name: opponent.name.clone(),
+                deck_name: opponent.deck_name.clone(),
+                life: opponent.life,
+                hand_count: opponent.hand_count,
+                library_count: opponent.library_count,
+                eliminated: opponent.eliminated,
+                battlefield: opponent.battlefield.clone(),
+                hand: Vec::new(),
+                graveyard: opponent.graveyard.clone(),
+                exile: opponent.exile.clone(),
+                command_zone: opponent.command_zone.clone(),
+            }
+        } else {
+            SeatPanelData {
+                seat,
+                name: seats
+                    .get(seat as usize)
+                    .map(|deck| deck.name.clone())
+                    .unwrap_or_default(),
+                deck_name: seats
+                    .get(seat as usize)
+                    .map(|deck| deck.name.clone())
+                    .unwrap_or_default(),
+                life: 0,
+                hand_count: 0,
+                library_count: 0,
+                eliminated: true,
+                battlefield: Vec::new(),
+                hand: Vec::new(),
+                graveyard: Vec::new(),
+                exile: Vec::new(),
+                command_zone: Vec::new(),
+            }
+        }
+    }
+}
+
+fn zone_cards_for(view: &PlayerView, seat: PlayerId, zone: Zone) -> Vec<CardView> {
+    let (own, opponent) = if seat == view.viewer {
+        (true, None)
+    } else {
+        (false, view.opponent_view(seat))
+    };
+    if own {
+        match zone {
+            Zone::Battlefield => view.own_battlefield.clone(),
+            Zone::Graveyard => view.own_graveyard.clone(),
+            Zone::Exile => view.own_exile.clone(),
+            Zone::Command => view.own_command_zone.clone(),
+            Zone::Hand => view.own_hand.clone(),
+            Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
+        }
+    } else if let Some(opponent) = opponent {
+        match zone {
+            Zone::Battlefield => opponent.battlefield.clone(),
+            Zone::Graveyard => opponent.graveyard.clone(),
+            Zone::Exile => opponent.exile.clone(),
+            Zone::Command => opponent.command_zone.clone(),
+            // Counts are public; contents are intentionally absent.
+            Zone::Hand | Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
+        }
+    } else {
+        Vec::new()
+    }
+}
+
 impl ApertureApp {
     pub fn new(cc: &eframe::CreationContext<'_>, startup: Startup) -> Self {
         theme::apply(&cc.egui_ctx);
-        let (deck_a, deck_b, deck_refusal) = startup_decks(&startup);
         // A smoke run never spends its frames on model calls: the decider is
         // disabled for the whole capture even when --decider was passed, and a
         // note is printed so the capture is not mistaken for an opt-in run.
@@ -91,14 +233,29 @@ impl ApertureApp {
         if startup.use_decider && startup.smoke.is_some() {
             eprintln!("smoke mode: Decider-2B calls are disabled for the capture");
         }
+        let initial_profile = startup.profile;
+        let seat_count = startup.seats.clamp(2, 4) as usize;
+        let (deck_a, deck_b, deck_refusal) = startup_decks(&startup);
+        let mut seats = UiSession::bundled_seats_for_profile(seat_count, initial_profile)
+            .expect("the native table supports 2..=4 bundled seats");
+        seats[0] = deck_a;
+        seats[1] = deck_b;
+        let human_seat = if seat_count == 2 && startup.ai_seat == P0 {
+            // Backwards-compatible two-seat choice: the old --ai-seat 0 made
+            // P1 the human's seat. The four-seat table is always human P0.
+            1
+        } else {
+            P0
+        };
         let ai = AiSettings {
-            human_seat: if startup.ai_seat == P0 { P1 } else { P0 },
-            ai_seats: vec![startup.ai_seat.min(1)],
+            human_seat,
+            ai_seats: (0..seat_count as PlayerId)
+                .filter(|seat| *seat != human_seat)
+                .collect(),
             autoplay: startup.autoplay || startup.smoke.is_some(),
             use_decider,
             ..AiSettings::default()
         };
-        let seats = vec![deck_a, deck_b];
         let mut session = UiSession::new(
             startup.seed,
             seats,
@@ -106,7 +263,11 @@ impl ApertureApp {
             use_decider,
             startup.human_autoplay || startup.smoke.is_some(),
         )
-        .expect("the native table always starts with two valid seat lists");
+        .expect("the native table always starts with valid bundled seat lists");
+        session.profile = initial_profile;
+        // Rebuild through the explicit profile constructor so a 40-life table
+        // (or a 3/4-seat table) is never silently replaced by practice-20.
+        session.new_game(startup.seed);
         session.deck_refusal = deck_refusal.clone();
         // A smoke run should show a developed board, not the opening hand.
         if startup.smoke.is_some() {
@@ -128,6 +289,13 @@ impl ApertureApp {
             show_import: deck_refusal.is_some(),
             show_zones: false,
             show_coach: true,
+            show_help: false,
+            setup_seats: seat_count as u8,
+            setup_profile: initial_profile,
+            observed_seats: seat_count as u8,
+            observed_profile: initial_profile,
+            zone_inspect: None,
+            zoom: 1.0,
             frame_count: 0,
         }
     }
@@ -148,6 +316,111 @@ impl ApertureApp {
         if self.session.ai.autoplay && !self.session.game.state.is_over() {
             ctx.request_repaint_after(Duration::from_millis(120));
         }
+    }
+
+    fn set_zoom(&mut self, ctx: &egui::Context, zoom: f32) {
+        self.zoom = zoom.clamp(0.7, 1.9);
+        ctx.set_zoom_factor(self.zoom);
+    }
+
+    /// Keyboard controls that do not conflict with a focused text field. Tab
+    /// and Shift+Tab move egui focus; Enter activates the focused control.
+    fn keyboard_shortcuts(&mut self, ctx: &egui::Context) {
+        if ctx.text_edit_focused() {
+            return;
+        }
+        let (pass, new_game, save, load, import, zones, sandbox, coach, help, plus, minus, esc) =
+            ctx.input(|input| {
+                (
+                    input.key_pressed(egui::Key::P),
+                    input.key_pressed(egui::Key::N),
+                    input.key_pressed(egui::Key::S),
+                    input.key_pressed(egui::Key::L),
+                    input.key_pressed(egui::Key::I),
+                    input.key_pressed(egui::Key::Z),
+                    input.key_pressed(egui::Key::K),
+                    input.key_pressed(egui::Key::C),
+                    input.key_pressed(egui::Key::H),
+                    input.key_pressed(egui::Key::Plus) || input.key_pressed(egui::Key::Equals),
+                    input.key_pressed(egui::Key::Minus),
+                    input.key_pressed(egui::Key::Escape),
+                )
+            });
+        if pass && self.session.owner() == Some(self.session.human_seat()) {
+            let _ = self.session.submit_human(Action::Pass);
+        }
+        if new_game {
+            let seed = self.session.seed.wrapping_add(1);
+            self.session.new_game(seed);
+        }
+        if save {
+            self.session
+                .request_save(PathBuf::from(self.session.save_path.clone()));
+        }
+        if load {
+            self.session
+                .request_load(PathBuf::from(self.session.save_path.clone()));
+        }
+        if import {
+            self.show_import = !self.show_import;
+        }
+        if zones {
+            self.show_zones = !self.show_zones;
+        }
+        if sandbox {
+            self.show_sandbox = !self.show_sandbox;
+        }
+        if coach {
+            self.show_coach = !self.show_coach;
+        }
+        if help {
+            self.show_help = !self.show_help;
+        }
+        if plus {
+            let zoom = self.zoom + 0.1;
+            self.set_zoom(ctx, zoom);
+        }
+        if minus {
+            let zoom = self.zoom - 0.1;
+            self.set_zoom(ctx, zoom);
+        }
+        if esc {
+            self.session.target_pick = None;
+            self.zone_inspect = None;
+        }
+    }
+
+    fn inspect_card(&mut self, card: &CardView) {
+        let counters = if card.plus_one_counters > 0 {
+            format!(
+                "\n+1/+1 counters: {} (sandbox storage only; not a rules-supported counter system)",
+                card.plus_one_counters
+            )
+        } else {
+            String::new()
+        };
+        let pump = if card.pump_power != 0 || card.pump_toughness != 0 {
+            format!(
+                "\nuntil-end-of-turn pump: {:+}/{:+}",
+                card.pump_power, card.pump_toughness
+            )
+        } else {
+            String::new()
+        };
+        self.session.inspect = Some(format!(
+            "{} — {}\n{} (mana cost)\ncontroller P{}{}{}\n\n{}",
+            card.name,
+            if card.card.def().is_land() {
+                "land"
+            } else {
+                "permanent / spell"
+            },
+            card.cost.unwrap_or("(no cost)"),
+            card.controller,
+            if card.tapped { "\ntapped" } else { "" },
+            counters + &pump,
+            card.oracle
+        ));
     }
 
     fn pending_controls(&mut self, ui: &mut egui::Ui, view: &PlayerView) {
@@ -465,84 +738,230 @@ impl ApertureApp {
         if card.damage > 0 {
             label.push_str(&format!("  [{} dmg]", card.damage));
         }
-        if card.plus_one_counters > 0 || card.pump_power != 0 {
+        if card.plus_one_counters > 0 {
+            // Stored by the sandbox only: the engine's combat math ignores
+            // these counters, so the label never implies rules support.
+            label.push_str(&format!("  [{} +1/+1 sandbox]", card.plus_one_counters));
+        }
+        if card.pump_power != 0 || card.pump_toughness != 0 {
             label.push_str(&format!(
-                "  [{}{}]",
-                if card.plus_one_counters > 0 {
-                    format!("{} +1/+1", card.plus_one_counters)
-                } else {
-                    String::new()
-                },
-                if card.pump_power != 0 {
-                    format!(" pump {:+}/{:+}", card.pump_power, card.pump_toughness)
-                } else {
-                    String::new()
-                }
+                "  [pump {:+}/{:+}]",
+                card.pump_power, card.pump_toughness
             ));
         }
         label
     }
 
-    fn battlefield_ui(
-        &mut self,
-        ui: &mut egui::Ui,
-        seat: PlayerId,
-        cards: &[CardView],
-        interactive: bool,
-    ) {
+    fn battlefield_ui(&mut self, ui: &mut egui::Ui, cards: &[CardView], interactive: bool) {
         if cards.is_empty() {
             theme::muted(ui, "(no permanents)");
             return;
         }
-        egui::ScrollArea::horizontal()
-            .id_salt(("bf", seat))
-            .show(ui, |ui| {
-                ui.horizontal_wrapped(|ui| {
-                    let mut sandbox_click: Option<ObjectId> = None;
-                    for card in cards {
-                        let label = Self::card_label(card);
-                        let text = RichText::new(label).color(if card.card.def().is_land() {
-                            theme::MUTED
-                        } else {
-                            theme::TEXT
-                        });
-                        let response =
-                            ui.add(egui::Button::new(text).min_size(egui::vec2(150.0, 54.0)));
-                        if response.clicked() {
-                            if interactive && self.show_sandbox {
-                                sandbox_click = Some(card.id);
-                            } else {
-                                self.session.inspect = Some(format!(
-                                    "{} — {}\n{}\ncontroller P{}",
-                                    card.name,
-                                    card.oracle,
-                                    card.cost.unwrap_or("(no cost)"),
-                                    card.controller
-                                ));
-                            }
-                        }
-                        response.on_hover_text(format!("{} {}", card.name, card.oracle));
-                    }
-                    if let Some(id) = sandbox_click {
-                        self.session.sandbox(SandboxOp::Counter(id, 1));
-                    }
+        ui.horizontal_wrapped(|ui| {
+            let mut sandbox_click: Option<ObjectId> = None;
+            let mut inspect_card: Option<CardView> = None;
+            for card in cards {
+                let label = Self::card_label(card);
+                let text = RichText::new(label).color(if card.card.def().is_land() {
+                    theme::MUTED
+                } else {
+                    theme::TEXT
                 });
-            });
+                let response = ui.add(egui::Button::new(text).min_size(egui::vec2(104.0, 32.0)));
+                if response.clicked() {
+                    if interactive && self.show_sandbox {
+                        sandbox_click = Some(card.id);
+                    } else {
+                        inspect_card = Some(card.clone());
+                    }
+                }
+                if response.secondary_clicked() {
+                    inspect_card = Some(card.clone());
+                }
+                response.on_hover_text(format!("{} {}", card.name, card.oracle));
+            }
+            if let Some(card) = inspect_card {
+                self.inspect_card(&card);
+            }
+            if let Some(id) = sandbox_click {
+                self.session.sandbox(SandboxOp::Counter(id, 1));
+            }
+        });
     }
 
-    /// Per-seat import: URL, pasted text or a text file. Each seat is certified
-    /// on its own; nothing is substituted and nothing is fetched in this frame.
+    fn seat_panel(
+        &mut self,
+        ui: &mut egui::Ui,
+        data: &SeatPanelData,
+        view: &PlayerView,
+        is_own: bool,
+    ) {
+        let seat = data.seat;
+        let active = view.active == seat;
+        let priority = view.priority == Some(seat);
+        let pending_owner = view.pending_owner == Some(seat) && view.pending.is_some();
+        ui.group(|ui| {
+            ui.set_min_width(300.0);
+            ui.horizontal_wrapped(|ui| {
+                let role = if is_own {
+                    " · YOU"
+                } else {
+                    " · heuristic AI"
+                };
+                ui.label(
+                    RichText::new(format!("P{seat}{role}"))
+                        .color(theme::BRASS)
+                        .strong(),
+                );
+                if active {
+                    ui.label(RichText::new("ACTIVE").color(theme::GOOD).small());
+                }
+                if priority {
+                    ui.label(RichText::new("PRIORITY").color(theme::BRASS).small());
+                }
+                if pending_owner {
+                    ui.label(RichText::new("PENDING").color(theme::WARN).small());
+                }
+                if data.eliminated {
+                    ui.label(RichText::new("ELIMINATED").color(theme::BAD).strong());
+                }
+            });
+            ui.label(
+                RichText::new(format!(
+                    "{} · {} · life {} · hand {} · library {}",
+                    data.name, data.deck_name, data.life, data.hand_count, data.library_count
+                ))
+                .small(),
+            );
+            ui.horizontal_wrapped(|ui| {
+                for (zone, count) in [
+                    (Zone::Graveyard, data.graveyard.len()),
+                    (Zone::Exile, data.exile.len()),
+                    (Zone::Command, data.command_zone.len()),
+                ] {
+                    if ui
+                        .small_button(format!("{} {count}", zone_label(zone)))
+                        .clicked()
+                    {
+                        self.zone_inspect = Some((seat, zone));
+                        self.show_zones = true;
+                    }
+                }
+                theme::muted(
+                    ui,
+                    if is_own {
+                        "public zones"
+                    } else {
+                        "public zones; hand/library contents hidden"
+                    },
+                );
+            });
+            for commander in view.commanders.iter().filter(|c| c.owner == seat) {
+                ui.label(
+                    RichText::new(format!(
+                        "Commander {} · tax {{+{}}} · zone: {}",
+                        commander.name,
+                        commander.tax,
+                        commander
+                            .zone
+                            .map(zone_label)
+                            .unwrap_or("hidden (hand/library)")
+                    ))
+                    .small()
+                    .color(theme::BRASS),
+                );
+            }
+            let damage: Vec<String> = view
+                .commander_damage
+                .iter()
+                .filter(|entry| entry.recipient == seat && entry.amount > 0)
+                .map(|entry| {
+                    let name = view
+                        .commanders
+                        .iter()
+                        .find(|commander| commander.id == entry.commander)
+                        .map(|commander| commander.name)
+                        .unwrap_or("commander");
+                    format!("{name} dmg {}", entry.amount)
+                })
+                .collect();
+            if !damage.is_empty() {
+                ui.label(
+                    RichText::new(format!("Commander damage: {}", damage.join(" · ")))
+                        .small()
+                        .color(theme::WARN),
+                );
+            }
+            self.battlefield_ui(ui, &data.battlefield, is_own);
+            if is_own {
+                theme::heading(ui, "YOUR HAND");
+                if data.hand.is_empty() {
+                    theme::muted(ui, "(empty)");
+                }
+                egui::ScrollArea::vertical()
+                    .id_salt("own-hand")
+                    .max_height(170.0)
+                    .show(ui, |ui| {
+                        let legal = view.legal.clone();
+                        let mut play: Option<Action> = None;
+                        for card in &data.hand {
+                            let matching: Vec<Action> = legal
+                                .iter()
+                                .filter(|entry| match (&entry.action, card.card.def().is_land()) {
+                                    (Action::PlayLand { card: id }, true) => *id == card.id,
+                                    (Action::CastSpell { card: id, .. }, false) => *id == card.id,
+                                    _ => false,
+                                })
+                                .map(|entry| entry.action.clone())
+                                .collect();
+                            let label = Self::card_label(card);
+                            let enabled = !matching.is_empty();
+                            let response = ui.add_enabled(
+                                enabled,
+                                egui::Button::new(RichText::new(label).color(if enabled {
+                                    theme::TEXT
+                                } else {
+                                    theme::MUTED
+                                })),
+                            );
+                            if response.clicked() {
+                                match matching.len() {
+                                    0 => self.inspect_card(card),
+                                    1 => play = Some(matching[0].clone()),
+                                    _ => {
+                                        self.session.target_pick = Some((card.id, matching.clone()))
+                                    }
+                                }
+                            }
+                            if response.secondary_clicked() {
+                                self.inspect_card(card);
+                            }
+                            response.on_hover_text(format!(
+                                "{} — click to {}",
+                                card.oracle,
+                                if enabled { "cast/play" } else { "inspect" }
+                            ));
+                        }
+                        if let Some(action) = play {
+                            let _ = self.session.submit_human(action);
+                        }
+                    });
+            }
+        });
+    }
+
     fn import_panel(&mut self, ui: &mut egui::Ui) {
         self.import_panel_contents(ui);
     }
 
     fn import_panel_contents(&mut self, ui: &mut egui::Ui) {
-        theme::heading(ui, "Deck import — two seats, each certified on its own");
+        theme::heading(ui, "Deck import — one certified list per seat (2-4 seats)");
         theme::muted(
             ui,
             "URL form: https://archidekt.com/decks/<id>[/slug] (host-allowlisted, canonical API built from the id). \
              Text fallback: paste a list or point at a file. A seat becomes usable only after its exact list passes \
-             the practice profile; unsupported input is refused, never replaced.",
+             the practice profile; unsupported input is refused, never replaced. The old two-seat import still \
+             labels its seats honestly.",
         );
         for seat in 0..self.session.seats.len() as PlayerId {
             let index = seat as usize;
@@ -582,7 +1001,7 @@ impl ApertureApp {
             ui.label("Text fallback (paste a deck list):");
             ui.add(
                 egui::TextEdit::multiline(&mut self.session.seat_text[index])
-                    .desired_rows(4)
+                    .desired_rows(3)
                     .desired_width(470.0),
             );
             ui.horizontal_wrapped(|ui| {
@@ -656,7 +1075,7 @@ impl ApertureApp {
             if !ready {
                 theme::muted(
                     ui,
-                    "disabled until BOTH seats are certified (an unsupported deck cannot start)",
+                    "disabled until EVERY seat is certified (an unsupported deck cannot start)",
                 );
             }
         });
@@ -703,6 +1122,635 @@ impl ApertureApp {
             ui.text_edit_singleline(&mut self.session.save_path);
         });
     }
+
+    fn render_ui(&mut self, ui: &mut egui::Ui) {
+        let ctx = ui.ctx().clone();
+        self.frame_count += 1;
+        if self.frame_count <= 3 {
+            // eframe applies its own style when the window is created, so the
+            // palette is (re)asserted over the first frames.
+            theme::apply(&ctx);
+        }
+        // Finished background work is applied here, on the main thread only.
+        let applied = self.session.poll_workers();
+        if !applied.is_empty() {
+            self.session.busy_note = Some(applied.join("; "));
+        }
+        // Workers keep running after a game ends (import, health, save, load),
+        // so keep the frame loop ticking while any is outstanding.
+        if self.session.worker_busy() {
+            ctx.request_repaint_after(Duration::from_millis(120));
+        }
+        self.tick_ai(&ctx);
+        self.keyboard_shortcuts(&ctx);
+        // Follow table changes that came from outside the setup controls
+        // (load, imported match) without overwriting a selection the user is
+        // about to start.
+        let live_seats = self.session.seats.len().min(4) as u8;
+        let live_profile = self.session.profile;
+        if self.observed_seats != live_seats {
+            self.setup_seats = live_seats;
+            self.observed_seats = live_seats;
+        }
+        if self.observed_profile != live_profile {
+            self.setup_profile = live_profile;
+            self.observed_profile = live_profile;
+        }
+
+        let human = self.session.human_seat();
+        let view = self.session.view(human);
+        let owner = self.session.owner();
+
+        egui::Panel::top("primary-strip").show(ui, |ui| {
+            ui.horizontal_wrapped(|ui| {
+                ui.label(RichText::new("THE APERTURE").heading().color(theme::BRASS));
+                theme::muted(ui, crate::session::profile_line());
+                ui.separator();
+                if ui.small_button("A−").clicked() {
+                    let zoom = self.zoom - 0.1;
+                    self.set_zoom(&ctx, zoom);
+                }
+                ui.label(format!("text {:.0}%", self.zoom * 100.0));
+                if ui.small_button("A+").clicked() {
+                    let zoom = self.zoom + 0.1;
+                    self.set_zoom(&ctx, zoom);
+                }
+                if ui.small_button("Help (H)").clicked() {
+                    self.show_help = !self.show_help;
+                }
+            });
+            ui.horizontal_wrapped(|ui| {
+                ui.label(RichText::new("TABLE:").color(theme::BRASS).small());
+                for count in 2..=4u8 {
+                    if ui
+                        .selectable_label(self.setup_seats == count, format!("{count} seats"))
+                        .clicked()
+                    {
+                        self.setup_seats = count;
+                    }
+                }
+                ui.separator();
+                ui.label(RichText::new("PROFILE:").color(theme::BRASS).small());
+                if ui
+                    .selectable_label(
+                        self.setup_profile == Profile::Practice20,
+                        "ordinary 20 life",
+                    )
+                    .clicked()
+                {
+                    self.setup_profile = Profile::Practice20;
+                }
+                if ui
+                    .selectable_label(
+                        self.setup_profile == Profile::CommanderCombat40,
+                        "bounded 40 life · Isamaru each seat",
+                    )
+                    .clicked()
+                {
+                    self.setup_profile = Profile::CommanderCombat40;
+                }
+                if ui.button("Start new table with these options").clicked() {
+                    let seed = self.session.seed.wrapping_add(1);
+                    match self
+                        .session
+                        .start_table(seed, self.setup_seats as usize, self.setup_profile)
+                    {
+                        Ok(()) => {
+                            self.session.deck_refusal = None;
+                            self.session.message = format!(
+                                "started a {}-seat table, profile {} ({} life); human P0, other seats heuristic AI",
+                                self.session.seats.len(),
+                                self.session.profile.label(),
+                                self.session.profile.starting_life()
+                            );
+                        }
+                        Err(err) => self.session.message = err,
+                    }
+                }
+                theme::muted(
+                    ui,
+                    "bounded 40 life gives every seat the command-zone library so Isamaru is castable — practice, not Commander",
+                );
+            });
+            ui.horizontal_wrapped(|ui| {
+                if ui.button("New game").clicked() {
+                    let seed = self.session.seed.wrapping_add(1);
+                    self.session.new_game(seed);
+                }
+                if ui.button("Pass (P)").clicked() {
+                    let _ = self.session.submit_human(Action::Pass);
+                }
+                if ui.button("AI step").clicked() {
+                    self.session.request_ai_decision_default();
+                }
+                ui.checkbox(&mut self.session.ai.autoplay, "AI autoplay");
+                if ui
+                    .checkbox(
+                        &mut self.session.human_plays_ai_seat,
+                        "Let the AI play my seat too",
+                    )
+                    .changed()
+                {
+                    self.session.invalidate_pending_work();
+                }
+                let decider_toggle = ui.checkbox(
+                    &mut self.session.ai.use_decider,
+                    "Use local Decider-2B",
+                );
+                if decider_toggle.changed() {
+                    let on = self.session.ai.use_decider;
+                    self.session.set_use_decider(on);
+                }
+                if ui.button("Save (S)").clicked() {
+                    self.session
+                        .request_save(PathBuf::from(self.session.save_path.clone()));
+                }
+                if ui.button("Load (L)").clicked() {
+                    self.session
+                        .request_load(PathBuf::from(self.session.save_path.clone()));
+                }
+                if ui.button("Set branch").clicked() {
+                    self.session.set_branch();
+                }
+                if ui.button("Return to branch").clicked()
+                    && let Err(err) = self.session.return_to_branch()
+                {
+                    self.session.message = err;
+                }
+                ui.checkbox(&mut self.show_coach, "Coaching (C)");
+                ui.checkbox(&mut self.show_sandbox, "Sandbox (K)");
+                ui.checkbox(&mut self.show_import, "Import (I)");
+                ui.checkbox(&mut self.show_zones, "Zones (Z)");
+            });
+            if self.show_help {
+                ui.label(
+                    RichText::new(
+                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · N new game (keeps seats/profile) · S save · L load · I import · Z zones · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick. Shortcuts are ignored while a text field has focus.",
+                    )
+                    .small()
+                    .color(theme::MUTED),
+                );
+            }
+            ui.horizontal_wrapped(|ui| {
+                if let Some((label, _)) = &self.session.branch {
+                    ui.label(
+                        RichText::new(format!("branch: {label}"))
+                            .color(theme::BRASS)
+                            .small(),
+                    );
+                }
+                if let Some(pending) = &view.pending {
+                    ui.label(RichText::new(format!("WAITING: {pending}")).color(theme::WARN));
+                } else if let Some(owner) = owner {
+                    if owner == human || view.priority == Some(owner) {
+                        ui.label(format!("P{owner} holds priority"));
+                    } else {
+                        ui.label(
+                            RichText::new(format!(
+                                "Waiting on P{owner} (no player has priority)"
+                            ))
+                            .color(theme::WARN),
+                        );
+                    }
+                } else if let Some(conclusion) = self.session.conclude() {
+                    ui.label(RichText::new(conclusion).color(theme::GOOD).strong());
+                }
+            });
+            ui.horizontal_wrapped(|ui| {
+                let lives = (0..view.seat_count as PlayerId)
+                    .map(|seat| {
+                        let life = if seat == human {
+                            view.own_life
+                        } else {
+                            view.opponent_view(seat).map(|o| o.life).unwrap_or(0)
+                        };
+                        let out = if seat == human {
+                            view.own_eliminated
+                        } else {
+                            view.opponent_view(seat)
+                                .map(|o| o.eliminated)
+                                .unwrap_or(true)
+                        };
+                        format!("P{seat} {life}{}", if out { " (out)" } else { "" })
+                    })
+                    .collect::<Vec<_>>()
+                    .join(" / ");
+                ui.label(lives);
+                ui.label(format!(
+                    "· {} seats · profile {} ({} life) · turn {} · {} · active P{} · stack {} · digest {}",
+                    self.session.seats.len(),
+                    self.session.profile.label(),
+                    self.session.profile.starting_life(),
+                    view.turn_number,
+                    view.step.name(),
+                    view.active,
+                    view.stack.len(),
+                    view.digest
+                ));
+                if let Some(pending_owner) = view.pending_owner
+                    && view.pending.is_some()
+                {
+                    ui.label(
+                        RichText::new(format!("pending owner P{pending_owner}"))
+                            .color(theme::WARN)
+                            .small(),
+                    );
+                }
+                if self.session.sandbox_modified {
+                    ui.label(RichText::new("SANDBOX-MODIFIED").color(theme::BAD).strong());
+                }
+                if self.session.ai.use_decider {
+                    ui.label(RichText::new("decider-2b opt-in").color(theme::BRASS));
+                }
+                if self.session.worker_busy() {
+                    ui.spinner();
+                    ui.label(RichText::new("background work running").color(theme::BRASS));
+                }
+            });
+            if let Some(note) = &self.session.busy_note {
+                ui.label(RichText::new(note).color(theme::MUTED).small());
+            }
+            ui.separator();
+            // The persistent primary strip: own pending choices and legal
+            // actions never scroll away with the table.
+            theme::heading(ui, "YOUR ACTIONS — only engine-offered decisions are accepted");
+            egui::ScrollArea::vertical()
+                .id_salt("primary-actions")
+                .max_height(210.0)
+                .auto_shrink([false, true])
+                .show(ui, |ui| {
+                    if owner == Some(human) && view.pending_kind.is_some() {
+                        let pending_view = view.clone();
+                        self.pending_controls(ui, &pending_view);
+                    }
+                    if owner != Some(human) {
+                        if let Some(owner) = owner {
+                            theme::heading(ui, &format!("WAITING ON P{owner}"));
+                            if view.priority == Some(owner) {
+                                theme::muted(ui, format!("P{owner} holds priority."));
+                            } else {
+                                theme::muted(
+                                    ui,
+                                    format!(
+                                        "P{owner} has a pending decision; details are private to that seat. No player has priority."
+                                    ),
+                                );
+                            }
+                            if self.session.seat_is_ai(owner)
+                                && ui.button("Let the AI answer (step)").clicked()
+                            {
+                                self.session.request_ai_decision_default();
+                            }
+                        }
+                    } else {
+                        if view.legal.is_empty() {
+                            theme::muted(ui, "no legal action for your seat right now");
+                        }
+                        let mut chosen: Option<Action> = None;
+                        ui.horizontal_wrapped(|ui| {
+                            for entry in &view.legal {
+                                let label =
+                                    format!("{}   [CR {}]", entry.label, entry.rules.join(", "));
+                                if ui.button(label).clicked() {
+                                    chosen = Some(entry.action.clone());
+                                }
+                            }
+                        });
+                        if let Some(action) = chosen {
+                            let _ = self.session.submit_human(action);
+                        }
+                        if let Some((card, options)) = self.session.target_pick.clone() {
+                            let name = self
+                                .session
+                                .game
+                                .state
+                                .try_object(card)
+                                .map(|o| o.name())
+                                .unwrap_or("spell");
+                            ui.label(
+                                RichText::new(format!("Choose a target for {name}:"))
+                                    .color(theme::BRASS),
+                            );
+                            ui.horizontal_wrapped(|ui| {
+                                for action in options {
+                                    let label = view
+                                        .legal
+                                        .iter()
+                                        .find(|entry| entry.action == action)
+                                        .map(|entry| entry.label.clone())
+                                        .unwrap_or_else(|| "cast".to_string());
+                                    if ui.button(label).clicked() {
+                                        let _ = self.session.submit_human(action);
+                                    }
+                                }
+                                if ui.button("Cancel").clicked() {
+                                    self.session.target_pick = None;
+                                }
+                            });
+                        }
+                    }
+                });
+            if let Some(note) = &self.session.note {
+                ui.label(RichText::new(note).color(theme::BRASS).small());
+            }
+            if !self.session.message.is_empty() {
+                ui.label(RichText::new(&self.session.message).color(theme::WARN).small());
+            }
+        });
+
+        egui::CentralPanel::default().show(ui, |ui| {
+            // Scroll the real application content. The primary strip above is
+            // never inside this scroll area, so choices stay reachable.
+            egui::ScrollArea::vertical()
+                .id_salt("tabletop-content")
+                .auto_shrink([false, false])
+                .show(ui, |ui| {
+                    if let Some(refusal) = self.session.deck_refusal.clone() {
+                        ui.label(
+                            RichText::new(format!("DECK REFUSED — {refusal}"))
+                                .color(theme::BAD)
+                                .strong(),
+                        );
+                        theme::muted(
+                            ui,
+                            "Use the Import panel to supply a valid list for each seat, then start the imported match.",
+                        );
+                    }
+
+                    // Compact 2x2 seat panels: every battlefield, status block
+                    // and public zone control is visible without a huge scroll.
+                    let seats: Vec<PlayerId> = (0..view.seat_count as PlayerId)
+                        .filter(|seat| *seat == human)
+                        .chain(
+                            (0..view.seat_count as PlayerId)
+                                .filter(|seat| *seat != human)
+                                .take(3),
+                        )
+                        .take(4)
+                        .collect();
+                    let gap = 10.0;
+                    let cell_width = ((ui.available_width() - gap) / 2.0).max(320.0);
+                    for row in seats.chunks(2) {
+                        ui.horizontal_top(|ui| {
+                            ui.spacing_mut().item_spacing.x = gap;
+                            for seat in row {
+                                ui.allocate_ui_with_layout(
+                                    egui::vec2(cell_width, 0.0),
+                                    egui::Layout::top_down(egui::Align::Min),
+                                    |ui| {
+                                        ui.set_width(cell_width);
+                                        let data = SeatPanelData::from_view(
+                                            &view,
+                                            &self.session.seats,
+                                            *seat,
+                                        );
+                                        self.seat_panel(ui, &data, &view, *seat == human);
+                                    },
+                                );
+                            }
+                        });
+                    }
+
+                    ui.separator();
+                    theme::heading(ui, "STACK");
+                    if view.stack.is_empty() {
+                        theme::muted(ui, "(stack empty)");
+                    }
+                    for (index, item) in view.stack.iter().rev().enumerate() {
+                        let targets = if item.targets.is_empty() {
+                            String::new()
+                        } else {
+                            format!(" → {}", item.targets.join(", "))
+                        };
+                        ui.label(format!(
+                            "{}. {}{}  (P{})",
+                            index + 1,
+                            item.name,
+                            targets,
+                            item.controller
+                        ));
+                    }
+
+                    if self.show_coach {
+                        ui.separator();
+                        theme::heading(ui, "COACHING (derived from the engine trace)");
+                        let explanations =
+                            coach::explain(&self.session.game, human, &view.legal);
+                        egui::ScrollArea::vertical()
+                            .id_salt("coach")
+                            .max_height(220.0)
+                            .show(ui, |ui| {
+                                for explanation in explanations {
+                                    ui.label(
+                                        RichText::new(format!(
+                                            "[{}] {}",
+                                            explanation.topic, explanation.text
+                                        ))
+                                        .color(if explanation.topic.contains("unavailable") {
+                                            theme::MUTED
+                                        } else {
+                                            theme::TEXT
+                                        }),
+                                    );
+                                    for rule in &explanation.rules {
+                                        if let Some(note) = coach::rule_note(rule) {
+                                            ui.label(
+                                                RichText::new(format!("    CR {rule}: {note}"))
+                                                    .small()
+                                                    .color(theme::MUTED),
+                                            );
+                                        }
+                                    }
+                                }
+                            });
+                    }
+
+                    ui.separator();
+                    theme::heading(ui, "LOG (viewer-masked)");
+                    egui::ScrollArea::vertical()
+                        .id_salt("log")
+                        .max_height(190.0)
+                        .show(ui, |ui| {
+                            for line in view.log.iter().rev().take(80) {
+                                ui.label(RichText::new(line).small());
+                            }
+                        });
+
+                    if self.show_sandbox {
+                        ui.separator();
+                        theme::heading(ui, crate::session::sandbox_label());
+                        ui.horizontal_wrapped(|ui| {
+                            if ui.button("Draw 1").clicked() {
+                                self.session.sandbox(SandboxOp::Draw(1));
+                            }
+                            if ui.button("Mill 1").clicked() {
+                                self.session.sandbox(SandboxOp::Mill(1));
+                            }
+                            if ui.button("Reveal top 3").clicked() {
+                                self.session.sandbox(SandboxOp::RevealTop(3));
+                            }
+                            if ui.button("Reset game").clicked() {
+                                self.session.sandbox_modified = false;
+                                let seed = self.session.seed;
+                                self.session.new_game(seed);
+                            }
+                            theme::muted(
+                                ui,
+                                "click one of YOUR permanents while the sandbox is open to add a +1/+1 counter",
+                            );
+                        });
+                        theme::muted(
+                            ui,
+                            "Sandbox +1/+1 counters are stored and displayed on the card, but they are NOT a rules-supported counter system; combat math ignores them.",
+                        );
+                        if !self.session.revealed.is_empty() {
+                            ui.label(format!(
+                                "revealed (sandbox): {}",
+                                self.session.revealed.join(", ")
+                            ));
+                        }
+                    }
+
+                    if self.show_import {
+                        ui.separator();
+                        self.import_panel(ui);
+                    }
+
+                    if self.frame_count == 1 {
+                        ui.label(
+                            RichText::new(format!(
+                                "rules revision {} · pool {} cards · deterministic replay + digest · {}",
+                                aperture_core::RULES_REVISION,
+                                catalog::pool_size(),
+                                if self.session.ai.use_decider {
+                                    "model opt-in ON"
+                                } else {
+                                    "model off (heuristic)"
+                                }
+                            ))
+                            .small()
+                            .color(theme::MUTED),
+                        );
+                    }
+                });
+        });
+
+        // ------------------------------ floating windows
+        if let Some(text) = self.session.inspect.clone() {
+            let mut open = true;
+            egui::Window::new("Inspect")
+                .open(&mut open)
+                .resizable(true)
+                .show(&ctx, |ui| {
+                    ui.label(RichText::new(text).monospace());
+                    theme::muted(
+                        ui,
+                        "Inspect is read-only. Use the table controls for decisions.",
+                    );
+                });
+            if !open {
+                self.session.inspect = None;
+            }
+        }
+
+        if self.show_zones {
+            let mut open = true;
+            let inspect = self.zone_inspect;
+            let all_seats: Vec<PlayerId> = (0..view.seat_count as PlayerId).collect();
+            let mut inspect_card: Option<CardView> = None;
+            egui::Window::new("Public zones")
+                .open(&mut open)
+                .resizable(true)
+                .default_width(520.0)
+                .show(&ctx, |ui| {
+                    theme::muted(
+                        ui,
+                        "Battlefield, graveyard, exile and command zone are public. Opponent hand and library are counts only.",
+                    );
+                    for seat in &all_seats {
+                        ui.separator();
+                        let data = SeatPanelData::from_view(&view, &self.session.seats, *seat);
+                        ui.label(
+                            RichText::new(format!(
+                                "P{seat} · life {} · hand {} · library {}{}",
+                                data.life,
+                                data.hand_count,
+                                data.library_count,
+                                if data.eliminated { " · ELIMINATED" } else { "" }
+                            ))
+                            .color(theme::BRASS)
+                            .strong(),
+                        );
+                        let zones: Vec<(Zone, Vec<CardView>)> = vec![
+                            (Zone::Graveyard, data.graveyard.clone()),
+                            (Zone::Exile, data.exile.clone()),
+                            (Zone::Command, data.command_zone.clone()),
+                        ];
+                        for (zone, cards) in zones {
+                            ui.label(
+                                RichText::new(format!("{} ({})", zone_label(zone), cards.len()))
+                                    .small()
+                                    .color(theme::MUTED),
+                            );
+                            ui.horizontal_wrapped(|ui| {
+                                for card in &cards {
+                                    if ui.small_button(Self::card_label(card)).clicked() {
+                                        inspect_card = Some(card.clone());
+                                    }
+                                }
+                                if cards.is_empty() {
+                                    theme::muted(ui, "(empty)");
+                                }
+                            });
+                        }
+                    }
+                    if let Some((seat, zone)) = inspect {
+                        ui.separator();
+                        let cards = zone_cards_for(&view, seat, zone);
+                        ui.label(
+                            RichText::new(format!(
+                                "P{seat} {} — {} card(s)",
+                                zone_label(zone),
+                                cards.len()
+                            ))
+                            .color(theme::BRASS),
+                        );
+                        ui.horizontal_wrapped(|ui| {
+                            for card in &cards {
+                                if ui.small_button(Self::card_label(card)).clicked() {
+                                    inspect_card = Some(card.clone());
+                                }
+                            }
+                        });
+                    }
+                });
+            if let Some(card) = inspect_card {
+                self.inspect_card(&card);
+            }
+            if !open {
+                self.show_zones = false;
+            }
+        }
+
+        // ------------------------------ smoke mode
+        if let Some(path) = self.startup.smoke.clone() {
+            let elapsed = self.smoke_started.elapsed();
+            if !self.smoke_requested && elapsed > Duration::from_millis(700) {
+                self.smoke_requested = true;
+                let written = self.smoke_written.clone();
+                ctx.request_screenshot(move |image| {
+                    if let Err(err) = write_png(&path, &image) {
+                        eprintln!("smoke screenshot failed: {err}");
+                    }
+                    written.store(true, Ordering::SeqCst);
+                });
+            }
+            if self.smoke_requested && self.smoke_written.load(Ordering::SeqCst) {
+                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+            }
+            ctx.request_repaint_after(Duration::from_millis(200));
+        }
+    }
 }
 
 fn write_png(path: &std::path::Path, image: &egui::ColorImage) -> std::io::Result<()> {
@@ -734,508 +1782,6 @@ fn write_png(path: &std::path::Path, image: &egui::ColorImage) -> std::io::Resul
     Ok(())
 }
 
-impl ApertureApp {
-    fn render_ui(&mut self, ui: &mut egui::Ui) {
-        let ctx = ui.ctx().clone();
-        self.frame_count += 1;
-        if self.frame_count <= 3 {
-            // eframe applies its own style when the window is created, so the
-            // palette is (re)asserted over the first frames.
-            theme::apply(&ctx);
-        }
-        // Finished background work is applied here, on the main thread only.
-        let applied = self.session.poll_workers();
-        if !applied.is_empty() {
-            self.session.busy_note = Some(applied.join("; "));
-        }
-        // Workers keep running after a game ends (import, health, save, load),
-        // so keep the frame loop ticking while any is outstanding.
-        if self.session.worker_busy() {
-            ctx.request_repaint_after(Duration::from_millis(120));
-        }
-        self.tick_ai(&ctx);
-
-        let human = self.session.human_seat();
-        let view = self.session.view(human);
-        let owner = self.session.owner();
-
-        egui::CentralPanel::default().show(ui, |ui| {
-            // Scroll the real application content, not only a final panel that
-            // may already start beyond the viewport after the board and log.
-            egui::ScrollArea::vertical()
-                .id_salt("tabletop-content")
-                .auto_shrink([false, false])
-                .show(ui, |ui| {
-            ui.horizontal_wrapped(|ui| {
-                ui.label(RichText::new("THE APERTURE").heading().color(theme::BRASS));
-                theme::muted(ui, crate::session::profile_line());
-            });
-            if let Some(refusal) = self.session.deck_refusal.clone() {
-                ui.label(
-                    RichText::new(format!("DECK REFUSED — {refusal}"))
-                        .color(theme::BAD)
-                        .strong(),
-                );
-                theme::muted(
-                    ui,
-                    "Use the Import panel to supply a valid list for each seat, then start the imported match.",
-                );
-            }
-            ui.horizontal_wrapped(|ui| {
-                if ui.button("New game").clicked() {
-                    let seed = self.session.seed.wrapping_add(1);
-                    self.session.new_game(seed);
-                }
-                if ui.button("Pass / next action").clicked() {
-                    let _ = self.session.submit_human(Action::Pass);
-                }
-                if ui.button("AI step").clicked() {
-                    self.session.request_ai_decision_default();
-                }
-                ui.checkbox(&mut self.session.ai.autoplay, "AI autoplay");
-                if ui
-                    .checkbox(
-                        &mut self.session.human_plays_ai_seat,
-                        "Let the AI play my seat too",
-                    )
-                    .changed()
-                {
-                    self.session.invalidate_pending_work();
-                }
-                let decider_toggle = ui.checkbox(
-                    &mut self.session.ai.use_decider,
-                    "Use local Decider-2B",
-                );
-                if decider_toggle.changed() {
-                    let on = self.session.ai.use_decider;
-                    self.session.set_use_decider(on);
-                }
-                if ui.button("Save").clicked() {
-                    self.session
-                        .request_save(PathBuf::from(self.session.save_path.clone()));
-                }
-                if ui.button("Load").clicked() {
-                    self.session
-                        .request_load(PathBuf::from(self.session.save_path.clone()));
-                }
-                if ui.button("Set branch").clicked() {
-                    self.session.set_branch();
-                }
-                if ui.button("Return to branch").clicked()
-                    && let Err(err) = self.session.return_to_branch()
-                {
-                    self.session.message = err;
-                }
-                ui.checkbox(&mut self.show_coach, "Coaching");
-                ui.checkbox(&mut self.show_sandbox, "Sandbox");
-                ui.checkbox(&mut self.show_import, "Import");
-                ui.checkbox(&mut self.show_zones, "Zones");
-            });
-            ui.horizontal_wrapped(|ui| {
-                if let Some((label, _)) = &self.session.branch {
-                    ui.label(
-                        RichText::new(format!("branch: {label}"))
-                            .color(theme::BRASS)
-                            .small(),
-                    );
-                }
-                if let Some(pending) = &view.pending {
-                    ui.label(RichText::new(format!("WAITING: {pending}")).color(theme::WARN));
-                } else if let Some(owner) = owner {
-                    if owner == human || view.priority == Some(owner) {
-                        ui.label(format!("P{owner} holds priority"));
-                    } else {
-                        ui.label(
-                            RichText::new(format!(
-                                "Waiting on P{owner} (no player has priority)"
-                            ))
-                            .color(theme::WARN),
-                        );
-                    }
-                } else if let Some(conclusion) = self.session.conclude() {
-                    ui.label(RichText::new(conclusion).color(theme::GOOD).strong());
-                }
-                ui.label(format!(
-                    "turn {} · {} · active P{} · stack {} · {} · digest {}",
-                    view.turn_number,
-                    view.step.name(),
-                    view.active,
-                    view.stack.len(),
-                    {
-                        (0..view.seat_count)
-                            .map(|seat| {
-                                let player = &self.session.game.state.players[seat];
-                                format!(
-                                    "P{seat} {}{}",
-                                    player.life,
-                                    if player.lost { " (out)" } else { "" }
-                                )
-                            })
-                            .collect::<Vec<_>>()
-                            .join(" / ")
-                    },
-                    view.digest
-                ));
-                if self.session.sandbox_modified {
-                    ui.label(RichText::new("SANDBOX-MODIFIED").color(theme::BAD).strong());
-                }
-                if self.session.ai.use_decider {
-                    ui.label(RichText::new("decider-2b opt-in").color(theme::BRASS));
-                }
-                if self.session.worker_busy() {
-                    ui.spinner();
-                    ui.label(RichText::new("background work running").color(theme::BRASS));
-                }
-            });
-            if let Some(note) = &self.session.busy_note {
-                ui.label(RichText::new(note).color(theme::MUTED).small());
-            }
-            ui.separator();
-
-            ui.columns(2, |columns| {
-                // ---------------- left: the table
-                let left = &mut columns[0];
-                let opponents = view.opponents.clone();
-                for opponent in &opponents {
-                    theme::heading(
-                        left,
-                        &format!(
-                            "OPPONENT  P{}  life {}{}  hand {}  library {}  graveyard {}  exile {}",
-                            opponent.seat,
-                            opponent.life,
-                            if opponent.eliminated { "  [LEFT THE GAME]" } else { "" },
-                            opponent.hand_count,
-                            opponent.library_count,
-                            opponent.graveyard.len(),
-                            opponent.exile.len()
-                        ),
-                    );
-                    theme::muted(
-                        left,
-                        "opponent hand contents are hidden; graveyard and exile are public",
-                    );
-                    self.battlefield_ui(left, opponent.seat, &opponent.battlefield, false);
-                }
-
-                theme::heading(left, "STACK");
-                if view.stack.is_empty() {
-                    theme::muted(left, "(stack empty)");
-                }
-                for (index, item) in view.stack.iter().rev().enumerate() {
-                    let targets = if item.targets.is_empty() {
-                        String::new()
-                    } else {
-                        format!(" → {}", item.targets.join(", "))
-                    };
-                    left.label(format!(
-                        "{}. {}{}  (P{})",
-                        index + 1,
-                        item.name,
-                        targets,
-                        item.controller
-                    ));
-                }
-
-                theme::heading(
-                    left,
-                    &format!(
-                        "YOU  P{human}  life {}  hand {}  library {}  mana {}",
-                        view.own_life,
-                        view.own_hand.len(),
-                        view.own_library_count,
-                        view.own_mana
-                    ),
-                );
-                theme::muted(
-                    left,
-                    format!(
-                        "graveyard {} · exile {} · lands played this turn {} · mulligans {}",
-                        view.own_graveyard.len(),
-                        view.own_exile.len(),
-                        self.session.game.state.turn.lands_played,
-                        view.own_mulligans
-                    ),
-                );
-                let own_cards = view.own_battlefield.clone();
-                self.battlefield_ui(left, human, &own_cards, true);
-
-                theme::heading(left, "YOUR HAND");
-                let hand = view.own_hand.clone();
-                let legal = view.legal.clone();
-                let mut play: Option<Action> = None;
-                for card in &hand {
-                    let matching: Vec<Action> = legal
-                        .iter()
-                        .filter(|entry| match (&entry.action, card.card.def().is_land()) {
-                            (Action::PlayLand { card: id }, true) => *id == card.id,
-                            (Action::CastSpell { card: id, .. }, false) => *id == card.id,
-                            _ => false,
-                        })
-                        .map(|entry| entry.action.clone())
-                        .collect();
-                    let label = Self::card_label(card);
-                    let enabled = !matching.is_empty();
-                    let response = left.add_enabled(
-                        enabled,
-                        egui::Button::new(RichText::new(label).color(if enabled {
-                            theme::TEXT
-                        } else {
-                            theme::MUTED
-                        })),
-                    );
-                    if response.clicked() {
-                        match matching.len() {
-                            0 => {
-                                self.session.inspect = Some(format!(
-                                    "{}\n{}\n{}",
-                                    card.name,
-                                    card.cost.unwrap_or("(no cost)"),
-                                    card.oracle
-                                ));
-                            }
-                            1 => play = Some(matching[0].clone()),
-                            _ => self.session.target_pick = Some((card.id, matching)),
-                        }
-                    }
-                    response.on_hover_text(card.oracle);
-                }
-                if let Some(action) = play {
-                    let _ = self.session.submit_human(action);
-                }
-                if self.session.target_pick.is_some() {
-                    let (card, options) = self.session.target_pick.clone().unwrap();
-                    let name = self
-                        .session
-                        .game
-                        .state
-                        .try_object(card)
-                        .map(|o| o.name())
-                        .unwrap_or("spell");
-                    left.label(RichText::new(format!("Choose a target for {name}:")).color(theme::BRASS));
-                    for action in options {
-                        let label = legal
-                            .iter()
-                            .find(|entry| entry.action == action)
-                            .map(|entry| entry.label.clone())
-                            .unwrap_or_else(|| "cast".to_string());
-                        if left.button(label).clicked() {
-                            let _ = self.session.submit_human(action);
-                        }
-                    }
-                    if left.button("Cancel").clicked() {
-                        self.session.target_pick = None;
-                    }
-                }
-
-                // ---------------- right: state, actions, coaching, log
-                let right = &mut columns[1];
-                theme::heading(right, "LEGAL ACTIONS — only these are accepted");
-                if view.legal.is_empty() {
-                    theme::muted(right, "no legal action for your seat right now");
-                }
-                let mut chosen: Option<Action> = None;
-                for entry in &view.legal {
-                    let label = format!("{}   [CR {}]", entry.label, entry.rules.join(", "));
-                    if right.button(label).clicked() {
-                        chosen = Some(entry.action.clone());
-                    }
-                }
-                if let Some(action) = chosen {
-                    let _ = self.session.submit_human(action);
-                }
-
-                if let Some(owner) = owner
-                    && owner != human
-                {
-                    right.separator();
-                    theme::heading(right, &format!("WAITING ON P{owner}"));
-                    if view.priority == Some(owner) {
-                        theme::muted(right, format!("P{owner} holds priority."));
-                    } else {
-                        theme::muted(
-                            right,
-                            format!(
-                                "P{owner} has a pending decision; details are private to that seat. No player has priority."
-                            ),
-                        );
-                    }
-                    if self.session.seat_is_ai(owner)
-                        && right.button("Let the AI answer (step)").clicked()
-                    {
-                        self.session.request_ai_decision_default();
-                    }
-                } else if view.pending_kind.is_some() {
-                    right.separator();
-                    let pending_view = view.clone();
-                    self.pending_controls(right, &pending_view);
-                }
-
-                if self.show_coach {
-                    right.separator();
-                    theme::heading(right, "COACHING (derived from the engine trace)");
-                    let explanations = coach::explain(&self.session.game, human, &view.legal);
-                    egui::ScrollArea::vertical()
-                        .id_salt("coach")
-                        .max_height(240.0)
-                        .show(right, |ui| {
-                            for explanation in explanations {
-                                ui.label(
-                                    RichText::new(format!("[{}] {}", explanation.topic, explanation.text))
-                                        .color(if explanation.topic.contains("unavailable") {
-                                            theme::MUTED
-                                        } else {
-                                            theme::TEXT
-                                        }),
-                                );
-                                for rule in &explanation.rules {
-                                    if let Some(note) = coach::rule_note(rule) {
-                                        ui.label(
-                                            RichText::new(format!("    CR {rule}: {note}"))
-                                                .small()
-                                                .color(theme::MUTED),
-                                        );
-                                    }
-                                }
-                            }
-                        });
-                }
-
-                right.separator();
-                theme::heading(right, "LOG (viewer-masked)");
-                egui::ScrollArea::vertical()
-                    .id_salt("log")
-                    .max_height(200.0)
-                    .show(right, |ui| {
-                        for line in view.log.iter().rev().take(60) {
-                            ui.label(RichText::new(line).small());
-                        }
-                    });
-
-                if let Some(note) = &self.session.note {
-                    right.label(RichText::new(note).color(theme::BRASS).small());
-                }
-                if !self.session.message.is_empty() {
-                    right.label(RichText::new(&self.session.message).color(theme::WARN).small());
-                }
-            });
-
-            if self.show_sandbox {
-                ui.separator();
-                theme::heading(ui, crate::session::sandbox_label());
-                ui.horizontal_wrapped(|ui| {
-                    if ui.button("Draw 1").clicked() {
-                        self.session.sandbox(SandboxOp::Draw(1));
-                    }
-                    if ui.button("Mill 1").clicked() {
-                        self.session.sandbox(SandboxOp::Mill(1));
-                    }
-                    if ui.button("Reveal top 3").clicked() {
-                        self.session.sandbox(SandboxOp::RevealTop(3));
-                    }
-                    if ui.button("Reset game").clicked() {
-                        self.session.sandbox_modified = false;
-                        let seed = self.session.seed;
-                        self.session.new_game(seed);
-                    }
-                    theme::muted(
-                        ui,
-                        "click a permanent while the sandbox is open to add a +1/+1 counter (storage only)",
-                    );
-                });
-                if !self.session.revealed.is_empty() {
-                    ui.label(format!("revealed (sandbox): {}", self.session.revealed.join(", ")));
-                }
-            }
-
-            if self.show_import {
-                ui.separator();
-                self.import_panel(ui);
-            }
-
-            if self.frame_count == 1 {
-                ui.label(
-                    RichText::new(format!(
-                        "rules revision {} · pool {} cards · deterministic replay + digest · {}",
-                        aperture_core::RULES_REVISION,
-                        catalog::pool_size(),
-                        if self.session.ai.use_decider {
-                            "model opt-in ON"
-                        } else {
-                            "model off (heuristic)"
-                        }
-                    ))
-                    .small()
-                    .color(theme::MUTED),
-                );
-            }
-            });
-        });
-
-        // ------------------------------ floating windows
-        if let Some(text) = self.session.inspect.clone() {
-            let mut open = true;
-            egui::Window::new("Inspect")
-                .open(&mut open)
-                .resizable(true)
-                .show(&ctx, |ui| {
-                    ui.label(RichText::new(text).monospace());
-                });
-            if !open {
-                self.session.inspect = None;
-            }
-        }
-
-        if self.show_zones {
-            let mut open = true;
-            let own_graveyard = view.own_graveyard.clone();
-            let own_exile = view.own_exile.clone();
-            let opponent_graveyards: Vec<Vec<CardView>> =
-                view.opponents.iter().map(|o| o.graveyard.clone()).collect();
-            let opponent_exiles: Vec<Vec<CardView>> =
-                view.opponents.iter().map(|o| o.exile.clone()).collect();
-            egui::Window::new("Public zones")
-                .open(&mut open)
-                .resizable(true)
-                .show(&ctx, |ui| {
-                    ui.label(RichText::new("Graveyard (public)").color(theme::BRASS));
-                    for card in own_graveyard
-                        .iter()
-                        .chain(opponent_graveyards.iter().flatten())
-                    {
-                        ui.label(Self::card_label(card));
-                    }
-                    ui.separator();
-                    ui.label(RichText::new("Exile (public)").color(theme::BRASS));
-                    for card in own_exile.iter().chain(opponent_exiles.iter().flatten()) {
-                        ui.label(Self::card_label(card));
-                    }
-                });
-            if !open {
-                self.show_zones = false;
-            }
-        }
-
-        // ------------------------------ smoke mode
-        if let Some(path) = self.startup.smoke.clone() {
-            let elapsed = self.smoke_started.elapsed();
-            if !self.smoke_requested && elapsed > Duration::from_millis(700) {
-                self.smoke_requested = true;
-                let written = self.smoke_written.clone();
-                ctx.request_screenshot(move |image| {
-                    if let Err(err) = write_png(&path, &image) {
-                        eprintln!("smoke screenshot failed: {err}");
-                    }
-                    written.store(true, Ordering::SeqCst);
-                });
-            }
-            if self.smoke_requested && self.smoke_written.load(Ordering::SeqCst) {
-                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
-            }
-            ctx.request_repaint_after(Duration::from_millis(200));
-        }
-    }
-}
-
 impl eframe::App for ApertureApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         self.render_ui(ui);
@@ -1245,10 +1791,11 @@ impl eframe::App for ApertureApp {
 #[cfg(test)]
 mod viewport_tests {
     use super::*;
+    use crate::session::{BUNDLED_A, BUNDLED_B};
     use aperture_core::{CardId, DeckList, Game, Step};
 
-    fn imported_app() -> ApertureApp {
-        let startup = Startup {
+    fn startup() -> Startup {
+        Startup {
             smoke: None,
             seed: 1,
             deck_a: PathBuf::new(),
@@ -1259,12 +1806,19 @@ mod viewport_tests {
             human_autoplay: false,
             autoplay: false,
             use_decider: false,
-        };
+            seats: 2,
+            profile: Profile::Practice20,
+            window: None,
+        }
+    }
+
+    fn imported_app() -> ApertureApp {
+        let startup = startup();
         let (a, b, _) = startup_decks(&startup);
         let mut session =
             UiSession::new(1, vec![a, b], AiSettings::default(), false, false).expect("session");
         session.seat_import[0] = Some(import_seat_text(P0, "P0 imported", BUNDLED_A).unwrap());
-        session.seat_import[1] = Some(import_seat_text(P1, "P1 imported", BUNDLED_B).unwrap());
+        session.seat_import[1] = Some(import_seat_text(1, "P1 imported", BUNDLED_B).unwrap());
         ApertureApp {
             session,
             startup,
@@ -1276,45 +1830,328 @@ mod viewport_tests {
             show_import: true,
             show_zones: false,
             show_coach: true,
+            show_help: false,
+            setup_seats: 2,
+            setup_profile: Profile::Practice20,
+            observed_seats: 2,
+            observed_profile: Profile::Practice20,
+            zone_inspect: None,
+            zoom: 1.0,
             frame_count: 0,
         }
+    }
+
+    fn four_seat_app() -> ApertureApp {
+        let startup = Startup {
+            seats: 4,
+            ..startup()
+        };
+        let seats = UiSession::bundled_seats(4).expect("four seats");
+        let ai = AiSettings {
+            human_seat: P0,
+            ai_seats: vec![1, 2, 3],
+            ..AiSettings::default()
+        };
+        let mut session = UiSession::new(1, seats, ai, false, false).expect("session");
+        session.profile = Profile::CommanderCombat40;
+        session.new_game(1);
+        ApertureApp {
+            session,
+            startup,
+            smoke_started: Instant::now(),
+            smoke_requested: false,
+            smoke_written: Arc::new(AtomicBool::new(false)),
+            last_ai_step: Instant::now(),
+            show_sandbox: false,
+            show_import: false,
+            show_zones: false,
+            show_coach: true,
+            show_help: false,
+            setup_seats: 4,
+            setup_profile: Profile::CommanderCombat40,
+            observed_seats: 4,
+            observed_profile: Profile::CommanderCombat40,
+            zone_inspect: None,
+            zoom: 1.0,
+            frame_count: 0,
+        }
+    }
+
+    #[test]
+    fn explicit_startup_decks_override_the_bounded_default() {
+        let path = std::env::temp_dir().join(format!(
+            "aperture-explicit-startup-{}.txt",
+            std::process::id()
+        ));
+        std::fs::write(&path, "1 Grizzly Bears\n39 Forest\n").expect("temp deck");
+        let mut startup = startup();
+        startup.seats = 4;
+        startup.profile = Profile::CommanderCombat40;
+        startup.deck_a = path.clone();
+        startup.deck_a_explicit = true;
+        let (deck_a, deck_b, refusal) = startup_decks(&startup);
+        assert!(refusal.is_none(), "{refusal:?}");
+        assert_eq!(
+            deck_a.count_of(CardId::GrizzlyBears),
+            1,
+            "an explicit --deck-a must be applied exactly"
+        );
+        assert_eq!(deck_a.size(), 40);
+        assert_eq!(
+            deck_b.count_of(CardId::Plains),
+            12,
+            "an unmodified bounded P1 still receives the command-zone default"
+        );
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn command_zone_inspection_does_not_invent_a_battlefield_location() {
+        let mut app = four_seat_app();
+        let view = app.session.view(P0);
+        let commander = view.own_command_zone.first().expect("public commander");
+        app.inspect_card(commander);
+        let text = app.session.inspect.as_deref().expect("inspection text");
+        assert!(text.contains("Isamaru, Hound of Konda"));
+        assert!(
+            !text.contains("zone: battlefield"),
+            "a command-zone card was mislabeled: {text}"
+        );
+    }
+
+    fn run_frame(app: &mut ApertureApp, width: f32, height: f32, frame: usize) -> Vec<String> {
+        let ctx = egui::Context::default();
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(width, height),
+            )),
+            time: Some(frame as f64 / 30.0),
+            ..Default::default()
+        };
+        // Panels settle their remembered sizes on the first frame; assert the
+        // second frame so the capture matches a real running window.
+        let mut warm = ctx.run_ui(input.clone(), |ui| app.render_ui(ui));
+        warm.textures_delta.clear();
+        let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+        output.textures_delta.clear();
+        output
+            .shapes
+            .into_iter()
+            .filter_map(|clipped| match clipped.shape {
+                egui::Shape::Text(text) => Some(text.galley.text().to_owned()),
+                _ => None,
+            })
+            .collect()
     }
 
     #[test]
     fn absolute_life_labels_remain_correct_when_the_human_is_p1() {
         let mut app = imported_app();
         app.show_import = false;
-        app.session.ai.human_seat = P1;
+        app.session.ai.human_seat = 1;
         app.session.ai.ai_seats = vec![P0];
         app.session.game.state.players[0].life = 3;
         app.session.game.state.players[1].life = 17;
-        let ctx = egui::Context::default();
-        let mut output = ctx.run_ui(
-            egui::RawInput {
-                screen_rect: Some(egui::Rect::from_min_size(
-                    egui::Pos2::ZERO,
-                    egui::vec2(1400.0, 940.0),
-                )),
-                ..Default::default()
-            },
-            |ui| app.render_ui(ui),
-        );
-        output.textures_delta.clear();
-        let labels: Vec<String> = output
-            .shapes
-            .into_iter()
-            .filter_map(|clipped| {
-                if let egui::Shape::Text(text) = clipped.shape {
-                    Some(text.galley.text().to_owned())
-                } else {
-                    None
-                }
-            })
-            .collect();
+        let labels = run_frame(&mut app, 1400.0, 940.0, 0);
         assert!(
             labels.iter().any(|text| text.contains("P0 3 / P1 17")),
             "absolute life labels were swapped for the P1 viewer: {labels:?}"
         );
+    }
+
+    #[test]
+    fn four_seat_panels_are_visible_at_the_minimum_viewport() {
+        let mut app = four_seat_app();
+        let labels = run_frame(&mut app, 1280.0, 720.0, 0);
+        for seat in 0..4 {
+            assert!(
+                labels.iter().any(|text| text.contains(&format!("P{seat}"))),
+                "P{seat} panel/status missing at 1280x720: {labels:?}"
+            );
+        }
+        assert!(
+            labels.iter().any(|text| text.contains("Commander")),
+            "bounded 40-life commander data missing: {labels:?}"
+        );
+        assert!(
+            labels.iter().any(|text| text.contains("PROFILE:")),
+            "profile setup controls missing: {labels:?}"
+        );
+        assert!(
+            labels.iter().any(|text| text.contains("text 100%")),
+            "text zoom control missing: {labels:?}"
+        );
+    }
+
+    fn run_frame_with_clip(
+        app: &mut ApertureApp,
+        width: f32,
+        height: f32,
+    ) -> Vec<(String, egui::Rect, egui::Rect)> {
+        let ctx = egui::Context::default();
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(width, height),
+            )),
+            ..Default::default()
+        };
+        let mut warm = ctx.run_ui(input.clone(), |ui| app.render_ui(ui));
+        warm.textures_delta.clear();
+        let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+        output.textures_delta.clear();
+        output
+            .shapes
+            .into_iter()
+            .filter_map(|clipped| match clipped.shape {
+                egui::Shape::Text(text) => {
+                    let bounds = text.visual_bounding_rect();
+                    Some((text.galley.text().to_owned(), clipped.clip_rect, bounds))
+                }
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn click_text(app: &mut ApertureApp, width: f32, height: f32, needle: &str) {
+        let ctx = egui::Context::default();
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(width, height),
+            )),
+            ..Default::default()
+        };
+        let mut warm = ctx.run_ui(input.clone(), |ui| app.render_ui(ui));
+        warm.textures_delta.clear();
+        let mut warm = ctx.run_ui(input.clone(), |ui| app.render_ui(ui));
+        warm.textures_delta.clear();
+        let target = warm
+            .shapes
+            .iter()
+            .find_map(|clipped| match &clipped.shape {
+                egui::Shape::Text(text) if text.galley.text().contains(needle) => {
+                    Some(text.visual_bounding_rect().center())
+                }
+                _ => None,
+            })
+            .unwrap_or_else(|| {
+                let labels: Vec<&str> = warm
+                    .shapes
+                    .iter()
+                    .filter_map(|clipped| match &clipped.shape {
+                        egui::Shape::Text(text) => Some(text.galley.text()),
+                        _ => None,
+                    })
+                    .collect();
+                panic!("no clickable label containing {needle:?}: {labels:?}")
+            });
+        let mut click_input = input;
+        click_input.events = vec![
+            egui::Event::PointerMoved(target),
+            egui::Event::PointerButton {
+                pos: target,
+                button: egui::PointerButton::Primary,
+                pressed: true,
+                modifiers: egui::Modifiers::NONE,
+            },
+            egui::Event::PointerButton {
+                pos: target,
+                button: egui::PointerButton::Primary,
+                pressed: false,
+                modifiers: egui::Modifiers::NONE,
+            },
+        ];
+        let mut clicked = ctx.run_ui(click_input, |ui| app.render_ui(ui));
+        clicked.textures_delta.clear();
+    }
+
+    #[test]
+    fn real_clicks_start_a_four_seat_bounded_table() {
+        let mut app = imported_app();
+        assert_eq!(app.session.seats.len(), 2);
+        assert_eq!(app.session.profile, Profile::Practice20);
+        click_text(&mut app, 1280.0, 720.0, "4 seats");
+        click_text(
+            &mut app,
+            1280.0,
+            720.0,
+            "bounded 40 life · Isamaru each seat",
+        );
+        click_text(
+            &mut app,
+            1280.0,
+            720.0,
+            "Start new table with these options",
+        );
+        assert_eq!(
+            app.session.seats.len(),
+            4,
+            "the clicked setup did not start four seats"
+        );
+        assert_eq!(app.session.profile, Profile::CommanderCombat40);
+        assert_eq!(app.session.game.state.player(P0).life, 40);
+        assert_eq!(app.session.game.state.commanders.len(), 4);
+        assert_eq!(app.session.ai.ai_seats, vec![1, 2, 3]);
+    }
+
+    #[test]
+    fn a_pending_table_selection_is_not_overwritten_by_the_live_table() {
+        let mut app = imported_app();
+        app.setup_seats = 4;
+        app.setup_profile = Profile::CommanderCombat40;
+        let _ = run_frame(&mut app, 1280.0, 720.0, 0);
+        assert_eq!(
+            app.setup_seats, 4,
+            "the frame loop reset the user's seat selection"
+        );
+        assert_eq!(
+            app.setup_profile,
+            Profile::CommanderCombat40,
+            "the frame loop reset the user's profile selection"
+        );
+    }
+
+    #[test]
+    fn four_seat_panels_and_primary_actions_are_actually_visible_at_1280x720() {
+        let mut app = four_seat_app();
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        let visible = |needle: &str| {
+            shapes.iter().any(|(text, clip, bounds)| {
+                text.contains(needle) && clip.intersects(*bounds) && bounds.min.y < 720.0
+            })
+        };
+        for seat in 0..4 {
+            assert!(
+                visible(&format!("P{seat} ·")),
+                "P{seat} seat panel header is not visible at 1280x720"
+            );
+        }
+        assert!(
+            visible("YOUR ACTIONS"),
+            "the persistent primary action strip is not visible at 1280x720"
+        );
+        assert!(
+            visible("Pass priority")
+                || visible("Keep this hand")
+                || visible("Mulligan")
+                || visible("Let the AI answer")
+                || visible("WAITING ON"),
+            "no primary action control is visible at 1280x720"
+        );
+    }
+
+    #[test]
+    fn four_seat_panels_are_visible_at_a_large_viewport() {
+        let mut app = four_seat_app();
+        let labels = run_frame(&mut app, 1920.0, 1080.0, 0);
+        for seat in 0..4 {
+            assert!(
+                labels.iter().any(|text| text.contains(&format!("P{seat}"))),
+                "P{seat} panel/status missing at 1920x1080: {labels:?}"
+            );
+        }
     }
 
     #[test]
@@ -1334,7 +2171,7 @@ mod viewport_tests {
             };
             input
                 .events
-                .push(egui::Event::PointerMoved(egui::pos2(20.0, 200.0)));
+                .push(egui::Event::PointerMoved(egui::pos2(20.0, 640.0)));
             if frame > 1 {
                 input.events.push(egui::Event::MouseWheel {
                     unit: egui::MouseWheelUnit::Point,
@@ -1369,6 +2206,7 @@ mod viewport_tests {
             "the two certified decks' Start button never becomes visible in the actual 1100x760 application frame"
         );
     }
+
     fn partial_apnap_app() -> ApertureApp {
         let deck = DeckList::new(
             "Native APNAP partial",
@@ -1397,7 +2235,7 @@ mod viewport_tests {
             enabled: true,
             autoplay: false,
             human_seat: P0,
-            ai_seats: vec![P1],
+            ai_seats: vec![1],
             ..AiSettings::default()
         };
         let mut session = UiSession::new(seed, decks, ai, false, false).expect("session");
@@ -1460,18 +2298,7 @@ mod viewport_tests {
             .expect("sacrifice choice")
             .action;
         session.submit(choice).expect("answer P0");
-        let startup = Startup {
-            smoke: None,
-            seed,
-            deck_a: PathBuf::new(),
-            deck_b: PathBuf::new(),
-            deck_a_explicit: false,
-            deck_b_explicit: false,
-            ai_seat: 1,
-            human_autoplay: false,
-            autoplay: false,
-            use_decider: false,
-        };
+        let startup = startup();
         ApertureApp {
             session,
             startup,
@@ -1483,6 +2310,13 @@ mod viewport_tests {
             show_import: false,
             show_zones: false,
             show_coach: true,
+            show_help: false,
+            setup_seats: 2,
+            setup_profile: Profile::Practice20,
+            observed_seats: 2,
+            observed_profile: Profile::Practice20,
+            zone_inspect: None,
+            zoom: 1.0,
             frame_count: 0,
         }
     }
@@ -1490,28 +2324,9 @@ mod viewport_tests {
     #[test]
     fn partial_apnap_shows_generic_waiting_without_the_owner_label() {
         let mut app = partial_apnap_app();
-        assert_eq!(app.session.owner(), Some(P1));
+        assert_eq!(app.session.owner(), Some(1));
         assert_eq!(app.session.game.state.turn.priority, None);
-        let ctx = egui::Context::default();
-        let mut output = ctx.run_ui(
-            egui::RawInput {
-                screen_rect: Some(egui::Rect::from_min_size(
-                    egui::Pos2::ZERO,
-                    egui::vec2(1100.0, 760.0),
-                )),
-                ..Default::default()
-            },
-            |ui| app.render_ui(ui),
-        );
-        output.textures_delta.clear();
-        let labels: Vec<String> = output
-            .shapes
-            .into_iter()
-            .filter_map(|clipped| match clipped.shape {
-                egui::Shape::Text(text) => Some(text.galley.text().to_owned()),
-                _ => None,
-            })
-            .collect();
+        let labels = run_frame(&mut app, 1100.0, 760.0, 0);
         assert!(
             labels
                 .iter()

@@ -4,7 +4,7 @@
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
-use aperture_core::{Action, AiSettings, CardId, DeckList, ObjectId, P0, P1};
+use aperture_core::{Action, AiSettings, CardId, DeckList, Event, ObjectId, P0, P1, Profile};
 use aperture_ui::session::{BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, load_explicit_deck};
 
 fn deck_a() -> DeckList {
@@ -177,7 +177,8 @@ fn the_profile_line_states_the_scope() {
     let line = aperture_ui::session::profile_line();
     assert!(line.contains("2-4 live seats"), "{line}");
     assert!(line.contains("NOT Commander"), "{line}");
-    assert!(line.contains("native table: 2"), "{line}");
+    assert!(line.contains("native table: 2-4"), "{line}");
+    assert!(line.contains("40-life"), "{line}");
     let _ = CardId::Shock;
     let _ = P1;
 }
@@ -449,4 +450,193 @@ fn native_startup_still_accepts_a_valid_mainboard_prefixed_file() {
     assert_eq!(list.size(), 40);
     assert!(refusal.is_none(), "{refusal:?}");
     std::fs::remove_file(&path).ok();
+}
+
+fn four_seat_bounded(seed: u64) -> UiSession {
+    let mut ui = session(seed, false);
+    ui.start_table(seed, 4, Profile::CommanderCombat40)
+        .expect("four-seat bounded table");
+    ui
+}
+
+#[test]
+fn native_table_starts_four_ordinary_seats_and_retains_them_on_a_new_game() {
+    let mut ui = session(31, false);
+    ui.start_table(31, 4, Profile::Practice20)
+        .expect("four-seat ordinary table");
+    assert_eq!(
+        ui.seats.len(),
+        4,
+        "new game must not fall back to two seats"
+    );
+    assert_eq!(ui.game.state.seat_count(), 4);
+    assert_eq!(ui.game.state.profile, Profile::Practice20);
+    assert_eq!(ui.ai.human_seat, P0);
+    assert_eq!(ui.ai.ai_seats, vec![1, 2, 3]);
+    assert!(ui.game.state.commanders.is_empty());
+
+    let owner = ui.owner().expect("opening mulligan");
+    if owner == P0 {
+        ui.submit(Action::Mulligan { keep: true })
+            .expect("human keeps");
+    }
+    while ui.owner().is_some() && ui.owner() != Some(P0) {
+        assert!(
+            ui.step_ai().is_some(),
+            "every non-human seat must be playable by the heuristic AI"
+        );
+    }
+    assert!(
+        ui.owner() == Some(P0),
+        "the table returns to the human seat"
+    );
+
+    ui.new_game(32);
+    assert_eq!(
+        ui.seats.len(),
+        4,
+        "New game dropped the selected seat count"
+    );
+    assert_eq!(ui.game.state.profile, Profile::Practice20);
+    assert_eq!(ui.game.state.player(P0).life, 20);
+}
+
+#[test]
+fn bounded_forty_life_profile_has_one_public_commander_per_seat() {
+    let ui = four_seat_bounded(33);
+    assert_eq!(ui.game.state.profile, Profile::CommanderCombat40);
+    assert_eq!(ui.game.state.player(P0).life, 40);
+    assert_eq!(ui.game.state.commanders.len(), 4);
+    assert_eq!(ui.commander_setup().len(), 4);
+    let view = ui.view(P0);
+    assert_eq!(view.seat_count, 4);
+    assert_eq!(view.opponents.len(), 3);
+    assert_eq!(view.commanders.len(), 4);
+    for commander in &view.commanders {
+        assert_eq!(commander.name, "Isamaru, Hound of Konda");
+        assert_eq!(commander.zone, Some(aperture_core::Zone::Command));
+    }
+    // Command zones are public; opponent hand/library contents are not even
+    // representable in OpponentView.
+    for opponent in &view.opponents {
+        assert_eq!(opponent.command_zone.len(), 1);
+        assert!(opponent.hand_count > 0);
+        assert!(opponent.library_count > 0);
+    }
+    assert_eq!(view.own_command_zone.len(), 1);
+    assert_eq!(
+        view.pending_owner,
+        ui.game.decision_owner(),
+        "the public pending owner must match the engine"
+    );
+}
+
+#[test]
+fn bounded_forty_life_four_seat_save_load_round_trips() {
+    let mut ui = four_seat_bounded(34);
+    while matches!(
+        ui.game.state.pending,
+        Some(aperture_core::Pending::Mulligan { .. })
+    ) {
+        if ui.owner() == Some(P0) {
+            ui.submit(Action::Mulligan { keep: true }).expect("keep");
+        } else {
+            assert!(ui.step_ai().is_some(), "AI keeps its hand");
+        }
+    }
+    let path = temp_path("bounded-four-seat");
+    ui.save(&path).expect("bounded save succeeds");
+    let digest = ui.game.digest();
+
+    let mut other = session(35, false);
+    other.load(&path).expect("bounded load succeeds");
+    assert_eq!(other.game.digest(), digest);
+    assert_eq!(other.seats.len(), 4, "load must restore the seat count");
+    assert_eq!(other.game.state.profile, Profile::CommanderCombat40);
+    assert_eq!(other.game.state.player(P0).life, 40);
+    assert_eq!(other.game.state.commanders.len(), 4);
+    assert_eq!(other.seat_url.len(), 4, "per-seat controls follow the load");
+    let _ = std::fs::remove_file(&path);
+}
+
+#[test]
+fn four_seat_load_resizes_the_native_import_controls() {
+    let mut ui = session(36, false);
+    let path = temp_path("four-seat-resize");
+    ui.start_table(36, 3, Profile::Practice20)
+        .expect("three-seat table");
+    ui.save(&path).expect("save");
+    let mut other = session(37, false);
+    assert_eq!(other.seat_url.len(), 2);
+    other.load(&path).expect("load");
+    assert_eq!(other.seats.len(), 3);
+    assert_eq!(other.seat_url.len(), 3);
+    assert_eq!(other.seat_import.len(), 3);
+    let _ = std::fs::remove_file(&path);
+}
+
+#[test]
+fn default_four_seat_bounded_libraries_actually_cast_isamaru() {
+    let mut cast_seed = None;
+    'seeds: for seed in 0..24u64 {
+        let mut ui = session(seed, false);
+        ui.start_table(seed, 4, Profile::CommanderCombat40)
+            .expect("four-seat bounded table");
+        for (seat, deck) in ui.seats.iter().enumerate() {
+            assert!(
+                deck.count_of(CardId::Plains) > 0,
+                "P{seat} bounded default has no white source: {}",
+                deck.name
+            );
+            assert_eq!(
+                deck.count_of(CardId::IsamaruHoundOfKonda),
+                0,
+                "the commander must not be part of the library"
+            );
+        }
+        // Drive every seat with the same heuristic policy the UI uses.
+        ui.human_plays_ai_seat = true;
+        for _ in 0..600 {
+            if ui.game.state.is_over() {
+                break;
+            }
+            let Some(seat) = ui.owner() else { break };
+            assert!(ui.seat_is_ai(seat), "P{seat} has no policy");
+            let _ = ui.step_ai();
+            if ui.log.iter().any(|event| {
+                matches!(
+                    event,
+                    Event::Cast {
+                        card: CardId::IsamaruHoundOfKonda,
+                        ..
+                    }
+                )
+            }) {
+                cast_seed = Some(seed);
+                break 'seeds;
+            }
+        }
+    }
+    assert!(
+        cast_seed.is_some(),
+        "no default four-seat bounded game cast its supplied Isamaru within 600 actions per seed"
+    );
+}
+
+#[test]
+fn ordinary_default_seats_stay_temur_izzet() {
+    let seats =
+        UiSession::bundled_seats_for_profile(4, Profile::Practice20).expect("four ordinary seats");
+    let names: Vec<&str> = seats.iter().map(|deck| deck.name.as_str()).collect();
+    assert_eq!(
+        names,
+        vec![
+            "Temur Beats",
+            "Izzet Control",
+            "Temur Beats P2",
+            "Izzet Control P3"
+        ]
+    );
+    assert!(seats.iter().all(|deck| deck.count_of(CardId::Plains) == 0));
+    assert!(seats.iter().all(|deck| deck.size() == 40));
 }

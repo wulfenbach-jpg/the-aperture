@@ -1,6 +1,6 @@
 # THE APERTURE — a practice slice of Magic: The Gathering
 
-**practice slice / supported card pool / headless 2–4 seats / native 2-seat practice / named 20-life and bounded 40-life profiles / NOT Commander**
+**practice slice / supported card pool / headless 2–4 seats / native 2–4-seat practice / named 20-life and bounded 40-life profiles / NOT Commander**
 
 An original Rust rules engine, a headless CLI, and a native desktop card table.
 
@@ -21,16 +21,19 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (22 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (28 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
   five sourced command-zone practice cards **Isamaru, Hound of Konda**,
   **Plains**, **Unsummon**, **Time Ebb**, and **Swords to Plowshares**, plus
   the sourced full-combat-prevention instant **Fog** (`{G}`, Oracle: “Prevent
-  all combat damage that would be dealt this turn.”).
+  all combat damage that would be dealt this turn.”), plus the six typed
+  activated/triggered-ability practice cards **Prodigal Sorcerer**,
+  **Rootwalla**, **Brindle Boar**, **Elvish Visionary**, **Festering Goblin**
+  and **Oculus** (see `decks/abilities-practice-a.txt`/`-b.txt`).
   Isamaru is commander-only and is refused in every ordinary starting library
-  because the legend rule is not implemented. Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No other card or ability is added. This is a branch candidate, not an accepted M1 release.
+  because the legend rule is not implemented. Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
 * **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `harness`,
@@ -41,13 +44,13 @@ implementation and it says so everywhere it matters.
   masked per-seat projections, bounded one-defender combat declarations,
   replay v5/save v8 and a `harness` command that runs
   paired 2/3/4-seat seeds and verifies every replay digest. Terminal, capped and
-  failed runs are reported separately. This is **not** Commander support: the
-  native table remains a two-seat practice surface. This branch implements
+  failed runs are reported separately. The same ordered 2–4-seat engine is now
+  exposed by the native table (see the UI bullet below), but this is still
+  **not** Commander support. This branch implements
   CR 103.5 starting-player mulligan rounds and one bounded, real fixed-set
   public sacrifice producer (Crack the Earth); independent review and exact-head
   CI remain delivery gates, not an automatic M1 acceptance. Generic APNAP hidden-zone choices,
-  dynamic/restarting APNAP, native 3/4-seat tables and Arcane/splice
-  interactions remain unsupported.
+  dynamic/restarting APNAP and Arcane/splice interactions remain unsupported.
 * **Offline Commander profile analysis (#11, analysis only):**
   `aperture-cli commander-check --deck <deck-snapshot.json> --cards
   <cards-snapshot.json> [--json] [--out <report.json>]` validates the
@@ -68,18 +71,29 @@ implementation and it says so everywhere it matters.
   digest, including the mulligan round and sacrifice queue. Older replay/save versions are rejected explicitly rather
   than silently reinterpreted, and a recorded `rules_revision` must match this
   build before a replay runs. The pinned rules revision is unchanged.
-* **Native desktop UI** (`aperture`): dark charcoal/brass card table with both
-  battlefields, stack view, own hand, legal-action buttons, coaching panel,
-  viewer-masked log, pending-choice controls, sandbox tools, **two-seat deck
-  import**, save/load, and deterministic digests. Every model, network and file
-  operation runs on a background worker with a visible busy state; the frame
-  callback never blocks, and a worker result is applied only while its session
-  generation, engine revision, decision serial and seat all still match. The
-  native table intentionally remains the two-seat practice surface; 3/4-seat play
-  is headless/CLI only in this candidate.
+* **Native desktop UI** (`aperture`): dark charcoal/brass 2–4-seat card table
+  with compact 2x2 seat panels, all public battlefields, command zones, life,
+  counters, status, stack view, own hand, legal-action buttons, coaching panel,
+  viewer-masked log, pending-choice controls, sandbox tools, per-seat deck
+  import, save/load, text zoom and keyboard navigation. Every model, network and
+  file operation runs on a background worker with a visible busy state; the
+  frame callback never blocks, and a worker result is applied only while its
+  session generation, engine revision, decision serial and seat all still match.
+  The human is P0 and every other seat can be driven by the deterministic
+  heuristic AI with no model service. The setup controls choose 2/3/4 seats and
+  either ordinary 20-life practice or the explicit bounded 40-life
+  one-Isamaru-per-seat practice profile; **New game** retains that selection.
+  Ordinary defaults use the alternating compiled Temur/Izzet lists. The bounded
+  command default uses the compiled command-zone practice library
+  (`decks/command-zone-practice.txt`: Plains/Forest/Island plus the supported
+  command-zone cards) for every seat, so the supplied white Isamaru is actually
+  castable. Explicit `--deck-a`/`--deck-b` and imported lists still replace the
+  defaults exactly (or are refused) and are never silently overwritten.
+  The renderer uses the engine's masked `PlayerView` for card data, so opponent
+  hands and libraries are counts only.
   An accepted action invalidates any in-flight load, so a delayed file read can
   never overwrite the board the player just changed.
-* **Two-seat import / play** (UI): each seat has its own Archidekt URL box, a
+* **Per-seat import / play** (UI): each seat has its own Archidekt URL box, a
   pasted-text fallback and a text-file fallback. Each import is certified on its
   own (name, supported/total counts, practice-profile line, refusal reason);
   **Start imported match (P0 vs P1)** is enabled only when *both* seats are
@@ -156,8 +170,9 @@ owner's one-time CR 903.9a return choice, and a commander moving to hand/library
 is suspended for the owner's CR 903.9b replacement choice. This named profile
 stays at 20 life. It is **not** Commander legality or full Commander: Isamaru is
 the only supported commander, there is no color-identity/100-card profile, no
-commander damage, no legend rule, no partner/multi-commander, and the native
-table refuses command-zone-profile saves.
+commander damage, no legend rule, no partner/multi-commander; the native table
+supports loading/saving the two named command profiles in addition to starting
+the bounded 40-life table, but this is still practice, not Commander.
 
 A separate explicit **bounded Commander-combat practice** profile
 (`--commander-combat-practice`, serialized as `commander-combat-practice-40`)
@@ -165,8 +180,10 @@ starts at 40 life and keeps the same one-Isamaru-per-seat command-zone behavior.
 The per-commander combat-damage ledger and the CR 903.10a 21-damage loss are
 implemented for this explicit profile (stable `CommanderId` + recipient,
 combat-only credit). It is still **not the Commander format** (no 100-card
-construction, partners, legend rule, native table or full elimination/APNAP
-cleanup), and the native table refuses this profile; it is headless/CLI only.
+construction, partners, legend rule or full elimination/APNAP cleanup). The
+native setup offers this as the explicit **bounded 40 life** option with one
+Isamaru per seat; its games save/load natively. It remains headless-capable and
+is not the Commander format.
 Isamaru is refused in every ordinary starting
 library. The command-zone sources are Isamaru, Plains, Unsummon, Time Ebb and
 Swords to Plowshares; **Fog** adds bounded full combat-damage prevention (this
@@ -177,22 +194,24 @@ prevention, damage redirection and replacement effects are not modelled.
 
 Full Commander legality and gameplay — the bounded command-zone and
 Commander-combat practice profiles above are not Commander: color identity,
-100-card singleton construction, the legend rule, partners/multi-commander and
-native command-zone play are absent. The Commander-combat profile implements 40
+100-card singleton construction, the legend rule and partners/multi-commander
+are absent. The native table exposes these explicit profiles for local practice,
+which does not make them Commander. The Commander-combat profile implements 40
 starting life, the per-commander combat-damage ledger and the CR 903.10a 21-damage
 loss and full combat-damage prevention for one turn (Fog); partial prevention,
 redirection and replacement effects are not implemented, so the profile is not
 Commander gameplay. The offline deck-profile analyzer above is
 analysis only;
-Commander multiplayer are absent — networked multiplayer or native multiplayer beyond the
-two-seat table (3/4 seats are headless/CLI only), generic hidden-zone APNAP or
+networked multiplayer is absent (the native table is local 2–4 seats), as are
+generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
 Earth sacrifice candidate, triggered abilities, activated abilities other
 than basic-land mana abilities, static abilities, replacement effects, partial prevention/redirection,
-tokens, planeswalkers, counters as rules objects, milling/tutoring/libraries as
+tokens, planeswalkers, counters as rules objects (the sandbox counter display is
+storage only), milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers beyond a single until-end-of-turn pump, Arcane/splice interactions, and any
-card outside this branch candidate's 22-card pool.
+card outside this branch candidate's 28-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints
