@@ -27,6 +27,7 @@ pub fn run(
     branch_at: Option<usize>,
     branch_out: Option<PathBuf>,
     compare_with: Option<PathBuf>,
+    save_out: Option<PathBuf>,
 ) -> anyhow::Result<()> {
     let text = std::fs::read_to_string(file)?;
     let value: serde_json::Value = serde_json::from_str(&text)?;
@@ -160,15 +161,37 @@ pub fn run(
         replay.steps.len(),
         replay.outcome
     );
+    if let Some(out) = save_out {
+        if replay.outcome.is_none() {
+            anyhow::bail!("--save-out needs a replay that actually recorded a game outcome");
+        }
+        if replay.steps.is_empty() {
+            anyhow::bail!("--save-out needs a replay with recorded actions");
+        }
+        let (game, log) = replay.run()?;
+        let save = SessionSave::capture(&game, replay.clone(), log.clone(), false);
+        std::fs::write(&out, save.to_json())?;
+        println!(
+            "  certified session save of the finished game written to {} (digest {})",
+            out.display(),
+            &save.digest[..12]
+        );
+    }
     if let Some(reason) = &replay.truncated {
         println!("  recorded as TRUNCATED (not a result): {reason}");
     }
     match replay.run() {
         Ok((game, events)) => {
             println!(
-                "  replayed digest {} | matches recorded: {} | events {}",
+                "  replayed digest {} | {} | events {}",
                 &game.digest()[..12],
-                game.digest() == replay.final_digest,
+                if replay.final_digest.is_empty() {
+                    "no recorded digest on this line (a branch)".to_string()
+                } else if game.digest() == replay.final_digest {
+                    "matches recorded".to_string()
+                } else {
+                    "MISMATCH".to_string()
+                },
                 events.len()
             );
             if verbose {
@@ -176,7 +199,7 @@ pub fn run(
                     println!("    {}", aperture_core::view::render_event(&game, 0, event));
                 }
             }
-            if game.digest() != replay.final_digest {
+            if !replay.final_digest.is_empty() && game.digest() != replay.final_digest {
                 anyhow::bail!("replay digest mismatch");
             }
         }
