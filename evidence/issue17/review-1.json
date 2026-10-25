@@ -1,0 +1,138 @@
+{
+  "verdict": "request_changes",
+  "full_issue17_accepted": false,
+  "reviewed_head": "0a7d781c41d1799a79c8ef41e6888d81ab7f9e6d",
+  "base": "8a72cc607ea25f203be672c0007ad5e798be7145",
+  "dirty_scope": {
+    "tracked_clean": true,
+    "untracked": [
+      ".starter-run.yml",
+      "evidence/issue17/IMPLEMENT-1.md",
+      "evidence/issue17/IMPLEMENT-2.md",
+      "evidence/issue17/REVIEW-1.md",
+      "evidence/issue17/commander-check.stderr.log",
+      "evidence/issue17/implement-1.log",
+      "evidence/issue17/implement-2.log",
+      "evidence/issue17/inspect_overlay.py",
+      "evidence/issue17/review-1-worker.log",
+      "evidence/issue17/review-sessions/",
+      "evidence/issue17/sessions/",
+      "review-1.* and review1-* outputs written by this review"
+    ]
+  },
+  "blocking_findings": [
+    {
+      "id": "default-deck-identity-regression",
+      "severity": "regression",
+      "summary": "decks::load now takes the list name from the file stem even for the non-explicit bundled defaults, so the unchanged default selfplay invocation records seat names 'temur-beats' and 'izzet-control' instead of the prior 'Temur Beats' and 'Izzet Control'.",
+      "evidence": [
+        "crates/cli/src/decks.rs:23-33 uses path.file_stem() whenever the path exists, ignoring fallback_name for the default paths.",
+        "Base 8a72cc607ea25f203be672c0007ad5e798be7145:crates/cli/src/decks.rs used DeckList::parse_practice(fallback_name, &text) on that same branch.",
+        "Command: ./target/release/aperture-cli.exe selfplay --seed 1 --max-steps 50 --out evidence/issue17/review1-default-names.json",
+        "Observed report seats: [('temur-beats','decks/temur-beats.txt'), ('izzet-control','decks/izzet-control.txt')].",
+        "The requested preservation check 'Existing defaults remain unchanged' fails for the machine-readable aperture-selfplay/2 seat identity. Deck contents and gameplay are unchanged."
+      ],
+      "required_fix": "Use the file stem only for explicit --deck paths (or only for paths other than the bundled defaults); keep fallback_name for non-explicit bundled-default loads. Add a small regression asserting the default load still yields 'Temur Beats'/'Izzet Control' while an explicit starter path yields 'jasmine-vanilla-stompy'."
+    },
+    {
+      "id": "tracked-corpus-docs-contradict-manifest",
+      "severity": "documentation-correctness",
+      "summary": "The new tracked corpus documentation still says planned entries have deck_path:null and that no exact future list is claimed, while the manifest and tests require the opposite for all seven planned entries.",
+      "evidence": [
+        "docs/issue17-starter-corpus.md:10 says planned entries have deck_path:null.",
+        "docs/issue17-starter-corpus.md:27-29 says all eight entries now have an exact desired 99-card library file and planned deck_path points under decks/starter-corpus/planned/.",
+        "docs/issue17-starter-corpus.md:116-118 says 'No exact future list is claimed' and a deck_path is assigned only when the list can be built from supported cards.",
+        "Actual decks/starter-corpus/manifest.json has non-null deck_path for all seven planned entries; crates/import/tests/starter_corpus_planned.rs requires them and reads each exact file.",
+        "Tracked evidence/issue17/IMPLEMENTATION-HANDOFF.md:103 also repeats 'the other seven are planned with deck_path: null. No exact future list is claimed.'"
+      ],
+      "required_fix": "Update the tracked doc and handoff to describe the actual schema: planned entries may have deck_path to an exact sourced desired list; planned means not engine-supported, not that the file is absent. Keep the seven lists explicitly non-playable and non-certified."
+    }
+  ],
+  "checks": [
+    {
+      "command": "git rev-parse HEAD; git status --porcelain=v1; git log --oneline base..HEAD",
+      "result": "HEAD 0a7d781c41d1799a79c8ef41e6888d81ab7f9e6d; tracked tree clean; one commit over base 8a72cc6; only untracked evidence/config files."
+    },
+    {
+      "command": "cargo test --locked -p aperture-core --test starter_corpus --test card_printings --test issue13_commander_combat",
+      "result": "exit 0; starter_corpus 8/8, card_printings 3/3, issue13_commander_combat 43/43 (log evidence/issue17/review1-core-tests.log)."
+    },
+    {
+      "command": "cargo test --locked -p aperture-import --test starter_corpus_analyzer --test starter_corpus_planned",
+      "result": "exit 0; 3/3 and 1/1 (log evidence/issue17/review1-import-tests.log)."
+    },
+    {
+      "command": "cargo test --locked -p aperture-cli",
+      "result": "exit 0; lib 5/5, commander_check 8/8, explicit_decks 1/1 (log evidence/issue17/review1-cli-tests.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    },
+    {
+      "command": "cargo build --release --locked -p aperture-cli",
+      "result": "exit 0; help text exposes 2-4 seat selfplay, --commander-combat-practice, --commander SEAT:CARD and both supported commanders."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe selfplay --seed 1 --deck decks/starter-corpus/jasmine-vanilla-stompy.txt x4 --commander-combat-practice --commander 0:Jasmine Boreal --commander 1:Jasmine Boreal --commander 2:Jasmine Boreal --commander 3:Jasmine Boreal --out evidence/issue17/review1-selfplay.json --replay-out evidence/issue17/review1-selfplay.replay.json --verbose",
+      "result": "exit 0; terminal P1 win in 2364 steps/53 turns, 4 seats, starting_life 40, profile commander-combat-practice-40, replay_digest_matches true, digest d7f8c2adaa17d906bdaaed28f9482589faa65c5863d1f134377ca45665ddab48; not capped."
+    },
+    {
+      "command": "python compare of replay seats[].cards against exact decks/starter-corpus/jasmine-vanilla-stompy.txt using catalog variant-to-name map",
+      "result": "all four embedded libraries are identical to the exact text multiset: 99 cards each; commanders are JasmineBoreal for seats 0-3; unknown variants none."
+    },
+    {
+      "command": "count 'P<n> casts <name>' in evidence/issue17/review1-selfplay.verbose.log and classify against fixtures/starter-corpus/sourced-cards.json",
+      "result": "55 total casts; 39 casts of 30 distinct new vanilla cards; 5 Jasmine Boreal casts; remaining casts are the pre-existing supported utility cards."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe replay --file evidence/issue17/review1-selfplay.replay.json",
+      "result": "exit 0; replayed digest d7f8c2adaa17 matches recorded, 6061 events."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe replay --file ...replay.json --save-out evidence/issue17/review1-save.json && ./target/release/aperture-cli.exe replay --file evidence/issue17/review1-save.json",
+      "result": "both exit 0; certified session save written, re-replay recomputes stored digest d7f8c2adaa17, pending none, sandbox unmodified."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe commander-check --deck fixtures/starter-corpus/jasmine-vanilla-stompy.deck.json --cards fixtures/starter-corpus/jasmine-vanilla-stompy.cards.json --json --out evidence/issue17/review1-commander-check.json",
+      "result": "exit 0; status legal, format legality legal, engine support supported, 1 commander + 99 library = 100, 61 unique canonical names, Jasmine Boreal [G,W] eligible, unsupported_cards empty; gameplay.available false with the pre-existing blanket reasons."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe commander-check --deck fixtures/starter-corpus/planned/zada-spells.deck.json --cards fixtures/starter-corpus/planned/zada-spells.cards.json --json",
+      "result": "exit 0; format legal, engine support unsupported (58 unsupported cards), gameplay.available false. Planned metadata is not promoted to support."
+    },
+    {
+      "command": "python manifest audit: parse all eight deck files, compare declared missing_cards to catalog membership, compute union and per-list support",
+      "result": "declared missing_cards equal computed missing for all 8; union 447 unique nonbasic names = 61 supported + 386 missing; each planned list 99 library cards, 57 nonbasic names, 42 basics; Jasmine 99 = 41 basics + 58 singleton nonlands. Planned fixture raw_deck multiset equals each exact .txt list."
+    },
+    {
+      "command": "python binding audit of fixtures/starter-corpus",
+      "result": "cards_sha256 equals SHA-256(raw_cards_jsonl); deck_text_sha256 equals SHA-256(exact deck text file); deck fixture provenance raw_sha256 equals SHA-256(raw_deck); all 61 sourced records match the saved raw Scryfall printing objects field-for-field; 1 commander, 47 vanilla, 11 existing, 2 basics; no duplicate source names."
+    },
+    {
+      "command": "live Scryfall spot-checks: GET cards/named?exact=Jasmine%20Boreal; GET cards/m12/7; GET cards/9ed/260",
+      "result": "Jasmine Boreal tsb/93 {3}{G}{W} Legendary Creature - Human 4/5 vanilla, commander-legal, G/W identity; Armored Warhorse m12/7 {W}{W} Creature - Horse 2/3 vanilla; Norwood Ranger 9ed/260 {G} Creature - Elf Scout Ranger 1/2 vanilla. All match catalog and sourced records."
+    },
+    {
+      "command": "printf '1 Jasmine Boreal\\n39 Forest\\n' > review1-jasmine-in-library.txt; aperture-cli selfplay --deck review1-jasmine-in-library.txt --deck decks/temur-beats.txt",
+      "result": "exit 1; 'Jasmine Boreal' is commander-only in the command-zone practice profile; it cannot be in an ordinary starting library because the legend rule is not modeled. Engine-level refusal is covered by the passing starter_corpus test."
+    },
+    {
+      "command": "aperture-cli selfplay --deck decks/does-not-exist-review1.txt --deck decks/temur-beats.txt --commander-combat-practice --commander 0:Jasmine Boreal",
+      "result": "exit 1; explicitly requested deck does not exist; refuses to substitute the bundled practice deck."
+    },
+    {
+      "command": "aperture-cli selfplay --seed 1 --max-steps 50 (no --deck)",
+      "result": "exit 0 but seat names are 'temur-beats'/'izzet-control'; this is the reproduced default identity regression above."
+    }
+  ],
+  "limitations": [
+    "Not a full issue-17 review: only Jasmine is implemented; the other seven archetypes are planned metadata and the eight-implemented-style gate remains open. full_issue17_accepted is false.",
+    "Did not rerun the full test suite or historical matrix; used the writer's retained all-targets-tests.log/gates.log and ran only the focused starter/core/import/CLI tests with --locked.",
+    "Legacy issue-14 replay mismatch was not independently re-executed. Read evidence/issue17/legacy-replay-note.md, which records the unmatched computed digest 31b1f522... at untouched base 8a72cc6; treated as inherited, not a new regression.",
+    "Native UI table code is untouched and still hardcodes Isamaru for the bounded profile; the Jasmine package is exercised through the CLI, as the docs state. No UI/hidden-zone rendering audit was performed.",
+    "fixtures/starter-corpus/manifest.json.deck_sha256 binds the raw_deck bytes (853a49d4...), not the deck JSON file bytes (677f24ee...); the test and deck provenance document the raw_deck binding, but the field itself has no explicit domain note. Not counted as a failure.",
+    "The exact starter conformance test pins the 47 sourced vanilla cards and 99 total but range-checks nonland/basic totals (54..=59 / 40..=45) rather than pinning 58/41; exact current file counts were verified manually and against the generated fixture.",
+    "No speculative engine audit, multi-year replay matrix, or network re-fetch of all 61 printings was attempted."
+  ]
+}

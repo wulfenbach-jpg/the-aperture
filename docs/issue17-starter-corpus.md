@@ -3,12 +3,15 @@
 Status: **PARTIAL**. One starter package is implemented and exercised; the
 eight-list release gate in the public issue remains open. Only
 `jasmine-vanilla-stompy` is supported. Every other entry below is a **planned**
-archetype with no exact list and no claimed card support.
+archetype with an exact sourced **desired** list under
+`decks/starter-corpus/planned/`, and **no** claimed card support, playability or
+certification.
 
 The machine-readable target list is
 `decks/starter-corpus/manifest.json` (schema `version: 1`). Its `status` field is
-`planned`, `implemented` or `certified`; planned entries have `deck_path: null`
-because no exact, sourced list has been constructed for them yet.
+`planned`, `implemented` or `certified`; planned entries have a non-null
+`deck_path` pointing at their exact desired 99-card library, but remain
+engine-unsupported and non-playable. `deck_path` is not a support claim.
 
 ## Target archetypes
 
@@ -113,9 +116,12 @@ Commander-combat practice are still **not** the Commander format.
    Extending the typed registry is deliberately explicit: adding a name to
    `SUPPORTED_COMMANDERS` without implementing its printed text would fake
    support.
-3. **Exact lists.** No exact future list is claimed. An entry gets a
-   `deck_path` only when a real sourced 99-card library can be constructed from
-   supported cards, as Jasmine's was. A 90-land pile or duplicated nonbasic
+3. **Exact lists.** Every planned target has an exact sourced desired list under
+   `decks/starter-corpus/planned/`, and its `deck_path` points at it. Jasmine's
+   implemented list is directly under `decks/starter-corpus/`.
+   A desired-list path is a planning artifact, not support: every planned list is
+   engine-unsupported, non-playable and non-certified. Jasmine is the only list
+   built entirely from supported cards. A 90-land pile or duplicated nonbasic
    singleton cards would not be a meaningful style and is not used to satisfy
    counts.
 4. **Certification.** `implemented` means an exact list exists, is analyzer

@@ -98,13 +98,21 @@ existing version policy. Details: `evidence/issue17/legacy-replay-note.md`.
 
 ## Corpus plan and gaps
 
+**Historical snapshot — superseded by assignment 2.** This section describes the
+state after assignment 1 only; it is retained for history and must not be read as
+current. At that point the other seven entries were `planned` with
+`deck_path: null` and no exact list.
+
+**Current state (assignment 2, see `IMPLEMENTATION-HANDOFF-2.md`):**
 `decks/starter-corpus/manifest.json` (version 1) lists all eight target ids and
-commanders with statuses. `jasmine-vanilla-stompy` is `implemented` (not
-`certified`); the other seven are `planned` with `deck_path: null`. No exact
-future list is claimed. Six target commanders are not in the supported pool and
-are named in each entry's `missing_cards`; interactions needed by the other
-archetypes (tokens, triggered/activated abilities, keywords, counters, copying,
-tribal payoffs, landfall, drain, sacrifice outlets) are listed in
+commanders. `jasmine-vanilla-stompy` is `implemented` (not `certified`); the other
+seven are `planned` with non-null `deck_path` values pointing at exact sourced
+desired lists under `decks/starter-corpus/planned/`. Those lists are
+engine-unsupported, non-playable and non-certified; `deck_path` is not a support
+claim. Six target commanders and 386 of the 447 union nonbasic names are outside
+the supported pool; interactions needed by the other archetypes (tokens,
+triggered/activated abilities, keywords, counters, copying, tribal payoffs,
+landfall, drain, sacrifice outlets, legend rule, black basic land) are listed in
 `missing_interactions`. `docs/issue17-starter-corpus.md` explains the
 archetypes, phased gaps and exclusion policy.
 
@@ -112,7 +120,10 @@ Remaining practical limits:
 
 * The eight-list proof, per-card coverage for seven other styles, independent
   review and exact-head CI are still open; only one starter is playable.
-* `isamaru-white-aggro` has its commander but no exact 99-card singleton library.
+* At assignment 1, `isamaru-white-aggro` had its commander but no exact
+  99-card singleton library. Assignment 2 added an exact desired list under
+  `decks/starter-corpus/planned/`; it remains unsupported metadata
+  (`IMPLEMENTATION-HANDOFF-2.md`).
 * The offline analyzer keeps its blanket `gameplay.available = false`; bounded
   command-zone/Commander-combat practice is still not the Commander format.
 * The native UI's default startup table remains the practice decks; the starter
