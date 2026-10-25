@@ -1,0 +1,14 @@
+# R170-1 RED — engine without the fix, tests as submitted
+# 2026-10-25T00:43:50Z  cargo test -p aperture-core --test abilities --test abilities_game --locked
+     Running tests\abilities.rs (target\debug\deps\abilities-5b3cb4c3aa560a50.exe)
+thread 'activated_ability_effect_comes_before_ability_resolved_and_priority' (24676) panicked at crates\core\tests\abilities.rs:690:5:
+no Priority may be granted between the ability's effect and its AbilityResolved event (CR 117.5, 608.2): [Priority { player: 0 }] in [AbilityActivated { player: 0, source: ObjectId(1), card: ProdigalSorcerer, text: "{T}: Prodigal Sorcerer deals 1 damage to any target.", targets: ["P1"] }, Priority { player: 0 }, Pass { player: 0 }, Priority { player: 1 }, Pass { player: 1 }, Damage { source: Some(ObjectId(1)), target: "P1", amount: 1 }, LifeChange { player: 1, delta: -1, life: 19 }, Priority { player: 0 }, AbilityResolved { controller: 0, source: ObjectId(1), card: ProdigalSorcerer, text: "{T}: Prodigal Sorcerer deals 1 damage to any target." }, Priority { player: 0 }]
+thread 'triggered_ability_effect_comes_before_ability_resolved_and_priority' (4036) panicked at crates\core\tests\abilities.rs:690:5:
+no Priority may be granted between the ability's effect and its AbilityResolved event (CR 117.5, 608.2): [Priority { player: 0 }] in [Pass { player: 0 }, Priority { player: 1 }, Pass { player: 1 }, Draw { player: 0, object: ObjectId(4), card: GrizzlyBears }, Priority { player: 0 }, AbilityResolved { controller: 0, source: ObjectId(1), card: ElvishVisionary, text: "When Elvish Visionary enters the battlefield, draw a card." }, Priority { player: 0 }]
+test result: FAILED. 11 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+# same, real-game audit only
+     Running tests\abilities_game.rs (target\debug\deps\abilities_game-130d3b2ca0573527.exe)
+thread 'real_game_activates_and_triggers_abilities_and_replays_identically' (46892) panicked at crates\core\tests\abilities_game.rs:133:9:
+no Priority may be granted while an ability is still resolving: [Draw { player: 0, object: ObjectId(18), card: ProdigalSorcerer }, Priority { player: 0 }, AbilityResolved { controller: 0, source: ObjectId(22), card: ElvishVisionary, text: "When Elvish Visionary enters the battlefield, draw a card." }]
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
