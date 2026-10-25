@@ -268,3 +268,114 @@ fn re_saving_a_legacy_tainted_save_never_clears_the_flag() {
     let _ = std::fs::remove_file(path);
     let _ = std::fs::remove_file(again);
 }
+
+/// Applying a branch replaces the live position and clears the taint record, so
+/// the branch has to prove the replacement really is the clean recorded prefix.
+/// A cut that includes a step played after a sandbox override must be refused
+/// (the override bumped the revision those steps were recorded against), and a
+/// cut before the override must reproduce the pre-override position exactly.
+#[test]
+fn a_sandbox_taint_cannot_be_branched_into_a_clean_line() {
+    let (mut ui, _) = mountain_session();
+    let land = *ui
+        .game
+        .state
+        .player(P0)
+        .hand
+        .iter()
+        .find(|id| ui.game.state.object(**id).card == CardId::Mountain)
+        .expect("Mountain in hand");
+    ui.submit(Action::PlayLand { card: land })
+        .expect("a recorded legal action before the override");
+    let clean_steps = ui.replay.steps.len();
+    let clean_digest = ui.game.digest();
+    let clean_events = ui.log.len();
+    assert!(!ui.tainted(), "the recorded line is clean so far");
+
+    ui.sandbox(SandboxOp::Draw(1)).expect("draw override");
+    assert!(ui.tainted());
+    ui.submit(Action::Pass)
+        .expect("a recorded legal action after the override");
+    let tainted_steps = ui.replay.steps.len();
+    assert_eq!(
+        tainted_steps,
+        clean_steps + 1,
+        "the pass is one recorded step on top of the clean prefix"
+    );
+    let tainted_digest = ui.game.digest();
+    let tainted_events = ui.log.len();
+
+    let path = temp_path("tainted-branch");
+    ui.save(&path).expect("a tainted save is written");
+
+    // 1. A cut that reaches into the post-override tail is refused, and the
+    //    refusal leaves the tainted session exactly as it was.
+    ui.request_replay_branch(path.clone(), tainted_steps);
+    let mut applied = Vec::new();
+    let mut guard = 0;
+    while ui.io_busy && guard < 2_000 {
+        applied.extend(ui.poll_workers());
+        std::thread::sleep(std::time::Duration::from_millis(2));
+        guard += 1;
+    }
+    assert!(!ui.io_busy, "the branch worker never finished");
+    applied.extend(ui.poll_workers());
+    assert!(
+        applied
+            .iter()
+            .any(|line| line.starts_with("branch failed") && line.contains("stale submission")),
+        "a post-override cut was not refused by the revision guard: {applied:?}"
+    );
+    assert!(
+        ui.tainted(),
+        "a refused branch must not launder the sandbox taint"
+    );
+    assert_eq!(ui.sandbox_record.len(), 1, "the taint record is untouched");
+    assert_eq!(
+        ui.game.digest(),
+        tainted_digest,
+        "a refused branch leaves the live position alone"
+    );
+    assert_eq!(ui.log.len(), tainted_events);
+    assert_eq!(ui.replay.steps.len(), tainted_steps);
+
+    // 2. A cut before the override replays the clean recorded prefix exactly.
+    //    That equality is what makes clearing the taint on the branch honest.
+    ui.request_replay_branch(path.clone(), clean_steps);
+    let mut applied = Vec::new();
+    let mut guard = 0;
+    while ui.io_busy && guard < 2_000 {
+        applied.extend(ui.poll_workers());
+        std::thread::sleep(std::time::Duration::from_millis(2));
+        guard += 1;
+    }
+    assert!(!ui.io_busy, "the branch worker never finished");
+    applied.extend(ui.poll_workers());
+    assert!(
+        applied.iter().any(|line| line.starts_with("branched from")),
+        "the clean pre-override cut was refused: {applied:?}"
+    );
+    assert!(
+        !ui.tainted(),
+        "the branch is the clean recorded prefix, so the taint is gone with the position"
+    );
+    assert!(ui.sandbox_record.is_empty());
+    assert_eq!(
+        ui.game.digest(),
+        clean_digest,
+        "the branch reproduces the pre-override position exactly, not an approximation"
+    );
+    assert_eq!(
+        ui.log.len(),
+        clean_events,
+        "nothing the override logged survives the branch"
+    );
+    assert!(
+        !ui.log
+            .iter()
+            .any(|event| matches!(event, aperture_core::Event::SandboxOverride { .. })),
+        "an override event survived into the clean line"
+    );
+    assert_eq!(ui.replay.steps.len(), clean_steps);
+    let _ = std::fs::remove_file(path);
+}
