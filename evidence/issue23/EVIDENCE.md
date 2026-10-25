@@ -127,3 +127,39 @@ No merge, no master push, no issue closure, no successor activation. The
 branch-comparison view is deliberately action-kind only; it is a study aid, not
 a hidden-information oracle. Scope stays bounded 28-card four-seat practice with
 one supported commander per seat.
+
+## Review round 1 rework — exact head 462ae4a
+
+One blocking review defect at 5cdcad7 was fixed at 462ae4a:
+
+- **Base-tail leak.** The diverged branch comparison previously rendered the
+  base line's action kinds for steps beyond the branch's own recorded history
+  (the branch's live boundary), revealing the base's future action sequence on
+  a live branch. `compare_branches` now bounds the compared span by the
+  branch's recorded length; the base continuation past it is caught not as
+  action kinds but only as the non-leaking note
+  `(the base line still extends past the branch's current recorded history —
+  its continuation is not revealed here)`, exposed as
+  `BranchDiff::base_tail_unrevealed`. The compared lines also now carry the
+  branch's own player/decision axis.
+- Focused regression: `the_diff_never_reveals_the_base_tail_beyond_the_branchs_recorded_history`
+  (crates/core/tests/issue23_branch.rs) builds a 3-step base and a live
+  2-step diverged branch and asserts no line sits past the branch boundary,
+  the tail is marked, and the base tail's action kind never appears in the
+  rendered text. The render-side assertion fails against the pre-fix code's
+  span, which the review reproduced independently.
+- Doc comment, study panel text (added diverged-state line) and
+  docs/issue23-study.md now state the actual behavior.
+- Verification at 462ae4a: issue23_branch 5/5, issue23_study 4/4,
+  aperture-ui lib 12/12, `cargo fmt --all --check` clean, clippy core+ui+cli
+  clean; PR #42 OPEN/MERGEABLE at 462ae4a with 8/8 exact-head CI SUCCESS
+  (both workflows' runs at 462ae4a360848aaab92814d1564c170b9069e475, all
+  checks pass).
+- Non-blocking naming nit resolved: the practice package is refreshed as
+  `C:/AI/mtg-slice/dist/TheAperture-issue23-study-462ae4a` with both release
+  binaries built in this worktree at 462ae4a; its README states the
+  provenance and supersedes the review window-B build name. Packaged CLI
+  smoke at that folder: the four-seat save verifies (stored recomputed
+  c76c56bd72fd, 1104 actions reproduce it), `--branch-at 1` branches and
+  replays (4c57bf2226e5), and a cross-setup comparison is refused by the
+  same-setup invariant.
