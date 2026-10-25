@@ -707,10 +707,10 @@ impl UiSession {
 
     pub fn submit(&mut self, action: Action) -> Result<(), String> {
         if self.review_mode {
-            return Err(
+            self.message =
                 "postgame review is a read-only view; leave review mode to act on the table"
-                    .to_string(),
-            );
+                    .to_string();
+            return Err(self.message.clone());
         }
         let Some(owner) = self.owner() else {
             return Err("no player holds priority right now".to_string());
