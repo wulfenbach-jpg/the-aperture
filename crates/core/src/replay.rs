@@ -564,7 +564,8 @@ impl SessionSave {
     /// The sentence a result surface must use: a sandbox game is never a legal
     /// match result.
     pub fn record_line(&self) -> String {
-        self.sandbox.record_line(self.game.outcome.as_ref())
+        self.sandbox
+            .record_line(self.game.outcome.as_ref(), self.tainted())
     }
 
     pub fn to_json(&self) -> String {

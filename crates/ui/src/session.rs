@@ -987,12 +987,17 @@ impl UiSession {
         self.replay.ai = self.ai.clone();
         self.replay.outcome = self.game.state.outcome.clone();
         self.replay.final_digest = self.game.digest();
-        SessionSave::capture_recorded(
+        // The boolean flag and the typed record are both carried: a save that
+        // was loaded from an older file can be tainted without a record, and
+        // re-saving it must never clear that taint.
+        let mut save = SessionSave::capture(
             &self.game,
             self.replay.clone(),
             self.log.clone(),
-            self.sandbox_record.clone(),
-        )
+            self.tainted(),
+        );
+        save.sandbox = self.sandbox_record.clone();
+        save
     }
 
     /// Write the session to `path` on a background worker. The frame callback
@@ -1255,7 +1260,7 @@ impl UiSession {
     /// The one sentence any result surface must use.
     pub fn record_line(&self) -> String {
         self.sandbox_record
-            .record_line(self.game.state.outcome.as_ref())
+            .record_line(self.game.state.outcome.as_ref(), self.tainted())
     }
 
     // ------------------------------------------------------------------- undo
