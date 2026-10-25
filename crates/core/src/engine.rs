@@ -13,6 +13,7 @@
 
 use std::collections::BTreeMap;
 
+use crate::ability::{self, Ability, TriggerEvent};
 use crate::action::{Action, BlockDecl, LegalAction, Submission, Target};
 use crate::card::{CardDef, CardId, Effect, ManaColor, SpellSpec, TargetSpec};
 use crate::catalog;
@@ -25,7 +26,7 @@ use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::state::{
     DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, Profile,
-    StackItem, Step, Turn,
+    StackEntry, StackItem, Step, TriggerRef, Turn,
 };
 
 /// Safety bound on scheduler iterations inside one submission. Reaching it is a
@@ -275,6 +276,9 @@ impl Game {
             mulligan: None,
             resolving: None,
             next_object: 1,
+            trigger_queue: Vec::new(),
+            next_trigger_seq: 0,
+            activation_uses: BTreeMap::new(),
             revision: 0,
             decision: 0,
             outcome: None,
@@ -499,7 +503,12 @@ impl Game {
             player.command_zone.retain(|c| *c != id);
         }
         // A represented card changing zone leaves the stack in the same move.
-        self.state.stack.retain(|item| item.object != id);
+        // A spell leaves the stack with its card. An ability does not: its
+        // source may change zones (or leave the game) while the ability is
+        // still on the stack (CR 603.3, 608.2).
+        self.state
+            .stack
+            .retain(|item| item.object != id || item.entry != StackEntry::Spell);
         if self.state.resolving == Some(id) {
             self.state.resolving = None;
         }
@@ -760,6 +769,9 @@ impl Game {
     }
 
     fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+        let dying = self.state.try_object(id).and_then(|object| {
+            (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
+        });
         let Some(mut object) = self.detach_object(id) else {
             return;
         };
@@ -774,6 +786,12 @@ impl Game {
             object: new_id,
             card,
         });
+        // CR 700.4 + 603.6c: a permanent put into a graveyard from the
+        // battlefield "dies". The trigger keeps the card and its controller as
+        // last known information; `source` is the graveyard object.
+        if let Some((card, controller)) = dying {
+            self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
+        }
     }
 
     fn enter_battlefield(&mut self, id: ObjectId, controller: PlayerId, events: &mut Vec<Event>) {
@@ -796,6 +814,9 @@ impl Game {
             card,
             controller,
         });
+        // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
+        // is on the battlefield.
+        self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
     }
 
     fn draw(&mut self, p: PlayerId, events: &mut Vec<Event>) -> bool {
@@ -945,6 +966,39 @@ impl Game {
             Action::PlayLand { card } => self.validate_play_land(player, *card),
             Action::CastSpell { card, targets } => self.validate_cast(player, *card, targets),
             Action::ActivateManaAbility { land } => self.validate_mana_ability(player, *land),
+            Action::ActivateAbility {
+                source,
+                ability,
+                mode,
+                targets,
+            } => self.validate_activate_ability(player, *source, *ability, *mode, targets),
+            Action::ChooseTriggerTarget { target } => match &state.pending {
+                Some(Pending::TriggerTarget {
+                    player: p, legal, ..
+                }) if *p == player => {
+                    if !legal.contains(target) {
+                        return Err(EngineError::illegal(
+                            "choose trigger target",
+                            format!(
+                                "{} is not one of the offered legal targets (CR 603.3d)",
+                                self.describe_target(*target)
+                            ),
+                        ));
+                    }
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "choose trigger target",
+                    "no triggered ability is waiting for a target choice (CR 603.3d)",
+                )),
+            },
+            Action::AnswerTriggerChoice { .. } => match &state.pending {
+                Some(Pending::TriggerChoice { player: p, .. }) if *p == player => Ok(()),
+                _ => Err(EngineError::illegal(
+                    "trigger choice",
+                    "no optional triggered ability is waiting for its controller (CR 603.5)",
+                )),
+            },
             Action::DeclareAttackers {
                 attackers,
                 defender,
@@ -1315,7 +1369,8 @@ impl Game {
                 .state
                 .stack
                 .iter()
-                .filter(|s| s.object != exclude)
+                // An ability on the stack is not a spell (CR 115.1, 602.2).
+                .filter(|s| s.object != exclude && s.entry == StackEntry::Spell)
                 .map(|s| Target::Spell(s.object))
                 .collect(),
         }
@@ -1607,6 +1662,18 @@ impl Game {
             Action::AnswerCommanderDraw { to_command_zone } => {
                 self.apply_commander_draw(player, *to_command_zone, events)
             }
+            Action::ActivateAbility {
+                source,
+                ability,
+                mode,
+                targets,
+            } => self.apply_activate_ability(player, *source, *ability, *mode, targets, events),
+            Action::ChooseTriggerTarget { target } => {
+                self.apply_trigger_target(player, *target, events)
+            }
+            Action::AnswerTriggerChoice { use_ability } => {
+                self.apply_trigger_choice(player, *use_ability, events)
+            }
         }
     }
 
@@ -1670,6 +1737,359 @@ impl Game {
             color: color.unwrap_or(ManaColor::Colorless),
         });
         events.push(Event::Priority { player });
+    }
+
+    // --------------------------------------------------- activated abilities
+
+    /// CR 602.2/602.5: validate one activation against the typed ability record.
+    fn validate_activate_ability(
+        &self,
+        player: PlayerId,
+        source: ObjectId,
+        index: u8,
+        mode: u8,
+        targets: &[Target],
+    ) -> Result<(), EngineError> {
+        if self.state.pending.is_some() {
+            return Err(EngineError::illegal(
+                "activate ability",
+                "a pending choice must be answered before any ability is activated (CR 608.2d)",
+            ));
+        }
+        let object = self
+            .state
+            .try_object(source)
+            .ok_or(EngineError::UnknownObject)?;
+        if object.zone != Zone::Battlefield {
+            return Err(EngineError::WrongZone {
+                name: object.card.def().name,
+                zone: "battlefield",
+            });
+        }
+        if object.controller != player {
+            return Err(EngineError::illegal(
+                "activate ability",
+                format!(
+                    "only {}'s controller may activate its abilities (CR 602.2)",
+                    object.card.def().name
+                ),
+            ));
+        }
+        if self.state.turn.priority != Some(player) {
+            return Err(EngineError::BadTiming {
+                name: object.card.def().name,
+                reason: "that player does not have priority (CR 602.2)".to_string(),
+            });
+        }
+        let Some(activated) = ability::abilities(object.card)
+            .get(index as usize)
+            .and_then(Ability::activated)
+        else {
+            return Err(EngineError::illegal(
+                "activate ability",
+                format!(
+                    "{} has no activated ability #{index}",
+                    object.card.def().name
+                ),
+            ));
+        };
+        if mode as usize >= activated.modes.len() {
+            return Err(EngineError::illegal(
+                "activate ability",
+                format!(
+                    "{} has no mode {mode} for that ability",
+                    object.card.def().name
+                ),
+            ));
+        }
+        if activated.cost.tap && object.tapped {
+            return Err(EngineError::illegal(
+                "activate ability",
+                format!(
+                    "{} is already tapped, so the {{T}} cost cannot be paid (CR 602.5a)",
+                    object.card.def().name
+                ),
+            ));
+        }
+        if activated.cost.tap && object.is_creature() && object.summoning_sick {
+            return Err(EngineError::BadTiming {
+                name: object.card.def().name,
+                reason: "a creature with a {T} activation cost cannot use it until it has been under its controller's control since their most recent turn began (CR 302.6)".to_string(),
+            });
+        }
+        if activated.once_per_turn && self.activation_used(source, index) {
+            return Err(EngineError::illegal(
+                "activate ability",
+                format!(
+                    "{} may be activated only once each turn (CR 602.5b)",
+                    object.card.def().name
+                ),
+            ));
+        }
+        let required = usize::from(activated.target != TargetSpec::None);
+        if targets.len() != required {
+            return Err(EngineError::TargetKind { card: object.card });
+        }
+        if required == 1 {
+            let legal = self.legal_targets(player, activated.target, source);
+            if !legal.contains(&targets[0]) {
+                return Err(EngineError::BadTarget {
+                    card: object.card,
+                    reason: format!(
+                        "{} is not a legal target for this ability ({})",
+                        self.describe_target(targets[0]),
+                        target_spec_rule(activated.target)
+                    ),
+                });
+            }
+        }
+        if let Some(mana_cost) = activated.cost.mana {
+            let cost = mana::parse_cost(mana_cost);
+            self.plan_payment(player, &cost)?;
+        }
+        Ok(())
+    }
+
+    fn activation_used(&self, source: ObjectId, index: u8) -> bool {
+        self.state
+            .activation_uses
+            .get(&source)
+            .is_some_and(|mask| mask & (1u8 << index) != 0)
+    }
+
+    fn apply_activate_ability(
+        &mut self,
+        player: PlayerId,
+        source: ObjectId,
+        index: u8,
+        _mode: u8,
+        targets: &[Target],
+        events: &mut Vec<Event>,
+    ) {
+        let card = self.state.object(source).card;
+        let Some(activated) = ability::abilities(card)
+            .get(index as usize)
+            .and_then(Ability::activated)
+            .copied()
+        else {
+            return;
+        };
+        if let Some(mana_cost) = activated.cost.mana {
+            let cost = mana::parse_cost(mana_cost);
+            if let Ok(payment) = self.plan_payment(player, &cost) {
+                self.apply_payment(player, payment, events);
+            }
+        }
+        let target_labels = targets
+            .iter()
+            .map(|t| self.describe_target(*t))
+            .collect::<Vec<_>>();
+        events.push(Event::AbilityActivated {
+            player,
+            source,
+            card,
+            text: activated.text.to_string(),
+            targets: target_labels,
+        });
+        if activated.cost.tap
+            && let Some(object) = self.objects_mut(source)
+        {
+            object.tapped = true;
+        }
+        if activated.once_per_turn {
+            *self.state.activation_uses.entry(source).or_insert(0) |= 1u8 << index;
+        }
+        // CR 602.2b: the cost is paid as part of activating. Paying a
+        // "sacrifice this permanent" cost moves the source, so the stack entry
+        // is recorded afterwards and carries the source's card as LKI.
+        if activated.cost.sacrifice_source {
+            self.move_to_graveyard(source, events);
+        }
+        self.state.stack.push(StackItem {
+            object: source,
+            card,
+            controller: player,
+            targets: targets.to_vec(),
+            cursor: 0,
+            entry: StackEntry::Activated { ability: index },
+            trigger_answered: false,
+        });
+        // CR 117.3c: activating is treated like casting for priority purposes.
+        self.state.turn.passed = 0;
+        self.state.turn.priority = Some(player);
+        events.push(Event::Priority { player });
+    }
+
+    // --------------------------------------------------- triggered abilities
+
+    /// Record every triggered ability of `card` that fires for `event` on the
+    /// object `source`. The trigger is only queued here; it reaches the stack
+    /// when a player would receive priority (CR 603.2, 603.3).
+    fn queue_triggers(
+        &mut self,
+        source: ObjectId,
+        card: CardId,
+        controller: PlayerId,
+        event: TriggerEvent,
+    ) {
+        for (index, _) in ability::triggers_on(card, event) {
+            let seq = self.state.next_trigger_seq;
+            self.state.next_trigger_seq += 1;
+            self.state.trigger_queue.push(TriggerRef {
+                source,
+                card,
+                controller,
+                ability: index,
+                seq,
+            });
+        }
+    }
+
+    /// CR 603.3: put every waiting triggered ability on the stack, in APNAP
+    /// order (active player first, then turn order), before a player receives
+    /// priority. Returns true when the queue was consumed.
+    fn put_triggers(&mut self, events: &mut Vec<Event>) -> bool {
+        if self.state.pending.is_some() || self.state.trigger_queue.is_empty() {
+            return false;
+        }
+        let mut queue = std::mem::take(&mut self.state.trigger_queue);
+        // A trigger whose controller left the game is never put on the stack
+        // (CR 800.4a).
+        queue.retain(|trigger| self.state.is_live(trigger.controller));
+        if queue.is_empty() {
+            return false;
+        }
+        let anchor = self.state.turn.active;
+        let seats = self.state.seat_count();
+        queue.sort_by_key(|trigger| {
+            (
+                (trigger.controller as usize + seats - anchor as usize) % seats,
+                trigger.seq,
+            )
+        });
+        self.stage_triggers(queue, events);
+        true
+    }
+
+    /// Put triggers on the stack in the given order, asking for targets as
+    /// CR 603.3d requires. A trigger with no legal target is removed instead.
+    fn stage_triggers(&mut self, mut queue: Vec<TriggerRef>, events: &mut Vec<Event>) {
+        while !queue.is_empty() {
+            let trigger = queue.remove(0);
+            let spec = ability::abilities(trigger.card)
+                .get(trigger.ability as usize)
+                .and_then(Ability::triggered)
+                .map(|triggered| triggered.target)
+                .unwrap_or(TargetSpec::None);
+            if spec == TargetSpec::None {
+                self.push_trigger(trigger, Vec::new(), events);
+                continue;
+            }
+            let legal = self.legal_targets(trigger.controller, spec, trigger.source);
+            match legal.len() {
+                0 => events.push(Event::TriggerRemoved {
+                    controller: trigger.controller,
+                    card: trigger.card,
+                    reason: format!(
+                        "it requires a target and no legal target exists (CR 603.3d, {})",
+                        target_spec_rule(spec)
+                    ),
+                }),
+                1 => self.push_trigger(trigger, vec![legal[0]], events),
+                _ => {
+                    self.state.pending = Some(Pending::TriggerTarget {
+                        player: trigger.controller,
+                        trigger,
+                        legal,
+                        queued: queue,
+                    });
+                    self.state.turn.priority = None;
+                    return;
+                }
+            }
+        }
+    }
+
+    fn push_trigger(&mut self, trigger: TriggerRef, targets: Vec<Target>, events: &mut Vec<Event>) {
+        let text = ability::abilities(trigger.card)
+            .get(trigger.ability as usize)
+            .map(Ability::text)
+            .unwrap_or("");
+        events.push(Event::TriggerStaged {
+            controller: trigger.controller,
+            source: trigger.source,
+            card: trigger.card,
+            text: text.to_string(),
+        });
+        self.state.stack.push(StackItem {
+            object: trigger.source,
+            card: trigger.card,
+            controller: trigger.controller,
+            targets,
+            cursor: 0,
+            entry: StackEntry::Triggered {
+                ability: trigger.ability,
+            },
+            trigger_answered: false,
+        });
+        self.state.turn.passed = 0;
+    }
+
+    fn apply_trigger_target(&mut self, _player: PlayerId, target: Target, events: &mut Vec<Event>) {
+        let Some(Pending::TriggerTarget {
+            trigger, queued, ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        self.push_trigger(trigger, vec![target], events);
+        self.stage_triggers(queued, events);
+    }
+
+    /// CR 603.5: the controller decides when an optional trigger resolves.
+    fn apply_trigger_choice(
+        &mut self,
+        player: PlayerId,
+        use_ability: bool,
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::TriggerChoice { trigger, .. }) = self.state.pending.take() else {
+            return;
+        };
+        if use_ability {
+            if let Some(top) = self.state.stack.last_mut()
+                && top.object == trigger.source
+                && matches!(top.entry, StackEntry::Triggered { .. })
+            {
+                top.trigger_answered = true;
+            }
+            self.state.resolving = Some(trigger.source);
+        } else {
+            events.push(Event::TriggerDeclined {
+                controller: player,
+                card: trigger.card,
+            });
+            self.pop_ability(
+                trigger.source,
+                StackEntry::Triggered {
+                    ability: trigger.ability,
+                },
+            );
+            self.state.resolving = None;
+        }
+        self.state.turn.priority = None;
+    }
+
+    /// Remove exactly one ability stack entry, whatever happened to its source.
+    fn pop_ability(&mut self, source: ObjectId, entry: StackEntry) {
+        if let Some(index) = self
+            .state
+            .stack
+            .iter()
+            .rposition(|item| item.object == source && item.entry == entry)
+        {
+            self.state.stack.remove(index);
+        }
     }
 
     /// CR 601.2a + 400.7: move a hand/command-zone card to the stack. A
@@ -1740,9 +2160,12 @@ impl Game {
         let stack_object = self.move_object_to_stack(player, card, commander_id);
         self.state.stack.push(StackItem {
             object: stack_object,
+            card: card_id,
             controller: player,
             targets: targets.to_vec(),
             cursor: 0,
+            entry: StackEntry::Spell,
+            trigger_answered: false,
         });
         if from_command_zone
             && let Some(commander) = commander_id
@@ -2068,6 +2491,14 @@ impl Game {
             self.state.turn.priority = None;
             return;
         }
+        // CR 603.3: waiting triggered abilities are put on the stack before any
+        // player actually receives priority.
+        if self.state.pending.is_none() && self.put_triggers(events) && self.state.pending.is_some()
+        {
+            // A trigger still needs its controller's target choice.
+            self.state.turn.priority = None;
+            return;
+        }
         // CR 800.4j: if the seat that would receive priority has left the game,
         // the next live seat in turn order receives it.
         let recipient = if self.state.is_live(player) {
@@ -2196,6 +2627,9 @@ impl Game {
             self.state.turn.blockers.clear();
             self.state.turn.combat_damage_done = false;
             self.state.turn.defender = None;
+            // CR 602.5b: "activate only once each turn" limits reset with the
+            // new turn.
+            self.state.activation_uses.clear();
             let (turn, active) = (self.state.turn.number, self.state.turn.active);
             events.push(Event::TurnBegin { turn, active });
         }
@@ -2850,7 +3284,11 @@ impl Game {
                     .state
                     .try_object(*id)
                     .is_some_and(|o| o.zone == Zone::Battlefield && o.is_creature()),
-                Target::Spell(id) => self.state.stack.iter().any(|s| s.object == *id),
+                Target::Spell(id) => self
+                    .state
+                    .stack
+                    .iter()
+                    .any(|s| s.object == *id && s.entry == StackEntry::Spell),
             };
             if !ok {
                 return false;
@@ -2865,6 +3303,10 @@ impl Game {
                 self.state.resolving = None;
                 return;
             };
+            if item.entry != StackEntry::Spell {
+                self.advance_ability_resolution(item, events);
+                return;
+            }
             let card = self.state.object(item.object).card;
             let def = card.def();
             let Some(spec) = def.spell_spec() else {
@@ -2924,6 +3366,85 @@ impl Game {
         // Priority is granted by settle() only after resolution completes and
         // SBAs have run (CR 117.5, 704.4). No Priority event is emitted here.
         self.state.turn.priority = None;
+    }
+
+    /// Resolve one activated or triggered ability (CR 608.2, 603.5, 608.2b).
+    ///
+    /// An ability is not a card: finishing it never puts the source into a
+    /// graveyard. The source may already have left the battlefield (a "dies"
+    /// trigger, or a cost that sacrificed it), so every characteristic used
+    /// here comes from the stack item's recorded card and targets.
+    fn advance_ability_resolution(&mut self, item: StackItem, events: &mut Vec<Event>) {
+        let Some(found) = ability::abilities(item.card).get(ability_index(item.entry) as usize)
+        else {
+            self.pop_ability(item.object, item.entry);
+            self.state.resolving = None;
+            self.finish_resolution(events);
+            return;
+        };
+        let ability = *found;
+        let optional = matches!(item.entry, StackEntry::Triggered { .. })
+            && ability
+                .triggered()
+                .is_some_and(|triggered| triggered.optional);
+
+        // CR 603.5: the controller decides when the optional ability resolves.
+        if optional && !item.trigger_answered {
+            self.state.pending = Some(Pending::TriggerChoice {
+                player: item.controller,
+                trigger: TriggerRef {
+                    source: item.object,
+                    card: item.card,
+                    controller: item.controller,
+                    ability: ability_index(item.entry),
+                    seq: 0,
+                },
+            });
+            self.state.resolving = Some(item.object);
+            self.state.turn.priority = None;
+            return;
+        }
+
+        // CR 608.2b: legality is checked once, before instructions are followed.
+        if item.cursor == 0 && !self.targets_legal(&item) {
+            events.push(Event::AbilityFizzled {
+                controller: item.controller,
+                card: item.card,
+                reason: "all of its targets are illegal, so it does not resolve (CR 608.2b)"
+                    .to_string(),
+            });
+            self.pop_ability(item.object, item.entry);
+            self.state.resolving = None;
+            self.finish_resolution(events);
+            return;
+        }
+
+        let effects = ability.effects();
+        if item.cursor as usize >= effects.len() {
+            events.push(Event::AbilityResolved {
+                controller: item.controller,
+                source: item.object,
+                card: item.card,
+                text: ability.text().to_string(),
+            });
+            self.pop_ability(item.object, item.entry);
+            self.state.resolving = None;
+            self.finish_resolution(events);
+            return;
+        }
+
+        let effect = effects[item.cursor as usize];
+        let pending_created = self.apply_effect(effect, &item, events);
+        if let Some(top) = self.state.stack.last_mut()
+            && top.object == item.object
+            && top.entry == item.entry
+        {
+            top.cursor += 1;
+        }
+        if pending_created {
+            self.state.resolving = Some(item.object);
+            self.state.turn.priority = None;
+        }
     }
 
     /// Returns true when the effect created a pending decision.
@@ -3242,6 +3763,27 @@ impl Game {
                     turn: self.state.turn.number,
                     card,
                 });
+                false
+            }
+            Effect::GainLife(amount) => {
+                self.state.players[controller as usize].life += amount;
+                let life = self.state.players[controller as usize].life;
+                events.push(Event::LifeChange {
+                    player: controller,
+                    delta: amount,
+                    life,
+                });
+                false
+            }
+            Effect::PumpSource(power, toughness) => {
+                // A pump with no target applies to the ability's own source
+                // (CR 611.2c). The source must still be on the battlefield.
+                if let Some(object) = self.objects_mut(item.object)
+                    && object.zone == Zone::Battlefield
+                {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
                 false
             }
             Effect::CounterTargetSpell => {
@@ -3605,6 +4147,52 @@ impl Game {
                 rules: vec!["605.1a"],
             });
         }
+
+        // Activated abilities (CR 602.2). Each legal target is its own option.
+        for object in self.state.battlefield(player) {
+            let card = object.card;
+            for (index, ability) in crate::ability::abilities(card).iter().enumerate() {
+                let Ability::Activated(activated) = ability else {
+                    continue;
+                };
+                let targets: Vec<Vec<Target>> = if activated.target == TargetSpec::None {
+                    vec![Vec::new()]
+                } else {
+                    self.legal_targets(player, activated.target, object.id)
+                        .into_iter()
+                        .map(|target| vec![target])
+                        .collect()
+                };
+                for target_set in targets {
+                    let action = Action::ActivateAbility {
+                        source: object.id,
+                        ability: index as u8,
+                        mode: 0,
+                        targets: target_set.clone(),
+                    };
+                    if self.validate(player, &action).is_err() {
+                        continue;
+                    }
+                    let rendered = if target_set.is_empty() {
+                        String::new()
+                    } else {
+                        format!(
+                            " -> {}",
+                            target_set
+                                .iter()
+                                .map(|t| self.describe_target(*t))
+                                .collect::<Vec<_>>()
+                                .join(", ")
+                        )
+                    };
+                    out.push(LegalAction {
+                        action,
+                        label: format!("Activate {}: {}{rendered}", card.name(), activated.text),
+                        rules: vec!["602.2", "602.2b"],
+                    });
+                }
+            }
+        }
         out
     }
 
@@ -3831,6 +4419,29 @@ impl Game {
                     },
                 ]
             }
+            Pending::TriggerTarget { legal, .. } => legal
+                .iter()
+                .map(|target| LegalAction {
+                    action: Action::ChooseTriggerTarget { target: *target },
+                    label: format!("Target {}", self.describe_target(*target)),
+                    rules: vec!["603.3d"],
+                })
+                .collect(),
+            Pending::TriggerChoice { trigger, .. } => vec![
+                LegalAction {
+                    action: Action::AnswerTriggerChoice { use_ability: true },
+                    label: "Use the optional triggered ability".to_string(),
+                    rules: vec!["603.5"],
+                },
+                LegalAction {
+                    action: Action::AnswerTriggerChoice { use_ability: false },
+                    label: format!(
+                        "Decline {}'s optional triggered ability",
+                        trigger.card.name()
+                    ),
+                    rules: vec!["603.5"],
+                },
+            ],
         }
     }
 
@@ -3913,6 +4524,14 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::AnyTarget => "any target: CR 115.4",
         TargetSpec::Creature => "target creature: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
+    }
+}
+
+/// Ability index of a non-spell stack entry.
+pub fn ability_index(entry: StackEntry) -> u8 {
+    match entry {
+        StackEntry::Spell => u8::MAX,
+        StackEntry::Activated { ability } | StackEntry::Triggered { ability } => ability,
     }
 }
 

@@ -904,5 +904,7 @@ fn pending_name(pending: Option<&Pending>) -> &'static str {
         Some(Pending::CommanderReturn { .. }) => "CommanderReturn",
         Some(Pending::CommanderReplacement { .. }) => "CommanderReplacement",
         Some(Pending::CommanderDraw { .. }) => "CommanderDraw",
+        Some(Pending::TriggerTarget { .. }) => "TriggerTarget",
+        Some(Pending::TriggerChoice { .. }) => "TriggerChoice",
     }
 }

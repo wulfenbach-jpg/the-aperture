@@ -172,6 +172,49 @@ pub enum Pending {
         remaining: u8,
         resume: DrawResume,
     },
+    /// CR 603.3d: a triggered ability that needs targets can be put on the
+    /// stack only after its controller chooses them. `queued` holds the
+    /// remaining triggers, still in APNAP order, that are put on the stack
+    /// after this one.
+    TriggerTarget {
+        player: PlayerId,
+        trigger: TriggerRef,
+        legal: Vec<crate::action::Target>,
+        queued: Vec<TriggerRef>,
+    },
+    /// CR 603.5: a "you may" trigger is put on the stack regardless of the
+    /// controller's intention; the choice is made when it resolves.
+    TriggerChoice {
+        player: PlayerId,
+        trigger: TriggerRef,
+    },
+}
+
+/// One triggered ability waiting to be put on the stack (CR 603.2, 603.3).
+///
+/// The record carries the source's identity and card as *last known
+/// information*: a "dies" trigger is queued after its source has already left
+/// the battlefield, so resolution can never read the current zone for it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TriggerRef {
+    /// The object that was the source when the event happened.
+    pub source: ObjectId,
+    pub card: CardId,
+    /// The controller of the source at the moment the event happened.
+    pub controller: PlayerId,
+    /// Index into [`crate::ability::abilities`] for `card`.
+    pub ability: u8,
+    /// Monotonic arrival serial; keeps same-controller ordering deterministic.
+    pub seq: u64,
+}
+
+/// What one stack item is: a spell card, or an ability whose source never
+/// leaves the battlefield merely because the ability is on the stack.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum StackEntry {
+    Spell,
+    Activated { ability: u8 },
+    Triggered { ability: u8 },
 }
 
 /// Strong serialized provenance for an APNAP source that left the game while
@@ -240,6 +283,9 @@ impl Pending {
             Pending::CommanderReturn { order, cursor, .. } => order[*cursor].player,
             Pending::CommanderReplacement { player, .. } => *player,
             Pending::CommanderDraw { player, .. } => *player,
+            Pending::TriggerTarget { player, .. } | Pending::TriggerChoice { player, .. } => {
+                *player
+            }
         }
     }
 
@@ -317,6 +363,20 @@ impl Pending {
                 "P{player}: commander {object} in the {} may be put into the command zone instead of the {} (CR 903.9b)",
                 from_zone.name(),
                 destination.name()
+            ),
+            Pending::TriggerTarget {
+                player,
+                trigger,
+                legal,
+                ..
+            } => format!(
+                "P{player}: choose a target for {}'s triggered ability ({} legal target(s), CR 603.3d)",
+                trigger.card.name(),
+                legal.len()
+            ),
+            Pending::TriggerChoice { player, trigger } => format!(
+                "P{player}: choose whether to use {}'s optional triggered ability (CR 603.5)",
+                trigger.card.name()
             ),
         }
     }
@@ -416,10 +476,20 @@ impl Object {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StackItem {
     pub object: ObjectId,
+    /// Card identity recorded when the item was put on the stack. For a spell
+    /// this is the spell's card; for an ability it is the source's card as last
+    /// known information, so resolution never depends on the source's current
+    /// zone (or on it still existing).
+    pub card: CardId,
     pub controller: PlayerId,
     pub targets: Vec<crate::action::Target>,
     /// Index of the next effect to apply during resolution (CR 608.2c).
     pub cursor: u8,
+    /// Spell or ability. Ability entries resolve without moving their source
+    /// into a graveyard for resolution (CR 603.3, 608.2).
+    pub entry: StackEntry,
+    /// Set once the controller has answered a CR 603.5 "you may" trigger.
+    pub trigger_answered: bool,
 }
 
 /// Stable registry entry for one physical commander card. The per-zone object
@@ -537,6 +607,14 @@ pub struct GameState {
     /// Object id of the stack item currently resolving (CR 608.2), if any.
     pub resolving: Option<ObjectId>,
     pub next_object: u32,
+    /// Triggered abilities that have triggered but are not on the stack yet
+    /// (CR 603.2, 603.3). Serialized so save/replay preserve the exact queue.
+    pub trigger_queue: Vec<TriggerRef>,
+    /// Next arrival serial for `trigger_queue`.
+    pub next_trigger_seq: u64,
+    /// Per-turn "activate only once each turn" usage, keyed by source object.
+    /// Bit `n` records that ability index `n` was activated this turn.
+    pub activation_uses: BTreeMap<ObjectId, u8>,
     /// Incremented on every accepted state mutation.
     pub revision: u64,
     /// Serial of the current decision point; submissions must match it.

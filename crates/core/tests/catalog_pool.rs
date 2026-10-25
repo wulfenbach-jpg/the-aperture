@@ -49,13 +49,36 @@ fn every_printed_ability_maps_to_implemented_semantics() {
         let spec = match card.spell {
             Some(spec) => spec,
             None => {
-                // No spell definition means a vanilla permanent: it must have
-                // no printed ability text at all.
-                assert!(
-                    card.oracle.trim().is_empty(),
-                    "{} prints abilities but has no implementation",
-                    card.name
-                );
+                // No spell definition means a permanent whose printed text, if
+                // any, is entirely covered by typed activated/triggered
+                // abilities.
+                let abilities = aperture_core::abilities(card.id);
+                if card.oracle.trim().is_empty() {
+                    assert!(
+                        abilities.is_empty(),
+                        "{} has abilities but prints no text",
+                        card.name
+                    );
+                } else {
+                    assert!(
+                        !abilities.is_empty(),
+                        "{} prints abilities but has no implementation",
+                        card.name
+                    );
+                    for ability in abilities {
+                        assert!(
+                            card.oracle.contains(ability.text()),
+                            "{} prints {:?} but the catalog text does not contain the typed ability",
+                            card.name,
+                            ability.text()
+                        );
+                        assert!(
+                            !ability.effects().is_empty(),
+                            "{}'s ability does nothing",
+                            card.name
+                        );
+                    }
+                }
                 assert!(card.is_creature(), "{} has no rules text at all", card.name);
                 assert!(card.power.is_some() && card.toughness.is_some());
                 continue;
@@ -96,6 +119,14 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::PreventAllCombatDamageThisTurn => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                     assert!(spec.instant, "{} prevention is an instant", card.name);
+                }
+                // Ability-only effects are exercised by the ability tests, not
+                // by a spell spec.
+                Effect::GainLife(_) | Effect::PumpSource(_, _) => {
+                    panic!(
+                        "{} uses an ability-only effect in its spell text",
+                        card.name
+                    )
                 }
             }
         }

@@ -1357,12 +1357,16 @@ fn fog_shield_survives_sandbox_save_and_malformed_shield_is_refused() {
 }
 
 #[test]
-fn fog_is_the_sourced_22nd_card() {
+fn fog_is_a_sourced_catalog_card() {
     let fog = catalog::by_name("Fog").expect("Fog is supported");
     assert_eq!(fog.name(), "Fog");
     assert_eq!(fog.def().cost, Some("{G}"));
     assert!(fog.def().is_instant());
-    assert_eq!(aperture_core::catalog::pool_size(), 22);
+    // The pool grew from 22 to 28 when issue 14 added the ability-bearing
+    // starter cards; Fog's own sourced semantics are unchanged.
+    assert_eq!(aperture_core::catalog::pool_size(), 28);
+    assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
+    assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
 
 /// CR 800.4a step 4: a survivor-owned represented card still controlled by the
@@ -1376,9 +1380,12 @@ fn departing_controller_stack_card_is_exiled_without_a_phantom_entry() {
     let shock = add_card(&mut game, P1, Zone::Stack, CardId::Shock, P0);
     game.state.stack.push(StackItem {
         object: shock,
+        card: CardId::Shock,
         controller: P0,
         targets: vec![Target::Player(P1)],
         cursor: 0,
+        entry: StackEntry::Spell,
+        trigger_answered: false,
     });
     game.state.players[P0 as usize].life = 0;
     game.state.turn.step = Step::PrecombatMain;

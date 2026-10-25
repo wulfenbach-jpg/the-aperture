@@ -95,7 +95,12 @@ impl HeuristicPolicy {
                 PendingKind::ApnapSacrifice
                 | PendingKind::CommanderReturn
                 | PendingKind::CommanderReplacement
-                | PendingKind::CommanderDraw,
+                | PendingKind::CommanderDraw
+                // Triggered-ability choices: take the engine's first offered
+                // option (declared targets, and "use the trigger" for a "may"
+                // ability).
+                | PendingKind::TriggerTarget
+                | PendingKind::TriggerChoice,
             ) => view
                 .legal
                 .first()
@@ -231,6 +236,12 @@ impl HeuristicPolicy {
     }
 
     fn priority_action(&self, view: &PlayerView) -> Action {
+        // 0. Use a non-sacrifice activated ability when the engine offers one,
+        // aimed at the weakest live opponent. Rules legality stays with the
+        // engine; this only chooses among already-legal options.
+        if let Some(action) = self.activation(view) {
+            return action;
+        }
         // 1. Counter an opponent's spell if we hold a counterspell (CR 701.6a).
         if let Some(spell) = top_opponent_spell(view)
             && self.threat(spell) >= 2
@@ -256,6 +267,29 @@ impl HeuristicPolicy {
             }
         }
         Action::Pass
+    }
+
+    fn activation(&self, view: &PlayerView) -> Option<Action> {
+        let weakest = view
+            .opponents
+            .iter()
+            .filter(|opponent| !opponent.eliminated)
+            .min_by_key(|opponent| (opponent.life, opponent.seat));
+        view.legal.iter().find_map(|legal| {
+            let Action::ActivateAbility { targets, .. } = &legal.action else {
+                return None;
+            };
+            // Sacrificing our own permanent for value is not part of this
+            // baseline policy.
+            if legal.label.contains("Sacrifice") {
+                return None;
+            }
+            if targets.is_empty() {
+                return Some(legal.action.clone());
+            }
+            let opponent = weakest?;
+            (targets.as_slice() == [Target::Player(opponent.seat)]).then(|| legal.action.clone())
+        })
     }
 
     fn main_phase_action(&self, view: &PlayerView) -> Option<Action> {
