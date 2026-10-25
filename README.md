@@ -137,6 +137,21 @@ cargo run --release -p aperture-cli -- import --url https://archidekt.com/decks/
 The CLI and UI both load `decks/*.txt`; the same lists are compiled in, so the
 binaries also work from another working directory.
 
+## Packaged, reproducible build
+
+```
+scripts\package.cmd
+```
+
+Builds a version/commit-stamped, unsigned practice bundle under `dist/` —
+`aperture.exe`, `aperture-cli.exe`, the bundled decks, the packaged scope README
+and launcher — with a SHA-256 manifest and a `verify-package.cmd` that
+re-derives every hash and launches the packaged executable in its smoke mode.
+Text payloads and the manifest are deterministic, and the release executables
+are byte-identical across repeated builds of the same commit and toolchain.
+See [docs/packaging.md](docs/packaging.md) for the exact contract, what is and
+is not claimed, and the CI artifact job.
+
 ## Verification
 
 ```
