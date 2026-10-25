@@ -1,15 +1,75 @@
 //! `replay`: verify a saved session or a replay file by re-running it.
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-use aperture_core::{Replay, SessionSave};
+use aperture_core::{Replay, SessionSave, compare_branches};
 
-pub fn run(file: &Path, verbose: bool) -> anyhow::Result<()> {
+/// Load a recorded line from a session save (embedded replay after full
+/// validation) or a bare replay file.
+fn load_line(
+    _file: &Path,
+    text: &str,
+    value: &serde_json::Value,
+) -> anyhow::Result<Option<Replay>> {
+    if value.get("game").is_some() {
+        let save = SessionSave::from_json(text).map_err(|e| anyhow::anyhow!("{e}"))?;
+        Ok(Some(save.replay))
+    } else {
+        Ok(Some(
+            Replay::from_json(text).map_err(|e| anyhow::anyhow!("{e}"))?,
+        ))
+    }
+}
+
+pub fn run(
+    file: &Path,
+    verbose: bool,
+    branch_at: Option<usize>,
+    branch_out: Option<PathBuf>,
+    compare_with: Option<PathBuf>,
+) -> anyhow::Result<()> {
     let text = std::fs::read_to_string(file)?;
     let value: serde_json::Value = serde_json::from_str(&text)?;
 
+    if let Some(other) = compare_with {
+        let base = load_line(file, &text, &value)?.ok_or_else(|| {
+            anyhow::anyhow!("the file does not contain a recorded line to compare")
+        })?;
+        let other_text = std::fs::read_to_string(&other)?;
+        let other_value: serde_json::Value = serde_json::from_str(&other_text)?;
+        let branch = load_line(&other, &other_text, &other_value)?.ok_or_else(|| {
+            anyhow::anyhow!(
+                "{} does not contain a recorded line to compare",
+                other.display()
+            )
+        })?;
+        let diff = compare_branches(&base, &branch)?;
+        println!(
+            "public accepted-action comparison ({file:?} vs {other:?}) — action kinds only, card names/targets/zone contents are never shown:"
+        );
+        print!("{}", diff.render());
+        return Ok(());
+    }
+
     if value.get("game").is_some() {
         let save = SessionSave::from_json(&text).map_err(|e| anyhow::anyhow!("{e}"))?;
+        let replay = save.replay.clone();
+        if let Some(keep) = branch_at {
+            let branch = replay.branch_at(keep)?;
+            let (branched, _) = branch.run_recorded()?;
+            println!(
+                "branch from {} at action #{keep}: {} seat(s), {} recorded action(s) kept, replays to digest {} under the same seed",
+                file.display(),
+                branch.seats.len(),
+                branch.steps.len(),
+                &branched.digest()[..12],
+            );
+            if let Some(out) = branch_out {
+                std::fs::write(&out, branch.to_json())?;
+                println!("  branch written to {}", out.display());
+            }
+            return Ok(());
+        }
         let game = save.game();
         let recomputed = game.digest();
         let integrity = recomputed == save.digest;
@@ -77,6 +137,22 @@ pub fn run(file: &Path, verbose: bool) -> anyhow::Result<()> {
     }
 
     let replay = Replay::from_json(&text).map_err(|e| anyhow::anyhow!("{e}"))?;
+    if let Some(keep) = branch_at {
+        let branch = replay.branch_at(keep)?;
+        let (branched, _) = branch.run_recorded()?;
+        println!(
+            "branch from {} at action #{keep}: {} seat(s), {} recorded action(s) kept, replays to digest {} under the same seed",
+            file.display(),
+            branch.seats.len(),
+            branch.steps.len(),
+            &branched.digest()[..12],
+        );
+        if let Some(out) = branch_out {
+            std::fs::write(&out, branch.to_json())?;
+            println!("  branch written to {}", out.display());
+        }
+        return Ok(());
+    }
     println!(
         "replay seed {} — {} seat(s), {} action(s), recorded outcome {:?}",
         replay.seed,

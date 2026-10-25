@@ -38,7 +38,10 @@ pub use error::EngineError;
 pub use event::Event;
 pub use ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, P0, P1, PlayerId, Zone};
 pub use mana::{ManaCost, ManaPool};
-pub use replay::{CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave};
+pub use replay::{
+    BranchDiff, BranchDiffLine, CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave,
+    compare_branches,
+};
 pub use settings::AiSettings;
 pub use state::{
     Commander, CommanderDamageEntry, DrawResume, GameState, OrderMode, Outcome, Pending, Profile,

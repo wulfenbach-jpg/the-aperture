@@ -51,7 +51,7 @@ fn cards_to_bottom(seat_count: usize, mulligans: u8) -> u8 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Game {
     pub state: GameState,
 }
