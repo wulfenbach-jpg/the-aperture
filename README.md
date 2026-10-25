@@ -85,8 +85,9 @@ implementation and it says so everywhere it matters.
   (category-badged: `[RULE]`, `[SIMPLIFICATION]`, `[STRATEGY]` — see
   `docs/issue19-trace-coach.md`; includes pass-round, response-window and APNAP
   records),
-  viewer-masked log, pending-choice controls, sandbox tools, per-seat deck
-  import, save/load, text zoom and keyboard navigation. Every model, network and
+  viewer-masked log, pending-choice controls, one searchable zone inspector,
+  an explicitly labelled sandbox with manual table controls, per-seat deck
+  import, save/load, undo, text zoom and keyboard navigation. Every model, network and
   file operation runs on a background worker with a visible busy state; the
   frame callback never blocks, and a worker result is applied only while its
   session generation, engine revision, decision serial and seat all still match.
@@ -104,6 +105,23 @@ implementation and it says so everywhere it matters.
   hands and libraries are counts only.
   An accepted action invalidates any in-flight load, so a delayed file read can
   never overwrite the board the player just changed.
+* **Tabletop controls, zone inspector and honest sandbox** (UI + core): `Z`
+  opens one searchable inspector over every zone this seat may legally see
+  (search by name, rules text or cost; filter by seat and zone; a command-zone
+  card is never labelled battlefield, and opponent hands and libraries stay
+  counts only). `K` opens the sandbox panel: explicit draw, mill, untap, scry
+  (keep/bottom), surveil (keep/graveyard), reveal and a +1/+1 counter and life
+  editor. Those are **overrides, never legal-match actions**: each one runs
+  through one deterministic engine path, emits a typed viewer-masked trace
+  event, and taints the session's typed record, which survives save/load and
+  makes every result read *SANDBOX-MODIFIED — not a legal match result* (a save
+  that carries overrides but claims to be untainted is refused). `Undo (U)`
+  rebuilds the position from the deterministic recorded prefix, so the RNG,
+  revision and decision serial are exact and nothing the undone action revealed
+  survives in the log; it is refused after an override. New game, new table,
+  load, branch, imported start and sandbox reset all require an explicit
+  confirmation and report failures in an error state. See
+  `docs/issue20-tabletop.md`.
 * **Per-seat import / play** (UI): each seat has its own Archidekt URL box, a
   pasted-text fallback and a text-file fallback. Each import is certified on its
   own (name, supported/total counts, practice-profile line, refusal reason);

@@ -16,10 +16,11 @@ use std::thread;
 use aperture_ai::{
     DeciderConfig, DeciderPolicy, Decision, DecisionSource, HeuristicPolicy, Policy,
 };
+use aperture_core::sandbox::{SandboxOp as EngineSandboxOp, SandboxRecord};
 use aperture_core::view::{PendingKind, PlayerView};
 use aperture_core::{
     Action, AiSettings, BlockDecl, CardId, CommanderSetup, DeckList, Event, Game, ObjectId, P0,
-    PlayerId, Profile, Replay, ReplayStep, SessionSave, Submission, Zone,
+    PlayerId, Profile, Replay, ReplayStep, SessionSave, Submission,
 };
 use aperture_import::DeckReport;
 
@@ -48,11 +49,29 @@ pub fn parse_replay_file(path: &Path) -> Result<Replay, String> {
     }
 }
 
+/// A manual table control as the UI exposes it. Every variant is a sandbox
+/// override: none of them is a legal-match action.
 pub enum SandboxOp {
     Draw(u8),
     Mill(u8),
+    /// Untap every permanent the human seat controls.
+    Untap,
+    /// Look at the top N and keep them on top (a scry choice, CR 701.22a).
+    Scry(u8),
+    /// Look at the top N and put them on the bottom in the same order.
+    ScryBottom(u8),
+    /// Look at the top N and keep them on top (a surveil choice, CR 701.25a).
+    Surveil(u8),
+    /// Look at the top N and put them into the graveyard.
+    SurveilGraveyard(u8),
+    /// Reveal the top N to every seat (public information).
     RevealTop(u8),
+    /// Add (or remove, negative) +1/+1 counters on a permanent.
     Counter(ObjectId, i32),
+    /// Set a permanent's +1/+1 counter count exactly.
+    SetCounters(ObjectId, u32),
+    /// Set a seat's life total (tabletop life counter).
+    SetLife(PlayerId, i32),
 }
 
 /// One seat's certified import: the exact planned list plus the audit summary
@@ -199,6 +218,8 @@ pub struct UiSession {
     pub profile: Profile,
     pub seed: u64,
     pub sandbox_modified: bool,
+    /// Typed record of every manual table override used in this session.
+    pub sandbox_record: SandboxRecord,
     pub human_plays_ai_seat: bool,
     pub heuristic: HeuristicPolicy,
     pub decider: Option<DeciderPolicy>,
@@ -295,6 +316,7 @@ impl UiSession {
             profile: Profile::Practice20,
             seed,
             sandbox_modified: false,
+            sandbox_record: SandboxRecord::default(),
             human_plays_ai_seat,
             heuristic: HeuristicPolicy::new(),
             decider,
@@ -657,6 +679,7 @@ impl UiSession {
         self.replay = save.replay.clone();
         self.ai = save.ai.clone();
         self.sandbox_modified = save.sandbox_modified;
+        self.sandbox_record = save.sandbox.clone();
         self.selected_attackers.clear();
         self.selected_defender = None;
         self.selected_blocks.clear();
@@ -944,6 +967,7 @@ impl UiSession {
         self.log = log;
         self.replay = replay;
         self.sandbox_modified = false;
+        self.sandbox_record = SandboxRecord::default();
         self.revealed.clear();
         self.message.clear();
         self.note = None;
@@ -963,11 +987,11 @@ impl UiSession {
         self.replay.ai = self.ai.clone();
         self.replay.outcome = self.game.state.outcome.clone();
         self.replay.final_digest = self.game.digest();
-        SessionSave::capture(
+        SessionSave::capture_recorded(
             &self.game,
             self.replay.clone(),
             self.log.clone(),
-            self.sandbox_modified,
+            self.sandbox_record.clone(),
         )
     }
 
@@ -1067,6 +1091,7 @@ impl UiSession {
         self.review_mode = false;
         self.review_cache = None;
         self.sandbox_modified = false;
+        self.sandbox_record = SandboxRecord::default();
         self.selected_attackers.clear();
         self.selected_defender = None;
         self.selected_blocks.clear();
@@ -1104,6 +1129,7 @@ impl UiSession {
         self.profile = save.game.profile;
         self.resize_seat_ui();
         self.sandbox_modified = save.sandbox_modified;
+        self.sandbox_record = save.sandbox.clone();
         self.review_mode = false;
         self.review_cache = None;
         self.branch_source = None;
@@ -1139,87 +1165,154 @@ impl UiSession {
         Ok(())
     }
 
-    /// Sandbox tools. These bypass the rules on purpose; the session is marked
-    /// so no certified claim can be made about the resulting position.
-    pub fn sandbox(&mut self, op: SandboxOp) {
+    /// Apply one manual table control.
+    ///
+    /// These are **sandbox overrides**, not legal-match actions: each one goes
+    /// through the engine's deterministic sandbox path, is recorded in the
+    /// session's typed taint record (which survives save/load) and marks the
+    /// whole session as sandbox-modified. A refusal changes nothing and reports
+    /// the engine's reason.
+    pub fn sandbox(&mut self, op: SandboxOp) -> Result<(), String> {
         if self.review_mode {
             self.message =
                 "postgame review is read-only: sandbox tools are off while review is shown"
                     .to_string();
-            return;
+            return Err(self.message.clone());
         }
-        let mut description = String::new();
-        match op {
-            SandboxOp::Draw(count) => {
-                for _ in 0..count {
-                    let seat = self.human_seat();
-                    let next = self.game.state.players[seat as usize]
+        let seat = self.human_seat();
+        let engine_op = match op {
+            SandboxOp::Draw(count) => EngineSandboxOp::Draw { seat, count },
+            SandboxOp::Mill(count) => EngineSandboxOp::Mill { seat, count },
+            SandboxOp::Untap => EngineSandboxOp::Untap { seat },
+            SandboxOp::Scry(count) => EngineSandboxOp::Scry {
+                seat,
+                count,
+                to_top: true,
+            },
+            SandboxOp::ScryBottom(count) => EngineSandboxOp::Scry {
+                seat,
+                count,
+                to_top: false,
+            },
+            SandboxOp::Surveil(count) => EngineSandboxOp::Surveil {
+                seat,
+                count,
+                to_top: true,
+            },
+            SandboxOp::SurveilGraveyard(count) => EngineSandboxOp::Surveil {
+                seat,
+                count,
+                to_top: false,
+            },
+            SandboxOp::RevealTop(count) => EngineSandboxOp::Reveal { seat, count },
+            SandboxOp::Counter(object, delta) => EngineSandboxOp::AddCounters { object, delta },
+            SandboxOp::SetCounters(object, count) => EngineSandboxOp::SetCounters { object, count },
+            SandboxOp::SetLife(target, life) => EngineSandboxOp::SetLife { seat: target, life },
+        };
+        match self.game.sandbox(engine_op) {
+            Ok(outcome) => {
+                self.invalidate_pending_work();
+                self.sandbox_modified = true;
+                let revealed_names = match outcome.events.last() {
+                    Some(Event::SandboxOverride {
+                        kind: aperture_core::SandboxKind::Reveal,
+                        count,
+                        ..
+                    }) => self
+                        .game
+                        .state
+                        .player(seat)
                         .library
-                        .first()
-                        .copied();
-                    if let Some(id) = next {
-                        self.game.state.players[seat as usize].library.remove(0);
-                        self.game.state.players[seat as usize].hand.push(id);
-                        if let Some(object) = self.game.state.objects.get_mut(&id) {
-                            object.zone = Zone::Hand;
-                        }
-                        description = format!("SANDBOX: P{seat} drew a card outside the rules");
-                    } else {
-                        description = "SANDBOX: library is empty".to_string();
-                        break;
-                    }
+                        .iter()
+                        .take(*count as usize)
+                        .map(|id| self.game.state.object(*id).card.name().to_string())
+                        .collect(),
+                    _ => Vec::new(),
+                };
+                self.log.extend(outcome.events);
+                self.sandbox_record.push(outcome.edit.clone());
+                if !revealed_names.is_empty() {
+                    self.revealed = revealed_names;
                 }
-            }
-            SandboxOp::Mill(count) => {
-                for _ in 0..count {
-                    let seat = self.human_seat();
-                    let next = self.game.state.players[seat as usize]
-                        .library
-                        .first()
-                        .copied();
-                    if let Some(id) = next {
-                        self.game.state.players[seat as usize].library.remove(0);
-                        self.game.state.players[seat as usize].graveyard.push(id);
-                        if let Some(object) = self.game.state.objects.get_mut(&id) {
-                            object.zone = Zone::Graveyard;
-                        }
-                        description = format!("SANDBOX: P{seat} milled a card outside the rules");
-                    } else {
-                        description = "SANDBOX: library is empty".to_string();
-                        break;
-                    }
-                }
-            }
-            SandboxOp::RevealTop(count) => {
-                let seat = self.human_seat();
-                let library = self.game.state.players[seat as usize].library.clone();
-                self.revealed = library
-                    .iter()
-                    .take(count as usize)
-                    .map(|id| self.game.state.object(*id).card.name().to_string())
-                    .collect();
-                description = format!(
-                    "SANDBOX: revealed the top {} card(s) of P{seat}'s library to the table",
-                    self.revealed.len()
+                self.message = format!(
+                    "SANDBOX override applied — {}. This session is tainted: no certified replay and no legal match result from here on.",
+                    outcome.edit.detail
                 );
+                Ok(())
             }
-            SandboxOp::Counter(id, delta) => {
-                if let Some(object) = self.game.state.objects.get_mut(&id) {
-                    let current = object.plus_one_counters as i32;
-                    object.plus_one_counters = (current + delta).max(0) as u32;
-                    description = format!(
-                        "SANDBOX: {} now has {} +1/+1 counter(s) (storage only; combat math ignores them)",
-                        object.card.name(),
-                        object.plus_one_counters
-                    );
-                }
+            Err(err) => {
+                self.message = format!("sandbox refused: {err}");
+                Err(err.to_string())
             }
         }
-        if !description.is_empty() {
-            self.invalidate_pending_work();
-            self.sandbox_modified = true;
-            self.log.push(Event::StateBasedAction { description });
+    }
+
+    /// True when this session's competitive record is tainted by an override.
+    pub fn tainted(&self) -> bool {
+        self.sandbox_modified || self.sandbox_record.is_tainted()
+    }
+
+    /// The one sentence any result surface must use.
+    pub fn record_line(&self) -> String {
+        self.sandbox_record
+            .record_line(self.game.state.outcome.as_ref())
+    }
+
+    // ------------------------------------------------------------------- undo
+
+    /// Undo is offered only while the recorded line still describes this exact
+    /// position: after a sandbox override the line no longer produces the state,
+    /// so undoing would silently substitute a different game.
+    pub fn can_undo(&self) -> bool {
+        !self.review_mode && !self.tainted() && !self.replay.steps.is_empty()
+    }
+
+    /// Undo the most recent accepted action.
+    ///
+    /// The position is rebuilt by replaying the deterministic recorded prefix
+    /// from the same seed, so the random state, revision and decision serial are
+    /// restored *exactly* rather than patched. The log is rebuilt from that
+    /// prefix too, so nothing the undone action revealed (a draw, a scry look, a
+    /// private choice) is still readable anywhere in the session.
+    pub fn undo_last_action(&mut self) -> Result<String, String> {
+        if self.review_mode {
+            return Err("postgame review is read-only: leave review before undoing".to_string());
         }
+        if self.tainted() {
+            let message = "undo is unavailable after a sandbox override: the recorded line no longer produces this position. Start a new game or use Return to branch.".to_string();
+            self.message = message.clone();
+            return Err(message);
+        }
+        let Some(last) = self.replay.steps.last().cloned() else {
+            let message = "there is no accepted action to undo".to_string();
+            self.message = message.clone();
+            return Err(message);
+        };
+        let keep = self.replay.steps.len() - 1;
+        let branched = self
+            .replay
+            .branch_at(keep)
+            .map_err(|err| format!("could not cut the recorded line: {err}"))?;
+        let (game, log) = branched
+            .run_recorded()
+            .map_err(|err| format!("could not replay the recorded prefix: {err}"))?;
+        self.invalidate_pending_work();
+        self.game = game;
+        self.log = log;
+        self.replay = branched;
+        self.review_mode = false;
+        self.review_cache = None;
+        self.selected_attackers.clear();
+        self.selected_defender = None;
+        self.selected_blocks.clear();
+        self.selected_cards.clear();
+        self.target_pick = None;
+        self.note = None;
+        let label = format!("P{}'s {}", last.player, last.action.kind());
+        self.message = format!(
+            "undid {label}. The position was rebuilt from the recorded prefix, so the random state and decision serial are exact; anything that action revealed is gone from the log."
+        );
+        Ok(label)
     }
 
     /// Pending-choice helper text for the UI.
@@ -1259,10 +1352,24 @@ impl UiSession {
             .as_ref()
             .map(|outcome| match outcome {
                 aperture_core::Outcome::Win { winner, reason } => {
-                    format!("P{winner} wins — {reason}")
+                    if self.tainted() {
+                        format!(
+                            "P{winner} wins — {reason} — SANDBOX-MODIFIED, not a legal match result ({})",
+                            self.sandbox_record.summary()
+                        )
+                    } else {
+                        format!("P{winner} wins — {reason}")
+                    }
                 }
                 aperture_core::Outcome::Draw { reason } => {
-                    format!("the game is a draw — {reason}")
+                    if self.tainted() {
+                        format!(
+                            "the game is a draw — {reason} — SANDBOX-MODIFIED, not a legal match result ({})",
+                            self.sandbox_record.summary()
+                        )
+                    } else {
+                        format!("the game is a draw — {reason}")
+                    }
                 }
             })
     }
@@ -1312,7 +1419,7 @@ pub fn load_explicit_deck(path: &Path, name: &str) -> (DeckList, Option<String>)
 }
 
 pub fn sandbox_label() -> &'static str {
-    "SANDBOX — these tools bypass the rules and void certified replay"
+    "SANDBOX OVERRIDES — manual table controls; each one taints this session's record (never a legal match action)"
 }
 
 pub fn block_list(pairs: &[(ObjectId, ObjectId)]) -> Vec<BlockDecl> {

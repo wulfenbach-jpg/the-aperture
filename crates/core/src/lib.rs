@@ -24,6 +24,7 @@ pub mod layer;
 pub mod mana;
 pub mod replay;
 pub mod rng;
+pub mod sandbox;
 pub mod settings;
 pub mod state;
 pub mod view;
@@ -47,6 +48,7 @@ pub use replay::{
     BranchDiff, BranchDiffLine, CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave,
     compare_branches,
 };
+pub use sandbox::{SandboxEdit, SandboxKind, SandboxOp, SandboxOutcome, SandboxRecord};
 pub use settings::AiSettings;
 pub use state::{
     Commander, CommanderDamageEntry, DrawResume, GameState, OrderMode, Outcome, Pending, Profile,

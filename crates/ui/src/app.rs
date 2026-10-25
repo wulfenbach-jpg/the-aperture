@@ -13,7 +13,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
 use aperture_ai::{DeciderClient, DeciderConfig};
-use aperture_core::view::{CardView, PlayerView};
+use aperture_core::view::{CardView, PlayerView, ZONE_ORDER};
 use aperture_core::{Action, AiSettings, ObjectId, P0, PlayerId, Profile, Zone, catalog, coach};
 use eframe::egui::{self, RichText};
 
@@ -48,6 +48,78 @@ pub struct Startup {
     pub branch_at: usize,
 }
 
+/// A destructive action that must be confirmed before it runs. Everything in
+/// this list discards or replaces live table state, so it never fires on the
+/// first click and it never silently substitutes a deck or a game.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum PendingAction {
+    NewGame {
+        seed: u64,
+    },
+    NewTable {
+        seed: u64,
+        seats: usize,
+        profile: Profile,
+    },
+    Load {
+        path: PathBuf,
+    },
+    Branch {
+        path: PathBuf,
+        keep: usize,
+    },
+    ResetSandboxGame {
+        seed: u64,
+    },
+    StartImported {
+        seed: u64,
+    },
+}
+
+impl PendingAction {
+    fn question(&self) -> String {
+        match self {
+            PendingAction::NewGame { seed } => format!(
+                "start a new game with seed {seed}? The live position, its log and any unsaved changes are discarded."
+            ),
+            PendingAction::NewTable {
+                seed,
+                seats,
+                profile,
+            } => format!(
+                "start a new {seats}-seat table with profile {} ({} life) and seed {seed}? The live position is discarded.",
+                profile.label(),
+                profile.starting_life()
+            ),
+            PendingAction::Load { path } => format!(
+                "load {}? The live position, its log and unsaved changes are discarded.",
+                path.display()
+            ),
+            PendingAction::Branch { path, keep } => format!(
+                "branch from {} at recorded action #{keep}? The live position is replaced by the replayed recorded prefix.",
+                path.display()
+            ),
+            PendingAction::ResetSandboxGame { seed } => format!(
+                "reset this sandbox game with seed {seed}? The live position is discarded and the sandbox taint is cleared."
+            ),
+            PendingAction::StartImported { seed } => format!(
+                "start the imported match with seed {seed}? The live position is discarded and the certified lists replace it."
+            ),
+        }
+    }
+
+    fn confirm_label(&self) -> &'static str {
+        match self {
+            PendingAction::NewGame { .. } => "Confirm new game",
+            PendingAction::NewTable { .. } => "Confirm new table",
+            PendingAction::Load { .. } => "Confirm load",
+            PendingAction::Branch { .. } => "Confirm branch",
+            PendingAction::ResetSandboxGame { .. } => "Confirm reset",
+            PendingAction::StartImported { .. } => "Confirm imported match",
+        }
+    }
+}
+
 pub struct ApertureApp {
     session: UiSession,
     startup: Startup,
@@ -69,8 +141,17 @@ pub struct ApertureApp {
     /// pending selection until they start the new table.
     observed_seats: u8,
     observed_profile: Profile,
-    /// Which public zone the user asked to inspect.
-    zone_inspect: Option<(PlayerId, Zone)>,
+    /// Zone-inspector inputs: one shared, searchable inspector over every zone
+    /// the human seat may legally see.
+    zone_query: String,
+    zone_seat_filter: Option<PlayerId>,
+    zone_zone_filter: Option<Zone>,
+    /// Destructive action waiting for an explicit confirmation.
+    confirm: Option<PendingAction>,
+    /// Counter-editor target and life-editor inputs (sandbox overrides).
+    counter_object: Option<ObjectId>,
+    life_seat: PlayerId,
+    life_value: i32,
     zoom: f32,
     frame_count: u64,
 }
@@ -199,35 +280,6 @@ impl SeatPanelData {
     }
 }
 
-fn zone_cards_for(view: &PlayerView, seat: PlayerId, zone: Zone) -> Vec<CardView> {
-    let (own, opponent) = if seat == view.viewer {
-        (true, None)
-    } else {
-        (false, view.opponent_view(seat))
-    };
-    if own {
-        match zone {
-            Zone::Battlefield => view.own_battlefield.clone(),
-            Zone::Graveyard => view.own_graveyard.clone(),
-            Zone::Exile => view.own_exile.clone(),
-            Zone::Command => view.own_command_zone.clone(),
-            Zone::Hand => view.own_hand.clone(),
-            Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
-        }
-    } else if let Some(opponent) = opponent {
-        match zone {
-            Zone::Battlefield => opponent.battlefield.clone(),
-            Zone::Graveyard => opponent.graveyard.clone(),
-            Zone::Exile => opponent.exile.clone(),
-            Zone::Command => opponent.command_zone.clone(),
-            // Counts are public; contents are intentionally absent.
-            Zone::Hand | Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
-        }
-    } else {
-        Vec::new()
-    }
-}
-
 impl ApertureApp {
     pub fn new(cc: &eframe::CreationContext<'_>, startup: Startup) -> Self {
         theme::apply(&cc.egui_ctx);
@@ -308,10 +360,77 @@ impl ApertureApp {
             setup_profile: initial_profile,
             observed_seats: seat_count as u8,
             observed_profile: initial_profile,
-            zone_inspect: None,
+            zone_query: String::new(),
+            zone_seat_filter: None,
+            zone_zone_filter: None,
+            confirm: None,
+            counter_object: None,
+            life_seat: P0,
+            life_value: 20,
             zoom: 1.0,
             frame_count: 0,
         }
+    }
+
+    /// Run a pending destructive action after its confirmation.
+    fn apply_pending(&mut self, action: PendingAction) {
+        self.confirm = None;
+        match action {
+            PendingAction::NewGame { seed } => {
+                self.session.new_game(seed);
+                self.session.message = format!("started a new game with seed {seed}");
+            }
+            PendingAction::NewTable {
+                seed,
+                seats,
+                profile,
+            } => match self.session.start_table(seed, seats, profile) {
+                Ok(()) => {
+                    self.session.deck_refusal = None;
+                    self.session.message = format!(
+                        "started a {seats}-seat table, profile {} ({} life); human P0, other seats heuristic AI",
+                        profile.label(),
+                        profile.starting_life()
+                    );
+                }
+                Err(err) => self.session.message = err,
+            },
+            PendingAction::Load { path } => self.session.request_load(path),
+            PendingAction::Branch { path, keep } => self.session.request_replay_branch(path, keep),
+            PendingAction::ResetSandboxGame { seed } => {
+                self.session.new_game(seed);
+                self.session.message = format!(
+                    "reset the table with seed {seed}: the sandbox taint is cleared with the old position"
+                );
+            }
+            PendingAction::StartImported { seed } => {
+                if let Err(err) = self.session.start_imported_match(seed) {
+                    self.session.message = err;
+                }
+            }
+        }
+    }
+
+    /// The confirmation bar content. Nothing destructive runs until the user
+    /// presses the explicit confirm button.
+    fn confirm_bar(&mut self, ui: &mut egui::Ui) {
+        let Some(pending) = self.confirm.clone() else {
+            return;
+        };
+        ui.horizontal_wrapped(|ui| {
+            ui.label(
+                RichText::new(format!("CONFIRM: {}", pending.question()))
+                    .color(theme::WARN)
+                    .strong(),
+            );
+            if ui.button(pending.confirm_label()).clicked() {
+                self.apply_pending(pending.clone());
+            }
+            if ui.button("Cancel").clicked() {
+                self.confirm = None;
+                self.session.message = "cancelled — nothing was changed".to_string();
+            }
+        });
     }
 
     fn tick_ai(&mut self, ctx: &egui::Context) {
@@ -363,6 +482,7 @@ impl ApertureApp {
             plus,
             minus,
             esc,
+            undo,
         ) = ctx.input(|input| {
             (
                 input.key_pressed(egui::Key::P),
@@ -379,6 +499,7 @@ impl ApertureApp {
                 input.key_pressed(egui::Key::Plus) || input.key_pressed(egui::Key::Equals),
                 input.key_pressed(egui::Key::Minus),
                 input.key_pressed(egui::Key::Escape),
+                input.key_pressed(egui::Key::U),
             )
         });
         if review {
@@ -406,16 +527,22 @@ impl ApertureApp {
             let _ = self.session.submit_human(Action::Pass);
         }
         if new_game {
+            // Destructive: ask first. The confirm bar is part of the primary
+            // strip, so the question never hides behind a scrolling panel.
             let seed = self.session.seed.wrapping_add(1);
-            self.session.new_game(seed);
+            self.confirm = Some(PendingAction::NewGame { seed });
+        }
+        if undo && let Err(err) = self.session.undo_last_action() {
+            self.session.message = err;
         }
         if save {
             self.session
                 .request_save(PathBuf::from(self.session.save_path.clone()));
         }
         if load {
-            self.session
-                .request_load(PathBuf::from(self.session.save_path.clone()));
+            self.confirm = Some(PendingAction::Load {
+                path: PathBuf::from(self.session.save_path.clone()),
+            });
         }
         if import {
             self.show_import = !self.show_import;
@@ -441,8 +568,11 @@ impl ApertureApp {
             self.set_zoom(ctx, zoom);
         }
         if esc {
+            // Esc cancels a pending target choice and closes the inspector or an
+            // unconfirmed destructive action; it never performs anything.
             self.session.target_pick = None;
-            self.zone_inspect = None;
+            self.show_zones = false;
+            self.confirm = None;
         }
     }
 
@@ -463,8 +593,16 @@ impl ApertureApp {
         } else {
             String::new()
         };
+        // The zone is read from this viewer's masked projection: a shared
+        // inspector is called from hand, a public zone, the battlefield and the
+        // command zone, so it never hardcodes or invents a location.
+        let view = self.session.view(self.session.human_seat());
+        let zone_line = match view.zone_of(card.id) {
+            Some(zone) => format!("zone: {}", zone_label(zone)),
+            None => "zone: not projected in your view".to_string(),
+        };
         self.session.inspect = Some(format!(
-            "{} — {}\n{} (mana cost)\ncontroller P{}{}{}\n\n{}",
+            "{} — {}\n{} (mana cost)\ncontroller P{}{}{}\n{}\n\n{}",
             card.name,
             if card.card.def().is_land() {
                 "land"
@@ -474,6 +612,7 @@ impl ApertureApp {
             card.cost.unwrap_or("(no cost)"),
             card.controller,
             if card.tapped { "\ntapped" } else { "" },
+            zone_line,
             counters + &pump,
             card.oracle
         ));
@@ -808,13 +947,15 @@ impl ApertureApp {
         label
     }
 
-    fn battlefield_ui(&mut self, ui: &mut egui::Ui, cards: &[CardView], interactive: bool) {
+    /// A battlefield row. A click always inspects the card: the counter editor
+    /// in the sandbox panel is the only way to edit counters, so a stray click
+    /// on a permanent can never silently mutate the game.
+    fn battlefield_ui(&mut self, ui: &mut egui::Ui, cards: &[CardView]) {
         if cards.is_empty() {
             theme::muted(ui, "(no permanents)");
             return;
         }
         ui.horizontal_wrapped(|ui| {
-            let mut sandbox_click: Option<ObjectId> = None;
             let mut inspect_card: Option<CardView> = None;
             for card in cards {
                 let label = Self::card_label(card);
@@ -824,23 +965,24 @@ impl ApertureApp {
                     theme::TEXT
                 });
                 let response = ui.add(egui::Button::new(text).min_size(egui::vec2(104.0, 32.0)));
-                if response.clicked() {
-                    if interactive && self.show_sandbox {
-                        sandbox_click = Some(card.id);
-                    } else {
-                        inspect_card = Some(card.clone());
-                    }
-                }
-                if response.secondary_clicked() {
+                if response.clicked() || response.secondary_clicked() {
                     inspect_card = Some(card.clone());
                 }
-                response.on_hover_text(format!("{} {}", card.name, card.oracle));
+                response.on_hover_text(format!(
+                    "{} — click to inspect. {}",
+                    card.oracle,
+                    if card.plus_one_counters > 0 {
+                        format!(
+                            "{} +1/+1 sandbox counter(s); edit them in the sandbox counter editor.",
+                            card.plus_one_counters
+                        )
+                    } else {
+                        "Counters are edited in the sandbox panel.".to_string()
+                    }
+                ));
             }
             if let Some(card) = inspect_card {
                 self.inspect_card(&card);
-            }
-            if let Some(id) = sandbox_click {
-                self.session.sandbox(SandboxOp::Counter(id, 1));
             }
         });
     }
@@ -899,7 +1041,8 @@ impl ApertureApp {
                         .small_button(format!("{} {count}", zone_label(zone)))
                         .clicked()
                     {
-                        self.zone_inspect = Some((seat, zone));
+                        self.zone_seat_filter = Some(seat);
+                        self.zone_zone_filter = Some(zone);
                         self.show_zones = true;
                     }
                 }
@@ -948,7 +1091,7 @@ impl ApertureApp {
                         .color(theme::WARN),
                 );
             }
-            self.battlefield_ui(ui, &data.battlefield, is_own);
+            self.battlefield_ui(ui, &data.battlefield);
             if is_own {
                 theme::heading(ui, "YOUR HAND");
                 if data.hand.is_empty() {
@@ -1124,9 +1267,7 @@ impl ApertureApp {
                 .clicked()
             {
                 let seed = self.session.seed.wrapping_add(1);
-                if let Err(err) = self.session.start_imported_match(seed) {
-                    self.session.message = err;
-                }
+                self.confirm = Some(PendingAction::StartImported { seed });
             }
             if !ready {
                 theme::muted(
@@ -1283,7 +1424,7 @@ impl ApertureApp {
             )
             .clicked()
         {
-            self.session.request_replay_branch(path, keep);
+            self.confirm = Some(PendingAction::Branch { path, keep });
         }
         theme::muted(
             ui,
@@ -1409,21 +1550,11 @@ impl ApertureApp {
                 }
                 if ui.button("Start new table with these options").clicked() {
                     let seed = self.session.seed.wrapping_add(1);
-                    match self
-                        .session
-                        .start_table(seed, self.setup_seats as usize, self.setup_profile)
-                    {
-                        Ok(()) => {
-                            self.session.deck_refusal = None;
-                            self.session.message = format!(
-                                "started a {}-seat table, profile {} ({} life); human P0, other seats heuristic AI",
-                                self.session.seats.len(),
-                                self.session.profile.label(),
-                                self.session.profile.starting_life()
-                            );
-                        }
-                        Err(err) => self.session.message = err,
-                    }
+                    self.confirm = Some(PendingAction::NewTable {
+                        seed,
+                        seats: self.setup_seats as usize,
+                        profile: self.setup_profile,
+                    });
                 }
                 theme::muted(
                     ui,
@@ -1433,7 +1564,7 @@ impl ApertureApp {
             ui.horizontal_wrapped(|ui| {
                 if ui.button("New game").clicked() {
                     let seed = self.session.seed.wrapping_add(1);
-                    self.session.new_game(seed);
+                    self.confirm = Some(PendingAction::NewGame { seed });
                 }
                 if ui.button("Pass (P)").clicked() {
                     let _ = self.session.submit_human(Action::Pass);
@@ -1464,14 +1595,28 @@ impl ApertureApp {
                         .request_save(PathBuf::from(self.session.save_path.clone()));
                 }
                 if ui.button("Load (L)").clicked() {
-                    self.session
-                        .request_load(PathBuf::from(self.session.save_path.clone()));
+                    self.confirm = Some(PendingAction::Load {
+                        path: PathBuf::from(self.session.save_path.clone()),
+                    });
                 }
                 if ui.button("Set branch").clicked() {
                     self.session.set_branch();
                 }
                 if ui.button("Return to branch").clicked()
                     && let Err(err) = self.session.return_to_branch()
+                {
+                    self.session.message = err;
+                }
+                if ui
+                    .add_enabled(
+                        self.session.can_undo(),
+                        egui::Button::new("Undo (U)"),
+                    )
+                    .on_hover_text(
+                        "Undo the last accepted action by rebuilding the recorded prefix exactly",
+                    )
+                    .clicked()
+                    && let Err(err) = self.session.undo_last_action()
                 {
                     self.session.message = err;
                 }
@@ -1501,10 +1646,11 @@ impl ApertureApp {
                 ui.checkbox(&mut self.show_import, "Import (I)");
                 ui.checkbox(&mut self.show_zones, "Zones (Z)");
             });
+            self.confirm_bar(ui);
             if self.show_help {
                 ui.label(
                     RichText::new(
-                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · N new game (keeps seats/profile) · S save · L load · I import · B study-branch panel · G branch from the prefilled study inputs · R postgame review (game over only) · Z zones · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick. Shortcuts are ignored while a text field has focus.",
+                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · U undo · N new game (keeps seats/profile, asks first) · S save · L load (asks first) · I import · B study-branch panel · G branch from the prefilled study inputs (asks first) · R postgame review (game over only) · Z zone inspector · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick, a confirmation or the inspector. Shortcuts are ignored while a text field has focus.",
                     )
                     .small()
                     .color(theme::MUTED),
@@ -1575,8 +1721,15 @@ impl ApertureApp {
                             .small(),
                     );
                 }
-                if self.session.sandbox_modified {
-                    ui.label(RichText::new("SANDBOX-MODIFIED").color(theme::BAD).strong());
+                if self.session.tainted() {
+                    ui.label(
+                        RichText::new(format!(
+                            "SANDBOX-MODIFIED — NOT A LEGAL MATCH RESULT ({})",
+                            self.session.sandbox_record.summary()
+                        ))
+                        .color(theme::BAD)
+                        .strong(),
+                    );
                 }
                 if self.session.ai.use_decider {
                     ui.label(RichText::new("decider-2b opt-in").color(theme::BRASS));
@@ -1631,7 +1784,21 @@ impl ApertureApp {
                 ui.label(RichText::new(note).color(theme::BRASS).small());
             }
             if !self.session.message.is_empty() {
-                ui.label(RichText::new(&self.session.message).color(theme::WARN).small());
+                // A refusal or a failed load/branch is an error state, not a
+                // hint: it is shown in the error colour so a silent no-op can
+                // never be mistaken for success.
+                let failed = self.session.message.starts_with("refused")
+                    || self.session.message.starts_with("sandbox refused")
+                    || self.session.message.starts_with("load failed")
+                    || self.session.message.starts_with("branch failed")
+                    || self.session.message.starts_with("undo is unavailable")
+                    || self.session.message.starts_with("cancel")
+                    || self.session.message.starts_with("there is no accepted action");
+                ui.label(
+                    RichText::new(&self.session.message)
+                        .color(if failed { theme::BAD } else { theme::WARN })
+                        .small(),
+                );
             }
         });
 
@@ -1769,35 +1936,149 @@ impl ApertureApp {
                     if self.show_sandbox {
                         ui.separator();
                         theme::heading(ui, crate::session::sandbox_label());
-                        ui.horizontal_wrapped(|ui| {
-                            if ui.button("Draw 1").clicked() {
-                                self.session.sandbox(SandboxOp::Draw(1));
-                            }
-                            if ui.button("Mill 1").clicked() {
-                                self.session.sandbox(SandboxOp::Mill(1));
-                            }
-                            if ui.button("Reveal top 3").clicked() {
-                                self.session.sandbox(SandboxOp::RevealTop(3));
-                            }
-                            if ui.button("Reset game").clicked() {
-                                self.session.sandbox_modified = false;
-                                let seed = self.session.seed;
-                                self.session.new_game(seed);
-                            }
-                            theme::muted(
-                                ui,
-                                "click one of YOUR permanents while the sandbox is open to add a +1/+1 counter",
+                        ui.label(
+                            RichText::new(
+                                "LEGAL MATCH ACTIONS stay in YOUR ACTIONS at the top of the window. Every control below is a manual table override: it bypasses the rules, it is written into this session's taint record, and the table can then never be presented as a legal match result.",
+                            )
+                            .small()
+                            .color(theme::WARN),
+                        );
+                        if self.session.tainted() {
+                            ui.label(
+                                RichText::new(format!(
+                                    "TAINTED — {}",
+                                    self.session.sandbox_record.summary()
+                                ))
+                                .color(theme::BAD)
+                                .strong(),
                             );
+                        }
+                        ui.horizontal_wrapped(|ui| {
+                            ui.label(
+                                RichText::new(format!("on your seat (P{human}):"))
+                                    .color(theme::BRASS)
+                                    .small(),
+                            );
+                            for (label, op) in [
+                                ("Draw 1", SandboxOp::Draw(1)),
+                                ("Mill 1", SandboxOp::Mill(1)),
+                                ("Untap all", SandboxOp::Untap),
+                                ("Scry 1 · keep on top", SandboxOp::Scry(1)),
+                                ("Scry 1 · to bottom", SandboxOp::ScryBottom(1)),
+                                ("Surveil 1 · keep on top", SandboxOp::Surveil(1)),
+                                ("Surveil 1 · to graveyard", SandboxOp::SurveilGraveyard(1)),
+                                ("Reveal top 3", SandboxOp::RevealTop(3)),
+                            ] {
+                                if ui.button(format!("{label} · sandbox")).clicked() {
+                                    let _ = self.session.sandbox(op);
+                                }
+                            }
                         });
                         theme::muted(
                             ui,
-                            "Sandbox +1/+1 counters are stored and displayed on the card, but they are NOT a rules-supported counter system; combat math ignores them.",
+                            "A scry or surveil look is shown to your seat only; a reveal is public by construction. A control is refused while a rules choice is pending.",
+                        );
+                        theme::heading(ui, "Counter editor — your permanents");
+                        let own = view.own_battlefield.clone();
+                        if own.is_empty() {
+                            theme::muted(ui, "(no permanents on your battlefield)");
+                        } else {
+                            ui.horizontal_wrapped(|ui| {
+                                for card in &own {
+                                    let selected = self.counter_object == Some(card.id);
+                                    if ui
+                                        .selectable_label(
+                                            selected,
+                                            format!(
+                                                "{} [{} +1/+1]",
+                                                card.name, card.plus_one_counters
+                                            ),
+                                        )
+                                        .clicked()
+                                    {
+                                        self.counter_object = Some(card.id);
+                                    }
+                                }
+                            });
+                            if let Some(card) = own
+                                .iter()
+                                .find(|card| Some(card.id) == self.counter_object)
+                                .cloned()
+                            {
+                                ui.horizontal_wrapped(|ui| {
+                                    if ui
+                                        .add_enabled(
+                                            card.plus_one_counters > 0,
+                                            egui::Button::new("−1 · sandbox"),
+                                        )
+                                        .clicked()
+                                    {
+                                        let _ =
+                                            self.session.sandbox(SandboxOp::Counter(card.id, -1));
+                                    }
+                                    if ui
+                                        .add_enabled(
+                                            card.plus_one_counters < 99,
+                                            egui::Button::new("+1 · sandbox"),
+                                        )
+                                        .clicked()
+                                    {
+                                        let _ =
+                                            self.session.sandbox(SandboxOp::Counter(card.id, 1));
+                                    }
+                                    if ui.button("Clear · sandbox").clicked() {
+                                        let _ = self
+                                            .session
+                                            .sandbox(SandboxOp::SetCounters(card.id, 0));
+                                    }
+                                    ui.label(format!(
+                                        "{}: {} +1/+1 counter(s)",
+                                        card.name, card.plus_one_counters
+                                    ));
+                                });
+                                theme::muted(
+                                    ui,
+                                    "Counter edits are stored and displayed only: this engine's combat math does not apply them.",
+                                );
+                            }
+                        }
+                        theme::heading(ui, "Life editor");
+                        ui.horizontal_wrapped(|ui| {
+                            for seat in 0..view.seat_count as PlayerId {
+                                let life = if seat == human {
+                                    view.own_life
+                                } else {
+                                    view.opponent_view(seat).map(|other| other.life).unwrap_or(0)
+                                };
+                                if ui
+                                    .selectable_label(self.life_seat == seat, format!("P{seat} {life}"))
+                                    .clicked()
+                                {
+                                    self.life_seat = seat;
+                                    self.life_value = life;
+                                }
+                            }
+                            ui.add(egui::DragValue::new(&mut self.life_value).range(1..=999));
+                            if ui.button("Set life · sandbox").clicked() {
+                                let _ = self.session.sandbox(SandboxOp::SetLife(
+                                    self.life_seat,
+                                    self.life_value,
+                                ));
+                            }
+                        });
+                        theme::muted(
+                            ui,
+                            "A sandbox life edit stays between 1 and 999: ending the game is a legal-match action, not an override.",
                         );
                         if !self.session.revealed.is_empty() {
                             ui.label(format!(
                                 "revealed (sandbox): {}",
                                 self.session.revealed.join(", ")
                             ));
+                        }
+                        if ui.button("Reset this game · sandbox").clicked() {
+                            let seed = self.session.seed;
+                            self.confirm = Some(PendingAction::ResetSandboxGame { seed });
                         }
                     }
 
@@ -1850,74 +2131,124 @@ impl ApertureApp {
 
         if self.show_zones {
             let mut open = true;
-            let inspect = self.zone_inspect;
-            let all_seats: Vec<PlayerId> = (0..view.seat_count as PlayerId).collect();
             let mut inspect_card: Option<CardView> = None;
-            egui::Window::new("Public zones")
+            egui::Window::new("Zone inspector — searchable, viewer-masked")
                 .open(&mut open)
                 .resizable(true)
-                .default_width(520.0)
+                .default_width(660.0)
+                .default_height(460.0)
                 .show(&ctx, |ui| {
                     theme::muted(
                         ui,
-                        "Battlefield, graveyard, exile and command zone are public. Opponent hand and library are counts only.",
+                        "One inspector for every zone this seat may legally see: your own hand plus every public zone of every seat. Opponent hands and every library stay counts only, and nothing here queries the engine.",
                     );
-                    for seat in &all_seats {
-                        ui.separator();
-                        let data = SeatPanelData::from_view(&view, &self.session.seats, *seat);
-                        ui.label(
-                            RichText::new(format!(
-                                "P{seat} · life {} · hand {} · library {}{}",
-                                data.life,
-                                data.hand_count,
-                                data.library_count,
-                                if data.eliminated { " · ELIMINATED" } else { "" }
-                            ))
-                            .color(theme::BRASS)
-                            .strong(),
+                    ui.horizontal_wrapped(|ui| {
+                        ui.label("search");
+                        ui.add(
+                            egui::TextEdit::singleline(&mut self.zone_query)
+                                .hint_text("name, rules text or mana cost")
+                                .desired_width(300.0),
                         );
-                        let zones: Vec<(Zone, Vec<CardView>)> = vec![
-                            (Zone::Graveyard, data.graveyard.clone()),
-                            (Zone::Exile, data.exile.clone()),
-                            (Zone::Command, data.command_zone.clone()),
-                        ];
-                        for (zone, cards) in zones {
-                            ui.label(
-                                RichText::new(format!("{} ({})", zone_label(zone), cards.len()))
-                                    .small()
-                                    .color(theme::MUTED),
-                            );
-                            ui.horizontal_wrapped(|ui| {
-                                for card in &cards {
-                                    if ui.small_button(Self::card_label(card)).clicked() {
-                                        inspect_card = Some(card.clone());
-                                    }
-                                }
-                                if cards.is_empty() {
-                                    theme::muted(ui, "(empty)");
-                                }
-                            });
+                        if ui.button("Clear").clicked() {
+                            self.zone_query.clear();
+                            self.zone_seat_filter = None;
+                            self.zone_zone_filter = None;
                         }
-                    }
-                    if let Some((seat, zone)) = inspect {
+                    });
+                    ui.horizontal_wrapped(|ui| {
+                        ui.label(RichText::new("seat:").color(theme::BRASS).small());
+                        if ui
+                            .selectable_label(self.zone_seat_filter.is_none(), "all")
+                            .clicked()
+                        {
+                            self.zone_seat_filter = None;
+                        }
+                        for seat in 0..view.seat_count as PlayerId {
+                            if ui
+                                .selectable_label(
+                                    self.zone_seat_filter == Some(seat),
+                                    format!("P{seat}"),
+                                )
+                                .clicked()
+                            {
+                                self.zone_seat_filter = Some(seat);
+                            }
+                        }
                         ui.separator();
-                        let cards = zone_cards_for(&view, seat, zone);
-                        ui.label(
-                            RichText::new(format!(
-                                "P{seat} {} — {} card(s)",
-                                zone_label(zone),
-                                cards.len()
-                            ))
-                            .color(theme::BRASS),
-                        );
+                        ui.label(RichText::new("zone:").color(theme::BRASS).small());
+                        if ui
+                            .selectable_label(self.zone_zone_filter.is_none(), "all")
+                            .clicked()
+                        {
+                            self.zone_zone_filter = None;
+                        }
+                        for zone in ZONE_ORDER {
+                            if ui
+                                .selectable_label(
+                                    self.zone_zone_filter == Some(zone),
+                                    zone_label(zone),
+                                )
+                                .clicked()
+                            {
+                                self.zone_zone_filter = Some(zone);
+                            }
+                        }
+                    });
+                    for seat in 0..view.seat_count as PlayerId {
+                        let data = SeatPanelData::from_view(&view, &self.session.seats, seat);
                         ui.horizontal_wrapped(|ui| {
-                            for card in &cards {
-                                if ui.small_button(Self::card_label(card)).clicked() {
-                                    inspect_card = Some(card.clone());
+                            ui.label(
+                                RichText::new(format!(
+                                    "P{seat} '{}' · life {} · hand {} · library {}",
+                                    data.name, data.life, data.hand_count, data.library_count
+                                ))
+                                .color(theme::BRASS)
+                                .small(),
+                            );
+                            for (zone, count) in [
+                                (Zone::Hand, data.hand_count),
+                                (Zone::Battlefield, data.battlefield.len()),
+                                (Zone::Graveyard, data.graveyard.len()),
+                                (Zone::Exile, data.exile.len()),
+                                (Zone::Command, data.command_zone.len()),
+                            ] {
+                                if ui
+                                    .small_button(format!("{} {count}", zone_label(zone)))
+                                    .clicked()
+                                {
+                                    self.zone_seat_filter = Some(seat);
+                                    self.zone_zone_filter = Some(zone);
                                 }
                             }
                         });
                     }
+                    let seats: Vec<PlayerId> = self.zone_seat_filter.into_iter().collect();
+                    let zones: Vec<Zone> = self.zone_zone_filter.into_iter().collect();
+                    let hits = view.search(&self.zone_query, &seats, &zones);
+                    ui.separator();
+                    ui.label(RichText::new(format!("{} card(s) match", hits.len())).strong());
+                    if hits.is_empty() {
+                        theme::muted(
+                            ui,
+                            "Nothing matches. A hidden hand or a library never matches: its contents are not projected to this seat.",
+                        );
+                    }
+                    egui::ScrollArea::vertical()
+                        .id_salt("zone-hits")
+                        .max_height(240.0)
+                        .show(ui, |ui| {
+                            for hit in &hits {
+                                let label = format!(
+                                    "P{} · {} · {}",
+                                    hit.seat,
+                                    zone_label(hit.zone),
+                                    Self::card_label(&hit.card)
+                                );
+                                if ui.small_button(label).clicked() {
+                                    inspect_card = Some(hit.card.clone());
+                                }
+                            }
+                        });
                 });
             if let Some(card) = inspect_card {
                 self.inspect_card(&card);
@@ -2033,7 +2364,13 @@ mod viewport_tests {
             setup_profile: Profile::Practice20,
             observed_seats: 2,
             observed_profile: Profile::Practice20,
-            zone_inspect: None,
+            zone_query: String::new(),
+            zone_seat_filter: None,
+            zone_zone_filter: None,
+            confirm: None,
+            counter_object: None,
+            life_seat: P0,
+            life_value: 20,
             zoom: 1.0,
             frame_count: 0,
         }
@@ -2070,7 +2407,13 @@ mod viewport_tests {
             setup_profile: Profile::CommanderCombat40,
             observed_seats: 4,
             observed_profile: Profile::CommanderCombat40,
-            zone_inspect: None,
+            zone_query: String::new(),
+            zone_seat_filter: None,
+            zone_zone_filter: None,
+            confirm: None,
+            counter_object: None,
+            life_seat: P0,
+            life_value: 20,
             zoom: 1.0,
             frame_count: 0,
         }
@@ -2286,8 +2629,18 @@ mod viewport_tests {
         );
         assert_eq!(
             app.session.seats.len(),
+            2,
+            "a table start that discards the live game must ask before it runs"
+        );
+        assert!(
+            app.confirm.is_some(),
+            "the confirmation question is offered in the primary strip"
+        );
+        click_text(&mut app, 1280.0, 720.0, "Confirm new table");
+        assert_eq!(
+            app.session.seats.len(),
             4,
-            "the clicked setup did not start four seats"
+            "the confirmed setup did not start four seats"
         );
         assert_eq!(app.session.profile, Profile::CommanderCombat40);
         assert_eq!(app.session.game.state.player(P0).life, 40);
@@ -2558,7 +2911,13 @@ mod viewport_tests {
             setup_profile: Profile::Practice20,
             observed_seats: 2,
             observed_profile: Profile::Practice20,
-            zone_inspect: None,
+            zone_query: String::new(),
+            zone_seat_filter: None,
+            zone_zone_filter: None,
+            confirm: None,
+            counter_object: None,
+            life_seat: P0,
+            life_value: 20,
             zoom: 1.0,
             frame_count: 0,
         }
@@ -2590,5 +2949,254 @@ mod viewport_tests {
             labels.iter().any(|text| text.contains("Let the AI answer")),
             "AI step control missing: {labels:?}"
         );
+    }
+
+    /// Finish the opening mulligan choices so the table reaches a real priority.
+    fn finish_opening(app: &mut ApertureApp) {
+        let mut guard = 0;
+        while app.session.game.state.pending.is_some() {
+            app.session
+                .submit(Action::Mulligan { keep: true })
+                .unwrap_or_else(|err| panic!("opening keep refused: {err}"));
+            guard += 1;
+            assert!(guard < 40, "the opening procedure did not finish");
+        }
+    }
+
+    #[test]
+    fn the_zone_inspector_is_searchable_and_usable_at_1280x720() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.show_zones = true;
+        app.show_coach = false;
+        let own = app
+            .session
+            .view(P0)
+            .own_hand
+            .first()
+            .cloned()
+            .expect("hand");
+        let hidden = app
+            .session
+            .view(P0)
+            .opponent_view(1)
+            .expect("P1")
+            .hand_count;
+        app.zone_query = own.name.to_string();
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        let visible = |needle: &str| {
+            shapes.iter().any(|(text, clip, bounds)| {
+                text.contains(needle) && clip.intersects(*bounds) && bounds.min.y < 720.0
+            })
+        };
+        assert!(
+            visible("Zone inspector"),
+            "the inspector window is not visible"
+        );
+        assert!(visible("search"), "the search field is missing");
+        assert!(
+            visible("card(s) match"),
+            "the inspector does not report its result count"
+        );
+        assert!(
+            visible(&format!("P0 · hand · {}", own.name)),
+            "the searched card is not listed with its real zone"
+        );
+        assert!(
+            !visible(&format!("P1 · hand · {}", own.name)),
+            "an opponent hand must never be projected"
+        );
+        assert_eq!(hidden, 7, "the opponent hand is still a count");
+        assert!(
+            visible("YOUR ACTIONS"),
+            "the persistent primary strip must stay visible with the inspector open"
+        );
+    }
+
+    #[test]
+    fn the_zone_inspector_reports_hidden_zones_as_counts_only() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.show_zones = true;
+        app.zone_seat_filter = Some(1);
+        app.zone_zone_filter = Some(Zone::Hand);
+        app.zone_query = String::new();
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        let visible = |needle: &str| {
+            shapes.iter().any(|(text, clip, bounds)| {
+                text.contains(needle) && clip.intersects(*bounds) && bounds.min.y < 720.0
+            })
+        };
+        assert!(
+            visible("0 card(s) match"),
+            "an opponent hand filter must match nothing"
+        );
+        assert!(
+            visible("not projected to this seat"),
+            "the inspector must explain why a hidden zone is empty"
+        );
+    }
+
+    /// Scroll the real application content with wheel input until `needle` is
+    /// fully inside a clip rect (the same interaction the packaged app gets).
+    fn scroll_until_visible(app: &mut ApertureApp, needle: &str, width: f32, height: f32) -> bool {
+        let ctx = egui::Context::default();
+        for frame in 0..60 {
+            let mut input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(width, height),
+                )),
+                time: Some(frame as f64 / 30.0),
+                ..Default::default()
+            };
+            input
+                .events
+                .push(egui::Event::PointerMoved(egui::pos2(20.0, height - 80.0)));
+            if frame > 1 {
+                input.events.push(egui::Event::MouseWheel {
+                    unit: egui::MouseWheelUnit::Point,
+                    delta: egui::vec2(0.0, -90.0),
+                    phase: egui::TouchPhase::Move,
+                    source: egui::MouseWheelSource::Unknown,
+                    modifiers: egui::Modifiers::NONE,
+                });
+            }
+            let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+            output.textures_delta.clear();
+            for clipped in output.shapes {
+                if let egui::Shape::Text(text) = clipped.shape
+                    && text.galley.text().contains(needle)
+                    && clipped.clip_rect.contains_rect(text.visual_bounding_rect())
+                {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    #[test]
+    fn the_sandbox_panel_separates_overrides_and_shows_the_taint_at_1280x720() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.show_sandbox = true;
+        app.show_coach = false;
+        assert!(
+            !app.session.tainted(),
+            "the fixture starts with an untouched record"
+        );
+        app.session
+            .sandbox(SandboxOp::Draw(1))
+            .expect("draw override");
+        assert!(app.session.tainted());
+
+        // The taint is in the fixed primary strip, so it is visible without any
+        // scrolling; the controls themselves live in the scrollable table.
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        let visible = |needle: &str| {
+            shapes.iter().any(|(text, clip, bounds)| {
+                text.contains(needle) && clip.intersects(*bounds) && bounds.min.y < 720.0
+            })
+        };
+        assert!(visible("YOUR ACTIONS"), "legal actions stay on screen");
+        assert!(
+            visible("NOT A LEGAL MATCH RESULT"),
+            "the permanent taint banner is missing from the strip"
+        );
+        assert!(
+            visible("SANDBOX-MODIFIED"),
+            "the strip does not mark the session as sandbox-modified"
+        );
+
+        // Every override surface must be reachable at the enforced minimum size.
+        for needle in [
+            "SANDBOX OVERRIDES",
+            "LEGAL MATCH ACTIONS stay in YOUR ACTIONS",
+            "Draw 1 · sandbox",
+            "Surveil 1 · to graveyard · sandbox",
+            "Counter editor",
+            "Life editor",
+        ] {
+            assert!(
+                scroll_until_visible(&mut app, needle, 1280.0, 720.0),
+                "{needle:?} never became visible in the real 1280x720 frame"
+            );
+        }
+        // Scrolling the table must not move the persistent primary strip.
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        assert!(
+            shapes
+                .iter()
+                .any(|(text, clip, bounds)| text.contains("YOUR ACTIONS")
+                    && clip.intersects(*bounds)
+                    && bounds.min.y < 720.0),
+            "the primary strip scrolled away with the table"
+        );
+    }
+
+    #[test]
+    fn a_destructive_action_waits_for_an_explicit_confirmation() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let digest = app.session.game.digest();
+        click_text(&mut app, 1280.0, 720.0, "New game");
+        assert!(
+            app.confirm.is_some(),
+            "a new game must ask before it discards the table"
+        );
+        assert_eq!(
+            app.session.game.digest(),
+            digest,
+            "the live position must survive the first click"
+        );
+        click_text(&mut app, 1280.0, 720.0, "Cancel");
+        assert!(app.confirm.is_none(), "cancel clears the question");
+        assert_eq!(app.session.game.digest(), digest, "cancel changes nothing");
+        assert!(
+            app.session.message.contains("cancelled"),
+            "{}",
+            app.session.message
+        );
+
+        click_text(&mut app, 1280.0, 720.0, "New game");
+        click_text(&mut app, 1280.0, 720.0, "Confirm new game");
+        assert!(app.confirm.is_none());
+        assert_ne!(
+            app.session.game.digest(),
+            digest,
+            "the confirmed action must actually run"
+        );
+        assert_eq!(app.session.seats.len(), 4, "the table size is retained");
+    }
+
+    #[test]
+    fn undo_is_only_offered_on_an_untainted_recorded_line() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        assert!(
+            app.session.can_undo(),
+            "the opening keep is a recorded action, so undo is offered"
+        );
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        assert!(
+            shapes
+                .iter()
+                .any(|(text, clip, bounds)| text.contains("Undo (U)")
+                    && clip.intersects(*bounds)
+                    && bounds.min.y < 720.0),
+            "the undo control is not reachable in the primary strip"
+        );
+        app.session
+            .sandbox(SandboxOp::Draw(1))
+            .expect("draw override");
+        let digest = app.session.game.digest();
+        assert!(
+            !app.session.can_undo(),
+            "undo must not pretend a sandbox line is replayable"
+        );
+        assert!(app.session.undo_last_action().is_err());
+        let after = app.session.game.digest();
+        assert_eq!(digest, after, "the refused undo changed nothing");
     }
 }

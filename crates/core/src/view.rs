@@ -504,6 +504,22 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             reason,
         } => format!("P{controller}'s {} ability fizzles: {reason}", card.name()),
         Event::StateBasedAction { description } => format!("state-based action: {description}"),
+        Event::SandboxOverride {
+            player,
+            kind,
+            detail,
+            private_cards,
+            ..
+        } => {
+            let mut text = format!("SANDBOX P{player} {}: {detail}", kind.label());
+            // Only the seat that looked at the cards sees them. Every other
+            // seat gets the public shape of the override and nothing else.
+            if *player == viewer && !private_cards.is_empty() {
+                let names: Vec<&str> = private_cards.iter().map(|card| card.name()).collect();
+                text.push_str(&format!(" — you looked at: {}", names.join(", ")));
+            }
+            text
+        }
         Event::GameOver { winner, reason } => format!("Game over — P{winner} wins: {reason}"),
         Event::GameDrawn { reason } => format!("Game drawn — {reason}"),
         Event::Truncated { reason } => format!("TRUNCATED: {reason}"),
@@ -800,4 +816,131 @@ fn renderer_join(names: &[String]) -> String {
     } else {
         names.join(", ")
     }
+}
+
+/// One search hit from the viewer's own masked projection. `zone` is where the
+/// viewer may legally see the card right now; hidden opponent hand/library cards
+/// never appear because they are not in the projection at all.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ZoneHit {
+    pub seat: PlayerId,
+    pub zone: Zone,
+    pub card: CardView,
+}
+
+/// Zones in the order a table inspector lists them.
+pub const ZONE_ORDER: [Zone; 5] = [
+    Zone::Hand,
+    Zone::Battlefield,
+    Zone::Graveyard,
+    Zone::Exile,
+    Zone::Command,
+];
+
+impl PlayerView {
+    /// Where this viewer may legally see `id`, or `None` when the object is not
+    /// projected at all (another seat's hand or library, a face-down card, the
+    /// stack, or an object that left the game). This reads only the masked
+    /// projection, so a shared inspector can never invent or query a hidden
+    /// location, and a command-zone card is never mislabeled as a battlefield.
+    pub fn zone_of(&self, id: ObjectId) -> Option<Zone> {
+        if self.own_hand.iter().any(|card| card.id == id) {
+            return Some(Zone::Hand);
+        }
+        if self.own_battlefield.iter().any(|card| card.id == id) {
+            return Some(Zone::Battlefield);
+        }
+        if self.own_graveyard.iter().any(|card| card.id == id) {
+            return Some(Zone::Graveyard);
+        }
+        if self.own_exile.iter().any(|card| card.id == id) {
+            return Some(Zone::Exile);
+        }
+        if self.own_command_zone.iter().any(|card| card.id == id) {
+            return Some(Zone::Command);
+        }
+        for opponent in &self.opponents {
+            for (zone, cards) in [
+                (Zone::Battlefield, &opponent.battlefield),
+                (Zone::Graveyard, &opponent.graveyard),
+                (Zone::Exile, &opponent.exile),
+                (Zone::Command, &opponent.command_zone),
+            ] {
+                if cards.iter().any(|card| card.id == id) {
+                    return Some(zone);
+                }
+            }
+        }
+        None
+    }
+
+    /// Every zone this viewer may inspect for `seat`, in table order. A seat
+    /// other than the viewer projects public zones only; its hand and library
+    /// are counts, so they are returned as empty lists rather than invented
+    /// contents.
+    pub fn zones_for(&self, seat: PlayerId) -> Vec<(Zone, Vec<CardView>)> {
+        if seat == self.viewer {
+            vec![
+                (Zone::Hand, self.own_hand.clone()),
+                (Zone::Battlefield, self.own_battlefield.clone()),
+                (Zone::Graveyard, self.own_graveyard.clone()),
+                (Zone::Exile, self.own_exile.clone()),
+                (Zone::Command, self.own_command_zone.clone()),
+            ]
+        } else if let Some(opponent) = self.opponent_view(seat) {
+            vec![
+                (Zone::Hand, Vec::new()),
+                (Zone::Battlefield, opponent.battlefield.clone()),
+                (Zone::Graveyard, opponent.graveyard.clone()),
+                (Zone::Exile, opponent.exile.clone()),
+                (Zone::Command, opponent.command_zone.clone()),
+            ]
+        } else {
+            Vec::new()
+        }
+    }
+
+    /// Case-insensitive search over the projected cards: name, printed text and
+    /// mana cost. `seats` limits the search to those seats (empty means every
+    /// seat); `zones` limits it to those zones. Results are ordered by seat,
+    /// then table zone order, then name, so the inspector is stable.
+    pub fn search(&self, query: &str, seats: &[PlayerId], zones: &[Zone]) -> Vec<ZoneHit> {
+        let needle = query.trim().to_lowercase();
+        let mut hits = Vec::new();
+        for seat in 0..self.seat_count as PlayerId {
+            if !seats.is_empty() && !seats.contains(&seat) {
+                continue;
+            }
+            for (zone, cards) in self.zones_for(seat) {
+                if !zones.is_empty() && !zones.contains(&zone) {
+                    continue;
+                }
+                for card in cards {
+                    let matches = needle.is_empty()
+                        || card.name.to_lowercase().contains(&needle)
+                        || card.oracle.to_lowercase().contains(&needle)
+                        || card
+                            .cost
+                            .is_some_and(|cost| cost.to_lowercase().contains(&needle));
+                    if matches {
+                        hits.push(ZoneHit { seat, zone, card });
+                    }
+                }
+            }
+        }
+        hits.sort_by(|a, b| {
+            a.seat
+                .cmp(&b.seat)
+                .then_with(|| zone_rank(a.zone).cmp(&zone_rank(b.zone)))
+                .then_with(|| a.card.name.cmp(b.card.name))
+        });
+        hits
+    }
+}
+
+fn zone_rank(zone: Zone) -> usize {
+    ZONE_ORDER
+        .iter()
+        .position(|candidate| *candidate == zone)
+        .unwrap_or(ZONE_ORDER.len())
 }
