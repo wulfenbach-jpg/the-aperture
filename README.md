@@ -210,8 +210,11 @@ generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
 Earth sacrifice candidate, triggered abilities, activated abilities other
 than basic-land mana abilities, static abilities, replacement effects, partial prevention/redirection,
-tokens, planeswalkers, counters as rules objects (the sandbox counter display is
-storage only), milling/tutoring/libraries as
+planeswalkers, counters and tokens *as card text* (the rules layer implements
+typed +1/+1 and -1/-1 counters, creature tokens with correct ownership/
+cessation and the flying/reach/defender keywords, but no card in the 28-card
+pool creates or prints one; the sandbox counter display is storage only),
+milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers beyond a single until-end-of-turn pump, Arcane/splice interactions, and any
 card outside this branch candidate's 28-card pool.

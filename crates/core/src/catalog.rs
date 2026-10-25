@@ -6,7 +6,10 @@
 //! refused at import instead of being approximated.
 //!
 //! Deliberate exclusions (documented in HANDOFF.md): no static abilities, no
-//! replacement effects, no tokens, and no counters in the rules layer.
+//! replacement effects, and no keyword printed on a pool card. Typed counters
+//! (CR 122) and creature tokens (CR 111) are implemented in [`crate::counters`]
+//! and [`crate::tokens`]; token characteristics live outside this pool, so a
+//! token can never be imported or cast as a card.
 
 use crate::card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
 
@@ -215,7 +218,7 @@ pub fn def(id: CardId) -> &'static CardDef {
     CARDS
         .iter()
         .find(|c| c.id == id)
-        .expect("every CardId has a catalog entry")
+        .unwrap_or_else(|| crate::tokens::def(id))
 }
 
 pub fn by_name(name: &str) -> Option<CardId> {

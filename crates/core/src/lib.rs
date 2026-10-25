@@ -14,17 +14,20 @@ pub mod action;
 pub mod card;
 pub mod catalog;
 pub mod coach;
+pub mod counters;
 pub mod deck;
 pub mod digest;
 pub mod engine;
 pub mod error;
 pub mod event;
 pub mod ids;
+pub mod library;
 pub mod mana;
 pub mod replay;
 pub mod rng;
 pub mod settings;
 pub mod state;
+pub mod tokens;
 pub mod view;
 
 pub use ability::{
@@ -32,6 +35,7 @@ pub use ability::{
 };
 pub use action::{Action, BlockDecl, LegalAction, Submission, Target};
 pub use card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
+pub use counters::{CounterKind, Counters};
 pub use deck::DeckList;
 pub use engine::Game;
 pub use error::EngineError;
@@ -44,6 +48,7 @@ pub use state::{
     Commander, CommanderDamageEntry, DrawResume, GameState, OrderMode, Outcome, Pending, Profile,
     StackEntry, Step, TriggerRef,
 };
+pub use tokens::{Keyword, TokenKind};
 pub use view::{OpponentView, PlayerView};
 
 /// Comprehensive Rules revision this engine was written against.

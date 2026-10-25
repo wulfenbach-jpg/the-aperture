@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 use crate::card::{CardId, Effect};
+use crate::counters::Counters;
 use crate::error::EngineError;
 use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
 use crate::mana::ManaPool;
@@ -450,9 +451,13 @@ pub struct Object {
     /// "Until end of turn" pump from `Effect::Pump` (CR 613.4c).
     pub pump_power: i32,
     pub pump_toughness: i32,
-    /// +1/+1 counters are stored for display and sandbox editing only. They do
-    /// not affect combat math yet; see HANDOFF.md "not implemented".
+    /// Legacy sandbox storage used by the native UI's editing tools only. The
+    /// rules layer never reads it: typed counters live in `Object::counters`.
     pub plus_one_counters: u32,
+    /// Typed counters on this permanent (CR 122). Only battlefield permanents
+    /// may carry counters; leaving the battlefield clears them (CR 122.2) and
+    /// the projections expose them as public information.
+    pub counters: Counters,
 }
 
 impl Object {
@@ -460,16 +465,35 @@ impl Object {
         self.card.def().is_creature()
     }
 
+    /// CR 111.7: a token is not a card and ceases to exist when it leaves the
+    /// battlefield.
+    pub fn is_token(&self) -> bool {
+        self.card.is_token()
+    }
+
+    /// CR 613.4c: power/toughness counters modify the permanent's actual
+    /// characteristics, so combat and state-based actions see them.
     pub fn power(&self) -> i32 {
-        self.card.def().power.unwrap_or(0) + self.pump_power
+        self.card.def().power.unwrap_or(0) + self.pump_power + self.counters.power_delta()
     }
 
     pub fn toughness(&self) -> i32 {
-        self.card.def().toughness.unwrap_or(0) + self.pump_toughness
+        self.card.def().toughness.unwrap_or(0)
+            + self.pump_toughness
+            + self.counters.toughness_delta()
     }
 
     pub fn name(&self) -> &'static str {
         self.card.name()
+    }
+
+    /// Keywords this permanent has. None are printed on the 28-card pool.
+    pub fn keywords(&self) -> &'static [crate::tokens::Keyword] {
+        crate::tokens::keywords(self.card)
+    }
+
+    pub fn has_keyword(&self, keyword: crate::tokens::Keyword) -> bool {
+        self.keywords().contains(&keyword)
     }
 }
 
@@ -612,6 +636,11 @@ pub struct GameState {
     pub trigger_queue: Vec<TriggerRef>,
     /// Next arrival serial for `trigger_queue`.
     pub next_trigger_seq: u64,
+    /// Cards currently revealed from a hidden zone (CR 701.16a). Public
+    /// information for every viewer while the card stays in that hidden zone;
+    /// see `crate::view`. Serialized so save/replay keep the same visibility.
+    #[serde(default)]
+    pub revealed: Vec<ObjectId>,
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.
     pub activation_uses: BTreeMap<ObjectId, u8>,
@@ -1480,6 +1509,30 @@ impl GameState {
                     reason: format!(
                         "object {} has out-of-range owner P{} or controller P{}",
                         object.id, object.owner, object.controller
+                    ),
+                });
+            }
+            // CR 122.2: counters exist only on battlefield permanents; a save
+            // that carries counters in any other zone is not a reachable state.
+            if !object.counters.is_empty() && object.zone != Zone::Battlefield {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "object {} carries {} counter(s) in the {} zone",
+                        object.id,
+                        object.counters.describe(),
+                        object.zone.name()
+                    ),
+                });
+            }
+            // CR 111.7: a token exists only on the battlefield. It is never a
+            // card, so it can never be in a zone list or on the stack.
+            if object.card.is_token() && object.zone != Zone::Battlefield {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "token {} ({}) is in the {} zone; tokens cease to exist off the battlefield",
+                        object.id,
+                        object.card.name(),
+                        object.zone.name()
                     ),
                 });
             }

@@ -883,6 +883,7 @@ fn add_card(
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: aperture_core::counters::Counters::default(),
         },
     );
     match zone {

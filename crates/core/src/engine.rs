@@ -70,6 +70,7 @@ fn blank_object(id: ObjectId, card: CardId, owner: PlayerId) -> Object {
         pump_power: 0,
         pump_toughness: 0,
         plus_one_counters: 0,
+        counters: crate::counters::Counters::default(),
     }
 }
 
@@ -278,6 +279,7 @@ impl Game {
             next_object: 1,
             trigger_queue: Vec::new(),
             next_trigger_seq: 0,
+            revealed: Vec::new(),
             activation_uses: BTreeMap::new(),
             revision: 0,
             decision: 0,
@@ -528,6 +530,13 @@ impl Game {
         let owner = object.owner;
         let commander = object.commander;
         let old_id = object.id;
+        // CR 111.7: a token that leaves the battlefield ceases to exist. It is
+        // never a card, so it must not be re-keyed, inserted into a zone list or
+        // put on the stack; callers see the stale id and their zone move is a
+        // no-op. Nothing is inserted, so the token simply stops existing.
+        if object.card.is_token() && zone != Zone::Battlefield {
+            return old_id;
+        }
         let new_id = if commander.is_some() {
             let id = ObjectId(self.state.next_object);
             self.state.next_object += 1;
@@ -537,6 +546,9 @@ impl Game {
             old_id
         };
         object.zone = zone;
+        // CR 122.2: counters cease to exist with the object that carried them,
+        // so a zone change can never deliver counters to the new object.
+        object.counters.clear();
         if commander.is_some() {
             // A zone change creates a new object (CR 400.7): no previous
             // battlefield-only memory may follow the commander.
@@ -728,6 +740,15 @@ impl Game {
         };
         let owner = object.owner;
         let card = object.card;
+        // CR 111.7: a token never reaches a library; it ceases to exist.
+        if object.card.is_token() {
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "token {card} ceases to exist instead of moving to the library (CR 111.7)"
+                ),
+            });
+            return;
+        }
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -745,10 +766,19 @@ impl Game {
     fn move_to_exile(&mut self, id: ObjectId, events: &mut Vec<Event>) -> Option<ObjectId> {
         let object = self.detach_object(id)?;
         let card = object.card;
+        let token = object.card.is_token();
         let new_id = self.insert_object(object, Zone::Exile);
-        events.push(Event::StateBasedAction {
-            description: format!("{card} ({new_id}) is exiled"),
-        });
+        if token {
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "token {card} ceases to exist instead of being exiled (CR 111.7)"
+                ),
+            });
+        } else {
+            events.push(Event::StateBasedAction {
+                description: format!("{card} ({new_id}) is exiled"),
+            });
+        }
         Some(new_id)
     }
 
@@ -757,6 +787,15 @@ impl Game {
             return;
         };
         let card = object.card;
+        // CR 111.7: a token returned to a hand ceases to exist instead.
+        if object.card.is_token() {
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "token {card} ceases to exist instead of moving to a hand (CR 111.7)"
+                ),
+            });
+            return;
+        }
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -772,6 +811,10 @@ impl Game {
         let dying = self.state.try_object(id).and_then(|object| {
             (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
         });
+        let token = self
+            .state
+            .try_object(id)
+            .is_some_and(|object| object.card.is_token());
         let Some(mut object) = self.detach_object(id) else {
             return;
         };
@@ -782,10 +825,18 @@ impl Game {
         object.pump_power = 0;
         object.pump_toughness = 0;
         let new_id = self.insert_object(object, Zone::Graveyard);
-        events.push(Event::Destroyed {
-            object: new_id,
-            card,
-        });
+        if token {
+            // CR 111.7: the token is put into the graveyard as it dies, then
+            // ceases to exist; it is never a card and never stays in a zone.
+            events.push(Event::StateBasedAction {
+                description: format!("token {card} dies and ceases to exist (CR 111.7)"),
+            });
+        } else {
+            events.push(Event::Destroyed {
+                object: new_id,
+                card,
+            });
+        }
         // CR 700.4 + 603.6c: a permanent put into a graveyard from the
         // battlefield "dies". The trigger keeps the card and its controller as
         // last known information; `source` is the graveyard object.
@@ -1598,6 +1649,20 @@ impl Game {
                     ),
                 ));
             }
+            // CR 509.1b: the pair must be legal, not just each object. Flying is
+            // the only evasion this slice models (CR 702.9b, 702.17b).
+            let attacker = self.state.object(block.attacker);
+            let blocker = self.state.object(block.blocker);
+            if !crate::tokens::can_block(attacker.keywords(), blocker.keywords()) {
+                return Err(EngineError::illegal(
+                    "declare blockers",
+                    format!(
+                        "{} cannot block {} without flying or reach (CR 509.1b, 702.9b)",
+                        blocker.name(),
+                        attacker.name()
+                    ),
+                ));
+            }
         }
         Ok(())
     }
@@ -1612,6 +1677,8 @@ impl Game {
                     && o.is_creature()
                     && !o.tapped
                     && !o.summoning_sick
+                    // CR 702.3b: defender can't attack.
+                    && !o.has_keyword(crate::tokens::Keyword::Defender)
             })
             .map(|o| o.id)
             .collect()
@@ -4506,8 +4573,16 @@ impl Game {
         attackers.sort_by_key(|(id, power)| (std::cmp::Reverse(*power), id.0));
         let mut out = Vec::new();
         for blocker in self.legal_blockers(player) {
-            let Some((attacker, _)) = attackers.first() else {
-                break;
+            let Some(blocker_object) = self.state.try_object(blocker) else {
+                continue;
+            };
+            // Only offer a pair the rules actually allow (CR 509.1b).
+            let Some((attacker, _)) = attackers.iter().find(|(id, _)| {
+                self.state.try_object(*id).is_some_and(|a| {
+                    crate::tokens::can_block(a.keywords(), blocker_object.keywords())
+                })
+            }) else {
+                continue;
             };
             out.push(BlockDecl {
                 blocker,
