@@ -182,7 +182,11 @@ impl SandboxRecord {
     }
 
     /// The sentence every surface that could be mistaken for a result uses.
-    pub fn record_line(&self, outcome: Option<&crate::state::Outcome>) -> String {
+    ///
+    /// `tainted` is passed separately because an older save can carry only the
+    /// boolean marker with no typed record; that is still a taint and must
+    /// never read as a legal match result.
+    pub fn record_line(&self, outcome: Option<&crate::state::Outcome>, tainted: bool) -> String {
         let result = match outcome {
             Some(crate::state::Outcome::Win { winner, reason }) => {
                 format!("P{winner} won this sandbox game ({reason})")
@@ -192,13 +196,16 @@ impl SandboxRecord {
             }
             None => "game still in progress".to_string(),
         };
-        if self.edits.is_empty() {
-            format!("{result} — no sandbox override was used")
-        } else {
-            format!(
-                "SANDBOX-MODIFIED — {result}, but this is NOT a legal match result ({}). The taint lasts for the rest of this session.",
-                self.summary()
-            )
+        if !tainted && self.edits.is_empty() {
+            return format!("{result} — no sandbox override was used");
         }
+        let detail = if self.edits.is_empty() {
+            "the save only carried the sandbox-modified marker".to_string()
+        } else {
+            self.summary()
+        };
+        format!(
+            "SANDBOX-MODIFIED — {result}, but this is NOT a legal match result ({detail}). The taint lasts for the rest of this session."
+        )
     }
 }

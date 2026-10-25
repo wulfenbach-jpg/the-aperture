@@ -235,3 +235,36 @@ fn a_pending_choice_and_an_empty_library_are_reported_not_silently_ignored() {
         "a refusal leaves the library untouched"
     );
 }
+
+#[test]
+fn re_saving_a_legacy_tainted_save_never_clears_the_flag() {
+    // An older save can carry the boolean taint without a typed record. Loading
+    // and re-saving it must not launder the game into a legal match result.
+    let (mut ui, _) = mountain_session();
+    ui.sandbox(SandboxOp::Draw(1)).expect("draw override");
+    let path = temp_path("legacy-taint");
+    ui.save(&path).expect("save");
+    let text = std::fs::read_to_string(&path).expect("read");
+    let mut value: serde_json::Value = serde_json::from_str(&text).expect("json");
+    value["sandbox"] = serde_json::json!({ "edits": [] });
+    std::fs::write(&path, serde_json::to_string(&value).expect("json")).expect("write legacy");
+
+    let mut loaded = session(9_003);
+    loaded.load(&path).expect("a legacy tainted save loads");
+    assert!(loaded.tainted(), "the legacy flag is still a taint");
+    assert!(!loaded.can_undo(), "a tainted line offers no undo");
+
+    let again = temp_path("legacy-taint-resave");
+    loaded.save(&again).expect("re-save");
+    let save = aperture_core::SessionSave::from_json(
+        &std::fs::read_to_string(&again).expect("read the re-save"),
+    )
+    .expect("the re-save loads");
+    assert!(
+        save.sandbox_modified,
+        "re-saving must not clear a taint that came from the boolean flag alone"
+    );
+    assert!(save.record_line().contains("NOT a legal match result"));
+    let _ = std::fs::remove_file(path);
+    let _ = std::fs::remove_file(again);
+}
