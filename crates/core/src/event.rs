@@ -205,6 +205,45 @@ pub enum Event {
         card: CardId,
         reason: String,
     },
+    /// CR 615.1: a prevention effect created a one-shot shield.
+    DamageShieldCreated {
+        player: PlayerId,
+        card: CardId,
+        target: String,
+        /// `None` for a shield that prevents all applicable damage this turn.
+        amount: Option<u32>,
+        combat_only: bool,
+    },
+    /// CR 615: one damage instance (or part of it) was prevented. `card` is the
+    /// prevention effect's card, `source` the damage source when it still has an
+    /// object representation.
+    DamagePrevented {
+        source: Option<ObjectId>,
+        card: CardId,
+        target: String,
+        amount: u32,
+        /// Remaining shield capacity; `None` for an unlimited shield.
+        remaining: Option<u32>,
+        combat: bool,
+    },
+    /// CR 614.1a with CR 614.5: one replacement effect applied once to one
+    /// event. `chooser` is the player CR 616.1 gives the choice to.
+    ReplacementApplied {
+        card: CardId,
+        controller: PlayerId,
+        chooser: PlayerId,
+        target: String,
+        before: u32,
+        after: u32,
+    },
+    /// CR 613: a continuous effect began applying in its layer. `layer` is the
+    /// layer label (`"7a"`, `"7c"`) and `text` the rule it comes from.
+    ContinuousEffectStarted {
+        object: ObjectId,
+        card: CardId,
+        layer: String,
+        text: String,
+    },
     StateBasedAction {
         description: String,
     },

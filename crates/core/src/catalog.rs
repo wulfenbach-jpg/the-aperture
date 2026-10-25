@@ -5,8 +5,12 @@
 //! executed by the engine; a card with an ability this crate cannot execute is
 //! refused at import instead of being approximated.
 //!
-//! Deliberate exclusions (documented in HANDOFF.md): no static abilities, no
-//! replacement effects, no tokens, and no counters in the rules layer.
+//! Static abilities are declared in [`crate::ability::static_abilities`]. Static
+//! forms outside the two declared kinds (characteristic-defining power/toughness
+//! and damage doubling) are refused at import.
+//!
+//! Deliberate exclusions (documented in HANDOFF.md): no tokens, no counters in
+//! the rules layer, and no layer 4–6/7b continuous effects.
 
 use crate::card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
 
@@ -22,6 +26,7 @@ const RETURN_HAND: &[Effect] = &[Effect::ReturnToHand];
 const TOP_LIBRARY: &[Effect] = &[Effect::PutOnTopOfLibrary];
 const SWORDS: &[Effect] = &[Effect::ExileAndGainLife];
 const PREVENT_COMBAT: &[Effect] = &[Effect::PreventAllCombatDamageThisTurn];
+const PREVENT_FOUR: &[Effect] = &[Effect::PreventNextDamage(4)];
 
 const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
@@ -50,7 +55,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 28] = [
+pub static CARDS: [CardDef; 31] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -204,6 +209,24 @@ pub static CARDS: [CardDef; 28] = [
         Oculus, "Oculus", cost: Some("{1}{U}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Phyrexian Homunculus", power: Some(1), toughness: Some(1),
         oracle: "When Oculus dies, you may draw a card.", spell: None
+    ),
+    card!(
+        MendingHands, "Mending Hands", cost: Some("{W}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Prevent the next 4 damage that would be dealt to any target this turn.",
+        spell: Some(SpellSpec { target: TargetSpec::AnyTarget, instant: true, effects: PREVENT_FOUR })
+    ),
+    card!(
+        AngrathsMarauders, "Angrath's Marauders", cost: Some("{5}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Pirate", power: Some(4), toughness: Some(4),
+        oracle: "If a creature you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
+        spell: None
+    ),
+    card!(
+        WightOfPrecinctSix, "Wight of Precinct Six", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
+        oracle: "Wight of Precinct Six's power and toughness are each equal to the number of creature cards in all graveyards.",
+        spell: None
     ),
 ];
 

@@ -387,6 +387,70 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             Some(player) => format!("{amount} combat damage to P{player} is prevented"),
             None => format!("{amount} combat damage to a permanent is prevented"),
         },
+        Event::DamageShieldCreated {
+            player,
+            card,
+            target,
+            amount,
+            combat_only,
+        } => {
+            let scope = if *combat_only {
+                "combat damage only"
+            } else {
+                "any damage"
+            };
+            match amount {
+                Some(n) => format!(
+                    "P{player} shields {target} with {} (prevent the next {n} damage, {scope}, CR 615)",
+                    card.name()
+                ),
+                None => format!(
+                    "P{player} shields {target} with {} (prevent all damage this turn, {scope}, CR 615)",
+                    card.name()
+                ),
+            }
+        }
+        Event::DamagePrevented {
+            card,
+            target,
+            amount,
+            remaining,
+            combat,
+            ..
+        } => {
+            let kind = if *combat { "combat damage" } else { "damage" };
+            match remaining {
+                Some(0) => format!(
+                    "{} prevents {amount} {kind} to {target}; the shield is used up (CR 615)",
+                    card.name()
+                ),
+                Some(left) => format!(
+                    "{} prevents {amount} {kind} to {target}; {left} prevention left this turn (CR 615)",
+                    card.name()
+                ),
+                None => format!(
+                    "{} prevents {amount} {kind} to {target} (CR 615)",
+                    card.name()
+                ),
+            }
+        }
+        Event::ReplacementApplied {
+            card,
+            controller,
+            chooser,
+            target,
+            before,
+            after,
+        } => format!(
+            "{} replaces {target}'s {before} damage with {after} (P{controller} controls it, P{chooser} chose the order, CR 614.1a/616.1)",
+            card.name()
+        ),
+        Event::ContinuousEffectStarted {
+            card, layer, text, ..
+        } => format!(
+            "{} starts a continuous effect in layer {layer}: {text}",
+            card.name()
+        ),
         Event::Destroyed { card, .. } => format!("{} is put into a graveyard", card.name()),
         Event::AbilityActivated {
             player,

@@ -95,6 +95,10 @@ pub enum Effect {
     /// The source itself gets +P/+T until end of turn (Rootwalla: a pump with
     /// no target).
     PumpSource(i32, i32),
+    /// CR 615: prevent the next N damage that would be dealt to the target this
+    /// turn. A one-shot shield: once it has absorbed N damage it stops applying
+    /// and is removed in cleanup (CR 514.2).
+    PreventNextDamage(u32),
 }
 
 impl Effect {
@@ -121,6 +125,9 @@ impl Effect {
             Effect::GainLife(n) => format!("its controller gains {n} life"),
             Effect::PumpSource(p, t) => {
                 format!("this permanent gets {p:+}/{t:+} until end of turn")
+            }
+            Effect::PreventNextDamage(n) => {
+                format!("prevent the next {n} damage that would be dealt to the target this turn")
             }
         }
     }
@@ -230,6 +237,9 @@ pub enum CardId {
     ElvishVisionary,
     FesteringGoblin,
     Oculus,
+    MendingHands,
+    AngrathsMarauders,
+    WightOfPrecinctSix,
 }
 
 impl CardId {

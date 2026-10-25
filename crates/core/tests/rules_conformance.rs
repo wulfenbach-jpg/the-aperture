@@ -427,6 +427,29 @@ fn apply_permanent_state(game: &mut Game, id: ObjectId, state: &PermanentState) 
     if let Some(toughness) = state.pump_toughness {
         object.pump_toughness = toughness;
     }
+    // Issue 15: a fixture pump is a layer-7c continuous effect, not a bare
+    // field. The typed record keeps the layer recomputation from clearing the
+    // override the fixture asked for, and keeps the fixture honest about what
+    // a "-2 toughness" premise means (CR 613.4c).
+    let power = state.pump_power.unwrap_or(0);
+    let toughness = state.pump_toughness.unwrap_or(0);
+    if power != 0 || toughness != 0 {
+        let card = game.state.object(id).card;
+        let controller = game.state.object(id).controller;
+        let effect_id = game.state.next_effect;
+        game.state.next_effect += 1;
+        game.state.effects.push(ContinuousEffect {
+            id: effect_id,
+            timestamp: 1,
+            source: None,
+            card,
+            controller,
+            layer: Layer::Modifying,
+            target: id,
+            kind: ContinuousKind::ModifyPowerToughness { power, toughness },
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+    }
 }
 
 fn unique_permanent(game: &Game, name: &str, context: &str) -> ObjectId {
