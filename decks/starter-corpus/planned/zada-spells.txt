@@ -1,0 +1,62 @@
+// zada-spells — DESIRED, NOT SUPPORTED. 99 library cards; commander: Zada, Hedron Grinder
+// Metadata-only planned list; do not load as a supported/default deck.
+1 Blasphemous Act
+1 Chaos Warp
+1 Deflecting Swat
+1 Faithless Looting
+1 Vandalblast
+1 Jeska's Will
+1 Big Score
+1 Abrade
+1 Lightning Bolt
+1 Thrill of Possibility
+1 Gamble
+1 Untimely Malfunction
+1 Unexpected Windfall
+1 Mana Geyser
+1 Seething Song
+1 The Ozolith
+1 Demand Answers
+1 Red Elemental Blast
+1 Conjurer's Closet
+1 Chandra's Ignition
+1 Pyroblast
+1 Redirect Lightning
+1 Return the Favor
+1 Tibalt's Trickery
+1 Rite of Flame
+1 Pyretic Ritual
+1 Grapeshot
+1 Desperate Ritual
+1 Strike It Rich
+1 Manifold Key
+1 Cathartic Reunion
+1 Great Train Heist
+1 Crackle with Power
+1 Expedite
+1 Wheel of Fortune
+1 Seize the Spoils
+1 Thousand-Year Elixir
+1 Sword of Hearth and Home
+1 Staff of Domination
+1 Flare of Duplication
+1 Wheel of Misfortune
+1 Light Up the Stage
+1 Delayed Blast Fireball
+1 Feldon of the Third Path
+1 Seize the Spotlight
+1 Sonic Screwdriver
+1 Bolt Bend
+1 Chain Reaction
+1 Hammer of Nazahn
+1 Mizzix's Mastery
+1 The Fire Crystal
+1 Disrupt Decorum
+1 Past in Flames
+1 Chandra, Torch of Defiance
+1 Relentless Assault
+1 Seize the Day
+1 Fiery Confluence
+
+// Basic lands
+42 Mountain

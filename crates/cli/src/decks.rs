@@ -23,7 +23,14 @@ pub fn load(
     }
     if path.exists() {
         let text = std::fs::read_to_string(path)?;
-        let list = DeckList::parse_practice(fallback_name, &text)
+        // A file's identity in snapshots comes from the file, not from the
+        // bundled fallback: an exact starter list must not be recorded as
+        // "Temur Beats" just because it was loaded through the same helper.
+        let list_name = path
+            .file_stem()
+            .and_then(|stem| stem.to_str())
+            .unwrap_or(fallback_name);
+        let list = DeckList::parse_practice(list_name, &text)
             .map_err(|e| anyhow::anyhow!("{}: {e}", path.display()))?;
         return Ok((list, format!("{}", path.display())));
     }
@@ -44,5 +51,16 @@ mod tests {
             result.is_err(),
             "an explicit missing path must be refused, not silently replaced: {result:?}"
         );
+    }
+
+    #[test]
+    fn an_explicit_starter_file_keeps_its_own_identity() {
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../decks/starter-corpus/jasmine-vanilla-stompy.txt");
+        let (list, source) = load(&path, BUNDLED_TEMUR, "Temur Beats", true)
+            .expect("the exact starter library loads");
+        assert_eq!(list.name, "jasmine-vanilla-stompy");
+        assert_eq!(list.size(), 99);
+        assert_eq!(source, path.display().to_string());
     }
 }

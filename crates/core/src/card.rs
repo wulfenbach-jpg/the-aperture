@@ -240,7 +240,63 @@ pub enum CardId {
     MendingHands,
     AngrathsMarauders,
     WightOfPrecinctSix,
+    AlabornTrooper,
+    ArmoredWarhorse,
+    BastionEnforcer,
+    BladeOfTheSixthPride,
+    DevotedHero,
+    EagerCadet,
+    EliteVanguard,
+    GlorySeeker,
+    IndomitableAncients,
+    KnightErrant,
+    LoomingAltisaur,
+    LoxodonLineBreaker,
+    OreskosSwiftclaw,
+    PearledUnicorn,
+    PillarfieldOx,
+    RaptorCompanion,
+    SavannahLions,
+    SiegeMastodon,
+    SilentArtisan,
+    SilvercoatLion,
+    StaunchShieldmate,
+    ValiantGuard,
+    YokedOx,
+    AlphaTyrranax,
+    AlpineGrizzly,
+    AxebaneBeast,
+    BalduvianBears,
+    BearCub,
+    BlanchwoodTreefolk,
+    CylianElf,
+    DurkwoodBoars,
+    EnormousBaloth,
+    FeralKrushok,
+    GoldenBear,
+    HollowhengeBeast,
+    KalonianTusker,
+    NessianCourser,
+    NorwoodRanger,
+    SwordwiseCentaur,
+    TerrainElemental,
+    TrainedArmodon,
+    TrainedJackal,
+    VastwoodGorger,
+    WillowElf,
+    ArmoredWolfRider,
+    GrizzledLeotau,
+    Watchwolf,
+    JasmineBoreal,
 }
+
+/// Explicit command-zone practice allow-list. This is deliberately narrower
+/// than CR 903.3: no general legendary/Vehicle/Spacecraft support exists in
+/// this slice. Every entry is a genuine printed vanilla legendary creature; new
+/// commanders are added here and to the catalog, never inferred from a type
+/// line. Commander-only cards are refused in ordinary starting libraries
+/// because the legend rule is not modelled.
+pub const SUPPORTED_COMMANDERS: &[CardId] = &[CardId::IsamaruHoundOfKonda, CardId::JasmineBoreal];
 
 impl CardId {
     pub fn def(self) -> &'static CardDef {
@@ -255,11 +311,8 @@ impl CardId {
         self.def().mana_cost()
     }
 
-    /// Explicit command-zone practice allow-list. This is deliberately narrower
-    /// than CR 903.3: no general legendary/Vehicle/Spacecraft support exists in
-    /// this slice.
     pub fn is_supported_commander(self) -> bool {
-        matches!(self, CardId::IsamaruHoundOfKonda)
+        SUPPORTED_COMMANDERS.contains(&self)
     }
 }
 

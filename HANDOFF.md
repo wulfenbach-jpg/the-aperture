@@ -31,7 +31,8 @@ the branch question is shared by the Study panel button and the `G` shortcut, so
 neither trigger can replace the live position without asking.
 Known limits: +1/+1 counters remain storage/display only (combat math ignores
 them); a sandbox game's embedded replay is uncertified; this is still bounded
-28–31-card practice, not Commander. Tests: `crates/core/tests/issue20_sandbox.rs`,
+28–31-card practice at that milestone, not Commander. The pool has since grown
+to 79 cards with the issue-17 starter package. Tests: `crates/core/tests/issue20_sandbox.rs`,
 `crates/ui/tests/issue20_controls.rs` and the app viewport tests; details in
 `docs/issue20-tabletop.md` and `evidence/issue20/DELIVERY.md`.
 

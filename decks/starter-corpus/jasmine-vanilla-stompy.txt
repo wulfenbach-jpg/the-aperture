@@ -1,0 +1,74 @@
+// jasmine-vanilla-stompy — 99-card library; commander supplied separately: Jasmine Boreal
+// Green/white vanilla-creature stompy. Every nonland card is supported by the
+// compiled pool; the 47 vanilla creatures print no rules text.
+// 58 unique nonland cards + 41 basic lands = 99 library cards.
+
+// White creatures
+1 Savannah Lions
+1 Elite Vanguard
+1 Devoted Hero
+1 Eager Cadet
+1 Staunch Shieldmate
+1 Valiant Guard
+1 Yoked Ox
+1 Silvercoat Lion
+1 Glory Seeker
+1 Knight Errant
+1 Oreskos Swiftclaw
+1 Blade of the Sixth Pride
+1 Raptor Companion
+1 Armored Warhorse
+1 Alaborn Trooper
+1 Bastion Enforcer
+1 Loxodon Line Breaker
+1 Pearled Unicorn
+1 Pillarfield Ox
+1 Siege Mastodon
+1 Silent Artisan
+1 Indomitable Ancients
+1 Looming Altisaur
+
+// Green creatures
+1 Norwood Ranger
+1 Willow Elf
+1 Trained Jackal
+1 Balduvian Bears
+1 Bear Cub
+1 Cylian Elf
+1 Kalonian Tusker
+1 Swordwise Centaur
+1 Terrain Elemental
+1 Alpine Grizzly
+1 Nessian Courser
+1 Trained Armodon
+1 Golden Bear
+1 Axebane Beast
+1 Hollowhenge Beast
+1 Durkwood Boars
+1 Feral Krushok
+1 Blanchwood Treefolk
+1 Alpha Tyrranax
+1 Vastwood Gorger
+1 Enormous Baloth
+
+// Green/white creatures
+1 Watchwolf
+1 Armored Wolf-Rider
+1 Grizzled Leotau
+
+// Existing supported green/white utility cards
+1 Giant Growth
+1 Fog
+1 Swords to Plowshares
+1 Mending Hands
+1 Elvish Visionary
+1 Rootwalla
+1 Brindle Boar
+1 Grizzly Bears
+1 Runeclaw Bear
+1 Centaur Courser
+1 Craw Wurm
+
+// Basic lands
+20 Plains
+21 Forest

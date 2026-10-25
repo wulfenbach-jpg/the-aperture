@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (31 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (79 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -40,8 +40,16 @@ implementation and it says so everywhere it matters.
   ability). All three card texts and their printing sources are recorded in
   `crates/core/tests/card_printings.rs`; see
   [docs/issue15-effects.md](docs/issue15-effects.md).
-  Isamaru is commander-only and is refused in every ordinary starting library
-  because the legend rule is not implemented. Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
+  Isamaru and **Jasmine Boreal** are commander-only; both are refused in every
+  ordinary starting library because the legend rule is not implemented.
+  The issue-17 starter package adds **47 sourced vanilla green/white creatures**
+  (Savannah Lions, Elite Vanguard, Balduvian Bears, Watchwolf and 43 more) and
+  the vanilla commander **Jasmine Boreal** (`{3}{G}{W}`, legendary 4/5 Human),
+  all reusing the existing permanent-spell path. Their exact 99-card singleton
+  library is `decks/starter-corpus/jasmine-vanilla-stompy.txt`; see
+  [docs/issue17-starter-corpus.md](docs/issue17-starter-corpus.md). The other
+  seven target archetypes are planned, not supported.
+  Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
 * **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `harness`,
@@ -94,7 +102,7 @@ implementation and it says so everywhere it matters.
   The human is P0 and every other seat can be driven by the deterministic
   heuristic AI with no model service. The setup controls choose 2/3/4 seats and
   either ordinary 20-life practice or the explicit bounded 40-life
-  one-Isamaru-per-seat practice profile; **New game** retains that selection.
+  one-supported-commander-per-seat practice profile; **New game** retains that selection.
   Ordinary defaults use the alternating compiled Temur/Izzet lists. The bounded
   command default uses the compiled command-zone practice library
   (`decks/command-zone-practice.txt`: Plains/Forest/Island plus the supported
@@ -213,25 +221,26 @@ seat starts in that seat's command zone, command-zone casts pay `{2}` per previo
 command-zone cast (CR 903.8), a commander entering a graveyard/exile gets its
 owner's one-time CR 903.9a return choice, and a commander moving to hand/library
 is suspended for the owner's CR 903.9b replacement choice. This named profile
-stays at 20 life. It is **not** Commander legality or full Commander: Isamaru is
-the only supported commander, there is no color-identity/100-card profile, no
+stays at 20 life. It is **not** Commander legality or full Commander: Isamaru and Jasmine
+Boreal are the supported commanders, there is no color-identity/100-card profile, no
 commander damage, no legend rule, no partner/multi-commander; the native table
 supports loading/saving the two named command profiles in addition to starting
 the bounded 40-life table, but this is still practice, not Commander.
 
 A separate explicit **bounded Commander-combat practice** profile
 (`--commander-combat-practice`, serialized as `commander-combat-practice-40`)
-starts at 40 life and keeps the same one-Isamaru-per-seat command-zone behavior.
+starts at 40 life and keeps the same one-supported-commander-per-seat command-zone
+behavior.
 The per-commander combat-damage ledger and the CR 903.10a 21-damage loss are
 implemented for this explicit profile (stable `CommanderId` + recipient,
 combat-only credit). It is still **not the Commander format** (no 100-card
 construction, partners, legend rule or full elimination/APNAP cleanup). The
 native setup offers this as the explicit **bounded 40 life** option with one
-Isamaru per seat; its games save/load natively. It remains headless-capable and
+supported commander per seat; its games save/load natively. It remains headless-capable and
 is not the Commander format.
-Isamaru is refused in every ordinary starting
-library. The command-zone sources are Isamaru, Plains, Unsummon, Time Ebb and
-Swords to Plowshares; **Fog** adds bounded full combat-damage prevention (this
+Both supported commanders are refused in every ordinary starting
+library. The command-zone sources are Isamaru, Jasmine Boreal, Plains, Unsummon,
+Time Ebb and Swords to Plowshares; **Fog** adds bounded full combat-damage prevention (this
 turn, all players and permanents) with typed prevented events. Partial
 prevention, damage redirection and replacement effects are not modelled.
 
@@ -257,7 +266,7 @@ tokens, planeswalkers, counters as rules objects (the sandbox counter display is
 storage only), milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
-card outside this branch candidate's 31-card pool.
+card outside this branch candidate's 79-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

@@ -1,0 +1,224 @@
+{
+  "issue": 17,
+  "slice": "first supported starter package (rolling slice 1 / assignment 1 of 6)",
+  "status": "PARTIAL",
+  "eight_list_gate": "open",
+  "branch": "aperture/issue-17",
+  "base": "8a72cc607ea25f203be672c0007ad5e798be7145",
+  "writer": "ordinary OMP DeepSeek worker (not Vibe)",
+  "claimed_supported_starters": [
+    "jasmine-vanilla-stompy"
+  ],
+  "changed_files": [
+    "crates/core/src/card.rs",
+    "crates/core/src/catalog.rs",
+    "crates/core/tests/starter_corpus.rs",
+    "crates/core/tests/card_printings.rs",
+    "crates/core/tests/issue13_commander_combat.rs",
+    "crates/import/tests/starter_corpus_analyzer.rs",
+    "crates/cli/src/decks.rs",
+    "crates/cli/src/main.rs",
+    "decks/starter-corpus/jasmine-vanilla-stompy.txt",
+    "decks/starter-corpus/manifest.json",
+    "fixtures/starter-corpus/sourced-cards.json",
+    "fixtures/starter-corpus/jasmine-vanilla-stompy.deck.json",
+    "fixtures/starter-corpus/jasmine-vanilla-stompy.cards.json",
+    "fixtures/starter-corpus/manifest.json",
+    "docs/issue17-starter-corpus.md",
+    "README.md",
+    "HANDOFF.md",
+    "docs/issue15-effects.md",
+    "docs/issue20-tabletop.md",
+    "evidence/issue17/TDD.md",
+    "evidence/issue17/IMPLEMENTATION-HANDOFF.md",
+    "evidence/issue17/source-starter-cards.py",
+    "evidence/issue17/generate-starter-fixtures.py",
+    "evidence/issue17/verify-starter-journey.py",
+    "evidence/issue17/scryfall-responses.json",
+    "evidence/issue17/scryfall-bulk-data.json",
+    "evidence/issue17/jasmine-starter-game.json",
+    "evidence/issue17/jasmine-starter-game.replay.json",
+    "evidence/issue17/jasmine-starter-game.verbose.log",
+    "evidence/issue17/journey-verify.json",
+    "evidence/issue17/commander-check.json",
+    "evidence/issue17/replay-verify.log",
+    "evidence/issue17/focused-tests.log",
+    "evidence/issue17/all-targets-tests.log",
+    "evidence/issue17/gates.log",
+    "evidence/issue17/legacy-replay-note.md",
+    "decks/starter-corpus/planned/isamaru-white-aggro.txt",
+    "decks/starter-corpus/planned/talrand-draw-go.txt",
+    "decks/starter-corpus/planned/krenko-goblin-tokens.txt",
+    "decks/starter-corpus/planned/ayula-bear-counters.txt",
+    "decks/starter-corpus/planned/elas-sacrifice.txt",
+    "decks/starter-corpus/planned/tatyova-landfall.txt",
+    "decks/starter-corpus/planned/zada-spells.txt",
+    "fixtures/starter-corpus/planned/source-index.json",
+    "crates/import/tests/starter_corpus_planned.rs",
+    "evidence/issue17/source-planned-starters.py",
+    "evidence/issue17/planned-checks/summary.json",
+    "evidence/issue17/IMPLEMENTATION-HANDOFF-2.md"
+  ],
+  "coordinator_owned_untouched": [
+    ".starter-run.yml",
+    "evidence/issue17/IMPLEMENT-1.md"
+  ],
+  "sourced_cards": {
+    "provider": "scryfall",
+    "retrieved_at": "2026-10-25T07:59:45Z",
+    "method": "GET /cards/named?exact=... then GET /cards/{set}/{collector_number} for each card, paced; raw responses and URLs recorded",
+    "unique_cards": 61,
+    "new_vanilla_creatures": 47,
+    "commander": "Jasmine Boreal",
+    "vanilla_rules_text": "empty for every new creature; keywords []",
+    "excluded_unsupported_semantics": "legendary (except the commander), artifact, enchantment, snow, multi-face, keyword text"
+  },
+  "pool_size": {
+    "before": 31,
+    "after": 79,
+    "breakdown": "31 previous + 47 vanilla creatures + 1 commander"
+  },
+  "first_starter": {
+    "id": "jasmine-vanilla-stompy",
+    "commander": "Jasmine Boreal",
+    "commander_cost": "{3}{G}{W}",
+    "commander_type_line": "Legendary Creature — Human",
+    "commander_power_toughness": "4/5",
+    "library_cards": 99,
+    "unique_nonland_cards": 58,
+    "basic_lands": {
+      "Plains": 20,
+      "Forest": 21,
+      "total": 41
+    },
+    "total_with_commander": 100,
+    "nonbasic_singletons": true,
+    "commander_in_library": false,
+    "deck_path": "decks/starter-corpus/jasmine-vanilla-stompy.txt",
+    "manifest_status": "implemented",
+    "certified": false
+  },
+  "analyzer_result": {
+    "schema": "aperture.commander-report.v1",
+    "format_legality": "legal",
+    "engine_support": "supported",
+    "deck_summary": {
+      "commanders": 1,
+      "library": 99,
+      "total": 100,
+      "unique_canonical_names": 61
+    },
+    "unsupported_cards": [],
+    "gameplay_available": false,
+    "gameplay_refusal_modified": false
+  },
+  "verification": {
+    "fmt_check": {
+      "command": "cargo fmt --all --check",
+      "exit": 0
+    },
+    "clippy": {
+      "command": "cargo clippy -q --all-targets -- -D warnings",
+      "exit": 0
+    },
+    "release_build": {
+      "command": "cargo build --release -p aperture-cli",
+      "exit": 0
+    },
+    "all_targets_tests": {
+      "command": "cargo test -q --all-targets",
+      "exit": 0,
+      "suites": 71,
+      "passed": 468,
+      "failed": 0,
+      "log": "evidence/issue17/all-targets-tests.log"
+    },
+    "focused_tests": {
+      "command": "cargo test -q -p aperture-core --test starter_corpus --test card_printings --test catalog_pool --test command_zone_setup --test practice_commander_guard --test issue13_commander_combat -p aperture-import --test starter_corpus_analyzer",
+      "exit": 0,
+      "log": "evidence/issue17/focused-tests.log"
+    },
+    "commander_check": {
+      "command": "target/release/aperture-cli.exe commander-check --deck fixtures/starter-corpus/jasmine-vanilla-stompy.deck.json --cards fixtures/starter-corpus/jasmine-vanilla-stompy.cards.json --json",
+      "exit": 0,
+      "report": "evidence/issue17/commander-check.json"
+    }
+  },
+  "game_journey": {
+    "command": "target/release/aperture-cli.exe selfplay --seed 1 --max-steps 12000 --deck decks/starter-corpus/jasmine-vanilla-stompy.txt (x4) --commander-combat-practice --commander 0:Jasmine Boreal --commander 1:Jasmine Boreal --commander 2:Jasmine Boreal --commander 3:Jasmine Boreal --verbose --out evidence/issue17/jasmine-starter-game.json --replay-out evidence/issue17/jasmine-starter-game.replay.json",
+    "exit": 0,
+    "profile": "commander-combat-practice-40",
+    "starting_life": 40,
+    "seats": 4,
+    "seat_library_cards": [99, 99, 99, 99],
+    "seat_sources": "decks/starter-corpus/jasmine-vanilla-stompy.txt for all four seats",
+    "commanders": ["Jasmine Boreal", "Jasmine Boreal", "Jasmine Boreal", "Jasmine Boreal"],
+    "status": "terminal",
+    "capped": false,
+    "winner": 1,
+    "steps": 2364,
+    "turns": 53,
+    "final_digest": "d7f8c2adaa17d906bdaaed28f9482589faa65c5863d1f134377ca45665ddab48",
+    "casts_total": 55,
+    "commander_casts_logged": 5,
+    "distinct_new_vanilla_cards_cast": 30,
+    "replay_verified_inside_selfplay": true,
+    "separate_replay": {
+      "command": "target/release/aperture-cli.exe replay --file evidence/issue17/jasmine-starter-game.replay.json",
+      "exit": 0,
+      "digest_matches": true,
+      "log": "evidence/issue17/replay-verify.log"
+    }
+  },
+  "legacy_replay_preservation": {
+    "state_fields_added": false,
+    "rules_revision_changed": false,
+    "replay_save_versions_changed": false,
+    "all_replay_and_save_tests_pass": true,
+    "stale_evidence_replay_at_base": "evidence/issue14-abilities-replay.json fails identically at base 8a72cc6 (same computed and recorded digests); pre-existing issue-15 state drift, not caused by this change",
+    "note_path": "evidence/issue17/legacy-replay-note.md"
+  },
+  "planned_corpus": {
+    "files": "decks/starter-corpus/planned/*.txt",
+    "snapshots": "fixtures/starter-corpus/planned/*.deck.json and *.cards.json",
+    "source_index": "fixtures/starter-corpus/planned/source-index.json",
+    "retrieved_at": "2026-10-25T08:32:00Z",
+    "lists": 7,
+    "per_list": {
+      "library_cards": 99,
+      "unique_nonland_names": 57,
+      "basic_lands": 42
+    },
+    "union_nonbasic_names": 447,
+    "union_supported": 61,
+    "union_missing": 386,
+    "analyzer": {
+      "format_legality": "legal for all seven",
+      "engine_support": "unsupported for all seven (honest refusal)",
+      "unsupported_counts": {
+        "isamaru-white-aggro": 57,
+        "talrand-draw-go": 55,
+        "krenko-goblin-tokens": 58,
+        "ayula-bear-counters": 52,
+        "elas-sacrifice": 59,
+        "tatyova-landfall": 58,
+        "zada-spells": 58
+      },
+      "reports": "evidence/issue17/planned-checks/"
+    },
+    "status": "all seven planned, none certified or playable",
+    "structural_test": "crates/import/tests/starter_corpus_planned.rs"
+  },
+  "unresolved_gaps": [
+    "Only 1 of 8 target starters is implemented; the eight-list release gate is open.",
+    "Six target commanders (Talrand, Krenko, Ayula, Elas, Tatyova, Zada) are not supported and their printed text needs token, trigger, keyword, counter or copy semantics.",
+    "Exact desired lists exist for all eight targets, but seven remain unsupported metadata; none is playable or certified.",
+    "Isamaru is a supported commander and has an exact desired list, but none of that list's nonland cards is supported.",
+    "Elas additionally needs Swamp (black basic land), which the pool lacks.",
+    "The analyzer's gameplay.available remains false by design; bounded command-zone/Commander-combat practice is not the Commander format.",
+    "The native UI's bundled startup table still defaults to the practice decks; the starter corpus is exercised through explicit CLI deck paths.",
+    "The local AI remains the deterministic heuristic; no strategy tuning was done."
+  ],
+  "reporter_pointer_discrepancy": "The reporter pointer still targets completed m3-tabletop/#20. This was disclosed to the coordinator and was NOT changed from the product checkout.",
+  "commit_or_push": "none; coordinator handles commit/PR/review"
+}

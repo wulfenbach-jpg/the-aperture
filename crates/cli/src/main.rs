@@ -64,8 +64,11 @@ pub enum Command {
         /// supported commander per seat, NOT the Commander format).
         #[arg(long = "commander-combat-practice")]
         commander_combat_practice: bool,
-        /// One `SEAT:CARD` commander spec per seat; requires
-        /// --command-zone-practice. Example: `0:Isamaru, Hound of Konda`.
+        /// One `SEAT:CARD` commander spec per seat; requires an explicit
+        /// command-zone profile (`--command-zone-practice` or
+        /// `--commander-combat-practice`). Example:
+        /// `0:Jasmine Boreal`. Supported commanders: Isamaru, Hound of Konda;
+        /// Jasmine Boreal.
         #[arg(long = "commander")]
         commander: Vec<String>,
     },

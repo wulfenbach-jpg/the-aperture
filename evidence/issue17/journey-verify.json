@@ -1,0 +1,24 @@
+{
+ "status": "terminal",
+ "winner": 1,
+ "steps": 2364,
+ "turns": 53,
+ "starting_life": 40,
+ "seat_libraries": [
+  99,
+  99,
+  99,
+  99
+ ],
+ "commanders": [
+  "Jasmine Boreal",
+  "Jasmine Boreal",
+  "Jasmine Boreal",
+  "Jasmine Boreal"
+ ],
+ "final_digest": "d7f8c2adaa17d906bdaaed28f9482589faa65c5863d1f134377ca45665ddab48",
+ "replay_matches": true,
+ "casts_total": 55,
+ "new_vanilla_cards_cast": 30,
+ "commander_casts": 5
+}

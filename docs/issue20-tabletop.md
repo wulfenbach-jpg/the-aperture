@@ -1,6 +1,7 @@
 # Issue 20 — tabletop-grade controls, one searchable zone inspector, honest sandbox
 
-This is bounded 28–31-card practice on the real native four-seat table, not
+This is bounded practice on the real native four-seat table (79 supported cards
+after the issue-17 starter package), not
 Commander, not a trainer and not v1. It adds the manual table furniture a player
 needs while practising: one searchable zone inspector, explicit table controls,
 an explicitly labelled sandbox that taints the session, an honest undo, and

@@ -1,5 +1,11 @@
-//! The supported card pool. Twenty-eight real cards; every printed ability is
-//! implemented. Card text is the short functional Oracle wording.
+//! The supported card pool. Seventy-nine real cards; every printed ability is
+//! implemented. Card text is the short functional Oracle wording (vanilla
+//! creatures print no text at all).
+//!
+//! The issue-17 starter package adds 47 sourced vanilla green/white creatures
+//! and the vanilla commander Jasmine Boreal. All of them reuse the existing
+//! permanent-spell path: no new ability, keyword, counter or token semantics
+//! were introduced for that package.
 //!
 //! Activated and triggered abilities are declared in [`crate::ability`] and
 //! executed by the engine; a card with an ability this crate cannot execute is
@@ -55,7 +61,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 31] = [
+pub static CARDS: [CardDef; 79] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -227,6 +233,252 @@ pub static CARDS: [CardDef; 31] = [
         type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
         oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
         spell: None
+    ),
+    // Issue 17 starter corpus: sourced vanilla green/white creatures. Every
+    // entry below prints no rules text, so the plain permanent-spell path is the
+    // whole implementation.
+    card!(
+        AlabornTrooper, "Alaborn Trooper", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(2), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        ArmoredWarhorse, "Armored Warhorse", cost: Some("{W}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Horse", power: Some(2), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        BastionEnforcer, "Bastion Enforcer", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dwarf Soldier", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        BladeOfTheSixthPride, "Blade of the Sixth Pride", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat Rebel", power: Some(3), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        DevotedHero, "Devoted Hero", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Soldier", power: Some(1), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        EagerCadet, "Eager Cadet", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(1), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        EliteVanguard, "Elite Vanguard", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(2), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        GlorySeeker, "Glory Seeker", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        IndomitableAncients, "Indomitable Ancients", cost: Some("{2}{W}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Treefolk Warrior", power: Some(2), toughness: Some(10),
+        oracle: "", spell: None
+    ),
+    card!(
+        KnightErrant, "Knight Errant", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Knight", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        LoomingAltisaur, "Looming Altisaur", cost: Some("{3}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dinosaur", power: Some(1), toughness: Some(7),
+        oracle: "", spell: None
+    ),
+    card!(
+        LoxodonLineBreaker, "Loxodon Line Breaker", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elephant Soldier", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        OreskosSwiftclaw, "Oreskos Swiftclaw", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat Warrior", power: Some(3), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        PearledUnicorn, "Pearled Unicorn", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Unicorn", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        PillarfieldOx, "Pillarfield Ox", cost: Some("{3}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Ox", power: Some(2), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        RaptorCompanion, "Raptor Companion", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dinosaur", power: Some(3), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        SavannahLions, "Savannah Lions", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat", power: Some(2), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        SiegeMastodon, "Siege Mastodon", cost: Some("{4}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elephant", power: Some(3), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        SilentArtisan, "Silent Artisan", cost: Some("{3}{W}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Giant", power: Some(3), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        SilvercoatLion, "Silvercoat Lion", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        StaunchShieldmate, "Staunch Shieldmate", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dwarf Soldier", power: Some(1), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        ValiantGuard, "Valiant Guard", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(0), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        YokedOx, "Yoked Ox", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Ox", power: Some(0), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        AlphaTyrranax, "Alpha Tyrranax", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dinosaur Beast", power: Some(6), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        AlpineGrizzly, "Alpine Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(4), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        AxebaneBeast, "Axebane Beast", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(3), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        BalduvianBears, "Balduvian Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        BearCub, "Bear Cub", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        BlanchwoodTreefolk, "Blanchwood Treefolk", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Treefolk", power: Some(4), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        CylianElf, "Cylian Elf", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Scout", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        DurkwoodBoars, "Durkwood Boars", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Boar", power: Some(4), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        EnormousBaloth, "Enormous Baloth", cost: Some("{6}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(7), toughness: Some(7),
+        oracle: "", spell: None
+    ),
+    card!(
+        FeralKrushok, "Feral Krushok", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(5), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        GoldenBear, "Golden Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(4), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        HollowhengeBeast, "Hollowhenge Beast", cost: Some("{3}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(5), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        KalonianTusker, "Kalonian Tusker", cost: Some("{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        NessianCourser, "Nessian Courser", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Centaur Warrior", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        NorwoodRanger, "Norwood Ranger", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Scout Ranger", power: Some(1), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        SwordwiseCentaur, "Swordwise Centaur", cost: Some("{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Centaur Warrior", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        TerrainElemental, "Terrain Elemental", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elemental", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        TrainedArmodon, "Trained Armodon", cost: Some("{1}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elephant", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        TrainedJackal, "Trained Jackal", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Jackal", power: Some(1), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        VastwoodGorger, "Vastwood Gorger", cost: Some("{5}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Wurm", power: Some(5), toughness: Some(6),
+        oracle: "", spell: None
+    ),
+    card!(
+        WillowElf, "Willow Elf", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf", power: Some(1), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        ArmoredWolfRider, "Armored Wolf-Rider", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Knight", power: Some(4), toughness: Some(6),
+        oracle: "", spell: None
+    ),
+    card!(
+        GrizzledLeotau, "Grizzled Leotau", cost: Some("{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat", power: Some(1), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        Watchwolf, "Watchwolf", cost: Some("{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Wolf", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    // Issue 17 first supported commander: a genuine printed vanilla legendary
+    // creature. It is registered in `CardId::SUPPORTED_COMMANDERS`, never as an
+    // ordinary library card.
+    card!(
+        JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
+        oracle: "", spell: None
     ),
 ];
 

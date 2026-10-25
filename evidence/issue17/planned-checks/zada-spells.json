@@ -1,0 +1,382 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "legal",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 59
+  },
+  "commanders": [
+    {
+      "name": "Zada, Hedron Grinder",
+      "oracle_id": "9f7d5e1c-bf5b-4ab9-bd6e-2627b4d22b36",
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "eligibility": "legal",
+      "reason": "front-face legendary creature"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-25T08:32:00Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "4f2b1d261e65e516cdb6129da619a583e0e505474cf887564eed8cb669685a30",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Abrade",
+        "oracle_id": "f9db72dc-9a5b-48a4-a86e-7464d9a2166a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Big Score",
+        "oracle_id": "a5cbd257-c836-493e-bb1a-76242619dea2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Blasphemous Act",
+        "oracle_id": "7a2484a9-04fd-41a0-8224-610c1c07ed10",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Bolt Bend",
+        "oracle_id": "c20a96f7-aa5a-4c15-b8b1-806685c99b27",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Cathartic Reunion",
+        "oracle_id": "0f3c3e5f-6af3-4af2-8703-4ccc8ed8f675",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Chain Reaction",
+        "oracle_id": "086b2564-9114-4ba2-94fd-b490f98f38a7",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Chandra's Ignition",
+        "oracle_id": "f61680da-606e-4d16-b0a0-361aa5210901",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Chandra, Torch of Defiance",
+        "oracle_id": "12cc800c-c7be-4811-8207-fd01a99cc892",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Chaos Warp",
+        "oracle_id": "07a0cba9-8768-4fd9-a3d5-b0f83b4bf8e8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Conjurer's Closet",
+        "oracle_id": "cd1eda60-53e4-44d0-9b2c-7a57395e291f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Crackle with Power",
+        "oracle_id": "273f5483-b67e-4dd6-bba8-c0a047fa34d7",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Deflecting Swat",
+        "oracle_id": "ae120613-97d6-4393-b39d-c3e6c076f5d6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Delayed Blast Fireball",
+        "oracle_id": "99915b5a-5092-4900-8824-6de2aab1b2c1",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Demand Answers",
+        "oracle_id": "c11e84a1-dbda-429b-8cd6-fd0deaefc689",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Desperate Ritual",
+        "oracle_id": "3620ab8f-b693-4225-bb96-5ca3cb3fa465",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Disrupt Decorum",
+        "oracle_id": "9b084cd4-cc21-4f3a-9ac5-1e1160a31aa6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Expedite",
+        "oracle_id": "3501a839-eef5-44e4-8637-b5754780454e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Faithless Looting",
+        "oracle_id": "3d6fa57a-aa53-4b5c-b8af-a7612c823117",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Feldon of the Third Path",
+        "oracle_id": "be094704-5232-4b10-beeb-aa9bbfae063d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Fiery Confluence",
+        "oracle_id": "3c22e031-4804-4c31-bd3c-c3f29d456b34",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Flare of Duplication",
+        "oracle_id": "f586ecb8-310c-4f40-a766-6a7ca46a254d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Gamble",
+        "oracle_id": "a54f0869-94c8-42af-9080-166efb9486a4",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Grapeshot",
+        "oracle_id": "ebd2d760-5ad8-4027-b124-171822f3edfe",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Great Train Heist",
+        "oracle_id": "afe2f7a4-9440-4d93-801f-a18b627efb21",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Hammer of Nazahn",
+        "oracle_id": "e3955573-3db5-490e-903e-65e0172a9202",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Jeska's Will",
+        "oracle_id": "0fd114c4-092b-4e28-b0dc-ef529f3bc73e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Light Up the Stage",
+        "oracle_id": "8d286376-f386-43ab-a9bd-8478fb9e2497",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Lightning Bolt",
+        "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mana Geyser",
+        "oracle_id": "a8dba58b-2956-492e-ae30-49db2ae68e53",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Manifold Key",
+        "oracle_id": "370c37f7-2484-40e8-8fd9-c10cf6f5d5f2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mizzix's Mastery",
+        "oracle_id": "40362fe0-a1a9-4d76-8c35-eac474b91af5",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Past in Flames",
+        "oracle_id": "37a18736-5fe2-4897-809b-013497bdd890",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Pyretic Ritual",
+        "oracle_id": "86ef6474-613f-41fb-931c-d4279b03ed99",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Pyroblast",
+        "oracle_id": "ecc435e2-deb1-420a-a79f-01dd08747314",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Red Elemental Blast",
+        "oracle_id": "bb329a5c-b9f9-4973-a53f-090024146325",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Redirect Lightning",
+        "oracle_id": "c62b5c22-e058-436f-9575-a01cb2112829",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Relentless Assault",
+        "oracle_id": "dc1c0e8c-d0c1-445c-968f-7dec91e5d5fc",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Return the Favor",
+        "oracle_id": "30377bd5-99ab-4888-9ea7-e5a069b527e8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Rite of Flame",
+        "oracle_id": "8a2e53f9-8100-488f-8504-b59e9bd1cc29",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Seething Song",
+        "oracle_id": "64bf8929-f5f2-4d50-8667-13b1d007bcfc",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Seize the Day",
+        "oracle_id": "2a6abd59-e448-46f1-9af8-bb9040645971",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Seize the Spoils",
+        "oracle_id": "58f83528-9110-4895-b5ea-51b90af30a8d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Seize the Spotlight",
+        "oracle_id": "3d1b09a3-f151-4218-974b-02bb6159247a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Sonic Screwdriver",
+        "oracle_id": "cd68cc31-12fd-48ff-b37b-bccfe4172974",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Staff of Domination",
+        "oracle_id": "d7888719-647d-4022-a211-822fa09f0791",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Strike It Rich",
+        "oracle_id": "c34c17c7-3827-49a2-be25-67f44fdfe150",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Sword of Hearth and Home",
+        "oracle_id": "913e6182-706a-4872-8c8a-e146b0ae0738",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "The Fire Crystal",
+        "oracle_id": "57276db8-9d8d-4587-ae88-dfdc44343f17",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "The Ozolith",
+        "oracle_id": "1946ded1-5f53-409f-b0a6-5433bb0357d2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Thousand-Year Elixir",
+        "oracle_id": "4dc5726e-2f7e-4c2b-9616-c3301d212f78",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Thrill of Possibility",
+        "oracle_id": "1cb0610b-a731-42c2-b93f-0a29f63cebf4",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tibalt's Trickery",
+        "oracle_id": "6623cb85-fb1e-4561-8b21-0977c25096c2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Unexpected Windfall",
+        "oracle_id": "498c10c9-253d-4b15-b48c-1509381b17e8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Untimely Malfunction",
+        "oracle_id": "2c49d24a-98a4-43c2-bb59-1ef13d4214c2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Vandalblast",
+        "oracle_id": "3567c3c8-b3c7-45b7-935b-b1fdbc973720",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Wheel of Fortune",
+        "oracle_id": "a8abd966-de7b-46a3-8ac7-8747ab35653a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Wheel of Misfortune",
+        "oracle_id": "10aff3f6-8347-4e1b-b8e7-c204c9e46657",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Zada, Hedron Grinder",
+        "oracle_id": "9f7d5e1c-bf5b-4ab9-bd6e-2627b4d22b36",
+        "reason": "not in the implemented 79-card practice pool"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY",
+      "status": "legal",
+      "message": "commander 'Zada, Hedron Grinder' is a front-face legendary creature"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "the-aperture planned starter corpus",
+      "source": "desired list for zada-spells; cards from Scryfall search https://api.scryfall.com/cards/search?q=id%3C%3Dr%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "raw_sha256": "410a52d42033d823d93a77578b4abb5aba01f229cc8fe068f4643e44cf05dd4c"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/cards/search?q=id%3C%3Dr%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261024210157.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "cards_sha256": "4f2b1d261e65e516cdb6129da619a583e0e505474cf887564eed8cb669685a30",
+      "raw_sha256": "4f2b1d261e65e516cdb6129da619a583e0e505474cf887564eed8cb669685a30"
+    }
+  }
+}

@@ -19,6 +19,28 @@
 //! reviewed slices.
 
 use aperture_core::catalog;
+use serde_json::Value;
+
+/// Issue-17 starter package provenance: the captured Scryfall printing records
+/// for the 47 vanilla creatures and Jasmine Boreal. Unlike the hand-recorded
+/// entries above, this list is data-driven; the fields are the provider's and
+/// the same fixture drives the catalog conformance test.
+const STARTER_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sourced-cards.json");
+
+fn starter_new_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| matches!(card["role"].as_str(), Some("vanilla" | "commander")))
+        .cloned()
+        .collect()
+}
+
+fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
+    card[key].as_str().unwrap_or_else(|| panic!("{key}"))
+}
 
 /// One authoritative printing of a pool card.
 struct Printing {
@@ -144,14 +166,66 @@ fn every_new_pool_card_matches_its_recorded_authoritative_printing() {
 }
 
 #[test]
+fn every_starter_corpus_card_matches_its_recorded_printing() {
+    let cards = starter_new_cards();
+    assert_eq!(cards.len(), 48, "47 vanilla creatures plus the commander");
+    for card in cards {
+        let name = sourced_text(&card, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&card, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&card, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&card, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            card["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            card["toughness"].as_str(),
+            "{name} toughness"
+        );
+        assert_eq!(sourced_text(&card, "layout"), "normal");
+        assert!(
+            sourced_text(&card, "printing_url").starts_with("https://api.scryfall.com/cards/"),
+            "{name} records no concrete Scryfall printing"
+        );
+        assert!(!sourced_text(&card, "retrieved_at").is_empty());
+        assert_eq!(sourced_text(&card, "legalities_commander"), "legal");
+        assert_eq!(card["keywords"].as_array().map(Vec::len), Some(0));
+    }
+}
+
+#[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
+    let starter = starter_new_cards();
+    let starter_names: Vec<&str> = starter
+        .iter()
+        .map(|card| sourced_text(card, "name"))
+        .collect();
     for card in catalog::all() {
         let recorded = PRINTINGS.iter().any(|printing| printing.name == card.name);
         let legacy = LEGACY_POOL.contains(&card.name);
+        let sourced = starter_names.contains(&card.name);
         assert!(
-            recorded || legacy,
+            recorded || legacy || sourced,
             "{} has no recorded authoritative printing: add a record to \
-             crates/core/tests/card_printings.rs instead of authoring card text by hand",
+             crates/core/tests/card_printings.rs or to \
+             fixtures/starter-corpus/sourced-cards.json instead of authoring card text by hand",
             card.name
         );
         assert!(
@@ -159,10 +233,15 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
             "{} is both legacy and recorded",
             card.name
         );
+        assert!(
+            !(sourced && (recorded || legacy)),
+            "{} is both a starter-sourced card and an older record",
+            card.name
+        );
     }
     assert_eq!(
         catalog::all().len(),
-        PRINTINGS.len() + LEGACY_POOL.len(),
-        "the pool size must equal the recorded and legacy cards"
+        PRINTINGS.len() + LEGACY_POOL.len() + starter.len(),
+        "the pool size must equal the recorded, legacy and starter-sourced cards"
     );
 }
