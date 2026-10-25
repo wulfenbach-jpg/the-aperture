@@ -26,6 +26,19 @@ fn session(seed: u64, human_plays_ai_seat: bool) -> UiSession {
     .expect("session")
 }
 
+/// Answer the opening mulligan choices so the table reaches a real priority.
+/// A sandbox control is refused while a rules choice is pending, so a test that
+/// wants to override the table has to finish the opening procedure first.
+fn reach_priority(ui: &mut UiSession) {
+    let mut guard = 0;
+    while ui.game.state.pending.is_some() {
+        ui.submit(Action::Mulligan { keep: true })
+            .unwrap_or_else(|err| panic!("opening keep refused: {err}"));
+        guard += 1;
+        assert!(guard < 40, "the opening procedure did not finish");
+    }
+}
+
 fn temp_path(name: &str) -> PathBuf {
     let mut path = std::env::temp_dir();
     path.push(format!("aperture-test-{name}-{}.json", std::process::id()));
@@ -52,6 +65,7 @@ fn an_illegal_action_is_refused_and_leaves_the_state_identical() {
 fn sandbox_tools_change_the_state_and_void_certified_play() {
     let mut ui = session(12, false);
     // Reach the first priority so the human seat is not mid-mulligan.
+    reach_priority(&mut ui);
     ui.step_ai();
     while ui.owner().is_some() && ui.seat_is_ai(ui.owner().unwrap()) {
         ui.step_ai();
@@ -60,20 +74,26 @@ fn sandbox_tools_change_the_state_and_void_certified_play() {
     let hand_before = ui.game.state.player(human).hand.len();
     let before = ui.game.digest();
     assert!(!ui.sandbox_modified);
-    ui.sandbox(SandboxOp::Draw(1));
+    ui.sandbox(SandboxOp::Draw(1))
+        .expect("a draw override applies");
     assert!(ui.sandbox_modified, "a sandbox edit must be visible");
     assert_eq!(ui.game.state.player(human).hand.len(), hand_before + 1);
     assert_ne!(ui.game.digest(), before);
-    assert!(ui
-        .log
-        .iter()
-        .any(|event| matches!(event, aperture_core::Event::StateBasedAction { description } if description.starts_with("SANDBOX"))));
+    assert!(
+        ui.log.iter().any(|event| matches!(
+            event,
+            aperture_core::Event::SandboxOverride { kind, .. }
+                if *kind == aperture_core::SandboxKind::Draw
+        )),
+        "the override is recorded as a typed trace event"
+    );
 
-    ui.sandbox(SandboxOp::RevealTop(2));
+    ui.sandbox(SandboxOp::RevealTop(2)).expect("reveal applies");
     assert_eq!(ui.revealed.len(), 2, "reveal reports what it looked at");
 
     // Counters are stored but do not change combat math.
-    ui.sandbox(SandboxOp::RevealTop(1));
+    ui.sandbox(SandboxOp::RevealTop(1))
+        .expect("a second reveal applies");
 }
 
 #[test]
@@ -128,7 +148,8 @@ fn the_ai_steps_only_for_its_own_seat() {
 #[test]
 fn a_new_game_resets_the_sandbox_flag_and_keeps_the_decks() {
     let mut ui = session(15, true);
-    ui.sandbox(SandboxOp::Draw(1));
+    reach_priority(&mut ui);
+    ui.sandbox(SandboxOp::Draw(1)).expect("draw override");
     assert!(ui.sandbox_modified);
     let decks = (ui.seats[0].clone(), ui.seats[1].clone());
     ui.new_game(16);
@@ -186,7 +207,8 @@ fn the_profile_line_states_the_scope() {
 #[test]
 fn sandbox_modified_save_roundtrip_preserves_the_uncertified_flag() {
     let mut ui = session(19, false);
-    ui.sandbox(SandboxOp::Draw(1));
+    reach_priority(&mut ui);
+    ui.sandbox(SandboxOp::Draw(1)).expect("draw override");
     assert!(ui.sandbox_modified);
     let digest = ui.game.digest();
     let path = temp_path("sandbox-roundtrip");

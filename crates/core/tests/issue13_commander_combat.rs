@@ -602,6 +602,7 @@ fn forged_retired_identity_is_refused_by_sandbox_save_load() {
         replay,
         log: Vec::new(),
         sandbox_modified: true,
+        sandbox: aperture_core::SandboxRecord::default(),
     };
     assert!(
         SessionSave::from_json(&forged.to_json()).is_err(),
