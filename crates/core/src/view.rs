@@ -654,3 +654,86 @@ fn masked_digest(view: &PlayerView) -> String {
         .take(12)
         .collect()
 }
+
+/// Omniscient postgame review text. This reads the FULL engine state — every
+/// hand, library and hidden zone — and is therefore only ever rendered inside
+/// the explicit postgame review mode, never as a live or policy input. The
+/// caller gates it on a finished game; the function re-checks and refuses to
+/// render anything while the game is still live, so a live seat cannot use it
+/// to see hidden cards.
+pub fn render_review(game: &Game) -> Result<String, String> {
+    if game.state.outcome.is_none() {
+        return Err(
+            "postgame review is only available once the game has actually ended".to_string(),
+        );
+    }
+    let state = &game.state;
+    let mut text = String::new();
+    text.push_str(
+        "POSTGAME OMNISCIENT REVIEW — shown because the game is over; this is not a policy view\n",
+    );
+    text.push_str(&format!("rules revision {}\n", state.rules_revision));
+    for player in &state.players {
+        let zone_names = |ids: &[ObjectId]| -> Vec<String> {
+            ids.iter()
+                .map(|id| {
+                    state
+                        .try_object(*id)
+                        .map(|object| object.name().to_string())
+                        .unwrap_or_else(|| format!("object #{id}"))
+                })
+                .collect()
+        };
+        text.push_str(&format!(
+            "\n--- P{} '{}' — life {}{} ---\n",
+            player.id,
+            player.name,
+            player.life,
+            if player.lost { " (left the game)" } else { "" }
+        ));
+        text.push_str(&format!(
+            "hand ({}): {}\n",
+            player.hand.len(),
+            renderer_join(&zone_names(&player.hand))
+        ));
+        text.push_str(&format!(
+            "library ({}): {}\n",
+            player.library.len(),
+            renderer_join(&zone_names(&player.library))
+        ));
+        text.push_str(&format!(
+            "graveyard ({}): {}\n",
+            player.graveyard.len(),
+            renderer_join(&zone_names(&player.graveyard))
+        ));
+        text.push_str(&format!(
+            "exile ({}): {}\n",
+            player.exile.len(),
+            renderer_join(&zone_names(&player.exile))
+        ));
+        if state.profile.has_command_zone() {
+            text.push_str(&format!(
+                "command zone ({}): {}\n",
+                player.command_zone.len(),
+                renderer_join(&zone_names(&player.command_zone))
+            ));
+        }
+    }
+    if state.stack.is_empty() {
+        text.push_str("\nstack: empty at the recorded end\n");
+    } else {
+        text.push_str(&format!(
+            "\nstack at the recorded end: {} item(s)\n",
+            state.stack.len()
+        ));
+    }
+    Ok(text)
+}
+
+fn renderer_join(names: &[String]) -> String {
+    if names.is_empty() {
+        "(none)".to_string()
+    } else {
+        names.join(", ")
+    }
+}

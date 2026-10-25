@@ -42,6 +42,10 @@ pub struct Startup {
     pub profile: Profile,
     /// Optional initial window size for smoke captures and viewport checks.
     pub window: Option<(f32, f32)>,
+    /// Optional prefilled study file for branching a recorded line.
+    pub study_file: Option<String>,
+    /// Optional prefilled divergence action index for `study_file`.
+    pub branch_at: usize,
 }
 
 pub struct ApertureApp {
@@ -55,6 +59,7 @@ pub struct ApertureApp {
     show_import: bool,
     show_zones: bool,
     show_coach: bool,
+    show_study: bool,
     show_help: bool,
     /// Table setup controls; kept in sync with the live table.
     setup_seats: u8,
@@ -269,6 +274,14 @@ impl ApertureApp {
         // (or a 3/4-seat table) is never silently replaced by practice-20.
         session.new_game(startup.seed);
         session.deck_refusal = deck_refusal.clone();
+        // A study launch prefills the branch-from-replay inputs; the panel is
+        // opened with the Study button (B) and the branch is still an
+        // explicitly user-confirmed action.
+        if let Some(study_file) = startup.study_file.clone() {
+            session.branch_path = study_file;
+            session.branch_at = startup.branch_at;
+            session.branch_source = None;
+        }
         // A smoke run should show a developed board, not the opening hand.
         if startup.smoke.is_some() {
             for _ in 0..240 {
@@ -289,6 +302,7 @@ impl ApertureApp {
             show_import: deck_refusal.is_some(),
             show_zones: false,
             show_coach: true,
+            show_study: false,
             show_help: false,
             setup_seats: seat_count as u8,
             setup_profile: initial_profile,
@@ -301,6 +315,11 @@ impl ApertureApp {
     }
 
     fn tick_ai(&mut self, ctx: &egui::Context) {
+        if self.session.review_mode {
+            // The omniscient review is explicitly not a policy input: no AI,
+            // no autoplay pacing and no decision work runs while it is shown.
+            return;
+        }
         if self.session.game.state.is_over() {
             return;
         }
@@ -329,23 +348,49 @@ impl ApertureApp {
         if ctx.text_edit_focused() {
             return;
         }
-        let (pass, new_game, save, load, import, zones, sandbox, coach, help, plus, minus, esc) =
-            ctx.input(|input| {
-                (
-                    input.key_pressed(egui::Key::P),
-                    input.key_pressed(egui::Key::N),
-                    input.key_pressed(egui::Key::S),
-                    input.key_pressed(egui::Key::L),
-                    input.key_pressed(egui::Key::I),
-                    input.key_pressed(egui::Key::Z),
-                    input.key_pressed(egui::Key::K),
-                    input.key_pressed(egui::Key::C),
-                    input.key_pressed(egui::Key::H),
-                    input.key_pressed(egui::Key::Plus) || input.key_pressed(egui::Key::Equals),
-                    input.key_pressed(egui::Key::Minus),
-                    input.key_pressed(egui::Key::Escape),
-                )
-            });
+        let (
+            pass,
+            new_game,
+            save,
+            load,
+            import,
+            zones,
+            sandbox,
+            coach,
+            study,
+            review,
+            help,
+            plus,
+            minus,
+            esc,
+        ) = ctx.input(|input| {
+            (
+                input.key_pressed(egui::Key::P),
+                input.key_pressed(egui::Key::N),
+                input.key_pressed(egui::Key::S),
+                input.key_pressed(egui::Key::L),
+                input.key_pressed(egui::Key::I),
+                input.key_pressed(egui::Key::Z),
+                input.key_pressed(egui::Key::K),
+                input.key_pressed(egui::Key::C),
+                input.key_pressed(egui::Key::B),
+                input.key_pressed(egui::Key::R),
+                input.key_pressed(egui::Key::H),
+                input.key_pressed(egui::Key::Plus) || input.key_pressed(egui::Key::Equals),
+                input.key_pressed(egui::Key::Minus),
+                input.key_pressed(egui::Key::Escape),
+            )
+        });
+        if review {
+            if self.session.review_mode {
+                self.session.leave_review();
+            } else if let Err(err) = self.session.enter_review() {
+                self.session.message = err.clone();
+            }
+        }
+        if study {
+            self.show_study = !self.show_study;
+        }
         if pass && self.session.owner() == Some(self.session.human_seat()) {
             let _ = self.session.submit_human(Action::Pass);
         }
@@ -1123,6 +1168,139 @@ impl ApertureApp {
         });
     }
 
+    /// The normal (non-review) primary strip content: own pending choices and
+    /// legal actions.
+    fn primary_actions(
+        &mut self,
+        ui: &mut egui::Ui,
+        view: &PlayerView,
+        owner: Option<PlayerId>,
+        human: PlayerId,
+    ) {
+        if owner == Some(human) && view.pending_kind.is_some() {
+            let pending_view = view.clone();
+            self.pending_controls(ui, &pending_view);
+        }
+        if owner != Some(human) {
+            if let Some(owner) = owner {
+                theme::heading(ui, &format!("WAITING ON P{owner}"));
+                if view.priority == Some(owner) {
+                    theme::muted(ui, format!("P{owner} holds priority."));
+                } else {
+                    theme::muted(
+                        ui,
+                        format!(
+                            "P{owner} has a pending decision; details are private to that seat. No player has priority."
+                        ),
+                    );
+                }
+                if self.session.seat_is_ai(owner) && ui.button("Let the AI answer (step)").clicked()
+                {
+                    self.session.request_ai_decision_default();
+                }
+            }
+        } else {
+            if view.legal.is_empty() {
+                theme::muted(ui, "no legal action for your seat right now");
+            }
+            let mut chosen: Option<Action> = None;
+            ui.horizontal_wrapped(|ui| {
+                for entry in &view.legal {
+                    let label = format!("{}   [CR {}]", entry.label, entry.rules.join(", "));
+                    if ui.button(label).clicked() {
+                        chosen = Some(entry.action.clone());
+                    }
+                }
+            });
+            if let Some(action) = chosen {
+                let _ = self.session.submit_human(action);
+            }
+            if let Some((card, options)) = self.session.target_pick.clone() {
+                let name = self
+                    .session
+                    .game
+                    .state
+                    .try_object(card)
+                    .map(|o| o.name())
+                    .unwrap_or("spell");
+                ui.label(RichText::new(format!("Choose a target for {name}:")).color(theme::BRASS));
+                ui.horizontal_wrapped(|ui| {
+                    for action in options {
+                        let label = view
+                            .legal
+                            .iter()
+                            .find(|entry| entry.action == action)
+                            .map(|entry| entry.label.clone())
+                            .unwrap_or_else(|| "cast".to_string());
+                        if ui.button(label).clicked() {
+                            let _ = self.session.submit_human(action);
+                        }
+                    }
+                    if ui.button("Cancel").clicked() {
+                        self.session.target_pick = None;
+                    }
+                });
+            }
+        }
+    }
+
+    /// Study panel: branch a recorded line (from a session save or a bare
+    /// replay file) at an explicitly chosen action boundary, and show the
+    /// public comparison of accepted actions between the base line and the
+    /// live branch.
+    fn study_panel(&mut self, ui: &mut egui::Ui) {
+        theme::heading(ui, "STUDY — branch from a recorded line");
+        theme::muted(
+            ui,
+            "Accepts a session save (its embedded replay) or a bare replay file; the branch keeps the same seed and decks, replays the recorded prefix deterministically, then diverges at the chosen action index. Nothing after that point on the base line is shown to the live table.",
+        );
+        egui::Grid::new("study-inputs")
+            .num_columns(2)
+            .spacing([8.0, 4.0])
+            .show(ui, |ui| {
+                ui.label("study file");
+                ui.text_edit_singleline(&mut self.session.branch_path);
+                ui.label("branch after action #");
+                ui.add(egui::DragValue::new(&mut self.session.branch_at).range(0..=10_000_000));
+            });
+        let path = PathBuf::from(self.session.branch_path.clone());
+        let keep = self.session.branch_at;
+        if ui
+            .add_enabled(
+                !self.session.io_busy,
+                egui::Button::new("Branch from replay"),
+            )
+            .clicked()
+        {
+            self.session.request_replay_branch(path, keep);
+        }
+        if self.session.branch_source.is_some() {
+            match self.session.branch_comparison() {
+                Some(diff) => {
+                    let text = diff.render();
+                    egui::ScrollArea::vertical()
+                        .id_salt("branch-compare")
+                        .max_height(160.0)
+                        .show(ui, |ui| {
+                            ui.label(RichText::new(&text).monospace());
+                        });
+                    if self.session.branches_agree() {
+                        theme::muted(
+                            ui,
+                            "no accepted action differs yet: the branch has still played only base-line moves (the base tail after the branch point is never revealed).",
+                        );
+                    }
+                }
+                None => {
+                    theme::muted(
+                        ui,
+                        "the live branch and its base line cannot be compared (they are not from the same setup).",
+                    );
+                }
+            }
+        }
+    }
+
     fn render_ui(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();
         self.frame_count += 1;
@@ -1277,6 +1455,27 @@ impl ApertureApp {
                 {
                     self.session.message = err;
                 }
+                if ui.button("Study branches (B)").clicked() {
+                    self.show_study = !self.show_study;
+                }
+                let review_label = if self.session.review_mode {
+                    "Leave review (R)"
+                } else {
+                    "Postgame review (R)"
+                };
+                if ui
+                    .add_enabled(
+                        self.session.review_mode || self.session.conclude().is_some(),
+                        egui::Button::new(review_label),
+                    )
+                    .clicked()
+                {
+                    if self.session.review_mode {
+                        self.session.leave_review();
+                    } else if let Err(err) = self.session.enter_review() {
+                        self.session.message = err;
+                    }
+                }
                 ui.checkbox(&mut self.show_coach, "Coaching (C)");
                 ui.checkbox(&mut self.show_sandbox, "Sandbox (K)");
                 ui.checkbox(&mut self.show_import, "Import (I)");
@@ -1285,7 +1484,7 @@ impl ApertureApp {
             if self.show_help {
                 ui.label(
                     RichText::new(
-                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · N new game (keeps seats/profile) · S save · L load · I import · Z zones · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick. Shortcuts are ignored while a text field has focus.",
+                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · N new game (keeps seats/profile) · S save · L load · I import · B study-branch panel · R postgame review (game over only) · Z zones · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick. Shortcuts are ignored while a text field has focus.",
                     )
                     .small()
                     .color(theme::MUTED),
@@ -1372,84 +1571,42 @@ impl ApertureApp {
             }
             ui.separator();
             // The persistent primary strip: own pending choices and legal
-            // actions never scroll away with the table.
-            theme::heading(ui, "YOUR ACTIONS — only engine-offered decisions are accepted");
-            egui::ScrollArea::vertical()
-                .id_salt("primary-actions")
-                .max_height(210.0)
-                .auto_shrink([false, true])
-                .show(ui, |ui| {
-                    if owner == Some(human) && view.pending_kind.is_some() {
-                        let pending_view = view.clone();
-                        self.pending_controls(ui, &pending_view);
-                    }
-                    if owner != Some(human) {
-                        if let Some(owner) = owner {
-                            theme::heading(ui, &format!("WAITING ON P{owner}"));
-                            if view.priority == Some(owner) {
-                                theme::muted(ui, format!("P{owner} holds priority."));
-                            } else {
-                                theme::muted(
-                                    ui,
-                                    format!(
-                                        "P{owner} has a pending decision; details are private to that seat. No player has priority."
-                                    ),
-                                );
-                            }
-                            if self.session.seat_is_ai(owner)
-                                && ui.button("Let the AI answer (step)").clicked()
-                            {
-                                self.session.request_ai_decision_default();
-                            }
+            // actions never scroll away with the table. In postgame review
+            // mode it becomes the omniscient review readout and offers NO
+            // action, policy or sandbox control — review is a read-only view.
+            if self.session.review_mode {
+                theme::heading(
+                    ui,
+                    "REVIEW — omniscient postgame view · game over · acting is disabled",
+                );
+                egui::ScrollArea::vertical()
+                    .id_salt("review-strip")
+                    .max_height(210.0)
+                    .auto_shrink([false, true])
+                    .show(ui, |ui| {
+                        if let Some(review) = &self.session.review_cache {
+                            ui.label(RichText::new(review).monospace());
                         }
-                    } else {
-                        if view.legal.is_empty() {
-                            theme::muted(ui, "no legal action for your seat right now");
-                        }
-                        let mut chosen: Option<Action> = None;
-                        ui.horizontal_wrapped(|ui| {
-                            for entry in &view.legal {
-                                let label =
-                                    format!("{}   [CR {}]", entry.label, entry.rules.join(", "));
-                                if ui.button(label).clicked() {
-                                    chosen = Some(entry.action.clone());
-                                }
-                            }
-                        });
-                        if let Some(action) = chosen {
-                            let _ = self.session.submit_human(action);
-                        }
-                        if let Some((card, options)) = self.session.target_pick.clone() {
-                            let name = self
-                                .session
-                                .game
-                                .state
-                                .try_object(card)
-                                .map(|o| o.name())
-                                .unwrap_or("spell");
-                            ui.label(
-                                RichText::new(format!("Choose a target for {name}:"))
-                                    .color(theme::BRASS),
-                            );
-                            ui.horizontal_wrapped(|ui| {
-                                for action in options {
-                                    let label = view
-                                        .legal
-                                        .iter()
-                                        .find(|entry| entry.action == action)
-                                        .map(|entry| entry.label.clone())
-                                        .unwrap_or_else(|| "cast".to_string());
-                                    if ui.button(label).clicked() {
-                                        let _ = self.session.submit_human(action);
-                                    }
-                                }
-                                if ui.button("Cancel").clicked() {
-                                    self.session.target_pick = None;
-                                }
-                            });
-                        }
-                    }
-                });
+                    });
+                if ui.button("Leave review (R)").clicked() {
+                    self.session.leave_review();
+                }
+            } else {
+                theme::heading(ui, "YOUR ACTIONS — only engine-offered decisions are accepted");
+                egui::ScrollArea::vertical()
+                    .id_salt("primary-actions")
+                    .max_height(210.0)
+                    .auto_shrink([false, true])
+                    .show(ui, |ui| {
+                        self.primary_actions(ui, &view, owner, human);
+                    });
+                if let Some(review_ready) = self.session.conclude() {
+                    theme::muted(
+                        ui,
+                        format!("game over — {review_ready}. Postgame review (R) is enabled."),
+                    );
+                }
+            }
             if let Some(note) = &self.session.note {
                 ui.label(RichText::new(note).color(theme::BRASS).small());
             }
@@ -1627,6 +1784,11 @@ impl ApertureApp {
                     if self.show_import {
                         ui.separator();
                         self.import_panel(ui);
+                    }
+
+                    if self.show_study {
+                        ui.separator();
+                        self.study_panel(ui);
                     }
 
                     if self.frame_count == 1 {
@@ -1843,6 +2005,7 @@ mod viewport_tests {
             show_import: true,
             show_zones: false,
             show_coach: true,
+            show_study: false,
             show_help: false,
             setup_seats: 2,
             setup_profile: Profile::Practice20,
@@ -1879,6 +2042,7 @@ mod viewport_tests {
             show_import: false,
             show_zones: false,
             show_coach: true,
+            show_study: false,
             show_help: false,
             setup_seats: 4,
             setup_profile: Profile::CommanderCombat40,
@@ -2323,6 +2487,7 @@ mod viewport_tests {
             show_import: false,
             show_zones: false,
             show_coach: true,
+            show_study: false,
             show_help: false,
             setup_seats: 2,
             setup_profile: Profile::Practice20,

@@ -23,6 +23,31 @@ use aperture_core::{
 };
 use aperture_import::DeckReport;
 
+/// Everything a completed replay-branch job produces: the base recorded line,
+/// the branched line cut at the chosen action boundary, and the state the
+/// recorded prefix replays to. Applied only by the main thread.
+pub struct BranchOutcome {
+    pub parent: Replay,
+    pub branched: Replay,
+    pub game: Game,
+    pub log: Vec<Event>,
+}
+
+/// Parse a study file into a recorded line. A session save contributes its
+/// embedded replay (after a full digest validation); a bare replay file is
+/// used directly. Anything else is a refusal — never guessed.
+pub fn parse_replay_file(path: &Path) -> Result<Replay, String> {
+    let text = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
+    let value: serde_json::Value =
+        serde_json::from_str(&text).map_err(|e| format!("the file is not valid JSON: {e}"))?;
+    if value.get("game").is_some() {
+        let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
+        Ok(save.replay)
+    } else {
+        aperture_core::Replay::from_json(&text).map_err(|e| e.to_string())
+    }
+}
+
 pub enum SandboxOp {
     Draw(u8),
     Mill(u8),
@@ -53,7 +78,7 @@ impl SeatImport {
 }
 
 /// A finished background job, delivered to `poll_workers`.
-enum WorkerMessage {
+pub enum WorkerMessage {
     Import {
         generation: u64,
         seat: PlayerId,
@@ -70,6 +95,12 @@ enum WorkerMessage {
         generation: u64,
         path: PathBuf,
         result: Result<Box<SessionSave>, String>,
+    },
+    Branch {
+        generation: u64,
+        path: PathBuf,
+        keep: usize,
+        result: Result<Box<BranchOutcome>, String>,
     },
     Ai {
         generation: u64,
@@ -186,6 +217,16 @@ pub struct UiSession {
     pub save_path: String,
     /// Branch/study point: a full snapshot plus the label shown to the user.
     pub branch: Option<(String, SessionSave)>,
+    /// The recorded line a live branch was cut from, so accepted actions can
+    /// be compared against it. Referenced only by its public recorded axis.
+    pub branch_source: Option<Replay>,
+    /// Branch-from-replay file path and chosen divergence action index (UI inputs).
+    pub branch_path: String,
+    pub branch_at: usize,
+    /// True when the explicit postgame omniscient review mode is shown.
+    pub review_mode: bool,
+    /// Cached omniscient review text, computed once when review is entered.
+    pub review_cache: Option<String>,
     /// Bumped whenever live work must be invalidated (new game, load, branch
     /// return, sandbox edit, import start, settings change).
     pub generation: u64,
@@ -205,7 +246,9 @@ pub struct UiSession {
     pub deck_refusal: Option<String>,
     /// Short note about the last discarded/aborted background result.
     pub busy_note: Option<String>,
-    worker_tx: Sender<WorkerMessage>,
+    /// Exposed for deterministic delayed-queue tests: tests enqueue finished
+    /// worker results directly instead of racing real threads.
+    pub worker_tx: Sender<WorkerMessage>,
     worker_rx: Receiver<WorkerMessage>,
 }
 
@@ -268,6 +311,11 @@ impl UiSession {
             decider_status: None,
             save_path: "the-aperture-save.json".to_string(),
             branch: None,
+            branch_source: None,
+            branch_path: "the-aperture-save.json".to_string(),
+            branch_at: 0,
+            review_mode: false,
+            review_cache: None,
             generation: 0,
             seat_url: vec![String::new(); seat_count],
             seat_text: vec![String::new(); seat_count],
@@ -496,6 +544,35 @@ impl UiSession {
                         }
                     }
                 }
+                WorkerMessage::Branch {
+                    generation,
+                    path,
+                    keep,
+                    result,
+                } => {
+                    self.io_busy = false;
+                    if generation != self.generation {
+                        self.busy_note =
+                            Some("discarded a stale branch (the game changed)".to_string());
+                        continue;
+                    }
+                    match result {
+                        Ok(outcome) => {
+                            self.apply_replay_branch(*outcome, keep);
+                            let line = format!(
+                                "branched from {} at recorded action #{keep} — the recorded line is replayed to digest {}, new actions from here are branch history",
+                                path.display(),
+                                &self.game.digest()[..12]
+                            );
+                            self.message = line.clone();
+                            applied.push(line);
+                        }
+                        Err(err) => {
+                            self.message = format!("branch failed: {err}");
+                            applied.push(self.message.clone());
+                        }
+                    }
+                }
             }
         }
         applied
@@ -589,6 +666,8 @@ impl UiSession {
         self.message = format!(
             "returned to the branch point at {label}; the board, log and replay are back to that moment"
         );
+        self.review_mode = false;
+        self.review_cache = None;
         Ok(())
     }
 
@@ -627,6 +706,12 @@ impl UiSession {
     }
 
     pub fn submit(&mut self, action: Action) -> Result<(), String> {
+        if self.review_mode {
+            return Err(
+                "postgame review is a read-only view; leave review mode to act on the table"
+                    .to_string(),
+            );
+        }
         let Some(owner) = self.owner() else {
             return Err("no player holds priority right now".to_string());
         };
@@ -847,6 +932,9 @@ impl UiSession {
     pub fn new_game(&mut self, seed: u64) {
         self.invalidate_pending_work();
         self.branch = None;
+        self.branch_source = None;
+        self.review_mode = false;
+        self.review_cache = None;
         self.seed = seed;
         self.resize_seat_ui();
         let (game, log, replay) = self
@@ -928,6 +1016,83 @@ impl UiSession {
         });
     }
 
+    /// Branch from a recorded line: parse the study file (session save or bare
+    /// replay) on a background worker, cut the line at the chosen action
+    /// boundary, and replay that recorded prefix under the same seed. The
+    /// result is applied back on the main thread only when its generation
+    /// still matches, exactly like a load.
+    pub fn request_replay_branch(&mut self, path: PathBuf, keep: usize) {
+        let generation = self.generation;
+        let tx = self.worker_tx.clone();
+        self.io_busy = true;
+        thread::spawn(move || {
+            let result = (|| -> Result<Box<BranchOutcome>, String> {
+                let parent = parse_replay_file(&path)?;
+                const MAX_BRANCH_STEPS: usize = 1_000_000;
+                if parent.steps.len() > MAX_BRANCH_STEPS {
+                    return Err(format!(
+                        "the recorded line has {} action(s) (limit {MAX_BRANCH_STEPS})",
+                        parent.steps.len()
+                    ));
+                }
+                let branched = parent.branch_at(keep).map_err(|e| e.to_string())?;
+                let (game, log) = branched.run_recorded().map_err(|e| e.to_string())?;
+                Ok(Box::new(BranchOutcome {
+                    parent,
+                    branched,
+                    game,
+                    log,
+                }))
+            })();
+            let _ = tx.send(WorkerMessage::Branch {
+                generation,
+                path,
+                keep,
+                result,
+            });
+        });
+    }
+
+    /// Apply a completed replay branch (main thread only). The live session
+    /// becomes the branch: the recorded prefix state, its log, and the branch
+    /// line kept open for later accepted actions. The base line is remembered
+    /// for the public accepted-action comparison.
+    fn apply_replay_branch(&mut self, outcome: BranchOutcome, keep: usize) {
+        self.invalidate_pending_work();
+        self.game = outcome.game;
+        self.log = outcome.log;
+        self.replay = outcome.branched;
+        self.branch_source = Some(outcome.parent);
+        self.branch = None;
+        self.review_mode = false;
+        self.review_cache = None;
+        self.sandbox_modified = false;
+        self.selected_attackers.clear();
+        self.selected_defender = None;
+        self.selected_blocks.clear();
+        self.selected_cards.clear();
+        self.target_pick = None;
+        self.note = None;
+        self.revealed.clear();
+        self.branch_at = keep;
+        self.resize_seat_ui();
+        self.ai = self.replay.ai.clone();
+    }
+
+    /// The public comparison of accepted actions between the line this branch
+    /// was cut from and the live branch, as far as both are recorded. Only
+    /// action kinds, seats and decision serials are shown — never card names,
+    /// targets or zone contents.
+    pub fn branch_comparison(&self) -> Option<aperture_core::BranchDiff> {
+        aperture_core::compare_branches(self.branch_source.as_ref()?, &self.replay).ok()
+    }
+
+    /// Left alone only when both branch lines agree over the branch length so far.
+    pub fn branches_agree(&self) -> bool {
+        self.branch_comparison()
+            .is_some_and(|diff| diff.diverged_at.is_none())
+    }
+
     /// Apply a parsed snapshot to the live session (main thread only).
     fn apply_save(&mut self, save: &SessionSave) {
         self.invalidate_pending_work();
@@ -939,6 +1104,9 @@ impl UiSession {
         self.profile = save.game.profile;
         self.resize_seat_ui();
         self.sandbox_modified = save.sandbox_modified;
+        self.review_mode = false;
+        self.review_cache = None;
+        self.branch_source = None;
     }
 
     pub fn save(&mut self, path: &Path) -> Result<(), String> {
@@ -974,6 +1142,12 @@ impl UiSession {
     /// Sandbox tools. These bypass the rules on purpose; the session is marked
     /// so no certified claim can be made about the resulting position.
     pub fn sandbox(&mut self, op: SandboxOp) {
+        if self.review_mode {
+            self.message =
+                "postgame review is read-only: sandbox tools are off while review is shown"
+                    .to_string();
+            return;
+        }
         let mut description = String::new();
         match op {
             SandboxOp::Draw(count) => {
@@ -1051,6 +1225,31 @@ impl UiSession {
     /// Pending-choice helper text for the UI.
     pub fn pending_kind(&self, view: &PlayerView) -> Option<PendingKind> {
         view.pending_kind
+    }
+
+    /// Enter the explicit postgame omniscient review mode. Only possible once
+    /// the game has actually ended; while the review is up the session refuses
+    /// every action submission, so the omniscient pane can never be a live
+    /// policy input. The omniscient text is computed once and cached.
+    pub fn enter_review(&mut self) -> Result<(), String> {
+        if self.game.state.outcome.is_none() {
+            return Err(
+                "postgame review is only available once the game has actually ended".to_string(),
+            );
+        }
+        self.review_mode = true;
+        self.review_cache =
+            Some(aperture_core::view::render_review(&self.game).expect("review is gated"));
+        self.message = "REVIEW: omniscient postgame view. Acting is disabled; choose 'Leave review' to go back.".to_string();
+        Ok(())
+    }
+
+    /// Leave review mode. The session stays exactly as it was; review never
+    /// changes state and never feeds any policy or decision input.
+    pub fn leave_review(&mut self) {
+        self.review_mode = false;
+        self.review_cache = None;
+        self.message.clear();
     }
 
     pub fn conclude(&self) -> Option<String> {

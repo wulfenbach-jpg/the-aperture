@@ -25,11 +25,21 @@ fn parse_options() -> Startup {
         seats: 2,
         profile: Profile::Practice20,
         window: None,
+        study_file: None,
+        branch_at: 0,
     };
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--smoke" => options.smoke = args.next().map(PathBuf::from),
+            "--study-file" => {
+                options.study_file = args.next().map(|value| value.to_string());
+            }
+            "--branch-at" => {
+                if let Some(value) = args.next().and_then(|v| v.parse().ok()) {
+                    options.branch_at = value;
+                }
+            }
             "--seed" => {
                 if let Some(value) = args.next().and_then(|v| v.parse().ok()) {
                     options.seed = value;
