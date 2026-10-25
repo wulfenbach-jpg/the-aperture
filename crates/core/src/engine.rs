@@ -287,8 +287,11 @@ impl Game {
             activation_uses: BTreeMap::new(),
             effects: Vec::new(),
             shields: Vec::new(),
-            next_effect: 1,
-            next_timestamp: 1,
+            // Allocator cursors start at zero so a state with no live effect has
+            // exactly the canonical JSON it had before the effect pipeline
+            // existed; recorded save/replay digests therefore stay verifiable.
+            next_effect: 0,
+            next_timestamp: 0,
             revision: 0,
             decision: 0,
             outcome: None,
@@ -400,6 +403,21 @@ impl Game {
         let id = self.state.next_effect;
         self.state.next_effect += 1;
         id
+    }
+
+    /// Drop the effect/timestamp allocator cursors once nothing is live.
+    ///
+    /// The canonical digest is SHA-256 over the serialized state, so a cursor
+    /// left behind by an effect that has already ended would permanently change
+    /// the serialization of an otherwise identical position. Resetting while no
+    /// effect exists keeps such a position byte-identical to the same position
+    /// recorded before the effect pipeline existed, which is what lets earlier
+    /// saves and replays still verify. A live effect always keeps its cursor.
+    fn release_idle_effect_cursors(&mut self) {
+        if self.state.effects.is_empty() && self.state.shields.is_empty() {
+            self.state.next_effect = 0;
+            self.state.next_timestamp = 0;
+        }
     }
 
     /// How many cards a printed count-based static ability counts for the
@@ -680,6 +698,7 @@ impl Game {
             let now_remaining = self.state.shields[index].remaining;
             if self.state.shields[index].exhausted() {
                 self.state.shields.remove(index);
+                self.release_idle_effect_cursors();
             }
             events.push(Event::DamagePrevented {
                 source,
@@ -3182,6 +3201,7 @@ impl Game {
             .retain(|effect| effect.duration != EffectDuration::UntilEndOfTurn);
         let expired_shields = self.state.shields.len();
         self.state.shields.clear();
+        self.release_idle_effect_cursors();
         if expired_effects > 0 || expired_shields > 0 {
             changed = true;
         }

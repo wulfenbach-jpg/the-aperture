@@ -661,16 +661,22 @@ pub struct GameState {
     pub activation_uses: BTreeMap<ObjectId, u8>,
     /// Continuous effects with their layer, timestamp and duration (CR 613).
     /// Serialized so a save or replay reproduces the exact layer state.
-    #[serde(default)]
+    ///
+    /// Empty collections and zero counters are skipped so a state that uses no
+    /// effect still serializes byte-for-byte as it did before the effect
+    /// pipeline existed. The canonical digest is taken over this JSON, so
+    /// skipping the empty form is what keeps pre-existing saves and replays
+    /// verifiable instead of failing as digest mismatches.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub effects: Vec<crate::layer::ContinuousEffect>,
     /// One-shot prevention shields (CR 615), in creation order.
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub shields: Vec<crate::layer::DamageShield>,
     /// Next rule-visible effect id.
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
     pub next_effect: u32,
     /// Next rule-visible timestamp (CR 613.7 order, never wall-clock).
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_zero_u64")]
     pub next_timestamp: u64,
     /// Incremented on every accepted state mutation.
     pub revision: u64,
@@ -2119,4 +2125,15 @@ impl GameState {
         }
         self.turn.priority.filter(|p| self.is_live(*p))
     }
+}
+
+/// Serde helper: skip a zero `u32` so state written before the effect pipeline
+/// keeps its original canonical JSON (and therefore its recorded digest).
+fn is_zero_u32(value: &u32) -> bool {
+    *value == 0
+}
+
+/// Serde helper for `next_timestamp`, same reason as [`is_zero_u32`].
+fn is_zero_u64(value: &u64) -> bool {
+    *value == 0
 }

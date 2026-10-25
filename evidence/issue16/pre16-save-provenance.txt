@@ -25,9 +25,20 @@ the load path must accept version 10 and default both fields, which the test
 `a_real_pre16_v10_save_still_loads_and_replays` (crates/core/tests/
 counters_tokens_library.rs) asserts, including the digest above.
 
-Digest-basis check with the shipped binary (base vs this branch):
-  a76df88  aperture-cli selfplay --seed 4242 -> digest 64858f984f19,
-           315 steps, 14 turns, winner P0, 9 casts, 3 attacks
-  this branch, same command      -> digest 64858f984f19, identical counters
-Empty `counters`/`revealed` are skipped when serializing, so old replays keep
-verifying instead of failing as digest mismatches.
+Digest basis, stated precisely after integration with #15:
+  * Recorded PRE-#16/PRE-#15 positions still verify. The bundled v10 fixture
+    loads and replays to its stored digest 282eea63… exactly (see the test
+    above), because empty `counters`/`revealed`/`effects`/`shields` and zero
+    effect cursors are omitted from the canonical JSON.
+  * New games do NOT necessarily hash to the pre-#15 value: #15's layer
+    recomputation legitimately changes the serialized state, so
+    `selfplay --seed 4242` on post-#15 master yields b2fca737cff8 where a76df88
+    yielded 64858f984f19, with identical steps/turns/counters.
+  * Integration fix carried by this branch: #15 added `effects`, `shields`,
+    `next_effect` and `next_timestamp` with `#[serde(default)]` but without
+    skipping the empty form, and it initialised both cursors to 1. That alone
+    changed the canonical JSON of every position, so pre-existing saves and
+    replays failed digest verification even though deserialization succeeded.
+    The fields now skip empty/zero values, the cursors start at 0, and the
+    cursors are released whenever no effect or shield is live, so an
+    effect-free position serialises exactly as it did before #15.
