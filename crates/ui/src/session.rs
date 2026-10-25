@@ -18,8 +18,8 @@ use aperture_ai::{
 };
 use aperture_core::view::{PendingKind, PlayerView};
 use aperture_core::{
-    Action, AiSettings, BlockDecl, DeckList, Event, Game, ObjectId, PlayerId, Replay, ReplayStep,
-    SessionSave, Submission, Zone,
+    Action, AiSettings, BlockDecl, CardId, CommanderSetup, DeckList, Event, Game, ObjectId, P0,
+    PlayerId, Profile, Replay, ReplayStep, SessionSave, Submission, Zone,
 };
 use aperture_import::DeckReport;
 
@@ -163,6 +163,9 @@ pub struct UiSession {
     pub replay: Replay,
     pub ai: AiSettings,
     pub seats: Vec<DeckList>,
+    /// Explicit named game profile. New games and loads keep it; there is no
+    /// implicit fallback to the two-seat 20-life table.
+    pub profile: Profile,
     pub seed: u64,
     pub sandbox_modified: bool,
     pub human_plays_ai_seat: bool,
@@ -246,6 +249,7 @@ impl UiSession {
             replay,
             ai,
             seats,
+            profile: Profile::Practice20,
             seed,
             sandbox_modified: false,
             human_plays_ai_seat,
@@ -704,22 +708,153 @@ impl UiSession {
         Some(self.apply_ai_decision(decision))
     }
 
+    /// Bundled practice lists for a table of `seat_count` seats, alternating
+    /// the two compiled 40-card decks so every seat starts with a complete,
+    /// supported list. Ordinary practice always uses these lists.
+    pub fn bundled_seats(seat_count: usize) -> Result<Vec<DeckList>, String> {
+        Self::bundled_seats_for_profile(seat_count, Profile::Practice20)
+    }
+
+    /// Default libraries for the selected named profile. The command profiles
+    /// get the compiled command-zone practice list (white sources plus the
+    /// supported command-zone cards) for every seat; the supplied Isamaru is
+    /// separate and is never part of the library. Ordinary practice keeps the
+    /// alternating Temur/Izzet bundles.
+    pub fn bundled_seats_for_profile(
+        seat_count: usize,
+        profile: Profile,
+    ) -> Result<Vec<DeckList>, String> {
+        if !(aperture_core::MIN_PLAYERS..=aperture_core::MAX_PLAYERS).contains(&seat_count) {
+            return Err(format!(
+                "{seat_count} seats requested; the native table supports 2..=4"
+            ));
+        }
+        Ok((0..seat_count)
+            .map(|seat| {
+                let (name, text) = if profile.has_command_zone() {
+                    ("Command zone practice", BUNDLED_COMMAND)
+                } else if seat % 2 == 0 {
+                    ("Temur Beats", BUNDLED_A)
+                } else {
+                    ("Izzet Control", BUNDLED_B)
+                };
+                let mut deck = bundled_practice(name, text);
+                if seat > 1 {
+                    deck.name = format!("{} P{seat}", deck.name);
+                }
+                deck
+            })
+            .collect())
+    }
+
+    /// The explicit one-supported-commander-per-seat setup for the named
+    /// command profiles. Empty for ordinary practice.
+    pub fn commander_setup(&self) -> Vec<CommanderSetup> {
+        if !self.profile.has_command_zone() {
+            return Vec::new();
+        }
+        (0..self.seats.len())
+            .map(|seat| CommanderSetup {
+                seat: seat as PlayerId,
+                card: CardId::IsamaruHoundOfKonda,
+            })
+            .collect()
+    }
+
+    /// Build a brand-new engine, log and replay for the configured seats and
+    /// profile. Both the engine and the replay use the same explicit profile
+    /// constructors, so a 3/4-seat or 40-life table can never silently fall
+    /// back to the two-seat 20-life game.
+    fn build_fresh(&self, seed: u64) -> Result<(Game, Vec<Event>, Replay), String> {
+        let specs: Vec<(PlayerId, CardId)> = self
+            .commander_setup()
+            .into_iter()
+            .map(|setup| (setup.seat, setup.card))
+            .collect();
+        let (game, log) = match self.profile {
+            Profile::Practice20 => Game::new_logged(seed, &self.seats),
+            Profile::CommandZone20 => Game::new_command_zone_logged(seed, &self.seats, &specs),
+            Profile::CommanderCombat40 => {
+                Game::new_commander_combat_logged(seed, &self.seats, &specs)
+            }
+        }
+        .map_err(|err| format!("could not create the game: {err}"))?;
+        let commanders = self.commander_setup();
+        let mut replay = match self.profile {
+            Profile::Practice20 => Replay::new(
+                seed,
+                game.state.first_player,
+                self.seats.clone(),
+                self.ai.clone(),
+            ),
+            Profile::CommandZone20 => Replay::new_command_zone(
+                seed,
+                game.state.first_player,
+                self.seats.clone(),
+                commanders,
+                self.ai.clone(),
+            ),
+            Profile::CommanderCombat40 => Replay::new_commander_combat(
+                seed,
+                game.state.first_player,
+                self.seats.clone(),
+                commanders,
+                self.ai.clone(),
+            ),
+        }
+        .map_err(|err| format!("could not create the replay: {err}"))?;
+        replay.steps.clear();
+        Ok((game, log, replay))
+    }
+
+    /// Start a new table at `seat_count` seats and the selected named profile.
+    /// The human is P0; every other seat is driven by the heuristic AI. The
+    /// selection is retained by later `new_game` calls.
+    pub fn start_table(
+        &mut self,
+        seed: u64,
+        seat_count: usize,
+        profile: Profile,
+    ) -> Result<(), String> {
+        let seats = Self::bundled_seats_for_profile(seat_count, profile)?;
+        self.seats = seats;
+        self.profile = profile;
+        self.ai.human_seat = P0;
+        self.ai.ai_seats = (1..seat_count as PlayerId).collect();
+        self.ai.enabled = true;
+        self.human_plays_ai_seat = false;
+        self.seat_url = vec![String::new(); seat_count];
+        self.seat_text = vec![String::new(); seat_count];
+        self.seat_path = vec![String::new(); seat_count];
+        self.seat_import = vec![None; seat_count];
+        self.seat_error = vec![None; seat_count];
+        self.import_busy = vec![false; seat_count];
+        self.new_game(seed);
+        Ok(())
+    }
+
+    /// Resize every per-seat UI vector after a seat-count change or a load.
+    fn resize_seat_ui(&mut self) {
+        let count = self.seats.len();
+        self.seat_url.resize(count, String::new());
+        self.seat_text.resize(count, String::new());
+        self.seat_path.resize(count, String::new());
+        self.seat_import.resize(count, None);
+        self.seat_error.resize(count, None);
+        self.import_busy.resize(count, false);
+    }
+
     pub fn new_game(&mut self, seed: u64) {
         self.invalidate_pending_work();
         self.branch = None;
         self.seed = seed;
-        let (game, log) = Game::new_logged(seed, &self.seats)
+        self.resize_seat_ui();
+        let (game, log, replay) = self
+            .build_fresh(seed)
             .unwrap_or_else(|err| panic!("validated session seats failed to start: {err}"));
         self.game = game;
         self.log = log;
-        self.replay = Replay::new(
-            seed,
-            self.game.state.first_player,
-            self.seats.clone(),
-            self.ai.clone(),
-        )
-        .unwrap_or_else(|err| panic!("validated session replay failed: {err}"));
-        self.replay.steps.clear();
+        self.replay = replay;
         self.sandbox_modified = false;
         self.revealed.clear();
         self.message.clear();
@@ -783,12 +918,6 @@ impl UiSession {
             let result = (|| -> Result<Box<SessionSave>, String> {
                 let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
                 let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
-                if save.game.profile.has_command_zone() {
-                    return Err(format!(
-                        "the native table does not support the {} profile yet; use aperture-cli selfplay",
-                        save.game.profile.label()
-                    ));
-                }
                 Ok(Box::new(save))
             })();
             let _ = tx.send(WorkerMessage::Load {
@@ -807,6 +936,8 @@ impl UiSession {
         self.replay = save.replay.clone();
         self.ai = save.ai.clone();
         self.seats = save.seats.clone();
+        self.profile = save.game.profile;
+        self.resize_seat_ui();
         self.sandbox_modified = save.sandbox_modified;
     }
 
@@ -829,12 +960,6 @@ impl UiSession {
     pub fn load(&mut self, path: &Path) -> Result<(), String> {
         let text = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
         let save = SessionSave::from_json(&text).map_err(|e| e.to_string())?;
-        if save.game.profile.has_command_zone() {
-            return Err(format!(
-                "the native table does not support the {} profile yet; use aperture-cli selfplay",
-                save.game.profile.label()
-            ));
-        }
         self.apply_save(&save);
         self.message = format!(
             "loaded {} — digest {} (stored {}), {} action(s) in the replay",
@@ -947,13 +1072,14 @@ impl UiSession {
 /// Level of the practice profile shown in the UI header.
 pub fn profile_line() -> String {
     format!(
-        "practice slice · supported pool: {} cards · 2-4 live seats (native table: 2) · 20 life · London mulligan · NOT Commander",
+        "practice slice · supported pool: {} cards · 2-4 live seats (native table: 2-4) · 20-life ordinary or bounded 40-life one-Isamaru-per-seat profile · London mulligan · NOT Commander",
         aperture_core::catalog::pool_size()
     )
 }
 
 pub const BUNDLED_A: &str = include_str!("../../../decks/temur-beats.txt");
 pub const BUNDLED_B: &str = include_str!("../../../decks/izzet-control.txt");
+pub const BUNDLED_COMMAND: &str = include_str!("../../../decks/command-zone-practice.txt");
 
 /// Built-in practice deck from the compiled bundle. Used only when no custom
 /// deck path was requested; an explicitly requested path is never substituted.

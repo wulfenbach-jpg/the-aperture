@@ -6,6 +6,7 @@
 
 use std::path::PathBuf;
 
+use aperture_core::Profile;
 use aperture_ui::app::{ApertureApp, Startup};
 use eframe::egui;
 
@@ -21,6 +22,9 @@ fn parse_options() -> Startup {
         human_autoplay: false,
         autoplay: false,
         use_decider: false,
+        seats: 2,
+        profile: Profile::Practice20,
+        window: None,
     };
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
@@ -29,6 +33,41 @@ fn parse_options() -> Startup {
             "--seed" => {
                 if let Some(value) = args.next().and_then(|v| v.parse().ok()) {
                     options.seed = value;
+                }
+            }
+            "--seats" => {
+                if let Some(value) = args.next().and_then(|v| v.parse().ok()) {
+                    options.seats = value;
+                }
+            }
+            "--profile" => {
+                if let Some(value) = args.next() {
+                    options.profile = match value.as_str() {
+                        "ordinary" | "practice-20" | "20" => Profile::Practice20,
+                        "bounded" | "commander-combat-practice-40" | "40" => {
+                            Profile::CommanderCombat40
+                        }
+                        other => {
+                            eprintln!(
+                                "unknown profile '{other}'; use ordinary (20 life) or bounded (40 life)"
+                            );
+                            std::process::exit(2);
+                        }
+                    };
+                }
+            }
+            "--size" => {
+                if let Some(value) = args.next() {
+                    let parsed = value
+                        .split_once(['x', 'X'])
+                        .and_then(|(w, h)| Some((w.parse::<f32>().ok()?, h.parse::<f32>().ok()?)));
+                    match parsed {
+                        Some((w, h)) if w >= 1024.0 && h >= 640.0 => options.window = Some((w, h)),
+                        _ => {
+                            eprintln!("--size expects e.g. 1280x720 (minimum 1024x640)");
+                            std::process::exit(2);
+                        }
+                    }
                 }
             }
             "--deck-a" => {
@@ -55,12 +94,17 @@ fn parse_options() -> Startup {
                 println!(
                     "THE APERTURE — practice slice UI\n\
                      --seed N            deterministic game seed\n\
+                     --seats 2|3|4       native table size (default 2)\n\
+                     --profile ordinary|bounded\n\
+                                         ordinary = 20 life; bounded = 40 life with one\n\
+                                         supported Isamaru per seat (practice, not Commander)\n\
                      --deck-a PATH       deck for seat P0 (default decks/temur-beats.txt)\n\
                      --deck-b PATH       deck for seat P1 (default decks/izzet-control.txt)\n\
-                     --ai-seat 0|1       which seat the baseline AI plays (default 1)\n\
+                     --ai-seat 0|1       two-seat only: which seat the baseline AI plays (default 1)\n\
                      --autoplay          let the AI keep playing without clicking\n\
-                     --ai-both           both seats are played by the AI (watch mode)\n\
+                     --ai-both           every seat is played by the AI (watch mode)\n\
                      --decider           opt in to the local Decider-2B service (default off)\n\
+                     --size WxH          initial window size (default 1400x940; min 1024x640)\n\
                      --smoke OUT.png     render, screenshot the real window, exit\n"
                 );
                 std::process::exit(0);
@@ -74,10 +118,11 @@ fn parse_options() -> Startup {
 fn main() -> eframe::Result {
     let startup = parse_options();
     let smoke = startup.smoke.clone();
+    let (width, height) = startup.window.unwrap_or((1400.0, 940.0));
     let native_options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([1400.0, 940.0])
-            .with_min_inner_size([1100.0, 760.0])
+            .with_inner_size([width, height])
+            .with_min_inner_size([1024.0, 640.0])
             .with_title("THE APERTURE — practice slice"),
         ..Default::default()
     };

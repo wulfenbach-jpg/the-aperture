@@ -115,6 +115,8 @@ pub struct PlayerView {
     pub commander_damage: Vec<CommanderDamageView>,
     pub own_library_count: usize,
     pub own_life: i32,
+    /// Whether the viewing seat has left the game.
+    pub own_eliminated: bool,
     pub own_mana: String,
     pub own_mana_pool: crate::mana::ManaPool,
     pub own_lands_in_hand: usize,
@@ -128,6 +130,9 @@ pub struct PlayerView {
     pub step: Step,
     pub priority: Option<PlayerId>,
     pub pending: Option<String>,
+    /// Seat that must answer the pending decision, if any. Public information;
+    /// the decision's contents remain masked per viewer.
+    pub pending_owner: Option<PlayerId>,
     /// Typed form of `pending` for policies.
     pub pending_kind: Option<PendingKind>,
     /// Index (0-based) of the card currently being decided in a scry/surveil.
@@ -546,6 +551,7 @@ impl Game {
                 .collect(),
             own_library_count: me.library.len(),
             own_life: me.life,
+            own_eliminated: me.lost,
             own_mana: me.mana.render(),
             own_mana_pool: me.mana,
             own_lands_in_hand: me
@@ -579,6 +585,7 @@ impl Game {
             step: self.state.turn.step,
             priority: self.state.turn.priority,
             pending: pending_for_viewer.map(|p| p.describe()),
+            pending_owner: self.state.decision_owner(),
             pending_kind: pending_for_viewer.map(|p| match p {
                 crate::state::Pending::Mulligan { .. } => PendingKind::Mulligan,
                 crate::state::Pending::BottomCards { count, .. } => {

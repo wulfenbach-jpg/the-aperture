@@ -1,0 +1,19 @@
+{
+  "zip_sha256": "1cf08c16c43ecf2b65e47abe68c4338caa44c95c2ce00e15ab6e39de03c74f77",
+  "zip_bytes": 9367918,
+  "entries": [
+    "aperture-cli.exe",
+    "aperture.exe",
+    "ASSETS.md",
+    "decks/abilities-practice-a.txt",
+    "decks/abilities-practice-b.txt",
+    "decks/command-zone-practice.txt",
+    "decks/izzet-control.txt",
+    "decks/temur-beats.txt",
+    "LAUNCH.cmd",
+    "LICENSE-APACHE",
+    "LICENSE-MIT",
+    "README.txt"
+  ],
+  "exe_sha256": "f3d5bcd2ca5484cd6b09f8b8655dd45bfb6fb56e083debab42ee5778150d7b40"
+}
