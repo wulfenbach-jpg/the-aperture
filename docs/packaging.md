@@ -151,6 +151,20 @@ comparing the shipped hashes.
 * Any code signing. The build is unsigned; `signed=false` is recorded and the
   packaged README says so.
 
+### Measured cross-host check (not a claim, just evidence)
+
+Commit `8d65f74` was packaged locally (rustc 1.97.1) and by the CI `package` job
+on `windows-latest` (runner stable, rustc 1.99.1). Of the 12 hashed files, 8 were
+byte-identical across the two hosts: `README-PACKAGE.md`, all five deck lists,
+`launch.cmd`, `verify-package.cmd` and `verify-package.ps1`. The other four were
+the two executables and `BUILD-STAMP.txt`, and the stamp difference was exactly
+its `rustc=`/`cargo=` lines. The zip hashes differed too (different .NET runtime
+for DEFLATE). That is the contract above behaving as advertised: source-derived
+contents are host-independent, compiled artifacts are tied to the recorded
+toolchain, and the stamp never hides a toolchain change. The CI job proves
+same-toolchain byte-identity within its own run by rebuilding from `cargo clean`
+and comparing against the shipped hashes.
+
 ## CI
 
 `.github/workflows/ci.yml` gains a `package` job (windows-latest):
