@@ -358,6 +358,11 @@ fn the_postgame_review_is_omniscient_read_only_and_refused_while_live() {
         ui.submit(Action::Pass).is_err(),
         "review refuses submissions"
     );
+    assert!(
+        ui.message.contains("read-only"),
+        "the refusal is reported to the user: {}",
+        ui.message
+    );
     ui.sandbox(SandboxOp::Draw(1));
     assert_eq!(
         ui.game.digest(),

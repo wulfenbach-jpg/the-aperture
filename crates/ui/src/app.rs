@@ -391,6 +391,17 @@ impl ApertureApp {
         if study {
             self.show_study = !self.show_study;
         }
+        // G runs the same branch-from-replay action the Study panel button
+        // does, using the study file and action index currently shown there.
+        if ctx.input(|input| input.key_pressed(egui::Key::G))
+            && !self.session.branch_path.is_empty()
+            && !self.session.io_busy
+        {
+            self.session.request_replay_branch(
+                PathBuf::from(self.session.branch_path.clone()),
+                self.session.branch_at,
+            );
+        }
         if pass && self.session.owner() == Some(self.session.human_seat()) {
             let _ = self.session.submit_human(Action::Pass);
         }
@@ -1274,6 +1285,10 @@ impl ApertureApp {
         {
             self.session.request_replay_branch(path, keep);
         }
+        theme::muted(
+            ui,
+            "G runs the same branch using the study file and action index above.",
+        );
         if self.session.branch_source.is_some() {
             match self.session.branch_comparison() {
                 Some(diff) => {
@@ -1484,7 +1499,7 @@ impl ApertureApp {
             if self.show_help {
                 ui.label(
                     RichText::new(
-                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · N new game (keeps seats/profile) · S save · L load · I import · B study-branch panel · R postgame review (game over only) · Z zones · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick. Shortcuts are ignored while a text field has focus.",
+                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · N new game (keeps seats/profile) · S save · L load · I import · B study-branch panel · G branch from the prefilled study inputs · R postgame review (game over only) · Z zones · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick. Shortcuts are ignored while a text field has focus.",
                     )
                     .small()
                     .color(theme::MUTED),
@@ -1984,6 +1999,8 @@ mod viewport_tests {
             seats: 2,
             profile: Profile::Practice20,
             window: None,
+            study_file: None,
+            branch_at: 0,
         }
     }
 
@@ -2316,6 +2333,49 @@ mod viewport_tests {
                 || visible("Let the AI answer")
                 || visible("WAITING ON"),
             "no primary action control is visible at 1280x720"
+        );
+    }
+
+    #[test]
+    fn the_postgame_review_replaces_the_action_strip_at_1280x720() {
+        let mut app = four_seat_app();
+        // A finished game is the only state in which review is offered.
+        app.session.game.state.outcome = Some(aperture_core::Outcome::Win {
+            winner: 0,
+            reason: "scripted finish for the review-mode control".to_string(),
+        });
+        app.session.enter_review().expect("review opens");
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        let visible = |needle: &str| {
+            shapes.iter().any(|(text, clip, bounds)| {
+                text.contains(needle) && clip.intersects(*bounds) && bounds.min.y < 720.0
+            })
+        };
+        assert!(
+            visible("REVIEW — omniscient postgame view"),
+            "the review heading is not visible at 1280x720"
+        );
+        assert!(
+            visible("POSTGAME OMNISCIENT REVIEW"),
+            "the omniscient review body is not visible at 1280x720"
+        );
+        assert!(
+            visible("Leave review"),
+            "the review has no visible way back to the table"
+        );
+        assert!(
+            !visible("YOUR ACTIONS"),
+            "the live action strip must be replaced while review is shown"
+        );
+        app.session.leave_review();
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        assert!(
+            shapes
+                .iter()
+                .any(|(text, clip, bounds)| text.contains("YOUR ACTIONS")
+                    && clip.intersects(*bounds)
+                    && bounds.min.y < 720.0),
+            "leaving review must restore the live action strip"
         );
     }
 
