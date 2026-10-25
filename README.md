@@ -119,7 +119,8 @@ implementation and it says so everywhere it matters.
   rebuilds the position from the deterministic recorded prefix, so the RNG,
   revision and decision serial are exact and nothing the undone action revealed
   survives in the log; it is refused after an override. New game, new table,
-  load, branch, imported start and sandbox reset all require an explicit
+  load, branch (both the Study panel button and the `G` shortcut), imported
+  start and sandbox reset all require an explicit
   confirmation and report failures in an error state. See
   `docs/issue20-tabletop.md`.
 * **Per-seat import / play** (UI): each seat has its own Archidekt URL box, a

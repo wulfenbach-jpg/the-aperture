@@ -120,6 +120,19 @@ impl PendingAction {
     }
 }
 
+/// Whether a status message is a failure the player must not mistake for a
+/// hint. Every refusal and failed destructive action is painted in the error
+/// colour; success messages and study notes are not.
+fn message_is_error(message: &str) -> bool {
+    message.starts_with("refused")
+        || message.starts_with("sandbox refused")
+        || message.starts_with("load failed")
+        || message.starts_with("branch failed")
+        || message.starts_with("undo is unavailable")
+        || message.starts_with("cancel")
+        || message.starts_with("there is no accepted action")
+}
+
 pub struct ApertureApp {
     session: UiSession,
     startup: Startup,
@@ -372,6 +385,25 @@ impl ApertureApp {
         }
     }
 
+    /// Ask before a study branch replaces the live position. The Study panel
+    /// button and the G shortcut both come through here, so the keyboard path
+    /// can never run the destructive replace that the button gates.
+    fn ask_branch(&mut self, path: PathBuf, keep: usize) {
+        if self.session.io_busy {
+            self.session.message =
+                "refused: a table operation is still running; the branch was not requested"
+                    .to_string();
+            return;
+        }
+        if path.as_os_str().is_empty() {
+            self.session.message =
+                "refused: choose a study file (a session save or a replay) before branching"
+                    .to_string();
+            return;
+        }
+        self.confirm = Some(PendingAction::Branch { path, keep });
+    }
+
     /// Run a pending destructive action after its confirmation.
     fn apply_pending(&mut self, action: PendingAction) {
         self.confirm = None;
@@ -393,7 +425,9 @@ impl ApertureApp {
                         profile.starting_life()
                     );
                 }
-                Err(err) => self.session.message = err,
+                // A failed table start is an error state, not a hint: it uses
+                // the same `refused:` prefix the error-colour detector reads.
+                Err(err) => self.session.message = format!("refused: {err}"),
             },
             PendingAction::Load { path } => self.session.request_load(path),
             PendingAction::Branch { path, keep } => self.session.request_replay_branch(path, keep),
@@ -405,7 +439,7 @@ impl ApertureApp {
             }
             PendingAction::StartImported { seed } => {
                 if let Err(err) = self.session.start_imported_match(seed) {
-                    self.session.message = err;
+                    self.session.message = format!("refused: {err}");
                 }
             }
         }
@@ -512,16 +546,13 @@ impl ApertureApp {
         if study {
             self.show_study = !self.show_study;
         }
-        // G runs the same branch-from-replay action the Study panel button
-        // does, using the study file and action index currently shown there.
-        if ctx.input(|input| input.key_pressed(egui::Key::G))
-            && !self.session.branch_path.is_empty()
-            && !self.session.io_busy
-        {
-            self.session.request_replay_branch(
-                PathBuf::from(self.session.branch_path.clone()),
-                self.session.branch_at,
-            );
+        // G asks the same branch question the Study panel button asks, using
+        // the study file and action index currently shown there. It never
+        // replaces the live position on its own.
+        if ctx.input(|input| input.key_pressed(egui::Key::G)) {
+            let path = PathBuf::from(self.session.branch_path.clone());
+            let keep = self.session.branch_at;
+            self.ask_branch(path, keep);
         }
         if pass && self.session.owner() == Some(self.session.human_seat()) {
             let _ = self.session.submit_human(Action::Pass);
@@ -1424,11 +1455,11 @@ impl ApertureApp {
             )
             .clicked()
         {
-            self.confirm = Some(PendingAction::Branch { path, keep });
+            self.ask_branch(path, keep);
         }
         theme::muted(
             ui,
-            "G runs the same branch using the study file and action index above.",
+            "G asks the same question using the study file and action index above.",
         );
         if self.session.branch_source.is_some() {
             match self.session.branch_comparison() {
@@ -1787,13 +1818,7 @@ impl ApertureApp {
                 // A refusal or a failed load/branch is an error state, not a
                 // hint: it is shown in the error colour so a silent no-op can
                 // never be mistaken for success.
-                let failed = self.session.message.starts_with("refused")
-                    || self.session.message.starts_with("sandbox refused")
-                    || self.session.message.starts_with("load failed")
-                    || self.session.message.starts_with("branch failed")
-                    || self.session.message.starts_with("undo is unavailable")
-                    || self.session.message.starts_with("cancel")
-                    || self.session.message.starts_with("there is no accepted action");
+                let failed = message_is_error(&self.session.message);
                 ui.label(
                     RichText::new(&self.session.message)
                         .color(if failed { theme::BAD } else { theme::WARN })
@@ -3034,6 +3059,237 @@ mod viewport_tests {
         assert!(
             visible("not projected to this seat"),
             "the inspector must explain why a hidden zone is empty"
+        );
+    }
+
+    /// Press one key in a real frame, the way the native window receives it.
+    fn press_key(app: &mut ApertureApp, width: f32, height: f32, key: egui::Key) {
+        let ctx = egui::Context::default();
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(width, height),
+            )),
+            ..Default::default()
+        };
+        let mut warm = ctx.run_ui(input.clone(), |ui| app.render_ui(ui));
+        warm.textures_delta.clear();
+        let mut pressed = input;
+        pressed.events = vec![egui::Event::Key {
+            key,
+            physical_key: None,
+            pressed: true,
+            repeat: false,
+            modifiers: egui::Modifiers::NONE,
+        }];
+        let mut frame = ctx.run_ui(pressed, |ui| app.render_ui(ui));
+        frame.textures_delta.clear();
+    }
+
+    /// Poll the session's background channel until the branch worker is done,
+    /// exactly like the real frame loop does.
+    fn pump_worker(app: &mut ApertureApp) -> Vec<String> {
+        let mut applied = Vec::new();
+        for _ in 0..400 {
+            applied.extend(app.session.poll_workers());
+            if !app.session.io_busy {
+                break;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(2));
+        }
+        assert!(!app.session.io_busy, "the background worker never finished");
+        applied
+    }
+
+    /// The G shortcut used to replace the live position on the first press
+    /// while the Study panel button for the same action asked first. Both now
+    /// go through one helper, and this pins the shortcut to the question.
+    #[test]
+    fn the_g_shortcut_asks_before_it_replaces_the_live_position() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let path =
+            std::env::temp_dir().join(format!("aperture-g-branch-{}.json", std::process::id()));
+        app.session.save(&path).expect("the study line is written");
+        let recorded = app.session.replay.steps.len();
+        assert!(recorded >= 2, "a usable recorded line, got {recorded}");
+        let keep = recorded - 1;
+        app.session.branch_path = path.display().to_string();
+        app.session.branch_at = keep;
+        let digest = app.session.game.digest();
+        let log_len = app.session.log.len();
+
+        press_key(&mut app, 1280.0, 720.0, egui::Key::G);
+        assert_eq!(
+            app.confirm,
+            Some(PendingAction::Branch {
+                path: path.clone(),
+                keep
+            }),
+            "G must ask before it replaces the live position"
+        );
+        assert!(
+            app.session.branch_source.is_none(),
+            "the shortcut branched without asking"
+        );
+        assert_eq!(
+            app.session.game.digest(),
+            digest,
+            "the first press must not touch the table"
+        );
+        assert_eq!(app.session.log.len(), log_len);
+        let shapes = run_frame_with_clip(&mut app, 1280.0, 720.0);
+        assert!(
+            shapes
+                .iter()
+                .any(|(text, clip, bounds)| text.contains("CONFIRM: branch from")
+                    && clip.intersects(*bounds)
+                    && bounds.min.y < 720.0),
+            "the branch question is not visible in the fixed primary strip"
+        );
+
+        // Esc withdraws the question and changes nothing.
+        press_key(&mut app, 1280.0, 720.0, egui::Key::Escape);
+        assert!(app.confirm.is_none(), "Esc withdraws the branch question");
+        assert_eq!(app.session.game.digest(), digest);
+
+        // The confirmed branch runs exactly what the Study panel button runs.
+        press_key(&mut app, 1280.0, 720.0, egui::Key::G);
+        click_text(&mut app, 1280.0, 720.0, "Confirm branch");
+        assert!(app.confirm.is_none());
+        let applied = pump_worker(&mut app);
+        assert!(
+            applied.iter().any(|line| line.starts_with("branched from")),
+            "{applied:?}"
+        );
+        assert_eq!(
+            app.session.replay.steps.len(),
+            keep,
+            "the branch is cut at the prefilled action index"
+        );
+        assert_eq!(app.session.branch_at, keep);
+        assert!(app.session.branch_source.is_some(), "the base line is kept");
+        let _ = std::fs::remove_file(&path);
+    }
+
+    #[test]
+    fn the_g_shortcut_refuses_an_empty_or_busy_study_request() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.session.branch_path = String::new();
+        press_key(&mut app, 1280.0, 720.0, egui::Key::G);
+        assert!(
+            app.confirm.is_none(),
+            "an empty study path must not offer a branch"
+        );
+        assert!(
+            app.session.message.contains("study file"),
+            "{}",
+            app.session.message
+        );
+        assert!(message_is_error(&app.session.message));
+
+        app.session.branch_path = "recorded-line.json".to_string();
+        app.session.io_busy = true;
+        press_key(&mut app, 1280.0, 720.0, egui::Key::G);
+        assert!(
+            app.confirm.is_none(),
+            "a busy table must not offer a branch"
+        );
+        assert!(
+            app.session.message.contains("still running"),
+            "{}",
+            app.session.message
+        );
+        assert!(message_is_error(&app.session.message));
+    }
+
+    #[test]
+    fn a_failed_destructive_action_is_an_error_state_not_a_hint() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let digest = app.session.game.digest();
+
+        // A table the engine cannot build.
+        app.confirm = Some(PendingAction::NewTable {
+            seed: 7,
+            seats: 5,
+            profile: Profile::Practice20,
+        });
+        click_text(&mut app, 1280.0, 720.0, "Confirm new table");
+        assert!(app.confirm.is_none());
+        assert_eq!(
+            app.session.seats.len(),
+            4,
+            "a refused start resized the table"
+        );
+        assert_eq!(
+            app.session.game.digest(),
+            digest,
+            "a refused start replaced the position"
+        );
+        assert!(
+            app.session.message.starts_with("refused:"),
+            "{}",
+            app.session.message
+        );
+        assert!(message_is_error(&app.session.message));
+
+        // An imported match with uncertified seats.
+        app.session.seat_import = vec![None; app.session.seats.len()];
+        app.confirm = Some(PendingAction::StartImported { seed: 8 });
+        click_text(&mut app, 1280.0, 720.0, "Confirm imported match");
+        assert!(
+            app.session.message.starts_with("refused:"),
+            "{}",
+            app.session.message
+        );
+        assert!(
+            app.session.message.contains("certified"),
+            "{}",
+            app.session.message
+        );
+        assert!(message_is_error(&app.session.message));
+        assert_eq!(app.session.game.digest(), digest);
+
+        // Success notes and ordinary hints keep the hint colour.
+        for ok in [
+            "started a new game with seed 3",
+            "saved to table.json (digest 3b252264abcd)",
+            "loaded table.json — digest 3b252264abcd (stored 3b252264abcd), 3 action(s) in the replay",
+        ] {
+            assert!(!message_is_error(ok), "{ok:?} was painted as an error");
+        }
+    }
+
+    #[test]
+    fn the_new_controls_are_reachable_at_the_programmatic_minimum_1024x640() {
+        // The window minimum eframe enforces is 1024x640 (crates/ui/src/main.rs);
+        // 1280x720 is the acceptance viewport, not the smallest real client.
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.show_sandbox = true;
+        app.show_coach = false;
+        app.session
+            .sandbox(SandboxOp::Draw(1))
+            .expect("draw override");
+        for needle in [
+            "YOUR ACTIONS",
+            "SANDBOX-MODIFIED",
+            "Draw 1 · sandbox",
+            "Reveal top 3 · sandbox",
+            "Counter editor",
+            "Life editor",
+        ] {
+            assert!(
+                scroll_until_visible(&mut app, needle, 1024.0, 640.0),
+                "{needle:?} never became visible at the programmatic minimum 1024x640"
+            );
+        }
+        app.show_zones = true;
+        assert!(
+            scroll_until_visible(&mut app, "Zone inspector", 1024.0, 640.0),
+            "the zone inspector is unreachable at 1024x640"
         );
     }
 

@@ -23,8 +23,11 @@ engine's masked `PlayerView` for the human seat and from nothing else:
   inspector says so rather than showing an unexplained empty list.
 
 `docs/issue18-native-table.md` remains the reference for the four-seat layout and
-the 1280×720 minimum-window rules; the inspector is a floating window and does
-not change the persistent primary strip.
+the fixed primary strip. The window minimum eframe actually enforces is
+**1024×640** (`crates/ui/src/main.rs`); 1280×720 is the acceptance viewport. Both
+sizes are exercised against `render_ui` for the inspector, the sandbox panel and
+the primary strip — the inspector is a floating window and does not change the
+persistent strip at either size.
 
 ## 2. Manual table controls (all sandbox overrides)
 
@@ -89,17 +92,32 @@ position from the deterministic recorded prefix (`Replay::branch_at` +
 * undo is refused after a sandbox override, because the recorded line no longer
   produces the live position — silently substituting a different game would be
   dishonest. Start a new game or use **Return to branch** instead;
+* undo replays the recorded prefix synchronously inside the frame (CPU only, no
+  IO, no engine rule evaluation beyond the recorded actions), so a very long
+  recorded line costs the first frame after the key press;
 * `Set branch / Return to branch` (issue23) keeps its own snapshot semantics and
   hidden-information boundary message.
+
+A study branch also replaces the live position and clears the taint record, so
+the branch itself has to prove the replacement is the clean recorded prefix. It
+does: a sandbox override bumps the engine revision and decision serial, so a cut
+that reaches into anything recorded *after* an override fails the replay with
+`stale submission` and the tainted session is left exactly as it was; a cut
+*before* the override replays the recorded prefix to the same digest the table
+had at that point, which is what makes clearing the taint honest rather than
+cosmetic. Both halves are pinned by
+`a_sandbox_taint_cannot_be_branched_into_a_clean_line`.
 
 ## 5. Destructive actions ask first
 
 New game (`N`), Start new table, Load (`L`), Branch from replay (`G`), Reset
 *sandbox* game and Start imported match all set a pending confirmation that is
 rendered in the persistent primary strip. The question names the action, the
-seed or the file, so it is never a generic "are you sure?". `Cancel` and `Esc`
-change nothing, and a failure (load/branch/import) is shown in the error colour,
-never swallowed. Nothing destructive runs on the first click.
+seed or the file, so it is never a generic "are you sure?". Both branch triggers
+(the Study panel button and `G`) go through one helper, so the shortcut cannot
+skip the question the button asks. `Cancel` and `Esc` change nothing, and a
+failure (load/branch/import/table start) is shown in the error colour, never
+swallowed. Nothing destructive runs on the first click.
 
 ## 6. Evidence and limits
 
@@ -107,10 +125,13 @@ never swallowed. Nothing destructive runs on the first click.
   look, refusals, save/load taint, laundry refusal, zone/search projection.
 * `crates/ui/tests/issue20_controls.rs` — undo restores digest/RNG/decision
   serial and the same continuation; undo refused on a tainted line; taint
-  survives save/load; pending-choice and empty-library refusals.
-* `crates/ui/src/app.rs` (viewport tests) — the inspector is searchable and the
-  sandbox panel reachable at 1280×720, the taint banner is in the fixed strip,
-  and a destructive action waits for its confirmation.
+  survives save/load; pending-choice and empty-library refusals; a post-override
+  branch refused while a pre-override cut replays the clean digest.
+* `crates/ui/src/app.rs` (viewport + input tests) — the inspector is searchable
+  and the sandbox panel reachable at 1280×720 *and* at the 1024×640 programmatic
+  minimum, the taint banner is in the fixed strip, a destructive action waits for
+  its confirmation, `G` asks the same branch question the panel button asks, and
+  a failed table start / imported start is an error state rather than a hint.
 * `evidence/issue20/DELIVERY.md` — the packaged-app journey actually walked.
 
 Not claimed: arbitrary 100-card Commander or partners; counters as rules objects

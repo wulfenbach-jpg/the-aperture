@@ -26,7 +26,9 @@ searchable zone inspector built only from the masked projection. `Undo (U)`
 rebuilds the recorded prefix instead of patching state, restoring RNG, revision
 and decision serial exactly and dropping everything the undone action revealed;
 it is refused on a tainted line. New game / new table / load / branch / imported
-start / sandbox reset now need an explicit confirmation in the primary strip.
+start / sandbox reset now need an explicit confirmation in the primary strip;
+the branch question is shared by the Study panel button and the `G` shortcut, so
+neither trigger can replace the live position without asking.
 Known limits: +1/+1 counters remain storage/display only (combat math ignores
 them); a sandbox game's embedded replay is uncertified; this is still bounded
 28–31-card practice, not Commander. Tests: `crates/core/tests/issue20_sandbox.rs`,
