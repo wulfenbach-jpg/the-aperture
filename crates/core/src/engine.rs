@@ -400,26 +400,37 @@ impl Game {
         id
     }
 
-    /// Value a characteristic-defining ability (CR 604.3) computes from the
-    /// current game state.
-    fn cda_value(&self, source: ability::CdaSource) -> i32 {
+    /// How many cards a printed count-based static ability counts for the
+    /// object controlled by `controller`.
+    fn count_value(&self, controller: PlayerId, source: ability::CountSource) -> i32 {
         match source {
-            ability::CdaSource::CreatureCardsInAllGraveyards => self
-                .state
-                .players
-                .iter()
-                .flat_map(|player| player.graveyard.iter())
-                .filter_map(|id| self.state.try_object(*id))
-                .filter(|object| object.card.def().is_creature())
-                .count() as i32,
+            ability::CountSource::CreatureCardsInOpponentsGraveyards => {
+                self.state
+                    .players
+                    .iter()
+                    .enumerate()
+                    .filter(|(player, _)| *player as PlayerId != controller)
+                    .flat_map(|(_, player)| player.graveyard.iter())
+                    .filter_map(|id| self.state.try_object(*id))
+                    .filter(|object| object.card.def().is_creature())
+                    .count() as i32
+            }
         }
     }
 
     /// CR 613: recompute every battlefield object's power/toughness in layer
-    /// order. Layer 7a (characteristic-defining) is applied first, then layer
-    /// 7c modifiers in timestamp order (CR 613.7). Silent by design: a layer
+    /// order. Only layer 7c exists in this starter set: printed count-based
+    /// statics (Wight of Precinct Six's "+1/+1 for each creature card in your
+    /// opponents' graveyards") and one-shot until-end-of-turn modifiers, the
+    /// latter in timestamp order (CR 613.7). Silent by design: a layer
     /// recomputation is not itself a rules event, so the event trace only shows
     /// effects starting (`ContinuousEffectStarted`) and their consequences.
+    ///
+    /// 7c modifiers are additive, so the order between the static group and the
+    /// timestamp-ordered group cannot change the resulting power/toughness
+    /// (addition commutes); each group is still iterated in a fixed order —
+    /// object id for statics, timestamp for one-shot effects — so every replay
+    /// recomputes identically.
     ///
     /// Layer 7d (+1/+1 counters) is deliberately not applied here: counters are
     /// still display-only until the counters lane makes them
@@ -438,30 +449,35 @@ impl Game {
                 object.pump_toughness = 0;
             }
         }
-        // Layer 7a. Two characteristic-defining abilities never read each
-        // other's values in this starter set, so object-id order is a stable,
-        // deterministic order (CR 613.8 dependency ordering is not exercised).
+        // Printed layer 7c statics: +P/+T for each counted card, evaluated
+        // against the current game state for the source's controller.
         for (id, card) in &battlefield {
-            let def = card.def();
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
             for static_ability in ability::static_abilities(*card) {
-                let ability::StaticAbility::CdaPowerToughness { toughness_plus, .. } =
-                    static_ability
+                let ability::StaticAbility::PowerToughnessPerCount {
+                    power, toughness, ..
+                } = static_ability
                 else {
                     continue;
                 };
-                let Some(source) = static_ability.cda_source() else {
+                let Some(count) = static_ability.count_source() else {
                     continue;
                 };
-                let value = self.cda_value(source);
-                let power = value - def.power.unwrap_or(0);
-                let toughness = (value + toughness_plus) - def.toughness.unwrap_or(0);
+                let value = self.count_value(controller, count);
+                if value == 0 {
+                    continue;
+                }
                 if let Some(object) = self.state.objects.get_mut(id) {
-                    object.pump_power = power;
-                    object.pump_toughness = toughness;
+                    object.pump_power += power * value;
+                    object.pump_toughness += toughness * value;
                 }
             }
         }
-        // Layer 7c in timestamp order (CR 613.7).
+        // Layer 7c one-shot effects in timestamp order (CR 613.7).
         let mut modifying: Vec<(u64, ObjectId, i32, i32)> = self
             .state
             .effects
@@ -572,17 +588,15 @@ impl Game {
     }
 
     /// Replacement effects that apply to damage dealt by `source` (CR 614.1a).
-    /// The supported wording is "a creature you control would deal damage", so
-    /// the source must be a creature on the battlefield; the effect's controller
-    /// must control it. A spell (Shock) is not a creature and is never doubled.
+    /// The printed wording is "a **source** you control would deal damage", so
+    /// the source may be a permanent on the battlefield (a creature's combat or
+    /// activated-ability damage) or a spell on the stack (Shock) — the test is
+    /// that `source`'s controller controls it, not that it is a creature.
     fn damage_multipliers(&self, source: Option<ObjectId>) -> Vec<(CardId, PlayerId, u32)> {
-        let Some(source) = source else {
+        let Some(source_object) = source.and_then(|id| self.state.try_object(id)) else {
             return Vec::new();
         };
-        let Some(source_object) = self.state.try_object(source) else {
-            return Vec::new();
-        };
-        if source_object.zone != Zone::Battlefield || !source_object.is_creature() {
+        if !matches!(source_object.zone, Zone::Battlefield | Zone::Stack) {
             return Vec::new();
         }
         let controller = source_object.controller;
@@ -595,9 +609,9 @@ impl Game {
                 ability::static_abilities(object.card)
                     .iter()
                     .filter_map(move |static_ability| match static_ability {
-                        ability::StaticAbility::DamageFromControlledCreatures {
-                            factor, ..
-                        } => Some((object.card, object.controller, *factor)),
+                        ability::StaticAbility::DamageFromControlledSources { factor, .. } => {
+                            Some((object.card, object.controller, *factor))
+                        }
                         _ => None,
                     })
             })
@@ -4102,6 +4116,12 @@ impl Game {
                 // CR 615.1: the prevention effect's controller creates a shield
                 // on the spell's target. One shield per application; two
                 // Mending Hands stack as two independent shields.
+                //
+                // "Any target" never includes a spell (CR 115.4), so
+                // `legal_targets(AnyTarget)` offers only players and creatures
+                // and `validate_cast` refuses a spell with `BadTarget`. The
+                // spell arm below is therefore unreachable for a legal action;
+                // it produces no shield rather than a silent no-op shield.
                 for target in item.targets.clone() {
                     let shield_target = match target {
                         Target::Player(p) => ShieldTarget::Player(p),

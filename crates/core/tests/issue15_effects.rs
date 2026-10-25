@@ -144,14 +144,107 @@ fn prevention_shield_absorbs_its_amount_and_stops_applying() {
     assert_eq!(game.state.player(P1).life, 18);
 }
 
-/// The supported replacement effect doubles damage from a controlled creature
-/// exactly once per event (CR 614.1a, 614.5) and never from a spell.
+/// "Any target" never includes a spell (CR 115.4). A prevention shield aimed at
+/// a spell is refused by the action validator — the state is untouched and no
+/// empty shield is created — while the same spell on a creature still works.
 #[test]
-fn damage_multiplier_doubles_a_controlled_creature_once_per_event() {
+fn mending_hands_refuses_a_spell_as_an_any_target() {
+    let mut game = fixture(1507)
+        .battlefield(P0, &[CardId::GrizzlyBears])
+        .hand(P0, &[CardId::Shock, CardId::MendingHands])
+        .mana(
+            P0,
+            ManaPool {
+                white: 1,
+                red: 1,
+                ..Default::default()
+            },
+        )
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let shock = hand_card(&game, P0, CardId::Shock);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: shock,
+            targets: vec![Target::Player(P1)],
+        },
+    );
+    let shock_on_stack = game
+        .state
+        .stack
+        .last()
+        .expect("Shock is on the stack")
+        .object;
+
+    // The engine never offers a spell for an "any target" spell or ability.
+    assert!(
+        !game.legal_actions().iter().any(|legal| matches!(
+            &legal.action,
+            Action::CastSpell { targets, .. }
+                if targets.iter().any(|target| matches!(target, Target::Spell(_)))
+        )),
+        "a spell is not an any target (CR 115.4)"
+    );
+
+    // A forged spell target is refused before any state changes.
+    let mending = hand_card(&game, P0, CardId::MendingHands);
+    let rejected = game.submit_action(
+        P0,
+        Action::CastSpell {
+            card: mending,
+            targets: vec![Target::Spell(shock_on_stack)],
+        },
+    );
+    assert!(
+        matches!(rejected, Err(EngineError::BadTarget { .. })),
+        "a spell is not a legal target for Mending Hands: {rejected:?}"
+    );
+    assert!(shields(&game).is_empty(), "no shield was created");
+    assert!(
+        game.state.player(P0).hand.contains(&mending),
+        "the refused cast left the card in hand"
+    );
+
+    // The valid path is unchanged: a creature target gets the shield.
+    let bears = battlefield_card(&game, P0, CardId::GrizzlyBears);
+    let mending = hand_card(&game, P0, CardId::MendingHands);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: mending,
+            targets: vec![Target::Permanent(bears)],
+        },
+    );
+    let events = resolve_cast(&mut game, P0, P1);
+    assert!(
+        events.iter().any(|event| matches!(
+            event,
+            Event::DamageShieldCreated {
+                amount: Some(4),
+                ..
+            }
+        )),
+        "the shield is created on the creature: {events:?}"
+    );
+    assert_eq!(shields(&game)[0].target, ShieldTarget::Permanent(bears));
+    assert_eq!(shields(&game)[0].remaining, Some(4));
+}
+
+/// The printed replacement effect doubles damage from any source its controller
+/// controls — a creature's ability damage *and* a spell's damage — exactly once
+/// per event (CR 614.1a, 614.5), and never damage from a source another player
+/// controls.
+#[test]
+fn damage_multiplier_doubles_every_source_its_controller_controls() {
     let mut game = fixture(1502)
         .battlefield(P0, &[CardId::AngrathsMarauders, CardId::ProdigalSorcerer])
         .hand(P0, &[CardId::Shock])
+        .hand(P1, &[CardId::Shock])
         .mana(P0, red(1))
+        .mana(P1, red(1))
         .main(P0, Step::PrecombatMain)
         .build();
     let torcher = battlefield_card(&game, P0, CardId::ProdigalSorcerer);
@@ -179,7 +272,8 @@ fn damage_multiplier_doubles_a_controlled_creature_once_per_event() {
         "1 damage doubled once is 2, never 4 (CR 614.5)"
     );
 
-    // A spell is not a creature, so its damage is never doubled.
+    // A spell is a source its controller controls, so its damage is doubled too
+    // ("a source you control", not "a creature you control").
     let shock = hand_card(&game, P0, CardId::Shock);
     submit_ok(
         &mut game,
@@ -189,12 +283,40 @@ fn damage_multiplier_doubles_a_controlled_creature_once_per_event() {
             targets: vec![Target::Player(P1)],
         },
     );
-    resolve_cast(&mut game, P0, P1);
-    assert_eq!(
-        game.state.player(P1).life,
-        16,
-        "Shock still deals exactly 2"
+    let events = resolve_cast(&mut game, P0, P1);
+    assert!(
+        events.iter().any(|event| matches!(
+            event,
+            Event::ReplacementApplied {
+                before: 2,
+                after: 4,
+                ..
+            }
+        )),
+        "Shock's 2 damage becomes 4: {events:?}"
     );
+    assert_eq!(game.state.player(P1).life, 14, "2 doubled is 4");
+
+    // The other player's Shock is not a source its controller's opponent
+    // controls, so it is dealt undoubled.
+    submit_ok(&mut game, P0, Action::Pass);
+    let shock = hand_card(&game, P1, CardId::Shock);
+    submit_ok(
+        &mut game,
+        P1,
+        Action::CastSpell {
+            card: shock,
+            targets: vec![Target::Player(P0)],
+        },
+    );
+    let events = resolve_cast(&mut game, P1, P0);
+    assert!(
+        !events
+            .iter()
+            .any(|event| matches!(event, Event::ReplacementApplied { .. })),
+        "the Marauders' controller does not control the opponent's spell: {events:?}"
+    );
+    assert_eq!(game.state.player(P0).life, 18, "undoubled 2 damage");
 }
 
 /// CR 616.1: when prevention and a multiplier both apply, the affected player
@@ -221,7 +343,8 @@ fn prevention_is_applied_before_the_multiplier() {
     resolve_cast(&mut game, P0, P1);
     assert_eq!(shields(&game)[0].remaining, Some(4));
 
-    // Burn 3 of the 4 points away with a spell (never doubled).
+    // Prevention is applied before the multiplier (CR 616.1 policy), so the
+    // strike's damage is absorbed and never reaches the doubler.
     game.state.players[P0 as usize].mana.add(ManaColor::Red, 2);
     let strike = hand_card(&game, P0, CardId::LightningStrike);
     submit_ok(
