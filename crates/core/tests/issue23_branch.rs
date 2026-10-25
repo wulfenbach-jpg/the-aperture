@@ -140,6 +140,67 @@ fn the_accepted_action_comparison_shows_only_the_public_action_axis() {
 }
 
 #[test]
+fn the_diff_never_reveals_the_base_tail_beyond_the_branchs_recorded_history() {
+    // Base line of THREE recorded steps: the two guarded keeps, then one more
+    // accepted action recorded on the base game itself.
+    let (mut game, mut replay, mut log) = recorded_line(2305);
+    let next = game
+        .legal_actions()
+        .into_iter()
+        .next()
+        .expect("the engine offers a legal action at a live decision")
+        .action;
+    apply(&mut game, &mut replay, &mut log, next);
+    assert_eq!(replay.steps.len(), 3);
+    let base_tail_kind = replay.steps[2].action.kind();
+    assert_ne!(
+        base_tail_kind, "mulligan choice",
+        "setup: the base tail differs from the divergent kind"
+    );
+
+    // A live branch cut at #1 with one divergent mulligan: TWO recorded steps.
+    let mut branch = replay.branch_at(1).expect("branch point");
+    let (mut bgame, _) = branch.run_recorded().expect("prefix replays");
+    let owner = bgame.decision_owner().unwrap();
+    let step = ReplayStep {
+        player: owner,
+        revision: bgame.revision(),
+        decision: bgame.decision(),
+        action: Action::Mulligan { keep: false },
+    };
+    bgame
+        .submit_action(owner, Action::Mulligan { keep: false })
+        .expect("the mulligan choice is legal here");
+    branch.record(step);
+    assert_eq!(branch.steps.len(), 2, "the branch is mid-divergence");
+
+    let diff = compare_branches(&replay, &branch).expect("same setup compares");
+    assert_eq!(diff.diverged_at, Some(1));
+    assert!(
+        diff.base_tail_unrevealed,
+        "the branch is shorter than the base, so its tail must be marked unrevealed"
+    );
+    assert!(
+        diff.lines.iter().all(|line| line.step < branch.steps.len()),
+        "no compared line may sit past the branch's live boundary: {:?}",
+        diff.lines
+    );
+    let rendered = diff.render();
+    assert!(
+        rendered.contains("not revealed"),
+        "the unrevealed base tail must be marked, not implied: {rendered}"
+    );
+    assert!(
+        !rendered.contains(base_tail_kind),
+        "the base's future action kind '{base_tail_kind}' must never appear on a live branch: {rendered}"
+    );
+    assert!(
+        rendered.contains("mulligan choice"),
+        "the compared steps still show the public action axis: {rendered}"
+    );
+}
+
+#[test]
 fn branching_then_playing_forward_stays_deterministic_under_the_same_seed() {
     let (_, replay, _) = recorded_line(2304);
     let branch = replay.branch_at(1).expect("branch");

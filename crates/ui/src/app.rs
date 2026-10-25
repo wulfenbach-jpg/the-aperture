@@ -1304,6 +1304,11 @@ impl ApertureApp {
                             ui,
                             "no accepted action differs yet: the branch has still played only base-line moves (the base tail after the branch point is never revealed).",
                         );
+                    } else {
+                        theme::muted(
+                            ui,
+                            "the comparison stops at the branch's current recorded history — the base continuation past it is shown as an unrevealed note, never as action kinds.",
+                        );
                     }
                 }
                 None => {

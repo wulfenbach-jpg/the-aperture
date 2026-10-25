@@ -19,7 +19,9 @@ Commander, not arbitrary 100-card lists.
 - **Branch comparison** lists the first recorded index where the branch and the
   base stop agreeing, using only `(seat, decision serial, action kind)` — no card
   names, targets or zone contents — so the default comparison leaks no private
-  or future information. The base tail is shown only as “line has ended here”.
+  information. The compared span never reaches past the branch's own recorded
+  history: on a live branch the base continuation after the divergence stays
+  unrevealed, marked only by the note “its continuation is not revealed here”.
 - **Postgame review (R)** is offered only once `outcome` is set. While it is open
   the primary strip is replaced by the omniscient readout (every seat’s hand,
   library, graveyard, exile and command zone), every submission and sandbox tool
