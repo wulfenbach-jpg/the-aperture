@@ -179,6 +179,23 @@ fn a_creature_with_zero_toughness_dies_to_state_based_actions() {
         .build();
     let bear = battlefield_card(&game, P0, CardId::GrizzlyBears);
     object_mut(&mut game.state, bear).pump_toughness = -2;
+    // Issue 15: the premise is a typed layer-7c modifier, so the layer
+    // recomputation keeps it instead of clearing a bare field.
+    game.state.effects.push(ContinuousEffect {
+        id: game.state.next_effect,
+        timestamp: 1,
+        source: None,
+        card: CardId::GrizzlyBears,
+        controller: P0,
+        layer: Layer::Modifying,
+        target: bear,
+        kind: ContinuousKind::ModifyPowerToughness {
+            power: 0,
+            toughness: -2,
+        },
+        duration: EffectDuration::UntilEndOfTurn,
+    });
+    game.state.next_effect += 1;
     // Any action triggers the state-based-action check (CR 117.5).
     submit_ok(&mut game, P0, Action::Pass);
     assert_eq!(game.state.battlefield(P0).len(), 0);

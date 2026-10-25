@@ -20,6 +20,7 @@ pub mod engine;
 pub mod error;
 pub mod event;
 pub mod ids;
+pub mod layer;
 pub mod mana;
 pub mod replay;
 pub mod rng;
@@ -37,6 +38,10 @@ pub use engine::Game;
 pub use error::EngineError;
 pub use event::Event;
 pub use ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, P0, P1, PlayerId, Zone};
+pub use layer::{
+    ContinuousEffect, ContinuousKind, DamageShield, DamageTarget, EffectDuration, Layer,
+    ShieldScope, ShieldTarget,
+};
 pub use mana::{ManaCost, ManaPool};
 pub use replay::{
     BranchDiff, BranchDiffLine, CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave,

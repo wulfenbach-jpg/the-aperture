@@ -434,6 +434,23 @@ fn synthetic_repeated_cleanup_waits_for_discard_then_removes_damage_and_pump() {
     g.state.objects.get_mut(&bear).unwrap().damage = 1;
     g.state.objects.get_mut(&bear).unwrap().pump_power = 3;
     g.state.objects.get_mut(&bear).unwrap().pump_toughness = 3;
+    // Issue 15: a synthetic pump must also exist as a typed layer-7c record,
+    // otherwise the layer recomputation would (correctly) clear the bare field.
+    g.state.effects.push(ContinuousEffect {
+        id: g.state.next_effect,
+        timestamp: 1,
+        source: None,
+        card: CardId::GiantGrowth,
+        controller: P0,
+        layer: Layer::Modifying,
+        target: bear,
+        kind: ContinuousKind::ModifyPowerToughness {
+            power: 3,
+            toughness: 3,
+        },
+        duration: EffectDuration::UntilEndOfTurn,
+    });
+    g.state.next_effect += 1;
     let turn = g.state.turn.number;
     g.submit_action(P0, Action::Pass).unwrap();
     let events = g.submit_action(P1, Action::Pass).unwrap();
