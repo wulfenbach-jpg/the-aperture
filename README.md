@@ -33,8 +33,13 @@ implementation and it says so everywhere it matters.
   **Rootwalla**, **Brindle Boar**, **Elvish Visionary**, **Festering Goblin**
   and **Oculus** (see `decks/abilities-practice-a.txt`/`-b.txt`), plus the
   issue-15 effect cards **Mending Hands** (one-shot prevention shield),
-  **Angrath's Marauders** (damage-doubling replacement effect) and **Wight of
-  Precinct Six** (characteristic-defining power/toughness, layer 7a).
+  **Angrath's Marauders** (damage-doubling replacement effect for any source
+  its controller controls, spells included) and **Wight of Precinct Six**
+  (printed “This creature gets +1/+1 for each creature card in your opponents'
+  graveyards.” — an additive layer 7c static, not a characteristic-defining
+  ability). All three card texts and their printing sources are recorded in
+  `crates/core/tests/card_printings.rs`; see
+  [docs/issue15-effects.md](docs/issue15-effects.md).
   Isamaru is commander-only and is refused in every ordinary starting library
   because the legend rule is not implemented. Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,

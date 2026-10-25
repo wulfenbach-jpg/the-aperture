@@ -1,12 +1,13 @@
 //! Typed continuous, replacement and prevention effects.
 //!
 //! * CR 613 orders continuous effects into layers and sublayers. This starter
-//!   set implements layer 7a (characteristic-defining power/toughness), layer
-//!   7c (power/toughness modifying effects). Layers 4–6 (type, colour, ability)
-//!   and layer 7b (base power/toughness setting) are not implemented because no
-//!   supported card needs them; they are refused at import rather than
-//!   approximated. Layer 7d (+1/+1 counters) is deliberately *not* applied here:
-//!   counters remain display-only until the counters lane makes them
+//!   set implements layer 7c (power/toughness modifying effects, including
+//!   printed count-based statics such as Wight of Precinct Six). Layers 4–6
+//!   (type, colour, ability), 7a (characteristic-defining power/toughness) and
+//!   7b (base power/toughness setting) are not implemented because no supported
+//!   card needs them; they are refused at import rather than approximated.
+//!   Layer 7d (+1/+1 counters) is deliberately *not* applied here: counters
+//!   remain display-only until the counters lane makes them
 //!   characteristic-changing, so this lane never claims 7d coverage.
 //! * CR 614 replacement effects use "instead". Every effect applies at most
 //!   once to a single event (CR 614.5).
@@ -26,11 +27,16 @@ use crate::ids::{ObjectId, PlayerId};
 
 /// CR 613.4 layer/sublayer of a continuous effect. Ordered: an effect in an
 /// earlier layer is applied before an effect in a later one.
+///
+/// Only layer **7c** is implemented, because it is the only layer a supported
+/// card needs. Layer 7a (characteristic-defining power/toughness) was dropped
+/// with issue 15's review: its only candidate card, Wight of Precinct Six,
+/// prints an additive "+1/+1 for each ..." static (layer 7c), not a
+/// characteristic-defining ability, so keeping a 7a code path would have meant
+/// shipping untested production code for no card. Layers 4–6, 7b and 7d are
+/// likewise not implemented; 7d belongs to the counters lane.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum Layer {
-    /// CR 613.4a: characteristic-defining power/toughness. Applied first, so a
-    /// later modifier adds to (or subtracts from) the computed base.
-    CharacteristicDefining,
     /// CR 613.4c: effects that modify power and/or toughness without setting
     /// them, applied in timestamp order (CR 613.7).
     Modifying,
@@ -39,14 +45,12 @@ pub enum Layer {
 impl Layer {
     pub fn label(self) -> &'static str {
         match self {
-            Layer::CharacteristicDefining => "7a",
             Layer::Modifying => "7c",
         }
     }
 
     pub fn rules(self) -> &'static str {
         match self {
-            Layer::CharacteristicDefining => "CR 613.4a characteristic-defining power/toughness",
             Layer::Modifying => "CR 613.4c power/toughness modifiers",
         }
     }
@@ -250,7 +254,25 @@ mod tests {
     }
 
     #[test]
-    fn layers_are_ordered_characteristic_defining_before_modifiers() {
-        assert!(Layer::CharacteristicDefining < Layer::Modifying);
+    fn modifier_effects_describe_themselves_in_layer_7c() {
+        let effect = ContinuousEffect {
+            id: 7,
+            timestamp: 12,
+            source: None,
+            card: CardId::GiantGrowth,
+            controller: 0,
+            layer: Layer::Modifying,
+            target: ObjectId(3),
+            kind: ContinuousKind::ModifyPowerToughness {
+                power: 3,
+                toughness: -1,
+            },
+            duration: EffectDuration::UntilEndOfTurn,
+        };
+        assert_eq!(effect.layer.label(), "7c");
+        assert_eq!(
+            effect.describe(),
+            "+3/-1 until end of turn (CR 613.4c power/toughness modifiers)"
+        );
     }
 }

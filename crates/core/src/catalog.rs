@@ -219,13 +219,13 @@ pub static CARDS: [CardDef; 31] = [
     card!(
         AngrathsMarauders, "Angrath's Marauders", cost: Some("{5}{R}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Human Pirate", power: Some(4), toughness: Some(4),
-        oracle: "If a creature you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
+        oracle: "If a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
         spell: None
     ),
     card!(
         WightOfPrecinctSix, "Wight of Precinct Six", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
-        oracle: "Wight of Precinct Six's power and toughness are each equal to the number of creature cards in all graveyards.",
+        oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
         spell: None
     ),
 ];

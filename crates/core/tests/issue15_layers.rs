@@ -25,30 +25,64 @@ fn resolve_cast(game: &mut Game, caster: PlayerId, other: PlayerId) -> Vec<Event
     events
 }
 
-/// Layer 7a is computed before layer 7c, so a characteristic-defining creature
-/// gets the computed base and then adds the modifier (CR 613.4a, 613.4c).
+/// Wight of Precinct Six is a 1/1 whose printed ability is an additive layer
+/// 7c static ("gets +1/+1 for each creature card in your opponents'
+/// graveyards"), so with no creature cards in any graveyard it is still a 1/1
+/// and does not die.
 #[test]
-fn characteristic_defining_base_applies_before_modifiers() {
+fn printed_wight_is_a_one_one_with_empty_graveyards() {
     let mut game = fixture(1504)
-        .battlefield(P0, &[CardId::WightOfPrecinctSix, CardId::GrizzlyBears])
-        .add(P1, Zone::Graveyard, CardId::RuneclawBear)
-        .add(P1, Zone::Graveyard, CardId::CentaurCourser)
-        .hand(P0, &[CardId::GiantGrowth, CardId::GiantGrowth])
-        .mana(P0, green(2))
+        .battlefield(P0, &[CardId::WightOfPrecinctSix])
+        .battlefield(P1, &[CardId::GrizzlyBears])
         .main(P0, Step::PrecombatMain)
         .build();
     let wight = battlefield_card(&game, P0, CardId::WightOfPrecinctSix);
-    let bears = battlefield_card(&game, P0, CardId::GrizzlyBears);
+    assert_eq!(game.state.object(wight).power(), 1);
+    assert_eq!(game.state.object(wight).toughness(), 1);
+    let events = submit_ok(&mut game, P0, Action::Pass);
+    assert!(
+        !events.iter().any(
+            |event| matches!(event, Event::Destroyed { card, .. } if *card == CardId::WightOfPrecinctSix)
+        ),
+        "a printed 1/1 does not die to state-based actions: {events:?}"
+    );
+    assert_eq!(game.state.object(wight).zone, Zone::Battlefield);
+}
 
-    // A modifier on another creature still recomputes every characteristic-
-    // defining ability in the game state.
+/// Only creature cards in *opponents'* graveyards count: two of them make the
+/// 1/1 a 3/3, and a creature card in its controller's own graveyard adds
+/// nothing (CR 613.4c).
+#[test]
+fn printed_wight_counts_only_opponents_creature_cards() {
+    let mut game = fixture(1505)
+        .battlefield(P0, &[CardId::WightOfPrecinctSix, CardId::GrizzlyBears])
+        .add(P0, Zone::Graveyard, CardId::RuneclawBear)
+        .add(P0, Zone::Graveyard, CardId::CentaurCourser)
+        .add(P1, Zone::Graveyard, CardId::RuneclawBear)
+        .add(P1, Zone::Graveyard, CardId::CentaurCourser)
+        .hand(P0, &[CardId::Forest, CardId::GiantGrowth])
+        .mana(P0, green(1))
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let wight = battlefield_card(&game, P0, CardId::WightOfPrecinctSix);
+    // Playing a land recomputes the layers from the current game state.
+    let forest = hand_card(&game, P0, CardId::Forest);
+    submit_ok(&mut game, P0, Action::PlayLand { card: forest });
+    assert_eq!(
+        game.state.object(wight).power(),
+        3,
+        "1/1 plus two opponent creature cards is a 3/3; own graveyard ignored"
+    );
+    assert_eq!(game.state.object(wight).toughness(), 3);
+
+    // A 7c until-end-of-turn modifier is added to the same layer's static.
     let growth = hand_card(&game, P0, CardId::GiantGrowth);
     submit_ok(
         &mut game,
         P0,
         Action::CastSpell {
             card: growth,
-            targets: vec![Target::Permanent(bears)],
+            targets: vec![Target::Permanent(wight)],
         },
     );
     let events = resolve_cast(&mut game, P0, P1);
@@ -59,49 +93,8 @@ fn characteristic_defining_base_applies_before_modifiers() {
         )),
         "the modifier is logged in its layer: {events:?}"
     );
-    assert_eq!(
-        game.state.object(wight).power(),
-        2,
-        "two creature cards in graveyards make the Wight a 2/2 (layer 7a)"
-    );
-    assert_eq!(game.state.object(wight).toughness(), 2);
-    assert_eq!(game.state.object(bears).power(), 5, "2/2 plus +3/+3");
-    assert_eq!(game.state.object(bears).toughness(), 5);
-
-    // 7c adds to the computed 7a base, it does not replace it: 2 + 3 = 5.
-    let growth = hand_card(&game, P0, CardId::GiantGrowth);
-    submit_ok(
-        &mut game,
-        P0,
-        Action::CastSpell {
-            card: growth,
-            targets: vec![Target::Permanent(wight)],
-        },
-    );
-    resolve_cast(&mut game, P0, P1);
-    assert_eq!(game.state.object(wight).power(), 5);
-    assert_eq!(game.state.object(wight).toughness(), 5);
-}
-
-/// A characteristic-defining toughness of 0 is a state-based action, not a
-/// side effect of the layer code (CR 704.5f).
-#[test]
-fn characteristic_defining_zero_toughness_dies() {
-    let mut game = fixture(1505)
-        .battlefield(P0, &[CardId::WightOfPrecinctSix])
-        .battlefield(P1, &[CardId::GrizzlyBears])
-        .main(P0, Step::PrecombatMain)
-        .build();
-    let wight = battlefield_card(&game, P0, CardId::WightOfPrecinctSix);
-    let events = submit_ok(&mut game, P0, Action::Pass);
-    assert!(
-        events
-            .iter()
-            .any(|event| matches!(event, Event::Destroyed { card, .. } if *card == CardId::WightOfPrecinctSix)),
-        "the 0/0 dies to a state-based action: {events:?}"
-    );
-    assert_eq!(game.state.object(wight).zone, Zone::Graveyard);
-    assert!(game.state.player(P0).graveyard.contains(&wight));
+    assert_eq!(game.state.object(wight).power(), 6, "3/3 plus +3/+3");
+    assert_eq!(game.state.object(wight).toughness(), 6);
 }
 
 /// Until-end-of-turn modifiers and prevention shields both end in cleanup

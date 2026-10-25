@@ -264,36 +264,41 @@ pub fn triggers_on(
 
 // ------------------------------------------------------- static abilities
 
-/// Where a characteristic-defining ability reads its value from. Each variant
-/// exists because a supported card prints it; adding a card with a different
-/// count means adding a variant here, not approximating in the engine.
+/// What a layered static power/toughness ability counts. Each variant exists
+/// because a supported card prints it; adding a card with a different count
+/// means adding a variant here, not approximating it in the engine.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum CdaSource {
-    /// "its power and toughness are each equal to the number of creature cards
-    /// in all graveyards" (Wight of Precinct Six).
-    CreatureCardsInAllGraveyards,
+pub enum CountSource {
+    /// "for each creature card in your opponents' graveyards"
+    /// (Wight of Precinct Six — a layer 7c static, *not* characteristic-defining).
+    CreatureCardsInOpponentsGraveyards,
 }
 
 /// A printed static ability that produces a continuous or replacement effect.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum StaticAbility {
-    /// CR 604.3, applied in layer 7a before any 7c modifier.
-    CdaPowerToughness {
-        source: CdaSource,
-        /// Toughness offset printed on the card ("plus 1" style wording).
-        toughness_plus: i32,
+    /// CR 613.4c: "gets +P/+T for each ..." — an additive modifier that applies
+    /// for as long as the source is on the battlefield. It is a layer 7c
+    /// effect, so it stacks with until-end-of-turn modifiers instead of
+    /// setting a base value.
+    PowerToughnessPerCount {
+        count: CountSource,
+        power: i32,
+        toughness: i32,
         text: &'static str,
     },
-    /// CR 614.1a: "If a creature you control would deal damage to a permanent
-    /// or player, it deals double that damage instead."
-    DamageFromControlledCreatures { factor: u32, text: &'static str },
+    /// CR 614.1a: "If a source you control would deal damage to a permanent or
+    /// player, it deals double that damage instead." The doubled source may be
+    /// a permanent (a creature's combat or ability damage) or a spell on the
+    /// stack (Shock), because the printed word is "source", not "creature".
+    DamageFromControlledSources { factor: u32, text: &'static str },
 }
 
 impl StaticAbility {
     pub fn text(self) -> &'static str {
         match self {
-            StaticAbility::CdaPowerToughness { text, .. } => text,
-            StaticAbility::DamageFromControlledCreatures { text, .. } => text,
+            StaticAbility::PowerToughnessPerCount { text, .. } => text,
+            StaticAbility::DamageFromControlledSources { text, .. } => text,
         }
     }
 
@@ -301,28 +306,32 @@ impl StaticAbility {
     /// is layerless: it never applies in a layer, so `None`.
     pub fn layer(self) -> Option<Layer> {
         match self {
-            StaticAbility::CdaPowerToughness { .. } => Some(Layer::CharacteristicDefining),
-            StaticAbility::DamageFromControlledCreatures { .. } => None,
+            StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
+            StaticAbility::DamageFromControlledSources { .. } => None,
         }
     }
 
-    pub fn cda_source(self) -> Option<CdaSource> {
+    pub fn count_source(self) -> Option<CountSource> {
         match self {
-            StaticAbility::CdaPowerToughness { source, .. } => Some(source),
-            StaticAbility::DamageFromControlledCreatures { .. } => None,
+            StaticAbility::PowerToughnessPerCount { count, .. } => Some(count),
+            StaticAbility::DamageFromControlledSources { .. } => None,
         }
     }
 }
 
-const WIGHT: &[StaticAbility] = &[StaticAbility::CdaPowerToughness {
-    source: CdaSource::CreatureCardsInAllGraveyards,
-    toughness_plus: 0,
-    text: "Wight of Precinct Six's power and toughness are each equal to the number of creature cards in all graveyards.",
+/// Printed text of every static ability in the pool is recorded with its
+/// authoritative source in `crates/core/tests/data/card-printings.json`; the
+/// catalog strings below are copied from those printings verbatim.
+const WIGHT: &[StaticAbility] = &[StaticAbility::PowerToughnessPerCount {
+    count: CountSource::CreatureCardsInOpponentsGraveyards,
+    power: 1,
+    toughness: 1,
+    text: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
 }];
 
-const ANGRATH: &[StaticAbility] = &[StaticAbility::DamageFromControlledCreatures {
+const ANGRATH: &[StaticAbility] = &[StaticAbility::DamageFromControlledSources {
     factor: 2,
-    text: "If a creature you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
+    text: "If a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
 }];
 
 const NO_STATICS: &[StaticAbility] = &[];
