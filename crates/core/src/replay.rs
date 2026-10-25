@@ -13,7 +13,7 @@ use crate::deck::DeckList;
 use crate::engine::Game;
 use crate::error::EngineError;
 use crate::event::Event;
-use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, P0, PlayerId};
+use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, PlayerId};
 use crate::settings::AiSettings;
 use crate::state::{Outcome, Profile};
 
@@ -405,6 +405,11 @@ pub struct BranchDiff {
     /// over the whole branch length so far.
     pub diverged_at: Option<usize>,
     pub lines: Vec<BranchDiffLine>,
+    /// The base line is longer than the branch's current recorded history.
+    /// Its continuation past the branch's live boundary is deliberately left
+    /// out of `lines` and surfaced only as this note — never as action kinds —
+    /// because on a live branch that tail is the base's future.
+    pub base_tail_unrevealed: bool,
 }
 
 impl BranchDiff {
@@ -435,6 +440,11 @@ impl BranchDiff {
                 self.lines.len() - 64
             ));
         }
+        if self.base_tail_unrevealed {
+            text.push_str(
+                "  (the base line still extends past the branch's current recorded history — its continuation is not revealed here)\n",
+            );
+        }
         text
     }
 }
@@ -442,6 +452,10 @@ impl BranchDiff {
 /// Compare two recorded lines from the same setup. Legal-action *kinds* are the
 /// vocabulary shown; the exact arguments (cards, targets, counts) are deliberately
 /// omitted so the default comparison cannot leak private or future information.
+/// The comparison also never reaches past the branch's own recorded history: a
+/// diverged branch is typically still live, so the base's continuation after
+/// the branch's last step is left out entirely and marked with
+/// `base_tail_unrevealed` instead of being rendered.
 pub fn compare_branches(base: &Replay, branch: &Replay) -> Result<BranchDiff, ReplayError> {
     let same_setup = base.seed == branch.seed
         && base.seats == branch.seats
@@ -463,37 +477,31 @@ pub fn compare_branches(base: &Replay, branch: &Replay) -> Result<BranchDiff, Re
             reason: "the two lines do not share their first recorded action".to_string(),
         });
     }
-    let common = base.steps.len().min(branch.steps.len());
-    // Agreement is judged on the BRANCH line: it agrees with the base when
-    // every recorded branch action is the same accepted action the base has at
-    // that index (the branch is a recorded extension of the base prefix). The
-    // base tail beyond the branch is never compared and never revealed.
     let diverged_at =
         (0..branch.steps.len()).find(|index| base.steps.get(*index) != branch.steps.get(*index));
     let mut lines = Vec::new();
     if let Some(at) = diverged_at {
-        let span = common.max(base.steps.len()).max(branch.steps.len());
-        for step in at..span {
+        // The compared span is bounded by the BRANCH's own recorded history.
+        // Judging agreement uses only branch steps; once the branch line has
+        // ended, the base's continuation is its future and is never rendered
+        // as action kinds (it would reveal what the base line still holds in
+        // store to whoever is playing the live branch).
+        for step in at..branch.steps.len() {
             lines.push(BranchDiffLine {
                 step,
-                player: base
-                    .steps
-                    .get(step)
-                    .or(branch.steps.get(step))
-                    .map(|step| step.player)
-                    .unwrap_or(P0),
-                decision: base
-                    .steps
-                    .get(step)
-                    .or(branch.steps.get(step))
-                    .map(|step| step.decision)
-                    .unwrap_or(0),
+                player: branch.steps[step].player,
+                decision: branch.steps[step].decision,
                 base: base.steps.get(step).map(|step| step.action.kind()),
                 branch: branch.steps.get(step).map(|step| step.action.kind()),
             });
         }
     }
-    Ok(BranchDiff { diverged_at, lines })
+    let base_tail_unrevealed = base.steps.len() > branch.steps.len();
+    Ok(BranchDiff {
+        diverged_at,
+        lines,
+        base_tail_unrevealed,
+    })
 }
 
 /// A live session snapshot: the full engine state plus what produced it. Loading
