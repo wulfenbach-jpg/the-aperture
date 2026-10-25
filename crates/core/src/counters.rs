@@ -7,9 +7,11 @@
 //! combat, state-based actions and every projection read them through
 //! [`crate::state::Object::power`] / [`crate::state::Object::toughness`].
 //!
-//! The supported counter kinds are exactly the two power/toughness counters the
-//! practice pool can produce. A counter kind that no supported card can create
-//! is deliberately absent: this crate refuses unmodelled rules rather than
+//! The supported counter kinds are exactly the two power/toughness counters this
+//! slice models. The 28-card practice pool prints no card that creates a counter
+//! (creation from card text is corpus work), so these kinds are driven through
+//! [`Counters`] itself. A counter kind the rules layer does not model is
+//! deliberately absent: this crate refuses unmodelled rules rather than
 //! approximating them.
 
 use std::collections::BTreeMap;
@@ -57,10 +59,29 @@ impl std::fmt::Display for CounterKind {
 ///
 /// A kind with zero counters is never stored, so two permanents with the same
 /// counters serialize identically. `Default` is "no counters".
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
 #[serde(transparent)]
 pub struct Counters {
     counts: BTreeMap<CounterKind, u32>,
+}
+
+/// Deserialization enforces the same canonical form the engine writes. A save
+/// that stores a zero-count kind, an unknown kind or a negative count is
+/// refused instead of being silently coerced into an unequal state: a save file
+/// never gets to describe counters the rules cannot produce.
+impl<'de> Deserialize<'de> for Counters {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let counts = BTreeMap::<CounterKind, u32>::deserialize(deserializer)?;
+        if let Some((kind, _)) = counts.iter().find(|(_, count)| **count == 0) {
+            return Err(serde::de::Error::custom(format!(
+                "counter kind {kind} stores a zero count; the canonical form omits zero kinds"
+            )));
+        }
+        Ok(Self { counts })
+    }
 }
 
 impl Counters {
@@ -104,6 +125,22 @@ impl Counters {
     /// CR 122.2: every counter ceases to exist with the object that carried it.
     pub fn clear(&mut self) {
         self.counts.clear();
+    }
+
+    /// CR 704.5q: if a permanent has both +1/+1 and -1/-1 counters on it, N of
+    /// each are removed, where N is the smaller of the two counts. Returns the
+    /// number removed of each kind, or `None` when the permanent does not hold
+    /// both kinds, so callers log only real state-based actions.
+    pub fn annihilate(&mut self) -> Option<u32> {
+        let n = self
+            .get(CounterKind::PlusOnePlusOne)
+            .min(self.get(CounterKind::MinusOneMinusOne));
+        if n == 0 {
+            return None;
+        }
+        self.remove(CounterKind::PlusOnePlusOne, n);
+        self.remove(CounterKind::MinusOneMinusOne, n);
+        Some(n)
     }
 
     pub fn is_empty(&self) -> bool {
@@ -180,6 +217,45 @@ mod tests {
             "a kind reduced to zero is not stored at all"
         );
         assert_eq!(counters.power_delta(), 0);
+    }
+
+    #[test]
+    fn paired_power_counters_annihilate_equally() {
+        // CR 704.5q
+        let mut counters = Counters::new();
+        counters.add(CounterKind::PlusOnePlusOne, 2);
+        counters.add(CounterKind::MinusOneMinusOne, 1);
+        assert_eq!(counters.annihilate(), Some(1));
+        assert_eq!(counters.get(CounterKind::PlusOnePlusOne), 1);
+        assert_eq!(counters.get(CounterKind::MinusOneMinusOne), 0);
+        assert_eq!(counters.annihilate(), None, "only one kind is left");
+        assert_eq!(counters.describe(), "1 +1/+1");
+
+        let mut balanced = Counters::new();
+        balanced.add(CounterKind::PlusOnePlusOne, 1);
+        balanced.add(CounterKind::MinusOneMinusOne, 1);
+        assert_eq!(balanced.annihilate(), Some(1));
+        assert!(balanced.is_empty(), "equal counts leave nothing behind");
+    }
+
+    #[test]
+    fn deserialization_refuses_non_canonical_counters() {
+        // A save may not describe counters the engine would never store.
+        let zero: Result<Counters, _> = serde_json::from_str(r#"{"PlusOnePlusOne":0}"#);
+        let zero = zero.expect_err("a zero-count kind is not canonical");
+        assert!(
+            zero.to_string().contains("zero count"),
+            "the refusal names the reason: {zero}"
+        );
+        let unknown: Result<Counters, _> = serde_json::from_str(r#"{"Poison":1}"#);
+        assert!(
+            unknown.is_err(),
+            "an unmodelled counter kind is refused, never coerced"
+        );
+        let negative: Result<Counters, _> = serde_json::from_str(r#"{"MinusOneMinusOne":-1}"#);
+        assert!(negative.is_err(), "a negative count is refused");
+        let empty: Counters = serde_json::from_str("{}").expect("no counters is canonical");
+        assert!(empty.is_empty());
     }
 
     #[test]

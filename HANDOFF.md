@@ -282,9 +282,24 @@ capture even with `--decider`.
   scry/surveil 1, multi-face cards.
 * Counters are typed rules objects (`Object.counters`, CR 122): +1/+1 and
   -1/-1 change power/toughness, feed combat and state-based actions, clear on
-  every zone change and are public in every projection. No card in the 28-card
-  pool creates a counter yet; the *sandbox* `Object.plus_one_counters` display
-  field is still storage only. No layers — a single until-end-of-turn pump.
+  every zone change and are public in every projection. A permanent holding both
+  kinds loses N of each at every state-based-action checkpoint (CR 704.5q). No
+  card in the 28-card pool creates a counter yet; the *sandbox*
+  `Object.plus_one_counters` display field is still storage only. No layers — a
+  single until-end-of-turn pump.
+* **Player counters do not exist**: the issue named "object and player
+  counters", but only object counters are typed and stored. Nothing in the 28-card
+  pool puts a counter on a player (no poison, experience, energy or commander tax
+  counter is modelled), so player counters are deliberately absent rather than
+  approximated.
+* Save/replay compatibility at `SAVE_VERSION` 10 / `REPLAY_VERSION` 6: a pre-#16
+  save has no `counters` and no `revealed` key. Both fields are
+  `#[serde(default)]`, so such a save still loads with empty counters, and an
+  empty value is skipped when serializing, so a state that uses neither keeps its
+  pre-#16 serialized form and digest — old replays still verify instead of
+  failing as digest mismatches. A malformed counters payload (zero-count kind,
+  unknown kind, negative count, wrong JSON type) is refused as a load error and
+  never silently repaired.
 * Creature tokens are rules objects (`crates/core/src/tokens.rs`, CR 111):
   owned/controlled by their creator, summoning sick, cease to exist on any
   zone change and never enter a graveyard/hand/library/stack. Token

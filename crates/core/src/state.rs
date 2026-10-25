@@ -457,6 +457,12 @@ pub struct Object {
     /// Typed counters on this permanent (CR 122). Only battlefield permanents
     /// may carry counters; leaving the battlefield clears them (CR 122.2) and
     /// the projections expose them as public information.
+    ///
+    /// `#[serde(default)]` keeps every pre-#16 v10 save loadable (counters were
+    /// simply absent then), and `skip_serializing_if` keeps the serialized form
+    /// of a counter-free state byte-identical to that format, so the canonical
+    /// digest of an unchanged game does not move.
+    #[serde(default, skip_serializing_if = "Counters::is_empty")]
     pub counters: Counters,
 }
 
@@ -638,8 +644,10 @@ pub struct GameState {
     pub next_trigger_seq: u64,
     /// Cards currently revealed from a hidden zone (CR 701.16a). Public
     /// information for every viewer while the card stays in that hidden zone;
-    /// see `crate::view`. Serialized so save/replay keep the same visibility.
-    #[serde(default)]
+    /// see `crate::view`. Serialized so save/replay keep the same visibility,
+    /// skipped when empty so a state with nothing revealed keeps the pre-#16
+    /// serialized form (and therefore its digest).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub revealed: Vec<ObjectId>,
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.

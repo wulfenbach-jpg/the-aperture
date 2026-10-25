@@ -213,7 +213,8 @@ than basic-land mana abilities, static abilities, replacement effects, partial p
 planeswalkers, counters and tokens *as card text* (the rules layer implements
 typed +1/+1 and -1/-1 counters, creature tokens with correct ownership/
 cessation and the flying/reach/defender keywords, but no card in the 28-card
-pool creates or prints one; the sandbox counter display is storage only),
+pool creates or prints one; the sandbox counter display is storage only; player
+counters do not exist),
 milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers beyond a single until-end-of-turn pump, Arcane/splice interactions, and any

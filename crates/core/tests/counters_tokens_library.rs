@@ -52,16 +52,6 @@ fn power_and_toughness_counters_change_characteristics_and_projection() {
         ),
         (4, 4)
     );
-
-    add_counters(&mut game, bear, CounterKind::MinusOneMinusOne, 1);
-    assert_eq!(
-        (
-            game.state.object(bear).power(),
-            game.state.object(bear).toughness()
-        ),
-        (3, 3),
-        "+1/+1 and -1/-1 counters apply together (CR 122.1a)"
-    );
     game.state.validate().expect("counter state is legal");
 
     // Counters are public information and appear in every projection.
@@ -73,17 +63,90 @@ fn power_and_toughness_counters_change_characteristics_and_projection() {
         .iter()
         .find(|card| card.id == bear)
         .expect("the bear is on P0's visible battlefield");
-    assert_eq!(shown.power, Some(3));
-    assert_eq!(shown.toughness, Some(3));
+    assert_eq!(shown.power, Some(4));
+    assert_eq!(shown.toughness, Some(4));
     assert_eq!(
         shown.counters,
-        vec![("+1/+1", 2), ("-1/-1", 1)],
+        vec![("+1/+1", 2)],
         "counters are canonical and public"
     );
     assert_eq!(
         shown.plus_one_counters, 0,
         "legacy sandbox storage is not the rules layer"
     );
+
+    // A single counter kind is a stable state: a checkpoint leaves it alone.
+    submit_ok(&mut game, P0, Action::Pass);
+    assert_eq!(counters_of(&game, bear), "2 +1/+1");
+}
+
+#[test]
+fn paired_plus_and_minus_counters_annihilate_at_the_next_checkpoint() {
+    // CR 704.5q: N of each kind are removed, N = the smaller count.
+    let mut game = fixture(71)
+        .battlefield(P0, &[CardId::CentaurCourser])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let courser = battlefield_card(&game, P0, CardId::CentaurCourser);
+    add_counters(&mut game, courser, CounterKind::PlusOnePlusOne, 2);
+    add_counters(&mut game, courser, CounterKind::MinusOneMinusOne, 1);
+    // Both kinds coexist only until the next checkpoint; the net P/T already
+    // reflects both (CR 122.1a). Reading them here is reading a transient state.
+    assert_eq!(
+        (
+            game.state.object(courser).power(),
+            game.state.object(courser).toughness()
+        ),
+        (4, 4)
+    );
+    let soldier = game.state.create_token(TokenKind::Soldier, P1);
+    add_counters(&mut game, soldier, CounterKind::PlusOnePlusOne, 1);
+    add_counters(&mut game, soldier, CounterKind::MinusOneMinusOne, 1);
+
+    let mut log = Vec::new();
+    assert!(
+        run_until(
+            &mut game,
+            &mut log,
+            |g| g
+                .state
+                .object(courser)
+                .counters
+                .get(CounterKind::MinusOneMinusOne)
+                == 0,
+            8
+        ),
+        "a state-based-action checkpoint removes the pair: {log:?}"
+    );
+    assert_eq!(
+        counters_of(&game, courser),
+        "1 +1/+1",
+        "one of each kind is removed, leaving the surplus"
+    );
+    assert_eq!(
+        (
+            game.state.object(courser).power(),
+            game.state.object(courser).toughness()
+        ),
+        (4, 4),
+        "CR 704.5q changes counters, never the net power/toughness"
+    );
+    assert!(
+        game.state.object(soldier).counters.is_empty(),
+        "a 1/1 that got +1/+1 then -1/-1 ends with no counters"
+    );
+    assert_eq!(game.state.zone_of(soldier), Some(Zone::Battlefield));
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::StateBasedAction { description }
+                if description.contains("704.5q") && description.contains("1 +1/+1 and 1 -1/-1")
+        )),
+        "the annihilation is a cited state-based action: {log:?}"
+    );
+    game.state
+        .validate()
+        .expect("post-checkpoint state is legal");
 }
 
 #[test]
@@ -568,7 +631,6 @@ fn counters_and_tokens_survive_save_load_exactly() {
         .build();
     let courser = battlefield_card(&game, P0, CardId::CentaurCourser);
     add_counters(&mut game, courser, CounterKind::PlusOnePlusOne, 2);
-    add_counters(&mut game, courser, CounterKind::MinusOneMinusOne, 1);
     let spirit = game.state.create_token(TokenKind::Spirit, P1);
     let digest = game.digest();
 
@@ -581,8 +643,8 @@ fn counters_and_tokens_survive_save_load_exactly() {
         restored.state.object(courser).counters,
         game.state.object(courser).counters
     );
-    assert_eq!(restored.state.object(courser).power(), 4);
-    assert_eq!(restored.state.object(courser).toughness(), 4);
+    assert_eq!(restored.state.object(courser).power(), 5);
+    assert_eq!(restored.state.object(courser).toughness(), 5);
     assert_eq!(restored.state.object(spirit).card, CardId::SpiritToken);
     assert!(restored.state.object(spirit).has_keyword(Keyword::Flying));
     restored.state.validate().expect("loaded state is legal");
@@ -609,5 +671,155 @@ fn a_saved_state_with_counters_off_the_battlefield_is_refused() {
     assert!(
         format!("{err}").contains("counter(s) in the graveyard zone"),
         "{err}"
+    );
+}
+
+#[test]
+fn a_real_pre16_v10_save_still_loads_and_replays() {
+    // R183-1: the fixture is byte-for-byte what the base commit (a76df88) wrote
+    // through its own save path for seed 4242, so it has no `counters` and no
+    // `revealed` key at all. The version probe accepts version 10, therefore the
+    // load must succeed with empty counters instead of failing deserialization.
+    let text = include_str!("fixtures/continuity/pre16-v10-save.json");
+    assert!(
+        !text.contains("\"counters\"") && !text.contains("\"revealed\""),
+        "the fixture must be a genuine pre-#16 save"
+    );
+
+    let save = SessionSave::from_json(text).expect("a pre-#16 v10 save still loads");
+    assert_eq!(save.version, aperture_core::replay::SAVE_VERSION);
+    assert_eq!(save.replay.version, aperture_core::replay::REPLAY_VERSION);
+    assert_eq!(save.seats.len(), 2);
+    assert_eq!(save.log.len(), 132, "the event log survives the load");
+    assert_eq!(
+        save.replay.steps.len(),
+        45,
+        "the recorded action sequence survives the load"
+    );
+    assert!(
+        save.game
+            .objects
+            .values()
+            .all(|object| object.counters.is_empty()),
+        "an absent counters field defaults to no counters"
+    );
+    assert!(save.game.revealed.is_empty());
+
+    // No data loss: the state is exactly the saved state, and the pre-#16 digest
+    // basis still reproduces (an empty `counters`/`revealed` field is not
+    // serialized, so the canonical form of an unchanged game did not move).
+    let state = save.game.clone();
+    assert_eq!(save.game().digest(), save.digest);
+    assert_eq!(
+        save.digest, "282eea6340239bf2be48ca8f75e09127a193e22c1e5fdaab3847cedafc739e80",
+        "the recorded pre-#16 digest is reproduced exactly"
+    );
+    state.validate().expect("the loaded pre-#16 state is legal");
+
+    // A pre-#16 replay digest still verifies instead of becoming a mismatch.
+    let (replayed, _) = save.replay.run().expect("the pre-#16 replay still replays");
+    assert_eq!(replayed.digest(), save.digest);
+}
+
+#[test]
+fn a_save_with_malformed_counters_is_refused_not_coerced() {
+    // A save may not describe counters the rules layer cannot produce; a
+    // malformed payload is a load error, never a silently repaired state.
+    let game = fixture(72)
+        .battlefield(P0, &[CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let replay = Replay::new(
+        72,
+        game.state.first_player,
+        vec![deck_a(), deck_b()],
+        AiSettings::default(),
+    )
+    .expect("replay");
+    let save = SessionSave::capture(&game, replay, Vec::new(), false);
+    let value: serde_json::Value = serde_json::from_str(&save.to_json()).expect("the save is json");
+    let key = value["game"]["objects"]
+        .as_object()
+        .expect("objects map")
+        .keys()
+        .next()
+        .expect("at least one object")
+        .clone();
+
+    for (bad, expected) in [
+        (serde_json::json!({"PlusOnePlusOne": 0}), "zero count"),
+        (serde_json::json!({"Poison": 1}), "unknown variant"),
+        (serde_json::json!({"MinusOneMinusOne": -1}), "invalid value"),
+        (serde_json::json!("two"), "invalid type"),
+    ] {
+        let mut tampered = value.clone();
+        tampered["game"]["objects"][&key]["counters"] = bad.clone();
+        let err = SessionSave::from_json(&tampered.to_string())
+            .expect_err("malformed counters must be refused");
+        assert!(
+            format!("{err}").contains(expected),
+            "{bad} was refused for the wrong reason: {err}"
+        );
+    }
+
+    // A canonical payload is accepted, so the refusals above are about malformed
+    // counters rather than about counters in general.
+    let mut canonical = value.clone();
+    canonical["game"]["objects"][&key]["counters"] = serde_json::json!({"PlusOnePlusOne": 2});
+    let state: GameState =
+        serde_json::from_value(canonical["game"].clone()).expect("canonical counters deserialize");
+    assert_eq!(
+        state
+            .objects
+            .values()
+            .filter(|object| !object.counters.is_empty())
+            .count(),
+        1,
+        "the canonical payload loads as two +1/+1 counters"
+    );
+}
+
+#[test]
+fn swords_to_plowshares_reports_a_token_truthfully() {
+    // R183-3: CR 111.7 means the token ceases to exist; the effect line must not
+    // claim an exile that never happened. Life is gained from its LKI power.
+    let mut game = fixture(73)
+        .hand(P0, &[CardId::SwordsToPlowshares])
+        .battlefield(P0, &[CardId::Plains])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let spirit = game.state.create_token(TokenKind::Spirit, P1);
+    let swords = hand_card(&game, P0, CardId::SwordsToPlowshares);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: swords,
+            targets: vec![Target::Permanent(spirit)],
+        },
+    );
+    let mut events = submit_ok(&mut game, P0, Action::Pass);
+    events.extend(submit_ok(&mut game, P1, Action::Pass));
+
+    assert!(game.state.try_object(spirit).is_none(), "the token is gone");
+    assert_eq!(
+        game.state.player(P1).life,
+        21,
+        "P1 gained its power as life"
+    );
+    assert!(
+        !events.iter().any(|event| matches!(
+            event,
+            Event::StateBasedAction { description } if description.contains("is exiled")
+        )),
+        "nothing claims the token was exiled: {events:?}"
+    );
+    assert!(
+        events.iter().any(|event| matches!(
+            event,
+            Event::StateBasedAction { description }
+                if description.contains("ceases to exist") && description.contains("gains 1 life")
+        )),
+        "the effect line states the cessation and the life gain: {events:?}"
     );
 }

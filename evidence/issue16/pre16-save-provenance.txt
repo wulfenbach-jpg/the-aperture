@@ -1,0 +1,33 @@
+Pre-#16 v10 save fixture provenance
+===================================
+
+File: crates/core/tests/fixtures/continuity/pre16-v10-save.json
+Produced from commit: a76df88ce9a0e2ad2bba5f12d6deb9a7a146cfa2 (the #16 base)
+Produced by: that commit's own public save path, unmodified —
+  Game::new_logged(4242, [decks/temur-beats.txt, decks/izzet-control.txt]),
+  scripted auto-answer policy through turn 3, then
+  SessionSave::capture(&game, replay, log, false).to_json().
+  The generator test lived only in an out-of-tree export
+  (`git archive a76df88`), never in the repository.
+
+Recorded values (verified with grep on the fixture):
+  save version            10   (SAVE_VERSION at a76df88)
+  replay version           6   (REPLAY_VERSION at a76df88)
+  seats                    2
+  replay steps            45
+  logged events          132
+  state digest / replay final_digest
+   282eea6340239bf2be48ca8f75e09127a193e22c1e5fdaab3847cedafc739e80
+
+The fixture contains no `counters` key and no `revealed` key, because those
+fields did not exist at a76df88. That is exactly what makes it a pre-#16 save:
+the load path must accept version 10 and default both fields, which the test
+`a_real_pre16_v10_save_still_loads_and_replays` (crates/core/tests/
+counters_tokens_library.rs) asserts, including the digest above.
+
+Digest-basis check with the shipped binary (base vs this branch):
+  a76df88  aperture-cli selfplay --seed 4242 -> digest 64858f984f19,
+           315 steps, 14 turns, winner P0, 9 casts, 3 attacks
+  this branch, same command      -> digest 64858f984f19, identical counters
+Empty `counters`/`revealed` are skipped when serializing, so old replays keep
+verifying instead of failing as digest mismatches.

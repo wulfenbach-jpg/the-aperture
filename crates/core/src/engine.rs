@@ -2202,6 +2202,9 @@ impl Game {
         object.pump_power = 0;
         object.pump_toughness = 0;
         object.plus_one_counters = 0;
+        // CR 122.2: the stack object is not the battlefield permanent, so it can
+        // never carry the counters it had (defensive: only permanents do).
+        object.counters.clear();
         self.state.objects.insert(new_id, object);
         new_id
     }
@@ -3173,6 +3176,35 @@ impl Game {
                 changed = true;
             }
 
+            // CR 704.5q: a permanent that holds both +1/+1 and -1/-1 counters
+            // loses N of each, where N is the smaller count. Removing an equal
+            // number of both kinds leaves power and toughness unchanged, so this
+            // action neither causes nor prevents a CR 704.5f/704.5g death; it is
+            // applied at this same checkpoint so no stored state keeps an
+            // illegal pair. Iteration is by object id, so the trace is stable.
+            let mut annihilated: Vec<(CardId, u32)> = Vec::new();
+            for object in self.state.objects.values_mut() {
+                if object.zone != Zone::Battlefield {
+                    continue;
+                }
+                if let Some(removed) = object.counters.annihilate() {
+                    annihilated.push((object.card, removed));
+                }
+            }
+            if !annihilated.is_empty() {
+                let affected: Vec<String> = annihilated
+                    .iter()
+                    .map(|(card, removed)| format!("{card} ({removed} +1/+1 and {removed} -1/-1)"))
+                    .collect();
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "paired +1/+1 and -1/-1 counters were removed from {} (CR 704.5q)",
+                        affected.join(", ")
+                    ),
+                });
+                changed = true;
+            }
+
             let dying: Vec<ObjectId> = self
                 .state
                 .objects
@@ -3829,8 +3861,13 @@ impl Game {
             Effect::ExileAndGainLife => {
                 for target in &item.targets {
                     if let Target::Permanent(id) = target {
-                        let (controller, power, card) = match self.state.try_object(*id) {
-                            Some(object) => (object.controller, object.power(), object.card),
+                        let (controller, power, card, token) = match self.state.try_object(*id) {
+                            Some(object) => (
+                                object.controller,
+                                object.power(),
+                                object.card,
+                                object.card.is_token(),
+                            ),
                             None => continue,
                         };
                         let exiled = self.move_to_exile(*id, events);
@@ -3841,9 +3878,18 @@ impl Game {
                             delta: power,
                             life,
                         });
+                        // CR 111.7: a token that leaves the battlefield ceases to
+                        // exist, so the follow-up line must not claim an exile
+                        // that the token never became part of. Life is still
+                        // gained from its last known power (CR 608.2h).
+                        let fate = if token {
+                            "ceases to exist instead of being exiled (CR 111.7)"
+                        } else {
+                            "is exiled"
+                        };
                         events.push(Event::StateBasedAction {
                             description: format!(
-                                "{card} is exiled; P{controller} gains {power} life (now {life})"
+                                "{card} {fate}; P{controller} gains {power} life (now {life})"
                             ),
                         });
                         let _ = exiled;
