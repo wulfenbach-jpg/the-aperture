@@ -268,8 +268,16 @@ capture even with `--decider`.
 
 * Commander in any form, multiplayer pods, sideboard/companion play, and any
   format profile other than 1v1 / 20 life / 40 cards / London mulligan.
-* Triggered abilities, activated abilities other than basic-land mana abilities,
-  static abilities, replacement/prevention effects, tokens, planeswalkers,
+* Activated and triggered abilities are implemented only for the six catalog
+  cards that carry typed ability records (`ability.rs`): `{T}` / mana /
+  sacrifice-self activation costs, one once-each-turn restriction, and
+  enters-the-battlefield or "dies" triggers, mandatory or "you may". Not
+  implemented: mana abilities on nonland permanents, modal ("choose one")
+  abilities, intervening-"if" triggers, delayed/reflexive triggers, trigger
+  doubling or copying, and same-controller trigger ordering as a *choice*
+  (simultaneous triggers from one controller are ordered by source arrival
+  order, not by CR 603.3b player choice).
+* Static abilities, replacement/prevention effects, tokens, planeswalkers,
   battles, milling/tutoring/searching, library manipulation beyond scry/surveil
   1, multi-face cards.
 * Counters are stored and displayed but do not affect rules math

@@ -329,9 +329,12 @@ fn spell_target_that_is_not_on_the_stack_is_rejected() {
     );
     let _ = StackItem {
         object: ObjectId(999),
+        card: CardId::GrizzlyBears,
         controller: P0,
         targets: Vec::new(),
         cursor: 0,
+        entry: StackEntry::Spell,
+        trigger_answered: false,
     };
 }
 

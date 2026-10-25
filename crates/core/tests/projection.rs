@@ -151,8 +151,11 @@ fn projection_carries_the_decision_identity_and_legal_actions() {
     );
     let _ = StackItem {
         object: ObjectId(1),
+        card: CardId::Shock,
         controller: P0,
         targets: Vec::new(),
         cursor: 0,
+        entry: StackEntry::Spell,
+        trigger_answered: false,
     };
 }

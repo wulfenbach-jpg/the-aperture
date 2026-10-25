@@ -35,7 +35,7 @@ pub fn pool() -> anyhow::Result<()> {
         );
     }
     println!(
-        "\nnot implemented (refused at import): triggers, other activated abilities, static abilities, replacement effects, tokens, counters in the rules layer, milling, tutoring, multi-face cards, any card outside this 22-card pool; partial prevention and redirection are not modelled."
+        "\nnot implemented (refused at import): static abilities, replacement effects, tokens, counters in the rules layer, milling, tutoring, multi-face cards, any card outside this 28-card pool; partial prevention and redirection are not modelled. Activated and triggered abilities are modelled only for the cards whose typed abilities the engine implements."
     );
     Ok(())
 }

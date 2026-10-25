@@ -1,0 +1,10 @@
+// Ability practice A: issue 14 activated/triggered ability practice deck.
+// 40 cards, supported pool only, 20 life, not a Commander deck.
+9 Forest
+8 Island
+4 Prodigal Sorcerer
+4 Elvish Visionary
+3 Rootwalla
+3 Brindle Boar
+4 Festering Goblin
+5 Grizzly Bears

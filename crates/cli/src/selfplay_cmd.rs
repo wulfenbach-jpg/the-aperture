@@ -276,6 +276,24 @@ pub fn run(args: Args) -> anyhow::Result<()> {
             "blocks": blocks,
             "damage_events": damage,
             "counterspells": counters,
+            // Issue 14: activated/triggered ability evidence, counted from the
+            // real event log rather than inferred from the result.
+            "ability_activations": log
+                .iter()
+                .filter(|event| matches!(event, Event::AbilityActivated { .. }))
+                .count(),
+            "triggered_abilities": log
+                .iter()
+                .filter(|event| matches!(event, Event::TriggerStaged { .. }))
+                .count(),
+            "abilities_resolved": log
+                .iter()
+                .filter(|event| matches!(event, Event::AbilityResolved { .. }))
+                .count(),
+            "abilities_declined": log
+                .iter()
+                .filter(|event| matches!(event, Event::TriggerDeclined { .. }))
+                .count(),
             "commander_damage_events": log
                 .iter()
                 .filter(|event| matches!(event, Event::CommanderDamage { .. }))

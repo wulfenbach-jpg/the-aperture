@@ -161,6 +161,50 @@ pub enum Event {
         object: ObjectId,
         card: CardId,
     },
+    /// CR 602.2b: a player activated an ability. `text` is the printed ability
+    /// text from the rules layer, never model output.
+    AbilityActivated {
+        player: PlayerId,
+        source: ObjectId,
+        card: CardId,
+        text: String,
+        targets: Vec<String>,
+    },
+    /// CR 603.3: a triggered ability was put on the stack (after any CR 603.3d
+    /// target choice).
+    TriggerStaged {
+        controller: PlayerId,
+        source: ObjectId,
+        card: CardId,
+        text: String,
+    },
+    /// CR 603.3d: a triggered ability that requires targets had none and was
+    /// removed from the stack without ever being put on it.
+    TriggerRemoved {
+        controller: PlayerId,
+        card: CardId,
+        reason: String,
+    },
+    /// CR 603.5: the controller declined an optional triggered ability.
+    TriggerDeclined {
+        controller: PlayerId,
+        card: CardId,
+    },
+    /// One ability finished resolving (an ability is not a card: nothing moves
+    /// to a graveyard merely because the ability resolved).
+    AbilityResolved {
+        controller: PlayerId,
+        source: ObjectId,
+        card: CardId,
+        text: String,
+    },
+    /// CR 608.2b: every target of the ability is now illegal, so it does not
+    /// resolve.
+    AbilityFizzled {
+        controller: PlayerId,
+        card: CardId,
+        reason: String,
+    },
     StateBasedAction {
         description: String,
     },

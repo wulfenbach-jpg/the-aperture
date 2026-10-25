@@ -90,6 +90,11 @@ pub enum Effect {
     /// Full combat damage prevention for the rest of this turn (Fog). Partial
     /// prevention and redirection are not modelled.
     PreventAllCombatDamageThisTurn,
+    /// The controller of the source gains N life (Brindle Boar).
+    GainLife(i32),
+    /// The source itself gets +P/+T until end of turn (Rootwalla: a pump with
+    /// no target).
+    PumpSource(i32, i32),
 }
 
 impl Effect {
@@ -112,6 +117,10 @@ impl Effect {
             }
             Effect::PreventAllCombatDamageThisTurn => {
                 "prevent all combat damage that would be dealt this turn".to_string()
+            }
+            Effect::GainLife(n) => format!("its controller gains {n} life"),
+            Effect::PumpSource(p, t) => {
+                format!("this permanent gets {p:+}/{t:+} until end of turn")
             }
         }
     }
@@ -215,6 +224,12 @@ pub enum CardId {
     TimeEbb,
     SwordsToPlowshares,
     Fog,
+    ProdigalSorcerer,
+    Rootwalla,
+    BrindleBoar,
+    ElvishVisionary,
+    FesteringGoblin,
+    Oculus,
 }
 
 impl CardId {

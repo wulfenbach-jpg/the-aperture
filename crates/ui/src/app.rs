@@ -423,6 +423,30 @@ impl ApertureApp {
                     let _ = self.session.submit_human(action);
                 }
             }
+            aperture_core::view::PendingKind::TriggerTarget => {
+                ui.label("Choose a target for the triggered ability (CR 603.3d):");
+                for legal in view
+                    .legal
+                    .iter()
+                    .filter(|legal| matches!(legal.action, Action::ChooseTriggerTarget { .. }))
+                {
+                    if ui.button(legal.label.clone()).clicked() {
+                        let _ = self.session.submit_human(legal.action.clone());
+                    }
+                }
+            }
+            aperture_core::view::PendingKind::TriggerChoice => {
+                ui.label("Optional triggered ability (CR 603.5):");
+                for legal in view
+                    .legal
+                    .iter()
+                    .filter(|legal| matches!(legal.action, Action::AnswerTriggerChoice { .. }))
+                {
+                    if ui.button(legal.label.clone()).clicked() {
+                        let _ = self.session.submit_human(legal.action.clone());
+                    }
+                }
+            }
         }
     }
 

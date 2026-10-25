@@ -1,0 +1,10 @@
+// Ability practice B: issue 14 activated/triggered ability practice deck.
+// 40 cards, supported pool only, 20 life, not a Commander deck.
+9 Island
+8 Forest
+4 Oculus
+4 Festering Goblin
+4 Runeclaw Bear
+4 Centaur Courser
+4 Hill Giant
+3 Unsummon

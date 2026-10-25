@@ -231,7 +231,7 @@ it actually certifies.
 
 Anything not listed as implemented is unimplemented, not silently approximated.
 The current branch candidate has 2–4 ordered headless seats, first-turn draw
-policy, departure handling, masking, persistence replay v5/save v8, the harness,
+policy, departure handling, masking, persistence replay v6/save v10, the harness,
 ordered mulligan rounds and one fixed-set sacrifice/APNAP producer. Rows marked
 **candidate** describe this branch, not an accepted M1 release. Independent
 candidate review and exact-head checks are delivery gates; passing them does
@@ -249,14 +249,17 @@ not certify unsupported formats or complete rule coverage.
 | Object identity across zones | CR 400.7 | Identity is stable. | `HANDOFF.md` |
 | Counters | CR 122 | Stored/displayed only; no rules math. | `state.rs` comment |
 | Fog full combat prevention | CR 614.1a, 615.1, 615.6 | **Branch candidate:** Fog sets one turn-scoped shield; every combat-damage instance to players and permanents is prevented before life/marked damage/commander-ledger credit, with a typed `CombatDamagePrevented` event. Cleanup clears the shield. Partial prevention/redirection and generic replacement effects are not implemented. | `catalog.rs`, `issue13_commander_combat.rs` |
-| Triggers, activated abilities, statics, replacement/partial prevention, tokens, layers | CR 603, 602, 604, 614, 111, 613 | Not implemented (only basic-land mana abilities exist; Fog is the only prevention effect). | `catalog.rs`, `HANDOFF.md` |
+| Activated abilities | CR 602, 602.2, 602.2b, 602.5a/b, 302.6 | **Branch candidate:** typed records in `ability.rs` for six catalog cards. Activation costs are `{T}`, mana, or "sacrifice this permanent"; one ability carries "activate only once each turn"; targets and modes are declared by the record, never by the caller. A `{T}` ability on a creature obeys summoning sickness. | `abilities.rs`, `ability.rs` |
+| Triggered abilities | CR 603.2, 603.3, 603.3b/d, 603.5, 603.6a/c, 700.4 | **Branch candidate:** enters-the-battlefield and "dies" triggers, mandatory and optional ("you may", chosen on resolution). Simultaneous triggers are put on the stack in APNAP order from the active player; targets are chosen as the trigger is put on the stack and a trigger with no legal target is removed. Same-controller ordering is arrival order, not a CR 603.3b choice. | `abilities.rs`, `abilities_game.rs` |
+| Last known information for abilities | CR 608.2b, 700.4 | **Branch candidate:** a "dies" trigger resolves from its recorded card and controller after the source has left the battlefield; a target that became illegal before resolution makes the ability fizzle. Full LKI for copied/merged objects and continuous effects is not implemented. | `abilities.rs` |
+| Static abilities, replacement/partial prevention, tokens, layers | CR 604, 614, 111, 613 | Not implemented (Fog is the only prevention effect). | `catalog.rs`, `HANDOFF.md` |
 | Combat damage to a departed player | CR 800.4e | Not assigned; the current candidate preserves this on departure. | `m1_multiplayer.rs` |
 | Departed active player / turn completion | CR 800.4a, 800.4j, 800.4k | Implemented in the 2–4-seat candidate: the turn continues without an active player, priority passes to the next live seat, and a departed player's would-be turn does not begin. | `m1_multiplayer.rs`, `HANDOFF.md` |
 | Simultaneous loss of all remaining players | CR 104.4a (with 104.4c, 104.5) | Engine draw projection; unexercised by the current pool. | `HANDOFF.md` |
 
 ### Persistence candidate
 
-This branch writes replay v5/save v8 so the mulligan round, sacrifice queue,
+This branch writes replay v6/save v10 so the mulligan round, sacrifice queue,
 serialize exactly. The previous published candidate (`74df9a6`) wrote replay
 v2/save v3; those and older files are explicitly rejected, never reinterpreted.
 The pinned `RULES_REVISION` remains `2026-09-25`; schema versioning is separate

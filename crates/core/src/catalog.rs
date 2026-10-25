@@ -1,10 +1,12 @@
-//! The supported card pool. Twenty-two real cards; every printed ability is
+//! The supported card pool. Twenty-eight real cards; every printed ability is
 //! implemented. Card text is the short functional Oracle wording.
 //!
-//! Deliberate exclusions (documented in HANDOFF.md): no triggered abilities, no
-//! activated abilities other than basic-land mana abilities, no static
-//! abilities, no replacement effects, no tokens, and no counters in the rules
-//! layer.
+//! Activated and triggered abilities are declared in [`crate::ability`] and
+//! executed by the engine; a card with an ability this crate cannot execute is
+//! refused at import instead of being approximated.
+//!
+//! Deliberate exclusions (documented in HANDOFF.md): no static abilities, no
+//! replacement effects, no tokens, and no counters in the rules layer.
 
 use crate::card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
 
@@ -48,7 +50,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 22] = [
+pub static CARDS: [CardDef; 28] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -170,6 +172,38 @@ pub static CARDS: [CardDef; 22] = [
         type_line: "Instant", power: None, toughness: None,
         oracle: "Prevent all combat damage that would be dealt this turn.",
         spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: PREVENT_COMBAT })
+    ),
+    card!(
+        ProdigalSorcerer, "Prodigal Sorcerer", cost: Some("{2}{U}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Wizard", power: Some(1), toughness: Some(1),
+        oracle: "{T}: Prodigal Sorcerer deals 1 damage to any target.", spell: None
+    ),
+    card!(
+        Rootwalla, "Rootwalla", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Lizard", power: Some(2), toughness: Some(2),
+        oracle: "{1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.",
+        spell: None
+    ),
+    card!(
+        BrindleBoar, "Brindle Boar", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Boar", power: Some(2), toughness: Some(2),
+        oracle: "Sacrifice Brindle Boar: You gain 4 life.", spell: None
+    ),
+    card!(
+        ElvishVisionary, "Elvish Visionary", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Shaman", power: Some(1), toughness: Some(1),
+        oracle: "When Elvish Visionary enters the battlefield, draw a card.", spell: None
+    ),
+    card!(
+        FesteringGoblin, "Festering Goblin", cost: Some("{B}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Zombie Goblin", power: Some(1), toughness: Some(1),
+        oracle: "When Festering Goblin dies, target creature gets -1/-1 until end of turn.",
+        spell: None
+    ),
+    card!(
+        Oculus, "Oculus", cost: Some("{1}{U}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Phyrexian Homunculus", power: Some(1), toughness: Some(1),
+        oracle: "When Oculus dies, you may draw a card.", spell: None
     ),
 ];
 

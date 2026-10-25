@@ -9,6 +9,7 @@
 //! (`RULES_REVISION`). Card behaviors outside the supported pool are not
 //! emulated: they are rejected at import time.
 
+pub mod ability;
 pub mod action;
 pub mod card;
 pub mod catalog;
@@ -26,6 +27,9 @@ pub mod settings;
 pub mod state;
 pub mod view;
 
+pub use ability::{
+    Ability, AbilityCost, AbilityMode, ActivatedAbility, TriggerEvent, TriggeredAbility, abilities,
+};
 pub use action::{Action, BlockDecl, LegalAction, Submission, Target};
 pub use card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
 pub use deck::DeckList;
@@ -38,7 +42,7 @@ pub use replay::{CommanderSetup, Replay, ReplayError, ReplayStep, SessionSave};
 pub use settings::AiSettings;
 pub use state::{
     Commander, CommanderDamageEntry, DrawResume, GameState, OrderMode, Outcome, Pending, Profile,
-    Step,
+    StackEntry, Step, TriggerRef,
 };
 pub use view::{OpponentView, PlayerView};
 

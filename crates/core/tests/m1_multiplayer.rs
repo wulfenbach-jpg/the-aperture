@@ -296,9 +296,12 @@ fn active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_liv
     // Resolve Shock through the real stack so the remaining turn has work to do.
     game.state.stack.push(StackItem {
         object: shock,
+        card: CardId::Shock,
         controller: 1,
         targets: vec![Target::Player(2)],
         cursor: 0,
+        entry: StackEntry::Spell,
+        trigger_answered: false,
     });
 
     submit_ok(&mut game, P0, Action::Pass);

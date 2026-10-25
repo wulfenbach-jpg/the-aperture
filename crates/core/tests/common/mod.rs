@@ -80,6 +80,9 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             mulligan: None,
             resolving: None,
             next_object: 1,
+            trigger_queue: Vec::new(),
+            next_trigger_seq: 0,
+            activation_uses: BTreeMap::new(),
             revision: 0,
             decision: 0,
             outcome: None,
@@ -252,6 +255,19 @@ pub fn auto_answer(game: &Game) -> Action {
             Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
                 to_command_zone: true,
             },
+            // Declare the first offered target; accept the first offered option
+            // for a "you may" trigger (the engine lists "use it" first).
+            Pending::TriggerTarget { .. } | Pending::TriggerChoice { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| {
+                    matches!(
+                        legal.action,
+                        Action::ChooseTriggerTarget { .. } | Action::AnswerTriggerChoice { .. }
+                    )
+                })
+                .map(|legal| legal.action)
+                .expect("a triggered-ability option is offered"),
             Pending::BottomCards { .. } | Pending::Discard { .. } => game
                 .legal_actions()
                 .into_iter()

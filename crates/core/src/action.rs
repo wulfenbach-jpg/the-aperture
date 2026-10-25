@@ -78,6 +78,26 @@ pub enum Action {
     AnswerCommanderDraw {
         to_command_zone: bool,
     },
+    /// CR 602.2: activate an ability of a permanent this player controls.
+    /// `ability` indexes [`crate::ability::abilities`] for the source's card and
+    /// `mode` indexes that ability's printed modes, so a caller can never
+    /// supply a cost, target shape or effect of its own.
+    ActivateAbility {
+        source: ObjectId,
+        ability: u8,
+        mode: u8,
+        targets: Vec<Target>,
+    },
+    /// CR 603.3d: choose the targets for a triggered ability being put on the
+    /// stack.
+    ChooseTriggerTarget {
+        target: Target,
+    },
+    /// CR 603.5: accept or decline an optional ("you may") triggered ability as
+    /// it resolves.
+    AnswerTriggerChoice {
+        use_ability: bool,
+    },
 }
 
 impl Action {
@@ -97,6 +117,9 @@ impl Action {
             Action::AnswerCommanderReturn { .. } => "commander return choice",
             Action::AnswerCommanderReplacement { .. } => "commander replacement choice",
             Action::AnswerCommanderDraw { .. } => "commander draw replacement choice",
+            Action::ActivateAbility { .. } => "activate ability",
+            Action::ChooseTriggerTarget { .. } => "choose trigger target",
+            Action::AnswerTriggerChoice { .. } => "trigger choice",
         }
     }
 }

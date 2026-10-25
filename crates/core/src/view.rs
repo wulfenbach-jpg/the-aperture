@@ -44,6 +44,8 @@ pub enum PendingKind {
     CommanderReturn,
     CommanderReplacement,
     CommanderDraw,
+    TriggerTarget,
+    TriggerChoice,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -381,6 +383,57 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             None => format!("{amount} combat damage to a permanent is prevented"),
         },
         Event::Destroyed { card, .. } => format!("{} is put into a graveyard", card.name()),
+        Event::AbilityActivated {
+            player,
+            card,
+            text,
+            targets,
+            ..
+        } => {
+            if targets.is_empty() {
+                format!("P{player} activates {}: {text}", card.name())
+            } else {
+                format!(
+                    "P{player} activates {}: {text} (targeting {})",
+                    card.name(),
+                    targets.join(", ")
+                )
+            }
+        }
+        Event::TriggerStaged {
+            controller,
+            card,
+            text,
+            ..
+        } => format!(
+            "P{controller}'s triggered ability from {} goes on the stack: {text}",
+            card.name()
+        ),
+        Event::TriggerRemoved {
+            controller,
+            card,
+            reason,
+        } => format!(
+            "P{controller}'s {} trigger is removed: {reason}",
+            card.name()
+        ),
+        Event::TriggerDeclined { controller, card } => {
+            format!("P{controller} declines {}'s optional trigger", card.name())
+        }
+        Event::AbilityResolved {
+            controller,
+            card,
+            text,
+            ..
+        } => format!(
+            "P{controller}'s ability from {} resolves: {text}",
+            card.name()
+        ),
+        Event::AbilityFizzled {
+            controller,
+            card,
+            reason,
+        } => format!("P{controller}'s {} ability fizzles: {reason}", card.name()),
         Event::StateBasedAction { description } => format!("state-based action: {description}"),
         Event::GameOver { winner, reason } => format!("Game over — P{winner} wins: {reason}"),
         Event::GameDrawn { reason } => format!("Game drawn — {reason}"),
@@ -509,8 +562,10 @@ impl Game {
                 .iter()
                 .map(|item| StackView {
                     object: item.object,
-                    card: self.state.object(item.object).card,
-                    name: self.state.object(item.object).card.name(),
+                    // The recorded card, not the source's current object: an
+                    // ability can outlive its source's zone change.
+                    card: item.card,
+                    name: item.card.name(),
                     controller: item.controller,
                     targets: item
                         .targets
@@ -544,6 +599,8 @@ impl Game {
                     PendingKind::CommanderReplacement
                 }
                 crate::state::Pending::CommanderDraw { .. } => PendingKind::CommanderDraw,
+                crate::state::Pending::TriggerTarget { .. } => PendingKind::TriggerTarget,
+                crate::state::Pending::TriggerChoice { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })
