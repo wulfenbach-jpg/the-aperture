@@ -2,10 +2,10 @@
   "counts": {
     "capped": 0,
     "failed": 0,
-    "terminal": 18,
-    "total": 18
+    "terminal": 24,
+    "total": 24
   },
-  "games_per_seat": 3,
+  "games_per_seat": 4,
   "max_millis": null,
   "max_steps": 4000,
   "rows": [
@@ -137,6 +137,48 @@
     },
     {
       "decision_sources": {
+        "heuristic": 828
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "838b5af91101738554b6e2ede5b03746a06eff0f8de185d49ad815b39242ad2f",
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 2,
+      "seed": 4248,
+      "status": "terminal",
+      "steps": 828,
+      "truncated": null,
+      "turns": 34,
+      "winner": 0
+    },
+    {
+      "decision_sources": {
+        "heuristic": 561
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "2406d729e67329b8ba86290f6e91374f1cdc5453d135e5eed5a9459ae6e236b9",
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 2,
+      "seed": 4249,
+      "status": "terminal",
+      "steps": 561,
+      "truncated": null,
+      "turns": 23,
+      "winner": 0
+    },
+    {
+      "decision_sources": {
         "heuristic": 766
       },
       "decks": [
@@ -263,6 +305,50 @@
       "seed": 4247,
       "status": "terminal",
       "steps": 903,
+      "truncated": null,
+      "turns": 28,
+      "winner": 1
+    },
+    {
+      "decision_sources": {
+        "heuristic": 779
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "104abfdbb9352935862288d733d762f64bcf3bbd019d2aab89fba349cf7bd9ab",
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 3,
+      "seed": 4248,
+      "status": "terminal",
+      "steps": 779,
+      "truncated": null,
+      "turns": 26,
+      "winner": 0
+    },
+    {
+      "decision_sources": {
+        "heuristic": 930
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "2ecc804b9a349ea1e2ab9b04fa773371f6aafd490760ad27ce0e9bf0f5081644",
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 3,
+      "seed": 4249,
+      "status": "terminal",
+      "steps": 930,
       "truncated": null,
       "turns": 28,
       "winner": 1
@@ -404,6 +490,52 @@
       "truncated": null,
       "turns": 35,
       "winner": 1
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1432
+      },
+      "decks": [
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control"
+      ],
+      "digest": "69724d5b3b3f8299a67248c82cb82e30dda0b2a132b5236d7c9169392cd28d52",
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": false,
+      "seats": 4,
+      "seed": 4248,
+      "status": "terminal",
+      "steps": 1432,
+      "truncated": null,
+      "turns": 35,
+      "winner": 2
+    },
+    {
+      "decision_sources": {
+        "heuristic": 1250
+      },
+      "decks": [
+        "Izzet Control",
+        "Temur Beats",
+        "Izzet Control",
+        "Temur Beats"
+      ],
+      "digest": "fc1ce823d74126e8eb5a2fe1a7a4af75f4f283bcb8e8b750e009a4b484d6d768",
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "replay_digest_matches": true,
+      "replay_error": null,
+      "rotated_decks": true,
+      "seats": 4,
+      "seed": 4249,
+      "status": "terminal",
+      "steps": 1250,
+      "truncated": null,
+      "turns": 30,
+      "winner": 3
     }
   ],
   "rules_revision": "2026-09-25",

@@ -114,6 +114,29 @@ fn real_game_activates_and_triggers_abilities_and_replays_identically() {
     // The game really progressed: lands were played and turns taken.
     assert!(game.state.turn.number >= 3, "the game reached turn 3");
 
+    // R170-1: no `Priority` event may appear inside an ability's own
+    // resolution (CR 117.5, 608.2). Every completed ability must be reported
+    // before the next priority grant, so no `AbilityResolved` may be preceded by
+    // a priority event.
+    let resolved_indices: Vec<usize> = log
+        .iter()
+        .enumerate()
+        .filter(|(_, event)| matches!(event, Event::AbilityResolved { .. }))
+        .map(|(index, _)| index)
+        .collect();
+    assert_eq!(
+        resolved_indices.len(),
+        resolved,
+        "the audit covers every resolution in the real game"
+    );
+    for index in resolved_indices {
+        assert!(
+            index > 0 && !matches!(log[index - 1], Event::Priority { .. }),
+            "no Priority may be granted while an ability is still resolving: {:?}",
+            &log[index.saturating_sub(2)..=index]
+        );
+    }
+
     let mut replay = Replay::new(
         4242,
         game.state.first_player,

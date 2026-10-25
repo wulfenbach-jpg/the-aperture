@@ -2491,6 +2491,16 @@ impl Game {
             self.state.turn.priority = None;
             return;
         }
+        // CR 117.5/608.2: no player receives priority while a stack item is
+        // still resolving. `advance_resolution` follows an item's instructions to
+        // completion in one call, so this guard is a backstop: it can only fire
+        // if a future change reintroduces a mid-resolution grant, and the
+        // scheduler then resumes after the item finishes instead of emitting a
+        // false `Priority` event (R170-1).
+        if self.state.resolving.is_some() {
+            self.state.turn.priority = None;
+            return;
+        }
         // CR 603.3: waiting triggered abilities are put on the stack before any
         // player actually receives priority.
         if self.state.pending.is_none() && self.put_triggers(events) && self.state.pending.is_some()
@@ -3304,8 +3314,26 @@ impl Game {
                 return;
             };
             if item.entry != StackEntry::Spell {
-                self.advance_ability_resolution(item, events);
-                return;
+                // CR 608.2: an ability's instructions all finish before the item
+                // leaves the stack, and no player receives priority while it is
+                // resolving (CR 117.5). Follow every instruction in this call
+                // rather than returning to the scheduler between effects, which
+                // would grant priority before the item's `AbilityResolved` event
+                // and let a trigger caused by the effect be staged too early
+                // (R170-1). A pending choice still suspends resolution
+                // (CR 608.2d).
+                let mut current = item;
+                loop {
+                    self.advance_ability_resolution(current, events);
+                    if self.state.pending.is_some() || self.state.resolving.is_none() {
+                        return;
+                    }
+                    let Some(next) = self.state.stack.last().cloned() else {
+                        self.state.resolving = None;
+                        return;
+                    };
+                    current = next;
+                }
             }
             let card = self.state.object(item.object).card;
             let def = card.def();

@@ -667,3 +667,104 @@ fn an_ability_on_the_stack_is_not_a_spell() {
         "Counterspell has no legal target while only an ability is on the stack"
     );
 }
+
+// ------------------------------------------------------ resolution ordering
+
+/// R170-1 (review 170): a `Priority` event must never be emitted while an
+/// ability stack item is still resolving (CR 117.5, 608.2). The ability's own
+/// effect events come first, then `AbilityResolved`, and only then the next
+/// priority grant.
+fn assert_no_priority_inside_ability_resolution(log: &[Event], effect: fn(&Event) -> bool) {
+    let resolved = log
+        .iter()
+        .position(|event| matches!(event, Event::AbilityResolved { .. }))
+        .unwrap_or_else(|| panic!("the ability never reported AbilityResolved: {log:?}"));
+    let effect_index = log[..resolved]
+        .iter()
+        .rposition(effect)
+        .unwrap_or_else(|| panic!("the ability's own effect event is missing: {log:?}"));
+    let false_priority: Vec<&Event> = log[effect_index..resolved]
+        .iter()
+        .filter(|event| matches!(event, Event::Priority { .. }))
+        .collect();
+    assert!(
+        false_priority.is_empty(),
+        "no Priority may be granted between the ability's effect and its \
+         AbilityResolved event (CR 117.5, 608.2): {false_priority:?} in {log:?}"
+    );
+    assert!(
+        log[resolved + 1..]
+            .iter()
+            .any(|event| matches!(event, Event::Priority { .. })),
+        "priority resumes after the ability finished resolving: {log:?}"
+    );
+}
+
+#[test]
+fn activated_ability_effect_comes_before_ability_resolved_and_priority() {
+    // R170-1, CR 117.5: the scheduler must not hand out priority in the middle
+    // of an activated ability's resolution.
+    let mut game = fixture(114)
+        .battlefield(P0, &[CardId::ProdigalSorcerer])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let source = battlefield_card(&game, P0, CardId::ProdigalSorcerer);
+
+    let mut log = submit_ok(
+        &mut game,
+        P0,
+        Action::ActivateAbility {
+            source,
+            ability: 0,
+            mode: 0,
+            targets: vec![Target::Player(P1)],
+        },
+    );
+    log.extend(submit_ok(&mut game, P0, Action::Pass));
+    log.extend(submit_ok(&mut game, P1, Action::Pass));
+
+    assert_eq!(game.state.player(P1).life, 19, "the ability resolved");
+    assert_no_priority_inside_ability_resolution(&log, |event| {
+        matches!(event, Event::Damage { .. } | Event::LifeChange { .. })
+    });
+}
+
+#[test]
+fn triggered_ability_effect_comes_before_ability_resolved_and_priority() {
+    // R170-1 for a triggered ability: the draw happens, the trigger is reported
+    // resolved, and only then does the active player receive priority.
+    let mut game = fixture(115)
+        .hand(P0, &[CardId::ElvishVisionary])
+        .battlefield(P0, &[CardId::Forest, CardId::Forest])
+        .library(P0, &[CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let elf = hand_card(&game, P0, CardId::ElvishVisionary);
+
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: elf,
+            targets: Vec::new(),
+        },
+    );
+    submit_ok(&mut game, P0, Action::Pass);
+    submit_ok(&mut game, P1, Action::Pass);
+    assert!(
+        matches!(
+            game.state.stack.last().map(|item| item.entry),
+            Some(StackEntry::Triggered { .. })
+        ),
+        "the enters-the-battlefield trigger is waiting on the stack"
+    );
+
+    let mut log = submit_ok(&mut game, P0, Action::Pass);
+    log.extend(submit_ok(&mut game, P1, Action::Pass));
+    assert_eq!(
+        game.state.player(P0).hand_size(),
+        1,
+        "the trigger drew a card"
+    );
+    assert_no_priority_inside_ability_resolution(&log, |event| matches!(event, Event::Draw { .. }));
+}
