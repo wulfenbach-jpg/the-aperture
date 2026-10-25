@@ -73,7 +73,10 @@ implementation and it says so everywhere it matters.
   build before a replay runs. The pinned rules revision is unchanged.
 * **Native desktop UI** (`aperture`): dark charcoal/brass 2–4-seat card table
   with compact 2x2 seat panels, all public battlefields, command zones, life,
-  counters, status, stack view, own hand, legal-action buttons, coaching panel,
+  counters, status, stack view, own hand, legal-action buttons, coaching panel
+  (category-badged: `[RULE]`, `[SIMPLIFICATION]`, `[STRATEGY]` — see
+  `docs/issue19-trace-coach.md`; includes pass-round, response-window and APNAP
+  records),
   viewer-masked log, pending-choice controls, sandbox tools, per-seat deck
   import, save/load, text zoom and keyboard navigation. Every model, network and
   file operation runs on a background worker with a visible busy state; the

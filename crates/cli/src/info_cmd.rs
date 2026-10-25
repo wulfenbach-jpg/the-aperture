@@ -79,7 +79,12 @@ pub fn coach(seed: u64, deck_a: Option<&Path>, deck_b: Option<&Path>) -> anyhow:
         println!("  log: {line}");
     }
     for explanation in coach::explain(&game, aperture_core::P0, &legal) {
-        println!("\n[{}] {}", explanation.topic, explanation.text);
+        let kind = match explanation.kind {
+            coach::ExplanationKind::Rule => "RULE",
+            coach::ExplanationKind::Simplification => "SIMPLIFICATION",
+            coach::ExplanationKind::Strategy => "STRATEGY",
+        };
+        println!("\n[{kind}] [{}] {}", explanation.topic, explanation.text);
         for rule in &explanation.rules {
             match coach::rule_note(rule) {
                 Some(note) => println!("    CR {rule}: {note}"),

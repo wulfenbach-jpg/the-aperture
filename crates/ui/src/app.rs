@@ -1541,16 +1541,29 @@ impl ApertureApp {
                             .max_height(220.0)
                             .show(ui, |ui| {
                                 for explanation in explanations {
+                                    let badge = match explanation.kind {
+                                        coach::ExplanationKind::Rule => "[RULE]",
+                                        coach::ExplanationKind::Simplification => {
+                                            "[SIMPLIFICATION]"
+                                        }
+                                        coach::ExplanationKind::Strategy => "[STRATEGY]",
+                                    };
+                                    let color = match explanation.kind {
+                                        coach::ExplanationKind::Rule
+                                            if explanation.topic.contains("unavailable") =>
+                                        {
+                                            theme::MUTED
+                                        }
+                                        coach::ExplanationKind::Rule => theme::TEXT,
+                                        coach::ExplanationKind::Simplification => theme::WARN,
+                                        coach::ExplanationKind::Strategy => theme::BRASS,
+                                    };
                                     ui.label(
                                         RichText::new(format!(
-                                            "[{}] {}",
+                                            "{badge} [{}] {}",
                                             explanation.topic, explanation.text
                                         ))
-                                        .color(if explanation.topic.contains("unavailable") {
-                                            theme::MUTED
-                                        } else {
-                                            theme::TEXT
-                                        }),
+                                        .color(color),
                                     );
                                     for rule in &explanation.rules {
                                         if let Some(note) = coach::rule_note(rule) {

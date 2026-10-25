@@ -8,9 +8,22 @@ use crate::engine::Game;
 use crate::ids::PlayerId;
 use crate::state::{OrderMode, Pending};
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ExplanationKind {
+    /// Derived from the deterministic state or the pinned rule text.
+    Rule,
+    /// An explicit engine simplification, never taught as the rule.
+    Simplification,
+    /// Clearly non-rule advice; this slice generates strategy text never from
+    /// engine data, so the only strategy record states its absence.
+    Strategy,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
 pub struct Explanation {
     pub topic: String,
+    pub kind: ExplanationKind,
     pub text: String,
     /// Comprehensive Rules citations.
     pub rules: Vec<&'static str>,
@@ -22,6 +35,10 @@ pub static RULE_NOTES: &[(&str, &str)] = &[
     (
         "103.5",
         "Opening hands: a player may mulligan; the London mulligan draws a fresh seven and then puts a number of cards on the bottom equal to the mulligans taken.",
+    ),
+    (
+        "101.4",
+        "Paraphrase: when several players make simultaneous choices, they make them in APNAP order — active player first, then players in turn order.",
     ),
     (
         "104.3c",
@@ -249,6 +266,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
     match state.decision_owner() {
         Some(owner) => out.push(Explanation {
             topic: "priority".to_string(),
+            kind: ExplanationKind::Rule,
             text: format!(
                 "Turn {} — P{} is the active player. P{owner} {} in the {}.",
                 state.turn.number,
@@ -268,10 +286,68 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
         }),
         None => out.push(Explanation {
             topic: "priority".to_string(),
+            kind: ExplanationKind::Rule,
             text: "No player holds priority: the game is resolving, between steps, or over."
                 .to_string(),
             rules: vec!["117.4", "117.5"],
         }),
+    }
+
+    // Consecutive passes and what resolves next (CR 117.3d, 117.4). Derived
+    // from the typed pass-round bitmask; reset semantics live in the engine.
+    if let Some(owner) = state.decision_owner()
+        && state.pending.is_none()
+        && state.turn.priority.is_some()
+    {
+        let live_mask = state.live_mask();
+        let passed: Vec<String> = (0..state.seat_count() as PlayerId)
+            .filter(|p| state.turn.passed & (1u8 << p) != 0)
+            .map(|p| format!("P{p}"))
+            .collect();
+        let remaining: Vec<String> = (0..state.seat_count() as PlayerId)
+            .filter(|p| live_mask & (1u8 << p) != 0 && state.turn.passed & (1u8 << p) == 0)
+            .map(|p| format!("P{p}"))
+            .collect();
+        let resolves_next = match state.stack.last() {
+            Some(item) => format!("{} resolves next", state.object(item.object).card.name()),
+            None => "the current step/phase ends next".to_string(),
+        };
+        let text = if passed.is_empty() {
+            format!(
+                "No one has passed yet in the current priority round; P{owner} has the next response. If everyone passes without acting, {resolves_next}."
+            )
+        } else {
+            format!(
+                "Consecutive passes this round: {}. Still to respond: {}. When everyone remaining has passed, {resolves_next}.",
+                passed.join(", "),
+                if remaining.is_empty() {
+                    "a new round has begun".to_string()
+                } else {
+                    remaining.join(", ")
+                }
+            )
+        };
+        out.push(Explanation {
+            topic: "pass round".to_string(),
+            kind: ExplanationKind::Rule,
+            text,
+            rules: vec!["117.3d", "117.4"],
+        });
+        if !state.stack.is_empty() {
+            let top = state
+                .stack
+                .last()
+                .map(|item| state.object(item.object).card.name())
+                .unwrap_or_default();
+            out.push(Explanation {
+                    topic: "response window".to_string(),
+                    kind: ExplanationKind::Rule,
+                    text: format!(
+                        "Open response window: any player may act while {top} is the top of the stack; it resolves only after all players pass in succession."
+                    ),
+                    rules: vec!["117.1a", "117.4"],
+                });
+        }
     }
 
     // Bounded-slice simplification, stated so the coaching never teaches it as
@@ -281,6 +357,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
     if state.turn.step.is_combat() && !state.turn.attackers.is_empty() {
         out.push(Explanation {
             topic: "combat damage assignment".to_string(),
+            kind: ExplanationKind::Simplification,
             text: format!(
                 "This slice assigns combat damage automatically, in lethal-first order ({} attacker(s), {} declared blocker(s)). That is a bounded simplification of CR 510.1c, which lets the attacking player divide a blocked creature's damage among its blockers however they choose; typed damage assignment is not modeled yet.",
                 state.turn.attackers.len(),
@@ -299,6 +376,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             .collect();
         out.push(Explanation {
             topic: "stack".to_string(),
+            kind: ExplanationKind::Rule,
             text: format!(
                 "Top of stack: {} (controlled by P{}{}). {} item(s) below it.",
                 card.name(),
@@ -342,9 +420,16 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
         } else {
             pending.describe()
         };
+        let apnap_note = match pending {
+            Pending::ApnapSacrifice { .. } | Pending::CommanderReturn { .. } => {
+                " These choices are made in APNAP order: seats answer one at a time in turn order, starting with the active player (CR 101.4)."
+            }
+            _ => "",
+        };
         out.push(Explanation {
             topic: "pending choice".to_string(),
-            text,
+            kind: ExplanationKind::Rule,
+            text: format!("{text}{apnap_note}"),
             rules,
         });
     }
@@ -363,6 +448,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 {
                     out.push(Explanation {
                         topic: format!("{} unavailable", card.name()),
+                        kind: ExplanationKind::Rule,
                         text: err.reason(),
                         rules: vec!["305.2", "701.18a"],
                     });
@@ -372,6 +458,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             if let Some(reason) = cast_blocker(game, player, id) {
                 out.push(Explanation {
                     topic: format!("{} unavailable", card.name()),
+                    kind: ExplanationKind::Rule,
                     text: reason,
                     rules: vec!["117.1a", "601.2c"],
                 });
@@ -399,6 +486,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
     if !lethal.is_empty() {
         out.push(Explanation {
             topic: "state-based actions".to_string(),
+            kind: ExplanationKind::Rule,
             text: format!(
                 "Waiting for state-based actions: {} has lethal damage and will be destroyed.",
                 lethal.join(", ")
@@ -409,6 +497,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
 
     out.push(Explanation {
         topic: "board".to_string(),
+        kind: ExplanationKind::Rule,
         text: format!(
             "Board (public counts): {}.",
             (0..state.seat_count() as PlayerId)
@@ -431,11 +520,23 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
 
     out.push(Explanation {
         topic: "legal actions".to_string(),
+        kind: ExplanationKind::Rule,
         text: format!(
             "{} legal action(s) generated for the current decision point.",
             legal.len()
         ),
         rules: vec!["117.1a"],
+    });
+
+    // Category separation (issue19): strategy text is never derived from the
+    // engine, so the panel carries an explicit absence record instead of a
+    // disguised rule claim.
+    out.push(Explanation {
+        topic: "strategy".to_string(),
+        kind: ExplanationKind::Strategy,
+        text: "No strategic suggestions are shown: this panel renders only engine-derived facts and pinned rule text. Any future strategy entry must carry the strategy label and is advice, not a rule or a win projection."
+            .to_string(),
+        rules: Vec::new(),
     });
 
     out
