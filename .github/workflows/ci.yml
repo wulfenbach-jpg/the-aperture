@@ -32,6 +32,44 @@ jobs:
       - run: cargo fmt --check
       - run: cargo test --all-targets --locked
       - run: cargo clippy --all-targets --locked -- -D warnings
+  package:
+    name: windows package
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+      - name: Build, manifest and verify the reproducible package
+        shell: pwsh
+        run: ./scripts/package.ps1
+      - name: Prove repeated builds are byte-identical
+        shell: pwsh
+        run: |
+          $manifest = Get-ChildItem -Path dist -Recurse -Filter MANIFEST.sha256 | Select-Object -First 1
+          if (-not $manifest) { throw 'package produced no MANIFEST.sha256' }
+          $packageDir = $manifest.Directory.FullName
+          cargo clean
+          cargo build --release --locked -p aperture-ui -p aperture-cli
+          foreach ($name in @('aperture.exe', 'aperture-cli.exe')) {
+            $built = (Get-FileHash -LiteralPath (Join-Path 'target/release' $name) -Algorithm SHA256).Hash.ToLowerInvariant()
+            $shipped = (Get-FileHash -LiteralPath (Join-Path $packageDir $name) -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($built -ne $shipped) { throw "$name is not reproducible: rebuilt $built, shipped $shipped" }
+            Write-Host "reproduced $name $built"
+          }
+      - name: Show the package manifest
+        shell: pwsh
+        run: Get-Content (Get-ChildItem -Path dist -Recurse -Filter MANIFEST.sha256 | Select-Object -First 1).FullName
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: the-aperture-package
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 14
   board:
     name: board and roadmap
     runs-on: ubuntu-latest

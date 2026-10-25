@@ -92,6 +92,22 @@ pub enum Command {
         file: PathBuf,
         #[arg(long)]
         verbose: bool,
+        /// Cut a branch at this recorded action index and verify the branched
+        /// line replays deterministically. `branch_out` writes the branch.
+        #[arg(long)]
+        branch_at: Option<usize>,
+        /// Write the cut branch line here (a replay file, replay version 6).
+        #[arg(long)]
+        branch_out: Option<PathBuf>,
+        /// Compare the file's recorded line against this second line (same
+        /// setup) and print the public accepted-action differences only.
+        #[arg(long)]
+        compare_with: Option<PathBuf>,
+        /// For a bare replay file: verify it and write a certified session
+        /// save of the replayed final state here (used to deliver a finished
+        /// game into the native table).
+        #[arg(long)]
+        save_out: Option<PathBuf>,
     },
     /// Import a public Archidekt deck by URL (allowlisted host only).
     Import {
@@ -265,7 +281,21 @@ fn main() -> anyhow::Result<()> {
                 out,
             })
         }
-        Command::Replay { file, verbose } => replay_cmd::run(&file, verbose),
+        Command::Replay {
+            file,
+            verbose,
+            branch_at,
+            branch_out,
+            compare_with,
+            save_out,
+        } => replay_cmd::run(
+            &file,
+            verbose,
+            branch_at,
+            branch_out,
+            compare_with,
+            save_out,
+        ),
         Command::Import {
             url,
             cache,

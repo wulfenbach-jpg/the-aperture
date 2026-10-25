@@ -449,6 +449,13 @@ pub struct Object {
     /// Summoning sickness (CR 302.6).
     pub summoning_sick: bool,
     /// "Until end of turn" pump from `Effect::Pump` (CR 613.4c).
+    ///
+    /// This single delta holds the layer 7a and 7c results for the object: the
+    /// engine recomputes it in layer order (7a characteristic-defining first,
+    /// then 7c modifiers in timestamp order) and both implemented kinds are
+    /// additive, so the aggregation is lossless. A future layer 7b
+    /// base-setting effect needs its own base fields; object characteristic
+    /// fields are owned by the counters lane, so this lane adds none.
     pub pump_power: i32,
     pub pump_toughness: i32,
     /// Legacy sandbox storage used by the native UI's editing tools only. The
@@ -652,6 +659,19 @@ pub struct GameState {
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.
     pub activation_uses: BTreeMap<ObjectId, u8>,
+    /// Continuous effects with their layer, timestamp and duration (CR 613).
+    /// Serialized so a save or replay reproduces the exact layer state.
+    #[serde(default)]
+    pub effects: Vec<crate::layer::ContinuousEffect>,
+    /// One-shot prevention shields (CR 615), in creation order.
+    #[serde(default)]
+    pub shields: Vec<crate::layer::DamageShield>,
+    /// Next rule-visible effect id.
+    #[serde(default)]
+    pub next_effect: u32,
+    /// Next rule-visible timestamp (CR 613.7 order, never wall-clock).
+    #[serde(default)]
+    pub next_timestamp: u64,
     /// Incremented on every accepted state mutation.
     pub revision: u64,
     /// Serial of the current decision point; submissions must match it.

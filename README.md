@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (28 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (31 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -31,7 +31,15 @@ implementation and it says so everywhere it matters.
   all combat damage that would be dealt this turn.”), plus the six typed
   activated/triggered-ability practice cards **Prodigal Sorcerer**,
   **Rootwalla**, **Brindle Boar**, **Elvish Visionary**, **Festering Goblin**
-  and **Oculus** (see `decks/abilities-practice-a.txt`/`-b.txt`).
+  and **Oculus** (see `decks/abilities-practice-a.txt`/`-b.txt`), plus the
+  issue-15 effect cards **Mending Hands** (one-shot prevention shield),
+  **Angrath's Marauders** (damage-doubling replacement effect for any source
+  its controller controls, spells included) and **Wight of Precinct Six**
+  (printed “This creature gets +1/+1 for each creature card in your opponents'
+  graveyards.” — an additive layer 7c static, not a characteristic-defining
+  ability). All three card texts and their printing sources are recorded in
+  `crates/core/tests/card_printings.rs`; see
+  [docs/issue15-effects.md](docs/issue15-effects.md).
   Isamaru is commander-only and is refused in every ordinary starting library
   because the legend rule is not implemented. Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
@@ -137,6 +145,21 @@ cargo run --release -p aperture-cli -- import --url https://archidekt.com/decks/
 The CLI and UI both load `decks/*.txt`; the same lists are compiled in, so the
 binaries also work from another working directory.
 
+## Packaged, reproducible build
+
+```
+scripts\package.cmd
+```
+
+Builds a version/commit-stamped, unsigned practice bundle under `dist/` —
+`aperture.exe`, `aperture-cli.exe`, the bundled decks, the packaged scope README
+and launcher — with a SHA-256 manifest and a `verify-package.cmd` that
+re-derives every hash and launches the packaged executable in its smoke mode.
+Text payloads and the manifest are deterministic, and the release executables
+are byte-identical across repeated builds of the same commit and toolchain.
+See [docs/packaging.md](docs/packaging.md) for the exact contract, what is and
+is not claimed, and the CI artifact job.
+
 ## Verification
 
 ```
@@ -209,7 +232,8 @@ networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
 Earth sacrifice candidate, triggered abilities, activated abilities other
-than basic-land mana abilities, static abilities, replacement effects, partial prevention/redirection,
+than basic-land mana abilities, static abilities beyond the supported forms,
+replacement effects beyond the implemented CR 614/615/616 set, full redirection,
 planeswalkers, counters and tokens *as card text* (the rules layer implements
 typed +1/+1 and -1/-1 counters, creature tokens with correct ownership/
 cessation and the flying/reach/defender keywords, but no card in the 28-card
@@ -217,8 +241,8 @@ pool creates or prints one; the sandbox counter display is storage only; player
 counters do not exist),
 milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
-layers beyond a single until-end-of-turn pump, Arcane/splice interactions, and any
-card outside this branch candidate's 28-card pool.
+layers 4–6/7b/7d, Arcane/splice interactions, and any
+card outside this branch candidate's 31-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

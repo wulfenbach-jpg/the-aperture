@@ -51,18 +51,19 @@ fn every_printed_ability_maps_to_implemented_semantics() {
             None => {
                 // No spell definition means a permanent whose printed text, if
                 // any, is entirely covered by typed activated/triggered
-                // abilities.
+                // abilities or typed static abilities.
                 let abilities = aperture_core::abilities(card.id);
+                let statics = aperture_core::ability::static_abilities(card.id);
                 if card.oracle.trim().is_empty() {
                     assert!(
-                        abilities.is_empty(),
+                        abilities.is_empty() && statics.is_empty(),
                         "{} has abilities but prints no text",
                         card.name
                     );
                 } else {
                     assert!(
-                        !abilities.is_empty(),
-                        "{} prints abilities but has no implementation",
+                        !abilities.is_empty() || !statics.is_empty(),
+                        "{} prints text but has no implementation",
                         card.name
                     );
                     for ability in abilities {
@@ -76,6 +77,14 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                             !ability.effects().is_empty(),
                             "{}'s ability does nothing",
                             card.name
+                        );
+                    }
+                    for static_ability in statics {
+                        assert!(
+                            card.oracle.contains(static_ability.text()),
+                            "{} prints {:?} but the catalog text does not contain the typed static ability",
+                            card.name,
+                            static_ability.text()
                         );
                     }
                 }
@@ -127,6 +136,10 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                         "{} uses an ability-only effect in its spell text",
                         card.name
                     )
+                }
+                Effect::PreventNextDamage(n) => {
+                    assert!(*n > 0, "{} has a no-op prevention effect", card.name);
+                    assert_eq!(spec.target, TargetSpec::AnyTarget, "{}", card.name);
                 }
             }
         }

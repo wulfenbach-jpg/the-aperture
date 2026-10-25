@@ -1,0 +1,11 @@
+# Deterministic release linking for the packaged Windows desktop build.
+#
+# MSVC's linker otherwise stamps the PE header with the current time and derives
+# the debug-record GUID per invocation, so two builds of identical sources differ
+# by ~20 metadata bytes. /Brepro removes the timestamp and derives the record id
+# from content, which makes repeated builds of the same commit with the same
+# toolchain byte-identical (verified by scripts/package.ps1 + the CI package job).
+#
+# This changes link flags only; it does not affect the code the compiler emits.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "link-arg=/Brepro"]

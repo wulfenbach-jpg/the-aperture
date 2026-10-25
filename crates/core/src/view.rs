@@ -401,6 +401,70 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             Some(player) => format!("{amount} combat damage to P{player} is prevented"),
             None => format!("{amount} combat damage to a permanent is prevented"),
         },
+        Event::DamageShieldCreated {
+            player,
+            card,
+            target,
+            amount,
+            combat_only,
+        } => {
+            let scope = if *combat_only {
+                "combat damage only"
+            } else {
+                "any damage"
+            };
+            match amount {
+                Some(n) => format!(
+                    "P{player} shields {target} with {} (prevent the next {n} damage, {scope}, CR 615)",
+                    card.name()
+                ),
+                None => format!(
+                    "P{player} shields {target} with {} (prevent all damage this turn, {scope}, CR 615)",
+                    card.name()
+                ),
+            }
+        }
+        Event::DamagePrevented {
+            card,
+            target,
+            amount,
+            remaining,
+            combat,
+            ..
+        } => {
+            let kind = if *combat { "combat damage" } else { "damage" };
+            match remaining {
+                Some(0) => format!(
+                    "{} prevents {amount} {kind} to {target}; the shield is used up (CR 615)",
+                    card.name()
+                ),
+                Some(left) => format!(
+                    "{} prevents {amount} {kind} to {target}; {left} prevention left this turn (CR 615)",
+                    card.name()
+                ),
+                None => format!(
+                    "{} prevents {amount} {kind} to {target} (CR 615)",
+                    card.name()
+                ),
+            }
+        }
+        Event::ReplacementApplied {
+            card,
+            controller,
+            chooser,
+            target,
+            before,
+            after,
+        } => format!(
+            "{} replaces {target}'s {before} damage with {after} (P{controller} controls it, P{chooser} chose the order, CR 614.1a/616.1)",
+            card.name()
+        ),
+        Event::ContinuousEffectStarted {
+            card, layer, text, ..
+        } => format!(
+            "{} starts a continuous effect in layer {layer}: {text}",
+            card.name()
+        ),
         Event::Destroyed { card, .. } => format!("{} is put into a graveyard", card.name()),
         Event::AbilityActivated {
             player,
@@ -673,4 +737,87 @@ fn masked_digest(view: &PlayerView) -> String {
         .chars()
         .take(12)
         .collect()
+}
+
+/// Omniscient postgame review text. This reads the FULL engine state — every
+/// hand, library and hidden zone — and is therefore only ever rendered inside
+/// the explicit postgame review mode, never as a live or policy input. The
+/// caller gates it on a finished game; the function re-checks and refuses to
+/// render anything while the game is still live, so a live seat cannot use it
+/// to see hidden cards.
+pub fn render_review(game: &Game) -> Result<String, String> {
+    if game.state.outcome.is_none() {
+        return Err(
+            "postgame review is only available once the game has actually ended".to_string(),
+        );
+    }
+    let state = &game.state;
+    let mut text = String::new();
+    text.push_str(
+        "POSTGAME OMNISCIENT REVIEW — shown because the game is over; this is not a policy view\n",
+    );
+    text.push_str(&format!("rules revision {}\n", state.rules_revision));
+    for player in &state.players {
+        let zone_names = |ids: &[ObjectId]| -> Vec<String> {
+            ids.iter()
+                .map(|id| {
+                    state
+                        .try_object(*id)
+                        .map(|object| object.name().to_string())
+                        .unwrap_or_else(|| format!("object #{id}"))
+                })
+                .collect()
+        };
+        text.push_str(&format!(
+            "\n--- P{} '{}' — life {}{} ---\n",
+            player.id,
+            player.name,
+            player.life,
+            if player.lost { " (left the game)" } else { "" }
+        ));
+        text.push_str(&format!(
+            "hand ({}): {}\n",
+            player.hand.len(),
+            renderer_join(&zone_names(&player.hand))
+        ));
+        text.push_str(&format!(
+            "library ({}): {}\n",
+            player.library.len(),
+            renderer_join(&zone_names(&player.library))
+        ));
+        text.push_str(&format!(
+            "graveyard ({}): {}\n",
+            player.graveyard.len(),
+            renderer_join(&zone_names(&player.graveyard))
+        ));
+        text.push_str(&format!(
+            "exile ({}): {}\n",
+            player.exile.len(),
+            renderer_join(&zone_names(&player.exile))
+        ));
+        if state.profile.has_command_zone() {
+            text.push_str(&format!(
+                "command zone ({}): {}\n",
+                player.command_zone.len(),
+                renderer_join(&zone_names(&player.command_zone))
+            ));
+        }
+    }
+    if state.stack.is_empty() {
+        text.push_str("\nstack: empty at the recorded end\n");
+    } else {
+        text.push_str(&format!(
+            "\nstack at the recorded end: {} item(s)\n",
+            state.stack.len()
+        ));
+    }
+    Ok(text)
+}
+
+fn renderer_join(names: &[String]) -> String {
+    if names.is_empty() {
+        "(none)".to_string()
+    } else {
+        names.join(", ")
+    }
 }

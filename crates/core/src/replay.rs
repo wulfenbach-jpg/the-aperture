@@ -229,6 +229,82 @@ impl Replay {
         Ok(())
     }
 
+    /// Cut a new branch line from this recorded line at an explicitly chosen
+    /// action boundary: the branch keeps exactly the first `keep` recorded
+    /// steps, and anything played from there is new branching history. The
+    /// branch keeps the same seed and deck snapshots, so playing it forward is
+    /// deterministic. The recorded outcome and final digest are cleared — they
+    /// describe the base line, not the branch.
+    pub fn branch_at(&self, keep: usize) -> Result<Replay, ReplayError> {
+        self.validate()?;
+        if keep > self.steps.len() {
+            return Err(ReplayError::Invariant {
+                reason: format!(
+                    "branch point {keep} is beyond the {} recorded action(s)",
+                    self.steps.len()
+                ),
+            });
+        }
+        let mut branch = self.clone();
+        branch.steps.truncate(keep);
+        branch.outcome = None;
+        branch.truncated = None;
+        branch.final_digest.clear();
+        Ok(branch)
+    }
+
+    /// Replay only the recorded line and hand back the resulting state and
+    /// log, without a digest assertion against the recording. Used by the
+    /// branch application path where the recorded tail belongs to the base.
+    pub fn run_recorded(&self) -> Result<(Game, Vec<Event>), ReplayError> {
+        if self.version != REPLAY_VERSION {
+            return Err(ReplayError::Version {
+                got: self.version,
+                expected: REPLAY_VERSION,
+            });
+        }
+        self.validate()?;
+        let specs: Vec<(PlayerId, crate::card::CardId)> = self
+            .commanders
+            .iter()
+            .map(|setup| (setup.seat, setup.card))
+            .collect();
+        let (mut game, mut log) = match self.profile {
+            Profile::Practice20 => Game::new_logged(self.seed, &self.seats),
+            Profile::CommandZone20 => Game::new_command_zone_logged(self.seed, &self.seats, &specs),
+            Profile::CommanderCombat40 => {
+                Game::new_commander_combat_logged(self.seed, &self.seats, &specs)
+            }
+        }
+        .map_err(|source| ReplayError::Setup { source })?;
+        if game.state.first_player != self.first_player {
+            return Err(ReplayError::FirstPlayerMismatch {
+                expected: self.first_player,
+                got: game.state.first_player,
+            });
+        }
+        for (index, step) in self.steps.iter().enumerate() {
+            let submission = Submission {
+                player: step.player,
+                revision: step.revision,
+                decision: step.decision,
+                action: step.action.clone(),
+            };
+            match game.submit(&submission) {
+                Ok(events) => log.extend(events),
+                Err(source) => {
+                    return Err(ReplayError::Step {
+                        index,
+                        player: step.player,
+                        kind: step.action.kind(),
+                        source,
+                    });
+                }
+            }
+        }
+        Ok((game, log))
+    }
+
     pub fn record(&mut self, step: ReplayStep) {
         self.steps.push(step);
     }
@@ -303,6 +379,129 @@ impl Replay {
         replay.validate()?;
         Ok(replay)
     }
+}
+
+/// One compared point between two recorded lines. Only the public axis of the
+/// accepted action (seat, decision serial and action kind) is recorded — never
+/// a card name, target or zone contents — so a comparison shown by default
+/// leaks no private or future information beyond what both lines already
+/// recorded publicly.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BranchDiffLine {
+    pub step: usize,
+    pub player: PlayerId,
+    pub decision: u64,
+    pub base: Option<&'static str>,
+    pub branch: Option<&'static str>,
+}
+
+/// Public comparison of two replay lines that share the same setup. `branch` is
+/// expected to agree with `base` over its common prefix (a branch is derived
+/// from the base at an explicit action boundary); the lines start at the first
+/// step where the accepted actions differ.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BranchDiff {
+    /// Step index where the two lines first differ; `None` when they agree
+    /// over the whole branch length so far.
+    pub diverged_at: Option<usize>,
+    pub lines: Vec<BranchDiffLine>,
+    /// The base line is longer than the branch's current recorded history.
+    /// Its continuation past the branch's live boundary is deliberately left
+    /// out of `lines` and surfaced only as this note — never as action kinds —
+    /// because on a live branch that tail is the base's future.
+    pub base_tail_unrevealed: bool,
+}
+
+impl BranchDiff {
+    /// Rendered comparison; every line is public-action-kind only.
+    pub fn render(&self) -> String {
+        let mut text = String::new();
+        match self.diverged_at {
+            Some(step) => text.push_str(&format!(
+                "branches first differ at recorded action #{step}; then:\n"
+            )),
+            None => text.push_str(
+                "branches agree so far: every accepted action on the branch is still on the base line\n",
+            ),
+        }
+        for line in self.lines.iter().take(64) {
+            text.push_str(&format!(
+                "  #{step} P{player} (decision {decision}): base {} | branch {}\n",
+                line.base.unwrap_or("(nothing — line has ended here)"),
+                line.branch.unwrap_or("(nothing — line has ended here)"),
+                step = line.step,
+                player = line.player,
+                decision = line.decision,
+            ));
+        }
+        if self.lines.len() > 64 {
+            text.push_str(&format!(
+                "  … {} more compared action(s) not shown\n",
+                self.lines.len() - 64
+            ));
+        }
+        if self.base_tail_unrevealed {
+            text.push_str(
+                "  (the base line still extends past the branch's current recorded history — its continuation is not revealed here)\n",
+            );
+        }
+        text
+    }
+}
+
+/// Compare two recorded lines from the same setup. Legal-action *kinds* are the
+/// vocabulary shown; the exact arguments (cards, targets, counts) are deliberately
+/// omitted so the default comparison cannot leak private or future information.
+/// The comparison also never reaches past the branch's own recorded history: a
+/// diverged branch is typically still live, so the base's continuation after
+/// the branch's last step is left out entirely and marked with
+/// `base_tail_unrevealed` instead of being rendered.
+pub fn compare_branches(base: &Replay, branch: &Replay) -> Result<BranchDiff, ReplayError> {
+    let same_setup = base.seed == branch.seed
+        && base.seats == branch.seats
+        && base.profile == branch.profile
+        && base.commanders == branch.commanders
+        && base.first_player == branch.first_player;
+    if !same_setup {
+        return Err(ReplayError::Invariant {
+            reason: "the two lines were not recorded from the same setup".to_string(),
+        });
+    }
+    if base
+        .steps
+        .first()
+        .zip(branch.steps.first())
+        .is_some_and(|(a, b)| a != b)
+    {
+        return Err(ReplayError::Invariant {
+            reason: "the two lines do not share their first recorded action".to_string(),
+        });
+    }
+    let diverged_at =
+        (0..branch.steps.len()).find(|index| base.steps.get(*index) != branch.steps.get(*index));
+    let mut lines = Vec::new();
+    if let Some(at) = diverged_at {
+        // The compared span is bounded by the BRANCH's own recorded history.
+        // Judging agreement uses only branch steps; once the branch line has
+        // ended, the base's continuation is its future and is never rendered
+        // as action kinds (it would reveal what the base line still holds in
+        // store to whoever is playing the live branch).
+        for step in at..branch.steps.len() {
+            lines.push(BranchDiffLine {
+                step,
+                player: branch.steps[step].player,
+                decision: branch.steps[step].decision,
+                base: base.steps.get(step).map(|step| step.action.kind()),
+                branch: branch.steps.get(step).map(|step| step.action.kind()),
+            });
+        }
+    }
+    let base_tail_unrevealed = base.steps.len() > branch.steps.len();
+    Ok(BranchDiff {
+        diverged_at,
+        lines,
+        base_tail_unrevealed,
+    })
 }
 
 /// A live session snapshot: the full engine state plus what produced it. Loading

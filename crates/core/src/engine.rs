@@ -22,6 +22,10 @@ use crate::digest;
 use crate::error::EngineError;
 use crate::event::Event;
 use crate::ids::{ObjectId, P0, PlayerId, Zone};
+use crate::layer::{
+    ContinuousEffect, ContinuousKind, DamageShield, DamageTarget, EffectDuration, Layer,
+    ShieldScope, ShieldTarget,
+};
 use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::state::{
@@ -51,7 +55,7 @@ fn cards_to_bottom(seat_count: usize, mulligans: u8) -> u8 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Game {
     pub state: GameState,
 }
@@ -281,6 +285,10 @@ impl Game {
             next_trigger_seq: 0,
             revealed: Vec::new(),
             activation_uses: BTreeMap::new(),
+            effects: Vec::new(),
+            shields: Vec::new(),
+            next_effect: 1,
+            next_timestamp: 1,
             revision: 0,
             decision: 0,
             outcome: None,
@@ -377,6 +385,343 @@ impl Game {
 
     fn objects_mut(&mut self, id: ObjectId) -> Option<&mut Object> {
         self.state.objects.get_mut(&id)
+    }
+
+    // ------------------------------------------------------- effects (CR 613-616)
+
+    /// Next rule-visible timestamp (CR 613.7). Monotonic within a game; never
+    /// derived from wall-clock time, so a replay reproduces the same order.
+    fn next_timestamp(&mut self) -> u64 {
+        self.state.next_timestamp += 1;
+        self.state.next_timestamp
+    }
+
+    fn next_effect_id(&mut self) -> u32 {
+        let id = self.state.next_effect;
+        self.state.next_effect += 1;
+        id
+    }
+
+    /// How many cards a printed count-based static ability counts for the
+    /// object controlled by `controller`.
+    fn count_value(&self, controller: PlayerId, source: ability::CountSource) -> i32 {
+        match source {
+            ability::CountSource::CreatureCardsInOpponentsGraveyards => {
+                self.state
+                    .players
+                    .iter()
+                    .enumerate()
+                    .filter(|(player, _)| *player as PlayerId != controller)
+                    .flat_map(|(_, player)| player.graveyard.iter())
+                    .filter_map(|id| self.state.try_object(*id))
+                    .filter(|object| object.card.def().is_creature())
+                    .count() as i32
+            }
+        }
+    }
+
+    /// CR 613: recompute every battlefield object's power/toughness in layer
+    /// order. Only layer 7c exists in this starter set: printed count-based
+    /// statics (Wight of Precinct Six's "+1/+1 for each creature card in your
+    /// opponents' graveyards") and one-shot until-end-of-turn modifiers, the
+    /// latter in timestamp order (CR 613.7). Silent by design: a layer
+    /// recomputation is not itself a rules event, so the event trace only shows
+    /// effects starting (`ContinuousEffectStarted`) and their consequences.
+    ///
+    /// 7c modifiers are additive, so the order between the static group and the
+    /// timestamp-ordered group cannot change the resulting power/toughness
+    /// (addition commutes); each group is still iterated in a fixed order —
+    /// object id for statics, timestamp for one-shot effects — so every replay
+    /// recomputes identically.
+    ///
+    /// Layer 7d (+1/+1 counters) is deliberately not applied here: counters are
+    /// still display-only until the counters lane makes them
+    /// characteristic-changing.
+    fn recompute_layers(&mut self) {
+        let battlefield: Vec<(ObjectId, CardId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield)
+            .map(|object| (object.id, object.card))
+            .collect();
+        for (id, _) in &battlefield {
+            if let Some(object) = self.state.objects.get_mut(id) {
+                object.pump_power = 0;
+                object.pump_toughness = 0;
+            }
+        }
+        // Printed layer 7c statics: +P/+T for each counted card, evaluated
+        // against the current game state for the source's controller.
+        for (id, card) in &battlefield {
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
+            for static_ability in ability::static_abilities(*card) {
+                let ability::StaticAbility::PowerToughnessPerCount {
+                    power, toughness, ..
+                } = static_ability
+                else {
+                    continue;
+                };
+                let Some(count) = static_ability.count_source() else {
+                    continue;
+                };
+                let value = self.count_value(controller, count);
+                if value == 0 {
+                    continue;
+                }
+                if let Some(object) = self.state.objects.get_mut(id) {
+                    object.pump_power += power * value;
+                    object.pump_toughness += toughness * value;
+                }
+            }
+        }
+        // Layer 7c one-shot effects in timestamp order (CR 613.7).
+        let mut modifying: Vec<(u64, ObjectId, i32, i32)> = self
+            .state
+            .effects
+            .iter()
+            .filter(|effect| effect.layer == Layer::Modifying)
+            .map(|effect| {
+                let ContinuousKind::ModifyPowerToughness { power, toughness } = effect.kind;
+                (effect.timestamp, effect.target, power, toughness)
+            })
+            .collect();
+        modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
+        for (_, target, power, toughness) in modifying {
+            if let Some(object) = self.state.objects.get_mut(&target)
+                && object.zone == Zone::Battlefield
+            {
+                object.pump_power += power;
+                object.pump_toughness += toughness;
+            }
+        }
+        // An effect whose target left the battlefield (CR 400.7) stops applying;
+        // so does one that only lasts while its source is on the battlefield.
+        let effects = std::mem::take(&mut self.state.effects);
+        self.state.effects = effects
+            .into_iter()
+            .filter(|effect| {
+                let target_present = self
+                    .state
+                    .try_object(effect.target)
+                    .is_some_and(|object| object.zone == Zone::Battlefield);
+                let source_present = effect.duration != EffectDuration::WhileSourceOnBattlefield
+                    || effect.source.is_some_and(|source| {
+                        self.state
+                            .try_object(source)
+                            .is_some_and(|object| object.zone == Zone::Battlefield)
+                    });
+                target_present && source_present
+            })
+            .collect();
+        // A shield on a permanent that left the battlefield can never apply again.
+        let shields = std::mem::take(&mut self.state.shields);
+        self.state.shields = shields
+            .into_iter()
+            .filter(|shield| match shield.target {
+                ShieldTarget::Permanent(id) => self
+                    .state
+                    .try_object(id)
+                    .is_some_and(|object| object.zone == Zone::Battlefield),
+                ShieldTarget::Player(_) | ShieldTarget::Any => true,
+            })
+            .collect();
+    }
+
+    /// Start a layer 7c continuous effect on `target` from `item`'s source.
+    fn add_modifier_effect(
+        &mut self,
+        item: &StackItem,
+        target: ObjectId,
+        power: i32,
+        toughness: i32,
+        events: &mut Vec<Event>,
+    ) {
+        if power == 0 && toughness == 0 {
+            return;
+        }
+        let card = self.state.object(item.object).card;
+        let timestamp = self.next_timestamp();
+        let id = self.next_effect_id();
+        self.state.effects.push(ContinuousEffect {
+            id,
+            timestamp,
+            source: Some(item.object),
+            card,
+            controller: item.controller,
+            layer: Layer::Modifying,
+            target,
+            kind: ContinuousKind::ModifyPowerToughness { power, toughness },
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+        events.push(Event::ContinuousEffectStarted {
+            object: target,
+            card,
+            layer: Layer::Modifying.label().to_string(),
+            text: format!(
+                "{power:+}/{toughness:+} until end of turn ({})",
+                Layer::Modifying.rules()
+            ),
+        });
+    }
+
+    /// Player CR 616.1 gives the choice of replacement/prevention order to: the
+    /// affected player, or the controller of the affected permanent.
+    fn damage_chooser(&self, target: DamageTarget) -> PlayerId {
+        match target {
+            DamageTarget::Player(player) => player,
+            DamageTarget::Permanent(id) => self
+                .state
+                .try_object(id)
+                .map(|object| object.controller)
+                .unwrap_or(0),
+        }
+    }
+
+    fn damage_target_label(&self, target: DamageTarget) -> String {
+        match target {
+            DamageTarget::Player(player) => format!("P{player}"),
+            DamageTarget::Permanent(id) => self.describe_object(id),
+        }
+    }
+
+    /// Replacement effects that apply to damage dealt by `source` (CR 614.1a).
+    /// The printed wording is "a **source** you control would deal damage", so
+    /// the source may be a permanent on the battlefield (a creature's combat or
+    /// activated-ability damage) or a spell on the stack (Shock) — the test is
+    /// that `source`'s controller controls it, not that it is a creature.
+    fn damage_multipliers(&self, source: Option<ObjectId>) -> Vec<(CardId, PlayerId, u32)> {
+        let Some(source_object) = source.and_then(|id| self.state.try_object(id)) else {
+            return Vec::new();
+        };
+        if !matches!(source_object.zone, Zone::Battlefield | Zone::Stack) {
+            return Vec::new();
+        }
+        let controller = source_object.controller;
+        let mut found: Vec<(CardId, PlayerId, u32)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield && object.controller == controller)
+            .flat_map(|object| {
+                ability::static_abilities(object.card)
+                    .iter()
+                    .filter_map(move |static_ability| match static_ability {
+                        ability::StaticAbility::DamageFromControlledSources { factor, .. } => {
+                            Some((object.card, object.controller, *factor))
+                        }
+                        _ => None,
+                    })
+            })
+            .collect();
+        // Two copies of the same multiplier commute, so object order is a stable
+        // deterministic order rather than a timestamp one.
+        found
+            .sort_unstable_by_key(|(card, controller, factor)| (*controller, *card as u8, *factor));
+        found
+    }
+
+    /// Deal one damage instance through the replacement/prevention pipeline
+    /// (CR 614.1a, 615.1, 616.1) and return the amount actually dealt.
+    ///
+    /// CR 616.1 policy (engine-authoritative, because the engine has no interact
+    /// channel for order choices): the chooser resolves prevention shields
+    /// first — shields controlled by the chooser, then any other shield, each in
+    /// timestamp order — and only then the damage multipliers. That is the order
+    /// the affected player would choose (it removes damage before anything can
+    /// double it), and every application is recorded with its chooser in the
+    /// event trace, so no later agent can pick a different order.
+    fn deal_damage(
+        &mut self,
+        source: Option<ObjectId>,
+        target: DamageTarget,
+        amount: u32,
+        combat: bool,
+        events: &mut Vec<Event>,
+    ) -> u32 {
+        if amount == 0 {
+            return 0;
+        }
+        let chooser = self.damage_chooser(target);
+        let label = self.damage_target_label(target);
+        let mut remaining = amount;
+
+        let mut shields: Vec<(u8, u64, u32)> = self
+            .state
+            .shields
+            .iter()
+            .filter(|shield| shield.applies_to(target, combat))
+            .map(|shield| {
+                (
+                    if shield.controller == chooser { 0 } else { 1 },
+                    shield.timestamp,
+                    shield.id,
+                )
+            })
+            .collect();
+        shields.sort_unstable();
+        for (_, _, id) in shields {
+            if remaining == 0 {
+                break;
+            }
+            let Some(index) = self.state.shields.iter().position(|shield| shield.id == id) else {
+                continue;
+            };
+            let prevented = self.state.shields[index].absorb(remaining);
+            if prevented == 0 {
+                continue;
+            }
+            remaining -= prevented;
+            let card = self.state.shields[index].card;
+            let now_remaining = self.state.shields[index].remaining;
+            if self.state.shields[index].exhausted() {
+                self.state.shields.remove(index);
+            }
+            events.push(Event::DamagePrevented {
+                source,
+                card,
+                target: label.clone(),
+                amount: prevented,
+                remaining: now_remaining,
+                combat,
+            });
+        }
+
+        // CR 614.5: each replacement effect applies at most once per event.
+        for (card, controller, factor) in self.damage_multipliers(source) {
+            if remaining == 0 || factor <= 1 {
+                continue;
+            }
+            let before = remaining;
+            remaining = remaining.saturating_mul(factor);
+            events.push(Event::ReplacementApplied {
+                card,
+                controller,
+                chooser,
+                target: label.clone(),
+                before,
+                after: remaining,
+            });
+        }
+
+        if remaining == 0 {
+            return 0;
+        }
+        match target {
+            DamageTarget::Player(player) => {
+                self.state.players[player as usize].life -= remaining as i32;
+            }
+            DamageTarget::Permanent(id) => {
+                if let Some(object) = self.objects_mut(id) {
+                    object.damage += remaining;
+                }
+            }
+        }
+        remaining
     }
 
     fn tap_for(&mut self, lands: &[ObjectId], events: &mut Vec<Event>) {
@@ -2825,16 +3170,32 @@ impl Game {
         if self.state.prevent_all_combat_damage_turn.take().is_some() {
             changed = true;
         }
+        // CR 514.2: until-end-of-turn effects and every prevention shield end.
+        let expired_effects = self
+            .state
+            .effects
+            .iter()
+            .filter(|effect| effect.duration == EffectDuration::UntilEndOfTurn)
+            .count();
+        self.state
+            .effects
+            .retain(|effect| effect.duration != EffectDuration::UntilEndOfTurn);
+        let expired_shields = self.state.shields.len();
+        self.state.shields.clear();
+        if expired_effects > 0 || expired_shields > 0 {
+            changed = true;
+        }
         for obj in self.state.objects.values_mut() {
             if obj.zone == Zone::Battlefield {
-                if obj.damage > 0 || obj.pump_power != 0 || obj.pump_toughness != 0 {
+                if obj.damage > 0 {
                     changed = true;
                 }
                 obj.damage = 0;
-                obj.pump_power = 0;
-                obj.pump_toughness = 0;
             }
         }
+        // The layer recomputation clears the expired 7c modifiers and re-applies
+        // any characteristic-defining ability that outlives the turn.
+        self.recompute_layers();
         if changed {
             events.push(Event::StateBasedAction {
                 description:
@@ -3132,6 +3493,10 @@ impl Game {
         }
         loop {
             let mut changed = false;
+            // CR 613: continuous effects are recomputed before state-based
+            // actions are checked, so a characteristic-defining toughness of 0
+            // (or a modifier that left this turn) is seen by the SBA pass.
+            self.recompute_layers();
             // Reasons are captured before leave_game prunes the departed
             // recipient's ledger rows, so a commander-damage GameOver reason
             // survives the settlement.
@@ -3790,30 +4155,46 @@ impl Game {
                 true
             }
             Effect::Damage(n) => {
-                for target in &item.targets {
+                for target in item.targets.clone() {
                     match target {
                         Target::Player(p) => {
-                            self.state.players[*p as usize].life -= n as i32;
-                            let life = self.state.players[*p as usize].life;
+                            let dealt = self.deal_damage(
+                                Some(item.object),
+                                DamageTarget::Player(p),
+                                n as u32,
+                                false,
+                                events,
+                            );
+                            if dealt == 0 {
+                                continue;
+                            }
+                            let life = self.state.players[p as usize].life;
                             events.push(Event::Damage {
                                 source: Some(item.object),
                                 target: format!("P{p}"),
-                                amount: n as u32,
+                                amount: dealt,
                             });
                             events.push(Event::LifeChange {
-                                player: *p,
-                                delta: -(n as i32),
+                                player: p,
+                                delta: -(dealt as i32),
                                 life,
                             });
                         }
                         Target::Permanent(id) => {
-                            if let Some(obj) = self.objects_mut(*id) {
-                                obj.damage += n as u32;
+                            let dealt = self.deal_damage(
+                                Some(item.object),
+                                DamageTarget::Permanent(id),
+                                n as u32,
+                                false,
+                                events,
+                            );
+                            if dealt == 0 {
+                                continue;
                             }
                             events.push(Event::Damage {
                                 source: Some(item.object),
-                                target: self.describe_object(*id),
-                                amount: n as u32,
+                                target: self.describe_object(id),
+                                amount: dealt,
                             });
                         }
                         Target::Spell(_) => {}
@@ -3822,13 +4203,52 @@ impl Game {
                 false
             }
             Effect::Pump(power, toughness) => {
-                for target in &item.targets {
-                    if let Target::Permanent(id) = target
-                        && let Some(obj) = self.objects_mut(*id)
-                    {
-                        obj.pump_power += power;
-                        obj.pump_toughness += toughness;
+                for target in item.targets.clone() {
+                    if let Target::Permanent(id) = target {
+                        self.add_modifier_effect(item, id, power, toughness, events);
                     }
+                }
+                self.recompute_layers();
+                false
+            }
+            Effect::PreventNextDamage(amount) => {
+                // CR 615.1: the prevention effect's controller creates a shield
+                // on the spell's target. One shield per application; two
+                // Mending Hands stack as two independent shields.
+                //
+                // "Any target" never includes a spell (CR 115.4), so
+                // `legal_targets(AnyTarget)` offers only players and creatures
+                // and `validate_cast` refuses a spell with `BadTarget`. The
+                // spell arm below is therefore unreachable for a legal action;
+                // it produces no shield rather than a silent no-op shield.
+                for target in item.targets.clone() {
+                    let shield_target = match target {
+                        Target::Player(p) => ShieldTarget::Player(p),
+                        Target::Permanent(id) => ShieldTarget::Permanent(id),
+                        Target::Spell(_) => continue,
+                    };
+                    let card = self.state.object(item.object).card;
+                    let label = shield_target.label(&self.state);
+                    let timestamp = self.next_timestamp();
+                    let id = self.next_effect_id();
+                    self.state.shields.push(DamageShield {
+                        id,
+                        timestamp,
+                        source: Some(item.object),
+                        card,
+                        controller,
+                        scope: ShieldScope::AnyDamage,
+                        target: shield_target,
+                        remaining: Some(amount),
+                        created_turn: self.state.turn.number,
+                    });
+                    events.push(Event::DamageShieldCreated {
+                        player: controller,
+                        card,
+                        target: label,
+                        amount: Some(amount),
+                        combat_only: false,
+                    });
                 }
                 false
             }
@@ -3919,12 +4339,14 @@ impl Game {
             Effect::PumpSource(power, toughness) => {
                 // A pump with no target applies to the ability's own source
                 // (CR 611.2c). The source must still be on the battlefield.
-                if let Some(object) = self.objects_mut(item.object)
-                    && object.zone == Zone::Battlefield
+                if self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|object| object.zone == Zone::Battlefield)
                 {
-                    object.pump_power += power;
-                    object.pump_toughness += toughness;
+                    self.add_modifier_effect(item, item.object, power, toughness, events);
                 }
+                self.recompute_layers();
                 false
             }
             Effect::CounterTargetSpell => {
@@ -4120,23 +4542,35 @@ impl Game {
                     if !self.state.is_live(defender) {
                         continue;
                     }
-                    self.state.players[defender as usize].life -= amount as i32;
+                    // CR 614/615: replacement and prevention run before any
+                    // life change and before any commander-damage credit, so a
+                    // prevented instance never credits the ledger (CR 615.6).
+                    let dealt = self.deal_damage(
+                        Some(source),
+                        DamageTarget::Player(defender),
+                        amount,
+                        true,
+                        events,
+                    );
+                    if dealt == 0 {
+                        continue;
+                    }
                     let life = self.state.players[defender as usize].life;
                     let card = self.state.object(source).card;
                     events.push(Event::CombatDamage {
                         attacker: source,
                         attacker_card: card,
                         blocker: None,
-                        amount,
+                        amount: dealt,
                     });
                     events.push(Event::Damage {
                         source: Some(source),
                         target: format!("P{defender}"),
-                        amount,
+                        amount: dealt,
                     });
                     events.push(Event::LifeChange {
                         player: defender,
-                        delta: -(amount as i32),
+                        delta: -(dealt as i32),
                         life,
                     });
                     // CR 903.10a: only combat damage actually dealt to a player
@@ -4147,33 +4581,40 @@ impl Game {
                     if self.state.profile.is_commander_combat()
                         && let Some(commander) = self.state.object(source).commander
                     {
-                        self.state.add_commander_damage(commander, defender, amount);
+                        self.state.add_commander_damage(commander, defender, dealt);
                         let total = self.state.commander_damage_dealt(commander, defender);
                         events.push(Event::CommanderDamage {
                             commander,
                             card,
                             recipient: defender,
-                            amount,
+                            amount: dealt,
                             total,
                         });
                     }
                 }
                 Some(victim) => {
-                    if let Some(obj) = self.objects_mut(victim) {
-                        obj.damage += amount;
+                    let dealt = self.deal_damage(
+                        Some(source),
+                        DamageTarget::Permanent(victim),
+                        amount,
+                        true,
+                        events,
+                    );
+                    if dealt == 0 {
+                        continue;
                     }
                     let victim_card = self.state.object(victim).card;
                     let label = format!("{} ({})", victim_card.name(), victim);
                     events.push(Event::Damage {
                         source: Some(source),
                         target: label,
-                        amount,
+                        amount: dealt,
                     });
                     events.push(Event::CombatDamage {
                         attacker: source,
                         attacker_card: self.state.object(source).card,
                         blocker: Some((victim, victim_card)),
-                        amount,
+                        amount: dealt,
                     });
                 }
             }

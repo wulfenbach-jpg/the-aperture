@@ -12,10 +12,14 @@
 //!   optional ("you may").
 //!
 //! Not implemented, and not claimed: mana abilities on nonland permanents,
-//! static abilities, replacement effects, intervening-"if" clauses, delayed or
-//! reflexive triggers, and control changes.
+//! intervening-"if" clauses, delayed or reflexive triggers, and control
+//! changes. Static abilities are declared here only for the two printed forms
+//! the supported pool actually uses: a characteristic-defining power/toughness
+//! ability (CR 604.3, layer 7a) and a damage-doubling replacement effect
+//! (CR 614.1a).
 
 use crate::card::{CardId, Effect, TargetSpec};
+use crate::layer::Layer;
 
 /// The event that makes a triggered ability trigger.
 ///
@@ -256,4 +260,87 @@ pub fn triggers_on(
             Ability::Triggered(t) if t.event == event => Some((index as u8, t)),
             _ => None,
         })
+}
+
+// ------------------------------------------------------- static abilities
+
+/// What a layered static power/toughness ability counts. Each variant exists
+/// because a supported card prints it; adding a card with a different count
+/// means adding a variant here, not approximating it in the engine.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum CountSource {
+    /// "for each creature card in your opponents' graveyards"
+    /// (Wight of Precinct Six — a layer 7c static, *not* characteristic-defining).
+    CreatureCardsInOpponentsGraveyards,
+}
+
+/// A printed static ability that produces a continuous or replacement effect.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum StaticAbility {
+    /// CR 613.4c: "gets +P/+T for each ..." — an additive modifier that applies
+    /// for as long as the source is on the battlefield. It is a layer 7c
+    /// effect, so it stacks with until-end-of-turn modifiers instead of
+    /// setting a base value.
+    PowerToughnessPerCount {
+        count: CountSource,
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
+    /// CR 614.1a: "If a source you control would deal damage to a permanent or
+    /// player, it deals double that damage instead." The doubled source may be
+    /// a permanent (a creature's combat or ability damage) or a spell on the
+    /// stack (Shock), because the printed word is "source", not "creature".
+    DamageFromControlledSources { factor: u32, text: &'static str },
+}
+
+impl StaticAbility {
+    pub fn text(self) -> &'static str {
+        match self {
+            StaticAbility::PowerToughnessPerCount { text, .. } => text,
+            StaticAbility::DamageFromControlledSources { text, .. } => text,
+        }
+    }
+
+    /// Layer this ability's continuous effect belongs to. A replacement effect
+    /// is layerless: it never applies in a layer, so `None`.
+    pub fn layer(self) -> Option<Layer> {
+        match self {
+            StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
+            StaticAbility::DamageFromControlledSources { .. } => None,
+        }
+    }
+
+    pub fn count_source(self) -> Option<CountSource> {
+        match self {
+            StaticAbility::PowerToughnessPerCount { count, .. } => Some(count),
+            StaticAbility::DamageFromControlledSources { .. } => None,
+        }
+    }
+}
+
+/// Printed text of every static ability in the pool is recorded with its
+/// authoritative source in `crates/core/tests/data/card-printings.json`; the
+/// catalog strings below are copied from those printings verbatim.
+const WIGHT: &[StaticAbility] = &[StaticAbility::PowerToughnessPerCount {
+    count: CountSource::CreatureCardsInOpponentsGraveyards,
+    power: 1,
+    toughness: 1,
+    text: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
+}];
+
+const ANGRATH: &[StaticAbility] = &[StaticAbility::DamageFromControlledSources {
+    factor: 2,
+    text: "If a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
+}];
+
+const NO_STATICS: &[StaticAbility] = &[];
+
+/// Every static ability the rules layer knows for a card, in printed order.
+pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
+    match card {
+        CardId::WightOfPrecinctSix => WIGHT,
+        CardId::AngrathsMarauders => ANGRATH,
+        _ => NO_STATICS,
+    }
 }
