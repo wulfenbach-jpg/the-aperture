@@ -34,14 +34,17 @@ New bounded primitives: `OpponentCreature` target, `BecomesBlocked` trigger,
   a serialized remaining-attacker continuation was not completed; excluded
   rather than shipping a known bypass. Source record retained as excluded.
 
-Both remain in the manifest missing set via fresh recomputation; desired lists
-untouched.
+These three remain in the manifest missing set via fresh recomputation; desired
+lists untouched.
 
 ## Genuine RED / controls
 
-Original RED: all slice8 cards absent from catalog; after scaffold, each new
-behavior failed before implementation (optional lifegain, blocked pump, Volley
-damage, Reversal untap, War Strike count).
+Actual RED: all slice8 cards were absent from the catalog, so the initial tests
+failed at `catalog::by_name` (retained in
+`evidence/issue17/slice8/retained-red-results.json`). Mechanics were then
+implemented, and later execution exposed test-harness corrections (for example
+Friendly Teddy hand accounting, War Strike Goblin count, Aetherize blocking
+priority) rather than a retroactive strict-TDD claim for every behavior.
 
 Added controls:
 * OpponentCreature target: with two opponent creatures a `TriggerTarget` pending
@@ -49,8 +52,11 @@ Added controls:
   digest; the legal opponent target succeeds.
 * Volley source-left/runtime count: bounce Volley with Unsummon before the
   trigger resolves; X counts the two remaining Goblins and deals lethal 2.
-* Razorclaw with two blockers triggers exactly once (power 5, not 7); existing
-  one-blocker pump/revert test retained.
+* Razorclaw with two blockers triggers exactly once (power 5, not 7); a separate
+  unblocked attack asserts no trigger and power stays 3; the one-blocker
+  pump/revert test remains.
+* Goblin War Strike's printed planeswalker target is bounded out: no planeswalker
+  permanents exist in the pool, so only its player target is usable.
 All drains assert `pending`, `resolving`, `stack` and `trigger_queue` empty.
 
 ## Verification

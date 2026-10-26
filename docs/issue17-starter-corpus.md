@@ -31,8 +31,8 @@ is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
 111-card pool. Isamaru itself is supported, and the slice-4 package implemented
-one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 56 missing
-cards; it stays `planned` because 56 of its chosen cards are still unsupported.
+one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
+cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
 `Stitcher's Supplier` (elas), `Ruin Crab` (tatyova), `Negate` and `Preordain`
 (talrand), `Pyretic Ritual` and `Seething Song` (zada). None of them is close to
@@ -45,13 +45,21 @@ basic lands (coordinator evidence
 `evidence/issue17/slice5/update_manifest.py` + `slice5-corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **100** are in the supported 111-card catalog and **359** are missing;
+* **99** are in the supported 111-card catalog and **360** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.
 * Structure per list is still 99 library cards + a separately named commander;
   the Swamp basic in Elas is now supported, but the rest of that desired list
   still needs its unsupported cards and interactions.
+
+Slice 8 currently supports five sourced cards: Soul's Attendant, Razorclaw
+Bear, Volley Veteran, Dramatic Reversal and Goblin War Strike. Brightstone
+Ritual, Friendly Teddy and Aetherize are explicitly excluded (bounded mana,
+serialized multi-player draw, and attacker-list commander replacement,
+respectively) and remain manifest-missing. Goblin War Strike's printed
+planeswalker target is not usable because no planeswalker permanents exist in
+the pool; the player target is implemented.
 
 Staged interaction roadmap (derived from the manifest `missing_interactions`):
 
@@ -60,7 +68,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    Command, Hordeling Outburst, Goblin Instigator, Beetleback Chief) and a 2/2
    blue Drake with functional flying for Talrand, Sky Summoner. Ayula and Zada
    still need their own token types; the exact Krenko starter is still planned
-   (51 missing) and Talrand's desired list has 54 missing cards;
+   (49 missing) and Talrand's desired list has 51 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
    independent of counters), **bounded implemented** landfall for Tatyova and

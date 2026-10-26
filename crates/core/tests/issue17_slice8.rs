@@ -463,3 +463,38 @@ fn razorclaw_triggers_once_with_two_blockers_and_not_when_unblocked() {
         "one BecomesBlocked event, not one per blocker"
     );
 }
+
+#[test]
+fn razorclaw_unblocked_does_not_trigger_or_pump() {
+    let mut game = fixture(91)
+        .battlefield(P0, &[card("Razorclaw Bear")])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bear = battlefield_card(&game, P0, card("Razorclaw Bear"));
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![bear],
+            defender: Some(P1),
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.step == Step::CombatDamage || g.state.turn.step == Step::EndCombat,
+        64
+    ));
+    assert_eq!(
+        game.state.object(bear).power(),
+        3,
+        "unblocked: no BecomesBlocked trigger"
+    );
+}

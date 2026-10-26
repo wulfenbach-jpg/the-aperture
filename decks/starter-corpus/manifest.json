@@ -139,7 +139,7 @@
         "Windfall"
       ],
       "missing_interactions": [
-        "flying token package is implemented; remaining 54 desired-list cards are not",
+        "flying token package is implemented; remaining 51 desired-list cards are not",
         "spell-cast trigger is implemented for the package; wider blue shell remains unsupported"
       ]
     },
@@ -201,7 +201,7 @@
         "Zo-Zu the Punisher"
       ],
       "missing_interactions": [
-        "remaining 51 desired-list cards are not in the supported pool",
+        "remaining 49 desired-list cards are not in the supported pool",
         "goblin tribal static/triggered payoffs beyond the six-card token package",
         "haste keyword semantics",
         "legend rule (Krenko remains commander-only)",
@@ -332,7 +332,7 @@
         "Yawgmoth, Thran Physician"
       ],
       "missing_interactions": [
-        "remaining 58 desired-list nonland names are unsupported",
+        "remaining 55 desired-list nonland names are unsupported",
         "sacrifice outlets",
         "death/drain triggers",
         "tutor and reanimation interactions"
