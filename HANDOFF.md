@@ -314,6 +314,11 @@ capture even with `--decider`.
   multi-face cards.
 * Counters are stored and displayed but do not affect rules math
   (`Object.plus_one_counters`); no layers — a single until-end-of-turn pump only.
+* Effects that act on "each opponent"/"each player" (`Effect::MillEachOpponent`,
+  `Effect::DamageEachOpponent`, Crack the Earth's sacrifice) iterate seats in
+  seat order, not in APNAP order (CR 101.4). Per-player graveyards and life are
+  unaffected, so the deviation is only visible in the order the events are
+  logged; the chooser never gains information from it.
 * Object identity is stable across zone changes (real Magic creates a new object
   per zone change); unobservable in this pool but relevant before scaling cards.
 * Damage assignment for a multi-blocked attacker is automatic and lethal-first.

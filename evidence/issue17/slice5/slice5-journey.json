@@ -21,24 +21,24 @@
   ],
   "counts": {
     "abilities_declined": 0,
-    "abilities_resolved": 21,
+    "abilities_resolved": 14,
     "ability_activations": 0,
-    "attacks": 43,
-    "blocks": 3,
-    "casts": 17,
+    "attacks": 25,
+    "blocks": 17,
+    "casts": 14,
     "commander_damage_events": 0,
     "commander_damage_losses": 0,
     "counterspells": 0,
-    "damage_events": 66,
-    "events": 6227,
-    "triggered_abilities": 21
+    "damage_events": 34,
+    "events": 4654,
+    "triggered_abilities": 14
   },
   "decider": null,
   "decision_sources": {
-    "heuristic": 2494
+    "heuristic": 1880
   },
-  "final_digest": "104adbf674ec216ea329adb8562e650b0fcdc210b7bd97b190d0a4b991c3e537",
-  "first_player": 0,
+  "final_digest": "d0c888f680d7024189e41848f15d99220bb32edb142a13fee64bf3ba0487cb79",
+  "first_player": 3,
   "policies": "heuristic vs heuristic vs heuristic vs heuristic",
   "policy_notes": [],
   "pool_size": 103,
@@ -46,39 +46,39 @@
   "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
   "replay_digest_matches": true,
   "replay_error": null,
-  "replay_steps": 2494,
+  "replay_steps": 1880,
   "rules_revision": "2026-09-25",
   "schema": "aperture-selfplay/2",
   "seat_count": 4,
   "seats": [
     {
-      "cards": 50,
+      "cards": 40,
       "library": 0,
-      "life": 21,
+      "life": 38,
       "name": "package-slice5-mill",
       "seat": 0,
       "source": "decks/package-slice5-mill.txt"
     },
     {
-      "cards": 50,
+      "cards": 40,
       "library": 0,
-      "life": 1,
+      "life": 33,
       "name": "package-slice5-mill",
       "seat": 1,
       "source": "decks/package-slice5-mill.txt"
     },
     {
-      "cards": 50,
-      "library": 4,
-      "life": 20,
+      "cards": 40,
+      "library": 1,
+      "life": 32,
       "name": "package-slice5-mill",
       "seat": 2,
       "source": "decks/package-slice5-mill.txt"
     },
     {
-      "cards": 50,
+      "cards": 40,
       "library": 0,
-      "life": 32,
+      "life": 38,
       "name": "package-slice5-mill",
       "seat": 3,
       "source": "decks/package-slice5-mill.txt"
@@ -87,9 +87,9 @@
   "seed": 501,
   "starting_life": 40,
   "status": "terminal",
-  "steps": 2494,
+  "steps": 1880,
   "truncated": null,
-  "turns": 60,
+  "turns": 45,
   "winner": 2,
   "winner_label": "P2"
 }

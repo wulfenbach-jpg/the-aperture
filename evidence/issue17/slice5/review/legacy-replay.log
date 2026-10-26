@@ -1,0 +1,12 @@
+--- evidence/issue17/slice4/slice4-review-2-journey1.replay.json
+replay seed 17 — 4 seat(s), 1567 action(s), recorded outcome Some(Win { winner: 1, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 5e905fdc0399 | matches recorded | events 4209
+--- evidence/issue17/slice3-cross-game.replay.json
+replay seed 5 — 4 seat(s), 1112 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 4572cd11e893 | matches recorded | events 2819
+--- evidence/issue17/slice3-cross-save.json
+save evidence/issue17/slice3-cross-save.json — 4 seat(s): P0 'package-cross-corpus' vs P1 'package-cross-corpus' vs P2 'package-cross-corpus' vs P3 'package-cross-corpus'
+  stored digest 4572cd11e893 | recomputed 4572cd11e893 | matches
+  turn 25 step postcombat main phase | pending None | sandbox modified: false
+--- evidence/issue17/slice2-krenko-save.json
+Error: replay ended early: digest e2827d82da51bba3a3d744aebd9ec848865b93478f228a6e2456590e8bf384d7 != recorded f4768c8a3bd2972f56613bc6072ac9f67b1d6de04ecb16653a9b2854cea368f8

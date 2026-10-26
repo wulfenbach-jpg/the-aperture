@@ -393,12 +393,56 @@ fn preordain_scries_two_then_draws_one() {
             targets: vec![],
         },
     );
-    advance_until(&mut game, |g| {
-        g.state.player(P0).hand.len() == 1 && g.state.player(P0).library.len() == 2
-    });
-
-    // The scripted scry policy keeps both cards on top (CR 701.18a), so the
-    // drawn card is the first library card and the next two are unchanged.
+    // Drive the resolution by hand so the assertion distinguishes "scry then
+    // draw" from "draw then scry": send the *first* looked-at card to the bottom
+    // and keep the second on top. A draw-then-scry implementation would draw the
+    // Island (the original top card); a correct scry-then-draw implementation
+    // draws the Forest, because the Island left the top of the library first.
+    let mut log = Vec::new();
+    let mut first_order_answered = false;
+    for _ in 0..24 {
+        if game.state.player(P0).hand.len() == 1 && game.state.pending.is_none() {
+            break;
+        }
+        if let Some(Pending::OrderCard { .. }) = &game.state.pending {
+            let keep_on_top = first_order_answered;
+            log.extend(submit_ok(
+                &mut game,
+                P0,
+                Action::OrderCard {
+                    to_top: keep_on_top,
+                },
+            ));
+            first_order_answered = true;
+            continue;
+        }
+        let owner = game
+            .decision_owner()
+            .expect("someone must be able to act before the draw");
+        log.extend(submit_ok(&mut game, owner, Action::Pass));
+    }
+    assert!(first_order_answered, "the scry really asked about card one");
+    // CR 701.18a: the scry happens first, so its two OrderedCard events precede
+    // the draw event.
+    let first_draw = log
+        .iter()
+        .position(|event| matches!(event, Event::Draw { .. }))
+        .expect("Preordain draws a card");
+    let ordered = log
+        .iter()
+        .filter(|event| matches!(event, Event::OrderedCard { .. }))
+        .count();
+    let last_order = log
+        .iter()
+        .rposition(|event| matches!(event, Event::OrderedCard { .. }))
+        .expect("two scry decisions");
+    assert_eq!(ordered, 2, "scry 2 asks about both cards");
+    assert!(
+        last_order < first_draw,
+        "both scry decisions precede the draw (scry then draw, not draw then scry)"
+    );
+    // The Island went to the bottom, so the Forest is drawn and the Mountain
+    // stays on top.
     let library: Vec<CardId> = game
         .state
         .player(P0)
@@ -406,7 +450,7 @@ fn preordain_scries_two_then_draws_one() {
         .iter()
         .map(|id| game.state.object(*id).card)
         .collect();
-    assert_eq!(library, vec![CardId::Forest, CardId::Mountain]);
+    assert_eq!(library, vec![CardId::Mountain, CardId::Island]);
     let hand: Vec<CardId> = game
         .state
         .player(P0)
@@ -414,7 +458,7 @@ fn preordain_scries_two_then_draws_one() {
         .iter()
         .map(|id| game.state.object(*id).card)
         .collect();
-    assert_eq!(hand, vec![CardId::Island]);
+    assert_eq!(hand, vec![CardId::Forest]);
 }
 
 #[test]

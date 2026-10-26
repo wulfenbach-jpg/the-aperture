@@ -1,10 +1,10 @@
-P0 draws Stitcher's Supplier
+P0 draws Preordain
+P0 draws Island
+P0 draws Seething Song
+P0 draws Preordain
 P0 draws Runeclaw Bear
+P0 draws Seething Song
 P0 draws Runeclaw Bear
-P0 draws Negate
-P0 draws Swamp
-P0 draws Guttersnipe
-P0 draws Mountain
 P1 draws a card
 P1 draws a card
 P1 draws a card
@@ -26,11 +26,25 @@ P3 draws a card
 P3 draws a card
 P3 draws a card
 P3 draws a card
-Game start — P0 plays first
-— Turn 1: P0 —
-P0 keeps a hand of 7
-P1 keeps a hand of 7
+Game start — P3 plays first
+— Turn 1: P3 —
 P3 keeps a hand of 7
+P0 mulligans (mulligan count 1)
+P0 draws Negate
+P0 draws Stitcher's Supplier
+P0 draws Swamp
+P0 draws Island
+P0 draws Guttersnipe
+P0 draws Pyretic Ritual
+P0 draws Runeclaw Bear
+P1 mulligans (mulligan count 1)
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
 P2 mulligans (mulligan count 1)
 P2 draws a card
 P2 draws a card
@@ -39,24 +53,113 @@ P2 draws a card
 P2 draws a card
 P2 draws a card
 P2 draws a card
-P2 mulligans (mulligan count 2)
-P2 draws a card
-P2 draws a card
-P2 draws a card
-P2 draws a card
-P2 draws a card
-P2 draws a card
-P2 draws a card
-P2 puts 1 card(s) on the bottom of their library
-P2 keeps a hand of 6
+P0 keeps a hand of 7
+P1 keeps a hand of 7
+P2 keeps a hand of 7
+P3 receives priority
+P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
+[upkeep step]
 P3 receives priority
 P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 2: P0 —
+[untap step]
 [upkeep step]
 P0 receives priority
 P0 passes
@@ -67,7 +170,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [draw step]
-P0 draws Mountain
+P0 draws Pyretic Ritual
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -101,9 +204,9 @@ P2 receives priority
 P2 passes
 P3 receives priority
 P3 passes
+P0 mills Mountain
+P0 mills Seething Song
 P0 mills Preordain
-P0 mills Guttersnipe
-P0 mills Pyretic Ritual
 P0's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
 P0 receives priority
 P0 passes
@@ -177,7 +280,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [cleanup step]
-— Turn 2: P1 —
+— Turn 3: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
@@ -200,7 +303,7 @@ P0 receives priority
 P0 passes
 [precombat main phase]
 P1 receives priority
-P1 plays Island
+P1 plays Mountain
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -273,7 +376,408 @@ P3 passes
 P0 receives priority
 P0 passes
 [cleanup step]
-— Turn 3: P2 —
+— Turn 4: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Swamp
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 5: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Swamp
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 6: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Preordain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Stitcher's Supplier
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 39)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 7: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1 receives priority
+P1 casts Ruin Crab
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Ruin Crab resolves (controlled by P1)
+Ruin Crab enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 8: P2 —
 [untap step]
 [upkeep step]
 P2 receives priority
@@ -369,7 +873,7 @@ P0 passes
 P1 receives priority
 P1 passes
 [cleanup step]
-— Turn 4: P3 —
+— Turn 9: P3 —
 [untap step]
 [upkeep step]
 P3 receives priority
@@ -392,7 +896,7 @@ P2 receives priority
 P2 passes
 [precombat main phase]
 P3 receives priority
-P3 plays Mountain
+P3 plays Island
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -465,7 +969,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [cleanup step]
-— Turn 5: P0 —
+— Turn 10: P0 —
 [untap step]
 [upkeep step]
 P0 receives priority
@@ -477,7 +981,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [draw step]
-P0 draws Runeclaw Bear
+P0 draws Grizzly Bears
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -487,8 +991,6 @@ P2 passes
 P3 receives priority
 P3 passes
 [precombat main phase]
-P0 receives priority
-P0 plays Mountain
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -527,8 +1029,8 @@ P3 receives priority
 P3 passes
 [combat damage step]
 1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 39)
+1 damage to P2
+P2 loses 1 life (now 39)
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -565,7 +1067,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [cleanup step]
-— Turn 6: P1 —
+— Turn 11: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
@@ -588,7 +1090,41 @@ P0 receives priority
 P0 passes
 [precombat main phase]
 P1 receives priority
-P1 plays Island
+P1 plays Swamp
+P1's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P0 mills Guttersnipe
+P0 mills Runeclaw Bear
+P0 mills Ruin Crab
+P2 mills Negate
+P2 mills Pyretic Ritual
+P2 mills Island
+P3 mills Grizzly Bears
+P3 mills Stitcher's Supplier
+P3 mills Mountain
+P1's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 casts Guttersnipe
+P1 taps Mountain for {R}
+P1 taps Swamp for {B}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Guttersnipe resolves (controlled by P1)
+Guttersnipe enters the battlefield under P1
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -607,6 +1143,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare attackers step]
+P1 attacks with Ruin Crab
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -661,7 +1198,1299 @@ P3 passes
 P0 receives priority
 P0 passes
 [cleanup step]
-— Turn 7: P2 —
+— Turn 12: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Swamp
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 13: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 14: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Swamp
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Swamp
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Stitcher's Supplier
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 38)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 15: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P0 mills Ruin Crab
+P0 mills Guttersnipe
+P0 mills Preordain
+P2 mills Ruin Crab
+P2 mills Negate
+P2 mills Stitcher's Supplier
+P3 mills Ruin Crab
+P3 mills Swamp
+P3 mills Guttersnipe
+P1's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Ruin Crab, Guttersnipe
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 36)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 16: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+— Turn 17: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Swamp
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 18: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Ruin Crab
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Ruin Crab
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Ruin Crab resolves (controlled by P0)
+Ruin Crab enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Stitcher's Supplier
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 35)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 19: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Ruin Crab, Guttersnipe
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 33)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 20: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Guttersnipe
+P2 taps Mountain for {R}
+P2 taps Swamp for {B}
+P2 taps Swamp for {B}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Guttersnipe resolves (controlled by P2)
+Guttersnipe enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 21: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Stitcher's Supplier
+P3 taps Swamp for {B}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Stitcher's Supplier resolves (controlled by P3)
+Stitcher's Supplier enters the battlefield under P3
+P3's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 mills Seething Song
+P3 mills Mountain
+P3 mills Negate
+P3's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 22: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 mills Swamp
+P1 mills Island
+P1 mills Seething Song
+P2 mills Runeclaw Bear
+P2 mills Grizzly Bears
+P2 mills Runeclaw Bear
+P3 mills Ruin Crab
+P3 mills Negate
+P3 mills Mountain
+P0's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P0 receives priority
+P0 casts Guttersnipe
+P0 taps Mountain for {R}
+P0 taps Swamp for {B}
+P0 taps Swamp for {B}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Guttersnipe resolves (controlled by P0)
+Guttersnipe enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Stitcher's Supplier, Ruin Crab
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 38)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 23: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Guttersnipe
+P1 taps Mountain for {R}
+P1 taps Swamp for {B}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Guttersnipe resolves (controlled by P1)
+Guttersnipe enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Guttersnipe
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Guttersnipe (#106)
+2 combat damage to Guttersnipe
+2 damage to Guttersnipe (#65)
+2 combat damage to Guttersnipe
+Guttersnipe is put into a graveyard
+Guttersnipe is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 24: P2 —
 [untap step]
 [upkeep step]
 P2 receives priority
@@ -770,7 +2599,7 @@ P0 passes
 P1 receives priority
 P1 passes
 [cleanup step]
-— Turn 8: P3 —
+— Turn 25: P3 —
 [untap step]
 [upkeep step]
 P3 receives priority
@@ -792,882 +2621,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [precombat main phase]
-P3 receives priority
-P3 plays Mountain
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 9: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Mountain
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 plays Mountain
-P0 receives priority
-P0 casts Guttersnipe
-P0 taps Mountain for {R}
-P0 taps Swamp for {B}
-P0 taps Mountain for {R}
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-Guttersnipe resolves (controlled by P0)
-Guttersnipe enters the battlefield under P0
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Stitcher's Supplier
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 38)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 10: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 plays Mountain
-P1 receives priority
-P1 casts Guttersnipe
-P1 taps Mountain for {R}
-P1 taps Island for {U}
-P1 taps Island for {U}
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-Guttersnipe resolves (controlled by P1)
-Guttersnipe enters the battlefield under P1
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 11: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 plays Swamp
-P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P0 mills Negate
-P0 mills Guttersnipe
-P0 mills Stitcher's Supplier
-P1 mills Pyretic Ritual
-P1 mills Island
-P1 mills Seething Song
-P3 mills Swamp
-P3 mills Preordain
-P3 mills Guttersnipe
-P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 casts Stitcher's Supplier
-P2 taps Swamp for {B}
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-Stitcher's Supplier resolves (controlled by P2)
-Stitcher's Supplier enters the battlefield under P2
-P2's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 mills Mountain
-P2 mills Island
-P2 mills Preordain
-P2's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Ruin Crab
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 12: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 plays Island
-P3 receives priority
-P3 casts Guttersnipe
-P3 taps Mountain for {R}
-P3 taps Island for {U}
-P3 taps Mountain for {R}
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-Guttersnipe resolves (controlled by P3)
-Guttersnipe enters the battlefield under P3
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 13: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Swamp
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 plays Mountain
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Guttersnipe
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P1 declares 1 blocker(s)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-2 damage to Guttersnipe (#83)
-2 combat damage to Guttersnipe
-2 damage to Guttersnipe (#31)
-2 combat damage to Guttersnipe
-Guttersnipe is put into a graveyard
-Guttersnipe is put into a graveyard
-state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 14: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 plays Mountain
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 15: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 37)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 16: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 plays Island
 P3 receives priority
 P3 casts Ruin Crab
 P3 taps Island for {U}
@@ -1699,7 +2652,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare attackers step]
-P3 attacks with Guttersnipe
+P3 attacks with Stitcher's Supplier
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -1709,6 +2662,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare blockers step]
+P2 declares 1 blocker(s)
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -1718,9 +2672,8 @@ P1 passes
 P2 receives priority
 P2 passes
 [combat damage step]
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 35)
+1 damage to Ruin Crab (#84)
+1 combat damage to Ruin Crab
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -1757,7 +2710,8 @@ P1 passes
 P2 receives priority
 P2 passes
 [cleanup step]
-— Turn 17: P0 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 26: P0 —
 [untap step]
 [upkeep step]
 P0 receives priority
@@ -1769,7 +2723,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [draw step]
-P0 draws Island
+P0 draws Swamp
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -1781,6 +2735,25 @@ P3 passes
 [precombat main phase]
 P0 receives priority
 P0 plays Swamp
+P0's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 mills Swamp
+P1 mills Grizzly Bears
+P1 mills Seething Song
+P2 mills Island
+P2 mills Grizzly Bears
+P2 mills Preordain
+P3 mills Grizzly Bears
+P3 mills Swamp
+P3 mills Seething Song
+P0's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -1799,7 +2772,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [declare attackers step]
-P0 attacks with Stitcher's Supplier
+P0 attacks with Stitcher's Supplier, Guttersnipe
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -1809,6 +2782,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [declare blockers step]
+P2 declares 1 blocker(s)
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -1819,8 +2793,10 @@ P3 receives priority
 P3 passes
 [combat damage step]
 1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 34)
+1 damage to P2
+P2 loses 1 life (now 32)
+2 damage to Ruin Crab (#84)
+2 combat damage to Ruin Crab
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -1857,7 +2833,8 @@ P2 passes
 P3 receives priority
 P3 passes
 [cleanup step]
-— Turn 18: P1 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 27: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
@@ -1880,8 +2857,6 @@ P0 receives priority
 P0 passes
 [precombat main phase]
 P1 receives priority
-P1 plays Island
-P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
@@ -1899,6 +2874,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare attackers step]
+P1 attacks with Guttersnipe
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -1908,6 +2884,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare blockers step]
+P2 declares 1 blocker(s)
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -1917,6 +2894,8 @@ P3 passes
 P0 receives priority
 P0 passes
 [combat damage step]
+2 damage to Ruin Crab (#84)
+2 combat damage to Ruin Crab
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -1953,7 +2932,8 @@ P3 passes
 P0 receives priority
 P0 passes
 [cleanup step]
-— Turn 19: P2 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 28: P2 —
 [untap step]
 [upkeep step]
 P2 receives priority
@@ -1976,6 +2956,19 @@ P1 receives priority
 P1 passes
 [precombat main phase]
 P2 receives priority
+P2 casts Ruin Crab
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Ruin Crab resolves (controlled by P2)
+Ruin Crab enters the battlefield under P2
+P2 receives priority
 P2 passes
 P3 receives priority
 P3 passes
@@ -1993,7 +2986,7 @@ P0 passes
 P1 receives priority
 P1 passes
 [declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab
+P2 declares no attackers
 P2 receives priority
 P2 passes
 P3 receives priority
@@ -2012,9 +3005,6 @@ P0 passes
 P1 receives priority
 P1 passes
 [combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 33)
 P2 receives priority
 P2 passes
 P3 receives priority
@@ -2051,7 +3041,7 @@ P0 passes
 P1 receives priority
 P1 passes
 [cleanup step]
-— Turn 20: P3 —
+— Turn 29: P3 —
 [untap step]
 [upkeep step]
 P3 receives priority
@@ -2091,7 +3081,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare attackers step]
-P3 attacks with Ruin Crab, Guttersnipe
+P3 attacks with Stitcher's Supplier
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2101,6 +3091,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare blockers step]
+P1 declares 1 blocker(s)
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2110,9 +3101,8 @@ P1 passes
 P2 receives priority
 P2 passes
 [combat damage step]
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 31)
+1 damage to Ruin Crab (#45)
+1 combat damage to Ruin Crab
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2149,7 +3139,9 @@ P1 passes
 P2 receives priority
 P2 passes
 [cleanup step]
-— Turn 21: P0 —
+P3 discards a card
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 30: P0 —
 [untap step]
 [upkeep step]
 P0 receives priority
@@ -2161,7 +3153,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [draw step]
-P0 draws Seething Song
+P0 draws Grizzly Bears
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2171,8 +3163,6 @@ P2 passes
 P3 receives priority
 P3 passes
 [precombat main phase]
-P0 receives priority
-P0 plays Island
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2191,7 +3181,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [declare attackers step]
-P0 attacks with Stitcher's Supplier
+P0 attacks with Stitcher's Supplier, Guttersnipe
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2201,6 +3191,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [declare blockers step]
+P1 declares 1 blocker(s)
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2212,7 +3203,9 @@ P3 passes
 [combat damage step]
 1 combat damage to a player
 1 damage to P1
-P1 loses 1 life (now 30)
+P1 loses 1 life (now 37)
+2 damage to Ruin Crab (#45)
+2 combat damage to Ruin Crab
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2249,7 +3242,8 @@ P2 passes
 P3 receives priority
 P3 passes
 [cleanup step]
-— Turn 22: P1 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 31: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
@@ -2272,6 +3266,32 @@ P0 receives priority
 P0 passes
 [precombat main phase]
 P1 receives priority
+P1 casts Stitcher's Supplier
+P1 taps Swamp for {B}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Stitcher's Supplier resolves (controlled by P1)
+Stitcher's Supplier enters the battlefield under P1
+P1's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 mills Mountain
+P1 mills Pyretic Ritual
+P1 mills Stitcher's Supplier
+P1's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
+P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
@@ -2289,6 +3309,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare attackers step]
+P1 attacks with Guttersnipe
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -2298,6 +3319,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare blockers step]
+P0 declares 1 blocker(s)
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -2307,6 +3329,8 @@ P3 passes
 P0 receives priority
 P0 passes
 [combat damage step]
+2 damage to Ruin Crab (#5)
+2 combat damage to Ruin Crab
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -2343,7 +3367,8 @@ P3 passes
 P0 receives priority
 P0 passes
 [cleanup step]
-— Turn 23: P2 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 32: P2 —
 [untap step]
 [upkeep step]
 P2 receives priority
@@ -2366,8 +3391,10 @@ P1 receives priority
 P1 passes
 [precombat main phase]
 P2 receives priority
-P2 plays Mountain
-P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2 casts Guttersnipe
+P2 taps Mountain for {R}
+P2 taps Swamp for {B}
+P2 taps Swamp for {B}
 P2 receives priority
 P2 passes
 P3 receives priority
@@ -2376,114 +3403,124 @@ P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
+Guttersnipe resolves (controlled by P2)
+Guttersnipe enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 declares no attackers
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 33: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Swamp
+P3's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 mills Island
 P0 mills Swamp
 P0 mills Island
-P0 mills Seething Song
-P1 mills Runeclaw Bear
+P1 mills Guttersnipe
+P1 mills Ruin Crab
 P1 mills Swamp
-P1 mills Runeclaw Bear
-P3 mills Ruin Crab
-P3 mills Negate
-P3 mills Pyretic Ritual
-P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 29)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 24: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
+P2 mills Swamp
+P2 mills Mountain
+P2 mills Stitcher's Supplier
+P3's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2502,7 +3539,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare attackers step]
-P3 attacks with Ruin Crab, Guttersnipe
+P3 attacks with Stitcher's Supplier
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2512,6 +3549,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare blockers step]
+P0 declares 1 blocker(s)
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2521,9 +3559,8 @@ P1 passes
 P2 receives priority
 P2 passes
 [combat damage step]
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 27)
+1 damage to Ruin Crab (#5)
+1 combat damage to Ruin Crab
 P3 receives priority
 P3 passes
 P0 receives priority
@@ -2560,7 +3597,8 @@ P1 passes
 P2 receives priority
 P2 passes
 [cleanup step]
-— Turn 25: P0 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 34: P0 —
 [untap step]
 [upkeep step]
 P0 receives priority
@@ -2600,7 +3638,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [declare attackers step]
-P0 attacks with Stitcher's Supplier
+P0 attacks with Stitcher's Supplier, Guttersnipe
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2610,6 +3648,7 @@ P2 passes
 P3 receives priority
 P3 passes
 [declare blockers step]
+P3 declares 1 blocker(s)
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2620,8 +3659,10 @@ P3 receives priority
 P3 passes
 [combat damage step]
 1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 26)
+1 damage to P3
+P3 loses 1 life (now 39)
+2 damage to Ruin Crab (#124)
+2 combat damage to Ruin Crab
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -2658,7 +3699,9 @@ P2 passes
 P3 receives priority
 P3 passes
 [cleanup step]
-— Turn 26: P1 —
+P0 discards Runeclaw Bear
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 35: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
@@ -2681,6 +3724,27 @@ P0 receives priority
 P0 passes
 [precombat main phase]
 P1 receives priority
+P1 plays Swamp
+P1's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P0 mills Runeclaw Bear
+P0 mills Island
+P0 mills Stitcher's Supplier
+P2 mills Mountain
+P2 mills Island
+P2 mills Grizzly Bears
+P3 mills Preordain
+P3 mills Pyretic Ritual
+P3 mills Island
+P1's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
@@ -2698,6 +3762,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare attackers step]
+P1 attacks with Stitcher's Supplier, Guttersnipe
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -2707,6 +3772,7 @@ P3 passes
 P0 receives priority
 P0 passes
 [declare blockers step]
+P3 declares 1 blocker(s)
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -2716,6 +3782,11 @@ P3 passes
 P0 receives priority
 P0 passes
 [combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 38)
+2 damage to Ruin Crab (#124)
+2 combat damage to Ruin Crab
 P1 receives priority
 P1 passes
 P2 receives priority
@@ -2752,473 +3823,8 @@ P3 passes
 P0 receives priority
 P0 passes
 [cleanup step]
-P1 discards a card
-— Turn 27: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 casts Guttersnipe
-P2 taps Mountain for {R}
-P2 taps Swamp for {B}
-P2 taps Island for {U}
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-Guttersnipe resolves (controlled by P2)
-Guttersnipe enters the battlefield under P2
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 25)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 28: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 plays Swamp
-P3's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P0 mills Preordain
-P0 mills Mountain
-P0 mills Ruin Crab
-P1 mills Preordain
-P1 mills Ruin Crab
-P1 mills Swamp
-P2 mills Runeclaw Bear
-P2 mills Guttersnipe
-P2 mills Seething Song
-P3's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 casts Stitcher's Supplier
-P3 taps Swamp for {B}
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-Stitcher's Supplier resolves (controlled by P3)
-Stitcher's Supplier enters the battlefield under P3
-P3's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 mills Ruin Crab
-P3 mills Stitcher's Supplier
-P3 mills Grizzly Bears
-P3's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 23)
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 29: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Preordain
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Stitcher's Supplier
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 22)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 30: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 casts Guttersnipe
-P1 taps Mountain for {R}
-P1 taps Island for {U}
-P1 taps Island for {U}
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-Guttersnipe resolves (controlled by P1)
-Guttersnipe enters the battlefield under P1
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 31: P2 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 36: P2 —
 [untap step]
 [upkeep step]
 P2 receives priority
@@ -3243,861 +3849,6 @@ P1 passes
 P2 receives priority
 P2 plays Swamp
 P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P0 mills Grizzly Bears
-P0 mills Pyretic Ritual
-P0 mills Pyretic Ritual
-P1 mills Island
-P1 mills Runeclaw Bear
-P1 mills Seething Song
-P3 mills Runeclaw Bear
-P3 mills Stitcher's Supplier
-P3 mills Ruin Crab
-P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P0
-P0 loses 1 life (now 39)
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 37)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 32: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 plays Swamp
-P3's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P0 mills Runeclaw Bear
-P0 mills Swamp
-P0 mills Ruin Crab
-P1 mills Preordain
-P1 mills Seething Song
-P1 mills Guttersnipe
-P2 mills Swamp
-P2 mills Stitcher's Supplier
-P2 mills Guttersnipe
-P3's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P0
-P0 loses 1 life (now 36)
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 34)
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 33: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Island
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 plays Island
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Stitcher's Supplier
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 39)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 34: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 plays Mountain
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 attacks with Guttersnipe
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 32)
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 35: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 21)
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 19)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 36: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 18)
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 16)
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 37: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Seething Song
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Stitcher's Supplier
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 15)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-P0 discards Seething Song
-— Turn 38: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 casts Ruin Crab
-P1 taps Island for {U}
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-Ruin Crab resolves (controlled by P1)
-Ruin Crab enters the battlefield under P1
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 attacks with Guttersnipe
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 30)
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 39: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 plays Island
 P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
 P2 receives priority
 P2 passes
@@ -4107,15 +3858,33 @@ P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
-P0 mills Swamp
 P0 mills Island
-P0 mills Ruin Crab
-P1 mills Pyretic Ritual
-P1 mills Stitcher's Supplier
-P1 mills Ruin Crab
-P3 mills Pyretic Ritual
+P0 mills Mountain
+P0 mills Swamp
+P1 mills Runeclaw Bear
+P1 mills Negate
+P1 mills Island
 P3 mills Runeclaw Bear
-P3 mills Seething Song
+P3 mills Stitcher's Supplier
+P3 mills Runeclaw Bear
+P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 mills Seething Song
+P0 mills Runeclaw Bear
+P0 mills Stitcher's Supplier
+P1 mills Preordain
+P1 mills Grizzly Bears
+P1 mills Grizzly Bears
+P3 mills Guttersnipe
+P3 mills Island
+P3 mills Preordain
 P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
 P2 receives priority
 P2 passes
@@ -4135,504 +3904,7 @@ P0 passes
 P1 receives priority
 P1 passes
 [declare attackers step]
-P2 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P0
-P0 loses 1 life (now 29)
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 27)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-— Turn 40: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 casts Stitcher's Supplier
-P3 taps Swamp for {B}
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-Stitcher's Supplier resolves (controlled by P3)
-Stitcher's Supplier enters the battlefield under P3
-P3's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 mills Island
-P3 mills Seething Song
-P3 mills Mountain
-P3's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P0
-P0 loses 1 life (now 26)
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 24)
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 41: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Stitcher's Supplier
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 casts Stitcher's Supplier
-P0 taps Swamp for {B}
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-Stitcher's Supplier resolves (controlled by P0)
-Stitcher's Supplier enters the battlefield under P0
-P0's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 mills Grizzly Bears
-P0 mills Grizzly Bears
-P0 mills Ruin Crab
-P0's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Stitcher's Supplier
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 38)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 42: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 plays Swamp
-P1's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P0 mills Stitcher's Supplier
-P0 mills Island
-P0 mills Preordain
-P2 mills Swamp
-P2 mills Stitcher's Supplier
-P2 mills Runeclaw Bear
-P3 mills Swamp
-P3 mills Preordain
-P3 mills Island
-P1's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P1 receives priority
-P1 casts Stitcher's Supplier
-P1 taps Swamp for {B}
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-Stitcher's Supplier resolves (controlled by P1)
-Stitcher's Supplier enters the battlefield under P1
-P1's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 mills Stitcher's Supplier
-P1 mills Negate
-P1 mills Negate
-P1's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 attacks with Ruin Crab, Guttersnipe
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P2
-P2 loses 2 life (now 36)
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 43: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Stitcher's Supplier, Guttersnipe
+P2 attacks with Guttersnipe
 P2 receives priority
 P2 passes
 P3 receives priority
@@ -4652,42 +3924,8 @@ P0 passes
 P1 receives priority
 P1 passes
 [combat damage step]
-1 damage to Stitcher's Supplier (#52)
-1 combat damage to Stitcher's Supplier
-1 damage to Stitcher's Supplier (#104)
-1 combat damage to Stitcher's Supplier
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 13)
-Stitcher's Supplier is put into a graveyard
-Stitcher's Supplier is put into a graveyard
-state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
-P2's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P1's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P1 mills Island
-P1 mills Guttersnipe
-P1 mills Negate
-P1's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 mills Swamp
-P2 mills Ruin Crab
-P2 mills Seething Song
-P2's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
+2 damage to Ruin Crab (#45)
+2 combat damage to Ruin Crab
 P2 receives priority
 P2 passes
 P3 receives priority
@@ -4724,8 +3962,8 @@ P0 passes
 P1 receives priority
 P1 passes
 [cleanup step]
-P2 discards a card
-— Turn 44: P3 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 37: P3 —
 [untap step]
 [upkeep step]
 P3 receives priority
@@ -4737,9 +3975,9 @@ P1 passes
 P2 receives priority
 P2 passes
 [draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
+P3 attempted to draw from an empty library (CR 704.5b)
+state-based action: P3 loses: attempted to draw from an empty library (CR 704.5b)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4747,8 +3985,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [precombat main phase]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4756,8 +3992,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [beginning of combat step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4765,9 +3999,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare attackers step]
-P3 attacks with Stitcher's Supplier, Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4775,8 +4006,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare blockers step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4784,17 +4013,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [combat damage step]
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 12)
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 11)
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 9)
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4802,8 +4020,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [end of combat step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4811,8 +4027,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [postcombat main phase]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4820,8 +4034,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [end step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -4829,8 +4041,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [cleanup step]
-P3 discards a card
-— Turn 45: P0 —
+— Turn 38: P0 —
 [untap step]
 [upkeep step]
 P0 receives priority
@@ -4839,42 +4050,21 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [draw step]
-P0 draws Guttersnipe
+P0 draws Negate
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [precombat main phase]
 P0 receives priority
-P0 casts Guttersnipe
-P0 taps Mountain for {R}
-P0 taps Swamp for {B}
-P0 taps Swamp for {B}
-P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
-Guttersnipe resolves (controlled by P0)
-Guttersnipe enters the battlefield under P0
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
 [beginning of combat step]
 P0 receives priority
 P0 passes
@@ -4882,42 +4072,34 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [declare attackers step]
-P0 attacks with Stitcher's Supplier, Stitcher's Supplier
+P0 attacks with Stitcher's Supplier, Guttersnipe
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [declare blockers step]
+P1 declares 1 blocker(s)
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [combat damage step]
 1 combat damage to a player
 1 damage to P1
-P1 loses 1 life (now 8)
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 7)
+P1 loses 1 life (now 36)
+2 damage to Ruin Crab (#45)
+2 combat damage to Ruin Crab
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [end of combat step]
 P0 receives priority
 P0 passes
@@ -4925,8 +4107,6 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [postcombat main phase]
 P0 receives priority
 P0 passes
@@ -4934,8 +4114,6 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [end step]
 P0 receives priority
 P0 passes
@@ -4943,18 +4121,16 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [cleanup step]
-— Turn 46: P1 —
+P0 discards Grizzly Bears
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 39: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [draw step]
@@ -4963,43 +4139,13 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [precombat main phase]
 P1 receives priority
-P1 casts Stitcher's Supplier
-P1 taps Swamp for {B}
-P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-Stitcher's Supplier resolves (controlled by P1)
-Stitcher's Supplier enters the battlefield under P1
-P1's triggered ability from Stitcher's Supplier goes on the stack: When this creature enters or dies, mill three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 mills Swamp
-P1 mills Grizzly Bears
-P1 mills Mountain
-P1's ability from Stitcher's Supplier resolves: When this creature enters or dies, mill three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [beginning of combat step]
@@ -5007,471 +4153,34 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [declare attackers step]
-P1 attacks with Ruin Crab, Guttersnipe
+P1 attacks with Stitcher's Supplier, Guttersnipe
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [declare blockers step]
+P0 declares 1 blocker(s)
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P3
-P3 loses 2 life (now 38)
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[postcombat main phase]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[end step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[cleanup step]
-— Turn 47: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare attackers step]
-P2 attacks with Ruin Crab, Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P3
-P3 loses 2 life (now 36)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-[cleanup step]
-P2 discards a card
-— Turn 48: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Stitcher's Supplier, Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 35)
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 34)
-2 combat damage to a player
-2 damage to P2
-P2 loses 2 life (now 32)
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-P3 discards a card
-— Turn 49: P0 —
-[untap step]
-[upkeep step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P0 draws Island
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P0 receives priority
-P0 plays Island
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P0 attacks with Stitcher's Supplier, Stitcher's Supplier, Guttersnipe
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 31)
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 30)
-2 combat damage to a player
-2 damage to P2
-P2 loses 2 life (now 28)
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 50: P1 —
-[untap step]
-[upkeep step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[draw step]
-P1 draws a card
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[precombat main phase]
-P1 receives priority
-P1 plays Swamp
-P1's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P0 mills Negate
-P0 mills Grizzly Bears
-P0 mills Swamp
-P2 mills Ruin Crab
-P2 mills Seething Song
-P2 mills Island
-P3 mills Negate
-P3 mills Island
-P3 mills Island
-P1's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[beginning of combat step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare attackers step]
-P1 attacks with Stitcher's Supplier, Ruin Crab, Guttersnipe
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-[declare blockers step]
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [combat damage step]
 1 combat damage to a player
 1 damage to P0
-P0 loses 1 life (now 23)
-2 combat damage to a player
-2 damage to P0
-P0 loses 2 life (now 21)
+P0 loses 1 life (now 39)
+2 damage to Ruin Crab (#5)
+2 combat damage to Ruin Crab
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [end of combat step]
@@ -5479,8 +4188,6 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [postcombat main phase]
@@ -5488,8 +4195,6 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [end step]
@@ -5497,18 +4202,16 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 [cleanup step]
-— Turn 51: P2 —
+P1 discards a card
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 40: P2 —
 [untap step]
 [upkeep step]
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5517,35 +4220,26 @@ P1 passes
 P2 draws a card
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 [precombat main phase]
 P2 receives priority
-P2 plays Island
-P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2 casts Guttersnipe
+P2 taps Mountain for {R}
+P2 taps Swamp for {B}
+P2 taps Swamp for {B}
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
-P1 mills Pyretic Ritual
-P1 mills Swamp
-P1 mills Ruin Crab
-P3 mills Preordain
-P3 mills Swamp
-P3 mills Pyretic Ritual
-P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+Guttersnipe resolves (controlled by P2)
+Guttersnipe enters the battlefield under P2
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5553,39 +4247,31 @@ P1 passes
 [beginning of combat step]
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 [declare attackers step]
-P2 attacks with Ruin Crab, Guttersnipe
+P2 attacks with Guttersnipe
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 [declare blockers step]
+P1 declares 1 blocker(s)
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 [combat damage step]
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 5)
+2 damage to Ruin Crab (#45)
+2 combat damage to Ruin Crab
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5593,8 +4279,6 @@ P1 passes
 [end of combat step]
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5602,8 +4286,6 @@ P1 passes
 [postcombat main phase]
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5611,18 +4293,15 @@ P1 passes
 [end step]
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
 P1 passes
 [cleanup step]
-— Turn 52: P3 —
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 41: P0 —
 [untap step]
 [upkeep step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5630,9 +4309,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
+P0 draws Grizzly Bears
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5640,23 +4317,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [precombat main phase]
-P3 receives priority
-P3 plays Mountain
-P3's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
-P0 receives priority
-P0 passes
-P1 receives priority
-P1 passes
-P2 receives priority
-P2 passes
-P2 mills Ruin Crab
-P2 mills Mountain
-P2 mills Stitcher's Supplier
-P3's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5664,8 +4324,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [beginning of combat step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5673,9 +4331,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare attackers step]
-P3 attacks with Stitcher's Supplier, Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
+P0 attacks with Stitcher's Supplier, Guttersnipe
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5683,8 +4339,7 @@ P1 passes
 P2 receives priority
 P2 passes
 [declare blockers step]
-P3 receives priority
-P3 passes
+P1 declares 1 blocker(s)
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5694,15 +4349,9 @@ P2 passes
 [combat damage step]
 1 combat damage to a player
 1 damage to P1
-P1 loses 1 life (now 4)
-1 combat damage to a player
-1 damage to P1
-P1 loses 1 life (now 3)
-2 combat damage to a player
-2 damage to P1
-P1 loses 2 life (now 1)
-P3 receives priority
-P3 passes
+P1 loses 1 life (now 35)
+2 damage to Ruin Crab (#45)
+2 combat damage to Ruin Crab
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5710,8 +4359,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [end of combat step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5719,8 +4366,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [postcombat main phase]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5728,8 +4373,6 @@ P1 passes
 P2 receives priority
 P2 passes
 [end step]
-P3 receives priority
-P3 passes
 P0 receives priority
 P0 passes
 P1 receives priority
@@ -5737,7 +4380,209 @@ P1 passes
 P2 receives priority
 P2 passes
 [cleanup step]
-— Turn 53: P0 —
+P0 discards Grizzly Bears
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 42: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P0 mills Grizzly Bears
+P2 mills Island
+P2 mills Preordain
+P2 mills Stitcher's Supplier
+P1's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Stitcher's Supplier, Guttersnipe
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 38)
+2 damage to Ruin Crab (#5)
+2 combat damage to Ruin Crab
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 43: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Swamp
+P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P1 mills Stitcher's Supplier
+P1 mills Island
+P1 mills Ruin Crab
+P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P1 mills Negate
+P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Guttersnipe, Guttersnipe
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Ruin Crab (#45)
+2 combat damage to Ruin Crab
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 33)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 44: P0 —
 [untap step]
 [upkeep step]
 P0 receives priority
@@ -5746,8 +4591,6 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [draw step]
 P0 attempted to draw from an empty library (CR 704.5b)
 state-based action: P0 loses: attempted to draw from an empty library (CR 704.5b)
@@ -5756,476 +4599,60 @@ P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [precombat main phase]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [beginning of combat step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [declare attackers step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [declare blockers step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [combat damage step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [end of combat step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [postcombat main phase]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [end step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [cleanup step]
-— Turn 54: P1 —
+— Turn 45: P1 —
 [untap step]
 [upkeep step]
 P1 receives priority
 P1 passes
 P2 receives priority
 P2 passes
-P3 receives priority
-P3 passes
 [draw step]
 P1 attempted to draw from an empty library (CR 704.5b)
 state-based action: P1 loses: attempted to draw from an empty library (CR 704.5b)
 state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 55: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P2 attacks with Ruin Crab, Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P3
-P3 loses 2 life (now 34)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-P2 discards a card
-— Turn 56: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 plays Swamp
-P3's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-P2 mills Preordain
-P2 mills Guttersnipe
-P2 mills Swamp
-P3's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Stitcher's Supplier, Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 27)
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 26)
-2 combat damage to a player
-2 damage to P2
-P2 loses 2 life (now 24)
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 57: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P2 attacks with Ruin Crab, Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-2 combat damage to a player
-2 damage to P3
-P3 loses 2 life (now 32)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-P2 discards a card
-— Turn 58: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 draws a card
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[precombat main phase]
-P3 receives priority
-P3 casts Guttersnipe
-P3 taps Mountain for {R}
-P3 taps Swamp for {B}
-P3 taps Swamp for {B}
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-Guttersnipe resolves (controlled by P3)
-Guttersnipe enters the battlefield under P3
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[beginning of combat step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[declare attackers step]
-P3 attacks with Stitcher's Supplier, Stitcher's Supplier, Ruin Crab, Guttersnipe
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[declare blockers step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[combat damage step]
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 23)
-1 combat damage to a player
-1 damage to P2
-P2 loses 1 life (now 22)
-2 combat damage to a player
-2 damage to P2
-P2 loses 2 life (now 20)
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[end of combat step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[postcombat main phase]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[end step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[cleanup step]
-— Turn 59: P2 —
-[untap step]
-[upkeep step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[draw step]
-P2 draws a card
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[precombat main phase]
-P2 receives priority
-P2 plays Island
-P2's triggered ability from Ruin Crab goes on the stack: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-P3 mills Guttersnipe
-P2's ability from Ruin Crab resolves: Landfall — Whenever a land you control enters, each opponent mills three cards.
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[beginning of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare attackers step]
-P2 attacks with Guttersnipe
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[declare blockers step]
-P3 declares 1 blocker(s)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[combat damage step]
-2 damage to Guttersnipe (#182)
-2 combat damage to Guttersnipe
-2 damage to Guttersnipe (#134)
-2 combat damage to Guttersnipe
-Guttersnipe is put into a graveyard
-Guttersnipe is put into a graveyard
-state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end of combat step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[postcombat main phase]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[end step]
-P2 receives priority
-P2 passes
-P3 receives priority
-P3 passes
-[cleanup step]
-— Turn 60: P3 —
-[untap step]
-[upkeep step]
-P3 receives priority
-P3 passes
-P2 receives priority
-P2 passes
-[draw step]
-P3 attempted to draw from an empty library (CR 704.5b)
-state-based action: P3 loses: attempted to draw from an empty library (CR 704.5b)
-state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
 Game over — P2 wins: opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)
-selfplay seed=501 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 2494 steps (60 turns)
-  digest 104adbf674ec | replay verified | casts 17 attacks 43 blocks 3 counters 0
+selfplay seed=501 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 1880 steps (45 turns)
+  digest d0c888f680d7 | replay verified | casts 14 attacks 25 blocks 17 counters 0
   replay written to evidence/issue17/slice5/slice5-journey.replay.json
   report written to evidence/issue17/slice5/slice5-journey.json

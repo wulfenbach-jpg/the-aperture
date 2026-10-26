@@ -1,0 +1,44 @@
+Stitcher's Supplier [tdc 196] MATCH
+   name: ok
+   cost: ok
+   type_line: ok
+   power: ok
+   toughness: ok
+   oracle: ok
+Ruin Crab [znr 75] MATCH
+   name: ok
+   cost: ok
+   type_line: ok
+   power: ok
+   toughness: ok
+   oracle: ok
+Negate [tmt 47] MATCH
+   name: ok
+   cost: ok
+   type_line: ok
+   power: ok
+   toughness: ok
+   oracle: ok
+Preordain [tdc 161] MATCH
+   name: ok
+   cost: ok
+   type_line: ok
+   power: ok
+   toughness: ok
+   oracle: ok
+Pyretic Ritual [m11 153] MATCH
+   name: ok
+   cost: ok
+   type_line: ok
+   power: ok
+   toughness: ok
+   oracle: ok
+Seething Song [c21 179] MATCH
+   name: ok
+   cost: ok
+   type_line: ok
+   power: ok
+   toughness: ok
+   oracle: ok
+
+6/6 cards match the catalog strings

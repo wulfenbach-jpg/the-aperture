@@ -1,15 +1,15 @@
 // package-slice5-mill — supported 40-card package fixture, NOT a desired 100-card starter.
 // Exercises the slice-5 primitives: mill on enters/dies, landfall mill for each
 // opponent, counter target noncreature spell, scry-then-draw and red rituals.
-4 Stitcher's Supplier
-4 Ruin Crab
-4 Negate
-4 Preordain
-3 Pyretic Ritual
-3 Seething Song
+3 Stitcher's Supplier
+3 Ruin Crab
+3 Negate
+3 Preordain
+2 Pyretic Ritual
+2 Seething Song
 4 Grizzly Bears
 4 Runeclaw Bear
-4 Guttersnipe
-6 Swamp
-6 Island
-4 Mountain
+3 Guttersnipe
+5 Swamp
+5 Island
+3 Mountain
