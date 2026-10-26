@@ -1,6 +1,7 @@
 //! THE APERTURE headless CLI: offline self-play, replay verification, coaching
 //! output, and real (bounded) Archidekt import.
 
+mod certify_cmd;
 mod commander_cmd;
 mod decks;
 mod harness_cmd;
@@ -171,6 +172,30 @@ pub enum Command {
         #[arg(long, default_value = "http://127.0.0.1:8765")]
         base_url: String,
     },
+    /// Certify one starter list end to end from its exact snapshot: hash the
+    /// declared deck file, verify every card is supported, play real four-seat
+    /// Commander-combat games with that snapshot in every seat, and require a
+    /// terminal outcome whose replay reproduces the same digest. Exit 0
+    /// certified, 1 not certified, 2 invalid request.
+    Certify {
+        /// Starter corpus manifest (decks/starter-corpus/manifest.json).
+        #[arg(long, default_value = "decks/starter-corpus/manifest.json")]
+        manifest: PathBuf,
+        /// Starter id to certify, e.g. jasmine-vanilla-stompy.
+        #[arg(long)]
+        starter: String,
+        #[arg(long, default_value_t = 4)]
+        seats: usize,
+        /// Comma-separated seeds, default 1,2,3.
+        #[arg(long, default_value = "1,2,3")]
+        seeds: String,
+        /// Write the machine-readable certificate here.
+        #[arg(long)]
+        out: Option<PathBuf>,
+        /// Print the certificate JSON.
+        #[arg(long)]
+        json: bool,
+    },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -328,6 +353,38 @@ fn main() -> anyhow::Result<()> {
             std::process::exit(commander_cmd::run(&deck, &cards, json, out.as_deref()));
         }
         Command::DeciderHealth { base_url } => import_cmd::decider_health(&base_url),
+        Command::Certify {
+            manifest,
+            starter,
+            seats,
+            seeds,
+            out,
+            json,
+        } => {
+            let seeds: Vec<u64> = seeds
+                .split(',')
+                .map(str::trim)
+                .filter(|seed| !seed.is_empty())
+                .map(|seed| {
+                    seed.parse::<u64>().map_err(|_| {
+                        anyhow::anyhow!("--seeds must be comma-separated integers, got '{seed}'")
+                    })
+                })
+                .collect::<Result<_, _>>()?;
+            let code = certify_cmd::run(certify_cmd::Args {
+                manifest,
+                starter,
+                seats,
+                seeds,
+                max_steps: 20000,
+                out,
+                json,
+            })?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+            Ok(())
+        }
     }
 }
 
