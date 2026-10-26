@@ -109,7 +109,9 @@
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Aetherize",
    "retrieved_at": "2026-10-26T12:50:12Z",
-   "role": "implemented"
+   "role": "excluded",
+   "status": "excluded",
+   "exclusion_reason": "attacking-commander CR903.9b continuation not implemented"
   },
   {
    "name": "Dramatic Reversal",

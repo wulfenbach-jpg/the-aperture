@@ -174,7 +174,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 112] = [
+pub static CARDS: [CardDef; 111] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -361,12 +361,6 @@ pub static CARDS: [CardDef; 112] = [
         VolleyVeteran, "Volley Veteran", cost: Some("{3}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin Warrior", power: Some(4), toughness: Some(2),
         oracle: "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.", spell: None
-    ),
-    card!(
-        Aetherize, "Aetherize", cost: Some("{3}{U}"), kinds: INSTANT, basic: None,
-        type_line: "Instant", power: None, toughness: None,
-        oracle: "Return all attacking creatures to their owner's hand.",
-        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::ReturnAllAttackersToHand] })
     ),
     card!(
         DramaticReversal, "Dramatic Reversal", cost: Some("{1}{U}"), kinds: INSTANT, basic: None,

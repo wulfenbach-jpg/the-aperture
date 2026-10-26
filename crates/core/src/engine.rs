@@ -4794,14 +4794,6 @@ impl Game {
                 }
                 false
             }
-            Effect::ReturnAllAttackersToHand => {
-                let attackers = self.state.turn.attackers.clone();
-                for id in attackers {
-                    self.move_to_hand(id, events);
-                }
-                self.prune_combat();
-                false
-            }
             Effect::UntapAllNonlandsYouControl => {
                 let ids: Vec<ObjectId> = self
                     .state

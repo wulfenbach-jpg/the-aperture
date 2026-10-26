@@ -63,11 +63,6 @@ fn sourced_slice8_cards_match_printings() {
         volley.oracle,
         "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control."
     );
-    let aether = card("Aetherize").def();
-    assert_eq!(
-        aether.oracle,
-        "Return all attacking creatures to their owner's hand."
-    );
     let reversal = card("Dramatic Reversal").def();
     assert_eq!(reversal.oracle, "Untap all nonland permanents you control.");
 }
@@ -232,79 +227,7 @@ fn volley_veteran_damages_opponent_creature_for_each_goblin() {
 }
 
 #[test]
-fn aetherize_returns_all_attackers_and_dramatic_reversal_untaps_nonlands() {
-    let mut game = fixture(85)
-        .battlefield(P0, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
-        .hand(P1, &[card("Aetherize")])
-        .battlefield(
-            P1,
-            &[
-                CardId::Island,
-                CardId::Island,
-                CardId::Island,
-                CardId::Island,
-                CardId::GrizzlyBears,
-            ],
-        )
-        .main(P0, Step::PrecombatMain)
-        .build();
-    let bears: Vec<ObjectId> = game
-        .state
-        .battlefield(P0)
-        .into_iter()
-        .map(|o| o.id)
-        .collect();
-    let mut log = Vec::new();
-    assert!(run_until(
-        &mut game,
-        &mut log,
-        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
-        64
-    ));
-    submit_ok(
-        &mut game,
-        P0,
-        Action::DeclareAttackers {
-            attackers: bears.clone(),
-            defender: Some(P1),
-        },
-    );
-    assert!(run_until(
-        &mut game,
-        &mut log,
-        |g| matches!(g.state.pending, Some(Pending::DeclareBlockers { .. })),
-        64
-    ));
-    submit_ok(
-        &mut game,
-        P1,
-        Action::DeclareBlockers { blocks: Vec::new() },
-    );
-    submit_ok(&mut game, P0, Action::Pass);
-    let aether = hand_card(&game, P1, card("Aetherize"));
-    submit_ok(
-        &mut game,
-        P1,
-        Action::CastSpell {
-            card: aether,
-            targets: Vec::new(),
-        },
-    );
-    for _ in 0..8 {
-        if drained(&game) {
-            break;
-        }
-        let player = game.decision_owner().expect("priority");
-        submit_ok(&mut game, player, Action::Pass);
-    }
-    assert!(
-        game.state
-            .player(P0)
-            .hand
-            .iter()
-            .any(|id| game.state.object(*id).card == CardId::GrizzlyBears)
-    );
-
+fn dramatic_reversal_untaps_nonlands_but_not_lands() {
     let mut game = fixture(86)
         .hand(P0, &[card("Dramatic Reversal")])
         .battlefield(P0, &[CardId::Island, CardId::Island, CardId::GrizzlyBears])

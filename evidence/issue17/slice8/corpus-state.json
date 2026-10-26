@@ -1,9 +1,9 @@
 {
-  "catalog": 112,
+  "catalog": 111,
   "union": 459,
-  "supported": 100,
-  "missing": 359,
-  "manifest_missing": 359,
+  "supported": 99,
+  "missing": 360,
+  "manifest_missing": 360,
   "matches": true,
   "rows": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "talrand-draw-go",
-      "missing": 50,
+      "missing": 51,
       "status": "planned"
     },
     {

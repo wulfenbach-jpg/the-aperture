@@ -146,8 +146,6 @@ pub enum Effect {
     /// Damage to the spell's target player equal to the number of Goblins its
     /// controller controls (Goblin War Strike).
     DamageTargetPlayerForEachGoblin,
-    /// Return every attacking creature to its owner's hand (Aetherize).
-    ReturnAllAttackersToHand,
     /// Untap every nonland permanent the effect's controller controls
     /// (Dramatic Reversal).
     UntapAllNonlandsYouControl,
@@ -192,9 +190,6 @@ impl Effect {
             }
             Effect::DamageTargetPlayerForEachGoblin => {
                 "deal damage to the target player equal to Goblins you control".to_string()
-            }
-            Effect::ReturnAllAttackersToHand => {
-                "return all attacking creatures to hand".to_string()
             }
             Effect::UntapAllNonlandsYouControl => {
                 "untap all nonland permanents you control".to_string()
@@ -371,7 +366,6 @@ pub enum CardId {
     SoulsAttendant,
     RazorclawBear,
     VolleyVeteran,
-    Aetherize,
     DramaticReversal,
     GoblinWarStrike,
     DrakeToken,

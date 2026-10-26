@@ -2,7 +2,7 @@
 3 Soul's Attendant
 3 Razorclaw Bear
 3 Volley Veteran
-3 Aetherize
+3 Counterspell
 3 Dramatic Reversal
 3 Shock
 3 Divination

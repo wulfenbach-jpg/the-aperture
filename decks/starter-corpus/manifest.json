@@ -86,6 +86,7 @@
       "status": "planned",
       "deck_path": "decks/starter-corpus/planned/talrand-draw-go.txt",
       "missing_cards": [
+        "Aetherize",
         "An Offer You Can't Refuse",
         "Arcane Denial",
         "Archmage's Charm",
