@@ -184,6 +184,176 @@ fn guttersnipe_hits_each_opponent_but_not_its_controller() {
 }
 
 #[test]
+fn living_guttersnipe_damage_is_doubled_and_opponent_angrath_does_not_apply() {
+    let mut game = guttersnipe_game(67);
+    let marauders = game.state.next_object;
+    game.state.next_object += 1;
+    game.state.objects.insert(
+        ObjectId(marauders),
+        aperture_core::state::Object {
+            id: ObjectId(marauders),
+            card: card("Angrath's Marauders"),
+            owner: P1,
+            controller: P1,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+        },
+    );
+    let before: Vec<i32> = game.state.players.iter().map(|p| p.life).collect();
+    let bolt = hand_card(&game, P0, CardId::LightningBolt);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: bolt,
+            targets: vec![Target::Player(P1)],
+        },
+    );
+    for _ in 0..64 {
+        if game.state.stack.is_empty()
+            && game.state.trigger_queue.is_empty()
+            && game.state.resolving.is_none()
+        {
+            break;
+        }
+        let player = game.decision_owner().expect("priority");
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    // P0's living Guttersnipe is not doubled by P1's Angrath.
+    assert_eq!(game.state.player(2).life, before[2] - 2);
+    assert_eq!(game.state.player(3).life, before[3] - 2);
+}
+
+#[test]
+fn eliminated_opponents_are_skipped_by_guttersnipe() {
+    let mut game = guttersnipe_game(68);
+    game.state.players[3].lost = true;
+    let before = game.state.player(3).life;
+    let bolt = hand_card(&game, P0, CardId::LightningBolt);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: bolt,
+            targets: vec![Target::Player(P1)],
+        },
+    );
+    for _ in 0..32 {
+        if game.state.stack.is_empty()
+            && game.state.trigger_queue.is_empty()
+            && game.state.resolving.is_none()
+        {
+            break;
+        }
+        let player = game.decision_owner().expect("priority");
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    assert_eq!(
+        game.state.player(3).life,
+        before,
+        "eliminated opponent takes no trigger damage"
+    );
+}
+
+#[test]
+fn guttersnipe_source_left_damage_uses_the_controllers_damage_multiplier() {
+    let mut game = guttersnipe_game(66);
+    let snipe = game
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == card("Guttersnipe"))
+        .unwrap()
+        .id;
+    // P0 also controls Angrath's Marauders: its controlled-source damage doubles,
+    // including a Guttersnipe ability whose source has left the battlefield.
+    let marauders = game.state.next_object;
+    game.state.next_object += 1;
+    game.state.objects.insert(
+        ObjectId(marauders),
+        aperture_core::state::Object {
+            id: ObjectId(marauders),
+            card: card("Angrath's Marauders"),
+            owner: P0,
+            controller: P0,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+        },
+    );
+    let island = game.state.next_object;
+    game.state.next_object += 1;
+    game.state.objects.insert(
+        ObjectId(island),
+        aperture_core::state::Object {
+            id: ObjectId(island),
+            card: CardId::Island,
+            owner: P0,
+            controller: P0,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+        },
+    );
+    let unsummon = game.state.players[P0 as usize].library.pop().unwrap();
+    game.state.objects.get_mut(&unsummon).unwrap().zone = Zone::Hand;
+    game.state.players[P0 as usize].hand.push(unsummon);
+    let bolt = hand_card(&game, P0, CardId::LightningBolt);
+    let own_life = game.state.player(P0).life;
+    let before: Vec<i32> = game.state.players.iter().map(|p| p.life).collect();
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: bolt,
+            targets: vec![Target::Player(P1)],
+        },
+    );
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: unsummon,
+            targets: vec![Target::Permanent(snipe)],
+        },
+    );
+    for _ in 0..64 {
+        if game.state.stack.is_empty()
+            && game.state.trigger_queue.is_empty()
+            && game.state.resolving.is_none()
+            && game.state.pending.is_none()
+        {
+            break;
+        }
+        let player = game.decision_owner().expect("priority");
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    assert!(game.state.stack.is_empty());
+    // Bolt is doubled to 6 on P1; each of the two Guttersnipe triggers is
+    // doubled to 4 on each opponent.
+    assert_eq!(game.state.player(P1).life, before[1] - 14);
+    assert_eq!(game.state.player(2).life, before[2] - 8);
+    assert_eq!(game.state.player(3).life, before[3] - 8);
+    assert_eq!(game.state.player(P0).life, own_life);
+}
+
+#[test]
 fn guttersnipe_trigger_still_deals_damage_after_the_source_leaves() {
     let mut game = guttersnipe_game(65);
     let snipe = game
@@ -219,15 +389,24 @@ fn guttersnipe_trigger_still_deals_damage_after_the_source_leaves() {
             targets: vec![Target::Permanent(snipe)],
         },
     );
-    for _ in 0..10 {
-        if game.state.stack.is_empty() && game.state.trigger_queue.is_empty() {
+    for _ in 0..64 {
+        if game.state.stack.is_empty()
+            && game.state.trigger_queue.is_empty()
+            && game.state.resolving.is_none()
+            && game.state.pending.is_none()
+        {
             break;
         }
         let player = game.decision_owner().expect("priority");
         submit_ok(&mut game, player, Action::Pass);
     }
-    assert_eq!(game.state.player(2).life, before[2] - 2);
-    assert_eq!(game.state.player(3).life, before[3] - 2);
+    assert!(game.state.stack.is_empty(), "all stack items resolved");
+    assert!(game.state.trigger_queue.is_empty(), "no queued triggers");
+    assert!(game.state.resolving.is_none(), "nothing still resolving");
+    assert!(game.state.pending.is_none(), "no pending choice");
+    // Two casts (Bolt and Unsummon) each trigger Guttersnipe: -4 total.
+    assert_eq!(game.state.player(2).life, before[2] - 4);
+    assert_eq!(game.state.player(3).life, before[3] - 4);
     assert!(
         game.state.players[P0 as usize]
             .hand

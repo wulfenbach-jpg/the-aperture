@@ -1,8 +1,9 @@
 # Issue 17 slice 3 — cross-corpus package handoff
 
-Implemented five sourced cards that were missing names in the exact desired
-lists, plus **Guttersnipe** with a complete controller-only spell-cast trigger.
-No commit/push. Full #17 incomplete; desired lists unchanged.
+Implemented **five sourced cards total**, including **Guttersnipe** with a
+complete controller-only spell-cast trigger: Swamp, Lightning Bolt, Forest Bear,
+Striped Bears and Guttersnipe. No commit/push. Full #17 incomplete; desired
+lists unchanged.
 
 ## Cards and sources
 
@@ -36,6 +37,31 @@ missing names.
 4. GREEN: 5/5 cross-package tests, including 4-seat each-opponent damage and
    source-left-by-Unsummon damage.
 
+## Repair pass — source-left test gap and LKI damage replacement
+
+The original source-left test drained too few stack items: two casts (Bolt and
+Unsummon) each trigger Guttersnipe, but a 10-pass cap could leave a trigger on
+the stack. The test now settles with a bounded 64-iteration guard until
+`stack`, `trigger_queue`, `resolving` and `pending` are all empty, then asserts
+all empty and **-4** to each affected opponent. This was a test-gap repair; the
+strengthened assertions pass without production changes, so they are labeled a
+control/repair, not a new RED.
+
+New genuine RED: Guttersnipe (P0) + Angrath's Marauders (P0), Bolt then
+Unsummon (real bounce), full settle. Expected doubled trigger damage (each
+opponent -8 across two triggers; P1 -14 with the doubled Bolt) but observed
+undoubled trigger damage. The cause: `DamageEachOpponent` called
+`deal_damage(Some(old_object_id))`, and `damage_multipliers` ignored sources no
+longer on the battlefield/stack.
+
+Fix: additive `deal_damage_from(..., source_controller)` passes the ability
+controller as last-known source controller into the existing
+prevention/replacement pipeline; normal damage keeps the old path. No serialized
+fields, replay version, allocator or fabricated live object was added. Controls
+cover living-source doubling vs an opponent-controlled Angrath (no double) and
+an eliminated opponent being skipped. Existing old-card LKI debt outside this
+bounded effect is not expanded or claimed fixed.
+
 ## Verification
 
 ```
@@ -43,7 +69,7 @@ cargo test -q -p aperture-core --test issue17_cross_package --test issue17_tatyo
   --test issue17_tokens --test issue17_talrand --test card_printings \
   --test catalog_pool --test issue13_commander_combat \
   -p aperture-import --test starter_corpus_planned
-  -> 5, 5, 10, 6, 4, 5, 43, 1 passed
+  -> 8, 5, 10, 6, 4, 5, 43, 1 passed
 cargo test -q -p aperture-cli
   -> 8 + 1 passed
 cargo fmt --all --check

@@ -593,14 +593,23 @@ impl Game {
     /// the source may be a permanent on the battlefield (a creature's combat or
     /// activated-ability damage) or a spell on the stack (Shock) — the test is
     /// that `source`'s controller controls it, not that it is a creature.
-    fn damage_multipliers(&self, source: Option<ObjectId>) -> Vec<(CardId, PlayerId, u32)> {
-        let Some(source_object) = source.and_then(|id| self.state.try_object(id)) else {
-            return Vec::new();
+    fn damage_multipliers(
+        &self,
+        source: Option<ObjectId>,
+        source_controller: Option<PlayerId>,
+    ) -> Vec<(CardId, PlayerId, u32)> {
+        let controller = match source_controller {
+            Some(controller) => controller,
+            None => {
+                let Some(source_object) = source.and_then(|id| self.state.try_object(id)) else {
+                    return Vec::new();
+                };
+                if !matches!(source_object.zone, Zone::Battlefield | Zone::Stack) {
+                    return Vec::new();
+                }
+                source_object.controller
+            }
         };
-        if !matches!(source_object.zone, Zone::Battlefield | Zone::Stack) {
-            return Vec::new();
-        }
-        let controller = source_object.controller;
         let mut found: Vec<(CardId, PlayerId, u32)> = self
             .state
             .objects
@@ -637,6 +646,21 @@ impl Game {
     fn deal_damage(
         &mut self,
         source: Option<ObjectId>,
+        target: DamageTarget,
+        amount: u32,
+        combat: bool,
+        events: &mut Vec<Event>,
+    ) -> u32 {
+        self.deal_damage_from(source, None, target, amount, combat, events)
+    }
+
+    /// Damage with an explicit last-known source controller. Bounded use: an
+    /// ability whose source has already left the battlefield still uses that
+    /// source's controller for the existing replacement/multiplier pipeline.
+    fn deal_damage_from(
+        &mut self,
+        source: Option<ObjectId>,
+        source_controller: Option<PlayerId>,
         target: DamageTarget,
         amount: u32,
         combat: bool,
@@ -691,7 +715,7 @@ impl Game {
         }
 
         // CR 614.5: each replacement effect applies at most once per event.
-        for (card, controller, factor) in self.damage_multipliers(source) {
+        for (card, controller, factor) in self.damage_multipliers(source, source_controller) {
             if remaining == 0 || factor <= 1 {
                 continue;
             }
@@ -4353,8 +4377,9 @@ impl Game {
                     if opponent == controller || !self.state.is_live(opponent) {
                         continue;
                     }
-                    let dealt = self.deal_damage(
+                    let dealt = self.deal_damage_from(
                         Some(item.object),
+                        Some(controller),
                         DamageTarget::Player(opponent),
                         u32::from(n),
                         false,
