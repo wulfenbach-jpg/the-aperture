@@ -3,6 +3,11 @@
 Exact head reported after commit. No merge/master push. Full #17 unfinished:
 **126 catalog / 459 union = 114 supported + 345 missing**, 1 certified / 7 planned.
 
+This slice has one independent delta review at `472aeba` (APPROVED_INCREMENT,
+nonblocking cleanup items fixed in the following documentation/cleanup commit).
+The `CardDef::mana_choices` / `CardDef::creature_mana` fields the reviewer
+flagged as dead were removed; behaviour lives only in the `CardId` accessors.
+
 ## Sources
 
 Four records extracted from the coordinator’s immutable
@@ -60,7 +65,7 @@ broad mechanism.
 ## Verification
 
 ```
-issue17_slice14            8 passed
+issue17_slice14           10 passed
 catalog_pool               5 passed
 card_printings             7 passed
 issue13_commander_combat  43 passed
@@ -101,5 +106,5 @@ Current docs counts refreshed; historical evidence untouched.
 
 No desired 100-card starter newly certified. Product heuristic ignores artifact
 casting and nonland mana activation (evidence-only/focused tests cover it; no AI
-policy edit). Commander’s Sphere/Friendly Teddy/Aetherize exclusions and broader
-Commander mechanics remain open.
+policy edit). Friendly Teddy and Aetherize remain excluded; Commander's Sphere
+is now implemented and tested. Broader Commander mechanics remain open.

@@ -1,0 +1,15 @@
+{
+  "retrieved_at": "2026-10-26T19:29:42.364751+00:00",
+  "uri": "https://api.scryfall.com/cards/a145fe99-1cca-45c6-aa7e-ec5d8a7bcd13",
+  "fields": {
+    "name": "Commander's Sphere",
+    "mana_cost": "{3}",
+    "type_line": "Artifact",
+    "oracle_text": "{T}: Add one mana of any color in your commander's color identity.\nSacrifice this artifact: Draw a card.",
+    "power": null,
+    "toughness": null,
+    "colors": [],
+    "color_identity": []
+  },
+  "matches": true
+}

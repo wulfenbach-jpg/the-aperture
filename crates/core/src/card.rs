@@ -259,10 +259,6 @@ pub struct CardDef {
     pub basic_mana: Option<ManaColor>,
     /// CR 605.1a mana ability on a nonland artifact: (color, amount), tap cost.
     pub artifact_mana: Option<(ManaColor, u8)>,
-    /// Dynamic one-mana ability: the offered colors are computed from live state.
-    pub mana_choices: Option<ManaChoice>,
-    /// Tap mana ability on a creature; obeys summoning sickness.
-    pub creature_mana: Option<ManaColor>,
     pub type_line: &'static str,
     /// Printed colors. Tokens carry theirs here; catalog cards leave it empty
     /// because the engine only needs it for token characteristics in this slice.

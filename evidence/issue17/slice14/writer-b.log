@@ -1,0 +1,19 @@
+Working...
+**Sphere implemented; driver validation remains incomplete — not claiming full slice 14 delivery.** Head `c30a336`; no push.
+
+## Commander’s Sphere
+- Added from the same authoritative candidate-source capture (four records now in `slice14-sourced.json`).
+- Reuses Arcane Signet dynamic commander-identity mana and Mind Stone sacrifice/draw.
+- Test covers real hand cast → stack → battlefield, immediate legal color choice, tap-for-mana, then sacrifice as a cost **while tapped**, source in graveyard before draw resolves, draw on stack, second activation refused.
+- `issue17_slice14` now **8/8**, including hand-cast Arcane/Fellwar controls, mono/two-color/none identity, commander leaving command zone, Fellwar eliminated-opponent/own-land exclusion, forged-color unchanged state.
+
+## Verification
+- Focused: slice14 8/8, catalog 5/5, printings 7/7, commander 43/43.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Updated 40-card package journey: terminal P0, 1785 steps, digest `fdc9b089f8f9…`; replay and fresh save-out/reload match 5897 events.
+- Actual default trace: 17 Werebear casts; **0 artifact casts and 0 mana activations**.
+
+## Unfinished blocker
+Evidence-only slice14 driver was adapted but **failed its mandatory activation assertion**: it cast/activated the three artifacts but could not force a Werebear mana activation before game end. It is left uncommitted; exact command is recorded in the handoff. Per instruction I did not weaken the requirement or fake activation counts.
+
+Corpus: catalog **126**, union 459 = **114 supported + 345 missing**, manifest matches. Handoff updated: `evidence/issue17/slice14/WRITER-HANDOFF.md`. Full #17 unfinished; no review/certification claim.

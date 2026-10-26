@@ -64,8 +64,16 @@ the defending player's board. Ayula currently has **42** missing names.
   immediate tap-mana abilities, and Mind Stone/Archive's printed mana + tap +
   sacrifice costs for stacked draw abilities. Artifact mana must be activated
   explicitly; the land-only automatic payment planner and product heuristic do
-  not automatically use it. Commander's Sphere stays unsupported because its
-  commander-color-identity mana ability is not implemented.
+  not automatically use it.
+* **Arcane Signet, Fellwar Stone, Commander's Sphere, Werebear (slice 14):**
+  immediate dynamic mana with an explicit offered color. Signet and Sphere use
+  the registered commander's color identity (none without a commander); Fellwar
+  Stone uses the typed basic mana types of lands an opponent controls, tapped
+  ones included, and excludes your own lands and eliminated players. Werebear's
+  `{T}: Add {G}` obeys summoning sickness and its threshold is a real layer 7c
+  static (+3/+3 at seven or more cards in *your* graveyard). Sphere's printed
+  sacrifice-draw works while the artifact is tapped. Tapped or summoning-sick
+  sources are never offered by `legal_actions`.
 * **Sazh's Chocobo:** controller-only landfall adds a real typed +1/+1 counter
   to the same battlefield object, not an end-of-turn pump.
 * **Rampaging Baloths:** printed trample and controller-only landfall creating
@@ -145,7 +153,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
     to the pool without tapping a permanent (Pyretic Ritual, Seething Song), and
     Preordain's scry-2-then-draw as an ordered two-effect resolution;
 
-Elas still has 53 unsupported desired-list nonland names plus sacrifice outlets,
+Elas still has 52 unsupported desired-list nonland names plus sacrifice outlets,
 tutor/reanimation interactions and keyword text on its own commander (Elas
 prints Deathtouch, which the rules layer does not model, so Elas itself stays
 refused at import); its Swamp requirement is now met by the supported basic land,

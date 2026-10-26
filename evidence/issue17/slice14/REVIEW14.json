@@ -1,0 +1,44 @@
+{
+  "review_outcome": "APPROVED_INCREMENT",
+  "reviewed_head": "472aeba1e06b3a657647219815f8cc2380106cb4",
+  "base": "a4db05f",
+  "full_issue17_accepted": false,
+  "findings": [],
+  "nonblocking_notes": [
+    "CardDef.mana_choices and CardDef.creature_mana are always None in the catalog; the executable/canonical behavior is driven by CardId::dynamic_mana()/creature_mana(). No current consumer reads the dead CardDef fields, and focused tests prove behavior, but the public catalog fields are inconsistent and should be removed or populated in cleanup.",
+    "docs/issue17-starter-corpus.md:67 still says Commander's Sphere stays unsupported, although Sphere is implemented and tested.",
+    "WRITER-HANDOFF says issue17_slice14 has 8 passing tests (final count is 10), and its last paragraph still lists Sphere among exclusions; demo JSON's artifact_casts/mana_activations keys include nonartifact cards (values are per-card named). These are known prose/metadata corrections."
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice14 --test issue17_slice13 --test issue17_slice12 --test issue17_tokens --test issue13_commander_combat --test catalog_pool --test card_printings --locked",
+      "result": "exit 0: slice14 10/10, slice13 4/4, slice12 11/11, tokens 10/10, issue13 43/43 including APNAP source-left, catalog 5/5, printings 7/7."
+    },
+    {
+      "command": "replay --file evidence/issue17/slice14/demo-replay.json; --save-out then replay save; replay old slice8",
+      "result": "demo replay 2371 actions/42 turns/6665 events/digest 028cc2e33168 matches; fresh save-out/reload reproduces 028cc2e33168 (6665 events); old slice8 still ffbeaee0db38/6087."
+    },
+    {
+      "command": "inspect demo-journey/event counts and native source receipts",
+      "result": "casts Arcane 7 / Fellwar 7 / Sphere 7 / Werebear 18; mana activations 51/39/7/82; Sphere draw activations 7; all four source records match six/seven live fields. Catalog 126, union 459 = 114 supported + 345 missing; desired files unchanged; manifest arrays match."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    },
+    {
+      "command": "inspect final offer/validate behavior",
+      "result": "ready Werebear is offered; sick/tapped Werebear is not; tapped dynamic artifacts offer no colors; every offered dynamic action validates; forged color/wrong state is refused before tap. Sphere sacrifice while tapped moves source before stack draw and resolves once."
+    }
+  ],
+  "reuse": [
+    "Slices1-13 audits and representative artifact/landfall journeys are approved/reused; this review did not repeat the historical matrix.",
+    "Native demo replay/save receipts and the default product-heuristic zero-artifact limitation remain truthful.",
+    "Current exact-head CI is pending/not green; native owner still waits required checks."
+  ],
+  "remaining_gaps": [
+    "Full #17 is 126 catalog / 459 union = 114 supported + 345 missing, 1 certified / 7 planned desired lists.",
+    "Product heuristic still casts no artifacts and does not auto-activate nonland mana; focused/driver evidence only, no AI policy change.",
+    "Broader Commander mechanics and excluded Friendly Teddy/Aetherize remain open; no merge/closure or release/#26/#32 unlock."
+  ]
+}

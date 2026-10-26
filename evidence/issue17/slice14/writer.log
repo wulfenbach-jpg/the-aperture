@@ -1,0 +1,23 @@
+Working...
+**Slice 14 delivered.** Head `963850a`; no push (native owner publication).
+
+## Implemented
+- **Arcane Signet** — immediate `{T}` mana, colors from the registered commander’s explicit color identity (W/U/B/R/G order). No commander or empty identity offers no colors.
+- **Fellwar Stone** — immediate mana from opponent-controlled lands’ typed production, including tapped lands; excludes own lands, artifacts, colorless, eliminated opponents; colors update when lands leave.
+- **Werebear** — `{1}{G}` 1/1; real green tap mana ability with summoning-sickness refusal; Threshold layer 7c +3/+3 at ≥7 cards in controller’s graveyard, both directions, excluding opponents’ graveyards, stacking with typed counters/pumps.
+
+Dynamic colors use new explicit `ActivateColorManaAbility` legal actions. Forged colors are refused before tap/mutation with unchanged state; activation is immediate (no stack/priority transfer). Existing fixed Sol Ring/Mind Stone/Hedron behavior unchanged.
+
+## Genuine RED
+Absent-catalog first; after scaffolding with no dynamic engine, Arcane/Fellwar offered `[]` colors and Werebear sickness/threshold behavior failed — real mechanic RED before implementation. One test refusal-string expectation was corrected to the engine’s correct “cannot produce red mana here” wording; no production weakening.
+
+## Verification
+- slice14 **5/5**, catalog 5/5, printings 7/7, commander 43/43, slice13 4/4, tokens 10/10.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat `package-slice14.txt` (40-card package, seed 1401): terminal P2, 1391 steps, digest `51fdc345d490…`; replay and fresh save-out/reload match 4304 events.
+- Actual events: **Werebear cast 6 times**; Arcane/Fellwar drawn but not cast/activated; **0 dynamic mana activations** in the product heuristic trace. Focused tests prove activation.
+
+## Corpus
+Catalog **125**, union 459 = **113 supported + 346 missing**, manifest matches; eight desired snapshots unchanged. Docs current counts refreshed. Handoff: `evidence/issue17/slice14/WRITER-HANDOFF.md`.
+
+Full #17 remains unfinished; no certification claim.

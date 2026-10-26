@@ -1,0 +1,25 @@
+Working...
+**Slice 14 assignment 3 complete.** Head `472aeba`; no push (native owns publication).
+
+## Product defects fixed (genuine RED)
+- **Werebear not offered**: `mana_sources` omitted creature mana, so even after summoning sickness cleared no `ActivateManaAbility` appeared. RED: “ready Werebear must be offered.” Fixed by including ready creature-mana sources only (auto-pay still land/pool-only).
+- **Tapped dynamic artifacts offered colors**: `legal_actions` emitted `ActivateColorManaAbility` for tapped/live-wrong-timing sources, which `validate` then refused. RED: “tapped Arcane Signet must offer none” and every offered action must validate. Fixed with priority/no-pending/untapped source preconditions. Removed driver-local tapped workarounds; it now uses only projected legal actions.
+
+## Completed evidence-only journey
+Driver at `evidence/issue17/slice14/journey-driver`, seed 1414, exact four seats/40 life/40-card package:
+- terminal P0, 2371 steps / 42 turns, digest `028cc2e33168…`, 6665 replay events
+- casts: Arcane Signet 7, Fellwar Stone 7, Commander’s Sphere 7, Werebear 18
+- mana activations: Arcane 51, Fellwar 39, Sphere 7, Werebear 82
+- Sphere sacrifice-draw activations: 7
+- separate release CLI replay + fresh save-out/reload/replay both match `028cc2e33168` and 6665 events
+- all actions accepted; no state injection or fabricated replay
+
+Default product trace retained separately: seed 1401, terminal, `fdc9b089f8f9…`, 17 Werebear casts, 0 artifact casts/activations.
+
+## Sphere + controls
+- Commander’s Sphere hand-cast → battlefield → dynamic color → tap → sacrifice while tapped → draw on stack → resolve → second activation refused.
+- Hand-cast Arcane/Fellwar controls, mono/two-color/none identity, commander leaving command zone, Fellwar eliminated/own-land exclusion.
+- Slice14 tests **10/10**; slice12 10/10; catalog 5/5; printings 7/7; fmt/clippy/release build clean.
+- Corpus **126 catalog / 459 union = 114 supported + 345 missing**; docs stale counts/Sphere exclusion corrected.
+
+Handoff updated: `evidence/issue17/slice14/WRITER-HANDOFF.md`. Full #17 unfinished; no self-approval.

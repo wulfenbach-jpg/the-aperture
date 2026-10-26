@@ -1,0 +1,51 @@
+{
+  "retrieved_at": "2026-10-26T19:08:30.734346+00:00",
+  "cards": [
+    {
+      "uri": "https://api.scryfall.com/cards/795df2ee-fbfc-4961-852c-e3ec50cc52da",
+      "fields": {
+        "name": "Arcane Signet",
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": []
+      },
+      "matches": true
+    },
+    {
+      "uri": "https://api.scryfall.com/cards/3ef87948-0ad9-4757-a692-2262c8e24367",
+      "fields": {
+        "name": "Fellwar Stone",
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        "power": null,
+        "toughness": null,
+        "colors": [],
+        "color_identity": []
+      },
+      "matches": true
+    },
+    {
+      "uri": "https://api.scryfall.com/cards/973310bb-ab32-46dc-8f59-8a5d3e1c58cc",
+      "fields": {
+        "name": "Werebear",
+        "mana_cost": "{1}{G}",
+        "type_line": "Creature \u2014 Human Bear Druid",
+        "oracle_text": "{T}: Add {G}.\nThreshold \u2014 This creature gets +3/+3 as long as there are seven or more cards in your graveyard.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ]
+      },
+      "matches": true
+    }
+  ]
+}
