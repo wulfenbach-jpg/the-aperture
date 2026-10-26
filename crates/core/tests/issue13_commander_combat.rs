@@ -1365,10 +1365,10 @@ fn fog_is_a_sourced_catalog_card() {
     assert!(fog.def().is_instant());
     // The pool grew from 22 to 28 when issue 14 added the ability-bearing
     // starter cards, to 31 when issue 15 added the replacement/prevention/layer
-    // starter cards, and to 79 when issue 17 added the 47 vanilla starter
-    // creatures plus the Jasmine Boreal commander; Fog's own sourced semantics
-    // are unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 79);
+    // starter cards, to 79 when issue 17 added the 47 vanilla starter
+    // creatures plus Jasmine Boreal, to 85 with the Krenko token package, and to 86 with Talrand;
+    // Fog's own sourced semantics are unchanged.
+    assert_eq!(aperture_core::catalog::pool_size(), 86);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

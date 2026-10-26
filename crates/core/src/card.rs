@@ -99,6 +99,14 @@ pub enum Effect {
     /// turn. A one-shot shield: once it has absorbed N damage it stops applying
     /// and is removed in cleanup (CR 514.2).
     PreventNextDamage(u32),
+    /// Create N 1/1 red Goblin creature tokens controlled by the source's
+    /// controller (CR 111.2, 608.2c). The token card is never importable.
+    CreateGoblinTokens(u8),
+    /// Create one 1/1 red Goblin creature token for each Goblin the source's
+    /// controller controls as this resolves (Krenko, Mob Boss).
+    CreateGoblinTokensForEachGoblin,
+    /// Create one 2/2 blue Drake creature token with flying (Talrand).
+    CreateDrakeToken,
 }
 
 impl Effect {
@@ -129,6 +137,11 @@ impl Effect {
             Effect::PreventNextDamage(n) => {
                 format!("prevent the next {n} damage that would be dealt to the target this turn")
             }
+            Effect::CreateGoblinTokens(n) => format!("create {n} 1/1 red Goblin tokens"),
+            Effect::CreateGoblinTokensForEachGoblin => {
+                "create a 1/1 red Goblin token for each Goblin you control".to_string()
+            }
+            Effect::CreateDrakeToken => "create a 2/2 blue Drake token with flying".to_string(),
         }
     }
 }
@@ -153,6 +166,10 @@ pub struct CardDef {
     /// Set for basic lands: the single mana the land's mana ability produces.
     pub basic_mana: Option<ManaColor>,
     pub type_line: &'static str,
+    /// Printed colors. Tokens carry theirs here; catalog cards leave it empty
+    /// because the engine only needs it for token characteristics in this slice.
+    pub colors: &'static [ManaColor],
+    pub flying: bool,
     pub power: Option<i32>,
     pub toughness: Option<i32>,
     pub oracle: &'static str,
@@ -166,6 +183,18 @@ impl CardDef {
 
     pub fn is_creature(&self) -> bool {
         self.kinds.contains(&Kind::Creature)
+    }
+
+    pub fn has_flying(&self) -> bool {
+        self.flying
+    }
+
+    /// The Goblin creature subtype (CR 205.3m), read from the printed type
+    /// line. Krenko counts Goblins by this predicate, tokens included.
+    pub fn is_goblin(&self) -> bool {
+        self.type_line
+            .split_once('—')
+            .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|s| s == "Goblin"))
     }
 
     pub fn is_instant(&self) -> bool {
@@ -240,6 +269,15 @@ pub enum CardId {
     MendingHands,
     AngrathsMarauders,
     WightOfPrecinctSix,
+    KrenkoMobBoss,
+    TalrandSkySummoner,
+    DrakeToken,
+    DragonFodder,
+    KrenkosCommand,
+    HordelingOutburst,
+    GoblinInstigator,
+    BeetlebackChief,
+    GoblinToken,
     AlabornTrooper,
     ArmoredWarhorse,
     BastionEnforcer,
@@ -296,7 +334,17 @@ pub enum CardId {
 /// commanders are added here and to the catalog, never inferred from a type
 /// line. Commander-only cards are refused in ordinary starting libraries
 /// because the legend rule is not modelled.
-pub const SUPPORTED_COMMANDERS: &[CardId] = &[CardId::IsamaruHoundOfKonda, CardId::JasmineBoreal];
+pub const SUPPORTED_COMMANDERS: &[CardId] = &[
+    CardId::IsamaruHoundOfKonda,
+    CardId::JasmineBoreal,
+    CardId::KrenkoMobBoss,
+    CardId::TalrandSkySummoner,
+];
+
+/// Token cards exist as engine objects but are never importable: `catalog::all`
+/// and `catalog::by_name` deliberately exclude them, and the deck parser
+/// refuses them like any other unknown name.
+pub const TOKEN_CARDS: &[CardId] = &[CardId::GoblinToken, CardId::DrakeToken];
 
 impl CardId {
     pub fn def(self) -> &'static CardDef {
@@ -313,6 +361,10 @@ impl CardId {
 
     pub fn is_supported_commander(self) -> bool {
         SUPPORTED_COMMANDERS.contains(&self)
+    }
+
+    pub fn is_token(self) -> bool {
+        TOKEN_CARDS.contains(&self)
     }
 }
 

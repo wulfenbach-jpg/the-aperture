@@ -1,0 +1,12 @@
+// package-krenko-tokens — supported 40-card package fixture, NOT a desired 100-card starter.
+// Commander supplied separately: Krenko, Mob Boss. Four-seat bounded Commander-combat
+// practice only; this exercises the real token package.
+3 Dragon Fodder
+3 Krenko's Command
+3 Hordeling Outburst
+3 Goblin Instigator
+3 Beetleback Chief
+4 Shock
+4 Lightning Strike
+3 Hill Giant
+14 Mountain

@@ -137,7 +137,6 @@
         "Solve the Equation",
         "Stock Up",
         "Swan Song",
-        "Talrand, Sky Summoner",
         "Tezzeret's Gambit",
         "Unwind",
         "Wave Goodbye",
@@ -145,8 +144,8 @@
         "Windfall"
       ],
       "missing_interactions": [
-        "token creation and token permanents",
-        "spell-cast triggered abilities"
+        "flying token package is implemented; remaining 54 desired-list cards are not",
+        "spell-cast trigger is implemented for the package; wider blue shell remains unsupported"
       ]
     },
     {
@@ -156,20 +155,17 @@
       "status": "planned",
       "deck_path": "decks/starter-corpus/planned/krenko-goblin-tokens.txt",
       "missing_cards": [
-        "Beetleback Chief",
         "Brash Taunter",
         "Breeches, Eager Pillager",
         "Brightstone Ritual",
         "Conspicuous Snoop",
         "Crime Novelist",
-        "Dragon Fodder",
         "Dragonlord's Servant",
         "Empty the Warrens",
         "General Kreat, the Boltbringer",
         "Goblin Chieftain",
         "Goblin Chirurgeon",
         "Goblin Engineer",
-        "Goblin Instigator",
         "Goblin King",
         "Goblin Lackey",
         "Goblin Matron",
@@ -187,12 +183,9 @@
         "Guttersnipe",
         "Hexing Squelcher",
         "Hobgoblin Bandit Lord",
-        "Hordeling Outburst",
         "Howlsquad Heavy",
         "Impulsive Pilferer",
         "Kiki-Jiki, Mirror Breaker",
-        "Krenko's Command",
-        "Krenko, Mob Boss",
         "Krenko, Tin Street Kingpin",
         "Legion Loyalist",
         "Legion Warboss",
@@ -216,10 +209,11 @@
         "Zo-Zu the Punisher"
       ],
       "missing_interactions": [
-        "token creation",
-        "activated token-producing abilities",
-        "goblin tribal payoffs",
-        "haste keyword"
+        "remaining 52 desired-list cards are not in the supported pool",
+        "goblin tribal static/triggered payoffs beyond the six-card token package",
+        "haste keyword semantics",
+        "legend rule (Krenko remains commander-only)",
+        "tokens outside the typed 1/1 red Goblin package"
       ]
     },
     {

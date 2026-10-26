@@ -1,0 +1,52 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-25T08:32:00Z",
+ "note": "Talrand copied from stored real planned-list printing; Drake token from a live Scryfall token search. No metadata invented.",
+ "cards": [
+  {
+   "name": "Talrand, Sky Summoner",
+   "role": "commander",
+   "oracle_id": "ea1eb902-a23c-44ff-9169-19baf71de238",
+   "scryfall_id": "1be3ed47-072e-481a-b3d9-dc232ac4b24f",
+   "set": "otc",
+   "collector_number": "116",
+   "layout": "normal",
+   "mana_cost": "{2}{U}{U}",
+   "type_line": "Legendary Creature — Merfolk Wizard",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/otc/116",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Drake",
+   "role": "token",
+   "oracle_id": "9e266374-80f1-458a-9417-16220d2a013a",
+   "scryfall_id": "f4a73034-e20f-4e7e-ac15-3460b1e9c69b",
+   "set": "tfdn",
+   "collector_number": "8",
+   "layout": "token",
+   "mana_cost": "",
+   "type_line": "Token Creature — Drake",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "Flying",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [
+    "Flying"
+   ],
+   "legalities_commander": "not_legal",
+   "printing_url": "https://api.scryfall.com/cards/tfdn/8",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  }
+ ]
+}

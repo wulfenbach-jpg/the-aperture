@@ -32,6 +32,8 @@ pub enum TriggerEvent {
     /// CR 700.4 with CR 603.6c: the source permanent was put into a graveyard
     /// from the battlefield ("dies").
     Dies,
+    /// CR 603.6a + 601.2: the controller cast an instant or sorcery spell.
+    SpellCast,
 }
 
 impl TriggerEvent {
@@ -39,6 +41,7 @@ impl TriggerEvent {
         match self {
             TriggerEvent::EntersBattlefield => "enters the battlefield",
             TriggerEvent::Dies => "dies",
+            TriggerEvent::SpellCast => "you cast an instant or sorcery spell",
         }
     }
 }
@@ -235,9 +238,46 @@ const OCULUS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::Draw(1)],
 })];
 
+const TALRAND: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.",
+    event: TriggerEvent::SpellCast,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateDrakeToken],
+})];
+
+const KRENKO: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.",
+    cost: AbilityCost::TAP,
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::CreateGoblinTokensForEachGoblin],
+    once_per_turn: false,
+})];
+
+const GOBLIN_INSTIGATOR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, create a 1/1 red Goblin creature token.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateGoblinTokens(1)],
+})];
+
+const BEETLEBACK_CHIEF: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, create two 1/1 red Goblin creature tokens.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateGoblinTokens(2)],
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::TalrandSkySummoner => TALRAND,
+        CardId::KrenkoMobBoss => KRENKO,
+        CardId::GoblinInstigator => GOBLIN_INSTIGATOR,
+        CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
         CardId::BrindleBoar => BRINDLE_BOAR,

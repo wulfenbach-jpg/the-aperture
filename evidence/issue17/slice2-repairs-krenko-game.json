@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 0
+    },
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 1
+    },
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 2
+    },
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 29,
+    "ability_activations": 20,
+    "attacks": 17,
+    "blocks": 11,
+    "casts": 25,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 325,
+    "events": 6039,
+    "triggered_abilities": 9
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1805
+  },
+  "final_digest": "e2827d82da51bba3a3d744aebd9ec848865b93478f228a6e2456590e8bf384d7",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 85,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1805,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 22,
+      "life": 40,
+      "name": "package-krenko-tokens",
+      "seat": 0,
+      "source": "decks/package-krenko-tokens.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -4,
+      "name": "package-krenko-tokens",
+      "seat": 1,
+      "source": "decks/package-krenko-tokens.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -23,
+      "name": "package-krenko-tokens",
+      "seat": 2,
+      "source": "decks/package-krenko-tokens.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -62,
+      "name": "package-krenko-tokens",
+      "seat": 3,
+      "source": "decks/package-krenko-tokens.txt"
+    }
+  ],
+  "seed": 7,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1805,
+  "truncated": null,
+  "turns": 40,
+  "winner": 0,
+  "winner_label": "P0"
+}

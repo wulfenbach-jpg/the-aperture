@@ -65,7 +65,7 @@ rules citation.
   is no general "instead" engine for arbitrary cards.
 * No interact channel is offered for the CR 616.1 order choice: the engine
   records the chooser and applies the policy above deterministically.
-* The pool stays a bounded practice corpus (79 cards after the issue-17 starter
+* The pool stays a bounded practice corpus (86 cards after the issue-17 starter
   package); this is not 100-card
   Commander and not full layer coverage.
 

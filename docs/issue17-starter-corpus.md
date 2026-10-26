@@ -30,7 +30,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-79-card pool. Isamaru itself is supported, but none of its 57 chosen nonland
+86-card pool. Isamaru itself is supported, but none of its 57 chosen nonland
 cards is, so `isamaru-white-aggro` stays `planned`.
 
 ## Corpus union and staged gaps
@@ -38,17 +38,22 @@ cards is, so `isamaru-white-aggro` stays `planned`.
 Computed from the exact files and the current catalog:
 
 * union of all nonbasic names across the eight lists: **447 unique cards**;
-* **61** of them are in the supported pool and **386** are missing;
+* **66** of them are in the supported pool and **381** are missing;
 * per planned list: 57 unique nonland names + 42 basics = 99; Jasmine has 58
   nonland + 41 basics = 99.
-* Supported overlap by desired list: Jasmine 58/58, Ayula 6/57, Talrand 3/57,
-  Isamaru/Krenko/Elas/Tatyova/Zada 0/57. Missing counts in the manifest are
+* Supported overlap by desired list: Jasmine 58/58, Ayula 6/57, Krenko 5/57,
+  Talrand 3/57, Isamaru/Elas/Tatyova/Zada 0/57. Missing counts in the manifest are
   computed from catalog membership, including the unsupported **Swamp** basic
   in Elas (the pool has no black basic land).
 
 Staged interaction roadmap (derived from the manifest `missing_interactions`):
 
-1. tokens and token permanents (Talrand, Krenko, Ayula, Zada);
+1. tokens and token permanents: **partially implemented** as typed 1/1 red
+   Goblin tokens for the Krenko package (Krenko, Dragon Fodder, Krenko's
+   Command, Hordeling Outburst, Goblin Instigator, Beetleback Chief) and a 2/2
+   blue Drake with functional flying for Talrand, Sky Summoner. Ayula and Zada
+   still need their own token types; the exact Krenko starter is still planned
+   (52 missing) and Talrand's desired list has 54 missing cards;
 2. triggered abilities, especially spell-cast, landfall, death and tribal
    triggers (Talrand, Elas, Tatyova, Ayula);
 3. activated non-mana abilities and sacrifice outlets (Krenko, Elas);
@@ -107,7 +112,7 @@ Commander-combat practice are still **not** the Commander format.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 79 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 86 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the

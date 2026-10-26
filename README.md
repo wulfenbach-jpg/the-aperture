@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (79 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (86 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -40,15 +40,24 @@ implementation and it says so everywhere it matters.
   ability). All three card texts and their printing sources are recorded in
   `crates/core/tests/card_printings.rs`; see
   [docs/issue15-effects.md](docs/issue15-effects.md).
-  Isamaru and **Jasmine Boreal** are commander-only; both are refused in every
-  ordinary starting library because the legend rule is not implemented.
+  Isamaru, **Jasmine Boreal**, **Krenko, Mob Boss** and **Talrand, Sky Summoner**
+  are commander-only; they
+  are refused in every ordinary starting library because the legend rule is not
+  implemented.
   The issue-17 starter package adds **47 sourced vanilla green/white creatures**
   (Savannah Lions, Elite Vanguard, Balduvian Bears, Watchwolf and 43 more) and
   the vanilla commander **Jasmine Boreal** (`{3}{G}{W}`, legendary 4/5 Human),
   all reusing the existing permanent-spell path. Their exact 99-card singleton
   library is `decks/starter-corpus/jasmine-vanilla-stompy.txt`; see
-  [docs/issue17-starter-corpus.md](docs/issue17-starter-corpus.md). The other
-  seven target archetypes are planned, not supported.
+  [docs/issue17-starter-corpus.md](docs/issue17-starter-corpus.md). Slice 2 adds
+  the sourced **Krenko goblin-token package**: Krenko, Dragon Fodder, Krenko's
+  Command, Hordeling Outburst, Goblin Instigator and Beetleback Chief, plus an
+  engine-only 1/1 red Goblin token (never importable), plus **Talrand, Sky
+  Summoner** with a complete instant/sorcery cast trigger, an engine-only 2/2
+  blue Drake token with real flying, and flying block restriction. The exact 100-card Krenko
+  starter remains planned; `decks/package-krenko-tokens.txt` is a clearly named
+  40-card supported package fixture. The other seven target archetypes are
+  planned, not supported.
   Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
@@ -259,14 +268,15 @@ analysis only;
 networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
-Earth sacrifice candidate, triggered abilities, activated abilities other
-than basic-land mana abilities, static abilities beyond the two supported forms,
-replacement effects beyond damage doubling, redirection,
-tokens, planeswalkers, counters as rules objects (the sandbox counter display is
-storage only), milling/tutoring/libraries as
+Earth sacrifice candidate, triggered abilities outside the typed supported forms,
+activated abilities outside the typed supported forms (basic-land mana, Krenko,
+Prodigal Sorcerer, Rootwalla, Brindle Boar), static abilities beyond the two
+supported forms, replacement effects beyond damage doubling, redirection,
+planeswalkers, counters as rules objects (the sandbox counter display is
+storage only), tokens beyond the typed 1/1 red Goblin package, milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
-card outside this branch candidate's 79-card pool.
+card outside this branch candidate's 86-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

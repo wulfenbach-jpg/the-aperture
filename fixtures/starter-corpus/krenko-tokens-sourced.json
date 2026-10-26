@@ -1,0 +1,155 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-25T08:32:00Z",
+ "note": "Card fields copied from the stored real Scryfall planned-list printing response (fixtures/starter-corpus/planned/krenko-goblin-tokens.cards.json) and the live Goblin token response; no metadata invented.",
+ "cards": [
+  {
+   "name": "Krenko, Mob Boss",
+   "role": "commander",
+   "oracle_id": "68418069-f615-40ef-ae0d-764192acae00",
+   "scryfall_id": "824b2d73-2151-4e5e-9f05-8f63e2bdcaa9",
+   "set": "fdn",
+   "collector_number": "204",
+   "layout": "normal",
+   "mana_cost": "{2}{R}{R}",
+   "type_line": "Legendary Creature — Goblin Warrior",
+   "power": "3",
+   "toughness": "3",
+   "oracle_text": "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/fdn/204",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Dragon Fodder",
+   "role": "token_package",
+   "oracle_id": "d0d2c45b-b6e3-4999-bdab-976e8f0d6617",
+   "scryfall_id": "f9abe517-f601-4784-8d62-2350bd755146",
+   "set": "fdn",
+   "collector_number": "535",
+   "layout": "normal",
+   "mana_cost": "{1}{R}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Create two 1/1 red Goblin creature tokens.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/fdn/535",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Krenko's Command",
+   "role": "token_package",
+   "oracle_id": "9cfe86ae-eebe-44aa-a956-4b3e9e621105",
+   "scryfall_id": "b07d96a1-87a0-45ff-ae6e-230deaf44dca",
+   "set": "clu",
+   "collector_number": "139",
+   "layout": "normal",
+   "mana_cost": "{1}{R}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Create two 1/1 red Goblin creature tokens.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/clu/139",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Hordeling Outburst",
+   "role": "token_package",
+   "oracle_id": "a6450b8e-eb18-431c-9eb7-7daf107978b2",
+   "scryfall_id": "e4138531-ef42-4c56-864e-d3525a4f2082",
+   "set": "a25",
+   "collector_number": "134",
+   "layout": "normal",
+   "mana_cost": "{1}{R}{R}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Create three 1/1 red Goblin creature tokens.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/a25/134",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Goblin Instigator",
+   "role": "token_package",
+   "oracle_id": "8b022754-6d16-470e-b754-4df6e4f4709e",
+   "scryfall_id": "b36a1bc7-a080-4fb6-b975-c59bb33a090a",
+   "set": "moc",
+   "collector_number": "282",
+   "layout": "normal",
+   "mana_cost": "{1}{R}",
+   "type_line": "Creature — Goblin Rogue",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "When this creature enters, create a 1/1 red Goblin creature token.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/moc/282",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Beetleback Chief",
+   "role": "token_package",
+   "oracle_id": "f5c5f64c-6911-430c-a825-b32b96d39c7d",
+   "scryfall_id": "2d19a474-b008-4088-8a31-333c0b2d9d65",
+   "set": "tdc",
+   "collector_number": "205",
+   "layout": "normal",
+   "mana_cost": "{2}{R}{R}",
+   "type_line": "Creature — Goblin Warrior",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "When this creature enters, create two 1/1 red Goblin creature tokens.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tdc/205",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Goblin",
+   "role": "token",
+   "oracle_id": "4465eff4-5851-4721-a248-866c686c2ab8",
+   "scryfall_id": "70f8a1de-cd4c-4afa-bf03-0245d375d42e",
+   "set": "tfdn",
+   "collector_number": "18",
+   "layout": "token",
+   "mana_cost": "",
+   "type_line": "Token Creature — Goblin",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "not_legal",
+   "printing_url": "https://api.scryfall.com/cards/tfdn/18",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  }
+ ]
+}

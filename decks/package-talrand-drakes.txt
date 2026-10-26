@@ -1,0 +1,10 @@
+// package-talrand-drakes — supported 40-card Talrand package fixture, NOT a desired 100-card starter.
+// Commander supplied separately: Talrand, Sky Summoner.
+4 Opt
+4 Consider
+4 Divination
+4 Counterspell
+4 Unsummon
+4 Time Ebb
+4 Prodigal Sorcerer
+12 Island

@@ -1944,6 +1944,24 @@ impl Game {
                     ),
                 ));
             }
+            if self
+                .state
+                .try_object(block.attacker)
+                .is_some_and(|object| object.has_flying())
+                && self
+                    .state
+                    .try_object(block.blocker)
+                    .is_some_and(|object| !object.has_flying())
+            {
+                return Err(EngineError::illegal(
+                    "declare blockers",
+                    format!(
+                        "{} cannot block {} because it does not have flying (CR 509.1b)",
+                        self.describe_object(block.blocker),
+                        self.describe_object(block.attacker)
+                    ),
+                ));
+            }
         }
         Ok(())
     }
@@ -2513,6 +2531,30 @@ impl Game {
             entry: StackEntry::Spell,
             trigger_answered: false,
         });
+        // CR 603.6a: "you cast" triggers are queued as the spell is cast, and
+        // reach the stack above it before priority. Only the caster's
+        // permanents trigger; an opponent's cast does not.
+        if matches!(card_id.def().kinds, kinds if kinds.contains(&crate::card::Kind::Instant) || kinds.contains(&crate::card::Kind::Sorcery))
+        {
+            let sources: Vec<(ObjectId, CardId)> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
+                .filter(|object| {
+                    ability::triggers_on(object.card, TriggerEvent::SpellCast)
+                        .next()
+                        .is_some()
+                })
+                .map(|object| (object.id, object.card))
+                .collect();
+            for (source, card) in sources {
+                self.queue_triggers(source, card, player, TriggerEvent::SpellCast);
+            }
+            // CR 603.3: put the "you cast" triggers on the stack above the
+            // spell before any player receives priority.
+            self.put_triggers(events);
+        }
         if from_command_zone
             && let Some(commander) = commander_id
             && let Some(registry) = self
@@ -3493,6 +3535,34 @@ impl Game {
                 changed = true;
             }
 
+            // CR 111.7: a token in a zone other than the battlefield ceases to
+            // exist as a state-based action. It reached that zone first, so
+            // dies/destination events and applicable triggers were recorded
+            // above; CR 111.8 then prevents another zone change.
+            let tokens: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.card.is_token()
+                        && object.zone != Zone::Battlefield
+                        && object.zone != Zone::Removed
+                })
+                .map(|object| object.id)
+                .collect();
+            if !tokens.is_empty() {
+                for id in tokens {
+                    if let Some(object) = self.detach_object(id) {
+                        let card = object.card;
+                        self.insert_object(object, Zone::Removed);
+                        events.push(Event::StateBasedAction {
+                            description: format!("{card} token ceases to exist (CR 111.7)"),
+                        });
+                    }
+                }
+                changed = true;
+            }
+
             // Terminal outcomes are resolved in the same SBA event before any
             // commander-return choice: once one live seat (or none) remains,
             // an irrelevant return choice must not defer GameOver.
@@ -4237,6 +4307,19 @@ impl Game {
                 self.recompute_layers();
                 false
             }
+            Effect::CreateGoblinTokens(count) => {
+                self.create_goblin_tokens(controller, usize::from(count), events);
+                false
+            }
+            Effect::CreateGoblinTokensForEachGoblin => {
+                let count = self.goblin_count(controller);
+                self.create_goblin_tokens(controller, count, events);
+                false
+            }
+            Effect::CreateDrakeToken => {
+                self.create_tokens(controller, CardId::DrakeToken, 1, events);
+                false
+            }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
                     Target::Spell(id) => Some(*id),
@@ -4258,6 +4341,57 @@ impl Game {
                 }
                 false
             }
+        }
+    }
+
+    fn goblin_count(&self, controller: PlayerId) -> usize {
+        self.state
+            .objects
+            .values()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == controller
+                    && object.card.def().is_goblin()
+            })
+            .count()
+    }
+
+    /// Create real token objects with unique object ids. Token cards are not in
+    /// the importable catalog; each token enters the battlefield under the
+    /// effect's controller with summoning sickness under CR 302.6.
+    fn create_goblin_tokens(
+        &mut self,
+        controller: PlayerId,
+        count: usize,
+        events: &mut Vec<Event>,
+    ) {
+        self.create_tokens(controller, CardId::GoblinToken, count, events);
+    }
+
+    fn create_tokens(
+        &mut self,
+        controller: PlayerId,
+        card: CardId,
+        count: usize,
+        events: &mut Vec<Event>,
+    ) {
+        for _ in 0..count {
+            let id = ObjectId(self.state.next_object);
+            self.state.next_object += 1;
+            let mut object = blank_object(id, card, controller);
+            object.controller = controller;
+            object.zone = Zone::Battlefield;
+            object.summoning_sick = true;
+            self.state.objects.insert(id, object);
+            events.push(Event::PermanentEntered {
+                object: id,
+                card,
+                controller,
+            });
+            events.push(Event::StateBasedAction {
+                description: format!("P{controller} creates {card} token ({id})"),
+            });
+            self.queue_triggers(id, card, controller, TriggerEvent::EntersBattlefield);
         }
     }
 
@@ -4948,7 +5082,15 @@ impl Game {
         attackers.sort_by_key(|(id, power)| (std::cmp::Reverse(*power), id.0));
         let mut out = Vec::new();
         for blocker in self.legal_blockers(player) {
-            let Some((attacker, _)) = attackers.first() else {
+            let Some((attacker, _)) = attackers.iter().find(|(attacker, _)| {
+                self.state
+                    .try_object(*attacker)
+                    .is_some_and(|a| !a.has_flying())
+                    || self
+                        .state
+                        .try_object(blocker)
+                        .is_some_and(|b| b.has_flying())
+            }) else {
                 break;
             };
             out.push(BlockDecl {

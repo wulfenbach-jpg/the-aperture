@@ -18,6 +18,7 @@
 //! the pool before this guard and their strings were accepted in earlier
 //! reviewed slices.
 
+use aperture_core::CardId;
 use aperture_core::catalog;
 use serde_json::Value;
 
@@ -26,6 +27,9 @@ use serde_json::Value;
 /// entries above, this list is data-driven; the fields are the provider's and
 /// the same fixture drives the catalog conformance test.
 const STARTER_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sourced-cards.json");
+const KRENKO_SOURCED: &str =
+    include_str!("../../../fixtures/starter-corpus/krenko-tokens-sourced.json");
+const TALRAND_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/talrand-sourced.json");
 
 fn starter_new_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
@@ -34,6 +38,28 @@ fn starter_new_cards() -> Vec<Value> {
         .expect("cards")
         .iter()
         .filter(|card| matches!(card["role"].as_str(), Some("vanilla" | "commander")))
+        .cloned()
+        .collect()
+}
+
+fn krenko_new_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(KRENKO_SOURCED).expect("sourced Krenko JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| matches!(card["role"].as_str(), Some("commander" | "token_package")))
+        .cloned()
+        .collect()
+}
+
+fn talrand_card() -> Vec<Value> {
+    let value: Value = serde_json::from_str(TALRAND_SOURCED).expect("sourced Talrand JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| card["role"] == "commander")
         .cloned()
         .collect()
 }
@@ -211,8 +237,67 @@ fn every_starter_corpus_card_matches_its_recorded_printing() {
 }
 
 #[test]
+fn every_krenko_package_card_matches_its_recorded_printing() {
+    let cards = krenko_new_cards();
+    assert_eq!(cards.len(), 6, "Krenko plus five token-package cards");
+    for card in cards {
+        let name = sourced_text(&card, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&card, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&card, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&card, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            card["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            card["toughness"].as_str(),
+            "{name} toughness"
+        );
+        assert_eq!(sourced_text(&card, "layout"), "normal");
+        assert!(sourced_text(&card, "printing_url").starts_with("https://api.scryfall.com/cards/"));
+        assert_eq!(sourced_text(&card, "legalities_commander"), "legal");
+    }
+    // The token is engine-only, never in the importable catalog.
+    let token: Value = serde_json::from_str::<Value>(KRENKO_SOURCED).unwrap()["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|card| card["role"] == "token")
+        .cloned()
+        .expect("token source record");
+    assert_eq!(token["type_line"], "Token Creature — Goblin");
+    assert_eq!(token["power"], "1");
+    assert_eq!(token["toughness"], "1");
+    assert_eq!(
+        CardId::GoblinToken.def().type_line,
+        token["type_line"].as_str().unwrap()
+    );
+}
+
+#[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
-    let starter = starter_new_cards();
+    let starter: Vec<Value> = starter_new_cards()
+        .into_iter()
+        .chain(krenko_new_cards())
+        .chain(talrand_card())
+        .collect();
     let starter_names: Vec<&str> = starter
         .iter()
         .map(|card| sourced_text(card, "name"))

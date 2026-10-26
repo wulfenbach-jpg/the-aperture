@@ -1,0 +1,121 @@
+{
+  "issue": 17,
+  "slice": "slice2 assignment3 \u2014 Talrand, Sky Summoner package",
+  "status": "PARTIAL",
+  "eight_list_gate": "open",
+  "head": "86db7d316edd6200f7f598849018e428d11b69eb",
+  "package": {
+    "commander": "Talrand, Sky Summoner",
+    "cost": "{2}{U}{U}",
+    "type": "Legendary Creature \u2014 Merfolk Wizard",
+    "pt": "2/2",
+    "token": "2/2 blue Drake with flying",
+    "commander_only": true,
+    "token_importable": false,
+    "pool_size": 86,
+    "exact_100_list_status": "planned; 54 missing names"
+  },
+  "source": {
+    "fixture": "fixtures/starter-corpus/talrand-sourced.json",
+    "talrand_retrieved_at": "2026-10-25T08:32:00Z (stored planned response)",
+    "drake_retrieved_at": "same session live Scryfall token search",
+    "urls": [
+      "https://api.scryfall.com/cards/otc/116",
+      "https://api.scryfall.com/cards/tfdn/8"
+    ]
+  },
+  "mechanics": {
+    "spell_cast_trigger": "instant or sorcery; caster's permanents only; staged above the spell; independent of counter",
+    "drake_token": true,
+    "flying_blocks": "nonflying cannot block flying; flying can block either",
+    "forged_block_refusal_preserves_state": true,
+    "token_cessation_CR111_7_111_8_retained": true,
+    "commander_only": true
+  },
+  "red_green": {
+    "scaffold_note": "CardId/CardDef symbols were added first so the tests compile; per instructions, missing-symbol compile errors are not counted as behavioral RED.",
+    "trigger_red": "casting_an_instant_stages_the_trigger_above_it_and_creates_a_drake: stack len 1, expected 2 (no trigger); no Drake",
+    "flying_red": "nonflyers_cannot_block_flyers_and_the_refusal_preserves_state: submit_err panicked 'expected rejection' (engine accepted a nonflyer block)",
+    "counter_test_note": "the countered-spell trigger test was added after GREEN as regression coverage, not claimed as RED",
+    "focused_log": "evidence/issue17/slice2-talrand-focused.log"
+  },
+  "verification": {
+    "fmt": 0,
+    "clippy": 0,
+    "release_build": 0,
+    "talrand_tests": "6 passed",
+    "token_tests": "10 passed",
+    "catalog": "5 passed",
+    "printings": "4 passed",
+    "commander_combat": "43 passed",
+    "starter": "8 passed",
+    "starter_planned": "1 passed",
+    "analyzer": "3 passed",
+    "gates_log": "evidence/issue17/slice2-talrand-gates.log"
+  },
+  "journey": {
+    "fixture": "decks/package-talrand-drakes.txt",
+    "fixture_note": "clearly named 40-card supported package fixture, not desired 100-card starter",
+    "status": "terminal",
+    "winner": 2,
+    "steps": 1830,
+    "turns": 39,
+    "starting_life": 40,
+    "casts": 29,
+    "drake_creations_logged": 11,
+    "blocks": 3,
+    "digest": "c9fb97c6fc084660108f41b0a4b870bb68240c43e8ebc73f5080cf71a80dcf11",
+    "report": "evidence/issue17/slice2-talrand-game.json",
+    "log": "evidence/issue17/slice2-talrand-game.log"
+  },
+  "replay": {
+    "direct": "evidence/issue17/slice2-talrand-replay.log",
+    "save": "evidence/issue17/slice2-talrand-save-replay.log",
+    "matches": true
+  },
+  "legacy": {
+    "jasmine_replay": "evidence/issue17/slice2-talrand-jasmine-replay.log",
+    "result": "digest d7f8c2adaa17 matches"
+  },
+  "desired_lists": {
+    "changed": false,
+    "missing_counts": {
+      "isamaru": 57,
+      "talrand": 54,
+      "krenko": 52,
+      "ayula": 52,
+      "elas": 59,
+      "tatyova": 58,
+      "zada": 58
+    }
+  },
+  "timing_note": "Assignment 2 stopped after about 7\u20138 active minutes, not because the 25-minute budget was exhausted; its handoff sentence claiming repairs consumed the runtime budget is inaccurate history and is preserved unchanged.",
+  "unfinished": [
+    "Talrand desired 100-card list remains planned with 54 missing cards",
+    "flying is implemented only for the typed Drake token; no other keyword semantics",
+    "tokens remain Goblin/Drake types only",
+    "legend rule absent; Talrand commander-only",
+    "no #16 integration claim"
+  ],
+  "changed_files": [
+    "crates/core/src/card.rs",
+    "crates/core/src/catalog.rs",
+    "crates/core/src/ability.rs",
+    "crates/core/src/engine.rs",
+    "crates/core/src/state.rs",
+    "crates/core/tests/issue17_talrand.rs",
+    "crates/core/tests/catalog_pool.rs",
+    "crates/core/tests/card_printings.rs",
+    "crates/core/tests/issue13_commander_combat.rs",
+    "decks/package-talrand-drakes.txt",
+    "fixtures/starter-corpus/talrand-sourced.json",
+    "decks/starter-corpus/manifest.json",
+    "docs/issue17-starter-corpus.md",
+    "README.md",
+    "docs/issue15-effects.md",
+    "evidence/issue17/SLICE2-IMPLEMENTATION-HANDOFF-3.md",
+    "evidence/issue17/slice2-result-3.json",
+    "evidence/issue17/slice2-talrand-*"
+  ],
+  "commit_or_push": "none"
+}

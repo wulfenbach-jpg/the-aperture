@@ -3,9 +3,9 @@
 //! creatures print no text at all).
 //!
 //! The issue-17 starter package adds 47 sourced vanilla green/white creatures
-//! and the vanilla commander Jasmine Boreal. All of them reuse the existing
-//! permanent-spell path: no new ability, keyword, counter or token semantics
-//! were introduced for that package.
+//! and the vanilla commander Jasmine Boreal. Slice 2 adds the Krenko goblin
+//! package: six sourced cards plus an engine-only 1/1 red Goblin token card.
+//! Token creation is typed; tokens are never importable catalog cards.
 //!
 //! Activated and triggered abilities are declared in [`crate::ability`] and
 //! executed by the engine; a card with an ability this crate cannot execute is
@@ -15,8 +15,9 @@
 //! forms outside the two declared kinds (characteristic-defining power/toughness
 //! and damage doubling) are refused at import.
 //!
-//! Deliberate exclusions (documented in HANDOFF.md): no tokens, no counters in
-//! the rules layer, and no layer 4–6/7b continuous effects.
+//! Deliberate exclusions (documented in HANDOFF.md): tokens outside the single
+//! Goblin type, counters in the rules layer, and layer 4–6/7b continuous
+//! effects.
 
 use crate::card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
 
@@ -52,6 +53,8 @@ macro_rules! card {
             kinds: $kinds,
             basic_mana: $basic,
             type_line: $tl,
+            colors: &[],
+            flying: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -61,7 +64,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 79] = [
+pub static CARDS: [CardDef; 86] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -232,6 +235,50 @@ pub static CARDS: [CardDef; 79] = [
         WightOfPrecinctSix, "Wight of Precinct Six", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
         oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
+        spell: None
+    ),
+    card!(
+        TalrandSkySummoner, "Talrand, Sky Summoner", cost: Some("{2}{U}{U}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Merfolk Wizard", power: Some(2), toughness: Some(2),
+        oracle: "Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.",
+        spell: None
+    ),
+    // Issue 17 slice 2: Krenko goblin-token package. All text is recorded from
+    // the stored Scryfall printings in fixtures/starter-corpus/planned/.
+    card!(
+        KrenkoMobBoss, "Krenko, Mob Boss", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin Warrior", power: Some(3), toughness: Some(3),
+        oracle: "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.",
+        spell: None
+    ),
+    card!(
+        DragonFodder, "Dragon Fodder", cost: Some("{1}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Create two 1/1 red Goblin creature tokens.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::CreateGoblinTokens(2)] })
+    ),
+    card!(
+        KrenkosCommand, "Krenko's Command", cost: Some("{1}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Create two 1/1 red Goblin creature tokens.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::CreateGoblinTokens(2)] })
+    ),
+    card!(
+        HordelingOutburst, "Hordeling Outburst", cost: Some("{1}{R}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Create three 1/1 red Goblin creature tokens.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::CreateGoblinTokens(3)] })
+    ),
+    card!(
+        GoblinInstigator, "Goblin Instigator", cost: Some("{1}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Rogue", power: Some(1), toughness: Some(1),
+        oracle: "When this creature enters, create a 1/1 red Goblin creature token.",
+        spell: None
+    ),
+    card!(
+        BeetlebackChief, "Beetleback Chief", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "When this creature enters, create two 1/1 red Goblin creature tokens.",
         spell: None
     ),
     // Issue 17 starter corpus: sourced vanilla green/white creatures. Every
@@ -486,9 +533,43 @@ pub fn all() -> &'static [CardDef] {
     &CARDS
 }
 
+/// Token definitions. Deliberately separate from `CARDS`: tokens are engine
+/// objects, never importable or analyzer-supported cards.
+pub static TOKENS: [CardDef; 2] = [
+    CardDef {
+        id: CardId::GoblinToken,
+        name: "Goblin",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        type_line: "Token Creature — Goblin",
+        colors: &[ManaColor::Red],
+        flying: false,
+        power: Some(1),
+        toughness: Some(1),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::DrakeToken,
+        name: "Drake Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        type_line: "Token Creature — Drake",
+        colors: &[ManaColor::Blue],
+        flying: true,
+        power: Some(2),
+        toughness: Some(2),
+        oracle: "Flying",
+        spell: None,
+    },
+];
+
 pub fn def(id: CardId) -> &'static CardDef {
     CARDS
         .iter()
+        .chain(TOKENS.iter())
         .find(|c| c.id == id)
         .expect("every CardId has a catalog entry")
 }

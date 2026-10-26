@@ -141,6 +141,13 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     assert!(*n > 0, "{} has a no-op prevention effect", card.name);
                     assert_eq!(spec.target, TargetSpec::AnyTarget, "{}", card.name);
                 }
+                Effect::CreateGoblinTokens(n) => {
+                    assert!(*n > 0, "{} has a no-op token effect", card.name);
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                Effect::CreateGoblinTokensForEachGoblin | Effect::CreateDrakeToken => {
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
             }
         }
         // The card's own reminder text is consistent with its cost.

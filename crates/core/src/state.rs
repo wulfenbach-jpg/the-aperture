@@ -467,6 +467,10 @@ impl Object {
         self.card.def().is_creature()
     }
 
+    pub fn has_flying(&self) -> bool {
+        self.card.def().has_flying()
+    }
+
     pub fn power(&self) -> i32 {
         self.card.def().power.unwrap_or(0) + self.pump_power
     }
