@@ -7,8 +7,13 @@ issue closure or successor activation was performed.
 ## Published exact head
 
 * draft PR46: https://github.com/wulfenbach-jpg/the-aperture/pull/46
-* branch `aperture/issue-17`, head **eea8f9dea34ae9b5f65c4bda3a1f50797449a118**
+* **code head of record (reviewed + CI): `eea8f9dea34ae9b5f65c4bda3a1f50797449a118`**
   (previous reviewed head `86aebf9`; previous approved increment `9cecd62`)
+* branch tip `ca23edb` is the **evidence-only** follow-up commit for this
+  checkpoint: `git diff --name-only eea8f9d ca23edb` touches 0 non-evidence paths
+  (6 files, all under `evidence/issue17/`), so the reviewed code bytes are
+  unchanged. A head-bound supervisor should bind approval to `eea8f9d` and treat
+  `ca23edb` as its evidence delta.
 * PR OPEN, MERGEABLE, still draft, `mergeStateStatus: BEHIND` (branch is behind
   master by other lanes' commits; no engine drift seen locally).
 * exact-head CI: **10/10 check-runs SUCCESS** on `eea8f9d`
