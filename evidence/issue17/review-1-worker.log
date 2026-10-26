@@ -1,0 +1,27 @@
+Working...
+Verdict: **request_changes** (increment only). `full_issue17_accepted: false`.
+
+Reviewed `0a7d781c41d1799a79c8ef41e6888d81ab7f9e6d` against base `8a72cc607ea25f203be672c0007ad5e798be7145`. Tracked tree clean.
+
+**Blocking findings**
+
+1. **Default CLI deck identity regressed** — `crates/cli/src/decks.rs` now takes the name from `file_stem()` for *every* existing path, including non-explicit bundled defaults. Unchanged invocation:
+   `aperture-cli selfplay --seed 1 --max-steps 50`
+   now reports seats `temur-beats` / `izzet-control`; base used `Temur Beats` / `Izzet Control`. Gameplay is unchanged, but the `aperture-selfplay/2` default identity changed contrary to the preserve-defaults requirement. Fix: derive stem only for explicit paths; keep `fallback_name` for defaults, and add a regression for both cases.
+
+2. **Tracked corpus docs contradict the manifest** — `docs/issue17-starter-corpus.md:10` claims planned entries have `deck_path: null`; `:116-118` says no exact future list is claimed. Actual manifest gives all seven planned entries non-null exact-list paths under `decks/starter-corpus/planned/`, and `starter_corpus_planned.rs` requires them. `evidence/issue17/IMPLEMENTATION-HANDOFF.md:103` repeats the stale claim. Fix the docs; do not implement the seven.
+
+**Verified**
+
+- Focused tests with `--locked`: core starter 8/8, card_printings 3/3, issue13 43/43; import 3/3 + 1/1; CLI 5/5 + 8/8 + 1/1. `cargo fmt --check` and `git diff --check` clean.
+- Real exact-file 4-seat game: terminal, 40 life, 2364 steps, replay digest matched, not capped.
+- All four embedded libraries programmatically equal the exact 99-card text list; 39 new-vanilla casts across 30 distinct cards; 5 Jasmine casts.
+- Separate replay verified; `--save-out` and save re-replay matched digest `d7f8c2adaa17…`.
+- Analyzer: exact Jasmine list legal/supported, 1 commander + 99 library = 100, 61 canonical names, `gameplay.available=false`; planned Zada list legal but engine-unsupported (58), not promoted.
+- Manifest missing-card counts match computed catalog gaps for all 8; union 447 = 61 supported + 386 missing. Baseline files and bundled practice decks unchanged.
+- Fixture hashes match their documented domains; saved printings match each other; live Scryfall spot checks of Jasmine, Armored Warhorse, and Norwood Ranger match.
+- Jasmine is refused in ordinary libraries; explicit missing deck paths are refused, not substituted.
+
+**Limitations**: full suite not rerun (writer logs reused), issue-14 legacy replay mismatch treated as inherited per retained base note, native UI untouched/still hardcodes Isamaru, and `fixtures/starter-corpus/manifest.json.deck_sha256` binds `raw_deck` bytes rather than the deck JSON file (test-defined binding, lacks domain note).
+
+Deliverables: `evidence/issue17/review-1.md`, `evidence/issue17/review-1.json`, plus `review1-*` run outputs. Windows case-insensitivity means the markdown replaced the uppercase assignment copy; the original is preserved at `evidence/issue17/review1-assignment-original.md`.

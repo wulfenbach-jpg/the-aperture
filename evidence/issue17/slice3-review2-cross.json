@@ -1,0 +1,78 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 11,
+    "ability_activations": 0,
+    "attacks": 11,
+    "blocks": 1,
+    "casts": 22,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 38,
+    "events": 2819,
+    "triggered_abilities": 11
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1112
+  },
+  "final_digest": "4572cd11e8933e629e21e57ac4e59646d100b4c9397bb88b94d78e47ad843456",
+  "first_player": 3,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 93,
+  "profile": "practice-20",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1112,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-cross-corpus",
+      "seat": 0,
+      "source": "decks/package-cross-corpus.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -2,
+      "name": "package-cross-corpus",
+      "seat": 1,
+      "source": "decks/package-cross-corpus.txt"
+    },
+    {
+      "cards": 40,
+      "library": 21,
+      "life": 10,
+      "name": "package-cross-corpus",
+      "seat": 2,
+      "source": "decks/package-cross-corpus.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-cross-corpus",
+      "seat": 3,
+      "source": "decks/package-cross-corpus.txt"
+    }
+  ],
+  "seed": 5,
+  "starting_life": 20,
+  "status": "terminal",
+  "steps": 1112,
+  "truncated": null,
+  "turns": 25,
+  "winner": 2,
+  "winner_label": "P2"
+}

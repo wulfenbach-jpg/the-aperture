@@ -1,0 +1,5 @@
+save evidence/issue17/slice3-tatyova-save.json — 4 seat(s): P0 'package-tatyova-landfall' vs P1 'package-tatyova-landfall' vs P2 'package-tatyova-landfall' vs P3 'package-tatyova-landfall'
+  stored digest b31adfd97c31 | recomputed b31adfd97c31 | matches
+  turn 65 step draw step | pending None | sandbox modified: false
+  ai: human P0; AI seats P0, P1, P2, P3 = deterministic baseline heuristic; autoplay off
+  replay of 2993 action(s) -> digest b31adfd97c31 | events 7549 | reproduces the save

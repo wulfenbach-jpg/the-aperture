@@ -1,0 +1,20 @@
+Working...
+Verdict: **approve_increment** for the bounded slice-3 Tatyova/Jaddi package. `full_issue17_accepted: false`.
+
+Reviewed `3661353aad1c3d628827e28faf187e23ca5b4cb9` against `e16185c`.
+
+**No findings** in the reviewed delta.
+
+**Verified**
+
+- Focused tests with `--locked`: Tatyova 5/5, card_printings 4/4, catalog_pool 5/5, starter 8/8, issue13 43/43; planned-manifest 1/1; CLI lib 7/7 including four-commander help, commander_check 8/8, explicit_decks 1/1. fmt/diff-check/release build clean.
+- Four-seat exact `decks/package-tatyova-landfall.txt` game, seed 21, Tatyova each seat: terminal P0, 2993 actions/65 turns, 40 life, digest `b31adfd97c31…`, not capped; replay matches.
+- Replay seats all exactly the 40-card package; all four commanders Tatyova.
+- Real events: 20 Tatyova landfall triggers and 60 Jaddi triggers; sample resolution logs life gain then draw; landfall staged before priority; zero Jaddi attack declarations.
+- Source fixture matches archived Scryfall records for Tatyova (`fdn/247`) and Jaddi (`tdc/260`): cost, type, body, Oracle text, Commander legality.
+- Catalog 88; eight-list union 459 all names = 76 supported + 383 missing; manifest missing union 383 and per-list sets match; Tatyova remains planned with 56 missing; one implemented, zero certified.
+- Bundled defaults and all eight desired-list contents unchanged. Commander-only refusal and Jaddi defender catalog consistency are covered by passing tests.
+
+**Limits**: landfall is bounded to land drops by these two cards; broader landfall/ramp/keywords remain open. Seven starters remain planned. Core hooks are a separate #16 integration hotspot and are not approved here. No full #17, #16, release, merge, GUI or playing-strength claim. Next focused command: `cargo test -q -p aperture-core --test issue17_tatyova --test issue17_tokens --test issue17_talrand`.
+
+Deliverables: `evidence/issue17/slice3-review-1.md`, `evidence/issue17/slice3-review-1.json`, plus `slice3-review-*` logs.

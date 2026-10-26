@@ -1,0 +1,84 @@
+{
+  "verdict": "approve_increment",
+  "prior_verdict": "request_changes",
+  "prior_reviewed_head": "095362b7eebbc58f57116db3f7899bd58e3b08be",
+  "reviewed_head": "e16185c81c66e11e5bef686f03c2a3977a791301",
+  "full_issue17_accepted": false,
+  "prior_findings": [
+    {
+      "finding": "CLI --commander help omitted Talrand, Sky Summoner.",
+      "disposition": "corrected",
+      "evidence": [
+        "Actual release help now says: Supported commanders: Isamaru, Hound of Konda; Jasmine Boreal; Krenko, Mob Boss; Talrand, Sky Summoner. Both explicit profiles are bounded practice, not the Commander format (no legend rule, no full 100-card construction).",
+        "New CLI test tests::selfplay_help_lists_every_supported_commander_and_the_bounded_scope passes."
+      ]
+    },
+    {
+      "finding": "Drake engine token name 'Drake Token' did not match the Scryfall printing label 'Drake'.",
+      "disposition": "withdrawn_corrected_on_primary_rules_evidence",
+      "evidence": [
+        "Independent read of the pinned official text at evidence/issue17/slice2-rules-source.txt lines 652-657: 'A spell or ability that creates a token sets both its name and its subtype(s). If the spell or ability doesn't specify the name of the token, its name is the same as its subtype(s) plus the word \"Token.\"'",
+        "docs/rules-reference.md pins the same MagicCompRules 20260925 source. Neither Krenko's nor Talrand's effect specifies a token name, so 'Goblin Token' and 'Drake Token' are correct rules names; the Scryfall labels 'Goblin'/'Drake' are printing labels.",
+        "catalog.rs now names both token defs 'Goblin Token' and 'Drake Token'; source fixtures retain printing name in name and add rules_name plus name_note. No rules revision or serialized state field changed.",
+        "issue17_tokens and issue17_talrand now assert the CR 111.4 generated-token names; both tokens remain excluded from catalog::all/by_name and deck import."
+      ]
+    },
+    {
+      "finding": "Remaining docs/HANDOFF still described Talrand cast triggers, Krenko activation and tokens as absent.",
+      "disposition": "corrected",
+      "evidence": [
+        "docs/issue17-starter-corpus.md roadmap items 2 and 3 now mark Talrand's controller-only cast trigger and Krenko's {T} token production as bounded implemented packages, with landfall/death/tribal and sacrifice outlets still gaps.",
+        "HANDOFF.md now scopes missing tokens to token types/interactions beyond the bounded Goblin and Drake packages instead of claiming all tokens are absent."
+      ]
+    }
+  ],
+  "blocking_findings": [],
+  "checks": [
+    {
+      "command": "git rev-parse HEAD; git diff --name-status 095362b..HEAD",
+      "result": "HEAD e16185c81c66e11e5bef686f03c2a3977a791301. Delta is limited to main.rs help, catalog token name, focused token/Talrand tests, docs/HANDOFF, source-name metadata, repair handoff/evidence, plus the prior review files. No engine/state/card-list/rules-revision/manifest change."
+    },
+    {
+      "command": "sed -n '648,660p' evidence/issue17/slice2-rules-source.txt; grep pinned revision docs/rules-reference.md",
+      "result": "CR 111.4 independently confirms unnamed generated tokens are subtype(s) plus 'Token'; pinned document is MagicCompRules 20260925. Finding 2 withdrawn."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe selfplay --help",
+      "result": "Help lists all four supported commanders including Talrand, Sky Summoner, and states both explicit profiles are bounded practice, not Commander."
+    },
+    {
+      "command": "cargo test --locked -p aperture-cli",
+      "result": "exit 0: lib 7/7 including the new help assertion; commander_check 8/8; explicit_decks 1/1 (evidence/issue17/slice2-review2-cli.log)."
+    },
+    {
+      "command": "cargo test --locked -p aperture-core --test issue17_tokens --test issue17_talrand --test catalog_pool --test card_printings",
+      "result": "exit 0: tokens 10/10, Talrand 6/6, catalog_pool 5/5, card_printings 4/4 (evidence/issue17/slice2-review2-core.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check; cargo build --release --locked -p aperture-cli",
+      "result": "all exit 0."
+    },
+    {
+      "command": "replay --file evidence/issue17/slice2-repairs-krenko-game.replay.json",
+      "result": "exit 0; 1805 actions, 6039 events; digest e2827d82da51 matches recorded. Name-only repair preserves the exact digest."
+    },
+    {
+      "command": "replay --file evidence/issue17/slice2-talrand-game.replay.json",
+      "result": "exit 0; 1830 actions, 4740 events; digest c9fb97c6fc08 matches recorded. Name-only repair preserves the exact digest."
+    },
+    {
+      "command": "git diff --name-status 095362b..HEAD -- decks/starter-corpus/planned decks/starter-corpus/jasmine-vanilla-stompy.txt decks/starter-corpus/manifest.json",
+      "result": "empty. All eight desired list contents and the manifest remain unchanged; seven incomplete starters remain planned/not certified, with the previously verified 381-name corpus gap."
+    }
+  ],
+  "reused_evidence": [
+    "Earlier independently run four-seat Krenko package game (terminal, 1528 steps, digest 69487135f53f, exact 40-card seats, token creation/cessation events) and Talrand package game (terminal, 2861 steps, digest cd6e07d238f7, trigger/Drake/flying behavior).",
+    "Earlier save/replay roundtrip, old Jasmine replay compatibility, source/fixture checks, and manifest support-gap audit; the repair delta changes no engine/state/list content.",
+    "Focused tests rerun above for the changed help/name/docs surfaces, rather than repeating full games or the full suite."
+  ],
+  "limitations": [
+    "Approves only this bounded partial slice-2 increment. It does not accept all issue #17, the remaining seven starters, #16 integration, release, merge or arbitrary Commander.",
+    "No full suite, full historical replay matrix, network refetch, UI review or playing-strength claim.",
+    "Native exact-head CI is checked separately by the coordinator."
+  ]
+}

@@ -1,0 +1,21 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+     Running tests\issue17_slice4.rs (target\debug\deps\issue17_slice4-2131696323d45952.exe)
+
+running 13 tests
+test sourced_slice4_cards_match_their_live_printings ... ok
+test a_creature_without_flash_is_refused_at_instant_timing ... ok
+test soul_warden_does_not_trigger_for_itself ... ok
+test ordinary_bear_is_a_vanilla_creature_with_no_abilities ... ok
+test printed_flash_allows_a_creature_spell_outside_the_own_main_phase ... ok
+test soul_warden_triggers_for_an_opponents_creature_too ... ok
+test soul_warden_gains_life_only_for_another_creature ... ok
+test owlbear_draws_a_card_when_it_enters ... ok
+test trample_carries_surplus_across_two_blockers ... ok
+test trample_assigns_only_lethal_damage_to_the_blocker ... ok
+test a_non_trample_attacker_never_damages_the_player_through_a_blocker ... ok
+test soul_warden_triggers_for_creature_tokens_too ... ok
+test trample_counts_damage_already_marked_on_the_blocker ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

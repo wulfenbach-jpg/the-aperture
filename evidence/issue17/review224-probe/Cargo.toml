@@ -1,0 +1,7 @@
+[package]
+name = "issue17-review224-probe"
+version = "0.0.0"
+edition = "2024"
+[workspace]
+[dependencies]
+aperture-core = { path = "../../../crates/core" }

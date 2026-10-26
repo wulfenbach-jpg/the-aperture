@@ -1,0 +1,26 @@
+873:    fn insert_object(&mut self, mut object: Object, zone: Zone) -> ObjectId {
+874-        let owner = object.owner;
+875-        let commander = object.commander;
+876-        let old_id = object.id;
+877-        let new_id = if commander.is_some() {
+878-            let id = ObjectId(self.state.next_object);
+879-            self.state.next_object += 1;
+880-            object.id = id;
+881-            id
+882-        } else {
+883-            old_id
+884-        };
+885-        object.zone = zone;
+886-        if commander.is_some() {
+887-            // A zone change creates a new object (CR 400.7): no previous
+888-            // battlefield-only memory may follow the commander.
+889-            object.plus_one_counters = 0;
+890-            if matches!(
+891-                zone,
+892-                Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command
+893-            ) {
+894-                object.controller = object.owner;
+895-                object.tapped = false;
+896-                object.damage = 0;
+897-                object.summoning_sick = false;
+898-                object.pump_power = 0;

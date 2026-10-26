@@ -1,0 +1,824 @@
+diff --git a/crates/core/src/engine.rs b/crates/core/src/engine.rs
+index f0a6c6e..88f0e57 100644
+--- a/crates/core/src/engine.rs
++++ b/crates/core/src/engine.rs
+@@ -613,14 +613,23 @@ impl Game {
+     /// the source may be a permanent on the battlefield (a creature's combat or
+     /// activated-ability damage) or a spell on the stack (Shock) — the test is
+     /// that `source`'s controller controls it, not that it is a creature.
+-    fn damage_multipliers(&self, source: Option<ObjectId>) -> Vec<(CardId, PlayerId, u32)> {
+-        let Some(source_object) = source.and_then(|id| self.state.try_object(id)) else {
+-            return Vec::new();
++    fn damage_multipliers(
++        &self,
++        source: Option<ObjectId>,
++        source_controller: Option<PlayerId>,
++    ) -> Vec<(CardId, PlayerId, u32)> {
++        let controller = match source_controller {
++            Some(controller) => controller,
++            None => {
++                let Some(source_object) = source.and_then(|id| self.state.try_object(id)) else {
++                    return Vec::new();
++                };
++                if !matches!(source_object.zone, Zone::Battlefield | Zone::Stack) {
++                    return Vec::new();
++                }
++                source_object.controller
++            }
+         };
+-        if !matches!(source_object.zone, Zone::Battlefield | Zone::Stack) {
+-            return Vec::new();
+-        }
+-        let controller = source_object.controller;
+         let mut found: Vec<(CardId, PlayerId, u32)> = self
+             .state
+             .objects
+@@ -661,6 +670,21 @@ impl Game {
+         amount: u32,
+         combat: bool,
+         events: &mut Vec<Event>,
++    ) -> u32 {
++        self.deal_damage_from(source, None, target, amount, combat, events)
++    }
++
++    /// Damage with an explicit last-known source controller. Bounded use: an
++    /// ability whose source has already left the battlefield still uses that
++    /// source's controller for the existing replacement/multiplier pipeline.
++    fn deal_damage_from(
++        &mut self,
++        source: Option<ObjectId>,
++        source_controller: Option<PlayerId>,
++        target: DamageTarget,
++        amount: u32,
++        combat: bool,
++        events: &mut Vec<Event>,
+     ) -> u32 {
+         if amount == 0 {
+             return 0;
+@@ -712,7 +736,7 @@ impl Game {
+         }
+ 
+         // CR 614.5: each replacement effect applies at most once per event.
+-        for (card, controller, factor) in self.damage_multipliers(source) {
++        for (card, controller, factor) in self.damage_multipliers(source, source_controller) {
+             if remaining == 0 || factor <= 1 {
+                 continue;
+             }
+@@ -895,13 +919,6 @@ impl Game {
+         let owner = object.owner;
+         let commander = object.commander;
+         let old_id = object.id;
+-        // CR 111.7: a token that leaves the battlefield ceases to exist. It is
+-        // never a card, so it must not be re-keyed, inserted into a zone list or
+-        // put on the stack; callers see the stale id and their zone move is a
+-        // no-op. Nothing is inserted, so the token simply stops existing.
+-        if object.card.is_token() && zone != Zone::Battlefield {
+-            return old_id;
+-        }
+         let new_id = if commander.is_some() {
+             let id = ObjectId(self.state.next_object);
+             self.state.next_object += 1;
+@@ -1105,15 +1122,6 @@ impl Game {
+         };
+         let owner = object.owner;
+         let card = object.card;
+-        // CR 111.7: a token never reaches a library; it ceases to exist.
+-        if object.card.is_token() {
+-            events.push(Event::StateBasedAction {
+-                description: format!(
+-                    "token {card} ceases to exist instead of moving to the library (CR 111.7)"
+-                ),
+-            });
+-            return;
+-        }
+         object.tapped = false;
+         object.damage = 0;
+         object.summoning_sick = false;
+@@ -1131,19 +1139,10 @@ impl Game {
+     fn move_to_exile(&mut self, id: ObjectId, events: &mut Vec<Event>) -> Option<ObjectId> {
+         let object = self.detach_object(id)?;
+         let card = object.card;
+-        let token = object.card.is_token();
+         let new_id = self.insert_object(object, Zone::Exile);
+-        if token {
+-            events.push(Event::StateBasedAction {
+-                description: format!(
+-                    "token {card} ceases to exist instead of being exiled (CR 111.7)"
+-                ),
+-            });
+-        } else {
+-            events.push(Event::StateBasedAction {
+-                description: format!("{card} ({new_id}) is exiled"),
+-            });
+-        }
++        events.push(Event::StateBasedAction {
++            description: format!("{card} ({new_id}) is exiled"),
++        });
+         Some(new_id)
+     }
+ 
+@@ -1152,15 +1151,6 @@ impl Game {
+             return;
+         };
+         let card = object.card;
+-        // CR 111.7: a token returned to a hand ceases to exist instead.
+-        if object.card.is_token() {
+-            events.push(Event::StateBasedAction {
+-                description: format!(
+-                    "token {card} ceases to exist instead of moving to a hand (CR 111.7)"
+-                ),
+-            });
+-            return;
+-        }
+         object.tapped = false;
+         object.damage = 0;
+         object.summoning_sick = false;
+@@ -1173,6 +1163,22 @@ impl Game {
+     }
+ 
+     fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
++        if let Some((dying, new_id, card, controller)) = self.move_to_graveyard_inner(id, events) {
++            let death = (dying, new_id, card, controller);
++            self.queue_watchers_for_deaths(&death_watchers(self), &[death]);
++        }
++    }
++
++    /// Move one permanent to its owner's graveyard and return the death record
++    /// for the "creature dies" watcher dispatch. When `dispatch == false` the
++    /// caller batches several simultaneous deaths and dispatches the watchers
++    /// once for the whole batch (CR 704.3, 603.6c): a watcher that dies in the
++    /// same batch must still see its fellow dying creatures.
++    fn move_to_graveyard_inner(
++        &mut self,
++        id: ObjectId,
++        events: &mut Vec<Event>,
++    ) -> Option<(ObjectId, ObjectId, CardId, PlayerId)> {
+         let dying = self.state.try_object(id).and_then(|object| {
+             (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
+         });
+@@ -1180,9 +1186,7 @@ impl Game {
+             .state
+             .try_object(id)
+             .is_some_and(|object| object.card.is_token());
+-        let Some(mut object) = self.detach_object(id) else {
+-            return;
+-        };
++        let mut object = self.detach_object(id)?;
+         let card = object.card;
+         object.tapped = false;
+         object.damage = 0;
+@@ -1190,16 +1194,15 @@ impl Game {
+         object.pump_power = 0;
+         object.pump_toughness = 0;
+         let new_id = self.insert_object(object, Zone::Graveyard);
++        events.push(Event::Destroyed {
++            object: new_id,
++            card,
++        });
+         if token {
+-            // CR 111.7: the token is put into the graveyard as it dies, then
+-            // ceases to exist; it is never a card and never stays in a zone.
+             events.push(Event::StateBasedAction {
+-                description: format!("token {card} dies and ceases to exist (CR 111.7)"),
+-            });
+-        } else {
+-            events.push(Event::Destroyed {
+-                object: new_id,
+-                card,
++                description: format!(
++                    "token {card} is put into the graveyard and will cease to exist (CR 111.7)"
++                ),
+             });
+         }
+         // CR 700.4 + 603.6c: a permanent put into a graveyard from the
+@@ -1207,7 +1210,12 @@ impl Game {
+         // last known information; `source` is the graveyard object.
+         if let Some((card, controller)) = dying {
+             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
++            // The dying permanent's own "this creature ... dies" trigger is
++            // order-independent, so it is queued here rather than in the batch.
++            self.queue_self_death(new_id, card, controller);
++            return Some((id, new_id, card, controller));
+         }
++        None
+     }
+ 
+     fn enter_battlefield(&mut self, id: ObjectId, controller: PlayerId, events: &mut Vec<Event>) {
+@@ -1233,6 +1241,9 @@ impl Game {
+         // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
+         // is on the battlefield.
+         self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
++        if is_creature {
++            self.queue_another_creature_enters(new_id);
++        }
+     }
+ 
+     fn draw(&mut self, p: PlayerId, events: &mut Vec<Event>) -> bool {
+@@ -1297,6 +1308,127 @@ impl Game {
+         }
+     }
+ 
++    /// CR 701.13a: mill N cards. The top card of `player`'s library becomes the
++    /// top card of their graveyard, one card at a time, one `Milled` event each.
++    /// A milled card never entered the battlefield, so no "dies" trigger fires
++    /// (CR 700.4 requires the battlefield as the origin). Milling an empty
++    /// library is legal and simply does nothing: only a *draw* from an empty
++    /// library loses the game (CR 704.5b), and this is not a draw.
++    fn mill_cards(&mut self, player: PlayerId, count: u8, events: &mut Vec<Event>) {
++        for _ in 0..count {
++            let Some(next) = self.state.players[player as usize].library.first().copied() else {
++                break;
++            };
++            let Some(card) = self.state.try_object(next).map(|object| object.card) else {
++                break;
++            };
++            let Some(mut object) = self.detach_object(next) else {
++                break;
++            };
++            object.tapped = false;
++            object.damage = 0;
++            object.summoning_sick = false;
++            object.pump_power = 0;
++            object.pump_toughness = 0;
++            let new_id = self.insert_object(object, Zone::Graveyard);
++            events.push(Event::Milled {
++                player,
++                object: new_id,
++                card,
++            });
++        }
++    }
++
++    /// CR 118.2 + 119.3: a player loses life. Life loss is not damage — nothing
++    /// is dealt, so damage prevention, damage replacement and "is dealt damage"
++    /// triggers never see it. Only the life total (and a single `LifeChange`
++    /// event) changes; CR 704.5a is then checked by the SBA pass.
++    fn lose_life(&mut self, player: PlayerId, amount: i32, events: &mut Vec<Event>) {
++        if amount <= 0 || !self.state.is_live(player) {
++            return;
++        }
++        let life = self.state.players[player as usize].life - amount;
++        self.state.players[player as usize].life = life;
++        events.push(Event::LifeChange {
++            player,
++            delta: -amount,
++            life,
++        });
++    }
++
++    /// The dying creature's own "this creature ... dies" trigger. Blood Artist
++    /// prints "this creature or another creature dies"; Zulaport Cutthroat
++    /// restricts that to creatures its controller controls, which includes
++    /// itself. Independent of batch order, so it is queued at the move.
++    fn queue_self_death(&mut self, dying: ObjectId, card: CardId, controller: PlayerId) {
++        // CR 700.4: only a creature dying is a "creature dies" event; a milled
++        // creature card or a sacrificed artifact never triggers these.
++        if !card.def().is_creature() {
++            return;
++        }
++        self.queue_triggers(dying, card, controller, TriggerEvent::CreatureDies);
++        self.queue_triggers(
++            dying,
++            card,
++            controller,
++            TriggerEvent::CreatureYouControlDies,
++        );
++    }
++
++    /// Queue the "creature dies" watchers once for a whole batch of deaths.
++    ///
++    /// CR 704.3 + 603.6c: simultaneously dying creatures are one event, so every
++    /// watcher that was on the battlefield when the batch happened looks at
++    /// every death in it — including a watcher that died in the same batch. The
++    /// caller snapshots the watchers *before* moving anything (see
++    /// `death_watchers`) and passes every death record from the batch, which is
++    /// what makes the result independent of object-id order.
++    fn queue_watchers_for_deaths(
++        &mut self,
++        watchers: &[(ObjectId, CardId, PlayerId)],
++        deaths: &[(ObjectId, ObjectId, CardId, PlayerId)],
++    ) {
++        let deaths: Vec<(ObjectId, CardId, PlayerId)> = deaths
++            .iter()
++            .filter(|(_, _, card, _)| card.def().is_creature())
++            .map(|(dying, _, card, controller)| (*dying, *card, *controller))
++            .collect();
++        if deaths.is_empty() {
++            return;
++        }
++        for (source, source_card, source_controller) in watchers.iter().copied() {
++            for (dying, _death_card, death_controller) in deaths.iter().copied() {
++                // The dying permanent's own "this creature ... dies" triggers
++                // were already queued by `queue_self_death` at the zone change.
++                // Dispatching it again through the watcher batch would double
++                // every self-death trigger.
++                if dying == source {
++                    continue;
++                }
++                self.queue_triggers(
++                    source,
++                    source_card,
++                    source_controller,
++                    TriggerEvent::CreatureDies,
++                );
++                if source_controller == death_controller {
++                    self.queue_triggers(
++                        source,
++                        source_card,
++                        source_controller,
++                        TriggerEvent::CreatureYouControlDies,
++                    );
++                    self.queue_triggers(
++                        source,
++                        source_card,
++                        source_controller,
++                        TriggerEvent::AnotherCreatureYouControlDies,
++                    );
++                }
++            }
++        }
++    }
++
+     // ------------------------------------------------------------ submission
+ 
+     pub fn submit(&mut self, sub: &Submission) -> Result<Vec<Event>, EngineError> {
+@@ -1774,6 +1906,12 @@ impl Game {
+                 );
+                 out
+             }
++            // CR 115.4: "target player" is every live player, the ability's own
++            // controller included (Hedron Crab, Blood Artist).
++            TargetSpec::Player => (0..self.state.seat_count() as PlayerId)
++                .filter(|p| self.state.is_live(*p))
++                .map(Target::Player)
++                .collect(),
+             TargetSpec::Creature => self
+                 .state
+                 .objects
+@@ -1789,6 +1927,24 @@ impl Game {
+                 .filter(|s| s.object != exclude && s.entry == StackEntry::Spell)
+                 .map(|s| Target::Spell(s.object))
+                 .collect(),
++            TargetSpec::NoncreatureSpell => self
++                .state
++                .stack
++                .iter()
++                // CR 115.1: only a spell is a spell; and a creature spell is
++                // excluded because the printed wording says "noncreature"
++                // (CR 205.2a: the card's types on the stack are the printed
++                // types).
++                .filter(|s| {
++                    s.object != exclude
++                        && s.entry == StackEntry::Spell
++                        && !self
++                            .state
++                            .try_object(s.object)
++                            .is_some_and(|object| object.card.def().is_creature())
++                })
++                .map(|s| Target::Spell(s.object))
++                .collect(),
+         }
+     }
+ 
+@@ -1886,7 +2042,10 @@ impl Game {
+                 reason: "that player does not have priority (CR 117.1a)".to_string(),
+             });
+         }
+-        if spec.instant {
++        // CR 702.8a: Flash is the only printed permission to cast a noninstant
++        // spell at instant timing; it covers the whole of `check_timing`, not
++        // just the main-phase clause.
++        if spec.instant || def.has_flash() {
+             return Ok(());
+         }
+         if self.state.turn.active != player {
+@@ -1959,6 +2118,15 @@ impl Game {
+                 ));
+             }
+             seen.push(*a);
++            if self.state.try_object(*a).is_some_and(|o| o.has_defender()) {
++                return Err(EngineError::illegal(
++                    "declare attackers",
++                    format!(
++                        "{} has defender and cannot attack (CR 702.3b)",
++                        self.describe_object(*a)
++                    ),
++                ));
++            }
+             if !legal.contains(a) {
+                 return Err(EngineError::illegal(
+                     "declare attackers",
+@@ -2153,6 +2321,24 @@ impl Game {
+             object: card,
+             card: card_id,
+         });
++        // CR 603.6a: landfall triggers fire when the land is already on the
++        // battlefield, only for permanents that player controls.
++        let sources: Vec<(ObjectId, CardId)> = self
++            .state
++            .objects
++            .values()
++            .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
++            .filter(|object| {
++                ability::triggers_on(object.card, TriggerEvent::LandEnters)
++                    .next()
++                    .is_some()
++            })
++            .map(|object| (object.id, object.card))
++            .collect();
++        for (source, source_card) in sources {
++            self.queue_triggers(source, source_card, player, TriggerEvent::LandEnters);
++        }
++        self.put_triggers(events);
+         events.push(Event::Priority { player });
+     }
+ 
+@@ -2602,6 +2788,30 @@ impl Game {
+             entry: StackEntry::Spell,
+             trigger_answered: false,
+         });
++        // CR 603.6a: "you cast" triggers are queued as the spell is cast, and
++        // reach the stack above it before priority. Only the caster's
++        // permanents trigger; an opponent's cast does not.
++        if matches!(card_id.def().kinds, kinds if kinds.contains(&crate::card::Kind::Instant) || kinds.contains(&crate::card::Kind::Sorcery))
++        {
++            let sources: Vec<(ObjectId, CardId)> = self
++                .state
++                .objects
++                .values()
++                .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
++                .filter(|object| {
++                    ability::triggers_on(object.card, TriggerEvent::SpellCast)
++                        .next()
++                        .is_some()
++                })
++                .map(|object| (object.id, object.card))
++                .collect();
++            for (source, card) in sources {
++                self.queue_triggers(source, card, player, TriggerEvent::SpellCast);
++            }
++            // CR 603.3: put the "you cast" triggers on the stack above the
++            // spell before any player receives priority.
++            self.put_triggers(events);
++        }
+         if from_command_zone
+             && let Some(commander) = commander_id
+             && let Some(registry) = self
+@@ -3600,9 +3810,20 @@ impl Game {
+                 .map(|o| o.id)
+                 .collect();
+             if !dying.is_empty() {
++                // CR 704.3 + 603.6c: the whole batch is one event. Snapshot the
++                // watchers before anything leaves the battlefield and dispatch
++                // once for every death, so the result does not depend on which
++                // dying creature happens to be moved first.
++                let watchers = death_watchers(self);
++                let mut deaths: Vec<(ObjectId, ObjectId, CardId, PlayerId)> = Vec::new();
+                 for id in &dying {
+-                    self.move_to_graveyard(*id, events);
++                    if let Some((dying_id, new_id, card, controller)) =
++                        self.move_to_graveyard_inner(*id, events)
++                    {
++                        deaths.push((dying_id, new_id, card, controller));
++                    }
+                 }
++                self.queue_watchers_for_deaths(&watchers, &deaths);
+                 events.push(Event::StateBasedAction {
+                     description: format!(
+                         "{} creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)",
+@@ -3612,6 +3833,33 @@ impl Game {
+                 changed = true;
+             }
+ 
++            // CR 111.7: a token in a zone other than the battlefield ceases to
++            // exist as a state-based action. It reached that zone first, so
++            // dies/destination events and applicable triggers were recorded
++            // above; CR 111.8 then prevents another zone change.
++            let tokens: Vec<ObjectId> = self
++                .state
++                .objects
++                .values()
++                .filter(|object| {
++                    object.card.is_token()
++                        && object.zone != Zone::Battlefield
++                        && object.zone != Zone::Removed
++                })
++                .map(|object| object.id)
++                .collect();
++            if !tokens.is_empty() {
++                for id in tokens {
++                    if let Some(object) = self.detach_object(id) {
++                        let card = object.card;
++                        events.push(Event::StateBasedAction {
++                            description: format!("{card} token ceases to exist (CR 111.7)"),
++                        });
++                    }
++                }
++                changed = true;
++            }
++
+             // Terminal outcomes are resolved in the same SBA event before any
+             // commander-return choice: once one live seat (or none) remains,
+             // an irrelevant return choice must not defer GameOver.
+@@ -4319,12 +4567,11 @@ impl Game {
+                             delta: power,
+                             life,
+                         });
+-                        // CR 111.7: a token that leaves the battlefield ceases to
+-                        // exist, so the follow-up line must not claim an exile
+-                        // that the token never became part of. Life is still
+-                        // gained from its last known power (CR 608.2h).
++                        // The token really enters exile; CR 111.7 removes it at
++                        // the next SBA check, not as an exile replacement. Life
++                        // gain uses last-known power (CR 608.2h).
+                         let fate = if token {
+-                            "ceases to exist instead of being exiled (CR 111.7)"
++                            "is exiled (token cessation awaits the next SBA check, CR 111.7)"
+                         } else {
+                             "is exiled"
+                         };
+@@ -4370,6 +4617,105 @@ impl Game {
+                 self.recompute_layers();
+                 false
+             }
++            Effect::CreateGoblinTokens(count) => {
++                self.create_goblin_tokens(controller, usize::from(count), events);
++                false
++            }
++            Effect::CreateGoblinTokensForEachGoblin => {
++                let count = self.goblin_count(controller);
++                self.create_goblin_tokens(controller, count, events);
++                false
++            }
++            Effect::CreateDrakeToken => {
++                self.create_tokens(controller, CardId::DrakeToken, 1, events);
++                false
++            }
++            Effect::MillSelf(n) => {
++                self.mill_cards(controller, n, events);
++                false
++            }
++            Effect::MillEachOpponent(n) => {
++                for opponent in 0..self.state.seat_count() as PlayerId {
++                    if opponent == controller || !self.state.is_live(opponent) {
++                        continue;
++                    }
++                    self.mill_cards(opponent, n, events);
++                }
++                false
++            }
++            Effect::MillTargetPlayer(n) => {
++                // CR 701.13a: "target player mills N cards" is the targeted
++                // player's library, never the effect controller's.
++                for target in item.targets.clone() {
++                    if let Target::Player(p) = target {
++                        self.mill_cards(p, n, events);
++                    }
++                }
++                false
++            }
++            Effect::LoseLife(amount) => {
++                // CR 118.2 + 119.3: losing life is not damage. No `Damage`
++                // event, no damage replacement or prevention, no damage
++                // trigger.
++                for target in item.targets.clone() {
++                    if let Target::Player(p) = target {
++                        self.lose_life(p, amount, events);
++                    }
++                }
++                false
++            }
++            Effect::LoseLifeEachOpponent(amount) => {
++                for opponent in 0..self.state.seat_count() as PlayerId {
++                    if opponent == controller || !self.state.is_live(opponent) {
++                        continue;
++                    }
++                    self.lose_life(opponent, amount, events);
++                }
++                false
++            }
++            Effect::AddMana { color, amount } => {
++                self.state.players[controller as usize]
++                    .mana
++                    .add(color, amount);
++                let pool_total = self.state.players[controller as usize].mana.get(color);
++                events.push(Event::ManaAdded {
++                    player: controller,
++                    color,
++                    amount,
++                    pool_total,
++                });
++                false
++            }
++            Effect::DamageEachOpponent(n) => {
++                for opponent in 0..self.state.seat_count() as PlayerId {
++                    if opponent == controller || !self.state.is_live(opponent) {
++                        continue;
++                    }
++                    let dealt = self.deal_damage_from(
++                        Some(item.object),
++                        Some(controller),
++                        DamageTarget::Player(opponent),
++                        u32::from(n),
++                        false,
++                        events,
++                    );
++                    if dealt == 0 {
++                        continue;
++                    }
++                    let life = self.state.players[opponent as usize].life;
++                    events.push(Event::Damage {
++                        source: Some(item.object),
++                        target: format!("P{opponent}"),
++                        amount: dealt,
++                    });
++                    events.push(Event::LifeChange {
++                        player: opponent,
++                        delta: -(dealt as i32),
++                        life,
++                    });
++                }
++                false
++            }
+             Effect::CounterTargetSpell => {
+                 let victim = item.targets.iter().find_map(|t| match t {
+                     Target::Spell(id) => Some(*id),
+@@ -4394,6 +4740,93 @@ impl Game {
+         }
+     }
+ 
++    fn goblin_count(&self, controller: PlayerId) -> usize {
++        self.state
++            .objects
++            .values()
++            .filter(|object| {
++                object.zone == Zone::Battlefield
++                    && object.controller == controller
++                    && object.card.def().is_goblin()
++            })
++            .count()
++    }
++
++    /// Create real token objects with unique object ids. Token cards are not in
++    /// the importable catalog; each token enters the battlefield under the
++    /// effect's controller with summoning sickness under CR 302.6.
++    fn create_goblin_tokens(
++        &mut self,
++        controller: PlayerId,
++        count: usize,
++        events: &mut Vec<Event>,
++    ) {
++        self.create_tokens(controller, CardId::GoblinToken, count, events);
++    }
++
++    fn create_tokens(
++        &mut self,
++        controller: PlayerId,
++        card: CardId,
++        count: usize,
++        events: &mut Vec<Event>,
++    ) {
++        for _ in 0..count {
++            let id = ObjectId(self.state.next_object);
++            self.state.next_object += 1;
++            let mut object = blank_object(id, card, controller);
++            object.controller = controller;
++            object.zone = Zone::Battlefield;
++            object.summoning_sick = true;
++            self.state.objects.insert(id, object);
++            events.push(Event::PermanentEntered {
++                object: id,
++                card,
++                controller,
++            });
++            events.push(Event::StateBasedAction {
++                description: format!("P{controller} creates {card} token ({id})"),
++            });
++            self.queue_triggers(id, card, controller, TriggerEvent::EntersBattlefield);
++            // CR 603.6a: a creature token entering is a creature entering for
++            // every "another creature enters" trigger. Sharing the permanent
++            // path here is what keeps Soul Warden visible to Goblin/Drake
++            // tokens instead of only to represented cards.
++            if card.def().is_creature() {
++                self.queue_another_creature_enters(id);
++            }
++        }
++    }
++
++    /// Queue every "another creature enters" trigger on another battlefield
++    /// permanent (CR 603.6a). The entering permanent is excluded because the
++    /// printed word is "another", and the trigger's controller is the source
++    /// permanent's controller, never the entering creature's controller.
++    /// Shared by `enter_battlefield` and `create_tokens` so a creature token is
++    /// not invisible to these triggers.
++    fn queue_another_creature_enters(&mut self, entering: ObjectId) {
++        let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
++            .state
++            .objects
++            .values()
++            .filter(|object| object.zone == Zone::Battlefield && object.id != entering)
++            .filter(|object| {
++                ability::triggers_on(object.card, TriggerEvent::AnotherCreatureEnters)
++                    .next()
++                    .is_some()
++            })
++            .map(|object| (object.id, object.card, object.controller))
++            .collect();
++        for (source, source_card, source_controller) in watchers {
++            self.queue_triggers(
++                source,
++                source_card,
++                source_controller,
++                TriggerEvent::AnotherCreatureEnters,
++            );
++        }
++    }
++
+     fn begin_order(
+         &mut self,
+         player: PlayerId,
+@@ -4507,22 +4940,30 @@ impl Game {
+                 // among the blockers as they choose. This slice is narrower: it
+                 // assigns automatically in lethal-first order and exposes no
+                 // damage-assignment choice (documented in the coach and README).
++                // CR 702.19b: a trampling attacker must assign lethal damage to
++                // every blocker before it may assign any to the player, so with
++                // trample the surplus after lethal assignment goes to the
++                // defending player instead of piling onto the last blocker.
++                let trample = atk.has_trample();
+                 let mut remaining = power;
+                 for (i, blocker) in its_blockers.iter().enumerate() {
+-                    let assign = if i + 1 == its_blockers.len() {
+-                        remaining
+-                    } else {
+-                        let lethal = match self.state.try_object(*blocker) {
+-                            Some(b) => (b.toughness() - b.damage as i32).max(1),
+-                            None => remaining,
+-                        };
++                    let lethal = match self.state.try_object(*blocker) {
++                        Some(b) => (b.toughness() - b.damage as i32).max(1),
++                        None => remaining,
++                    };
++                    let assign = if trample || i + 1 != its_blockers.len() {
+                         remaining.min(lethal).max(0)
++                    } else {
++                        remaining
+                     };
+                     remaining -= assign;
+                     if assign > 0 {
+                         damage.push((*attacker, Some(*blocker), assign as u32));
+                     }
+                 }
++                if trample && remaining > 0 {
++                    damage.push((*attacker, None, remaining as u32));
++                }
+                 for blocker in &its_blockers {
+                     if let Some(b) = self.state.try_object(*blocker) {
+                         let bp = b.power();
+@@ -4727,6 +5168,8 @@ impl Game {
+                 };
+                 let rules = if self.state.object(id).card.def().is_instant() {
+                     vec!["117.1a"]
++                } else if self.state.object(id).card.def().has_flash() {
++                    vec!["117.1a", "702.8a"]
+                 } else {
+                     vec!["117.1a", "601.2a"]
+                 };
+@@ -5129,12 +5572,37 @@ fn check_selection(
+     Ok(())
+ }
+ 
++/// Every permanent on the battlefield with a "creature dies" watcher ability,
++/// snapshotted before a batch of deaths moves anything. A watcher that dies in
++/// the same batch still sees the batch (CR 704.3, 603.6c).
++fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
++    game.state
++        .objects
++        .values()
++        .filter(|object| object.zone == Zone::Battlefield)
++        .filter(|object| {
++            ability::triggers_on(object.card, TriggerEvent::CreatureDies)
++                .next()
++                .is_some()
++                || ability::triggers_on(object.card, TriggerEvent::CreatureYouControlDies)
++                    .next()
++                    .is_some()
++                || ability::triggers_on(object.card, TriggerEvent::AnotherCreatureYouControlDies)
++                    .next()
++                    .is_some()
++        })
++        .map(|object| (object.id, object.card, object.controller))
++        .collect()
++}
++
+ fn target_spec_rule(spec: TargetSpec) -> &'static str {
+     match spec {
+         TargetSpec::None => "CR 601.2c",
+         TargetSpec::AnyTarget => "any target: CR 115.4",
++        TargetSpec::Player => "target player: CR 115.4",
+         TargetSpec::Creature => "target creature: CR 115.1",
+         TargetSpec::Spell => "target spell: CR 115.1",
++        TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
+     }
+ }
+ 

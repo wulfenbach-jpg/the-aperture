@@ -1,0 +1,118 @@
+2044:    fn apply_pass(&mut self, player: PlayerId, events: &mut Vec<Event>) {
+2045-        events.push(Event::Pass { player });
+2046-        self.state.turn.passed |= 1u8 << player;
+2047-        let live_mask = self.state.live_mask();
+2048-        if self.state.turn.passed & live_mask == live_mask {
+2049-            self.state.turn.passed = 0;
+2050-            if self.state.stack.is_empty() {
+2051-                self.advance_step(events);
+2052-            } else {
+2053-                self.state.resolving = self.state.stack.last().map(|s| s.object);
+2054-                self.state.turn.priority = None;
+2055-            }
+2056-        } else {
+2057-            let next = self
+2058-                .state
+2059-                .next_live_seat_after(player)
+2060-                .expect("a live seat remains when a pass round continues");
+2061-            if self.pending_loss_exists() {
+2062-                self.state.turn.priority = None;
+2063-            } else {
+2064-                self.state.turn.priority = Some(next);
+2065-                events.push(Event::Priority { player: next });
+2066-            }
+2067-        }
+2068-    }
+2069-
+2070-    fn apply_play_land(&mut self, player: PlayerId, card: ObjectId, events: &mut Vec<Event>) {
+2071-        let card_id = self.state.object(card).card;
+2072-        self.state.players[player as usize]
+2073-            .hand
+2074-            .retain(|c| *c != card);
+2075-        if let Some(obj) = self.objects_mut(card) {
+2076-            obj.zone = Zone::Battlefield;
+2077-            obj.controller = player;
+2078-            obj.tapped = false;
+2079-            obj.summoning_sick = false;
+2080-        }
+2081-        self.state.turn.lands_played += 1;
+2082-        self.state.turn.passed = 0;
+2083-        events.push(Event::LandPlayed {
+2084-            player,
+2085-            object: card,
+2086-            card: card_id,
+2087-        });
+2088-        events.push(Event::Priority { player });
+2089-    }
+2090-
+2091-    fn apply_mana_ability(&mut self, player: PlayerId, land: ObjectId, events: &mut Vec<Event>) {
+2092-        let color = self.state.object(land).card.def().basic_mana;
+2093-        if let (Some(color), Some(obj)) = (color, self.objects_mut(land)) {
+2094-            obj.tapped = true;
+2095-            self.state.players[player as usize].mana.add(color, 1);
+2096-        }
+2097-        self.state.turn.passed = 0;
+2098-        events.push(Event::ManaTapped {
+2099-            player,
+2100-            land,
+2101-            color: color.unwrap_or(ManaColor::Colorless),
+2102-        });
+2103-        events.push(Event::Priority { player });
+2104-    }
+====
+    }
+
+    // ----------------------------------------------------------- scheduler
+
+    fn grant_priority(&mut self, player: PlayerId, events: &mut Vec<Event>) {
+        if self.pending_loss_exists() {
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 117.5/608.2: no player receives priority while a stack item is
+        // still resolving. `advance_resolution` follows an item's instructions to
+        // completion in one call, so this guard is a backstop: it can only fire
+        // if a future change reintroduces a mid-resolution grant, and the
+        // scheduler then resumes after the item finishes instead of emitting a
+        // false `Priority` event (R170-1).
+        if self.state.resolving.is_some() {
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 603.3: waiting triggered abilities are put on the stack before any
+        // player actually receives priority.
+        if self.state.pending.is_none() && self.put_triggers(events) && self.state.pending.is_some()
+        {
+            // A trigger still needs its controller's target choice.
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 800.4j: if the seat that would receive priority has left the game,
+        // the next live seat in turn order receives it.
+        let recipient = if self.state.is_live(player) {
+            Some(player)
+        } else {
+            self.state.next_live_seat_after(player)
+        };
+        let Some(recipient) = recipient else {
+            self.state.turn.priority = None;
+            return;
+        };
+        self.state.turn.priority = Some(recipient);
+        self.state.turn.passed = 0;
+        events.push(Event::Priority { player: recipient });
+    }
+
+    /// Drive the game forward until a player must act, the game ends, or a
+    /// pending choice blocks progress.
+    fn settle(&mut self, events: &mut Vec<Event>) {
+        for _ in 0..SETTLE_LIMIT {
+            if self.state.is_over() {
+                return;
+            }
+            // No SBA or priority runs for normal play while a choice is
+            // outstanding (CR 608.2d). Externally injected sandbox departures
+            // still need to purge/resume the queue; this path cannot occur
+            // through the legal action interface because no effect changes life
+            // during the Crack the Earth choice.
+            if self.state.pending.is_some() {

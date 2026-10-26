@@ -1,0 +1,23 @@
+Working...
+Verdict: **approve_increment** for the bounded slice-2 partial increment. `full_issue17_accepted: false`.
+
+Reviewed `e16185c81c66e11e5bef686f03c2a3977a791301` against prior `095362b`.
+
+**Initial findings**
+
+1. **CLI help — corrected.** Release `selfplay --help` now lists Isamaru, Jasmine, Krenko and Talrand, and states the bounded non-Commander scope. New help test passes.
+2. **Token naming — withdrawn on primary evidence.** I independently read the pinned official text at `evidence/issue17/slice2-rules-source.txt:652-657`: an unnamed token is its subtype(s) plus “Token.” Neither Krenko nor Talrand names its token, so `Goblin Token` and `Drake Token` are correct; Scryfall’s `Goblin`/`Drake` are printing labels. `catalog.rs` now uses both rules names; fixtures separate `name` from `rules_name`; both tokens remain nonimportable. My prior finding was incorrect.
+3. **Docs — corrected.** Roadmap and `HANDOFF.md` now mark Talrand’s cast trigger and Krenko’s activation as bounded implemented packages and scope remaining token gaps.
+
+**Checks**
+
+- `cargo test --locked -p aperture-cli`: exit 0 — lib 7/7 (new help assertion), commander_check 8/8, explicit_decks 1/1.
+- Focused core: `issue17_tokens` 10/10, `issue17_talrand` 6/6, `catalog_pool` 5/5, `card_printings` 4/4.
+- `cargo fmt --check`, `git diff --check`, release build: all exit 0.
+- Existing Krenko replay: digest `e2827d82da51…` matches, 6039 events.
+- Existing Talrand replay: digest `c9fb97c6fc08…` matches, 4740 events. Name-only repair preserves digests.
+- Desired-list diff against `095362b..HEAD`: empty — all eight desired lists and manifest unchanged; seven incomplete starters remain planned/not certified with the prior 381-name gap.
+
+No remaining blocker. This approves only the bounded Krenko/Talrand package increment, not full #17, #16 integration, release, merge, UI or arbitrary Commander.
+
+Deliverables: `evidence/issue17/slice2-review-2.md`, `evidence/issue17/slice2-review-2.json`, plus `slice2-review2-*` logs.

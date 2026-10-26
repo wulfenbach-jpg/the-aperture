@@ -1,0 +1,21 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running tests\issue17_slice4.rs (target\debug\deps\issue17_slice4-2131696323d45952.exe)
+
+running 10 tests
+test a_creature_without_flash_is_refused_at_instant_timing ... ok
+test sourced_slice4_cards_match_their_live_printings ... ok
+test soul_warden_gains_life_only_for_another_creature ... ok
+test soul_warden_does_not_trigger_for_itself ... ok
+test printed_flash_allows_a_creature_spell_outside_the_own_main_phase ... ok
+test owlbear_draws_a_card_when_it_enters ... ok
+test soul_warden_triggers_for_an_opponents_creature_too ... ok
+test ordinary_bear_is_a_vanilla_creature_with_no_abilities ... ok
+test a_non_trample_attacker_never_damages_the_player_through_a_blocker ... ok
+test trample_assigns_only_lethal_damage_to_the_blocker ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

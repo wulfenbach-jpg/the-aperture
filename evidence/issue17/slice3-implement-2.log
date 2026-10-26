@@ -1,0 +1,22 @@
+Working...
+**Repair complete — catalog split fixed, accounting corrected.** No commit/push.
+
+## Catalog split — genuine RED first
+- New regression compared `catalog::all()` vs `catalog::def()` for Jaddi: failed `false != true`.
+- Removed the duplicate `JADDI` override; Jaddi now has one canonical `card_defender!` → defender `true` entry. `catalog_def_and_catalog_all_agree_on_jaddi_defender` passes, along with the defender behavior/heuristic legality tests.
+- Forged defender refusal now asserts **canonical state-digest equality**, not just revision.
+
+## Landfall control test
+- New source-left control: land played → landfall trigger on stack → Tatyova returned to hand via real Unsummon → trigger still gains 1 life and draws; no `Priority` event between life, draw, and `AbilityResolved`. Passes (not claimed as RED; existing guarantee).
+- Jaddi source role corrected to `landfall_package` (not token producer).
+
+## Exact accounting
+- Replaced the misleading nonbasic totals with coordinator-proven all-name totals: **459 union names, 76 supported, 383 missing, catalog 88**.
+- Manifest `missing_cards` unchanged per verified contents; desired lists untouched. Superseded 447/67/380 note retained in handoff.
+
+## Verification
+- Tatyova 5/5, tokens 10/10, Talrand 6/6, printings 4/4, catalog 5/5, commander 43/43, planned 1/1, CLI 8+1.
+- fmt, clippy `-D warnings`, release CLI build exit 0.
+- Existing Tatyova journey/replay reused; digest `b31adfd97c31…` still verifies.
+
+Updated handoff: `evidence/issue17/slice3-implementation.md`; logs `slice3-repair-{focused,gates,replay}.log`.

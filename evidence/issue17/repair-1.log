@@ -1,0 +1,20 @@
+Working...
+**Review-1 repairs complete.** Both blockers fixed; Jasmine package unchanged; no commit/push.
+
+## 1. Default deck identity regression — fixed
+- Added failing test first: `non_explicit_default_loads_keep_the_human_fallback_names`.
+- RED: `assertion failed: left "temur-beats", right "Temur Beats"`.
+- Minimal fix in `crates/cli/src/decks.rs`: `file_stem()` only when `explicit == true`; non-explicit defaults keep `fallback_name`.
+- GREEN: `cargo test -q -p aperture-cli` — 6 + 8 + 1 passed, including the existing explicit-starter identity test.
+- Actual default probe (`--seed 1 --max-steps 50`, intentionally capped): seats `Temur Beats` / `Izzet Control`; report marks `status capped` and the step-cap truncation.
+- Explicit Jasmine probe: seats `jasmine-vanilla-stompy`, 99 cards each, both commanders Jasmine.
+- Unchanged Jasmine replay: digest `d7f8c2adaa17…` matches, 2364 actions, exit 0.
+
+## 2. Corpus docs corrected
+- `docs/issue17-starter-corpus.md`: planned entries now correctly documented as having non-null `deck_path` under `decks/starter-corpus/planned/`, explicitly **not supported, not playable, not certified**; policy item 3 no longer claims lists are absent.
+- `evidence/issue17/IMPLEMENTATION-HANDOFF.md`: old corpus-plan text labeled **historical snapshot — superseded by assignment 2**, with current schema/status added; Isamaru limit corrected without erasing history.
+
+## Evidence
+- `evidence/issue17/REPAIR-HANDOFF.md`
+- `repair-gates.log`, `repair-default-names.json/.log`, `repair-explicit-name.json/.log`, `repair-replay.log`
+- Reviewer files (`review-1.*`, `REVIEW-1.md`, `review1-*`) untouched.

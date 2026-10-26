@@ -1,0 +1,111 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [
+    {
+      "commander": 4,
+      "recipient": 0,
+      "total": 8
+    },
+    {
+      "commander": 4,
+      "recipient": 1,
+      "total": 8
+    },
+    {
+      "commander": 4,
+      "recipient": 2,
+      "total": 10
+    }
+  ],
+  "commanders": [
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 0
+    },
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 1
+    },
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 2
+    },
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 70,
+    "ability_activations": 70,
+    "attacks": 15,
+    "blocks": 2,
+    "casts": 50,
+    "commander_damage_events": 13,
+    "commander_damage_losses": 0,
+    "counterspells": 9,
+    "damage_events": 110,
+    "events": 7251,
+    "triggered_abilities": 2
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 2861
+  },
+  "final_digest": "cd6e07d238f72da0b6079b4ca26405ce2d9150e9b5ed1ce708f27baf34cfaae2",
+  "first_player": 3,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 86,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 2861,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-talrand-drakes",
+      "seat": 0,
+      "source": "decks/package-talrand-drakes.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-talrand-drakes",
+      "seat": 1,
+      "source": "decks/package-talrand-drakes.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-talrand-drakes",
+      "seat": 2,
+      "source": "decks/package-talrand-drakes.txt"
+    },
+    {
+      "cards": 40,
+      "library": 13,
+      "life": 16,
+      "name": "package-talrand-drakes",
+      "seat": 3,
+      "source": "decks/package-talrand-drakes.txt"
+    }
+  ],
+  "seed": 5,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2861,
+  "truncated": null,
+  "turns": 66,
+  "winner": 3,
+  "winner_label": "P3"
+}

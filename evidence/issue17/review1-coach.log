@@ -1,0 +1,31 @@
+coaching for seed 1 — decision point 0 (revision 0, pending: none yet)
+  log: P0 draws Mountain
+  log: P0 draws Forest
+  log: P0 draws Hill Giant
+  log: P0 draws Mountain
+  log: P0 draws Lightning Strike
+  log: P0 draws Mountain
+  log: P0 draws Forest
+  log: P1 draws a card
+  log: P1 draws a card
+  log: P1 draws a card
+  log: P1 draws a card
+  log: P1 draws a card
+  log: P1 draws a card
+  log: P1 draws a card
+  log: Game start — P0 plays first
+  log: — Turn 1: P0 —
+
+[RULE] [priority] Turn 1 — P0 is the active player. P0 must answer a pending choice in the untap step.
+    CR 608.2d
+
+[RULE] [pending choice] P0: keep or mulligan the opening hand (CR 103.5)
+    CR 103.5: Opening hands: a player may mulligan; the London mulligan draws a fresh seven and then puts a number of cards on the bottom equal to the mulligans taken.
+
+[RULE] [board] Board (public counts): P0: 20 life, 0 permanent(s), 7 card(s) in hand, 33 in library; P1: 20 life, 0 permanent(s), 7 card(s) in hand, 33 in library.
+    CR 401.3
+
+[RULE] [legal actions] 2 legal action(s) generated for the current decision point.
+    CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller's main phase with an empty stack.
+
+[STRATEGY] [strategy] No strategic suggestions are shown: this panel renders only engine-derived facts and pinned rule text. Any future strategy entry must carry the strategy label and is advice, not a rule or a win projection.

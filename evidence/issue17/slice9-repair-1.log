@@ -1,0 +1,24 @@
+Working...
+**Slice 9 repairs complete.** No push. Code head `4e8a856`; evidence head `ea17c27`.
+
+## 1. Bounded mana render
+- `ManaPool.render` keeps the exact old repeated format for ≤32 per colour.
+- Above that emits aggregate `{R}x4294967295`.
+- Tests assert exact small `{U}{U}`, max-quantity bounded length, and explicit `u32::MAX` saturation without panic.
+
+## 2. Rite of Flame tests corrected
+- Copies placed in each **owner’s** physical graveyard and zone.
+- Zero-copy control proves base `{R}{R}` = 2.
+- Third copy moved into a graveyard **after cast, before resolution** → exact 5, proving runtime count.
+
+## 3. Multicolor large pool
+- 300 red + 300 blue; Divination pays `{U}` plus two generic from blue.
+- Exact remainder: blue 297, red 300, total 597.
+
+## 4. Evidence/docs
+- Genuine pre-engine RED retained in `evidence/issue17/slice9/retained-red-results.json`; no fabricated RED path.
+- Corpus state confirms catalog **114**, union 459, supported **102**, missing **357**, manifest matches; per-list prose checked.
+- `issue17_slice9` **6/6**; fmt, clippy `-D warnings`, release build clean.
+- Old slice8 replay still verifies unchanged `ffbeaee0db38…`, 6087 events.
+
+Handoff updated: `evidence/issue17/SLICE9-IMPLEMENT-HANDOFF.md`. No new cards, no journey rerun (render/test-only). Full #17 unfinished.

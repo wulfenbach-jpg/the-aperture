@@ -1,0 +1,38 @@
+{
+  "baseline_head": "86db7d316edd6200f7f598849018e428d11b69eb",
+  "exact_desired_list_count": 8,
+  "lists": [
+    {
+      "path": "decks/starter-corpus/planned/isamaru-white-aggro.txt",
+      "sha256": "ef23651d1a8d272d2f37706e7f2213f26fb2146f5e35197a37dca081e16486c5"
+    },
+    {
+      "path": "decks/starter-corpus/jasmine-vanilla-stompy.txt",
+      "sha256": "4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491"
+    },
+    {
+      "path": "decks/starter-corpus/planned/talrand-draw-go.txt",
+      "sha256": "9dd1388a966e158ce8575070f17403c940172e40d37eaf6e5fb34e9bffcad778"
+    },
+    {
+      "path": "decks/starter-corpus/planned/krenko-goblin-tokens.txt",
+      "sha256": "dc4b276a108ccd39fc9cf048d9f1cb5e2e5f8110fe9de14dfc781d123843170a"
+    },
+    {
+      "path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
+      "sha256": "988f2ae691d5d183944fd0667b75f1fbaa782a1ef77f9c72b3f9467899f1b966"
+    },
+    {
+      "path": "decks/starter-corpus/planned/elas-sacrifice.txt",
+      "sha256": "20a959ffc201ce7d8657e3a417dc0037a80c020629bf2379467de1d4e1c1340d"
+    },
+    {
+      "path": "decks/starter-corpus/planned/tatyova-landfall.txt",
+      "sha256": "582c39dedd06488cb46486006b584010ba2c4d8cc61f78acd3b278b410bd56cb"
+    },
+    {
+      "path": "decks/starter-corpus/planned/zada-spells.txt",
+      "sha256": "a36dd5c453fa2a331912154dabc0ebe7069959d5b169a0c3ec3b1ed6ae7daa89"
+    }
+  ]
+}

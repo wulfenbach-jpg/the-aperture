@@ -1,0 +1,51 @@
+842:    fn detach_object(&mut self, id: ObjectId) -> Option<Object> {
+843-        let object = self.state.objects.remove(&id)?;
+844-        for player in &mut self.state.players {
+845-            player.library.retain(|c| *c != id);
+846-            player.hand.retain(|c| *c != id);
+847-            player.graveyard.retain(|c| *c != id);
+848-            player.exile.retain(|c| *c != id);
+849-            player.command_zone.retain(|c| *c != id);
+850-        }
+851-        // A represented card changing zone leaves the stack in the same move.
+852-        // A spell leaves the stack with its card. An ability does not: its
+853-        // source may change zones (or leave the game) while the ability is
+854-        // still on the stack (CR 603.3, 608.2).
+855-        self.state
+856-            .stack
+857-            .retain(|item| item.object != id || item.entry != StackEntry::Spell);
+858-        if self.state.resolving == Some(id) {
+859-            self.state.resolving = None;
+860-        }
+861-        self.state.turn.attackers.retain(|c| *c != id);
+862-        self.state.turn.blocked.retain(|c| *c != id);
+863-        self.state
+864-            .turn
+865-            .blockers
+866-            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+867-        Some(object)
+868-    }
+869-
+870-    /// Insert an object into `zone`, re-keying commander objects. The stable
+871-    /// commander registry then points at the new object; stale target ids do not
+872-    /// follow (CR 400.7, 903.3).
+873-    fn insert_object(&mut self, mut object: Object, zone: Zone) -> ObjectId {
+874-        let owner = object.owner;
+875-        let commander = object.commander;
+876-        let old_id = object.id;
+877-        let new_id = if commander.is_some() {
+878-            let id = ObjectId(self.state.next_object);
+879-            self.state.next_object += 1;
+880-            object.id = id;
+881-            id
+882-        } else {
+883-            old_id
+884-        };
+885-        object.zone = zone;
+886-        if commander.is_some() {
+887-            // A zone change creates a new object (CR 400.7): no previous
+====
+661:111.7. A token that’s in a zone other than the battlefield ceases to exist. This is a state-based action; see rule 704. (Note that if a token changes zones, applicable triggered abilities will trigger before the token ceases to exist.)
+663:111.8. A token that has left the battlefield can’t move to another zone or come back onto the battlefield. If such a token would change zones, it remains in its current zone instead. It ceases to exist the next time state-based actions are checked; see rule 704.
+3240:700.4. The term dies means “is put into a graveyard from the battlefield.”
+7654:A creature or planeswalker “dies” if it is put into a graveyard from the battlefield. See rule 700.4.

@@ -1,0 +1,24 @@
+Working...
+**review_outcome: request_changes** — bounded slice-4 increment only. `full_issue17_accepted: false`; #16 not approved.
+
+Reviewed head: `86aebf9b1acf298a8dd9e0f0c908d2a62bfe63bc`.
+
+**Blocking finding — Soul Warden misses creature tokens.**
+`engine.rs:1187` queues `AnotherCreatureEnters` watchers from `enter_battlefield`, but `create_tokens` at `engine.rs:4482` inserts tokens directly and queues only the token's own ETB. A token is another creature, so Soul Warden must gain life. Independent probe:
+`aperture-cli selfplay --seed 1 --deck evidence/issue17/slice4/slice4-probe-warden.txt` ×2 with 10 Soul Warden / 10 Goblin Instigator.
+Observed in `slice4-probe-warden-token.log`: Goblin Instigator queues Soul Warden, then `creates Goblin Token token (#81)` with no Soul Warden trigger. Expected: Warden's controller gains 1 for the token. Repair: share the watcher-queue step with token creation and add a token-entry regression.
+
+**Checks**
+
+- `cargo test -p aperture-core --test issue17_slice4 --locked` — 10/10 passed.
+- `cargo test --workspace --locked` — exit 0.
+- `cargo fmt --all -- --check`; `git diff --check` — exit 0.
+- `cargo clippy --workspace --all-targets --locked -- -D warnings` — exit 0.
+- Required four-seat `package-ayula-slice4.txt` journey, seed 17, commander-combat, Jasmine each seat: terminal P1, 1567 steps/43 turns, digest `5e905fdc0399…`; separate replay matches.
+- Live Scryfall checks for `hob/133`, `tsp/190`, `afr/198`, `mm3/24` match cost/type/P-T/Oracle and keyword flags.
+- Trample assignment reads correctly for lethal-per-blocker, surplus-to-player, and non-trample last-blocker behavior. Multi-blocker/pre-damaged cases are code-consistent but not separately tested.
+- Catalog 97; union 459 = 85 supported + 374 missing; manifest matches; seven planned, one implemented, zero certified; desired-list files unchanged.
+
+Limitations: bounded increment only; seven desired starters remain unsupported; no #16, release, GUI/import/search, historical matrix or playing-strength claim.
+
+Reports: `evidence/issue17/slice4/slice4-review-1.md`, `slice4-review-1.json`, and probe/journey evidence in `evidence/issue17/slice4/`.

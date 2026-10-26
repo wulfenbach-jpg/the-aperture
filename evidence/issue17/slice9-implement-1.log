@@ -1,0 +1,29 @@
+Working...
+**Slice 9 delivered — widened mana pool + three count-scaled red rituals.** No push. Head `e300bdd`.
+
+## Implemented
+- **Brightstone Ritual** — red per Goblin on battlefield (all players), resolution-time count.
+- **Mana Geyser** — red per tapped land opponents control (excludes own/untapped/eliminated).
+- **Rite of Flame** — base `{R}{R}` + 1 per Rite of Flame card in **all** graveyards; resolving spell not counted.
+
+Sources: live Scryfall records with URI/Scryfall id/actual UTC in `fixtures/starter-corpus/slice9-sourced.json`. Brightstone’s slice8 exclusion is superseded only in slice9.
+
+## Mana widening
+- `ManaPool` fields/`get`/`add`/`total` → `u32`; `ManaAdded`/`ManaPoolEmptied` payloads → `u32`.
+- `ManaCost`/pips stay `u8`; `take` converts only the bounded pip demand.
+- Explicit saturation at `u32::MAX`, no silent 255 truncation.
+- Real Lightning Bolt cast from a 300-red pool pays exactly 1, leaves 299.
+
+## Genuine RED
+- Before widening: 255+45 saturated.
+- Absent cards failed lookup; after scaffold with no-op effects: expected 300/4/4 vs 0.
+- Then implementation → GREEN.
+
+## Verification
+- `issue17_slice9` 4/4; affected slice5/layer/effect/token/slice6/catalog/printings/commander suites pass.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Old slice8 replay still verifies unchanged `ffbeaee0db38…`.
+- Four-seat Krenko ritual package (`decks/package-slice9.txt`, 40-card package, seed 901): terminal, P0 wins, 1339 steps, digest `5d20bb4a35e2…`; replay matches 4379 events. Honest limitation: the simple heuristic never cast the three rituals in this trace; focused tests prove them.
+- Corpus: catalog **114**, union 459, supported **102**, missing **357**, manifest matches; per-list Isamaru 55, Jasmine 0, Talrand 51, Krenko 48, Ayula 46, Elas 55, Tatyova 54, Zada 53.
+
+Handoff: `evidence/issue17/SLICE9-IMPLEMENT-HANDOFF.md`. Full #17 unfinished; zero certified lists.

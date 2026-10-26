@@ -1,0 +1,24 @@
+Working...
+**Repair complete — findings 1 and 3 fixed; finding 2 rejected on pinned CR 111.4.** No commit/push.
+
+## CR 111.4 adjudication
+Local pinned text (`slice2-rules-source.txt:652`): unnamed tokens are named **subtype(s) + “Token.”** Neither Krenko nor Talrand names its token, so the correct names are **“Goblin Token”** and **“Drake Token”**; Scryfall labels (“Goblin”, “Drake”) are printing labels, not generated names. Kept `Drake Token`; corrected `Goblin` → `Goblin Token`.
+- Genuine RED: `left "Goblin"`, `right "Goblin Token"`.
+- Source fixtures now separate `name` (printing label) from `rules_name` (CR-derived).
+- Reviewer finding 2 recorded as incorrect on primary evidence, not suppressed.
+
+## Finding 1 — CLI help
+- RED: help-listing test failed, omitting Talrand.
+- Fixed `--commander` help to list all four commanders and state bounded-practice scope (no legend rule/full construction).
+- GREEN: `cargo test -q -p aperture-cli` → 8 + 1 passed.
+
+## Finding 3 — docs
+- Roadmap now marks **Talrand spell-cast triggers** and **Krenko activated token production** as bounded implemented packages; landfall/death/tribal/sacrifice gaps remain explicit.
+- `HANDOFF.md` scopes the token limitation to types/interactions beyond the Goblin/Drake packages. Historical slice handoffs untouched.
+
+## Verification
+- Tokens 10/10, Talrand 6/6, printings 4/4, catalog 5/5, CLI 8+1.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Replay digests unchanged: Talrand `c9fb97c6fc08…`, Krenko `e2827d82da51…`, Jasmine `d7f8c2adaa17…`.
+
+Handoff: `evidence/issue17/SLICE2-REPAIR-HANDOFF.md`. Full #17 remains incomplete; no new packages or gap-count changes.

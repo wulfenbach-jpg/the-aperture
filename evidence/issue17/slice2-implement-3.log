@@ -1,0 +1,33 @@
+Working...
+**Talrand package complete — PARTIAL #17.** No commit/push.
+
+## Implemented
+- **Talrand, Sky Summoner**: `{2}{U}{U}`, Legendary Creature — Merfolk Wizard, 2/2, commander-only, exact stored Oracle text.
+- Full “whenever you cast an instant or sorcery” trigger:
+  - caster-only; opponents’ casts do not trigger;
+  - staged **above** the spell before priority;
+  - resolves even if the spell is later countered (Opt + Counterspell regression);
+  - creates an engine-only **2/2 blue Drake with flying**, non-importable.
+- Functional flying:
+  - nonflyer blocking a flyer is refused with state unchanged;
+  - flyers can block flyers or nonflyers;
+  - greedy block generation skips illegal flying blocks.
+- Assignment 2’s CR 111.7/111.8 token death/zone/SBA behavior retained. No new serialized fields; old Jasmine replay still matches `d7f8c2adaa17…`.
+
+## Genuine RED (after compile scaffolding)
+- Trigger test: stack `1` vs expected `2`, no Drake.
+- Flying test: nonflyer block accepted (`expected rejection`).
+
+Then GREEN; countered-spell test is labeled post-GREEN regression coverage, not RED.
+
+## Verification
+- `issue17_talrand` 6/6, `issue17_tokens` 10/10, plus catalog/printings/commander/starter/planned/analyzer all pass.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat package journey (`decks/package-talrand-drakes.txt`, clearly not the desired starter, seed 11): terminal, P2 wins, 1830 steps, 29 casts, **11 actual Drake creations**, 3 blocks; digest `c9fb97c6fc08…`; separate replay and save both match.
+- Manifest recomputed: Talrand desired list now **54 missing**; all eight exact list files unchanged.
+
+## Gaps
+- Talrand 100-card list remains `planned`; flying only for the typed Drake; tokens limited to Goblin/Drake; legend rule absent; no #16 integration claim.
+- Timing correction recorded: assignment 2 stopped after ~7–8 active minutes, not budget exhaustion.
+
+Handoff: `evidence/issue17/SLICE2-IMPLEMENTATION-HANDOFF-3.md`; result: `evidence/issue17/slice2-result-3.json`.

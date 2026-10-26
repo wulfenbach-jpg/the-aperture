@@ -1,0 +1,73 @@
+{
+  "verdict": "approve_increment",
+  "reviewed_head": "86db7d316edd6200f7f598849018e428d11b69eb",
+  "full_issue17_accepted": false,
+  "prior_findings_retested": [
+    {
+      "finding": "default CLI deck identity regression (file_stem applied to non-explicit defaults)",
+      "status": "resolved",
+      "evidence": [
+        "crates/cli/src/decks.rs now uses file_stem only when explicit is true; otherwise fallback_name.",
+        "cargo test --locked -p aperture-cli: decks::tests::non_explicit_default_loads_keep_the_human_fallback_names ok; decks::tests::an_explicit_starter_file_keeps_its_own_identity ok.",
+        "./target/release/aperture-cli.exe selfplay --seed 1 --max-steps 50 -> seats [('Temur Beats','decks/temur-beats.txt'), ('Izzet Control','decks/izzet-control.txt')]; status capped at 50, not a victory."
+      ]
+    },
+    {
+      "finding": "tracked corpus docs contradicted the manifest about planned deck_path and exact desired lists",
+      "status": "resolved",
+      "evidence": [
+        "docs/issue17-starter-corpus.md: planned entries have non-null deck_path to exact desired 99-card lists; deck_path explicitly is not a support claim; gap 3 now distinguishes desired lists from support.",
+        "evidence/issue17/IMPLEMENTATION-HANDOFF.md: stale assignment-1 statement is now fenced as 'Historical snapshot — superseded by assignment 2' and followed by the current non-null deck_path state.",
+        "No stale claim remains in the current doc; only the explicitly historical handoff paragraph mentions the old null state."
+      ]
+    }
+  ],
+  "blocking_findings": [],
+  "checks": [
+    {
+      "command": "git rev-parse HEAD; git log --oneline 0a7d781c41d1799a79c8ef41e6888d81ab7f9e6d..HEAD; git diff --name-status 0a7d781..HEAD",
+      "result": "HEAD 86db7d316edd6200f7f598849018e428d11b69eb; one commit; delta is decks.rs, issue17 doc, implementation handoff, repair/review evidence only. No engine/card/catalog/deck-list/source changes."
+    },
+    {
+      "command": "cargo test --locked -p aperture-cli",
+      "result": "exit 0; lib 6/6 including the new non-explicit default-name test and the existing explicit-starter identity test; commander_check 8/8; explicit_decks 1/1 (evidence/issue17/review2-cli-tests.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    },
+    {
+      "command": "cargo build --release --locked -p aperture-cli",
+      "result": "exit 0."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe selfplay --seed 1 --max-steps 50 --out evidence/issue17/review2-default-names.json",
+      "result": "exit 0; prior human names restored (Temur Beats / Izzet Control); status capped at step 50, correctly reported as capped not victory."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe replay --file evidence/issue17/review1-selfplay.replay.json",
+      "result": "exit 0; 4 seats, 2364 actions, 6061 events, replayed digest d7f8c2adaa17 matches recorded."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe replay --file evidence/issue17/jasmine-starter-game.replay.json",
+      "result": "exit 0; tracked Jasmine recording still replays to recorded digest d7f8c2adaa17, 6061 events."
+    },
+    {
+      "command": "actual delta/paragraph read: git diff 0a7d781..HEAD -- crates/cli/src/decks.rs docs/issue17-starter-corpus.md evidence/issue17/IMPLEMENTATION-HANDOFF.md; sed of corrected sections",
+      "result": "code conditional and docs wording match the stated repair; old handoff state is explicitly historical, not presented as current."
+    }
+  ],
+  "reused_evidence": [
+    "Review-1 full partial-package inspection: exact Jasmine 99-card library + commander, 41 basics / 58 singleton nonlands, four-seat 40-life terminal game and exact embedded-library comparison.",
+    "Review-1 save/replay verification, analyzer legal/supported with gameplay.available=false, planned-list unsupported status and manifest missing-card/union audit.",
+    "Review-1 live Scryfall spot checks and source/fixture binding checks; no engine/card/list/source files changed in this delta, so those results remain applicable.",
+    "Writer/coordinator focused evidence in evidence/issue17/REPAIR-HANDOFF.md, repair-*.json/log and repair-gates.log was read as supporting context, not substituted for the rerun checks above."
+  ],
+  "limitations": [
+    "Approval covers only this bounded partial increment: one implemented Jasmine package and seven exact planned, unsupported lists. It is not approval of all issue #17, eight implemented styles, merge, release or closure.",
+    "Full suite and full four-seat game were not rerun per assignment; the partial-package game, analyzer, save/replay, source and manifest results were reused from review-1, and no engine/card/list/source files changed in this delta.",
+    "No network/source matrix rerun; exact-head CI is checked separately by the coordinator.",
+    "Native UI remains untouched and still uses its existing Isamaru bounded-profile setup; starter corpus remains CLI-exercised.",
+    "Untracked coordinator/assignment files present in the worktree (e.g. ASSIGN-REVIEW-2.md, PR-BODY.md, ci-watch logs, repair logs) are outside the reviewed tracked delta."
+  ]
+}

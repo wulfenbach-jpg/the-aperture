@@ -1,0 +1,12 @@
+# Genuine RED at integration head edd8008, strong restored issue17_tokens tests
+# Command (throwaway detached worktree C:/AI/tmp/aperture-edd8008):
+cargo test -q -p aperture-core --test issue17_tokens
+
+running 10 tests
+token_death_is_a_real_graveyard_change_then_cessation --- FAILED
+  "the token really dies (CR 700.4)" missing Destroyed; event was
+  "token Goblin Token dies and ceases to exist (CR 111.7)"
+token_bounce_and_exile_record_the_destination_before_cessation --- FAILED
+  "bounce records the hand zone change" missing; event was
+  "token Goblin Token ceases to exist instead of moving to a hand (CR 111.7)"
+test result: FAILED. 8 passed; 2 failed

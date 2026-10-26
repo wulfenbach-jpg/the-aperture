@@ -1,0 +1,80 @@
+{
+  "head": "e16185c81c66e11e5bef686f03c2a3977a791301",
+  "catalog_cards": 86,
+  "desired_lists": 8,
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "exact_union_names": 459,
+  "missing_union_names": 385,
+  "starters": [
+    {
+      "id": "isamaru-white-aggro",
+      "status": "planned",
+      "missing_names": 57,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "jasmine-vanilla-stompy",
+      "status": "implemented",
+      "missing_names": 0,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "talrand-draw-go",
+      "status": "planned",
+      "missing_names": 54,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "krenko-goblin-tokens",
+      "status": "planned",
+      "missing_names": 52,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "ayula-bear-counters",
+      "status": "planned",
+      "missing_names": 52,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "elas-sacrifice",
+      "status": "planned",
+      "missing_names": 59,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "tatyova-landfall",
+      "status": "planned",
+      "missing_names": 58,
+      "exact_desired_content_preserved": true
+    },
+    {
+      "id": "zada-spells",
+      "status": "planned",
+      "missing_names": 58,
+      "exact_desired_content_preserved": true
+    }
+  ],
+  "journeys": [
+    {
+      "fixture": "decks/package-krenko-tokens.txt",
+      "library_size": 40,
+      "exact_seats_verified": 4,
+      "terminal": true,
+      "actions": 1805,
+      "digest": "e2827d82da51bba3a3d744aebd9ec848865b93478f228a6e2456590e8bf384d7",
+      "note": "40-card mechanic package; NOT the desired 100-card Commander starter"
+    },
+    {
+      "fixture": "decks/package-talrand-drakes.txt",
+      "library_size": 40,
+      "exact_seats_verified": 4,
+      "terminal": true,
+      "actions": 1830,
+      "digest": "c9fb97c6fc084660108f41b0a4b870bb68240c43e8ebc73f5080cf71a80dcf11",
+      "note": "40-card mechanic package; NOT the desired 100-card Commander starter"
+    }
+  ],
+  "full_issue17_accepted": false
+}

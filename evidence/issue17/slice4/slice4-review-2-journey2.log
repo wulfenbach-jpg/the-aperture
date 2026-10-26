@@ -1,0 +1,3250 @@
+    Finished `release` profile [optimized] target(s) in 0.47s
+     Running `target\release\aperture-cli.exe selfplay --seed 23 --deck decks/package-soul-warden-tokens.txt --deck decks/package-soul-warden-tokens.txt --deck decks/package-soul-warden-tokens.txt --deck decks/package-soul-warden-tokens.txt --out evidence/issue17/slice4/slice4-review-2-journey2.json --replay-out evidence/issue17/slice4/slice4-review-2-journey2.replay.json --verbose`
+P0 draws Goblin Instigator
+P0 draws Krenko's Command
+P0 draws Plains
+P0 draws Plains
+P0 draws Goblin Instigator
+P0 draws Soul Warden
+P0 draws Dragon Fodder
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+Game start — P1 plays first
+— Turn 1: P1 —
+P1 keeps a hand of 7
+P2 keeps a hand of 7
+P3 keeps a hand of 7
+P0 keeps a hand of 7
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 2: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 3: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 4: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Krenko's Command
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Plains
+P0 receives priority
+P0 casts Soul Warden
+P0 taps Plains for {W}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Soul Warden resolves (controlled by P0)
+Soul Warden enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 5: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 casts Goblin Instigator
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Instigator resolves (controlled by P1)
+Goblin Instigator enters the battlefield under P1
+P1's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P0's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P0 gains 1 life (now 21)
+P0's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Token enters the battlefield under P1
+state-based action: P1 creates Goblin Token token (#161)
+P1's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P0's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P0 gains 1 life (now 22)
+P0's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 6: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Goblin Instigator
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Instigator resolves (controlled by P2)
+Goblin Instigator enters the battlefield under P2
+P2's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P0's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 23)
+P0's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Token enters the battlefield under P2
+state-based action: P2 creates Goblin Token token (#162)
+P2's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P0's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 24)
+P0's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 7: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 casts Goblin Instigator
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Instigator resolves (controlled by P3)
+Goblin Instigator enters the battlefield under P3
+P3's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P0's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 gains 1 life (now 25)
+P0's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Token enters the battlefield under P3
+state-based action: P3 creates Goblin Token token (#163)
+P3's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P0's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 gains 1 life (now 26)
+P0's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 8: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Krenko's Command
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Plains
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Soul Warden
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 damage to Goblin Instigator (#48)
+1 combat damage to Goblin Instigator
+1 damage to Soul Warden (#4)
+1 combat damage to Soul Warden
+Soul Warden is put into a graveyard
+Goblin Instigator is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 9: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 casts Goblin Instigator
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Instigator resolves (controlled by P1)
+Goblin Instigator enters the battlefield under P1
+P1's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Token enters the battlefield under P1
+state-based action: P1 creates Goblin Token token (#164)
+P1's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 25)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 10: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Goblin Instigator
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Instigator resolves (controlled by P2)
+Goblin Instigator enters the battlefield under P2
+P2's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Token enters the battlefield under P2
+state-based action: P2 creates Goblin Token token (#165)
+P2's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Goblin Instigator, Goblin Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 24)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 23)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 11: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Goblin Instigator
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Instigator resolves (controlled by P3)
+Goblin Instigator enters the battlefield under P3
+P3's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Token enters the battlefield under P3
+state-based action: P3 creates Goblin Token token (#166)
+P3's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin Instigator, Goblin Token
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 22)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 21)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 12: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Soul Warden
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Soul Warden
+P0 taps Plains for {W}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Soul Warden resolves (controlled by P0)
+Soul Warden enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 13: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Goblin Instigator, Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 damage to Soul Warden (#1)
+1 combat damage to Soul Warden
+1 damage to Goblin Instigator (#49)
+1 combat damage to Goblin Instigator
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 20)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 19)
+Soul Warden is put into a graveyard
+Goblin Instigator is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 14: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Plains
+P2 receives priority
+P2 casts Goblin Instigator
+P2 taps Mountain for {R}
+P2 taps Plains for {W}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Instigator resolves (controlled by P2)
+Goblin Instigator enters the battlefield under P2
+P2's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Token enters the battlefield under P2
+state-based action: P2 creates Goblin Token token (#167)
+P2's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 18)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 17)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 16)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 15)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 15: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Goblin Instigator
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Instigator resolves (controlled by P3)
+Goblin Instigator enters the battlefield under P3
+P3's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Token enters the battlefield under P3
+state-based action: P3 creates Goblin Token token (#168)
+P3's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 14)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 13)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 12)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 11)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 16: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Dragon Fodder
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 17: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Goblin Instigator
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Instigator resolves (controlled by P1)
+Goblin Instigator enters the battlefield under P1
+P1's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Token enters the battlefield under P1
+state-based action: P1 creates Goblin Token token (#169)
+P1's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 10)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 9)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 18: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Plains
+P2 receives priority
+P2 casts Soul Warden
+P2 taps Plains for {W}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Soul Warden resolves (controlled by P2)
+Soul Warden enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 8)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 7)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 6)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 5)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 4)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 3)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 19: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 2)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now 0)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now -1)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now -2)
+1 combat damage to a player
+1 damage to P0
+P0 loses 1 life (now -3)
+state-based action: P0 loses: life total is -3 (CR 704.5a)
+state-based action: P0 leaves the game; all objects owned by P0 leave the game (CR 800.4a)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 20: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 19)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 18)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 17)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 16)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 21: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Soul Warden, Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 15)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 14)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 13)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 12)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 11)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 10)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 9)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 22: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 19)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 18)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 17)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 16)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 15)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 14)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 23: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 8)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 7)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 6)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 5)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+P1 discards a card
+— Turn 24: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Goblin Instigator
+P2 taps Mountain for {R}
+P2 taps Plains for {W}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Goblin Instigator resolves (controlled by P2)
+Goblin Instigator enters the battlefield under P2
+P2's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P2's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 21)
+P2's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Goblin Token enters the battlefield under P2
+state-based action: P2 creates Goblin Token token (#170)
+P2's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P2's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 22)
+P2's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Soul Warden, Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 4)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 3)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 2)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 0)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -1)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -2)
+state-based action: P3 loses: life total is -2 (CR 704.5a)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 25: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P1 attacks with Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P2 declares 2 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 damage to Goblin Instigator (#86)
+1 combat damage to Goblin Instigator
+1 damage to Goblin Instigator (#52)
+1 combat damage to Goblin Instigator
+1 damage to Goblin Token (#170)
+1 combat damage to Goblin Token
+1 damage to Goblin Token (#161)
+1 combat damage to Goblin Token
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 21)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 20)
+Goblin Instigator is put into a graveyard
+Goblin Instigator is put into a graveyard
+Goblin Token is put into a graveyard
+Goblin Token is put into a graveyard
+state-based action: 4 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: Goblin Token token ceases to exist (CR 111.7)
+state-based action: Goblin Token token ceases to exist (CR 111.7)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+P1 discards a card
+— Turn 26: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Soul Warden, Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 13)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 12)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 11)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 10)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 9)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 8)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 7)
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 27: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Goblin Instigator
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Instigator resolves (controlled by P1)
+Goblin Instigator enters the battlefield under P1
+P1's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P2's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P2 gains 1 life (now 21)
+P2's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Token enters the battlefield under P1
+state-based action: P1 creates Goblin Token token (#171)
+P1's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P2's triggered ability from Soul Warden goes on the stack: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P2 gains 1 life (now 22)
+P2's ability from Soul Warden resolves: Whenever another creature enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P1 attacks with Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 21)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 20)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 28: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Soul Warden, Goblin Instigator, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 2 blocker(s)
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 damage to Goblin Instigator (#45)
+1 combat damage to Goblin Instigator
+1 damage to Soul Warden (#81)
+1 combat damage to Soul Warden
+1 damage to Goblin Token (#171)
+1 combat damage to Goblin Token
+1 damage to Goblin Instigator (#88)
+1 combat damage to Goblin Instigator
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 6)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 5)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 4)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 3)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 2)
+Goblin Instigator is put into a graveyard
+Soul Warden is put into a graveyard
+Goblin Instigator is put into a graveyard
+Goblin Token is put into a graveyard
+state-based action: 4 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: Goblin Token token ceases to exist (CR 111.7)
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 29: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P1 attacks with Goblin Token, Goblin Token
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 19)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 18)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 30: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Plains
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 0)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -1)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -2)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -3)
+state-based action: P1 loses: life total is -3 (CR 704.5a)
+state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
+Game over — P2 wins: opponents' life totals reached 0 or less (CR 704.5a)
+selfplay seed=23 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 1207 steps (30 turns)
+  digest 11fd9618f1e9 | replay verified | casts 14 attacks 21 blocks 4 counters 0
+  replay written to evidence/issue17/slice4/slice4-review-2-journey2.replay.json
+  report written to evidence/issue17/slice4/slice4-review-2-journey2.json

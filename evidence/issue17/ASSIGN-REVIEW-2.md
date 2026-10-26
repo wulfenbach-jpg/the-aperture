@@ -1,0 +1,8 @@
+# Slice1 assignment5 — exact-history focused re-review
+Resume YOUR independent reviewer session, not writer. Writer has STOPPED. Candidate now exact86db7d316edd6200f7f598849018e428d11b69eb pushed to draftPR46. Max3active minutes/runtime5m. No subagents, production/test/doc edits, commits/push/merge/closure. You may write evidence/issue17/review-2.md/.json and review2-* only. Do NOT reuse assignment's basename as report output (Windows case-insensitive). Prior review reports preserved and tracked.
+
+Re-test BOTH findings from your review-1: defaultCLI names fixed via explicit-only file_stem; planned-list docs/oldhandoff now distinguish exact desired unsupported lists and historical state. Diff0a7d781..86db7d3: onlyloadnameconditional/defaultregression/docs/handoff/failedreview+repairevidence. Coordinator additionally clarified Jasmine is atstarterroot, onlyplannedlists underplanned/. Noengine/card/list/sourcechanges.
+
+Use actual focusedCLItests with --locked, fmt/diffcheck, releasebuildCLI and realdefaultselfplay capped50 actionprobe to confirm priorhuman names, existingexplicitstartername test and replay unchangedJasmine recording toverifydigest. Reuse YOUR earlier fullpartial-packageinspection/game/save/sourcemetadata/manifest checks; do NOT repeatwholegame/fullsuite/networkmatrix. Read actualdeltaandcorrectedparagraphs, notjusthandoff.
+
+Write review-2.md/json {verdict:'approve_increment'|'request_changes',reviewed_head,full_issue17_accepted:false,prior_findings_retested:[...],blocking_findings:[...],checks:[actualcommands/results],reused_evidence:[...],limitations:[...]} and stop. Approvalmeanscomplete boundedpartialincrement only, NOT all#17/eightstyles/merge/release. CIcheckedseparatelybycoordinator.

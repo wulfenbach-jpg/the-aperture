@@ -1,0 +1,50 @@
+{
+  "catalog": 106,
+  "union": 459,
+  "supported": 94,
+  "missing": 365,
+  "lists": [
+    [
+      "isamaru-white-aggro",
+      56,
+      true
+    ],
+    [
+      "jasmine-vanilla-stompy",
+      0,
+      true
+    ],
+    [
+      "talrand-draw-go",
+      52,
+      true
+    ],
+    [
+      "krenko-goblin-tokens",
+      51,
+      true
+    ],
+    [
+      "ayula-bear-counters",
+      47,
+      true
+    ],
+    [
+      "elas-sacrifice",
+      55,
+      true
+    ],
+    [
+      "tatyova-landfall",
+      54,
+      true
+    ],
+    [
+      "zada-spells",
+      55,
+      true
+    ]
+  ],
+  "desired_unchanged": true,
+  "journey_exact_four_seat_package_snapshots": true
+}

@@ -1,0 +1,24 @@
+Working...
+**Slice 2 assignment 2 complete — both token defects fixed test-first.** Talrand deliberately not registered. No commit/push.
+
+## Defect 1 — Krenko X clamp
+- **Genuine RED:** `krenko_never_silently_truncates_a_goblin_count_above_255` expected 301 new tokens, observed **255**.
+- Removed `.min(u8::MAX)`; `goblin_count` and `create_goblin_tokens` now use `usize`; fixed-count spells unchanged.
+- **GREEN:** 301 new tokens, 602 Goblins total.
+
+## Defect 2 — token cessation ordering
+- **Genuine RED:** death test showed cessation before the graveyard SBA and no `Destroyed` event; bounce test showed cessation with no hand zone-change event.
+- Removed pre-destination interception. Tokens now perform the real zone change first (graveyard with `Destroyed`/dies trigger; hand/exile/library record), then `check_sbas` removes nonbattlefield tokens to `Zone::Removed` per CR 111.7/111.8. No graveyard/hand/exile residue after the checkpoint; Swords last-known-power life gain preserved.
+
+## Verification
+- `issue17_tokens` **10/10**, `starter_corpus_planned` 1/1, analyzer 3/3; fmt, clippy `-D warnings`, release build clean.
+- Reran the four-seat Krenko package journey (token death changed semantics): terminal, 1805 steps, new digest `e2827d82da51…`, 109 cessation events; replay and save both match.
+- Unchanged Jasmine replay still matches `d7f8c2adaa17…`.
+- Exact desired list content untouched (`git diff` empty); manifest missing counts unchanged.
+
+## Deliberately unfinished
+- **Talrand not registered** — full spell-cast trigger + real flying/Drake semantics not implemented; no partial card, no fake flying/copy.
+- Krenko 100-card list stays `planned` (52 missing); tokens still only 1/1 red Goblin; legend rule absent.
+- No #16 integration claim.
+
+Handoff: `evidence/issue17/SLICE2-IMPLEMENTATION-HANDOFF-2.md`; result: `evidence/issue17/slice2-result-2.json`.

@@ -1,0 +1,22 @@
+Working...
+**Integration regression rejected and repaired.** No push.
+
+## Token semantics restored
+- Removed `insert_object`’s blanket token discard and the “instead of moving to hand/exile/library” early returns.
+- Tokens now reach the real destination, emit `Destroyed`/departure events, fire death watchers once (including simultaneous batches), then `check_sbas` records CR 111.7 cessation and removes the object.
+- Stable state validation still refuses any off-battlefield token; no serialization changes.
+- Strong assertions restored from `f1b7ab6`; only the final object representation adapted to “absent” rather than a `Zone::Removed` tombstone.
+- #16’s invented “instead of exile/hand” tests corrected to destination-then-cessation ordering.
+
+## RED/GREEN
+- Genuine RED at `edd8008` with strong restored tests (`slice7-token-ordering-red.log`): missing `Destroyed` and missing hand-destination event.
+- GREEN: tokens 10/10, slice6 13/13, counters_tokens_library 16/16, cross 6/6, Tatyova 5/5, Talrand 7/7, SBA 7/7; reviewer224 probe 3/3.
+- fmt, clippy `-D warnings`, release CLI build clean.
+
+## Counts corrected
+Real 106-card pool + eight exact lists: **catalog 106, union 459, supported 94, missing 365**, manifest matches. Extended the audit regex for `card_defender!`/`card_flash!`/`card_trample!`. Desired snapshots byte-equivalent to `3987dd6`.
+
+## Journey
+Fresh four-seat `package-slice6-dies.txt`, seed 610: terminal, P3 wins, 2952 steps, digest `8e0ab4b00e7f…`; separate replay matches 7239 events.
+
+Commit: `04c39e6` (repair) on top of `edd8008` merge and `f1b7ab6`. Handoff updated: `evidence/issue17/SLICE7-IMPLEMENT-HANDOFF.md`. Full #17 remains unfinished.

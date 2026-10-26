@@ -1,0 +1,24 @@
+Working...
+**review_outcome: approve_increment** at `eea8f9dea34ae9b5f65c4bda3a1f50797449a118`.
+`full_issue17_accepted: false`; #16 not approved.
+
+**R211-1 fixed.** `engine.rs` now has one shared `queue_another_creature_enters(entering)` used by both `enter_battlefield` and `create_tokens`, excluding the entering object. My probe with 10 Soul Warden / 10 Goblin Instigator now logs a Soul Warden trigger immediately after `creates Goblin Token token (#81)`, as well as after the Instigator entry. Non-creatures remain excluded by the `is_creature` guards, and Soul Warden still never triggers for itself.
+
+**Regressions genuine**
+
+- Token test has RED evidence when the hook is disabled; now 13/13 focused tests pass.
+- Two-blocker trample asserts P1 at 18 plus a 2-damage player event.
+- Marked-damage trample asserts P1 at 17 plus a 3-damage player event; ignoring marked damage would leave 18.
+
+**No collateral change**
+
+- `cargo test --workspace --locked` — exit 0.
+- `cargo fmt --all -- --check`; `git diff --check` — exit 0.
+- `cargo clippy --workspace --all-targets --locked -- -D warnings` — exit 0.
+- First journey (`package-ayula-slice4`, seed 17, four Jasmine seats) — terminal P1, digest `5e905fdc0399…`, replay matches; unchanged.
+- Second journey (`package-soul-warden-tokens`, seed 23) — terminal P2, 1207 steps/30 turns, digest `11fd9618f1e9…`, replay matches; logs show Soul Warden triggers for Goblin tokens.
+- Catalog 97; union 459 = 85 supported + 374 missing; manifest matches; desired lists unedited; slice-4 source strings/flags unchanged.
+
+Limitations: bounded increment only; seven desired starters remain unsupported; no #16, release, GUI/import/search, historical matrix or playing-strength claim.
+
+Reports: `evidence/issue17/slice4/slice4-review-2.md`, `.json`, plus rerun probe/journey logs.

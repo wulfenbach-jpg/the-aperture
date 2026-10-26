@@ -1,0 +1,20 @@
+Working...
+**Repair complete — source-left test gap closed and LKI damage doubling fixed.** No commit/push.
+
+## 1. Source-left test gap
+- Strengthened the test to settle with a bounded 64-pass guard until **stack, trigger queue, resolving and pending are all empty**, then assert emptiness and **−4** to each affected opponent from the two Guttersnipe triggers (Bolt + Unsummon casts).
+- Labeled a test-gap/control repair, not new RED; it passes without production changes.
+
+## 2. Genuine RED — LKI multiplier
+- P0 Guttersnipe + P0 Angrath’s Marauders, Bolt then real Unsummon bounce, full settle.
+- Expected doubled trigger damage; observed undoubled (each opponent only −4 across two triggers instead of −8).
+- Cause: `DamageEachOpponent` called `deal_damage(Some(old_id))`, and `damage_multipliers` skipped sources no longer on battlefield/stack.
+- Fix: `deal_damage_from(..., source_controller)` feeds the ability controller’s last-known identity into the existing prevention/replacement pipeline. Normal damage path unchanged; no serialization, replay, allocator or fake-live-object changes.
+- Added controls: opponent-controlled Angrath does **not** double P0’s Guttersnipe; living-source doubling covered; eliminated opponent skipped.
+
+## Verification
+- Cross-package tests **8/8**; Tatyova 5/5, tokens 10/10, Talrand 6/6, printings 4/4, catalog 5/5, commander 43/43, planned 1/1.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Cross-package replay digest `4572cd11e893…` and Tatyova `b31adfd97c31…` both unchanged.
+- Handoff opening corrected to **five sourced cards total including Guttersnipe**; repair section added in `evidence/issue17/slice3-cross-package-implementation.md`.
+- Catalog 93 / missing 378 unchanged; desired lists untouched. Existing old-card LKI debt outside this bounded effect remains disclosed, not claimed fixed.

@@ -1,0 +1,62 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 0,
+    "ability_activations": 0,
+    "attacks": 0,
+    "blocks": 0,
+    "casts": 0,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 0,
+    "events": 147,
+    "triggered_abilities": 0
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 50
+  },
+  "final_digest": "230807eb1bc92335eaccf60d884175a35de0fcb0b770d276045bc8fcbd6ce610",
+  "first_player": 0,
+  "policies": "heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 79,
+  "profile": "practice-20",
+  "reason": "",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 50,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 2,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 32,
+      "life": 20,
+      "name": "temur-beats",
+      "seat": 0,
+      "source": "decks/temur-beats.txt"
+    },
+    {
+      "cards": 40,
+      "library": 32,
+      "life": 20,
+      "name": "izzet-control",
+      "seat": 1,
+      "source": "decks/izzet-control.txt"
+    }
+  ],
+  "seed": 1,
+  "starting_life": 20,
+  "status": "capped",
+  "steps": 50,
+  "truncated": "step cap of 50 reached before the game ended",
+  "turns": 3,
+  "winner": null,
+  "winner_label": "none"
+}

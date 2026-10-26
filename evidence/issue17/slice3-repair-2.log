@@ -1,0 +1,13 @@
+Working...
+**Repair-2 complete — truthfulness-only edits, no engine/test changes.** No commit/push.
+
+- **Krenko:** manifest `missing_interactions` corrected to verified **51**; docs roadmap line updated from 52.
+- **Elas:** removed stale “Swamp unsupported” claim from manifest and docs. Now states the real gaps: 58 unsupported nonland names, sacrifice outlets, death/drain triggers, tutor/reanimation. Swamp `mdd/296` remains supported with black mana.
+- **Handoff:** removed the false `docs/issue15-effects.md` changed-file claim; added repair-2 evidence section.
+
+Verification:
+- Reran `python evidence/issue17/slice3-native-corpus.py`: **catalog 93, union 459, supported 81, missing 378**, manifest matches; Krenko 51, Elas 58.
+- Focused grep/JSON check shows no stale 52 or black-basic-unsupported claims.
+- `git diff --check` and `cargo fmt --all --check` clean.
+
+No hardcoded new counts outside the programmatically verified manifest; all evidence preserved.

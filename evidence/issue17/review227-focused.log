@@ -1,0 +1,58 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.25s
+     Running tests\counters_tokens_library.rs (target\debug\deps\counters_tokens_library-e3980911648dde56.exe)
+
+running 16 tests
+test a_saved_state_with_counters_off_the_battlefield_is_refused ... ok
+test a_flying_token_can_only_be_blocked_by_flying_or_reach ... ok
+test a_created_token_has_its_own_characteristics_ownership_and_visibility ... ok
+test a_destroyed_token_ceases_to_exist_and_never_enters_a_graveyard ... ok
+test a_bounced_token_ceases_to_exist_and_never_reaches_a_hand ... ok
+test combat_damage_uses_counter_modified_power ... ok
+test counters_do_not_follow_the_card_out_of_the_battlefield ... ok
+test mill_shuffle_reveal_and_untap_are_deterministic_and_information_safe ... ok
+test minus_counters_reduce_toughness_to_zero_and_the_creature_dies ... ok
+test power_and_toughness_counters_change_characteristics_and_projection ... ok
+test paired_plus_and_minus_counters_annihilate_at_the_next_checkpoint ... ok
+test counters_and_tokens_survive_save_load_exactly ... ok
+test swords_to_plowshares_reports_a_token_truthfully ... ok
+test a_save_with_malformed_counters_is_refused_not_coerced ... ok
+test a_real_game_keeps_its_digest_and_survives_a_save_load_round_trip ... ok
+test a_real_pre16_v10_save_still_loads_and_replays ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests\issue17_slice6.rs (target\debug\deps\issue17_slice6-163b663ee6b23de2.exe)
+
+running 13 tests
+test single_dying_watcher_self_trigger_fires_exactly_once ... ok
+test sourced_slice6_cards_match_their_live_printings ... ok
+test hedron_crab_mills_the_targeted_player_not_its_controller ... ok
+test target_player_spec_offers_every_live_seat_and_refuses_a_creature ... ok
+test blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature ... ok
+test hedron_crab_may_target_its_own_controller ... ok
+test blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player ... ok
+test dying_watcher_self_trigger_fires_exactly_once_both_death_orders ... ok
+test life_loss_is_not_damage_and_a_damage_shield_never_stops_it ... ok
+test surviving_watcher_still_counts_both_deaths_once ... ok
+test simultaneous_deaths_each_trigger_the_watchers_regardless_of_id_order ... ok
+test creature_tokens_dying_are_seen_by_death_watchers ... ok
+test zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_tokens.rs (target\debug\deps\issue17_tokens-4c5073e334830261.exe)
+
+running 10 tests
+test token_cards_are_not_importable ... ok
+test sourced_token_package_matches_its_recorded_printings ... ok
+test a_token_ceases_to_exist_instead_of_going_to_the_graveyard ... ok
+test token_death_is_a_real_graveyard_change_then_cessation ... ok
+test goblin_instigator_and_beetleback_chief_trigger_on_entry_in_apnap_order ... ok
+test token_sorceries_create_the_printed_count_with_unique_objects ... ok
+test token_bounce_and_exile_record_the_destination_before_cessation ... ok
+test krenko_counts_goblins_including_tokens_and_needs_untapped_untaunted_source ... ok
+test token_state_round_trips_through_serialization_with_an_equal_digest ... ok
+test krenko_never_silently_truncates_a_goblin_count_above_255 ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+

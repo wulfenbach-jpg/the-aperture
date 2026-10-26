@@ -1,0 +1,8 @@
+{
+  "catalog_size": 79,
+  "exact_corpus_unique_names_including_commanders_and_basics": 459,
+  "currently_supported_corpus_names": 67,
+  "missing_corpus_names": 392,
+  "manifest_missing_union": 392,
+  "missing_union_matches_catalog": true
+}

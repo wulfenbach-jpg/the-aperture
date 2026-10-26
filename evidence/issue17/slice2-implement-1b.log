@@ -1,0 +1,24 @@
+Working...
+**Slice 2 partial delivered — Krenko goblin-token package works end-to-end.** Exact 100-card Krenko starter remains `planned`; no commit/push.
+
+## Implemented
+- Six sourced cards: **Krenko, Mob Boss** (commander-only), **Dragon Fodder**, **Krenko's Command**, **Hordeling Outburst**, **Goblin Instigator**, **Beetleback Chief**.
+- Engine-only **1/1 red Goblin** token: unique `ObjectId`, correct controller/red/Goblin/1-1, summoning sickness, never importable (`catalog::all`/`by_name` exclude it).
+- Typed `CreateGoblinTokens(n)` and dynamic `CreateGoblinTokensForEachGoblin`; Krenko counts every Goblin including itself and tokens, with existing `{T}` + summoning-sickness checks.
+- Instigator/Chief ETB triggers through the existing APNAP trigger queue; no priority during resolution.
+- Tokens cease to exist in `Zone::Removed`, never enter graveyards, via the existing SBA path.
+- Pool 79 → **85**; manifest `missing_cards` recomputed (Krenko list now 52 missing).
+
+## Evidence
+- Focused tests: `issue17_tokens` 7, catalog/printings/command-zone/starter/planned/analyzer all pass — `slice2-focused-tests.log`.
+- fmt + clippy `-D warnings`: clean; release CLI built.
+- Four-seat exact package journey (`decks/package-krenko-tokens.txt`, clearly not the desired starter), seed 7, 40 life: **terminal**, 1805 steps/40 turns, **317 token creations**, Krenko activated by all seats, 25 casts, 20 activations.
+- Replay digest matched; `--save-out` save replayed to the same digest.
+- Source fixture `fixtures/starter-corpus/krenko-tokens-sourced.json` from stored Scryfall responses plus live Goblin token record.
+
+## Honest caveats
+- Implementation-first: no retrospective RED claimed; the token tests were written alongside engine work, and the only first-run failure was a wrong test expectation about `Zone::Removed`.
+- Talrand not registered — no complete spell-cast trigger/flying implementation.
+- Token support is only the 1/1 red Goblin type; legend rule still absent; full Krenko list remains unsupported metadata.
+
+Handoff: `evidence/issue17/SLICE2-IMPLEMENTATION-HANDOFF.md`; machine result: `evidence/issue17/slice2-result.json`.

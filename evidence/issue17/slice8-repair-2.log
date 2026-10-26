@@ -1,0 +1,20 @@
+Working...
+**Aetherize excluded; 5 cards remain supported.** No push.
+
+## Decision
+- `ReturnAllAttackersToHand` called `move_to_hand` directly, bypassing the existing CR 903.9b commander hand-replacement choice. Implementing a serialized remaining-attacker continuation was not completed within the cap.
+- **Aetherize removed** from CardId/catalog/effect/tests/package. Source record retained as `role: excluded` with the continuity-gap reason.
+- No fake fix claim; excluded unsupported rather than shipping a known bypass.
+
+## Current slice-8 state
+- Supported: **Soul's Attendant, Razorclaw Bear, Volley Veteran, Dramatic Reversal, Goblin War Strike** (5).
+- Excluded: **Brightstone Ritual, Friendly Teddy, Aetherize** (3), all retained in the missing manifest via recomputation.
+
+## Verification
+- Focused: slice8 8/8 (including target/refusal, source-left runtime count, two-blocker Razorclaw, reversal controls), printings, catalog, commander all pass.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Updated package journey (`decks/package-slice8.txt` now uses Counterspell instead of Aetherize): terminal, P0 wins, 2377 steps, digest `ffbeaee0db38…`; replay/save match 6087 events; all five supported cards appear.
+- Corpus: catalog **111**, union 459, supported **99**, missing **360**, manifest matches. Per-list: Isamaru 55, Jasmine 0, Talrand 51, Krenko 49, Ayula 46, Elas 55, Tatyova 54, Zada 55.
+- Desired lists unchanged; historical slice3 audit untouched; new audit only under `slice8/`.
+
+Commit `818afdb`. Handoff updated: `evidence/issue17/SLICE8-IMPLEMENT-HANDOFF.md`. Full #17 unfinished; zero certified lists.

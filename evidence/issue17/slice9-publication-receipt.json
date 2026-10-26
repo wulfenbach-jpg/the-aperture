@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-26T13:53:48.631687+00:00",
+  "head": "ab9d4f50c1cd8b77ad8b358976fcf89a9a000864",
+  "remote_head": "ab9d4f50c1cd8b77ad8b358976fcf89a9a000864",
+  "pr": {
+    "headRefOid": "ab9d4f50c1cd8b77ad8b358976fcf89a9a000864",
+    "isDraft": true,
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "state": "OPEN"
+  },
+  "review_outcome": "APPROVED_INCREMENT",
+  "ci_success": 10,
+  "ci_failed": 0,
+  "required_checks_pass": true,
+  "catalog": 114,
+  "union": 459,
+  "supported": 102,
+  "missing": 357,
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "full_issue17_accepted": false,
+  "no_merge_or_closure": true
+}

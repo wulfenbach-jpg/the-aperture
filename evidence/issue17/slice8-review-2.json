@@ -1,0 +1,52 @@
+{
+  "review_outcome": "APPROVED_INCREMENT",
+  "reviewed_head": "c22b240be304802ed31a7f7f9acb8d656d6218bf",
+  "base": "818afdb8afbb5977b6e08b085654304e4b5754bf",
+  "full_issue17_accepted": false,
+  "findings": [],
+  "prior_findings": [
+    {
+      "id": "stale-corpus-counts",
+      "disposition": "fixed",
+      "evidence": "docs/issue17-starter-corpus.md now says Isamaru 55, 99 supported / 360 missing, Krenko 49 / Talrand 51; manifest interaction strings now say Talrand 51, Krenko 49, Elas 55. Verified catalog 111, union 459, supported 99, missing 360, manifest arrays matching; per-list 55/0/51/49/46/55/54/55."
+    },
+    {
+      "id": "unblocked-razorclaw-control",
+      "disposition": "fixed",
+      "evidence": "New razorclaw_unblocked_does_not_trigger_or_pump attacks unblocked and asserts power stays 3 through combat damage/end combat. It would fail if the BecomesBlocked trigger fired (power 5). Slice8 focus now 9/9."
+    }
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice8 --locked",
+      "result": "exit 0; 9/9, including razorclaw_unblocked_does_not_trigger_or_pump (evidence/issue17/slice8-review-2-focused.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    },
+    {
+      "command": "git diff --name-status 818afdb..HEAD",
+      "result": "only issue17_slice8.rs, manifest free-text, docs and the handoff; no production source, catalog, fixture or package behavior changed."
+    },
+    {
+      "command": "python read-only corpus audit",
+      "result": "catalog 111; union 459 = 99 supported + 360 missing; manifest 360 and matches; per-list 55/0/51/49/46/55/54/55; desired contents unchanged."
+    },
+    {
+      "command": "read retained RED evidence and corrected handoff",
+      "result": "evidence/issue17/slice8/retained-red-results.json contains actual pre-scaffold catalog-lookup failures; the handoff now says mechanics were implemented and later harness corrections were found, with no retrospective strict-TDD claim."
+    }
+  ],
+  "reused_evidence": [
+    "Review-1 focused 101 tests (slice8 8, tokens 10, slice6 13, counters/tokens/library 16, catalog 5, printings 6, issue13 43).",
+    "Review-1 real four-seat package journey seed 801: terminal P0, 2377 actions/68 turns, digest ffbeaee0db38…, 6087 events, four exact 40-card package snapshots, separate replay matched.",
+    "Review-1 live source check for all eight records and explicit exclusion/absence checks for Brightstone Ritual, Friendly Teddy and Aetherize; no source or package content changed in this repair."
+  ],
+  "limitations": [
+    "Bounded slice-8 increment only; full issue-17 remains unfinished at 111 catalog, 99/459 supported, 360 missing, 1 implemented / 0 certified of eight desired lists.",
+    "The three excluded cards remain unsupported: Brightstone Ritual needs bounded mana widening, Friendly Teddy needs serialized multi-player draw continuation/APNAP, Aetherize needs attacker-list commander replacement continuation.",
+    "Goblin War Strike implements the player target only; no planeswalker permanents exist in the predictable pool, so the printed planeswalker half is not currently targetable.",
+    "No #16 integration approval, release/merge, GUI/import/search audit, full workspace/historical matrix or playing-strength claim. An increment pass is continuation only and does not unlock certified/#26/#32 lanes."
+  ]
+}
