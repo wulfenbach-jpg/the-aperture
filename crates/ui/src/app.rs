@@ -49,7 +49,9 @@ pub struct Startup {
     pub branch_at: usize,
     /// Opt-in native frame instrumentation report path.
     pub performance_report: Option<PathBuf>,
-    /// Conditions to disclose in that report (e.g. a synthetic worker delay).
+    /// Conditions to disclose in that report (`--performance-note`): they are
+    /// reported as declared conditions. This binary injects no synthetic
+    /// delay, so the report's `synthetic_delays` list stays empty.
     pub performance_conditions: Vec<String>,
     /// Initial accessibility settings for a capture/launch (`--a11y
     /// high-contrast,reduced-motion`). Only seeds the two settings the
@@ -310,6 +312,24 @@ impl SeatPanelData {
     }
 }
 
+/// Conditions disclosed in the opt-in performance report.
+///
+/// `--performance-note` describes what was running while the samples were
+/// collected, so it is reported as a declared condition. Nothing in this
+/// binary injects a synthetic delay, so the report never claims one; a future
+/// harness that does inject one must add its own explicit source here.
+fn performance_conditions(startup: &Startup) -> Conditions {
+    Conditions {
+        synthetic_delays: Vec::new(),
+        notes: startup
+            .performance_conditions
+            .iter()
+            .map(|note| note.trim().to_string())
+            .filter(|note| !note.is_empty())
+            .collect(),
+    }
+}
+
 impl ApertureApp {
     pub fn new(cc: &eframe::CreationContext<'_>, startup: Startup) -> Self {
         theme::apply(&cc.egui_ctx);
@@ -373,23 +393,9 @@ impl ApertureApp {
                 session.step_ai();
             }
         }
-        let perf = startup
-            .performance_report
-            .clone()
-            .map(|path| {
-                let note = startup.performance_conditions.clone();
-                PerformanceProbe::new(path).with_conditions(Conditions {
-                    synthetic_delays: note.clone(),
-                    notes: if note.is_empty() {
-                        Vec::new()
-                    } else {
-                        vec![
-                            "the declared synthetic delay was a controlled test condition, not real model or network latency"
-                                .to_string(),
-                        ]
-                    },
-                })
-            });
+        let perf = startup.performance_report.clone().map(|path| {
+            PerformanceProbe::new(path).with_conditions(performance_conditions(&startup))
+        });
         let initial_high_contrast = startup.initial_high_contrast;
         let initial_reduced_motion = startup.initial_reduced_motion;
         ApertureApp {
@@ -4249,6 +4255,57 @@ Deck
         assert!(
             !app.session.ai_busy,
             "polling did not apply the worker result"
+        );
+    }
+
+    #[test]
+    fn a_performance_note_is_a_declared_condition_never_a_synthetic_delay() {
+        let mut startup = startup();
+        startup.performance_conditions = vec!["shared-desktop".to_string(), "   ".to_string()];
+        let conditions = performance_conditions(&startup);
+        assert!(
+            conditions.synthetic_delays.is_empty(),
+            "an ordinary collection note must never be reported as a synthetic delay"
+        );
+        assert_eq!(conditions.notes, vec!["shared-desktop".to_string()]);
+    }
+
+    #[test]
+    fn the_written_report_keeps_a_note_out_of_synthetic_delays() {
+        let path = std::env::temp_dir().join(format!(
+            "aperture-issue22-perf-note-{}.json",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_file(&path);
+        let mut startup = startup();
+        startup.performance_conditions = vec!["shared-desktop".to_string()];
+        let mut probe = PerformanceProbe::with_window(path.clone(), Duration::from_millis(120))
+            .with_conditions(performance_conditions(&startup));
+        for _ in 0..200 {
+            let started = Instant::now();
+            let done =
+                probe.callback_finished(started, started + Duration::from_micros(400), false);
+            if done {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        assert!(probe.finished(), "the bounded window never finished");
+        probe.finish_and_write();
+        for _ in 0..400 {
+            if probe.write_done() {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        assert!(probe.write_done(), "the report writer never finished");
+        let report = std::fs::read_to_string(&path).expect("report exists");
+        let _ = std::fs::remove_file(&path);
+        let json: serde_json::Value = serde_json::from_str(&report).expect("report is json");
+        assert_eq!(json["synthetic_delays"], serde_json::json!([]));
+        assert_eq!(
+            json["declared_conditions"],
+            serde_json::json!(["shared-desktop"])
         );
     }
 

@@ -114,6 +114,11 @@ cargo test -p aperture-ui --lib reduced_motion_uses_static_working_text_without_
   forced ~60 Hz repaint is requested.
 * `input_frame_render_us`: callback duration on frames with input events,
   explicitly `limited: true`; not OS/GPU input-to-photon latency.
+* `synthetic_delays` lists only delays the run actually injected. This binary
+  injects none, so the list is always empty; `--performance-note TEXT` is
+  recorded under `declared_conditions` and never under `synthetic_delays`
+  (`a_performance_note_is_a_declared_condition_never_a_synthetic_delay` and
+  `the_written_report_keeps_a_note_out_of_synthetic_delays`).
 * No GPU present/frame-present timing is measured or claimed.
 * The report is capped at 900 in-memory samples (15 s at 60 Hz); the default
   window is 10 s and starts at the first callback.
