@@ -21,32 +21,32 @@
   ],
   "counts": {
     "abilities_declined": 0,
-    "abilities_resolved": 71,
+    "abilities_resolved": 86,
     "ability_activations": 0,
-    "attacks": 31,
-    "blocks": 6,
-    "casts": 36,
+    "attacks": 36,
+    "blocks": 7,
+    "casts": 38,
     "commander_damage_events": 0,
     "commander_damage_losses": 0,
     "counterspells": 0,
-    "damage_events": 65,
-    "events": 5790,
-    "triggered_abilities": 71
+    "damage_events": 69,
+    "events": 7452,
+    "triggered_abilities": 86
   },
   "decider": null,
   "decision_sources": {
-    "heuristic": 2239
+    "heuristic": 3002
   },
-  "final_digest": "5302f3eda677367cbe6f0d52f51205ba28e608d7ad9e8434d931c52ceb90f085",
-  "first_player": 2,
+  "final_digest": "7864e4e956ebfefaaa91a93fb142a0c9aa9e84e2c52ef220c9416b4ed2e26fb4",
+  "first_player": 3,
   "policies": "heuristic vs heuristic vs heuristic vs heuristic",
   "policy_notes": [],
   "pool_size": 106,
   "profile": "commander-combat-practice-40",
-  "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
   "replay_digest_matches": true,
   "replay_error": null,
-  "replay_steps": 2239,
+  "replay_steps": 3002,
   "rules_revision": "2026-09-25",
   "schema": "aperture-selfplay/2",
   "seat_count": 4,
@@ -54,7 +54,7 @@
     {
       "cards": 40,
       "library": 0,
-      "life": 39,
+      "life": 0,
       "name": "package-slice6-dies",
       "seat": 0,
       "source": "decks/package-slice6-dies.txt"
@@ -62,7 +62,7 @@
     {
       "cards": 40,
       "library": 0,
-      "life": 15,
+      "life": 19,
       "name": "package-slice6-dies",
       "seat": 1,
       "source": "decks/package-slice6-dies.txt"
@@ -70,26 +70,26 @@
     {
       "cards": 40,
       "library": 0,
-      "life": 15,
+      "life": -2,
       "name": "package-slice6-dies",
       "seat": 2,
       "source": "decks/package-slice6-dies.txt"
     },
     {
       "cards": 40,
-      "library": 14,
-      "life": 7,
+      "library": 13,
+      "life": 41,
       "name": "package-slice6-dies",
       "seat": 3,
       "source": "decks/package-slice6-dies.txt"
     }
   ],
-  "seed": 601,
+  "seed": 610,
   "starting_life": 40,
   "status": "terminal",
-  "steps": 2239,
+  "steps": 3002,
   "truncated": null,
-  "turns": 57,
+  "turns": 67,
   "winner": 3,
   "winner_label": "P3"
 }

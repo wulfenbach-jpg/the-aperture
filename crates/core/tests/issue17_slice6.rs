@@ -510,3 +510,45 @@ fn target_player_spec_offers_every_live_seat_and_refuses_a_creature() {
     // The pending choice is unchanged, so the legal target still resolves.
     choose_trigger_target(&mut game, P0, Target::Player(P2));
 }
+
+/// CR 704.3 + 603.6c: creatures that die at the same time are one event, and a
+/// watcher that dies in that batch still sees its fellow dying creatures. This
+/// used to depend on object-id order: the watcher was moved to the graveyard
+/// first and then missed the other death (review finding S6-R1-F1).
+#[test]
+fn simultaneous_deaths_each_trigger_the_watchers_regardless_of_id_order() {
+    let zulaport = card("Zulaport Cutthroat");
+    for (seed, artist_first) in [(610u64, true), (611, false)] {
+        let mut cards = if artist_first {
+            vec![zulaport, CardId::TrainedJackal]
+        } else {
+            vec![CardId::TrainedJackal, zulaport]
+        };
+        let mut game = fixture_n(seed, 4)
+            .battlefield(P0, &cards)
+            .main(P0, Step::PrecombatMain)
+            .build();
+        // Both creatures are lethally damaged before the same SBA check, so they
+        // die in one batch.
+        let ids: Vec<ObjectId> = game
+            .state
+            .battlefield(P0)
+            .iter()
+            .map(|object| object.id)
+            .collect();
+        assert_eq!(ids.len(), 2);
+        for id in &ids {
+            object_mut(&mut game.state, *id).damage = 5;
+        }
+        advance_until(&mut game, |g| {
+            g.state.player(P1).life == 18 && g.state.player(P2).life == 18
+        });
+        assert_eq!(
+            game.state.player(P0).life,
+            22,
+            "two deaths are two triggers: {artist_first}"
+        );
+        assert_eq!(game.state.player(P3).life, 18);
+        cards.clear();
+    }
+}

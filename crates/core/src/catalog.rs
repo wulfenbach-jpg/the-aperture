@@ -1,4 +1,4 @@
-//! The supported card pool. One hundred and three real cards; every printed ability is
+//! The supported card pool. One hundred and six real cards; every printed ability is
 //! implemented. Card text is the short functional Oracle wording (vanilla
 //! creatures print no text at all).
 //!

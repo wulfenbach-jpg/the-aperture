@@ -1,2 +1,2 @@
-replay seed 601 — 4 seat(s), 2239 action(s), recorded outcome Some(Win { winner: 3, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
-  replayed digest 5302f3eda677 | matches recorded | events 5790
+replay seed 610 — 4 seat(s), 3002 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 7864e4e956eb | matches recorded | events 7452

@@ -1139,12 +1139,25 @@ impl Game {
     }
 
     fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+        if let Some(death) = self.move_to_graveyard_inner(id, events) {
+            self.queue_watchers_for_deaths(&death_watchers(self), &[death]);
+        }
+    }
+
+    /// Move one permanent to its owner's graveyard and return the death record
+    /// for the "creature dies" watcher dispatch. When `dispatch == false` the
+    /// caller batches several simultaneous deaths and dispatches the watchers
+    /// once for the whole batch (CR 704.3, 603.6c): a watcher that dies in the
+    /// same batch must still see its fellow dying creatures.
+    fn move_to_graveyard_inner(
+        &mut self,
+        id: ObjectId,
+        events: &mut Vec<Event>,
+    ) -> Option<(ObjectId, CardId, PlayerId)> {
         let dying = self.state.try_object(id).and_then(|object| {
             (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
         });
-        let Some(mut object) = self.detach_object(id) else {
-            return;
-        };
+        let mut object = self.detach_object(id)?;
         let card = object.card;
         object.tapped = false;
         object.damage = 0;
@@ -1161,10 +1174,12 @@ impl Game {
         // last known information; `source` is the graveyard object.
         if let Some((card, controller)) = dying {
             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
-            // CR 603.6c: the same event is a "creature dies" trigger for every
-            // watcher, so death payoffs see card deaths and token deaths alike.
-            self.queue_creature_dies(new_id, card, controller);
+            // The dying permanent's own "this creature ... dies" trigger is
+            // order-independent, so it is queued here rather than in the batch.
+            self.queue_self_death(new_id, card, controller);
+            return Some((new_id, card, controller));
         }
+        None
     }
 
     fn enter_battlefield(&mut self, id: ObjectId, controller: PlayerId, events: &mut Vec<Event>) {
@@ -1305,23 +1320,16 @@ impl Game {
         });
     }
 
-    /// CR 603.6c + 700.4: a creature that was on the battlefield is put into a
-    /// graveyard, so it "dies". Every matching watcher on the battlefield
-    /// triggers, and the dying creature itself can watch its own death when its
-    /// printed wording includes itself ("this creature or another creature you
-    /// control dies"). Shared by the card path and the token path through
-    /// `move_to_graveyard`, so creature tokens are not invisible to these
-    /// triggers.
-    fn queue_creature_dies(&mut self, dying: ObjectId, card: CardId, controller: PlayerId) {
+    /// The dying creature's own "this creature ... dies" trigger. Blood Artist
+    /// prints "this creature or another creature dies"; Zulaport Cutthroat
+    /// restricts that to creatures its controller controls, which includes
+    /// itself. Independent of batch order, so it is queued at the move.
+    fn queue_self_death(&mut self, dying: ObjectId, card: CardId, controller: PlayerId) {
         // CR 700.4: only a creature dying is a "creature dies" event; a milled
         // creature card or a sacrificed artifact never triggers these.
         if !card.def().is_creature() {
             return;
         }
-        // The dying permanent's own ability still triggers if it prints
-        // "this creature ... dies" (Blood Artist prints "this creature or
-        // another creature dies", Zulaport Cutthroat restricts that to
-        // creatures its controller controls, which includes itself).
         self.queue_triggers(dying, card, controller, TriggerEvent::CreatureDies);
         self.queue_triggers(
             dying,
@@ -1329,47 +1337,51 @@ impl Game {
             controller,
             TriggerEvent::CreatureYouControlDies,
         );
-        let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
-            .state
-            .objects
-            .values()
-            .filter(|object| object.zone == Zone::Battlefield)
-            .filter(|object| {
-                ability::triggers_on(object.card, TriggerEvent::CreatureDies)
-                    .next()
-                    .is_some()
-                    || ability::triggers_on(object.card, TriggerEvent::CreatureYouControlDies)
-                        .next()
-                        .is_some()
-                    || ability::triggers_on(
-                        object.card,
-                        TriggerEvent::AnotherCreatureYouControlDies,
-                    )
-                    .next()
-                    .is_some()
-            })
-            .map(|object| (object.id, object.card, object.controller))
+    }
+
+    /// Queue the "creature dies" watchers once for a whole batch of deaths.
+    ///
+    /// CR 704.3 + 603.6c: simultaneously dying creatures are one event, so every
+    /// watcher that was on the battlefield when the batch happened looks at
+    /// every death in it — including a watcher that died in the same batch. The
+    /// caller snapshots the watchers *before* moving anything (see
+    /// `death_watchers`) and passes every death record from the batch, which is
+    /// what makes the result independent of object-id order.
+    fn queue_watchers_for_deaths(
+        &mut self,
+        watchers: &[(ObjectId, CardId, PlayerId)],
+        deaths: &[(ObjectId, CardId, PlayerId)],
+    ) {
+        let deaths: Vec<(CardId, PlayerId)> = deaths
+            .iter()
+            .filter(|(_, card, _)| card.def().is_creature())
+            .map(|(_, card, controller)| (*card, *controller))
             .collect();
-        for (source, source_card, source_controller) in watchers {
-            self.queue_triggers(
-                source,
-                source_card,
-                source_controller,
-                TriggerEvent::CreatureDies,
-            );
-            if source_controller == controller {
+        if deaths.is_empty() {
+            return;
+        }
+        for (source, source_card, source_controller) in watchers.iter().copied() {
+            for (_, death_controller) in deaths.iter().copied() {
                 self.queue_triggers(
                     source,
                     source_card,
                     source_controller,
-                    TriggerEvent::CreatureYouControlDies,
+                    TriggerEvent::CreatureDies,
                 );
-                self.queue_triggers(
-                    source,
-                    source_card,
-                    source_controller,
-                    TriggerEvent::AnotherCreatureYouControlDies,
-                );
+                if source_controller == death_controller {
+                    self.queue_triggers(
+                        source,
+                        source_card,
+                        source_controller,
+                        TriggerEvent::CreatureYouControlDies,
+                    );
+                    self.queue_triggers(
+                        source,
+                        source_card,
+                        source_controller,
+                        TriggerEvent::AnotherCreatureYouControlDies,
+                    );
+                }
             }
         }
     }
@@ -3725,9 +3737,18 @@ impl Game {
                 .map(|o| o.id)
                 .collect();
             if !dying.is_empty() {
+                // CR 704.3 + 603.6c: the whole batch is one event. Snapshot the
+                // watchers before anything leaves the battlefield and dispatch
+                // once for every death, so the result does not depend on which
+                // dying creature happens to be moved first.
+                let watchers = death_watchers(self);
+                let mut deaths: Vec<(ObjectId, CardId, PlayerId)> = Vec::new();
                 for id in &dying {
-                    self.move_to_graveyard(*id, events);
+                    if let Some(death) = self.move_to_graveyard_inner(*id, events) {
+                        deaths.push(death);
+                    }
                 }
+                self.queue_watchers_for_deaths(&watchers, &deaths);
                 events.push(Event::StateBasedAction {
                     description: format!(
                         "{} creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)",
@@ -5462,6 +5483,29 @@ fn check_selection(
         seen.push(*card);
     }
     Ok(())
+}
+
+/// Every permanent on the battlefield with a "creature dies" watcher ability,
+/// snapshotted before a batch of deaths moves anything. A watcher that dies in
+/// the same batch still sees the batch (CR 704.3, 603.6c).
+fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
+    game.state
+        .objects
+        .values()
+        .filter(|object| object.zone == Zone::Battlefield)
+        .filter(|object| {
+            ability::triggers_on(object.card, TriggerEvent::CreatureDies)
+                .next()
+                .is_some()
+                || ability::triggers_on(object.card, TriggerEvent::CreatureYouControlDies)
+                    .next()
+                    .is_some()
+                || ability::triggers_on(object.card, TriggerEvent::AnotherCreatureYouControlDies)
+                    .next()
+                    .is_some()
+        })
+        .map(|object| (object.id, object.card, object.controller))
+        .collect()
 }
 
 fn target_spec_rule(spec: TargetSpec) -> &'static str {
