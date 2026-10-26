@@ -1,0 +1,92 @@
+﻿{
+    "mode":  "viewport",
+    "exe":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a\\aperture.exe",
+    "exe_sha256":  "104a79e2f06846caee69ef9ab1830b609c97d15a043761a6c18609dac5d3afad",
+    "journey":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a",
+    "seed":  4242,
+    "window":  "1024x640",
+    "started":  "2026-10-26T04:12:54.1580140-07:00",
+    "results":  [
+                    {
+                        "step":  "viewport-minimum",
+                        "status":  "passed",
+                        "detail":  "requested 1024x640; the window manager made it 1298x847",
+                        "data":  {
+                                     "actual":  "1298x847",
+                                     "requested":  "1024x640"
+                                 },
+                        "at":  "2026-10-26T04:12:44.1288434-07:00"
+                    },
+                    {
+                        "step":  "zoom-200",
+                        "status":  "passed",
+                        "detail":  "zoom control reads \u0027text 200%\u0027 at 1024x640; fixed rows reachable: Pass \\(P\\)=True, Accessibility \\(A\\)=True, Load \\(L\\)=True, Save \\(S\\)=True, Zones \\(Z\\)=True, Help \\(H\\)=True",
+                        "data":  {
+                                     "zoom":  "text 200%",
+                                     "fixed":  {
+                                                   "Pass \\(P\\)":  true,
+                                                   "Accessibility \\(A\\)":  true,
+                                                   "Load \\(L\\)":  true,
+                                                   "Save \\(S\\)":  true,
+                                                   "Zones \\(Z\\)":  true,
+                                                   "Help \\(H\\)":  true
+                                               },
+                                     "window":  "1298x847"
+                                 },
+                        "at":  "2026-10-26T04:12:53.2963058-07:00"
+                    },
+                    {
+                        "step":  "frame-probe",
+                        "status":  "passed",
+                        "detail":  "frame callback p50 589 us / p95 852 us / max 14496 us over 681 samples; inter-callback interval p50 17012 us / p95 17779 us; forced repaint 60 Hz",
+                        "data":  {
+                                     "interval_us":  {
+                                                         "max":  98312,
+                                                         "method":  "nearest-rank over bounded in-memory samples",
+                                                         "p50":  17012,
+                                                         "p95":  17779,
+                                                         "samples":  680
+                                                     },
+                                     "callback_us":  {
+                                                         "max":  14496,
+                                                         "method":  "nearest-rank over bounded in-memory samples",
+                                                         "p50":  589,
+                                                         "p95":  852,
+                                                         "samples":  681
+                                                     },
+                                     "conditions":  [
+                                                        "platform-qa: minimum-size window, idle heuristic worker"
+                                                    ],
+                                     "forced_repaint_hz":  60
+                                 },
+                        "at":  "2026-10-26T04:12:53.4831532-07:00"
+                    }
+                ],
+    "transcript":  [
+                       "[04:12:41.455] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a\\aperture.exe --seed 4242 --seats 2 --size 1024x640 --performance-report C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\evidence-viewport4\\frame-report.json --performance-note \"platform-qa: minimum-size window, idle heuristic worker\"",
+                       "[04:12:44.102] window hwnd=269140 pid=29632 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[04:12:44.134] STEP viewport-minimum: PASSED - requested 1024x640; the window manager made it 1298x847",
+                       "[04:12:44.879] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:44.880] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:45.584] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:45.585] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:46.328] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:46.329] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:47.054] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:47.055] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:47.755] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:47.756] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:48.576] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:48.577] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:49.333] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:49.334] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:50.157] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:50.158] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:50.867] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:50.868] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:51.570] invoke \u0027A+\u0027 via uia-invoke",
+                       "[04:12:51.571] invoked \u0027A+\u0027 via uia-invoke",
+                       "[04:12:53.296] STEP zoom-200: PASSED - zoom control reads \u0027text 200%\u0027 at 1024x640; fixed rows reachable: Pass \\(P\\)=True, Accessibility \\(A\\)=True, Load \\(L\\)=True, Save \\(S\\)=True, Zones \\(Z\\)=True, Help \\(H\\)=True",
+                       "[04:12:53.484] STEP frame-probe: PASSED - frame callback p50 589 us / p95 852 us / max 14496 us over 681 samples; inter-callback interval p50 17012 us / p95 17779 us; forced repaint 60 Hz"
+                   ]
+}

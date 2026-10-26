@@ -1,0 +1,120 @@
+=== pid 25360 'THE APERTURE - practice slice'
+  [ControlType.CheckBox] Use local Decider-2B
+  [ControlType.Button] Return to branch
+  [ControlType.Text] WAITING: P1: discard 1 card(s) down to maximum hand size (CR 514.1)
+  [ControlType.Text] ú 2 seats ú profile practice-20 (20 life) ú turn 13 ú cleanup step ú active P1 ú stack 0 ú digest 91a2c0d52cff
+  [ControlType.Text] pending owner P1
+  [ControlType.Text] discarded an AI decision [illegal_choice] (not in the live legal offer)
+  [ControlType.Text] WAITING ON P1
+  [ControlType.Text] P1 has a pending decision; details are private to that seat. No player has priority.
+  [ControlType.Text] PENDING
+  [ControlType.Text] (stack empty)
+  [ControlType.Text] [RULE] [priority] Turn 13 - P1 is the active player. P1 must answer a pending choice in the cleanup step.
+  [ControlType.Text] [RULE] [pending choice] P1: discard 1 card(s) down to maximum hand size (CR 514.1)
+  [ControlType.Text]     CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller's main phase with an empty stack.
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+=== pid 25360 'C:\Users\alex3\AppData\Local\hermes\cache\scratch\issue30\journey-a\aperture.exe'
+=== pid 26880 'THE APERTURE - practice slice'
+  [ControlType.CheckBox] Use local Decider-2B
+  [ControlType.Button] Return to branch
+  [ControlType.Text] P1 holds priority
+  [ControlType.Text] ú 2 seats ú profile practice-20 (20 life) ú turn 8 ú declare attackers step ú active P0 ú stack 0 ú digest 0d0dd66a56bb
+  [ControlType.Text] WAITING ON P1
+  [ControlType.Text] P1 holds priority.
+  [ControlType.Text] PRIORITY
+  [ControlType.Text] (stack empty)
+  [ControlType.Text] [RULE] [priority] Turn 8 - P0 is the active player. P1 holds priority in the declare attackers step.
+  [ControlType.Text]     CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller's main phase with an empty stack.
+  [ControlType.Text]     CR 117.3d: A player who chooses not to act passes; then the next player in turn order receives priority.
+  [ControlType.Text]     CR 117.3d: A player who chooses not to act passes; then the next player in turn order receives priority.
+  [ControlType.Text]     CR 117.4: If all players pass in succession, the topmost spell or ability resolves, or the step/phase ends if the stack is empty.
+  [ControlType.Text]     CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller's main phase with an empty stack.
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P0 draws Hill Giant
+  [ControlType.Text] [draw step]
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+=== pid 26880 'C:\Users\alex3\AppData\Local\hermes\cache\scratch\issue30\journey-a\aperture.exe'
+=== pid 34204 'THE APERTURE - practice slice'
+  [ControlType.CheckBox] Use local Decider-2B
+  [ControlType.Button] Return to branch
+  [ControlType.Text] WAITING: P0: keep or mulligan the opening hand (CR 103.5)
+  [ControlType.Text] ú 2 seats ú profile commander-combat-practice-40 (40 life) ú turn 1 ú untap step ú active P0 ú stack 0 ú digest a7fc60c72b66
+  [ControlType.Text] pending owner P0
+  [ControlType.Text] Pending choice
+  [ControlType.Text] PENDING
+  [ControlType.Text] (stack empty)
+  [ControlType.Text] - Turn 1: P0 -
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P1 draws a card
+  [ControlType.Text] P0 draws Forest
+  [ControlType.Text] P0 draws Swords to Plowshares
+  [ControlType.Text] P0 draws Island
+  [ControlType.Text] P0 draws Plains
+  [ControlType.Text] P0 draws Island
+  [ControlType.Text] P0 draws Centaur Courser
+  [ControlType.Text] P0 draws Grizzly Bears
+  [ControlType.Button] Draw 1 ú sandbox
+  [ControlType.Text] A scry or surveil look is shown to your seat only; a reveal is public by construction. A control is refused while a rules choice is pending.
+=== pid 45060 'THE APERTURE - practice slice'
+  [ControlType.CheckBox] Use local Decider-2B
+  [ControlType.Button] Return to branch
+  [ControlType.Text] WAITING: P1: discard 1 card(s) down to maximum hand size (CR 514.1)
+  [ControlType.Text] ú 2 seats ú profile practice-20 (20 life) ú turn 13 ú cleanup step ú active P1 ú stack 0 ú digest 91a2c0d52cff
+  [ControlType.Text] pending owner P1
+  [ControlType.Text] discarded an AI decision [illegal_choice] (not in the live legal offer)
+  [ControlType.Text] WAITING ON P1
+  [ControlType.Text] P1 has a pending decision; details are private to that seat. No player has priority.
+  [ControlType.Text] PENDING
+  [ControlType.Text] (stack empty)
+  [ControlType.Text] [RULE] [priority] Turn 13 - P1 is the active player. P1 must answer a pending choice in the cleanup step.
+  [ControlType.Text] [RULE] [pending choice] P1: discard 1 card(s) down to maximum hand size (CR 514.1)
+  [ControlType.Text]     CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller's main phase with an empty stack.
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+  [ControlType.Text] P0 receives priority
+  [ControlType.Text] P1 receives priority
+=== pid 45060 'C:\Users\alex3\AppData\Local\hermes\cache\scratch\issue30\journey-a\aperture.exe'

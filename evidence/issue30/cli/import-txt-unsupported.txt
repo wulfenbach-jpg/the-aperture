@@ -1,0 +1,8 @@
+text 'unsupported-practice-list' — 3 card(s): 1 supported, 2 unsupported
+  source: text list 'unsupported-practice-list'
+  unsupported:
+    Black Lotus x1 — 'Black Lotus' is not in the supported pool (31 cards)
+    Sol Ring x1 — 'Sol Ring' is not in the supported pool (31 cards)
+  note: excluded categories honored: Maybeboard
+  LAUNCH REFUSED: unsupported card(s) in the main deck: Black Lotus x1 ('Black Lotus' is not in the supported pool (31 cards)); Sol Ring x1 ('Sol Ring' is not in the supported pool (31 cards)) — the supported pool has 31 cards; unsupported cards are refused, never substituted
+  text list refused for play: the deck cannot be launched: unsupported card(s) in the main deck: Black Lotus x1 ('Black Lotus' is not in the supported pool (31 cards)); Sol Ring x1 ('Sol Ring' is not in the supported pool (31 cards)) — the supported pool has 31 cards; unsupported cards are refused, never substituted

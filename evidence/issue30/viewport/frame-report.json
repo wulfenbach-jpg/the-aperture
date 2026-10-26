@@ -1,0 +1,45 @@
+{
+  "callback_duration_us": {
+    "max": 14496,
+    "method": "nearest-rank over bounded in-memory samples",
+    "p50": 589,
+    "p95": 852,
+    "samples": 681
+  },
+  "declared_conditions": [
+    "platform-qa: minimum-size window, idle heuristic worker"
+  ],
+  "forced_repaint_hz": 60,
+  "generated_at_unix": 1793013172,
+  "input_frame_render_us": {
+    "limited": true,
+    "max": 791,
+    "meaning": "callback duration on frames that had at least one input event; NOT OS/GPU input-to-photon latency",
+    "p95": 791,
+    "samples": 18
+  },
+  "inter_callback_interval_us": {
+    "max": 98312,
+    "method": "nearest-rank over bounded in-memory samples",
+    "p50": 17012,
+    "p95": 17779,
+    "samples": 680
+  },
+  "limitations": [
+    "callback_duration is main-thread wall time, not thread CPU accounting",
+    "inter_callback_interval depends on the platform event loop and forced repaint",
+    "input_frame_render is not an end-to-end input latency measurement",
+    "no synthetic worker delay is injected by this native probe; worker tests use injectable hooks"
+  ],
+  "method": [
+    "samples are collected in memory only inside the eframe update callback",
+    "the report is serialized and written by a background thread after collection",
+    "no disk or network access happens in a frame callback",
+    "no GPU present or frame-present timing is measured or implied"
+  ],
+  "opt_in": "--performance-report",
+  "samples": 681,
+  "schema": "aperture-ui-performance/1",
+  "synthetic_delays": [],
+  "window_seconds": 10.0
+}
