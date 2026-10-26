@@ -214,7 +214,14 @@ pub fn run(args: Args) -> anyhow::Result<i32> {
     }
 
     let (deck, bytes) = load_exact_snapshot(id, deck_path)?;
-    let snapshot_sha256 = aperture_core::digest::digest_bytes(&bytes);
+    // Hash the snapshot's text with line endings normalized to LF. Raw-byte
+    // hashing is not portable: the same tracked file is checked out CRLF on
+    // Windows and LF elsewhere, and a certificate must identify the list, not
+    // the checkout.
+    let normalized = std::str::from_utf8(&bytes)
+        .map_err(|err| anyhow::anyhow!("'{deck_path}' is not valid UTF-8: {err}"))?
+        .replace("\r\n", "\n");
+    let snapshot_sha256 = aperture_core::digest::digest_bytes(normalized.as_bytes());
     let commander = catalog::by_name(commander_name).ok_or_else(|| {
         anyhow::anyhow!(
             "commander '{commander_name}' is not in the supported pool; this starter cannot be certified"

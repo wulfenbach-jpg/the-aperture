@@ -181,7 +181,8 @@ cargo run --release -p aperture-cli -- certify \
 Recorded certificate (`evidence/issue17/slice10/certification.json`, schema
 `aperture.corpus-certificate/1`):
 
-* verdict `certified`; snapshot SHA-256
+* verdict `certified`; snapshot SHA-256 (over the deck file text with CRLF
+  normalized to LF, so the digest is the same on an LF or CRLF checkout)
   `4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491` over the
   deck file bytes actually parsed; 99 library cards + 1 separately supplied
   commander = 100 cards; 58 unique nonland names + 41 basic lands.

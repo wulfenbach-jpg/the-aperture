@@ -50,3 +50,26 @@ CI artifact — which is why the reproduction command is recorded in the manifes
 The full workspace run before the repair was 660 passed / 0 failed; the repair
 touched only `certify_cmd.rs`, its test, the manifest coverage count and prose,
 so the affected suites above are the delta.
+
+## S10-R1-F4 — found by exact-head CI, not by the reviewer
+
+`rust (windows-latest)` failed at `67eb5e7` on
+`the_manifest_certification_record_matches_the_real_snapshot`:
+
+```
+left:  "4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491"
+right: "1fbaf76e10320beeea6b69fb5b2cadcf4437040a63eb954f3b06dce52d53d25c"
+```
+
+The test and the command hashed **raw file bytes**, so a checkout that converts
+the tracked LF file to CRLF (the Windows runner) produced a different digest.
+That is a portability defect in the certificate rule, not in the accepted list:
+a certificate must identify the list's content, not the checkout's line endings.
+
+**Repaired.** Both the command and the conformance test now hash the snapshot's
+UTF-8 text with CRLF normalized to LF, and the digest basis is recorded in the
+manifest (`snapshot_hash_basis`) and the docs. Control:
+`evidence/issue17/slice10/crlf-normalization-control.log` certifies a CRLF copy
+of the same deck (built on purpose) at the identical hash `4312ab2a…`, and the
+LF working tree still certifies unchanged. Linux and macOS CI passed at the
+same head, which is consistent with this being a line-ending-only defect.
