@@ -31,6 +31,15 @@ merged base `51fbc6b2803ef134badd41d408047fc8b339ba72`:
 
 ## The packaged revision
 
+> **Evidence revision notice.** The recorded journey and defect evidence in this
+> document was produced from the packaged build of `51fbc6b`. Master has since
+> advanced to `8de0961` (#16 typed counters, creature tokens, keywords and library
+> operations), so per the integration owner's coordination note this evidence is
+> **not offered as acceptance evidence for current master**. The harness, this
+> document and the defect record carry over; the packaged journey must be
+> re-produced from a build of `8de0961` or later before the table below is treated
+> as the acceptance result. Nothing else in this document changes.
+
 ```
 scripts\package.cmd
 ```
