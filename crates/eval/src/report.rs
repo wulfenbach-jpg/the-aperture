@@ -31,21 +31,34 @@ pub struct GameRecord {
     pub seat1: Strategy,
     /// Always `Some` in this driver (which seat search occupied).
     pub search_seat: Option<u8>,
-    /// One of "terminal", "capped", "failed".
+    /// One of "terminal", "capped", "failed", "policy_rejected" (a rejected
+    /// policy action keeps its own literal status AND counts under `failed`
+    /// aggregates; it is never scored).
     pub status: String,
-    /// Terminal wins only; None for capped/failed and draws.
+    /// Terminal wins only; None for capped/failed/policy-rejected and draws.
     pub winner: Option<u8>,
     pub reason: String,
     pub steps: usize,
     /// Whole-game wall-clock milliseconds, measured up to (not including)
-    /// replay verification.
+    /// replay verification. EXCLUDED from the serialized report: wall-clock
+    /// timings are the only non-deterministic bytes a run produces, and the
+    /// scored report must stay byte-reproducible (repair 3). The measurement
+    /// is exported to the sibling `timings.json` sidecar instead
+    /// ([`latency_rows`]).
+    #[serde(skip)]
     pub wall_ms: u64,
-    /// Replay verification milliseconds, separate from `wall_ms`.
+    /// Replay verification milliseconds, separate from `wall_ms`. Excluded
+    /// from the serialized report for the same reproducibility reason (see
+    /// `wall_ms`).
+    #[serde(skip)]
     pub verify_ms: u64,
-    /// True when the engine rejected a policy action; such games are `failed`
-    /// and are never scored.
+    /// True when the engine rejected a policy action; such games carry the
+    /// literal `policy_rejected` status and are never scored.
     pub policy_rejected: bool,
     /// Cumulative milliseconds spent inside search decisions for this game.
+    /// Excluded from the serialized report for the same reproducibility reason
+    /// (see `wall_ms`).
+    #[serde(skip)]
     pub search_ms: u64,
     pub search_decisions: u64,
     /// Decision-source counts (search / heuristic fallbacks / forced), auditable.
@@ -113,7 +126,13 @@ fn outcome_for(
 pub struct EvalSummary {
     pub games_declared: usize,
     pub games_recorded: usize,
+    /// Terminal games whose replay VERIFIED. Terminal records whose replay
+    /// did not verify are counted separately in `terminal_unverified`, so a
+    /// bare `terminal` count can never be misread as all-scored (repair 3).
     pub terminal: usize,
+    /// Terminal games whose replay did NOT verify: never scored, never folded
+    /// into `terminal`.
+    pub terminal_unverified: usize,
     pub capped: usize,
     pub failed: usize,
     /// Recorded games whose replay did NOT verify against the engine digest.
@@ -157,6 +176,7 @@ pub struct EvalSummary {
 
 pub fn summarize(session: &crate::runner::SessionConfig, games: &[GameRecord]) -> EvalSummary {
     let mut terminal = 0usize;
+    let mut terminal_unverified = 0usize;
     let mut capped = 0usize;
     let mut failed = 0usize;
     let mut replay_mismatch = 0usize;
@@ -176,8 +196,13 @@ pub fn summarize(session: &crate::runner::SessionConfig, games: &[GameRecord]) -
             policy_rejected += 1;
         }
         match game.status.as_str() {
-            "terminal" => terminal += 1,
+            // `terminal` counts only replay-VERIFIED terminal games; terminal
+            // records whose replay did not verify carry their own label.
+            "terminal" if game.replay_verified => terminal += 1,
+            "terminal" => terminal_unverified += 1,
             "capped" => capped += 1,
+            // A literal policy-rejected status still aggregates under `failed`.
+            "policy_rejected" => failed += 1,
             _ => failed += 1,
         }
         if !game.replay_verified {
@@ -275,7 +300,10 @@ pub fn summarize(session: &crate::runner::SessionConfig, games: &[GameRecord]) -
     };
 
     let headline = if replay_mismatch > 0 {
-        "report invalid: at least one replay did not verify against the engine digest; every scored outcome and the confidence interval are WITHHELD".to_string()
+        // Wording repair (non-blocking review finding): only the interval and
+        // the above/below-parity verdict are withheld; verified-only
+        // aggregates stay populated for audit. Never overstate.
+        "report invalid: at least one replay did not verify against the engine digest; the paired CI and the above/below-parity verdict are WITHHELD, while verified-only aggregates (terminal wins/losses/draws, paired mean diff) remain populated for audit".to_string()
     } else if policy_rejected > 0 {
         format!(
             "no strength statement: {policy_rejected} game(s) failed on a rejected policy action and are excluded from all scores"
@@ -301,6 +329,7 @@ pub fn summarize(session: &crate::runner::SessionConfig, games: &[GameRecord]) -
         games_declared: session.eval.seeds.len() * session.eval.rotations as usize,
         games_recorded: games.len(),
         terminal,
+        terminal_unverified,
         capped,
         failed,
         replay_mismatch,
@@ -362,6 +391,11 @@ pub struct EvalReport {
     pub frozen_policy_note: String,
     /// Pinned hardware/software for this run (declared, not guessed).
     pub hardware: HardwarePin,
+    /// Name of the sibling sidecar file (`timings.json`) carrying the raw
+    /// per-game wall/verify/search timings, which are deliberately EXCLUDED
+    /// from this serialized report so the scored evidence stays
+    /// byte-reproducible (repair 3).
+    pub latency_sidecar: String,
     pub config: EvalConfig,
     pub games: Vec<GameRecord>,
     pub summary: EvalSummary,
@@ -376,10 +410,97 @@ pub struct HardwarePin {
     pub cpu_model: String,
     /// `rustc --version` of the compiler that built this driver.
     pub rustc: String,
-    /// Git commit of the driver source, if a repo was found.
+    /// Git commit of the driver source, if a repo was found. This MUST be the
+    /// commit whose code actually executed and can reproduce the report;
+    /// a stale pin is a false-provenance defect (repair-3 blocking finding).
     pub git_commit: Option<String>,
+    /// `git rev-parse HEAD^{tree}` at run time: the exact tracked content
+    /// that produced the report.
+    pub git_tree: String,
+    /// True when the run's tracked working tree was NOT clean (or git could
+    /// not prove the provenance at all). Dirty-tree evidence is refused
+    /// by default and, with `--allow-dirty`, stamped unusable for any claim.
+    pub git_dirty: bool,
     /// Profile the games were built with, as executed.
     pub build_profile: String,
+}
+
+/// True when `git status --porcelain` text (captured WITHOUT untracked files)
+/// shows any tracked modification. Pure so it can be regression-tested.
+pub fn porcelain_status_is_dirty(status: &str) -> bool {
+    status.lines().any(|line| !line.trim().is_empty())
+}
+
+/// Escape-hatch stamping for evidence produced from a dirty tree, per the
+/// repair-3 work order: any escape hatch must stamp the evidence unusable
+/// for any claim.
+pub fn mark_dirty_evidence(report: &mut EvalReport) {
+    let s = &mut report.summary;
+    s.headline = "DIRTY TREE - NOT REPRODUCIBLE: this report was produced from a working tree with tracked modifications; NO value in it may support any claim".to_string();
+    s.paired_mean_diff_fair_odds = None;
+    s.paired_ci95_low_diff_fair_odds = None;
+    s.paired_ci95_high_diff_fair_odds = None;
+    s.paired_ci_note.push_str(
+        "; DIRTY TREE - NOT REPRODUCIBLE: interval suppressed (evidence unusable for any claim)",
+    );
+    s.wilson_low = None;
+    s.wilson_high = None;
+    s.wilson_note
+        .push_str("; DIRTY TREE - NOT REPRODUCIBLE: evidence unusable for any claim");
+}
+
+/// Refuse dirty-tree evidence by default. `git_dirty` is the run-time pin;
+/// `allow_dirty` is the explicit `--allow-dirty` escape hatch.
+pub fn dirty_tree_gate(git_dirty: bool, allow_dirty: bool) -> Result<(), String> {
+    if git_dirty && !allow_dirty {
+        Err(
+            "refusing to write evidence: the working tree has tracked modifications (or git could not prove clean provenance), so the report could not name the code that produces it. Commit or stash first, or re-run with --allow-dirty to emit a DIRTY TREE-labelled report that is unusable for any claim."
+                .to_string(),
+        )
+    } else {
+        Ok(())
+    }
+}
+
+/// One game's measured latencies, exported to the `timings.json` sidecar
+/// instead of `report.json`.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct LatencyRow {
+    pub seed: u64,
+    pub rotation: u32,
+    /// Whole-game wall-clock milliseconds (excludes replay verification).
+    pub wall_ms: u64,
+    /// Replay-verification milliseconds, reported separately.
+    pub verify_ms: u64,
+    /// Cumulative search milliseconds for the game.
+    pub search_ms: u64,
+}
+
+/// The sidecar payload: self-describing raw latency rows.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct LatencySidecar {
+    pub note: String,
+    pub rows: Vec<LatencyRow>,
+}
+
+pub const LATENCY_SIDECAR_FILE: &str = "timings.json";
+
+/// Collect the per-game latency rows that a run must write to
+/// [`LATENCY_SIDECAR_FILE`] next to the report.
+pub fn latency_rows(games: &[GameRecord]) -> LatencySidecar {
+    LatencySidecar {
+        note: "Raw per-game latencies, deliberately NOT in report.json so the scored report stays byte-reproducible; wall_ms excludes replay verification.".to_string(),
+        rows: games
+            .iter()
+            .map(|g| LatencyRow {
+                seed: g.seed,
+                rotation: g.rotation,
+                wall_ms: g.wall_ms,
+                verify_ms: g.verify_ms,
+                search_ms: g.search_ms,
+            })
+            .collect(),
+    }
 }
 
 fn first_stdout_line(cmd: &mut std::process::Command) -> Option<String> {
@@ -409,7 +530,59 @@ fn cpu_model() -> String {
     .unwrap_or_default()
 }
 
+/// Public provenance probe used by the CLI BEFORE any game runs: (commit,
+/// tree, tracked-dirty). Commit `None` means unnameable provenance, which the
+/// dirty gate refuses by default.
+pub fn git_provenance_probe(root: &Path) -> (Option<String>, String, bool) {
+    git_pin(root)
+}
+
+/// Git provenance probe: (commit, tree, tracked-dirty). Commit `None` (no
+/// repo, or git unusable) means provenance is UNNAMEABLE and the caller must
+/// treat the tree as dirty: unnameable code cannot be claimed reproducible.
+fn git_pin(root: &Path) -> (Option<String>, String, bool) {
+    let commit = first_stdout_line(
+        std::process::Command::new("git")
+            .args(["-C"])
+            .arg(root)
+            .args(["rev-parse", "HEAD"]),
+    );
+    match commit {
+        Some(commit) => {
+            let tree = first_stdout_line(
+                std::process::Command::new("git")
+                    .args(["-C"])
+                    .arg(root)
+                    .args(["rev-parse", "HEAD^{tree}"]),
+            )
+            .unwrap_or_default();
+            let dirty = match std::process::Command::new("git")
+                .args(["-C"])
+                .arg(root)
+                .args(["status", "--porcelain", "--untracked-files=no"])
+                .output()
+            {
+                Ok(out) => {
+                    if out.status.success() {
+                        porcelain_status_is_dirty(&String::from_utf8_lossy(&out.stdout))
+                    } else {
+                        // Cannot prove clean -> treat as dirty.
+                        true
+                    }
+                }
+                Err(_) => true,
+            };
+            (Some(commit), tree, dirty)
+        }
+        None => (None, String::new(), true),
+    }
+}
+
 fn detect_hardware(repo_root: Option<&Path>) -> HardwarePin {
+    let (git_commit, git_tree, git_dirty) = match repo_root {
+        Some(root) => git_pin(root),
+        None => (None, String::new(), true),
+    };
     HardwarePin {
         os: std::env::consts::OS.to_string(),
         logical_cpus: std::thread::available_parallelism()
@@ -418,15 +591,9 @@ fn detect_hardware(repo_root: Option<&Path>) -> HardwarePin {
         cpu_model: cpu_model(),
         rustc: first_stdout_line(std::process::Command::new("rustc").arg("--version"))
             .unwrap_or_else(|| "unknown".to_string()),
-        git_commit: repo_root.and_then(|root| {
-            first_stdout_line(
-                std::process::Command::new("git")
-                    .args(["-C"])
-                    .arg(root)
-                    .arg("rev-parse")
-                    .arg("HEAD"),
-            )
-        }),
+        git_commit,
+        git_tree,
+        git_dirty,
         build_profile: if cfg!(debug_assertions) {
             "dev".to_string()
         } else {
@@ -445,7 +612,8 @@ impl EvalReport {
         let summary = summarize(session, &games);
         let config_json = serde_json::to_string(&session.eval).expect("config serializes");
         EvalReport {
-            schema: 2,
+            // Schema 3: latency sidecar + git tree/dirty pin (repair 3).
+            schema: 3,
             run_id: session.eval.run_id.clone(),
             rules_revision: aperture_core::RULES_REVISION.to_string(),
             config_sha256: sha256_hex(config_json.as_bytes()),
@@ -462,6 +630,7 @@ impl EvalReport {
             policies: "frozen HeuristicPolicy (unchanged) vs budgeted information-set search (unchanged algorithm; budgets pinned in config)".to_string(),
             frozen_policy_note: "The baseline heuristic was not altered for this run; search-budget only differences are pinned in the versioned config.".to_string(),
             hardware: detect_hardware(repo_root),
+            latency_sidecar: LATENCY_SIDECAR_FILE.to_string(),
             config: session.eval.clone(),
             games,
             summary,
@@ -644,5 +813,112 @@ mod review_regression_tests {
         assert!(!summary.paired_design);
         assert!(summary.paired_ci_note.contains("NOT a paired design"));
         assert!(summary.paired_ci95_low_diff_fair_odds.is_none());
+    }
+
+    /// A literal `policy_rejected` status (repair-3 note on B5) aggregates
+    /// under `failed`, is excluded from every score, and cannot count as
+    /// `terminal`.
+    #[test]
+    fn literal_policy_rejected_status_is_failed_and_never_scored() {
+        let session = prod_config();
+        let mut rejected = terminal_record(101, 0, None, true);
+        rejected.status = "policy_rejected".to_string();
+        rejected.policy_rejected = true;
+        let games = vec![rejected, terminal_record(101, 1, Some(1), true)];
+        let summary = summarize(&session, &games);
+        assert_eq!(summary.failed, 1);
+        assert_eq!(summary.policy_rejected, 1);
+        assert_eq!(summary.terminal, 1);
+        assert_eq!(summary.terminal_unverified, 0);
+        assert_eq!(
+            summary.terminal_search_wins, 1,
+            "the verified terminal win still scores"
+        );
+        assert!(summary.headline.contains("no strength statement"));
+    }
+
+    /// Terminal-but-unverified records are labelled separately from `terminal`
+    /// so a bare terminal count can never be read as all-scored (repair 3).
+    #[test]
+    fn terminal_unverified_is_labelled_separately() {
+        let session = prod_config();
+        let games = vec![
+            terminal_record(101, 0, Some(0), true),
+            terminal_record(101, 1, Some(1), false),
+        ];
+        let summary = summarize(&session, &games);
+        assert_eq!(summary.terminal, 1);
+        assert_eq!(summary.terminal_unverified, 1);
+        assert_eq!(summary.replay_mismatch, 1);
+        assert_eq!(summary.terminal_search_wins, 1, "only the verified one");
+        assert!(summary.headline.contains("WITHHELD"));
+        assert!(
+            summary.headline.contains("verified-only aggregates"),
+            "the headline must state exactly what is retained: {}",
+            summary.headline
+        );
+    }
+
+    /// Tracked-modification porcelain text parses to dirty=True; empty output
+    /// to false. This is the parser used by the run-time dirty gate.
+    #[test]
+    fn porcelain_status_parser_flags_tracked_changes_only() {
+        assert!(!porcelain_status_is_dirty(""));
+        assert!(!porcelain_status_is_dirty("\n"));
+        assert!(!porcelain_status_is_dirty("   \n"));
+        assert!(porcelain_status_is_dirty(" M crates/eval/src/report.rs\n"));
+        assert!(porcelain_status_is_dirty("M  src/stats.rs\n"));
+        assert!(porcelain_status_is_dirty("M  a.rs\n M b.rs\n"));
+    }
+
+    /// A dirty tree can never produce an unlabelled scored report: without the
+    /// explicit escape hatch the run is refused outright, and with the hatch
+    /// the summary is stamped unusable for any claim with every interval and
+    /// mean suppressed.
+    #[test]
+    fn dirty_tree_is_refused_by_default_and_stamped_unusable_with_hatch() {
+        assert!(dirty_tree_gate(true, false).is_err());
+        assert!(dirty_tree_gate(true, true).is_ok());
+        assert!(dirty_tree_gate(false, false).is_ok());
+
+        let session = prod_config();
+        let games = vec![terminal_record(101, 0, Some(0), true)];
+        let mut report = EvalReport::build(&session, games, None, None);
+        assert_ne!(report.summary.headline, "");
+        mark_dirty_evidence(&mut report);
+        assert!(report.summary.headline.contains("DIRTY TREE"));
+        assert!(report.summary.headline.contains("NOT REPRODUCIBLE"));
+        assert!(report.summary.paired_mean_diff_fair_odds.is_none());
+        assert!(report.summary.paired_ci95_low_diff_fair_odds.is_none());
+        assert!(report.summary.paired_ci95_high_diff_fair_odds.is_none());
+        assert!(report.summary.wilson_low.is_none());
+        assert!(report.summary.wilson_high.is_none());
+        assert!(report.summary.paired_ci_note.contains("DIRTY TREE"));
+        assert!(
+            report
+                .summary
+                .paired_ci_note
+                .contains("unusable for any claim")
+        );
+    }
+
+    /// The latency sidecar is self-describing and matches the games' own
+    /// (non-serialized) timing fields row for row, in declared order.
+    #[test]
+    fn latency_rows_export_every_game_in_declared_order() {
+        let games = vec![
+            terminal_record(101, 0, Some(0), true),
+            terminal_record(101, 1, Some(1), true),
+        ];
+        let sidecar = latency_rows(&games);
+        assert_eq!(sidecar.rows.len(), games.len());
+        assert_eq!(sidecar.rows[0].seed, 101);
+        assert_eq!(sidecar.rows[0].rotation, 0);
+        assert_eq!(sidecar.rows[0].wall_ms, games[0].wall_ms);
+        assert_eq!(sidecar.rows[0].verify_ms, games[0].verify_ms);
+        assert_eq!(sidecar.rows[0].search_ms, games[0].search_ms);
+        assert_eq!(sidecar.rows[1].rotation, 1);
+        // The sidecar filename is stable and documented on the report itself.
+        assert_eq!(LATENCY_SIDECAR_FILE, "timings.json");
     }
 }

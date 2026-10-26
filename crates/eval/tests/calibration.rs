@@ -63,7 +63,10 @@ fn calibration_run_down_verifies_replays_and_counters() {
         // A game shows status terminal/capped/failed and its step count is
         // counted, never silently omitted.
         assert!(
-            game.status == "terminal" || game.status == "capped" || game.status == "failed",
+            game.status == "terminal"
+                || game.status == "capped"
+                || game.status == "failed"
+                || game.status == "policy_rejected",
             "unknown status {}",
             game.status
         );

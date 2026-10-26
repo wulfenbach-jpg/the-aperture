@@ -249,7 +249,12 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
         Some(aperture_core::Outcome::Draw { reason }) => (None, reason.clone()),
         None => (None, String::new()),
     };
-    let status = if failed {
+    let status = if policy_rejected {
+        // Literal distinct status for a rejected policy action (repair-3
+        // note on B5): it also aggregates under `failed` counters and is
+        // never scored for either side.
+        "policy_rejected".to_string()
+    } else if failed {
         "failed".to_string()
     } else if game.state.is_over() {
         "terminal".to_string()

@@ -26,7 +26,9 @@ impl Go {
     }
 }
 
-/// The paired sample: per-seed mean score over that seed's rotation games.
+/// The paired sample: per-seed mean of differences FROM FAIR ODDS over that
+/// seed's rotation games (`score - 0.5`, pre-differenced by the caller; a raw
+/// per-game score of 0.30 must arrive here as -0.20, never as 0.30).
 pub struct PairedSample {
     pub per_seed: Vec<f64>,
 }
