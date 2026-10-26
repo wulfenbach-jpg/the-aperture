@@ -80,6 +80,8 @@ macro_rules! card {
             kinds: $kinds,
             basic_mana: $basic,
             artifact_mana: None,
+            mana_choices: None,
+            creature_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -107,6 +109,8 @@ macro_rules! card_artifact {
             kinds: &[Kind::Artifact],
             basic_mana: None,
             artifact_mana: $mana,
+            mana_choices: None,
+            creature_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -135,6 +139,8 @@ macro_rules! card_defender {
             kinds: $kinds,
             basic_mana: $basic,
             artifact_mana: None,
+            mana_choices: None,
+            creature_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -164,6 +170,8 @@ macro_rules! card_flash {
             kinds: $kinds,
             basic_mana: $basic,
             artifact_mana: None,
+            mana_choices: None,
+            creature_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -193,6 +201,8 @@ macro_rules! card_islandwalk {
             kinds: $kinds,
             basic_mana: $basic,
             artifact_mana: None,
+            mana_choices: None,
+            creature_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -221,6 +231,8 @@ macro_rules! card_trample {
             kinds: $kinds,
             basic_mana: $basic,
             artifact_mana: None,
+            mana_choices: None,
+            creature_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -237,7 +249,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 122] = [
+pub static CARDS: [CardDef; 125] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -453,6 +465,22 @@ pub static CARDS: [CardDef; 122] = [
         ProfessorOfZoomancy, "Professor of Zoomancy", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear Druid", power: Some(4), toughness: Some(3),
         oracle: "When this creature enters, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+        spell: None
+    ),
+    card_artifact!(
+        ArcaneSignet, "Arcane Signet", cost: Some("{2}"), type_line: "Artifact",
+        oracle: "{T}: Add one mana of any color in your commander's color identity.",
+        mana: None, spell: None
+    ),
+    card_artifact!(
+        FellwarStone, "Fellwar Stone", cost: Some("{2}"), type_line: "Artifact",
+        oracle: "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        mana: None, spell: None
+    ),
+    card!(
+        Werebear, "Werebear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Bear Druid", power: Some(1), toughness: Some(1),
+        oracle: "{T}: Add {G}.\nThreshold — This creature gets +3/+3 as long as there are seven or more cards in your graveyard.",
         spell: None
     ),
     card_artifact!(
@@ -940,6 +968,8 @@ pub static TOKENS: [CardDef; 4] = [
         kinds: CREATURE,
         basic_mana: None,
         artifact_mana: None,
+        mana_choices: None,
+        creature_mana: None,
         type_line: "Token Creature — Goblin",
         colors: &[ManaColor::Red],
         flying: false,
@@ -959,6 +989,8 @@ pub static TOKENS: [CardDef; 4] = [
         kinds: CREATURE,
         basic_mana: None,
         artifact_mana: None,
+        mana_choices: None,
+        creature_mana: None,
         type_line: "Token Creature — Drake",
         colors: &[ManaColor::Blue],
         flying: true,
@@ -978,6 +1010,8 @@ pub static TOKENS: [CardDef; 4] = [
         kinds: CREATURE,
         basic_mana: None,
         artifact_mana: None,
+        mana_choices: None,
+        creature_mana: None,
         type_line: "Token Creature — Beast",
         colors: &[ManaColor::Green],
         flying: false,
@@ -997,6 +1031,8 @@ pub static TOKENS: [CardDef; 4] = [
         kinds: CREATURE,
         basic_mana: None,
         artifact_mana: None,
+        mana_choices: None,
+        creature_mana: None,
         type_line: "Token Creature — Pest",
         colors: &[ManaColor::Black, ManaColor::Green],
         flying: false,

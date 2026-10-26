@@ -38,6 +38,12 @@ impl ManaColor {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ManaChoice {
+    CommanderIdentity,
+    OpponentLandColors,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Kind {
     Land,
     Creature,
@@ -253,6 +259,10 @@ pub struct CardDef {
     pub basic_mana: Option<ManaColor>,
     /// CR 605.1a mana ability on a nonland artifact: (color, amount), tap cost.
     pub artifact_mana: Option<(ManaColor, u8)>,
+    /// Dynamic one-mana ability: the offered colors are computed from live state.
+    pub mana_choices: Option<ManaChoice>,
+    /// Tap mana ability on a creature; obeys summoning sickness.
+    pub creature_mana: Option<ManaColor>,
     pub type_line: &'static str,
     /// Printed colors. Tokens carry theirs here; catalog cards leave it empty
     /// because the engine only needs it for token characteristics in this slice.
@@ -426,6 +436,9 @@ pub enum CardId {
     SolRing,
     MindStone,
     HedronArchive,
+    ArcaneSignet,
+    FellwarStone,
+    Werebear,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,
@@ -535,6 +548,34 @@ pub const TOKEN_CARDS: &[CardId] = &[
 ];
 
 impl CardId {
+    /// Printed color identity of the supported commanders, in canonical WUBRG
+    /// order. Known only for the explicit registry; unknown cards return empty.
+    pub fn commander_color_identity(self) -> &'static [ManaColor] {
+        match self {
+            CardId::IsamaruHoundOfKonda => &[ManaColor::White],
+            CardId::JasmineBoreal => &[ManaColor::White, ManaColor::Green],
+            CardId::KrenkoMobBoss => &[ManaColor::Red],
+            CardId::TalrandSkySummoner => &[ManaColor::Blue],
+            CardId::TatyovaBenthicDruid => &[ManaColor::Blue, ManaColor::Green],
+            _ => &[],
+        }
+    }
+
+    pub fn dynamic_mana(self) -> Option<ManaChoice> {
+        match self {
+            CardId::ArcaneSignet => Some(ManaChoice::CommanderIdentity),
+            CardId::FellwarStone => Some(ManaChoice::OpponentLandColors),
+            _ => None,
+        }
+    }
+
+    pub fn creature_mana(self) -> Option<ManaColor> {
+        match self {
+            CardId::Werebear => Some(ManaColor::Green),
+            _ => None,
+        }
+    }
+
     pub fn def(self) -> &'static CardDef {
         crate::catalog::def(self)
     }

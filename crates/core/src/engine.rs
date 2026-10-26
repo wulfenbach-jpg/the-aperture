@@ -498,6 +498,33 @@ impl Game {
                 }
             }
         }
+        // Threshold statics: +P/+T while the controller's graveyard has at
+        // least the printed number of cards (Werebear).
+        for (id, card) in &battlefield {
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
+            let graveyard = self.state.players[controller as usize].graveyard.len();
+            for static_ability in ability::static_abilities(*card) {
+                let ability::StaticAbility::ThresholdPowerToughness {
+                    minimum,
+                    power,
+                    toughness,
+                    ..
+                } = static_ability
+                else {
+                    continue;
+                };
+                if graveyard >= *minimum
+                    && let Some(object) = self.state.objects.get_mut(id)
+                {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
+            }
+        }
         // Layer 7c one-shot effects in timestamp order (CR 613.7).
         let mut modifying: Vec<(u64, ObjectId, i32, i32)> = self
             .state
@@ -1531,6 +1558,9 @@ impl Game {
             Action::PlayLand { card } => self.validate_play_land(player, *card),
             Action::CastSpell { card, targets } => self.validate_cast(player, *card, targets),
             Action::ActivateManaAbility { land } => self.validate_mana_ability(player, *land),
+            Action::ActivateColorManaAbility { source, color } => {
+                self.validate_color_mana_ability(player, *source, *color)
+            }
             Action::ActivateAbility {
                 source,
                 ability,
@@ -1878,8 +1908,18 @@ impl Game {
                 format!("{} is already tapped", obj.card.name()),
             ));
         }
-        if obj.card.def().basic_mana.is_none() && obj.card.def().artifact_mana.is_none() {
+        if obj.card.def().basic_mana.is_none()
+            && obj.card.def().artifact_mana.is_none()
+            && obj.card.creature_mana().is_none()
+        {
             return Err(EngineError::NotAManaSource);
+        }
+        if obj.card.creature_mana().is_some() && obj.summoning_sick {
+            return Err(EngineError::BadTiming {
+                name: obj.card.name(),
+                reason: "a creature with a {T} mana ability is summoning sick (CR 302.6)"
+                    .to_string(),
+            });
         }
         Ok(())
     }
@@ -2289,6 +2329,9 @@ impl Game {
             Action::PlayLand { card } => self.apply_play_land(player, *card, events),
             Action::CastSpell { card, targets } => self.apply_cast(player, *card, targets, events),
             Action::ActivateManaAbility { land } => self.apply_mana_ability(player, *land, events),
+            Action::ActivateColorManaAbility { source, color } => {
+                self.apply_color_mana_ability(player, *source, *color, events)
+            }
             Action::DeclareAttackers {
                 attackers,
                 defender,
@@ -2392,11 +2435,130 @@ impl Game {
         events.push(Event::Priority { player });
     }
 
+    fn dynamic_mana_colors(&self, player: PlayerId, source: ObjectId) -> Vec<ManaColor> {
+        let Some(object) = self.state.try_object(source) else {
+            return Vec::new();
+        };
+        let order = [
+            ManaColor::White,
+            ManaColor::Blue,
+            ManaColor::Black,
+            ManaColor::Red,
+            ManaColor::Green,
+        ];
+        let mut set = [false; 5];
+        match object.card.dynamic_mana() {
+            Some(crate::card::ManaChoice::CommanderIdentity) => {
+                for commander in self
+                    .state
+                    .commanders
+                    .iter()
+                    .filter(|commander| commander.owner == player)
+                {
+                    for color in commander.card.commander_color_identity() {
+                        if let Some(index) = order.iter().position(|candidate| candidate == color) {
+                            set[index] = true;
+                        }
+                    }
+                }
+            }
+            Some(crate::card::ManaChoice::OpponentLandColors) => {
+                for land in self.state.objects.values() {
+                    let def = land.card.def();
+                    if land.zone != Zone::Battlefield
+                        || land.controller == player
+                        || !self.state.is_live(land.controller)
+                        || !def.is_land()
+                    {
+                        continue;
+                    }
+                    if let Some(color) = def.basic_mana
+                        && color != ManaColor::Colorless
+                        && let Some(index) = order.iter().position(|candidate| *candidate == color)
+                    {
+                        set[index] = true;
+                    }
+                }
+            }
+            None => return Vec::new(),
+        }
+        order
+            .iter()
+            .zip(set)
+            .filter_map(|(color, present)| present.then_some(*color))
+            .collect()
+    }
+
+    fn validate_color_mana_ability(
+        &self,
+        player: PlayerId,
+        source: ObjectId,
+        color: ManaColor,
+    ) -> Result<(), EngineError> {
+        if self.state.pending.is_some() || self.state.turn.priority != Some(player) {
+            return Err(EngineError::illegal(
+                "mana ability",
+                "mana abilities need priority and cannot be used while a choice is pending (CR 605.3a, 608.2d)",
+            ));
+        }
+        let object = self
+            .state
+            .try_object(source)
+            .ok_or(EngineError::UnknownObject)?;
+        if object.zone != Zone::Battlefield || object.controller != player {
+            return Err(EngineError::WrongZone {
+                name: object.card.name(),
+                zone: "battlefield",
+            });
+        }
+        if object.tapped {
+            return Err(EngineError::illegal(
+                "mana ability",
+                format!("{} is already tapped", object.card.name()),
+            ));
+        }
+        if !self.dynamic_mana_colors(player, source).contains(&color) {
+            return Err(EngineError::illegal(
+                "mana ability",
+                format!(
+                    "{} cannot produce {} mana here",
+                    object.card.name(),
+                    color.name()
+                ),
+            ));
+        }
+        Ok(())
+    }
+
+    fn apply_color_mana_ability(
+        &mut self,
+        player: PlayerId,
+        source: ObjectId,
+        color: ManaColor,
+        events: &mut Vec<Event>,
+    ) {
+        if let Some(object) = self.objects_mut(source) {
+            object.tapped = true;
+        }
+        self.state.players[player as usize].mana.add(color, 1);
+        self.state.turn.passed = 0;
+        events.push(Event::ManaTapped {
+            player,
+            land: source,
+            color,
+        });
+        events.push(Event::Priority { player });
+    }
+
     fn apply_mana_ability(&mut self, player: PlayerId, land: ObjectId, events: &mut Vec<Event>) {
         let def = self.state.object(land).card.def();
-        let source = def
-            .basic_mana
+        let source = self
+            .state
+            .object(land)
+            .card
+            .creature_mana()
             .map(|color| (color, 1u8))
+            .or_else(|| def.basic_mana.map(|color| (color, 1u8)))
             .or(def.artifact_mana);
         let color = source
             .map(|(color, _)| color)
@@ -5424,6 +5586,19 @@ impl Game {
                 ),
                 rules: vec!["605.1a"],
             });
+        }
+
+        for object in self.state.battlefield(player) {
+            for color in self.dynamic_mana_colors(player, object.id) {
+                out.push(LegalAction {
+                    action: Action::ActivateColorManaAbility {
+                        source: object.id,
+                        color,
+                    },
+                    label: format!("Tap {} for {}", object.card.name(), color.symbol()),
+                    rules: vec!["605.1a"],
+                });
+            }
         }
 
         // Activated abilities (CR 602.2). Each legal target is its own option.

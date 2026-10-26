@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-122-card pool. Isamaru itself is supported, and the slice-4 package implemented
+125-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **110** are in the supported 122-card catalog and **349** are missing;
+* **113** are in the supported 125-card catalog and **346** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.
@@ -258,7 +258,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 122 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 125 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the

@@ -564,13 +564,22 @@ pub enum StaticAbility {
     /// a permanent (a creature's combat or ability damage) or a spell on the
     /// stack (Shock), because the printed word is "source", not "creature".
     DamageFromControlledSources { factor: u32, text: &'static str },
+    /// Threshold +P/+T while the controller has at least this many cards in
+    /// their graveyard (Werebear).
+    ThresholdPowerToughness {
+        minimum: usize,
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
 }
 
 impl StaticAbility {
     pub fn text(self) -> &'static str {
         match self {
             StaticAbility::PowerToughnessPerCount { text, .. } => text,
-            StaticAbility::DamageFromControlledSources { text, .. } => text,
+            StaticAbility::DamageFromControlledSources { text, .. }
+            | StaticAbility::ThresholdPowerToughness { text, .. } => text,
         }
     }
 
@@ -579,14 +588,16 @@ impl StaticAbility {
     pub fn layer(self) -> Option<Layer> {
         match self {
             StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
-            StaticAbility::DamageFromControlledSources { .. } => None,
+            StaticAbility::DamageFromControlledSources { .. }
+            | StaticAbility::ThresholdPowerToughness { .. } => None,
         }
     }
 
     pub fn count_source(self) -> Option<CountSource> {
         match self {
             StaticAbility::PowerToughnessPerCount { count, .. } => Some(count),
-            StaticAbility::DamageFromControlledSources { .. } => None,
+            StaticAbility::DamageFromControlledSources { .. }
+            | StaticAbility::ThresholdPowerToughness { .. } => None,
         }
     }
 }
@@ -606,6 +617,13 @@ const ANGRATH: &[StaticAbility] = &[StaticAbility::DamageFromControlledSources {
     text: "If a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
 }];
 
+const WEREBEAR: &[StaticAbility] = &[StaticAbility::ThresholdPowerToughness {
+    minimum: 7,
+    power: 3,
+    toughness: 3,
+    text: "Threshold — This creature gets +3/+3 as long as there are seven or more cards in your graveyard.",
+}];
+
 const NO_STATICS: &[StaticAbility] = &[];
 
 /// Every static ability the rules layer knows for a card, in printed order.
@@ -613,6 +631,7 @@ pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
         CardId::WightOfPrecinctSix => WIGHT,
         CardId::AngrathsMarauders => ANGRATH,
+        CardId::Werebear => WEREBEAR,
         _ => NO_STATICS,
     }
 }

@@ -112,7 +112,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     assert!(
                         !abilities.is_empty()
                             || !statics.is_empty()
-                            || card.artifact_mana.is_some(),
+                            || card.artifact_mana.is_some()
+                            || card.id.dynamic_mana().is_some(),
                         "{} prints text but has no implementation",
                         card.name
                     );
@@ -139,7 +140,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     }
                 }
                 assert!(
-                    card.is_creature() || card.artifact_mana.is_some(),
+                    card.is_creature()
+                        || card.artifact_mana.is_some()
+                        || card.id.dynamic_mana().is_some(),
                     "{} has no rules text at all",
                     card.name
                 );

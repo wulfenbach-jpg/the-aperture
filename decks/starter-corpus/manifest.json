@@ -249,7 +249,6 @@
       "status": "planned",
       "deck_path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
       "missing_cards": [
-        "Arcane Signet",
         "Ayula's Influence",
         "Ayula, Queen Among Bears",
         "Bearscape",
@@ -265,7 +264,6 @@
         "Evercoat Ursine",
         "Exuberant Wolfbear",
         "Fade from History",
-        "Fellwar Stone",
         "Friendly Teddy",
         "Goreclaw, Terror of Qal Sisma",
         "Kamahl's Summons",
@@ -289,7 +287,6 @@
         "Ursine Champion",
         "Ursine Monstrosity",
         "Vivien's Grizzly",
-        "Werebear",
         "Words of Wilding"
       ],
       "missing_interactions": [

@@ -1,0 +1,66 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T17:44:38.065317+00:00",
+ "note": "Extracted from coordinator candidate-source collection; three records only.",
+ "cards": [
+  {
+   "name": "Arcane Signet",
+   "oracle_id": "0bc7f093-bef0-4f1a-852c-4b75ebf54838",
+   "scryfall_id": "795df2ee-fbfc-4961-852c-e3ec50cc52da",
+   "set": "trc",
+   "collector_number": "485",
+   "layout": "normal",
+   "mana_cost": "{2}",
+   "type_line": "Artifact",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+   "color_identity": [],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/795df2ee-fbfc-4961-852c-e3ec50cc52da",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  },
+  {
+   "name": "Fellwar Stone",
+   "oracle_id": "95560508-7ac9-4be9-8a3f-3c7d5b52807b",
+   "scryfall_id": "3ef87948-0ad9-4757-a692-2262c8e24367",
+   "set": "mbc",
+   "collector_number": "74",
+   "layout": "normal",
+   "mana_cost": "{2}",
+   "type_line": "Artifact",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+   "color_identity": [],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/3ef87948-0ad9-4757-a692-2262c8e24367",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  },
+  {
+   "name": "Werebear",
+   "oracle_id": "96cf3320-c730-4618-8768-28a179f4d9c0",
+   "scryfall_id": "973310bb-ab32-46dc-8f59-8a5d3e1c58cc",
+   "set": "dmr",
+   "collector_number": "182",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Creature — Human Bear Druid",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "{T}: Add {G}.\nThreshold — This creature gets +3/+3 as long as there are seven or more cards in your graveyard.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Threshold"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/973310bb-ab32-46dc-8f59-8a5d3e1c58cc",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  }
+ ]
+}

@@ -34,6 +34,11 @@ pub enum Action {
     ActivateManaAbility {
         land: ObjectId,
     },
+    /// Dynamic mana ability with an explicit chosen color.
+    ActivateColorManaAbility {
+        source: ObjectId,
+        color: crate::card::ManaColor,
+    },
     /// Structured attacker declaration. In the bounded M1 multiplayer model every
     /// attacker in one declaration attacks the same defending seat; `defender`
     /// is `None` exactly when no attackers are declared.
@@ -107,6 +112,7 @@ impl Action {
             Action::PlayLand { .. } => "play land",
             Action::CastSpell { .. } => "cast spell",
             Action::ActivateManaAbility { .. } => "mana ability",
+            Action::ActivateColorManaAbility { .. } => "mana ability",
             Action::DeclareAttackers { .. } => "declare attackers",
             Action::DeclareBlockers { .. } => "declare blockers",
             Action::Mulligan { .. } => "mulligan choice",
