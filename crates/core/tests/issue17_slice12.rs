@@ -367,3 +367,33 @@ fn tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability() {
     assert!(err.to_string().contains("tapped"), "{err}");
     assert_eq!(aperture_core::digest::digest(&game.state), before);
 }
+
+#[test]
+fn removed_tokens_are_valid_only_as_inert_archives_of_departed_owners() {
+    use aperture_core::tokens::TokenKind;
+    let mut game = fixture_n(150, 2).build();
+    let token = game.state.create_token(TokenKind::Spirit, P1);
+    game.state.players[P1 as usize].lost = true;
+    game.state.objects.get_mut(&token).unwrap().zone = Zone::Removed;
+    game.state
+        .validate()
+        .expect("a departed owner's token archive is inert internal storage");
+    assert!(!game.legal_actions().iter().any(|a| match &a.action {
+        Action::ActivateAbility { source, .. } | Action::ActivateManaAbility { land: source } =>
+            *source == token,
+        Action::CastSpell { card, .. } => *card == token,
+        _ => false,
+    }));
+
+    // Live-owner Removed and any token in a real off-battlefield zone are invalid.
+    let mut game = fixture_n(151, 2).build();
+    let live = game.state.create_token(TokenKind::Spirit, P1);
+    game.state.objects.get_mut(&live).unwrap().zone = Zone::Removed;
+    assert!(game.state.validate().is_err());
+
+    let mut game = fixture_n(152, 2).build();
+    let exiled = game.state.create_token(TokenKind::Spirit, P1);
+    game.state.objects.get_mut(&exiled).unwrap().zone = Zone::Exile;
+    game.state.players[P1 as usize].exile.push(exiled);
+    assert!(game.state.validate().is_err());
+}

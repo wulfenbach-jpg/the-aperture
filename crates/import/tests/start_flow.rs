@@ -38,7 +38,7 @@ Deck
 4 Grizzly Bears
 4 Centaur Courser
 2 Unsummon
-1 Sol Ring
+1 Darksteel Ingot
 1 Swords to Plowshares
 ";
 
@@ -142,8 +142,8 @@ fn unsupported_card_is_named_with_its_reason_and_start_is_refused() {
         .support
         .unsupported
         .iter()
-        .find(|c| c.name == "Sol Ring")
-        .expect("Sol Ring listed as unsupported");
+        .find(|c| c.name == "Darksteel Ingot")
+        .expect("Darksteel Ingot listed as unsupported");
     assert!(
         sol_ring.reason.contains("not in the supported pool"),
         "reason: {}",
@@ -151,13 +151,13 @@ fn unsupported_card_is_named_with_its_reason_and_start_is_refused() {
     );
     let refusal = cert.refusals.join(" ");
     assert!(refusal.contains("engine support"), "refusal: {refusal}");
-    assert!(refusal.contains("Sol Ring"), "refusal: {refusal}");
+    assert!(refusal.contains("Darksteel Ingot"), "refusal: {refusal}");
     // The refusal never claims a substitution.
     assert!(refusal.contains("never substituted"));
 
     match plan_start(&cert) {
         Err(ImportError::NotLaunchable(message)) => {
-            assert!(message.contains("Sol Ring"), "message: {message}");
+            assert!(message.contains("Darksteel Ingot"), "message: {message}");
         }
         other => panic!("expected a typed refusal, got {other:?}"),
     }
@@ -293,7 +293,7 @@ fn a_colorless_provider_identity_is_known_and_passes_the_identity_check() {
     // An empty `colorIdentity` array is a real answer: the card is colorless.
     let payload = archidekt_deck(
         ("Isamaru, Hound of Konda", &["White"]),
-        &[("Plains", 36, &["White"]), ("Sol Ring", 4, &[])],
+        &[("Plains", 36, &["White"]), ("Darksteel Ingot", 4, &[])],
     );
     let cert = certify(&normalize(&payload).unwrap(), Profile::CommanderCombat40);
     let identity = cert
@@ -407,7 +407,7 @@ fn sidelined_and_excluded_cards_never_reach_the_seat_list() {
                 "colorIdentity": ["White"], "superTypes": [], "types": ["Instant"],
                 "faces": []}}},
             {"quantity": 3, "categories": ["Maybeboard"], "card": {"oracleCard": {
-                "name": "Sol Ring", "layout": "normal", "colorIdentity": [],
+                "name": "Darksteel Ingot", "layout": "normal", "colorIdentity": [],
                 "superTypes": [], "types": ["Artifact"], "faces": []}}}
         ]
     })
@@ -425,7 +425,8 @@ fn sidelined_and_excluded_cards_never_reach_the_seat_list() {
         plan.deck
             .cards
             .iter()
-            .all(|(card, _)| card.name() != "Swords to Plowshares" && card.name() != "Sol Ring")
+            .all(|(card, _)| card.name() != "Swords to Plowshares"
+                && card.name() != "Darksteel Ingot")
     );
 }
 
@@ -494,7 +495,7 @@ fn a_duplicated_unsupported_nonbasic_is_refused_by_the_singleton_check() {
                 "name": "Isamaru, Hound of Konda", "layout": "normal", "colorIdentity": ["White"],
                 "superTypes": ["Legendary"], "types": ["Creature"], "faces": []}}},
             {"quantity": 2, "categories": ["Deck"], "card": {"oracleCard": {
-                "name": "Sol Ring", "layout": "normal", "colorIdentity": [],
+                "name": "Darksteel Ingot", "layout": "normal", "colorIdentity": [],
                 "superTypes": [], "types": ["Artifact"], "faces": []}}},
             {"quantity": 38, "categories": ["Deck"], "card": {"oracleCard": {
                 "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
@@ -516,7 +517,7 @@ fn a_duplicated_unsupported_nonbasic_is_refused_by_the_singleton_check() {
         singleton.detail
     );
     assert!(
-        singleton.detail.contains("Sol Ring x2"),
+        singleton.detail.contains("Darksteel Ingot x2"),
         "detail must name the repeated card: {}",
         singleton.detail
     );
@@ -527,7 +528,7 @@ fn a_duplicated_unsupported_nonbasic_is_refused_by_the_singleton_check() {
         cert.support
             .unsupported
             .iter()
-            .any(|c| c.name == "Sol Ring" && c.quantity == 2),
+            .any(|c| c.name == "Darksteel Ingot" && c.quantity == 2),
         "unsupported report keeps the exact quantity: {:?}",
         cert.support.unsupported
     );
@@ -541,7 +542,7 @@ fn a_text_repeat_without_a_type_line_is_not_certified_rather_than_legal() {
 Commander
 1 Isamaru, Hound of Konda
 Deck
-2 Sol Ring
+2 Darksteel Ingot
 38 Plains
 ";
     let cert = certify_text("P0 text singleton probe", list, Profile::CommanderCombat40).unwrap();
@@ -553,7 +554,8 @@ Deck
         .expect("singleton check present");
     assert_eq!(singleton.status, LegalityStatus::NotCertified);
     assert!(
-        singleton.detail.contains("Sol Ring x2") && singleton.detail.contains("no type line"),
+        singleton.detail.contains("Darksteel Ingot x2")
+            && singleton.detail.contains("no type line"),
         "detail: {}",
         singleton.detail
     );
@@ -759,8 +761,8 @@ fn split_text_lines_of_one_card_are_counted_together() {
 Commander
 1 Isamaru, Hound of Konda
 Deck
-1 Sol Ring
-1 sol ring
+1 Darksteel Ingot
+1 darksteel ingot
 38 Plains
 ";
     let cert = certify_text("P1 split text probe", list, Profile::CommanderCombat40).unwrap();
@@ -777,8 +779,17 @@ Deck
         singleton.detail
     );
     assert!(
-        singleton.detail.contains("Sol Ring x2") && singleton.detail.contains("no type line"),
+        singleton.detail.contains("Darksteel Ingot x2")
+            && singleton.detail.contains("no type line"),
         "detail: {}",
         singleton.detail
+    );
+}
+
+#[test]
+fn the_unsupported_sentinel_remains_outside_the_catalog() {
+    assert!(
+        aperture_core::catalog::by_name("Darksteel Ingot").is_none(),
+        "the fixture sentinel must stay genuinely unsupported"
     );
 }

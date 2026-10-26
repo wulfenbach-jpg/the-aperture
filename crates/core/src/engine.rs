@@ -3550,6 +3550,8 @@ impl Game {
                 obj.summoning_sick = false;
                 obj.pump_power = 0;
                 obj.pump_toughness = 0;
+                obj.plus_one_counters = 0;
+                obj.counters.clear();
             }
         }
         let player = &mut self.state.players[p as usize];

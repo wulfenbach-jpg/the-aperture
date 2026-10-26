@@ -1570,9 +1570,12 @@ impl GameState {
                     ),
                 });
             }
-            // CR 111.7: a token exists only on the battlefield. It is never a
-            // card, so it can never be in a zone list or on the stack.
-            if object.card.is_token() && object.zone != Zone::Battlefield {
+            // CR 111.7/800.4a: a token exists only on the battlefield. The one
+            // exception is internal Removed archival for a token whose owner has
+            // already left the game; that record is not a live rules object and
+            // must be inert. Any other off-battlefield token is invalid.
+            let archival = object.zone == Zone::Removed && !self.is_live(object.owner);
+            if object.card.is_token() && object.zone != Zone::Battlefield && !archival {
                 return Err(EngineError::InvalidState {
                     reason: format!(
                         "token {} ({}) is in the {} zone; tokens cease to exist off the battlefield",
@@ -1581,6 +1584,31 @@ impl GameState {
                         object.zone.name()
                     ),
                 });
+            }
+            if archival {
+                let in_combat =
+                    self.turn.attackers.contains(&object.id)
+                        || self.turn.blocked.contains(&object.id)
+                        || self.turn.blockers.iter().any(|(blocker, attacker)| {
+                            *blocker == object.id || *attacker == object.id
+                        });
+                if in_combat
+                    || self.stack.iter().any(|item| item.object == object.id)
+                    || self.players.iter().any(|player| {
+                        player.library.contains(&object.id)
+                            || player.hand.contains(&object.id)
+                            || player.graveyard.contains(&object.id)
+                            || player.exile.contains(&object.id)
+                            || player.command_zone.contains(&object.id)
+                    })
+                {
+                    return Err(EngineError::InvalidState {
+                        reason: format!(
+                            "archived token {} is still referenced by a live zone/stack/combat structure",
+                            object.id
+                        ),
+                    });
+                }
             }
         }
         // Bidirectional container/identity checks. The list->object pass below

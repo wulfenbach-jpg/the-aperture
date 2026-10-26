@@ -117,7 +117,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
     to the pool without tapping a permanent (Pyretic Ritual, Seething Song), and
     Preordain's scry-2-then-draw as an ordered two-effect resolution;
 
-Elas still has 55 unsupported desired-list nonland names plus sacrifice outlets,
+Elas still has 53 unsupported desired-list nonland names plus sacrifice outlets,
 tutor/reanimation interactions and keyword text on its own commander (Elas
 prints Deathtouch, which the rules layer does not model, so Elas itself stays
 refused at import); its Swamp requirement is now met by the supported basic land,
