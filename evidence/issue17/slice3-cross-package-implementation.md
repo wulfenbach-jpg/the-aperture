@@ -119,4 +119,18 @@ Changed: `crates/core/src/{card,catalog,ability,engine}.rs`,
 `decks/package-cross-corpus.txt`,
 `fixtures/starter-corpus/cross-package-sourced.json`,
 `decks/starter-corpus/manifest.json`, `docs/issue17-starter-corpus.md`,
-`README.md`, `docs/issue15-effects.md`, and evidence `slice3-cross-*` logs.
+`README.md`, and evidence `slice3-cross-*` logs.
+
+## Repair-2 — reviewer truthfulness fixes
+
+- Krenko `missing_interactions` now says **51** (verified current count), not 52;
+  the docs token-roadmap line uses the same verified count.
+- Elas `missing_interactions` no longer claims Swamp is unsupported. It names the
+  real remaining gaps: 58 unsupported nonland names, sacrifice outlets,
+  death/drain triggers, tutor/reanimation. The docs paragraph was replaced with
+  the same truth; Swamp `mdd/296` is supported with black mana.
+- Removed the false changed-file claim for `docs/issue15-effects.md` (no delta in
+  the reviewed range).
+- Re-ran `python evidence/issue17/slice3-native-corpus.py`: catalog 93, union
+  459, supported 81, missing 378, manifest matches; per-list Krenko 51 and Elas
+  58. No tests/engine changed; no commit/push.

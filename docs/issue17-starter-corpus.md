@@ -55,7 +55,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    Command, Hordeling Outburst, Goblin Instigator, Beetleback Chief) and a 2/2
    blue Drake with functional flying for Talrand, Sky Summoner. Ayula and Zada
    still need their own token types; the exact Krenko starter is still planned
-   (52 missing) and Talrand's desired list has 54 missing cards;
+   (51 missing) and Talrand's desired list has 54 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
    independent of counters) and **bounded implemented** landfall for Tatyova and
@@ -71,8 +71,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
 7. legend rule, equipment and Aura permanents (Isamaru and any future legend);
 8. black basic land support (Elas): **implemented** as the sourced Swamp basic;
 
-A further count gap: the current pool has no black basic land, so Elas cannot
-be constructed even as a legal 99-card practice library until `Swamp` is added.
+Elas still has 58 unsupported desired-list nonland names plus sacrifice outlets,
+death/drain triggers and tutor/reanimation interactions; its Swamp requirement is
+now met by the supported basic land.
 None of these planned lists is called supported, legal-for-play or certified.
 
 ## First implemented package: jasmine-vanilla-stompy

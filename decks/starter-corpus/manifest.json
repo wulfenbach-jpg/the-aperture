@@ -208,7 +208,7 @@
         "Zo-Zu the Punisher"
       ],
       "missing_interactions": [
-        "remaining 52 desired-list cards are not in the supported pool",
+        "remaining 51 desired-list cards are not in the supported pool",
         "goblin tribal static/triggered payoffs beyond the six-card token package",
         "haste keyword semantics",
         "legend rule (Krenko remains commander-only)",
@@ -346,10 +346,10 @@
         "Zulaport Cutthroat"
       ],
       "missing_interactions": [
-        "death triggers",
+        "remaining 58 desired-list nonland names are unsupported",
         "sacrifice outlets",
-        "life-drain triggers",
-        "black basic land (Swamp) is not in the supported pool"
+        "death/drain triggers",
+        "tutor and reanimation interactions"
       ]
     },
     {
