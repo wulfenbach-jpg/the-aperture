@@ -124,7 +124,7 @@ fn fade_from_history_gives_a_bear_to_each_player_with_an_artifact_or_enchantment
 
     // The tokens are creatures, not artifacts or enchantments, so the second
     // instruction leaves them alone.
-    assert!(game.state.is_over() == false);
+    assert!(!game.state.is_over());
 
     // Both permanents really left the battlefield for their owners' graveyards.
     assert!(
