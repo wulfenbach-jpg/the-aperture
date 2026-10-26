@@ -551,3 +551,74 @@ fn fellwar_ignores_eliminated_opponent_and_own_lands() {
     let stone2 = add_artifact(&mut no_land, P0, card("Fellwar Stone"));
     assert!(offered_colors(&no_land, stone2).is_empty());
 }
+
+#[test]
+fn ready_werebear_is_offered_but_sick_or_tapped_is_not() {
+    let mut game = fixture(188)
+        .battlefield(P0, &[card("Werebear")])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bear = battlefield_card(&game, P0, card("Werebear"));
+    assert!(
+        game.legal_actions()
+            .iter()
+            .any(|a| matches!(a.action, Action::ActivateManaAbility { land } if land == bear)),
+        "ready Werebear must be offered"
+    );
+    game.state.objects.get_mut(&bear).unwrap().summoning_sick = true;
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a.action, Action::ActivateManaAbility { land } if land == bear)),
+        "sick Werebear must not be offered"
+    );
+    game.state.objects.get_mut(&bear).unwrap().summoning_sick = false;
+    game.state.objects.get_mut(&bear).unwrap().tapped = true;
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a.action, Action::ActivateManaAbility { land } if land == bear)),
+        "tapped Werebear must not be offered"
+    );
+}
+
+#[test]
+fn each_offered_dynamic_mana_action_validates_and_tapped_sources_offer_none() {
+    let deck = DeckList::parse_practice("x", "40 Forest\n").unwrap();
+    let mut game = Game::new_commander_combat(
+        189,
+        &[deck.clone(), deck],
+        &[
+            (P0, card("Tatyova, Benthic Druid")),
+            (P1, card("Tatyova, Benthic Druid")),
+        ],
+    )
+    .unwrap();
+    game.state.mulligan = None;
+    game.state.pending = None;
+    game.state.turn.active = P0;
+    game.state.turn.step = Step::PrecombatMain;
+    game.state.turn.priority = Some(P0);
+    add_artifact(&mut game, P1, CardId::Island);
+    for name in ["Arcane Signet", "Fellwar Stone", "Commander's Sphere"] {
+        let source = add_artifact(&mut game, P0, card(name));
+        let offers: Vec<_> = game.legal_actions().into_iter().filter(|a| matches!(a.action, Action::ActivateColorManaAbility { source: s, .. } if s == source)).collect();
+        assert!(!offers.is_empty(), "{name} must offer colors");
+        for offer in offers {
+            game.validate(P0, &offer.action)
+                .expect("offered dynamic action must validate");
+        }
+        game.state.objects.get_mut(&source).unwrap().tapped = true;
+        assert!(!game.legal_actions().iter().any(|a| matches!(a.action, Action::ActivateColorManaAbility { source: s, .. } if s == source)), "tapped {name} must offer none");
+    }
+    // No priority: no dynamic offers at all.
+    game.state.turn.priority = None;
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a.action, Action::ActivateColorManaAbility { .. }))
+    );
+}

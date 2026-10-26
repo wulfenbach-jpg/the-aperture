@@ -72,8 +72,8 @@ fn sourced_artifacts_match_printings_and_are_noncreature_permanents() {
         "{T}: Add {C}{C}.\n{2}, {T}, Sacrifice this artifact: Draw two cards."
     );
     assert!(
-        catalog::by_name("Commander's Sphere").is_none(),
-        "explicitly excluded"
+        catalog::by_name("Commander's Sphere").is_some(),
+        "implemented later in slice 14; no longer excluded"
     );
 }
 

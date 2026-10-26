@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **113** are in the supported 126-card catalog and **346** are missing;
+* **114** are in the supported 126-card catalog and **345** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.

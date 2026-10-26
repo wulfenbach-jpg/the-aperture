@@ -1,0 +1,41 @@
+{
+  "artifact_casts": {
+    "Arcane Signet": 7,
+    "Commander's Sphere": 7,
+    "Fellwar Stone": 7,
+    "Grizzly Bears": 7,
+    "Krenko, Mob Boss": 4,
+    "Werebear": 18
+  },
+  "artifact_draw_activations": {
+    "Commander's Sphere": 7
+  },
+  "artifact_mana_activations": {
+    "Arcane Signet": 51,
+    "Commander's Sphere": 7,
+    "Fellwar Stone": 39,
+    "Forest": 21,
+    "Mountain": 110,
+    "Werebear": 82
+  },
+  "deck": "decks/package-slice14.txt",
+  "digest": "028cc2e33168b16de3e480e08cb8e6c74a3631dc6ab1be538a08acf5d83274ad",
+  "driver": "evidence-only masked artifact-preferring demonstrator; NOT product heuristic/strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 0
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 6665,
+  "seats": 4,
+  "seed": 1414,
+  "snapshot_sha256": "8a02ad417d14fe34c8a00b26a250754c9fe57126566aaa7386ecfd437c8287a7",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2371,
+  "turns": 42
+}

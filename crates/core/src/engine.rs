@@ -839,6 +839,8 @@ impl Game {
                 let def = o.card.def();
                 if let Some(color) = def.basic_mana {
                     Some((o.id, color, 1))
+                } else if let Some(color) = o.card.creature_mana() {
+                    (!o.summoning_sick).then_some((o.id, color, 1))
                 } else {
                     def.artifact_mana
                         .map(|(color, amount)| (o.id, color, amount))
@@ -5588,7 +5590,11 @@ impl Game {
             });
         }
 
+        let mana_timing = self.state.pending.is_none() && self.state.turn.priority == Some(player);
         for object in self.state.battlefield(player) {
+            if !mana_timing || object.tapped {
+                continue;
+            }
             for color in self.dynamic_mana_colors(player, object.id) {
                 out.push(LegalAction {
                     action: Action::ActivateColorManaAbility {

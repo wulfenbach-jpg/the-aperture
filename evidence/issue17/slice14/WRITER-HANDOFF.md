@@ -5,15 +5,15 @@ Exact head reported after commit. No merge/master push. Full #17 unfinished:
 
 ## Sources
 
-Three records extracted from the coordinator’s immutable
+Four records extracted from the coordinator’s immutable
 `evidence/issue17/slice13/candidate-source.json` (retrieved
 `2026-10-26T17:44:38Z`) into `fixtures/starter-corpus/slice14-sourced.json`;
-only these three, with Scryfall id/printing URL/retrieval stamp.
+all four, with Scryfall id/printing URL/retrieval stamp.
 
 * **Arcane Signet** `{2}` Artifact — `{T}: Add one mana of any color in your commander's color identity.`
 * **Fellwar Stone** `{2}` Artifact — `{T}: Add one mana of any color that a land an opponent controls could produce.`
 * **Werebear** `{1}{G}` 1/1 Human Bear Druid — `{T}: Add {G}.`; Threshold +3/+3 with ≥7 cards in your graveyard.
-* **Commander's Sphere** `{3}` Artifact — `{T}: Add one mana of any color in your commander's color identity.` / `Sacrifice this artifact: Draw a card.` (added from the same immutable candidate source; four source records total).
+* **Commander's Sphere** `{3}` Artifact — `{T}: Add one mana of any color in your commander's color identity.` / `Sacrifice this artifact: Draw a card.`
 
 ## Behavior
 
@@ -44,11 +44,18 @@ broad mechanism.
 
 ## Genuine RED
 
-Absent-catalog failure first; after scaffolding cards/fields/action with no
-dynamic mana engine, tests failed with offered colors `[]` (Arcane/Fellwar),
-Werebear sickness/threshold unavailable — real mechanic RED before implementation.
-A test assertion was corrected to match the engine’s correct
-“cannot produce red mana here” refusal wording; no production weakening.
+1. Absent-catalog first; after scaffolding cards/fields/action with no dynamic
+   mana engine, offered colors were `[]` (Arcane/Fellwar) and Werebear
+   sickness/threshold behavior failed.
+2. Product legal-offer defects (fixed here): a ready Werebear was absent from
+   `mana_sources`, so no `ActivateManaAbility` was offered; and tapped dynamic
+   artifacts were still offered colors that `validate` refused. RED asserted
+   “ready Werebear must be offered” and “tapped Arcane Signet must offer none”.
+   Fix: `mana_sources` includes ready creature mana; dynamic offers require
+   priority, no pending choice, and an untapped source. Driver-local tapped
+   filters were removed; it now chooses only actual projected legal actions.
+3. A slice12 test that still asserted Commander’s Sphere was excluded was
+   updated to the now-supported truth.
 
 ## Verification
 
@@ -69,16 +76,18 @@ cargo build --release -p aperture-cli   exit 0
 `decks/package-slice14.txt` — 40-card supported package, not a desired starter;
 four seats, Krenko commander each, 40 life, seed 1401:
 
-* the package file was updated to include Commander's Sphere (still 40 cards).
-* default product-heuristic run, seed 1401: terminal P0, 1785 steps / 40 turns,
-  digest `fdc9b089f8f9…`; 17 Werebear casts, **0 artifact casts and 0 mana
-  activations**; replay and fresh save-out/reload match 5897 events.
-* the evidence-only slice14 driver was adapted but **did not complete**: it cast
-  and activated the three artifacts, but could not force a Werebear mana
-  activation before termination, and its mandatory assertions therefore abort.
-  It is left uncommitted with the exact incomplete command
-  `CARGO_TARGET_DIR=C:/AI/aperture-worktrees/issue-17/target cargo run --manifest-path evidence/issue17/slice14/journey-driver/Cargo.toml`.
-  Focused tests prove all four cards; no journey activation claim is inferred.
+* package includes all four new cards (still 40 cards, not a desired starter).
+* **completed evidence-only driver** (`slice14/journey-driver`), seed 1414,
+  exact four seats, 40 life, terminal P0, 2371 steps / 42 turns, digest
+  `028cc2e33168…`, replay events 6665, replay digest matches:
+  * casts: Arcane Signet 7, Fellwar Stone 7, Commander’s Sphere 7, Werebear 18
+  * mana activations: Arcane 51, Fellwar 39, Sphere 7, Werebear 82
+  * Sphere sacrifice-draw activations: 7
+  * separate release CLI replay + fresh `--save-out` save reload/replay both
+    reproduce `028cc2e33168` and 6665 events
+* default product-heuristic trace retained separately: seed 1401, terminal P0,
+  1785 steps, digest `fdc9b089f8f9…`, 17 Werebear casts, 0 artifact casts or
+  activations. Product heuristic limitation remains; no AI policy edit.
 
 ## Corpus/docs
 
