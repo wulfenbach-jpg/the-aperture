@@ -11,9 +11,14 @@ issue closure or successor activation was performed.
   the `fix(corpus): … (S6-R1-F1)` repair below. Local = remote = PR head.
 * PR OPEN / MERGEABLE / still draft. Base change recorded but not applied: the
   supervisor reports #16 merged to master at `8de0961` (counters, tokens,
-  keywords, library operations); PR46 has **not** been rebased onto it — that is
-  the next integration step, and the slice-6 primitives touch
+  keywords, library operations); PR46 has **not** been rebased onto it, and
+  GitHub now reports the PR `CONFLICTING` against that base. That is the next
+  integration step, and the slice-6 primitives touch
   `card.rs`/`ability.rs`/`engine.rs`/`catalog.rs`, which is the collision surface.
+* Exact-head CI at code head `563f968`: **5/5 check-runs completed `success`**
+  (board and roadmap, rust ubuntu/windows/macos, windows package) —
+  `slice6-exact-head-ci-check-runs.json`. The commit after it (`ed9dba6`) is
+  evidence-only.
 
 ## What is usable now (real behaviour, sourced this run)
 
