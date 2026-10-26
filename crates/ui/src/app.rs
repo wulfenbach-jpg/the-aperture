@@ -18,8 +18,8 @@ use aperture_core::{Action, AiSettings, ObjectId, P0, PlayerId, Profile, Zone, c
 use eframe::egui::{self, RichText};
 
 use crate::session::{
-    SandboxOp, UiSession, block_list, import_seat_file, import_seat_text, import_seat_url,
-    load_explicit_deck,
+    SandboxOp, UiSession, block_list, import_seat_file_for, import_seat_text_for,
+    import_seat_url_for, load_explicit_deck,
 };
 use crate::theme;
 
@@ -1185,13 +1185,19 @@ impl ApertureApp {
     }
 
     fn import_panel_contents(&mut self, ui: &mut egui::Ui) {
+        let profile = self.session.profile;
         theme::heading(ui, "Deck import — one certified list per seat (2-4 seats)");
         theme::muted(
             ui,
-            "URL form: https://archidekt.com/decks/<id>[/slug] (host-allowlisted, canonical API built from the id). \
-             Text fallback: paste a list or point at a file. A seat becomes usable only after its exact list passes \
-             the practice profile; unsupported input is refused, never replaced. The old two-seat import still \
-             labels its seats honestly.",
+            format!(
+                "URL form: https://archidekt.com/decks/<id>[/slug] (host-allowlisted, canonical API built from the id). \
+                 Text fallback: paste a list or point at a file. Each seat is certified for the selected profile \
+                 ({}, {}-life) on two separate axes — Commander format legality and engine support — and the exact \
+                 unsupported cards are listed below before start is enabled. Unsupported input is refused, never \
+                 replaced by a bundled deck.",
+                profile.label(),
+                profile.starting_life()
+            ),
         );
         for seat in 0..self.session.seats.len() as PlayerId {
             let index = seat as usize;
@@ -1224,8 +1230,9 @@ impl ApertureApp {
                 {
                     let url = self.session.seat_url[index].clone();
                     let cache = PathBuf::from("cache");
-                    self.session
-                        .request_import(seat, move || import_seat_url(seat, &url, &cache));
+                    self.session.request_import(seat, move || {
+                        import_seat_url_for(seat, &url, &cache, profile)
+                    });
                 }
             });
             ui.label("Text fallback (paste a deck list):");
@@ -1241,8 +1248,9 @@ impl ApertureApp {
                 {
                     let text = self.session.seat_text[index].clone();
                     let name = format!("P{seat} pasted list");
-                    self.session
-                        .request_import(seat, move || import_seat_text(seat, &name, &text));
+                    self.session.request_import(seat, move || {
+                        import_seat_text_for(seat, &name, &text, profile)
+                    });
                 }
                 ui.label("file:");
                 ui.add(
@@ -1255,7 +1263,7 @@ impl ApertureApp {
                 {
                     let path = PathBuf::from(self.session.seat_path[index].clone());
                     self.session
-                        .request_import(seat, move || import_seat_file(seat, &path));
+                        .request_import(seat, move || import_seat_file_for(seat, &path, profile));
                 }
                 if busy {
                     ui.spinner();
@@ -1272,22 +1280,68 @@ impl ApertureApp {
                     ("REFUSED", theme::BAD)
                 };
                 ui.label(
+                    RichText::new(format!("{status} — {}", import.status_line()))
+                        .color(color)
+                        .strong(),
+                );
+                ui.label(
                     RichText::new(format!(
-                        "{status} — '{}' ({} / {} cards)",
-                        import.name, import.supported, import.total
+                        "format legality (Commander construction): {} · engine support: {} ({}/{} cards) · profile {}",
+                        import.format_status, import.support_status, import.supported, import.total, import.profile
                     ))
-                    .color(color)
-                    .strong(),
+                    .small(),
                 );
                 if let Some(list) = &import.list {
-                    let profile = aperture_core::catalog::pool_size();
+                    let pool = aperture_core::catalog::pool_size();
                     ui.label(RichText::new(format!(
-                        "planned list applied verbatim: {} card(s) across {} distinct cards; every card is in the {profile}-card pool",
+                        "planned list applied verbatim: {} card(s) across {} distinct cards; every card is in the {pool}-card pool{}",
                         list.size(),
-                        list.cards.len()
+                        list.cards.len(),
+                        import
+                            .commander
+                            .map(|c| format!("; commander {}", c.name()))
+                            .unwrap_or_default()
                     )));
                 }
-                ui.label(RichText::new(import.summary.clone()).monospace().small());
+                if import.unsupported.is_empty() {
+                    ui.label(RichText::new("unsupported cards: none").small());
+                } else {
+                    ui.label(
+                        RichText::new(format!(
+                            "unsupported cards ({} card(s), exact reasons):",
+                            import.unsupported.len()
+                        ))
+                        .color(theme::BAD)
+                        .small(),
+                    );
+                    egui::ScrollArea::vertical()
+                        .max_height(120.0)
+                        .id_salt(("unsupported", index))
+                        .show(ui, |ui| {
+                            for unsupported in &import.unsupported {
+                                ui.label(
+                                    RichText::new(format!(
+                                        "  {} x{} — {}",
+                                        unsupported.name, unsupported.quantity, unsupported.reason
+                                    ))
+                                    .monospace()
+                                    .small(),
+                                );
+                            }
+                        });
+                }
+                if let Some(refusal) = &import.refusal {
+                    ui.label(
+                        RichText::new(format!("refused: {refusal}"))
+                            .color(theme::BAD)
+                            .small(),
+                    );
+                }
+                egui::CollapsingHeader::new("full certification report")
+                    .id_salt(("import-report", index))
+                    .show(ui, |ui| {
+                        ui.label(RichText::new(import.summary.clone()).monospace().small());
+                    });
             }
         }
         ui.separator();
@@ -2370,8 +2424,10 @@ mod viewport_tests {
         let (a, b, _) = startup_decks(&startup);
         let mut session =
             UiSession::new(1, vec![a, b], AiSettings::default(), false, false).expect("session");
-        session.seat_import[0] = Some(import_seat_text(P0, "P0 imported", BUNDLED_A).unwrap());
-        session.seat_import[1] = Some(import_seat_text(1, "P1 imported", BUNDLED_B).unwrap());
+        session.seat_import[0] =
+            Some(crate::session::import_seat_text(P0, "P0 imported", BUNDLED_A).unwrap());
+        session.seat_import[1] =
+            Some(crate::session::import_seat_text(1, "P1 imported", BUNDLED_B).unwrap());
         ApertureApp {
             session,
             startup,
@@ -3454,5 +3510,100 @@ mod viewport_tests {
         assert!(app.session.undo_last_action().is_err());
         let after = app.session.game.digest();
         assert_eq!(digest, after, "the refused undo changed nothing");
+    }
+
+    /// Issue21: the exact command-seat list used by the panel journey.
+    const IMPORT_JOURNEY_COMMAND_SEAT: &str = "Commander
+1 Isamaru, Hound of Konda
+Deck
+12 Plains
+8 Forest
+8 Island
+4 Grizzly Bears
+4 Centaur Courser
+2 Unsummon
+2 Swords to Plowshares
+";
+
+    #[test]
+    fn the_import_panel_reports_both_axes_and_every_unsupported_card_before_start() {
+        let mut app = imported_app();
+        app.session
+            .start_table(61, 2, Profile::CommanderCombat40)
+            .expect("bounded command table");
+        let refused = IMPORT_JOURNEY_COMMAND_SEAT.replace("2 Unsummon", "2 Sol Ring");
+        let import =
+            crate::session::import_seat_text_for(0, "P0 refused", &refused, app.session.profile)
+                .expect("import runs");
+        assert!(!import.certified());
+        app.session.seat_import[0] = Some(import);
+        app.show_import = true;
+        let labels = run_frame(&mut app, 1600.0, 1600.0, 4);
+        let joined = labels.join(
+            "
+",
+        );
+        assert!(
+            joined.contains("format legality (Commander construction)"),
+            "the format axis is not shown: {joined}"
+        );
+        assert!(
+            joined.contains("engine support: unsupported"),
+            "the support axis is not shown: {joined}"
+        );
+        assert!(
+            joined.contains("Sol Ring"),
+            "the exact unsupported card is not listed: {joined}"
+        );
+        assert!(
+            joined.contains("refused:"),
+            "the refusal reason is not shown: {joined}"
+        );
+        assert!(
+            joined.contains("command-unfriendly")
+                || joined.contains("commander-combat-practice-40"),
+            "the panel must name the profile it certifies against: {joined}"
+        );
+        assert!(
+            !app.session.can_start_imported(),
+            "an unsupported deck must not enable start"
+        );
+    }
+
+    #[test]
+    fn the_import_panel_starts_a_command_seat_from_certified_lists() {
+        let mut app = imported_app();
+        app.session
+            .start_table(62, 2, Profile::CommandZone20)
+            .expect("bounded command table");
+        for seat in 0..2u8 {
+            let import = crate::session::import_seat_text_for(
+                seat,
+                &format!("P{seat} imported command"),
+                IMPORT_JOURNEY_COMMAND_SEAT,
+                app.session.profile,
+            )
+            .expect("import runs");
+            assert!(import.certified(), "refusal: {:?}", import.refusal);
+            app.session.seat_import[seat as usize] = Some(import);
+        }
+        app.show_import = true;
+        assert!(app.session.can_start_imported());
+        click_text(&mut app, 1280.0, 2400.0, "Start imported match");
+        assert!(
+            matches!(app.confirm, Some(PendingAction::StartImported { .. })),
+            "the start button did not ask for confirmation"
+        );
+        click_text(&mut app, 1280.0, 2400.0, "Confirm imported match");
+        assert_eq!(app.session.game.state.profile, Profile::CommandZone20);
+        assert_eq!(app.session.game.state.commanders.len(), 2);
+        assert!(app.session.seats.iter().all(|deck| deck.size() == 40));
+        assert!(
+            app.session
+                .seats
+                .iter()
+                .all(|deck| deck.name.contains("imported command")),
+            "the certified lists were applied verbatim"
+        );
     }
 }

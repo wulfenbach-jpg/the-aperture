@@ -23,6 +23,7 @@ use aperture_core::{
     PlayerId, Profile, Replay, ReplayStep, SessionSave, Submission,
 };
 use aperture_import::DeckReport;
+use aperture_import::start::{DeckCertification, plan_start};
 
 /// Everything a completed replay-branch job produces: the base recorded line,
 /// the branched line cut at the chosen action boundary, and the state the
@@ -75,7 +76,9 @@ pub enum SandboxOp {
 }
 
 /// One seat's certified import: the exact planned list plus the audit summary
-/// the user must see before a match can start.
+/// the user must see before a match can start. Certifying one seat produces
+/// three separate answers — Commander format legality, engine support and seat
+/// fit — and only an actually startable seat carries a list.
 #[derive(Debug, Clone)]
 pub struct SeatImport {
     pub seat: PlayerId,
@@ -87,12 +90,30 @@ pub struct SeatImport {
     /// The exact planned list; `None` when the import was refused.
     pub list: Option<DeckList>,
     pub refusal: Option<String>,
+    /// The commander this deck designates, when the engine can seat it.
+    pub commander: Option<CardId>,
+    /// Commander format legality, kept separate from engine support.
+    pub format_status: String,
+    /// Engine support verdict for the certified list.
+    pub support_status: String,
+    /// Every unsupported card with its exact reason (never truncated).
+    pub unsupported: Vec<aperture_import::UnsupportedCard>,
+    /// The profile this import was certified for.
+    pub profile: String,
 }
 
 impl SeatImport {
-    /// True only when the whole list passed the practice-profile analysis.
+    /// True only when the whole list passed the certification for its profile.
     pub fn certified(&self) -> bool {
         self.list.is_some()
+    }
+
+    /// One-line status for the import panel.
+    pub fn status_line(&self) -> String {
+        format!(
+            "'{}' — format: {} · engine support: {} ({}/{} cards)",
+            self.name, self.format_status, self.support_status, self.supported, self.total
+        )
     }
 }
 
@@ -133,6 +154,41 @@ pub enum WorkerMessage {
 /// File formats the UI shows as a label per seat.
 fn seat_label(seat: PlayerId) -> String {
     format!("P{seat}")
+}
+
+/// Build a `SeatImport` from a start-flow certification. The list is `Some` only
+/// when the engine support axis and the seat fit both pass, so an unsupported or
+/// unseatable deck can never start; the two verdicts stay separately visible.
+pub fn seat_import_from_certification(seat: PlayerId, cert: DeckCertification) -> SeatImport {
+    let plan = plan_start(&cert).ok();
+    let commander = cert.commander.as_ref().and_then(|c| c.card());
+    let refusal = if cert.refusals.is_empty() {
+        None
+    } else {
+        Some(cert.refusals.join(" | "))
+    };
+    SeatImport {
+        seat,
+        name: cert.deck_name.clone(),
+        supported: cert.support.supported_cards,
+        total: cert.support.total_cards
+            + cert
+                .commander
+                .as_ref()
+                .map(|c| c.quantity as u32)
+                .unwrap_or(0),
+        summary: cert.render(),
+        list: plan.as_ref().map(|p| p.deck.clone()),
+        refusal,
+        commander,
+        format_status: cert.format.status.as_str().to_string(),
+        support_status: match cert.support.status {
+            aperture_import::commander::SupportStatus::Supported => "supported".to_string(),
+            aperture_import::commander::SupportStatus::Unsupported => "unsupported".to_string(),
+        },
+        unsupported: cert.support.unsupported.clone(),
+        profile: cert.profile.clone(),
+    }
 }
 
 /// Build a `SeatImport` from a provider report: the list is `Some` only when
@@ -181,30 +237,68 @@ pub fn seat_import_from_report(seat: PlayerId, report: DeckReport) -> SeatImport
         summary,
         list,
         refusal: report.refusal.clone(),
+        commander: None,
+        format_status: "not_checked (legacy practice report)".to_string(),
+        support_status: if report.launchable {
+            "supported".to_string()
+        } else {
+            "unsupported".to_string()
+        },
+        unsupported: report.unsupported.clone(),
+        profile: "practice-20".to_string(),
     }
 }
 
-/// Import one seat from a pasted Archidekt URL (blocking; run off-thread).
+/// Import one seat from a pasted Archidekt URL for `profile` (blocking; run
+/// off-thread). The URL guard, redirect policy, timeout and size cap are the
+/// existing provider rules; nothing is fetched on the frame thread.
+pub fn import_seat_url_for(
+    seat: PlayerId,
+    url: &str,
+    cache_dir: &Path,
+    profile: Profile,
+) -> Result<SeatImport, String> {
+    let cert =
+        aperture_import::start::certify_url(url, cache_dir, profile).map_err(|e| e.to_string())?;
+    Ok(seat_import_from_certification(seat, cert))
+}
+
+/// Import one seat from a pasted text list for `profile` (blocking; run
+/// off-thread).
+pub fn import_seat_text_for(
+    seat: PlayerId,
+    name: &str,
+    text: &str,
+    profile: Profile,
+) -> Result<SeatImport, String> {
+    let cert =
+        aperture_import::start::certify_text(name, text, profile).map_err(|e| e.to_string())?;
+    Ok(seat_import_from_certification(seat, cert))
+}
+
+/// Import one seat from a deck file for `profile` (blocking; run off-thread).
+pub fn import_seat_file_for(
+    seat: PlayerId,
+    path: &Path,
+    profile: Profile,
+) -> Result<SeatImport, String> {
+    let cert = aperture_import::start::certify_file(path, profile).map_err(|e| e.to_string())?;
+    Ok(seat_import_from_certification(seat, cert))
+}
+
+/// Import one seat from a pasted Archidekt URL (practice profile; blocking).
 pub fn import_seat_url(seat: PlayerId, url: &str, cache_dir: &Path) -> Result<SeatImport, String> {
-    let report = aperture_import::import_url(url, cache_dir).map_err(|e| e.to_string())?;
-    Ok(seat_import_from_report(seat, report))
+    import_seat_url_for(seat, url, cache_dir, Profile::Practice20)
 }
 
-/// Import one seat from a pasted text list (blocking; run off-thread).
+/// Import one seat from a pasted text list (practice profile; blocking).
 pub fn import_seat_text(seat: PlayerId, name: &str, text: &str) -> Result<SeatImport, String> {
-    let report = aperture_import::text_report(name, text).map_err(|e| e.to_string())?;
-    Ok(seat_import_from_report(seat, report))
+    import_seat_text_for(seat, name, text, Profile::Practice20)
 }
 
-/// Import one seat from a text file path (blocking; run off-thread).
+/// Import one seat from a text file path (practice profile; blocking).
 pub fn import_seat_file(seat: PlayerId, path: &Path) -> Result<SeatImport, String> {
-    let text = std::fs::read_to_string(path)
-        .map_err(|e| format!("could not read {}: {e}", path.display()))?;
-    let name = path
-        .file_stem()
-        .and_then(|s| s.to_str())
-        .unwrap_or("imported list");
-    import_seat_text(seat, name, &text)
+    import_seat_file_for(seat, path, Profile::Practice20)
 }
 
 pub struct UiSession {
@@ -504,12 +598,18 @@ impl UiSession {
                     seat,
                     outcome,
                 } => {
+                    let index = seat as usize;
                     if generation != self.generation {
+                        // The seat's busy flag belongs to the discarded run: clear
+                        // it, otherwise a session change during a fetch would
+                        // leave the panel spinning forever with no way to retry.
+                        if let Some(busy) = self.import_busy.get_mut(index) {
+                            *busy = false;
+                        }
                         self.busy_note =
                             Some(format!("discarded a stale {} import", seat_label(seat)));
                         continue;
                     }
-                    let index = seat as usize;
                     self.import_busy[index] = false;
                     match outcome {
                         Ok(mut import) => {
@@ -856,7 +956,10 @@ impl UiSession {
     }
 
     /// The explicit one-supported-commander-per-seat setup for the named
-    /// command profiles. Empty for ordinary practice.
+    /// command profiles. Empty for ordinary practice. A seat whose import
+    /// certified its own commander uses that commander; every other seat falls
+    /// back to the bundled one. Nothing here can invent a commander: the
+    /// supported-pool check already ran during certification.
     pub fn commander_setup(&self) -> Vec<CommanderSetup> {
         if !self.profile.has_command_zone() {
             return Vec::new();
@@ -864,9 +967,20 @@ impl UiSession {
         (0..self.seats.len())
             .map(|seat| CommanderSetup {
                 seat: seat as PlayerId,
-                card: CardId::IsamaruHoundOfKonda,
+                card: self
+                    .imported_commander(seat as PlayerId)
+                    .unwrap_or(CardId::IsamaruHoundOfKonda),
             })
             .collect()
+    }
+
+    /// The commander a certified command-zone import designated for `seat`.
+    pub fn imported_commander(&self, seat: PlayerId) -> Option<CardId> {
+        let import = self.seat_import.get(seat as usize)?.as_ref()?;
+        if !import.certified() {
+            return None;
+        }
+        import.commander
     }
 
     /// Build a brand-new engine, log and replay for the configured seats and

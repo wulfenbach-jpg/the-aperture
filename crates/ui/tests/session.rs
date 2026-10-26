@@ -5,7 +5,9 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 use aperture_core::{Action, AiSettings, CardId, DeckList, Event, ObjectId, P0, P1, Profile};
-use aperture_ui::session::{BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, load_explicit_deck};
+use aperture_ui::session::{
+    BUNDLED_A, BUNDLED_B, SandboxOp, UiSession, import_seat_text_for, load_explicit_deck,
+};
 
 fn deck_a() -> DeckList {
     DeckList::parse_practice("Temur Beats", BUNDLED_A).expect("deck A")
@@ -661,4 +663,133 @@ fn ordinary_default_seats_stay_temur_izzet() {
     );
     assert!(seats.iter().all(|deck| deck.count_of(CardId::Plains) == 0));
     assert!(seats.iter().all(|deck| deck.size() == 40));
+}
+
+// ------------------------------------------------------- issue21 import journey
+
+/// 40 supported library cards plus a supported commander: the bounded
+/// command-zone seat contract that a real Archidekt Commander list has to be
+/// reduced to before this build can seat it.
+const COMMAND_SEAT: &str = "\
+Commander
+1 Isamaru, Hound of Konda
+Deck
+12 Plains
+8 Forest
+8 Island
+4 Grizzly Bears
+4 Centaur Courser
+2 Unsummon
+2 Swords to Plowshares
+";
+
+#[test]
+fn a_commander_import_certifies_and_starts_the_seat_with_its_own_commander() {
+    let mut ui = session(41, false);
+    ui.start_table(41, 2, Profile::CommanderCombat40)
+        .expect("bounded command table");
+    let profile = ui.profile;
+    for seat in 0..2u8 {
+        let import = import_seat_text_for(
+            seat,
+            &format!("P{seat} command import"),
+            COMMAND_SEAT,
+            profile,
+        )
+        .expect("import runs");
+        assert!(import.certified(), "refusal: {:?}", import.refusal);
+        assert_eq!(import.commander, Some(CardId::IsamaruHoundOfKonda));
+        // The two axes are reported separately and honestly: 41 cards is not a
+        // legal Commander deck, and it is still a supported, seatable list.
+        assert_eq!(import.format_status, "illegal");
+        assert_eq!(import.support_status, "supported");
+        assert_eq!(import.profile, profile.label());
+        ui.seat_import[seat as usize] = Some(import);
+    }
+    assert!(ui.can_start_imported(), "both seats are certified");
+    ui.start_imported_match(42).expect("imported match starts");
+
+    assert_eq!(ui.game.state.profile, Profile::CommanderCombat40);
+    assert_eq!(ui.game.state.player(P0).life, 40);
+    assert_eq!(ui.seats.len(), 2);
+    assert!(ui.seats.iter().all(|deck| deck.size() == 40));
+    assert_eq!(ui.game.state.commanders.len(), 2);
+    for commander in &ui.game.state.commanders {
+        assert_eq!(commander.card, CardId::IsamaruHoundOfKonda);
+    }
+    assert_eq!(ui.commander_setup().len(), 2);
+    // The imported commander is public in the other seat's command zone.
+    let view = ui.view(P1);
+    assert_eq!(view.opponents[0].command_zone.len(), 1);
+    assert_eq!(view.commanders.len(), 2);
+}
+
+#[test]
+fn an_unsupported_card_in_a_commander_import_is_refused_and_never_substituted() {
+    let mut ui = session(43, false);
+    ui.start_table(43, 2, Profile::CommanderCombat40)
+        .expect("bounded command table");
+    let text = COMMAND_SEAT.replace("2 Unsummon", "2 Sol Ring");
+    let import = import_seat_text_for(0, "P0 refused", &text, ui.profile).expect("import runs");
+    assert!(!import.certified());
+    assert_eq!(import.support_status, "unsupported");
+    let sol_ring = import
+        .unsupported
+        .iter()
+        .find(|card| card.name == "Sol Ring")
+        .expect("Sol Ring is listed with its reason");
+    assert!(sol_ring.reason.contains("not in the supported pool"));
+    assert!(
+        import
+            .refusal
+            .as_deref()
+            .unwrap_or_default()
+            .contains("never substituted"),
+        "refusal: {:?}",
+        import.refusal
+    );
+    ui.seat_import[0] = Some(import);
+    assert!(!ui.can_start_imported());
+    assert!(ui.start_imported_match(44).is_err());
+    // The live table is untouched: the bundled lists were not replaced, and no
+    // partially supported list was quietly applied.
+    assert_eq!(ui.seats[0].name, "Command zone practice");
+}
+
+#[test]
+fn a_stale_import_result_is_discarded_and_the_seat_is_not_left_busy() {
+    let mut ui = session(45, false);
+    let (ready_tx, ready_rx) = std::sync::mpsc::channel::<()>();
+    let started = ui.request_import(0, move || {
+        // Hold the worker until the test has changed the session.
+        let _ = ready_rx.recv();
+        import_seat_text_for(0, "late", COMMAND_SEAT, Profile::CommanderCombat40)
+    });
+    assert!(started);
+    assert!(ui.import_busy[0]);
+    ui.new_game(46);
+    ready_tx.send(()).expect("release the worker");
+    let mut applied = Vec::new();
+    for _ in 0..600 {
+        applied = ui.poll_workers();
+        if !ui.import_busy[0] && !applied.is_empty() {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    assert!(
+        !ui.import_busy[0],
+        "a discarded import must clear its busy flag, or the panel spins forever"
+    );
+    assert!(applied.is_empty(), "the stale result must not be applied");
+    assert!(
+        ui.busy_note
+            .as_deref()
+            .unwrap_or_default()
+            .contains("stale"),
+        "busy note: {:?}",
+        ui.busy_note
+    );
+    assert!(ui.seat_import[0].is_none());
+    assert!(!ui.can_start_imported());
 }
