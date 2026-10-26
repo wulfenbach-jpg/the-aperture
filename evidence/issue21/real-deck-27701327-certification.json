@@ -1,0 +1,2294 @@
+{
+  "schema": "aperture.import-start.v1",
+  "provider": "archidekt",
+  "source": "https://archidekt.com/decks/27701327",
+  "deck_id": 27701327,
+  "deck_name": "Menace",
+  "profile": "commander-combat-practice-40",
+  "format": {
+    "format": "commander",
+    "status": "illegal",
+    "basis": "provider card data: commander designation, card count, quantities, color identity. Per-card banned/errata status from the provider's legalities field is not re-certified.",
+    "checks": [
+      {
+        "code": "commander_present",
+        "status": "legal",
+        "detail": "exactly one commander (Seifer, Balamb Rival)"
+      },
+      {
+        "code": "deck_size",
+        "status": "illegal",
+        "detail": "a Commander deck is exactly 100 cards including the commander; this deck has 101 (100 library + 1 command zone)"
+      },
+      {
+        "code": "singleton",
+        "status": "legal",
+        "detail": "no nonbasic card appears more than once; basics are unlimited"
+      },
+      {
+        "code": "commander_eligibility",
+        "status": "legal",
+        "detail": "'Seifer, Balamb Rival' is a legendary creature"
+      },
+      {
+        "code": "color_identity",
+        "status": "legal",
+        "detail": "every library card is inside the commander's identity [BR]"
+      }
+    ]
+  },
+  "support": {
+    "status": "unsupported",
+    "total_cards": 100,
+    "supported_cards": 8,
+    "unsupported_cards": 92,
+    "unsupported": [
+      {
+        "name": "Magda, the Hoardmaster",
+        "quantity": 1,
+        "reason": "'Magda, the Hoardmaster' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rattleback Apothecary",
+        "quantity": 1,
+        "reason": "'Rattleback Apothecary' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Unholy Annex // Ritual Chamber",
+        "quantity": 1,
+        "reason": "multi-face card (layout 'split, faces: Unholy Annex / Ritual Chamber): not modeled"
+      },
+      {
+        "name": "Morbid Opportunist",
+        "quantity": 1,
+        "reason": "'Morbid Opportunist' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "J. Jonah Jameson",
+        "quantity": 1,
+        "reason": "'J. Jonah Jameson' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Avalanche of Sector 7",
+        "quantity": 1,
+        "reason": "'Avalanche of Sector 7' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Ardyn, the Usurper",
+        "quantity": 1,
+        "reason": "'Ardyn, the Usurper' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Grenzo, Havoc Raiser",
+        "quantity": 1,
+        "reason": "'Grenzo, Havoc Raiser' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Foreboding Ruins",
+        "quantity": 1,
+        "reason": "'Foreboding Ruins' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Curse of Opulence",
+        "quantity": 1,
+        "reason": "'Curse of Opulence' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Labyrinth Raptor",
+        "quantity": 1,
+        "reason": "'Labyrinth Raptor' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Command Tower",
+        "quantity": 1,
+        "reason": "'Command Tower' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Shadowblood Ridge",
+        "quantity": 1,
+        "reason": "'Shadowblood Ridge' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Sonorous Howlbonder",
+        "quantity": 1,
+        "reason": "'Sonorous Howlbonder' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Swamp",
+        "quantity": 9,
+        "reason": "'Swamp' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Tainted Peak",
+        "quantity": 1,
+        "reason": "'Tainted Peak' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Shakedown Heavy",
+        "quantity": 1,
+        "reason": "'Shakedown Heavy' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Sulfurous Springs",
+        "quantity": 1,
+        "reason": "'Sulfurous Springs' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Luxury Suite",
+        "quantity": 1,
+        "reason": "'Luxury Suite' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Feed the Swarm",
+        "quantity": 1,
+        "reason": "'Feed the Swarm' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Dark Ritual",
+        "quantity": 1,
+        "reason": "'Dark Ritual' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Dragonskull Summit",
+        "quantity": 1,
+        "reason": "'Dragonskull Summit' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Vincent, Vengeful Atoner",
+        "quantity": 1,
+        "reason": "'Vincent, Vengeful Atoner' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Smoldering Marsh",
+        "quantity": 1,
+        "reason": "'Smoldering Marsh' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Talisman of Indulgence",
+        "quantity": 1,
+        "reason": "'Talisman of Indulgence' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Frenzied Gorespawn",
+        "quantity": 1,
+        "reason": "'Frenzied Gorespawn' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Bojuka Bog",
+        "quantity": 1,
+        "reason": "'Bojuka Bog' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rakdos Charm",
+        "quantity": 1,
+        "reason": "'Rakdos Charm' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Blackcleave Cliffs",
+        "quantity": 1,
+        "reason": "'Blackcleave Cliffs' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Canyon Slough",
+        "quantity": 1,
+        "reason": "'Canyon Slough' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Graven Cairns",
+        "quantity": 1,
+        "reason": "'Graven Cairns' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Fellwar Stone",
+        "quantity": 1,
+        "reason": "'Fellwar Stone' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Restless Vents",
+        "quantity": 1,
+        "reason": "'Restless Vents' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Exotic Orchard",
+        "quantity": 1,
+        "reason": "'Exotic Orchard' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rakdos Carnarium",
+        "quantity": 1,
+        "reason": "'Rakdos Carnarium' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Mind Stone",
+        "quantity": 1,
+        "reason": "'Mind Stone' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Xantcha, Sleeper Agent",
+        "quantity": 1,
+        "reason": "'Xantcha, Sleeper Agent' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Blightstep Pathway // Searstep Pathway",
+        "quantity": 1,
+        "reason": "multi-face card (layout 'modal_dfc, faces: Blightstep Pathway / Searstep Pathway): not modeled"
+      },
+      {
+        "name": "Sol Ring",
+        "quantity": 1,
+        "reason": "'Sol Ring' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Massacre Girl, Known Killer",
+        "quantity": 1,
+        "reason": "'Massacre Girl, Known Killer' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Komainu Battle Armor",
+        "quantity": 1,
+        "reason": "'Komainu Battle Armor' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rapacious Guest",
+        "quantity": 1,
+        "reason": "'Rapacious Guest' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Loyal Subordinate",
+        "quantity": 1,
+        "reason": "'Loyal Subordinate' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Pain Distributor",
+        "quantity": 1,
+        "reason": "'Pain Distributor' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Sin Prodder",
+        "quantity": 1,
+        "reason": "'Sin Prodder' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Lobelia Sackville-Baggins",
+        "quantity": 1,
+        "reason": "'Lobelia Sackville-Baggins' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rowan, Scion of War",
+        "quantity": 1,
+        "reason": "'Rowan, Scion of War' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Blackbloom Rogue // Blackbloom Bog",
+        "quantity": 1,
+        "reason": "multi-face card (layout 'modal_dfc, faces: Blackbloom Rogue / Blackbloom Bog): not modeled"
+      },
+      {
+        "name": "Veronica, Dissident Scribe",
+        "quantity": 1,
+        "reason": "'Veronica, Dissident Scribe' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Raphael, Tag Team Tough",
+        "quantity": 1,
+        "reason": "'Raphael, Tag Team Tough' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Lightning, Security Sergeant",
+        "quantity": 1,
+        "reason": "'Lightning, Security Sergeant' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Blood Crypt",
+        "quantity": 1,
+        "reason": "'Blood Crypt' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Haunted Ridge",
+        "quantity": 1,
+        "reason": "'Haunted Ridge' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Daily Bugle Building",
+        "quantity": 1,
+        "reason": "'Daily Bugle Building' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Temple of Malice",
+        "quantity": 1,
+        "reason": "'Temple of Malice' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Professional Face-Breaker",
+        "quantity": 1,
+        "reason": "'Professional Face-Breaker' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Jecht, Reluctant Guardian // Braska's Final Aeon",
+        "quantity": 1,
+        "reason": "multi-face card (layout 'transform, faces: Jecht, Reluctant Guardian / Braska's Final Aeon): not modeled"
+      },
+      {
+        "name": "Stormfist Crusader",
+        "quantity": 1,
+        "reason": "'Stormfist Crusader' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rakdos Signet",
+        "quantity": 1,
+        "reason": "'Rakdos Signet' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Sticky Fingers",
+        "quantity": 1,
+        "reason": "'Sticky Fingers' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Ruin Grinder",
+        "quantity": 1,
+        "reason": "'Ruin Grinder' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Star Athlete",
+        "quantity": 1,
+        "reason": "'Star Athlete' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Barbed Servitor",
+        "quantity": 1,
+        "reason": "'Barbed Servitor' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Locke, Treasure Hunter",
+        "quantity": 1,
+        "reason": "'Locke, Treasure Hunter' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Bladewing, Deathless Tyrant",
+        "quantity": 1,
+        "reason": "'Bladewing, Deathless Tyrant' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Falthis, Shadowcat Familiar",
+        "quantity": 1,
+        "reason": "'Falthis, Shadowcat Familiar' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Ayara's Oathsworn",
+        "quantity": 1,
+        "reason": "'Ayara's Oathsworn' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Gut, True Soul Zealot",
+        "quantity": 1,
+        "reason": "'Gut, True Soul Zealot' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Arcane Signet",
+        "quantity": 1,
+        "reason": "'Arcane Signet' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Agent Venom",
+        "quantity": 1,
+        "reason": "'Agent Venom' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Rise of the Dark Realms",
+        "quantity": 1,
+        "reason": "'Rise of the Dark Realms' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Alesha, Who Laughs at Fate",
+        "quantity": 1,
+        "reason": "'Alesha, Who Laughs at Fate' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Massacre Girl",
+        "quantity": 1,
+        "reason": "'Massacre Girl' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Puppet Master, String Puller",
+        "quantity": 1,
+        "reason": "'Puppet Master, String Puller' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Gix, Yawgmoth Praetor",
+        "quantity": 1,
+        "reason": "'Gix, Yawgmoth Praetor' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Frillscare Mentor",
+        "quantity": 1,
+        "reason": "'Frillscare Mentor' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Tokka & Rahzar, Terrible Twos",
+        "quantity": 1,
+        "reason": "'Tokka & Rahzar, Terrible Twos' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Sawblade Skinripper",
+        "quantity": 1,
+        "reason": "'Sawblade Skinripper' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Garna, the Bloodflame",
+        "quantity": 1,
+        "reason": "'Garna, the Bloodflame' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Frontier Warmonger",
+        "quantity": 1,
+        "reason": "'Frontier Warmonger' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Popular Entertainer",
+        "quantity": 1,
+        "reason": "'Popular Entertainer' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Living Death",
+        "quantity": 1,
+        "reason": "'Living Death' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Ares, God of War",
+        "quantity": 1,
+        "reason": "'Ares, God of War' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Tentative Connection",
+        "quantity": 1,
+        "reason": "'Tentative Connection' is not in the supported pool (31 cards)"
+      }
+    ]
+  },
+  "seat": {
+    "profile": "commander-combat-practice-40",
+    "starting_life": 40,
+    "command_zone": true,
+    "library_cards": 100,
+    "compatible": true,
+    "reason": null
+  },
+  "commander": {
+    "name": "Seifer, Balamb Rival",
+    "quantity": 1,
+    "supported": false,
+    "reason": "'Seifer, Balamb Rival' is not in the supported pool, so the command zone cannot hold it"
+  },
+  "entries": [
+    {
+      "name": "Chaos Warp",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "At Knifepoint",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Gisa, the Hellraiser",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Kaervek, the Punisher",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Magda, the Hoardmaster",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Magda, the Hoardmaster' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Bandit's Haul",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Rattleback Apothecary",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rattleback Apothecary' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Take for a Ride",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Raphael, Ninja Destroyer",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Callous Inspector",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Daring Piracy",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Endless Ranks of HYDRA",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Wake the Dragon",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Unholy Annex // Ritual Chamber",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'split, faces: Unholy Annex / Ritual Chamber): not modeled"
+    },
+    {
+      "name": "Morbid Opportunist",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Morbid Opportunist' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Prosper, Tome-Bound",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Seifer, Balamb Rival",
+      "quantity": 1,
+      "categories": [
+        "Commander"
+      ],
+      "status": "Commander",
+      "detail": null
+    },
+    {
+      "name": "J. Jonah Jameson",
+      "quantity": 1,
+      "categories": [
+        "Ramp",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'J. Jonah Jameson' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Avalanche of Sector 7",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Avalanche of Sector 7' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Ardyn, the Usurper",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Ardyn, the Usurper' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Grenzo, Havoc Raiser",
+      "quantity": 1,
+      "categories": [
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Grenzo, Havoc Raiser' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Foreboding Ruins",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Foreboding Ruins' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Reno and Rude",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Curse of Opulence",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Curse of Opulence' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Labyrinth Raptor",
+      "quantity": 1,
+      "categories": [
+        "Disruption",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Labyrinth Raptor' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Command Tower",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Command Tower' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Shadowblood Ridge",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Shadowblood Ridge' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Sonorous Howlbonder",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sonorous Howlbonder' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Swamp",
+      "quantity": 9,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Swamp' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Bedevil",
+      "quantity": 1,
+      "categories": [
+        "Cuts"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Tainted Peak",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Tainted Peak' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Shakedown Heavy",
+      "quantity": 1,
+      "categories": [
+        "Menace",
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Shakedown Heavy' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Sulfurous Springs",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sulfurous Springs' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Luxury Suite",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Luxury Suite' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Feed the Swarm",
+      "quantity": 1,
+      "categories": [
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Feed the Swarm' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Dark Ritual",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Dark Ritual' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Dragonskull Summit",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Dragonskull Summit' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Generous Plunderer",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Bothersome Quasit",
+      "quantity": 1,
+      "categories": [
+        "Wishlist",
+        "Disruption"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Vincent, Vengeful Atoner",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Vincent, Vengeful Atoner' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Smoldering Marsh",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Smoldering Marsh' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Untimely Malfunction",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Talisman of Indulgence",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Talisman of Indulgence' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Frenzied Gorespawn",
+      "quantity": 1,
+      "categories": [
+        "Disruption",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Frenzied Gorespawn' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Bojuka Bog",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Bojuka Bog' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Rakdos Charm",
+      "quantity": 1,
+      "categories": [
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rakdos Charm' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Blackcleave Cliffs",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Blackcleave Cliffs' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Canyon Slough",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Canyon Slough' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Graven Cairns",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Graven Cairns' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Death Tyrant",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Fellwar Stone",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Fellwar Stone' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Restless Vents",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Restless Vents' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Exotic Orchard",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Exotic Orchard' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Abrade",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Bismuth Mindrender",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Rakdos Carnarium",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rakdos Carnarium' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Mind Stone",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Mind Stone' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Butch DeLoria, Tunnel Snake",
+      "quantity": 1,
+      "categories": [
+        "Wishlist",
+        "Menace"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Necrodominance",
+      "quantity": 1,
+      "categories": [
+        "Cuts",
+        "Card Advantage"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Xantcha, Sleeper Agent",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Xantcha, Sleeper Agent' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Black Market Connections",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Forsworn Paladin",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Blightstep Pathway // Searstep Pathway",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'modal_dfc, faces: Blightstep Pathway / Searstep Pathway): not modeled"
+    },
+    {
+      "name": "Kozilek, the Great Distortion",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Sol Ring",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sol Ring' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Vandalblast",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard",
+        "Mass Disruption",
+        "Disruption"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Blazemire Verge",
+      "quantity": 1,
+      "categories": [
+        "Wishlist",
+        "Land"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Mountain",
+      "quantity": 8,
+      "categories": [
+        "Land"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Siegfried, Famed Swordsman",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Anger",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Pitiless Plunderer",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Interceptor, Shadow's Hound",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Massacre Girl, Known Killer",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Massacre Girl, Known Killer' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Rampaging Ferocidon",
+      "quantity": 1,
+      "categories": [
+        "Cuts"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Komainu Battle Armor",
+      "quantity": 1,
+      "categories": [
+        "Mass Disruption",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Komainu Battle Armor' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Flaming Tyrannosaurus",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Rapacious Guest",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rapacious Guest' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Dire Fleet Ravager",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Loyal Subordinate",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Loyal Subordinate' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Pain Distributor",
+      "quantity": 1,
+      "categories": [
+        "Ramp",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Pain Distributor' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Casey Jones, Back Alley Brute",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Sin Prodder",
+      "quantity": 1,
+      "categories": [
+        "Menace",
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sin Prodder' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Lobelia Sackville-Baggins",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Lobelia Sackville-Baggins' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Immolation Shaman",
+      "quantity": 1,
+      "categories": [
+        "Cuts",
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Irreverent Gremlin",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Rowan, Scion of War",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rowan, Scion of War' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Moonshadow",
+      "quantity": 1,
+      "categories": [
+        "Cuts"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Ghost-Spider, Gwen Stacy",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Coalstoke Gearhulk",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Blackbloom Rogue // Blackbloom Bog",
+      "quantity": 1,
+      "categories": [
+        "Land",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'modal_dfc, faces: Blackbloom Rogue / Blackbloom Bog): not modeled"
+    },
+    {
+      "name": "Veronica, Dissident Scribe",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Veronica, Dissident Scribe' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Raphael, Tag Team Tough",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Raphael, Tag Team Tough' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Teapot Slinger",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Raphael, Most Attitude",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Lightning, Security Sergeant",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Lightning, Security Sergeant' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Blood Crypt",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Blood Crypt' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Haunted Ridge",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Haunted Ridge' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Daily Bugle Building",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Daily Bugle Building' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Temple of Malice",
+      "quantity": 1,
+      "categories": [
+        "Land"
+      ],
+      "status": "Unsupported",
+      "detail": "'Temple of Malice' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Professional Face-Breaker",
+      "quantity": 1,
+      "categories": [
+        "Ramp",
+        "Menace",
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Professional Face-Breaker' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Jecht, Reluctant Guardian // Braska's Final Aeon",
+      "quantity": 1,
+      "categories": [
+        "Menace",
+        "Mass Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "multi-face card (layout 'transform, faces: Jecht, Reluctant Guardian / Braska's Final Aeon): not modeled"
+    },
+    {
+      "name": "The Infamous Cruelclaw",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Stormfist Crusader",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Stormfist Crusader' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Rakdos Signet",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rakdos Signet' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Dalek Squadron",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Morbid Opportunist",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Noxious Gearhulk",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Phyrexian Arena",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Goblin War Drums",
+      "quantity": 1,
+      "categories": [
+        "Cuts",
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Sticky Fingers",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sticky Fingers' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Ruin Grinder",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Ruin Grinder' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Grim Servant",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Star Athlete",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Star Athlete' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Barbed Servitor",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Barbed Servitor' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Terminate",
+      "quantity": 1,
+      "categories": [
+        "Cuts"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Locke, Treasure Hunter",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Locke, Treasure Hunter' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Kari Zev, Skyship Raider",
+      "quantity": 1,
+      "categories": [
+        "Cuts",
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Summon: Anima",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Bladewing, Deathless Tyrant",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Bladewing, Deathless Tyrant' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Falthis, Shadowcat Familiar",
+      "quantity": 1,
+      "categories": [
+        "Plan"
+      ],
+      "status": "Unsupported",
+      "detail": "'Falthis, Shadowcat Familiar' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Ayara's Oathsworn",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Ayara's Oathsworn' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Shock Brigade",
+      "quantity": 1,
+      "categories": [
+        "Cuts",
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "The Frightful Four",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Calculating Lich",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Gut, True Soul Zealot",
+      "quantity": 1,
+      "categories": [
+        "Plan"
+      ],
+      "status": "Unsupported",
+      "detail": "'Gut, True Soul Zealot' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Redcap Gutter-Dweller",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Arcane Signet",
+      "quantity": 1,
+      "categories": [
+        "Ramp"
+      ],
+      "status": "Unsupported",
+      "detail": "'Arcane Signet' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Agent Venom",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Agent Venom' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Rise of the Dark Realms",
+      "quantity": 1,
+      "categories": [
+        "Plan"
+      ],
+      "status": "Unsupported",
+      "detail": "'Rise of the Dark Realms' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Alesha, Who Laughs at Fate",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Alesha, Who Laughs at Fate' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Massacre Girl",
+      "quantity": 1,
+      "categories": [
+        "Mass Disruption",
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Massacre Girl' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Puppet Master, String Puller",
+      "quantity": 1,
+      "categories": [
+        "Ramp",
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Puppet Master, String Puller' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Sign in Blood",
+      "quantity": 1,
+      "categories": [
+        "Cuts",
+        "Card Advantage"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Gix, Yawgmoth Praetor",
+      "quantity": 1,
+      "categories": [
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Gix, Yawgmoth Praetor' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Toxic Deluge",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard",
+        "Sorcery"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Frillscare Mentor",
+      "quantity": 1,
+      "categories": [
+        "Plan"
+      ],
+      "status": "Unsupported",
+      "detail": "'Frillscare Mentor' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Wayfarer's Bauble",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard",
+        "Ramp"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Tokka & Rahzar, Terrible Twos",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Tokka & Rahzar, Terrible Twos' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Junji, the Midnight Sky",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Raphael, the Nightwatcher",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Evin, Waterdeep Opportunist",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard",
+        "Creature"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Sawblade Skinripper",
+      "quantity": 1,
+      "categories": [
+        "Menace",
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sawblade Skinripper' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Samut, Hazoret's Champion",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Hammer of Purphoros",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Mass Hysteria",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Garna, the Bloodflame",
+      "quantity": 1,
+      "categories": [
+        "Plan",
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Garna, the Bloodflame' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Urabrask the Hidden",
+      "quantity": 1,
+      "categories": [
+        "Maybeboard"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Frontier Warmonger",
+      "quantity": 1,
+      "categories": [
+        "Menace"
+      ],
+      "status": "Unsupported",
+      "detail": "'Frontier Warmonger' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Popular Entertainer",
+      "quantity": 1,
+      "categories": [
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Popular Entertainer' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Chainer, Nightmare Adept",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Mahadi, Emporium Master",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Smaug, Wicked Worm",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Kardur, Doomscourge",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Living Death",
+      "quantity": 1,
+      "categories": [
+        "Mass Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Living Death' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Ares, God of War",
+      "quantity": 1,
+      "categories": [
+        "Plan",
+        "Card Advantage"
+      ],
+      "status": "Unsupported",
+      "detail": "'Ares, God of War' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Tentative Connection",
+      "quantity": 1,
+      "categories": [
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Tentative Connection' is not in the supported pool (31 cards)"
+    }
+  ],
+  "sideboard": [],
+  "excluded": [
+    {
+      "name": "Chaos Warp",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "At Knifepoint",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Gisa, the Hellraiser",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Kaervek, the Punisher",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Bandit's Haul",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Take for a Ride",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Raphael, Ninja Destroyer",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Callous Inspector",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Daring Piracy",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Endless Ranks of HYDRA",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Wake the Dragon",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Prosper, Tome-Bound",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Reno and Rude",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Bedevil",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Generous Plunderer",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Bothersome Quasit",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Untimely Malfunction",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Death Tyrant",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Abrade",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Bismuth Mindrender",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Butch DeLoria, Tunnel Snake",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Necrodominance",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Black Market Connections",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Forsworn Paladin",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Kozilek, the Great Distortion",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Vandalblast",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Blazemire Verge",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Siegfried, Famed Swordsman",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Anger",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Pitiless Plunderer",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Interceptor, Shadow's Hound",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Rampaging Ferocidon",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Flaming Tyrannosaurus",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Dire Fleet Ravager",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Casey Jones, Back Alley Brute",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Immolation Shaman",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Irreverent Gremlin",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Moonshadow",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Ghost-Spider, Gwen Stacy",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Coalstoke Gearhulk",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Teapot Slinger",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Raphael, Most Attitude",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "The Infamous Cruelclaw",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Dalek Squadron",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Morbid Opportunist",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Noxious Gearhulk",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Phyrexian Arena",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Goblin War Drums",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Grim Servant",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Terminate",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Kari Zev, Skyship Raider",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Summon: Anima",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Shock Brigade",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "The Frightful Four",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Calculating Lich",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Redcap Gutter-Dweller",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Sign in Blood",
+      "quantity": 1,
+      "reason": "category 'Cuts' is excluded from the deck"
+    },
+    {
+      "name": "Toxic Deluge",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Wayfarer's Bauble",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Junji, the Midnight Sky",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Raphael, the Nightwatcher",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Evin, Waterdeep Opportunist",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Samut, Hazoret's Champion",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Hammer of Purphoros",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Mass Hysteria",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Urabrask the Hidden",
+      "quantity": 1,
+      "reason": "category 'Maybeboard' is excluded from the deck"
+    },
+    {
+      "name": "Chainer, Nightmare Adept",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Mahadi, Emporium Master",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Smaug, Wicked Worm",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Kardur, Doomscourge",
+      "quantity": 1,
+      "reason": "category 'Wishlist' is excluded from the deck"
+    }
+  ],
+  "excluded_categories": [
+    "Cuts",
+    "Wishlist",
+    "Maybeboard"
+  ],
+  "startable": false,
+  "refusals": [
+    "engine support: 92 card(s) cannot be seated — Magda, the Hoardmaster x1 ('Magda, the Hoardmaster' is not in the supported pool (31 cards)); Rattleback Apothecary x1 ('Rattleback Apothecary' is not in the supported pool (31 cards)); Unholy Annex // Ritual Chamber x1 (multi-face card (layout 'split, faces: Unholy Annex / Ritual Chamber): not modeled); Morbid Opportunist x1 ('Morbid Opportunist' is not in the supported pool (31 cards)); J. Jonah Jameson x1 ('J. Jonah Jameson' is not in the supported pool (31 cards)) (+79 more listed above). Unsupported cards are refused, never substituted",
+    "commander: 'Seifer, Balamb Rival' is not in the supported pool, so the command zone cannot hold it"
+  ],
+  "notes": [
+    "this deck is not Commander-legal (see the format checks); the bounded practice profiles are not the Commander format, so format legality is reported, not enforced",
+    "excluded categories honored: Cuts, Wishlist, Maybeboard",
+    "certification cached at C:/Users/alex3/AppData/Local/hermes/cache/scratch/i21cache\\archidekt-27701327.start-commander-combat-practice-40.json"
+  ],
+  "raw_sha256": "60d1a8a1f05765df0e760601b13209cf216bedebb796a51214d2086f718374fe",
+  "cached_path": "C:/Users/alex3/AppData/Local/hermes/cache/scratch/i21cache\\archidekt-27701327.json"
+}
