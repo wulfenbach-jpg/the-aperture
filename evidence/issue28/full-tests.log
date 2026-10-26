@@ -1,0 +1,102 @@
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test the_request_uses_the_documented_endpoint_shape_and_masks_hidden_cards ... ok
+test a_single_legal_option_is_forced_and_never_asked_of_the_model ... ok
+test only_loopback_http_endpoints_are_accepted ... ok
+test an_unreachable_service_falls_back_to_the_heuristic_with_a_visible_reason ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+
+
+running 7 tests
+test reason_codes_are_stable_for_offline_and_protocol_failures ... ok
+test the_envelope_binds_the_viewer_revision_decision_generation_and_offers ... ok
+test a_stale_forced_view_keeps_the_stale_reason_instead_of_reporting_forced ... ok
+test a_stale_envelope_falls_back_to_the_current_masked_heuristic ... ok
+test a_valid_protocol_fixture_answer_is_accepted_from_the_offered_snapshot ... ok
+test a_key_outside_the_current_engine_offer_is_refused_even_when_the_binding_matches ... ok
+test a_truncated_protocol_fixture_answer_falls_back_with_the_stable_reason_code ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 2 tests
+test the_observation_does_not_hardcode_a_twenty_life_game ... ok
+test the_request_exposes_public_exile_command_and_card_details ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test the_decider_client_does_not_follow_a_redirect ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.05s
+
+
+running 5 tests
+test choose_enforces_cardinality_and_unique_keys_for_directly_built_requests ... ok
+test an_oversized_protocol_response_body_is_refused ... ok
+test a_non_choice_decision_type_is_refused_as_malformed ... ok
+test invalid_confidence_is_refused_instead_of_defaulted_to_zero ... ok
+test missing_or_malformed_usage_is_never_treated_as_clean ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 5 tests
+test the_default_state_budget_is_large_enough_for_the_masked_projection ... ok
+test the_life_object_is_keyed_by_absolute_seat_for_a_p1_viewer ... ok
+test a_truncated_response_makes_the_policy_fall_back_visibly ... ok
+test a_truncated_response_is_refused_with_a_truncated_error ... ok
+test a_healthy_response_is_used_by_the_client_and_the_policy ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 15 tests
+test heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice ... ok
+test casts_a_creature_with_its_available_mana ... ok
+test attacks_for_lethal_when_the_defender_cannot_block ... ok
+test bottoms_a_surplus_land_when_scrying ... ok
+test does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it ... ok
+test available_mana_counts_untapped_basics_and_pool ... ok
+test heuristic_uses_legal_command_zone_casts_instead_of_passing ... ok
+test keeps_a_three_land_hand_and_mulligans_a_land_flood ... ok
+test heuristic_casts_crack_the_earth_through_its_legal_option ... ok
+test passes_when_it_has_nothing_useful_to_do ... ok
+test blocks_when_the_trade_is_good ... ok
+test plays_a_land_in_its_own_main_phase ... ok
+test counterspells_the_opponents_creature_spell ... ok
+test the_policy_only_sees_masked_information ... ok
+test heuristic_observes_the_acting_seat_and_returns_a_legal_action ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 2 tests
+test the_heuristic_discards_from_the_engine_offer ... ok
+test the_decider_envelope_offers_each_legal_discard_set ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+test pending_decisions_are_refused_with_a_typed_reason ... ok
+test cancellation_reports_the_labelled_fallback ... ok
+test budget_exhaustion_labels_the_fallback ... ok
+test candidates_are_only_offered_actions ... ok
+test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+test reconstruction_is_reproducible_determinization ... ok
+test declared_own_deck_is_used_for_own_draws_only ... ok
+test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
