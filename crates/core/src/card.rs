@@ -411,6 +411,10 @@ pub enum CardId {
     ZulaportCutthroat,
     BloodArtist,
     HedronCrab,
+    /// 1/1 vanilla Soldier token (CR 111). Never importable.
+    SoldierToken,
+    /// 1/1 flying Spirit token (CR 111, 702.9).
+    SpiritToken,
 }
 
 /// Explicit command-zone practice allow-list. This is deliberately narrower
@@ -449,8 +453,13 @@ impl CardId {
         SUPPORTED_COMMANDERS.contains(&self)
     }
 
+    /// True for a token's synthetic characteristic card (CR 111.1: a token is
+    /// not a card, but it needs characteristics and an identity).
     pub fn is_token(self) -> bool {
-        TOKEN_CARDS.contains(&self)
+        matches!(
+            self,
+            CardId::SoldierToken | CardId::SpiritToken | CardId::GoblinToken | CardId::DrakeToken
+        )
     }
 }
 

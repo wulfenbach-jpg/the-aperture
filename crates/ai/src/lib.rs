@@ -3,13 +3,19 @@
 
 mod decider;
 mod heuristic;
+mod search;
 mod selfplay;
 
 pub use decider::{
-    ChoiceAnswer, DeciderClient, DeciderConfig, DeciderError, DeciderPolicy, DecisionRequest,
-    OptionSpec, decision_request,
+    ChoiceAnswer, DeciderClient, DeciderConfig, DeciderError, DeciderPolicy, DecisionBinding,
+    DecisionEnvelope, DecisionRequest, MAX_OPTIONS, MAX_RESPONSE_BYTES, MIN_OPTIONS, OptionSpec,
+    Proposal, decision_request,
 };
 pub use heuristic::{HeuristicPolicy, available_mana, card_mana_value, land_color, pool_size};
+pub use search::{
+    CandidateScore, Knowledge, SearchAnalysis, SearchCancellation, SearchConfig, SearchOutcome,
+    SearchUnavailable, determinization_seed, fallback, search,
+};
 pub use selfplay::{RunStatus, SelfplayLimits, SelfplayOutcome, play_to_end};
 
 use aperture_core::Action;
@@ -21,6 +27,9 @@ pub enum DecisionSource {
     Heuristic,
     Decider,
     DeciderFallback,
+    /// Budgeted information-set search chose the action from offered ones
+    /// only (no real opponent hands or library order were read).
+    Search,
     /// Only one legal action exists, so the choice is forced and no model call
     /// is made (the typed readout requires 2-100 criteria).
     Forced,
@@ -32,6 +41,7 @@ impl DecisionSource {
             DecisionSource::Heuristic => "heuristic",
             DecisionSource::Decider => "decider-2b",
             DecisionSource::DeciderFallback => "heuristic (decider fallback)",
+            DecisionSource::Search => "information-set search",
             DecisionSource::Forced => "forced (single legal option)",
         }
     }

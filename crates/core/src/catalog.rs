@@ -25,13 +25,17 @@
 //! executed by the engine; a card with an ability this crate cannot execute is
 //! refused at import instead of being approximated.
 //!
-//! Static abilities are declared in [`crate::ability::static_abilities`]. Static
-//! forms outside the two declared kinds (characteristic-defining power/toughness
-//! and damage doubling) are refused at import.
+//! Static abilities are declared in [`crate::ability::static_abilities`]; damage
+//! doubling lives there and characteristic changes are applied through
+//! [`crate::layer`]. Replacement effects (CR 614) and prevention shields (CR 615)
+//! are resolved by the engine; static forms outside the declared kinds are
+//! refused at import.
 //!
-//! Deliberate exclusions (documented in HANDOFF.md): tokens outside the single
-//! Goblin type, counters in the rules layer, and layer 4–6/7b continuous
-//! effects.
+//! Deliberate exclusions (documented in HANDOFF.md): no keyword printed on a pool
+//! card and no layer 4–6/7b/7d continuous effects. Typed counters (CR 122) and
+//! creature tokens (CR 111) are implemented in [`crate::counters`] and
+//! [`crate::tokens`]; token characteristics live outside this pool, so a token can
+//! never be imported or cast as a card.
 
 use crate::card::{CardDef, CardId, Effect, Kind, ManaColor, SpellSpec, TargetSpec};
 
@@ -818,7 +822,7 @@ pub fn def(id: CardId) -> &'static CardDef {
         .iter()
         .chain(TOKENS.iter())
         .find(|c| c.id == id)
-        .expect("every CardId has a catalog entry")
+        .unwrap_or_else(|| crate::tokens::def(id))
 }
 
 pub fn by_name(name: &str) -> Option<CardId> {

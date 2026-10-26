@@ -1,0 +1,122 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-22\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.48s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
+
+running 34 tests
+test app::viewport_tests::command_zone_inspection_does_not_invent_a_battlefield_location ... ok
+test app::viewport_tests::explicit_startup_decks_override_the_bounded_default ... ok
+test app::viewport_tests::four_seat_panels_and_primary_actions_are_actually_visible_at_1280x720 ... ok
+test app::viewport_tests::absolute_life_labels_remain_correct_when_the_human_is_p1 ... ok
+test app::viewport_tests::four_seat_panels_are_visible_at_the_minimum_viewport ... ok
+test app::viewport_tests::four_seat_panels_are_visible_at_a_large_viewport ... ok
+test app::viewport_tests::a_pending_table_selection_is_not_overwritten_by_the_live_table ... ok
+test app::viewport_tests::a_capture_launch_can_start_in_high_contrast_and_reduced_motion ... ok
+test app::viewport_tests::partial_apnap_shows_generic_waiting_without_the_owner_label ... ok
+test app::viewport_tests::a_failed_destructive_action_is_an_error_state_not_a_hint ... ok
+test app::viewport_tests::imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame ... ok
+test app::viewport_tests::reduced_motion_uses_static_working_text_without_blocking_worker_polling ... ok
+test app::viewport_tests::the_g_shortcut_refuses_an_empty_or_busy_study_request ... ok
+test app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start ... ok
+test app::viewport_tests::fixed_controls_stay_visible_at_200_percent_and_high_dpi_minimum_windows ... ok
+test app::viewport_tests::the_startup_accessibility_flags_seed_the_app_settings ... ok
+test app::viewport_tests::the_accessibility_panel_states_are_words_and_install_high_contrast_richtext ... ok
+test app::viewport_tests::a_destructive_action_waits_for_an_explicit_confirmation ... ok
+test app::viewport_tests::a_large_board_and_long_per_seat_reports_stay_renderable_and_reachable ... ok
+test app::viewport_tests::the_import_panel_starts_a_command_seat_from_certified_lists ... ok
+test perf::tests::nearest_rank_p95_uses_the_smallest_value_covering_95_percent ... ok
+test app::viewport_tests::the_opt_in_performance_probe_reports_bounded_native_samples ... ok
+test perf::tests::samples_are_bounded_and_the_window_finishes_once ... ok
+test session::tests::an_accepted_action_invalidates_an_in_flight_load ... ok
+test app::viewport_tests::the_zone_inspector_is_searchable_and_usable_at_1280x720 ... ok
+test app::viewport_tests::the_zone_inspector_reports_hidden_zones_as_counts_only ... ok
+test app::viewport_tests::undo_is_only_offered_on_an_untainted_recorded_line ... ok
+test app::viewport_tests::real_clicks_start_a_four_seat_bounded_table ... ok
+test app::viewport_tests::the_postgame_review_replaces_the_action_strip_at_1280x720 ... ok
+test app::viewport_tests::accessibility_opens_only_without_text_focus_and_escape_closes_it_first ... ok
+test app::viewport_tests::the_g_shortcut_asks_before_it_replaces_the_live_position ... ok
+test app::viewport_tests::zoom_is_repeatable_caps_at_200_percent_and_has_a_100_percent_reset ... ok
+test app::viewport_tests::the_new_controls_are_reachable_at_the_programmatic_minimum_1024x640 ... ok
+test app::viewport_tests::the_sandbox_panel_separates_overrides_and_shows_the_taint_at_1280x720 ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.44s
+
+     Running unittests src\main.rs (target\debug\deps\aperture-010a3c7c16456ee2.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\import_and_async.rs (target\debug\deps\import_and_async-eb7db7752fc41ee5.exe)
+
+running 11 tests
+test text_fallback_certifies_both_seats_and_rejects_bad_input ... ok
+test two_distinct_imported_lists_enter_the_game_and_the_replay ... ok
+test the_ui_cannot_submit_an_action_for_the_other_seat ... ok
+test an_unsupported_import_cannot_start_an_imported_match ... ok
+test a_fresh_worker_completion_is_applied ... ok
+test a_missing_or_invalid_explicit_deck_file_is_refused_not_substituted ... ok
+test import_worker_result_is_applied_through_the_poll ... ok
+test a_stale_worker_completion_never_changes_the_replacement_game ... ok
+test file_worker_reports_a_missing_path_instead_of_guessing ... ok
+test a_load_completed_after_the_game_changed_is_discarded ... ok
+test save_and_load_run_on_workers ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests\issue20_controls.rs (target\debug\deps\issue20_controls-d0e164c21ea1ca75.exe)
+
+running 6 tests
+test a_pending_choice_and_an_empty_library_are_reported_not_silently_ignored ... ok
+test undo_is_refused_once_a_sandbox_override_raised_the_taint ... ok
+test undo_restores_the_exact_random_state_and_forgets_the_undone_play ... ok
+test the_taint_record_survives_save_load_and_every_result_is_labelled ... ok
+test a_sandbox_taint_cannot_be_branched_into_a_clean_line ... ok
+test re_saving_a_legacy_tainted_save_never_clears_the_flag ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+     Running tests\issue23_study.rs (target\debug\deps\issue23_study-82c555ff6dee8e5f.exe)
+
+running 4 tests
+test a_stale_branch_result_is_discarded_by_the_generation_guard ... ok
+test a_four_seat_save_taken_with_a_resolving_spell_and_apnap_pending_restores_the_boundary ... ok
+test a_replay_branches_at_a_chosen_action_and_the_comparison_stays_public ... ok
+test the_postgame_review_is_omniscient_read_only_and_refused_while_live ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.49s
+
+     Running tests\session.rs (target\debug\deps\session-c2dbd5f93700f6f6.exe)
+
+running 22 tests
+test an_unsupported_card_in_a_commander_import_is_refused_and_never_substituted ... ok
+test a_new_game_resets_the_sandbox_flag_and_keeps_the_decks ... ok
+test bounded_forty_life_profile_has_one_public_commander_per_seat ... ok
+test an_illegal_action_is_refused_and_leaves_the_state_identical ... ok
+test a_commander_import_certifies_and_starts_the_seat_with_its_own_commander ... ok
+test native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human ... ok
+test native_startup_still_accepts_a_valid_mainboard_prefixed_file ... ok
+test ordinary_default_seats_stay_temur_izzet ... ok
+test native_table_starts_four_ordinary_seats_and_retains_them_on_a_new_game ... ok
+test native_startup_refuses_parenthesized_commander_headers ... ok
+test the_profile_line_states_the_scope ... ok
+test sandbox_tools_change_the_state_and_void_certified_play ... ok
+test native_startup_refuses_a_commander_text_file_instead_of_flattening_it ... ok
+test the_ai_steps_only_for_its_own_seat ... ok
+test a_branch_point_restores_the_earlier_position_and_labels_the_boundary ... ok
+test four_seat_load_resizes_the_native_import_controls ... ok
+test save_and_load_round_trip_preserves_pending_choices_rng_and_ai_mode ... ok
+test sandbox_modified_save_roundtrip_preserves_the_uncertified_flag ... ok
+test default_four_seat_bounded_libraries_actually_cast_isamaru ... ok
+test background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state ... ok
+test bounded_forty_life_four_seat_save_load_round_trips ... ok
+test a_stale_import_result_is_discarded_and_the_seat_is_not_left_busy ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.49s
+
+   Doc-tests aperture_ui
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+TEST=0

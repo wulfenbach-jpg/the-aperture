@@ -82,6 +82,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             next_object: 1,
             trigger_queue: Vec::new(),
             next_trigger_seq: 0,
+            revealed: Vec::new(),
             activation_uses: BTreeMap::new(),
             effects: Vec::new(),
             shields: Vec::new(),
@@ -114,6 +115,7 @@ impl Fixture {
                 pump_power: 0,
                 pump_toughness: 0,
                 plus_one_counters: 0,
+                counters: aperture_core::counters::Counters::default(),
             },
         );
         match zone {

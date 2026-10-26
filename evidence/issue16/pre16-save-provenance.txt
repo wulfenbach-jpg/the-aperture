@@ -1,0 +1,44 @@
+Pre-#16 v10 save fixture provenance
+===================================
+
+File: crates/core/tests/fixtures/continuity/pre16-v10-save.json
+Produced from commit: a76df88ce9a0e2ad2bba5f12d6deb9a7a146cfa2 (the #16 base)
+Produced by: that commit's own public save path, unmodified —
+  Game::new_logged(4242, [decks/temur-beats.txt, decks/izzet-control.txt]),
+  scripted auto-answer policy through turn 3, then
+  SessionSave::capture(&game, replay, log, false).to_json().
+  The generator test lived only in an out-of-tree export
+  (`git archive a76df88`), never in the repository.
+
+Recorded values (verified with grep on the fixture):
+  save version            10   (SAVE_VERSION at a76df88)
+  replay version           6   (REPLAY_VERSION at a76df88)
+  seats                    2
+  replay steps            45
+  logged events          132
+  state digest / replay final_digest
+   282eea6340239bf2be48ca8f75e09127a193e22c1e5fdaab3847cedafc739e80
+
+The fixture contains no `counters` key and no `revealed` key, because those
+fields did not exist at a76df88. That is exactly what makes it a pre-#16 save:
+the load path must accept version 10 and default both fields, which the test
+`a_real_pre16_v10_save_still_loads_and_replays` (crates/core/tests/
+counters_tokens_library.rs) asserts, including the digest above.
+
+Digest basis, stated precisely after integration with #15:
+  * Recorded PRE-#16/PRE-#15 positions still verify. The bundled v10 fixture
+    loads and replays to its stored digest 282eea63… exactly (see the test
+    above), because empty `counters`/`revealed`/`effects`/`shields` and zero
+    effect cursors are omitted from the canonical JSON.
+  * New games do NOT necessarily hash to the pre-#15 value: #15's layer
+    recomputation legitimately changes the serialized state, so
+    `selfplay --seed 4242` on post-#15 master yields b2fca737cff8 where a76df88
+    yielded 64858f984f19, with identical steps/turns/counters.
+  * Integration fix carried by this branch: #15 added `effects`, `shields`,
+    `next_effect` and `next_timestamp` with `#[serde(default)]` but without
+    skipping the empty form, and it initialised both cursors to 1. That alone
+    changed the canonical JSON of every position, so pre-existing saves and
+    replays failed digest verification even though deserialization succeeded.
+    The fields now skip empty/zero values, the cursors start at 0, and the
+    cursors are released whenever no effect or shield is live, so an
+    effect-free position serialises exactly as it did before #15.

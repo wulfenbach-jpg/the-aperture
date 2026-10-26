@@ -1,0 +1,10 @@
+# Local agent histories/probes and launch identities are not public source.
+/omp-sessions/
+/red-base/
+/implementation.log
+/implementation-resume.log
+/IMPLEMENT.md
+/OWNER-NOTES.md
+/native-instance.json
+/native-stdout.log
+# A stamped delivery package and captures made from it live in root /dist.

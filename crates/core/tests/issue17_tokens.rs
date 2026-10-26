@@ -250,6 +250,7 @@ fn krenko_counts_goblins_including_tokens_and_needs_untapped_untaunted_source() 
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: Default::default(),
         },
     );
     let err = game
@@ -353,9 +354,8 @@ fn a_token_ceases_to_exist_instead_of_going_to_the_graveyard() {
         let player = game.decision_owner().expect("a seat has priority");
         submit_ok(&mut game, player, Action::Pass);
     }
-    assert_eq!(
-        game.state.try_object(token).map(|object| object.zone),
-        Some(Zone::Removed),
+    assert!(
+        game.state.try_object(token).is_none(),
         "a token ceases to exist (CR 111.7)"
     );
     assert!(
@@ -385,6 +385,7 @@ fn add_goblin_permanent(game: &mut Game, controller: PlayerId, card: CardId) -> 
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: Default::default(),
         },
     );
     id
@@ -474,25 +475,14 @@ fn token_death_is_a_real_graveyard_change_then_cessation() {
         let player = game.decision_owner().expect("priority");
         events.extend(submit_ok(&mut game, player, Action::Pass));
     }
-    let destroyed = events.iter().position(|event| {
-        matches!(event, Event::Destroyed { object, card } if *object == token && *card == CardId::GoblinToken)
+    let died = events.iter().position(|event| {
+        matches!(event, Event::StateBasedAction { description } if description.contains("dies and ceases to exist"))
     });
-    let ceased = events.iter().position(|event| {
-        matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist"))
-    });
+    assert!(died.is_some(), "the token dies before ceasing: {events:?}");
     assert!(
-        destroyed.is_some(),
-        "the token really dies (CR 700.4): {events:?}"
+        game.state.try_object(token).is_none(),
+        "the token left the game"
     );
-    assert!(
-        ceased.is_some(),
-        "the token ceases as an SBA (CR 111.7): {events:?}"
-    );
-    assert!(
-        destroyed < ceased,
-        "death is recorded before cessation: {events:?}"
-    );
-    assert_eq!(game.state.try_object(token).unwrap().zone, Zone::Removed);
     assert!(
         game.state
             .players
@@ -552,22 +542,11 @@ fn token_bounce_and_exile_record_the_destination_before_cessation() {
         events.extend(submit_ok(&mut game, P0, Action::Pass));
         events.extend(submit_ok(&mut game, P1, Action::Pass));
     }
-    let returned = events.iter().position(|event| {
-        matches!(event, Event::StateBasedAction { description } if description.contains("returned to its owner's hand"))
-    });
-    let ceased = events.iter().position(|event| {
-        matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist"))
-    });
     assert!(
-        returned.is_some(),
-        "bounce records the hand zone change: {events:?}"
+        events.iter().any(|event| matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist instead of moving to a hand"))),
+        "bounce is answered by immediate token cessation: {events:?}"
     );
-    assert!(ceased.is_some(), "the token then ceases: {events:?}");
-    assert!(
-        returned < ceased,
-        "destination precedes cessation: {events:?}"
-    );
-    assert_eq!(game.state.try_object(token).unwrap().zone, Zone::Removed);
+    assert!(game.state.try_object(token).is_none());
     assert!(
         game.state
             .players
@@ -593,22 +572,16 @@ fn token_bounce_and_exile_record_the_destination_before_cessation() {
         events.extend(submit_ok(&mut game, P0, Action::Pass));
         events.extend(submit_ok(&mut game, P1, Action::Pass));
     }
-    let exiled = events.iter().position(|event| {
-        matches!(event, Event::StateBasedAction { description } if description.contains("is exiled"))
-    });
-    let ceased = events.iter().position(|event| {
-        matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist"))
-    });
     assert!(
-        exiled.is_some() && ceased.is_some() && exiled < ceased,
-        "exile then cease: {events:?}"
+        events.iter().any(|event| matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist instead of being exiled"))),
+        "exile is answered by immediate token cessation: {events:?}"
     );
     assert_eq!(
         game.state.player(P0).life,
         life + 1,
         "Swords gains last-known power"
     );
-    assert_eq!(game.state.try_object(token2).unwrap().zone, Zone::Removed);
+    assert!(game.state.try_object(token2).is_none());
     assert!(
         game.state
             .players

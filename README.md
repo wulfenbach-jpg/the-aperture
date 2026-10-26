@@ -117,7 +117,14 @@ implementation and it says so everywhere it matters.
   records),
   viewer-masked log, pending-choice controls, one searchable zone inspector,
   an explicitly labelled sandbox with manual table controls, per-seat deck
-  import, save/load, undo, text zoom and keyboard navigation. Every model, network and
+  import, save/load, undo, text zoom (70%–200%, 100% reset, Ctrl+0) and keyboard
+  navigation. An `Accessibility (A)` panel offers an explicit high-contrast
+  palette and a reduced-motion mode (static busy text, zero animation time),
+  with native Tab/Enter focus and a 2 px focus outline. `--performance-report
+  PATH` opts into a bounded ~10 s frame report written off the render callback;
+  it reports callback duration and inter-callback interval p95 and does not
+  claim GPU or end-to-end input latency. See
+  [docs/issue22-ergonomics.md](docs/issue22-ergonomics.md). Every model, network and
   file operation runs on a background worker with a visible busy state; the
   frame callback never blocks, and a worker result is applied only while its
   session generation, engine revision, decision serial and seat all still match.
@@ -228,12 +235,16 @@ The baseline AI is a deterministic heuristic. A local Decider-2B service can be
 opted into (`--decider`, or the UI checkbox) through its documented typed readout
 API (`POST /v1/systemone` with `state`/`questions`/`model` on
 `http://127.0.0.1:8765`). It is off by default, receives only the masked
-projection of the acting seat, and any timeout, HTTP error, unparsable answer or
+projection of the acting seat, and any timeout, HTTP error, malformed or
+oversized response, unparsable answer, invalid confidence or
 **response-indicated truncation** (`usage.truncated`, `state_tokens_dropped > 0`
-or a non-empty `truncated_questions`) falls back to the heuristic with a visible
-reason — a choice the model made without seeing the whole projection is never
-used. A returned confidence is option preference concentration, never a win
-probability. See HANDOFF.md for the tested/untested status of that path.
+or a non-empty `truncated_questions`) falls back to the heuristic with a stable
+visible reason code. A model answer is applied only through an envelope bound to
+the viewer, revision, decision serial and session generation, and only when the
+returned key resolves to an action still in the live engine offer. A returned
+confidence is option preference concentration, never a win probability or a
+search evaluation. No weights or model packages are bundled; a local checkpoint
+is obtained and licensed separately. See `docs/issue25-local-model.md`.
 
 ## Command-zone practice (explicit profile, not Commander)
 

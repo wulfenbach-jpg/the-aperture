@@ -1,0 +1,24 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-16\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.23s
+     Running tests\counters_tokens_library.rs (target\debug\deps\counters_tokens_library-484d8ca9a60a5810.exe)
+
+running 16 tests
+test a_saved_state_with_counters_off_the_battlefield_is_refused ... ok
+test combat_damage_uses_counter_modified_power ... ok
+test counters_do_not_follow_the_card_out_of_the_battlefield ... ok
+test a_flying_token_can_only_be_blocked_by_flying_or_reach ... ok
+test a_bounced_token_ceases_to_exist_and_never_reaches_a_hand ... ok
+test a_destroyed_token_ceases_to_exist_and_never_enters_a_graveyard ... ok
+test a_created_token_has_its_own_characteristics_ownership_and_visibility ... ok
+test minus_counters_reduce_toughness_to_zero_and_the_creature_dies ... ok
+test mill_shuffle_reveal_and_untap_are_deterministic_and_information_safe ... ok
+test paired_plus_and_minus_counters_annihilate_at_the_next_checkpoint ... ok
+test swords_to_plowshares_reports_a_token_truthfully ... ok
+test power_and_toughness_counters_change_characteristics_and_projection ... ok
+test counters_and_tokens_survive_save_load_exactly ... ok
+test a_save_with_malformed_counters_is_refused_not_coerced ... ok
+test a_real_game_keeps_its_digest_and_survives_a_save_load_round_trip ... ok
+test a_real_pre16_v10_save_still_loads_and_replays ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

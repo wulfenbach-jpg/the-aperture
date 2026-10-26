@@ -1,0 +1,16 @@
+{
+    "action":  "Dump",
+    "dpi":  120,
+    "foreground_before":  596694,
+    "client":  {
+                   "height":  0,
+                   "width":  0
+               },
+    "timestamp":  "2026-10-26T01:03:51.0327163-07:00",
+    "elements":  [
+
+                 ],
+    "pid":  45960,
+    "window":  5774068,
+    "foreground_after":  596694
+}

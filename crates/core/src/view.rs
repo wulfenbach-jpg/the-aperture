@@ -27,6 +27,10 @@ pub struct CardView {
     pub pump_power: i32,
     pub pump_toughness: i32,
     pub plus_one_counters: u32,
+    /// Typed counters on this permanent (CR 122), public information.
+    pub counters: Vec<(&'static str, u32)>,
+    /// CR 111.1: true for a token permanent, which is not a card.
+    pub is_token: bool,
     pub oracle: &'static str,
     pub cost: Option<&'static str>,
 }
@@ -109,6 +113,9 @@ pub struct PlayerView {
     pub own_graveyard: Vec<CardView>,
     pub own_exile: Vec<CardView>,
     pub own_command_zone: Vec<CardView>,
+    /// Cards revealed from a hidden zone (CR 701.16a). Public to every viewer
+    /// while they stay in that hidden zone; no other hidden card appears here.
+    pub revealed: Vec<CardView>,
     /// Public stable commander identities and command-zone cast tax.
     pub commanders: Vec<CommanderView>,
     /// Public cumulative commander combat damage (CR 903.10a).
@@ -186,13 +193,20 @@ fn card_view(game: &Game, id: ObjectId) -> CardView {
         name: def.name,
         controller: obj.controller,
         tapped: obj.tapped,
-        power: def.power.map(|p| p + obj.pump_power),
-        toughness: def.toughness.map(|t| t + obj.pump_toughness),
+        // Characteristics, not printed values: counters and pumps included.
+        power: obj.is_creature().then(|| obj.power()),
+        toughness: obj.is_creature().then(|| obj.toughness()),
         damage: obj.damage,
         summoning_sick: obj.summoning_sick,
         pump_power: obj.pump_power,
         pump_toughness: obj.pump_toughness,
         plus_one_counters: obj.plus_one_counters,
+        counters: obj
+            .counters
+            .iter()
+            .map(|(kind, count)| (kind.name(), count))
+            .collect(),
+        is_token: obj.is_token(),
         oracle: def.oracle,
         cost: def.cost,
     }
@@ -621,6 +635,12 @@ impl Game {
             own_graveyard: zone_cards(self, viewer, Zone::Graveyard),
             own_exile: zone_cards(self, viewer, Zone::Exile),
             own_command_zone: zone_cards(self, viewer, Zone::Command),
+            revealed: self
+                .state
+                .revealed_hidden()
+                .into_iter()
+                .map(|id| card_view(self, id))
+                .collect(),
             commanders: self
                 .state
                 .commanders

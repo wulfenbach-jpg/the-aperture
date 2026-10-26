@@ -52,6 +52,7 @@ fn put_talrand_on_battlefield(game: &mut Game, player: PlayerId) -> ObjectId {
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: Default::default(),
         },
     );
     id
