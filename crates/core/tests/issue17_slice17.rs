@@ -157,6 +157,9 @@ fn friendly_teddy_dies_each_live_player_draws_after_source_left() {
 
 #[test]
 fn ulvenwald_morbid_needs_a_real_death_and_targets_any_controller() {
+    // Control: a real Ulvenwald enters with no death this turn. Its actual
+    // battlefield object must have zero counters; an empty trigger queue alone
+    // would also be true after an incorrect trigger had already resolved.
     let mut g = fixture(208)
         .hand(P0, &[card("Ulvenwald Bear")])
         .battlefield(P0, &[CardId::Forest, CardId::Forest, CardId::Forest])
@@ -172,21 +175,35 @@ fn ulvenwald_morbid_needs_a_real_death_and_targets_any_controller() {
         },
     );
     drain(&mut g);
-    assert!(
-        !g.state
-            .trigger_queue
-            .iter()
-            .any(|t| t.card == card("Ulvenwald Bear")),
-        "no death, no morbid trigger"
+    let entered: Vec<_> = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .filter(|o| o.card == card("Ulvenwald Bear"))
+        .collect();
+    assert_eq!(
+        entered.len(),
+        1,
+        "Ulvenwald must actually be on the battlefield"
+    );
+    assert_eq!(
+        entered[0]
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        0,
+        "no death this turn means no counters"
     );
 
+    // Positive: a different creature dies, then the pre-existing opposing
+    // Runeclaw Bear is chosen from the actual TriggerTarget offer.
     let mut g = fixture(209)
         .hand(P0, &[card("Ulvenwald Bear")])
         .battlefield(P0, &[CardId::Forest, CardId::Forest, CardId::Forest])
-        .battlefield(P1, &[CardId::GrizzlyBears])
+        .battlefield(P1, &[CardId::GrizzlyBears, CardId::RuneclawBear])
         .main(P0, Step::PrecombatMain)
         .build();
     let victim = battlefield_card(&g, P1, CardId::GrizzlyBears);
+    let target = battlefield_card(&g, P1, CardId::RuneclawBear);
     kill(&mut g, victim);
     let u = hand_card(&g, P0, card("Ulvenwald Bear"));
     submit_ok(
@@ -197,9 +214,13 @@ fn ulvenwald_morbid_needs_a_real_death_and_targets_any_controller() {
             targets: Vec::new(),
         },
     );
-    for _ in 0..8 {
-        if matches!(g.state.pending, Some(Pending::TriggerTarget { .. })) {
-            let target = add_perm(&mut g, P1, CardId::RuneclawBear);
+    let mut answered = false;
+    for _ in 0..12 {
+        if let Some(Pending::TriggerTarget { legal, .. }) = &g.state.pending {
+            assert!(
+                legal.contains(&Target::Permanent(target)),
+                "the pre-existing opposing creature must be an offered target"
+            );
             submit_ok(
                 &mut g,
                 P0,
@@ -207,6 +228,7 @@ fn ulvenwald_morbid_needs_a_real_death_and_targets_any_controller() {
                     target: Target::Permanent(target),
                 },
             );
+            answered = true;
             break;
         }
         if drained(&g) {
@@ -215,19 +237,86 @@ fn ulvenwald_morbid_needs_a_real_death_and_targets_any_controller() {
         let p = g.decision_owner().unwrap();
         submit_ok(&mut g, p, Action::Pass);
     }
+    assert!(answered, "morbid must offer its creature target");
     drain(&mut g);
-    let target = g
-        .state
-        .battlefield(P1)
-        .into_iter()
-        .find(|o| o.card == CardId::RuneclawBear);
+    let target = g.state.object(target);
+    assert_eq!(target.zone, Zone::Battlefield, "target must still exist");
+    assert_eq!(
+        target
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        2,
+        "exactly two +1/+1 counters"
+    );
+}
+
+#[test]
+fn token_only_death_enables_morbid_without_counting_as_a_nontoken_death() {
+    let mut g = fixture(212)
+        .hand(P0, &[card("Ulvenwald Bear")])
+        .battlefield(P0, &[CardId::Forest, CardId::Forest, CardId::Forest])
+        .battlefield(P1, &[CardId::RuneclawBear])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let token = add_perm(&mut g, P0, CardId::BearToken);
+    let target = battlefield_card(&g, P1, CardId::RuneclawBear);
+    kill(&mut g, token);
+    assert_eq!(
+        g.state
+            .nontoken_creature_deaths_this_turn
+            .get(P0 as usize)
+            .copied()
+            .unwrap_or(0),
+        0
+    );
+    let u = hand_card(&g, P0, card("Ulvenwald Bear"));
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpell {
+            card: u,
+            targets: Vec::new(),
+        },
+    );
+    let mut answered = false;
+    for _ in 0..12 {
+        if let Some(Pending::TriggerTarget { legal, .. }) = &g.state.pending {
+            assert!(legal.contains(&Target::Permanent(target)));
+            submit_ok(
+                &mut g,
+                P0,
+                Action::ChooseTriggerTarget {
+                    target: Target::Permanent(target),
+                },
+            );
+            answered = true;
+            break;
+        }
+        if drained(&g) {
+            break;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
     assert!(
-        target.is_none()
-            || target
-                .unwrap()
-                .counters
-                .get(aperture_core::counters::CounterKind::PlusOnePlusOne)
-                == 2
+        answered,
+        "a token death is still a creature death for morbid"
+    );
+    drain(&mut g);
+    assert_eq!(
+        g.state
+            .object(target)
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        2
+    );
+    assert_eq!(
+        g.state
+            .nontoken_creature_deaths_this_turn
+            .get(P0 as usize)
+            .copied()
+            .unwrap_or(0),
+        0
     );
 }
 
