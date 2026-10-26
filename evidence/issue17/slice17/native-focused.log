@@ -1,0 +1,47 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.77s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 8 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice15_corpus.rs (target\debug\deps\issue17_slice15_corpus-2520fcad538eaf2c.exe)
+
+running 2 tests
+test the_three_slice15_cards_leave_the_ayula_gap ... ok
+test every_desired_list_missing_cards_equals_pool_membership ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice17.rs (target\debug\deps\issue17_slice17-8c21da0626de6e26.exe)
+
+running 6 tests
+test sourced_cards_match ... ok
+test token_only_death_enables_morbid_without_counting_as_a_nontoken_death ... ok
+test ulvenwald_morbid_needs_a_real_death_and_targets_any_controller ... ok
+test friendly_teddy_dies_each_live_player_draws_after_source_left ... ok
+test caller_counts_owned_nontoken_battlefield_deaths_even_if_card_later_leaves ... ok
+test death_history_is_reset_at_the_actual_turn_boundary ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

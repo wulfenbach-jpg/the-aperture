@@ -1,0 +1,51 @@
+{
+  "catalog_cards": 134,
+  "union_names": 459,
+  "supported_union_names": 122,
+  "missing_union_names": 337,
+  "certified_lists": 1,
+  "desired_lists": 8,
+  "stale_manifest_entries": 0,
+  "lists": [
+    {
+      "id": "isamaru-white-aggro",
+      "missing": 55,
+      "status": "planned"
+    },
+    {
+      "id": "jasmine-vanilla-stompy",
+      "missing": 0,
+      "status": "certified"
+    },
+    {
+      "id": "talrand-draw-go",
+      "missing": 51,
+      "status": "planned"
+    },
+    {
+      "id": "krenko-goblin-tokens",
+      "missing": 48,
+      "status": "planned"
+    },
+    {
+      "id": "ayula-bear-counters",
+      "missing": 31,
+      "status": "planned"
+    },
+    {
+      "id": "elas-sacrifice",
+      "missing": 52,
+      "status": "planned"
+    },
+    {
+      "id": "tatyova-landfall",
+      "missing": 52,
+      "status": "planned"
+    },
+    {
+      "id": "zada-spells",
+      "missing": 53,
+      "status": "planned"
+    }
+  ]
+}

@@ -1,30 +1,37 @@
-# Slice 17 human checkpoint
+# Issue17 — slice17 human checkpoint
 
-- Branch: `aperture/issue-17`
-- Implementation commit: `7e4a013`
-- Base: `6f294cf`
-- Status: **PARTIAL #17**; eight-list gate remains open.
-- Review: not launched, per instruction.
+## Increment, not whole-issue acceptance
 
-## Accepted repairs
-1. Cleanup is same-turn: death history survives repeated `finish_cleanup`;
-   reset happens only at an actual `turn.number` increment.
-2. Each-player draw has explicit serialized per-seat progress. Commander
-   replacement at an earlier seat no longer skips later live seats; save/load
-   mid-suspension validates and reloads; no early priority.
-3. Counter placement emits the authoritative counter event.
-4. AI delta disclosed as field initialization/copy only.
+Same branch `aperture/issue-17`, draft PR46. Three sourced Ayula-list cards:
+- **Friendly Teddy** `{2}` 2/2 artifact creature Bear Toy: dies → each player draws. Active-player turn order, source-left trigger, explicit serialized continuation when a commander draw suspends; mid-suspension save/load works.
+- **Ulvenwald Bear** `{2}{G}` 2/2: morbid enters trigger if any creature died this turn, then two +1/+1 counters on target creature (either controller). Token deaths count.
+- **Caller of the Claw** `{2}{G}` 2/2 flash Elf: enters → one 2/2 green Bear per nontoken creature put into its controller's graveyard from battlefield this turn. Counts owner, not battlefield controller; mill/discard don't count; later graveyard departure doesn't erase a death.
 
-## Verification
-Focused: slice17 5, cleanup lib 1, command_zone_setup 34, replay_digest 6,
-ordering_persistence 2. `cargo clippy --workspace --all-targets -D warnings`
-clean; release CLI built; fmt applied. Journey seed 1616 terminal win seat 3,
-digest `85fabffc9aa16a0f9ba53a5f64a751c43bb9ae66a3ce96f3e7402f1c633c7027`,
-replay matches, fresh save round-trips.
+Source URLs/retrieval dates: `fixtures/starter-corpus/slice17-sourced.json`.
+Fresh native audit: **134 catalog;459union=122supported+337missing;1certified/7planned**. Ayula31 missing. Desired100-card snapshots unchanged; all eight libraries99cards plus named commander. `slice17/native-corpus-state.json`.
 
-## Remaining gaps
-- Ayula: 3/34 sourced; 31 missing.
-- Seven of eight desired 100-card lists remain planned/partial.
-- No full workspace rerun after repair (instruction), no 100-card Commander game.
-- Old #20 reporter pointer remains; not touched here.
-- No commit push/merge/PR/issue closure.
+## Review and genuine corrections
+
+SAME-history practical review **APPROVED_INCREMENT** at `bfaa7827b5ffe40f9de8926efeed718dac5f6715` (`slice17/REVIEW17.md`), no blocking product defect. Later `e383d9d5cb1ae68d03a2ae1133083f265f9b18ad` changes only strengthened tests + result note, no product source. Native inspection confirms it removes vacuous morbid assertions and adds token-only death coverage.
+
+Two first-cut defects repaired: cleanup is still same turn, so history resets only at actual turn advance; initial Teddy draw loop lost later seats after commander replacement, now explicit serialized progress preserves them. Counter events restored. `BearToken` added to `CardId::is_token`. Compatibility-only AI changes initialize/copy two public state fields (`crates/ai/src/search.rs`, `crates/ai/tests/common.rs`), no policy/search change.
+
+TDD was scaffold-first, not strict test-first; initial morbid assertions were permissive. Preserve disclosed deviations (`TDD-slice17.md`, `slice17/NATIVE-TEST-GAP.md`), don't claim retroactive compliance. Final tests require actual zero/exact-two counters and a genuinely offered opposing target.
+
+## Executed verification
+
+- Parent independently ran final slice17 **6**, card_printings **8**, catalog_pool **5**, slice15 corpus **2**, all pass (`slice17/native-focused.log`); fmt check passes.
+- Reviewer ran lib12 / command-zone34 / then-slice17 5 / replay_digest6 / ordering_persistence2, all pass; includes actual-turn reset and commander-draw save/load.
+- Writer final workspace warnings-denied clippy real exit0; releaseCLI built. Full historical workspace not repeated after repair; exact final-headCI is collected after final publication, never inherited.
+- One real evidence-only masked offered-action journey, NOT productAI/strength: exact `decks/package-slice17.txt`, **4seats/40life/40-card package**, seed1616, **terminalP3/1866actions/42turns/4952events**, digest `85fabffc9aa16a0f9ba53a5f64a751c43bb9ae66a3ce96f3e7402f1c633c7027`. Driver explicitly injects **Jasmine Boreal for all four seats**. Casts:Teddy12/Ulvenwald8/Caller8; Caller creates4Bears. Parent separately replayed replay and fresh session-save with matching digest/save reproduction (`slice17/native-save-replay.log`). NOT a desired100-card starter certificate.
+
+## Original gate remains open / resume
+
+Missing names: Isamaru55/Talrand51/Krenko48/Ayula31/Elas52/Tatyova52/Zada53. Ayula commander itself still needs modal fight/counter trigger. Equipment and other per-list exclusions remain. No arbitrary Archidekt/fullCommander/v1 claim. No merge/masterpush/closure/certified-downstream unlock.
+
+Continue SAME card/PR46/branch and exact saved histories:
+- writer:`evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl`
+- reviewer:`evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl`
+
+Next: sourced remaining Ayula-card/commander implementation where feasible, then genuine desired-list certification; no re-audit approved increments. Current-lane target only; preserve other-agent cache cleanup, no retired builds/global config edits. Existing enabled15-minute supervisor owns same-card renewal. Final publicationSHA/CI conclusions are in fresh handoff receipt. No implementation command left running at checkpoint.
+
