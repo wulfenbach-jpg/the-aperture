@@ -1,0 +1,65 @@
+{
+    "mode":  "import",
+    "harness":  "C:\\AI\\aperture-worktrees\\issue-30\\scripts\\platform_qa\\platform-qa.ps1",
+    "harness_sha256":  "597dda096a09f8d342df7c423998b4a8da872c2b242a0b2a259d3baf73e7d25d",
+    "exe":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe",
+    "exe_sha256":  "c1372dd036af4fd2b89532b83b1746b6482ed0fa079765030c79373a59906f65",
+    "journey":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg",
+    "seed":  4242,
+    "seats":  4,
+    "window":  "1280x720",
+    "started":  "2026-10-26T10:20:18.1097475-07:00",
+    "finished":  "2026-10-26T10:20:23.3056097-07:00",
+    "results":  [
+                    {
+                        "step":  "import-supported-list",
+                        "status":  "passed",
+                        "detail":  "packaged CLI import of the supported list \u0027decks/izzet-control.txt\u0027: exit 0, launchable=True, unsupported_cards=0, playable line=True",
+                        "data":  {
+                                     "stderr_file":  "C:\\AI\\aperture-worktrees\\issue-30\\evidence\\issue30\\import\\cli-0faf6fe4.err.txt",
+                                     "launchable":  true,
+                                     "exit":  0,
+                                     "unsupported_cards":  0,
+                                     "stdout_file":  "C:\\AI\\aperture-worktrees\\issue-30\\evidence\\issue30\\import\\cli-0faf6fe4.out.txt",
+                                     "file":  "decks/izzet-control.txt"
+                                 },
+                        "at":  "2026-10-26T10:20:18.2816005-07:00"
+                    },
+                    {
+                        "step":  "import-to-start",
+                        "status":  "passed",
+                        "detail":  "the imported list started a real 4-seat table (header: · 4 seats · profile practice-20 (20 life) · turn 1 · untap step · active P1 · stack 0 · digest d75b11292c3b, 146 UIA nodes)",
+                        "data":  {
+                                     "seats":  4,
+                                     "header":  "· 4 seats · profile practice-20 (20 life) · turn 1 · untap step · active P1 · stack 0 · digest d75b11292c3b",
+                                     "file":  "decks/izzet-control.txt",
+                                     "nodes":  146
+                                 },
+                        "at":  "2026-10-26T10:20:22.6079513-07:00"
+                    },
+                    {
+                        "step":  "import-url-positive",
+                        "status":  "not-exercised",
+                        "detail":  "a positive Archidekt URL import needs live egress to the allowlisted public host AND a deck wholly inside the bounded 28-card practice scope; the clean-machine fixture has neither, so only the refusals are executed against the URL path",
+                        "data":  null,
+                        "at":  "2026-10-26T10:20:22.6089522-07:00"
+                    },
+                    {
+                        "step":  "slow-import",
+                        "status":  "not-exercised",
+                        "detail":  "import egress is pinned to the allowlisted archidekt.com host with no local override, so a slow or stalled import cannot be produced on this QA host without network control; the slow-service and stale-result paths ARE executed (see failures mode)",
+                        "data":  null,
+                        "at":  "2026-10-26T10:20:22.6099524-07:00"
+                    }
+                ],
+    "transcript":  [
+                       "[10:20:18.287] STEP import-supported-list: PASSED - packaged CLI import of the supported list \u0027decks/izzet-control.txt\u0027: exit 0, launchable=True, unsupported_cards=0, playable line=True",
+                       "[10:20:18.304] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe --seed 4242 --seats 4 --profile ordinary --size 1280x720 --deck-a C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\decks\\izzet-control.txt --autoplay",
+                       "[10:20:20.856] window hwnd=7543622 pid=35568 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[10:20:21.951] invoke \u0027Keep this hand\u0027 via uia-invoke",
+                       "[10:20:21.953] invoked \u0027Keep this hand\u0027 via uia-invoke",
+                       "[10:20:22.607] STEP import-to-start: PASSED - the imported list started a real 4-seat table (header: · 4 seats · profile practice-20 (20 life) · turn 1 · untap step · active P1 · stack 0 · digest d75b11292c3b, 146 UIA nodes)",
+                       "[10:20:22.608] STEP import-url-positive: NOT-EXERCISED - a positive Archidekt URL import needs live egress to the allowlisted public host AND a deck wholly inside the bounded 28-card practice scope; the clean-machine fixture has neither, so only the refusals are executed against the URL path",
+                       "[10:20:22.609] STEP slow-import: NOT-EXERCISED - import egress is pinned to the allowlisted archidekt.com host with no local override, so a slow or stalled import cannot be produced on this QA host without network control; the slow-service and stale-result paths ARE executed (see failures mode)"
+                   ]
+}

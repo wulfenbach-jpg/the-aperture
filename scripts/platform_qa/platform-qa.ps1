@@ -1320,7 +1320,9 @@ function Invoke-Import {
     $table = Wait-AnyName 'YOUR HAND' 25
     $nodes = Save-Tree (Join-Path $OutDir '30-import-start-tree.json')
     $header = Get-HeaderLine
-    $seatText = if ($null -ne $header -and $header -match 'seats (\d+)') { [int]$Matches[1] } else { $null }
+    # The header prints the table size BEFORE the word ("· 4 seats · profile …"),
+    # so the count is captured from the left of it.
+    $seatText = if ($null -ne $header -and $header -match '(\d+) seats') { [int]$Matches[1] } else { $null }
     Add-Result 'import-to-start' $(if ($table -and $seatText -eq $Seats) { 'passed' } else { 'failed' }) `
         ("the imported list started a real {0}-seat table (header: {1}, {2} UIA nodes)" -f $Seats, $header, $nodes) `
         @{ file = $deckRel; header = $header; seats = $seatText; nodes = $nodes }

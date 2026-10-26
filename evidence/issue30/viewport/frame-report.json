@@ -1,29 +1,29 @@
 {
   "callback_duration_us": {
-    "max": 14496,
+    "max": 12208,
     "method": "nearest-rank over bounded in-memory samples",
-    "p50": 589,
-    "p95": 852,
-    "samples": 681
+    "p50": 509,
+    "p95": 731,
+    "samples": 687
   },
   "declared_conditions": [
     "platform-qa: minimum-size window, idle heuristic worker"
   ],
   "forced_repaint_hz": 60,
-  "generated_at_unix": 1793013172,
+  "generated_at_unix": 1793035030,
   "input_frame_render_us": {
     "limited": true,
-    "max": 791,
+    "max": 645,
     "meaning": "callback duration on frames that had at least one input event; NOT OS/GPU input-to-photon latency",
-    "p95": 791,
-    "samples": 18
+    "p95": 645,
+    "samples": 16
   },
   "inter_callback_interval_us": {
-    "max": 98312,
+    "max": 70083,
     "method": "nearest-rank over bounded in-memory samples",
-    "p50": 17012,
-    "p95": 17779,
-    "samples": 680
+    "p50": 17000,
+    "p95": 17515,
+    "samples": 686
   },
   "limitations": [
     "callback_duration is main-thread wall time, not thread CPU accounting",
@@ -38,7 +38,7 @@
     "no GPU present or frame-present timing is measured or implied"
   ],
   "opt_in": "--performance-report",
-  "samples": 681,
+  "samples": 687,
   "schema": "aperture-ui-performance/1",
   "synthetic_delays": [],
   "window_seconds": 10.0
