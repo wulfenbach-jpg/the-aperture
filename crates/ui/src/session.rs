@@ -678,6 +678,9 @@ impl UiSession {
                             let label = legal.label.clone();
                             match self.submit(legal.action) {
                                 Ok(()) => {
+                                    // The refused attempt left a "refused: …" line in
+                                    // `message`; the table has moved on, so clear it.
+                                    self.message.clear();
                                     self.busy_note = Some(format!(
                                         "rejected an AI decision [illegal_choice] ({refusal}); applied the engine's legal offer \"{label}\" instead"
                                     ));
