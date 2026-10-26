@@ -1,0 +1,24 @@
+Working...
+**Slice 12 delivered — three artifact mana rocks.** No push. Head `fd18dfc`.
+
+## Implemented
+- **Sol Ring** — `{T}: Add {C}{C}` immediate mana ability.
+- **Mind Stone** — `{T}: Add {C}`; `{1}, {T}, Sacrifice: Draw a card`.
+- **Hedron Archive** — `{T}: Add {C}{C}`; `{2}, {T}, Sacrifice: Draw two`.
+
+Live Scryfall printings with URI/id/UTC in `fixtures/starter-corpus/slice12-sourced.json`. **Commander’s Sphere excluded** (commander-color identity mana not modelled).
+
+## Engine
+- Real `Kind::Artifact` noncreature permanents; no proxy creature/land.
+- `CardDef::artifact_mana` declares CR 605 tap-mana abilities: immediate activation, no stack/priority transfer, source taps, repeat activation refused with unchanged state; no artifact summoning sickness.
+- Sacrifice/draw abilities use the normal stack, generic costs, tap+sacrifice costs, correct ability index, real graveyard move and source-left resolution.
+- Artifact mana is explicit, not silently auto-paid by the land-only planner.
+
+## Verification
+- `issue17_slice12` **7/7**; slice9 6/6, tokens 10/10, catalog 5/5, printings 6/6, commander 43/43.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat `package-slice12.txt` (40-card package, seed 1201): terminal, P3 wins, 1746 steps, digest `328dadbdbdc6…`; replay/save match 7051 events.
+- Honest limitation: heuristic activated/cast **0** artifacts in that trace; focused tests prove activation.
+- Corpus: catalog **119**, union 459, supported **107**, missing **352**, manifest matches. Desired lists unchanged; docs current counts and islandwalk citation corrected.
+
+Handoff: `evidence/issue17/slice12/WRITER-HANDOFF.md`. Full #17 unfinished; no review/certification claim.

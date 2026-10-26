@@ -1,0 +1,45 @@
+
+running 6 tests
+test sourced_slice15_cards_match_their_printings ... ok
+test enchantment_permanents_cast_from_hand_and_stay_on_the_battlefield ... ok
+test mother_bear_is_activated_only_from_the_graveyard_and_only_as_a_sorcery ... ok
+test bear_tokens_enter_as_creatures_and_trigger_another_creature_enters ... ok
+test ayula_influence_discards_exactly_the_named_land_card ... FAILED
+test bearscape_needs_two_graveyard_cards_and_exiles_exactly_them ... FAILED
+
+failures:
+
+---- ayula_influence_discards_exactly_the_named_land_card stdout ----
+
+thread 'ayula_influence_discards_exactly_the_named_land_card' (24024) panicked at crates\core\tests\common\mod.rs:212:18:
+expected rejection
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- bearscape_needs_two_graveyard_cards_and_exiles_exactly_them stdout ----
+
+thread 'bearscape_needs_two_graveyard_cards_and_exiles_exactly_them' (16580) panicked at crates\core\tests\common\mod.rs:212:18:
+expected rejection
+
+
+failures:
+    ayula_influence_discards_exactly_the_named_land_card
+    bearscape_needs_two_graveyard_cards_and_exiles_exactly_them
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: method `validate_card_costs` is never used
+    --> crates\core\src\engine.rs:2795:8
+     |
+  82 | impl Game {
+     | --------- method in this implementation
+...
+2795 |     fn validate_card_costs(
+     |        ^^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.06s
+     Running tests\issue17_slice15.rs (target\debug\deps\issue17_slice15-92224932d13e893d.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice15`

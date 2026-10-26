@@ -1,0 +1,33 @@
+519:pub const SUPPORTED_COMMANDERS: &[CardId] = &[
+520-    CardId::IsamaruHoundOfKonda,
+521-    CardId::JasmineBoreal,
+522-    CardId::KrenkoMobBoss,
+523-    CardId::TalrandSkySummoner,
+524-    CardId::TatyovaBenthicDruid,
+525-];
+526-
+527-/// Token cards exist as engine objects but are never importable: `catalog::all`
+528-/// and `catalog::by_name` deliberately exclude them, and the deck parser
+529-/// refuses them like any other unknown name.
+530-pub const TOKEN_CARDS: &[CardId] = &[
+531-    CardId::GoblinToken,
+532-    CardId::DrakeToken,
+533-    CardId::BeastToken,
+534-    CardId::PestToken,
+--
+551:        SUPPORTED_COMMANDERS.contains(&self)
+552-    }
+553-
+554-    /// True for a token's synthetic characteristic card (CR 111.1: a token is
+555-    /// not a card, but it needs characteristics and an identity).
+556-    pub fn is_token(self) -> bool {
+557-        matches!(
+558-            self,
+559-            CardId::SoldierToken
+560-                | CardId::SpiritToken
+561-                | CardId::GoblinToken
+562-                | CardId::DrakeToken
+563-                | CardId::BeastToken
+564-                | CardId::PestToken
+565-        )
+566-    }

@@ -1,0 +1,863 @@
+﻿2026-10-26T18:12:52.8315280Z Current runner version: '2.338.0'
+2026-10-26T18:12:52.8387300Z ##[group]Runner Image Provisioner
+2026-10-26T18:12:52.8389200Z Hosted Compute Agent
+2026-10-26T18:12:52.8390330Z Version: 20261012.601
+2026-10-26T18:12:52.8391480Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-26T18:12:52.8392800Z Build Date: 2026-10-12T17:48:21Z
+2026-10-26T18:12:52.8394000Z Worker ID: {24f6823c-e8b6-42a0-818d-c68186cab242}
+2026-10-26T18:12:52.8395220Z Region: westus
+2026-10-26T18:12:52.8396170Z Cloud: MacCloud
+2026-10-26T18:12:52.8397570Z ##[endgroup]
+2026-10-26T18:12:52.8401370Z ##[group]Operating System
+2026-10-26T18:12:52.8402800Z macOS
+2026-10-26T18:12:52.8403770Z 26.6.2
+2026-10-26T18:12:52.8404810Z 25G83
+2026-10-26T18:12:52.8405690Z ##[endgroup]
+2026-10-26T18:12:52.8407250Z ##[group]Runner Image
+2026-10-26T18:12:52.8407740Z Image: macos-26-arm64
+2026-10-26T18:12:52.8408310Z Version: 20261013.0424.1
+2026-10-26T18:12:52.8409360Z Included Software: https://github.com/actions/runner-images/blob/macos-26-arm64/20261013.0424/images/macos/macos-26-arm64-Readme.md
+2026-10-26T18:12:52.8410530Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-26-arm64%2F20261013.0424
+2026-10-26T18:12:52.8411200Z ##[endgroup]
+2026-10-26T18:12:52.8412190Z ##[group]GITHUB_TOKEN Permissions
+2026-10-26T18:12:52.8414120Z Contents: read
+2026-10-26T18:12:52.8414700Z Metadata: read
+2026-10-26T18:12:52.8415130Z ##[endgroup]
+2026-10-26T18:12:52.8416840Z Secret source: Actions
+2026-10-26T18:12:52.8417580Z Cache mode: write
+2026-10-26T18:12:52.8418270Z Prepare workflow directory
+2026-10-26T18:12:52.8834000Z Prepare all required actions
+2026-10-26T18:12:52.8889340Z Getting action download info
+2026-10-26T18:12:53.0628260Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-26T18:12:53.3367440Z Download action repository 'dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+2026-10-26T18:12:53.8056340Z Download action repository 'Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6' (SHA:6323deb102c322ba6fcbdcafc7e3dddab59af2b6)
+2026-10-26T18:12:54.7363000Z Complete job name: rust (macos-latest)
+2026-10-26T18:12:54.8293090Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-10-26T18:12:54.8293900Z with:
+2026-10-26T18:12:54.8294310Z   persist-credentials: false
+2026-10-26T18:12:54.8294800Z   repository: wulfenbach-jpg/the-aperture
+2026-10-26T18:12:54.8297960Z   token: ***
+2026-10-26T18:12:54.8298310Z   ssh-strict: true
+2026-10-26T18:12:54.8298670Z   ssh-user: git
+2026-10-26T18:12:54.8299010Z   clean: true
+2026-10-26T18:12:54.8299360Z   sparse-checkout-cone-mode: true
+2026-10-26T18:12:54.8299770Z   fetch-depth: 1
+2026-10-26T18:12:54.8300190Z   fetch-tags: false
+2026-10-26T18:12:54.8300670Z   show-progress: true
+2026-10-26T18:12:54.8301110Z   lfs: false
+2026-10-26T18:12:54.8301650Z   submodules: false
+2026-10-26T18:12:54.8302580Z   set-safe-directory: true
+2026-10-26T18:12:54.8303060Z   allow-unsafe-pr-checkout: false
+2026-10-26T18:12:54.8303740Z ##[endgroup]
+2026-10-26T18:12:55.3744010Z Syncing repository: wulfenbach-jpg/the-aperture
+2026-10-26T18:12:55.3746330Z ##[group]Getting Git version info
+2026-10-26T18:12:55.3747130Z Working directory is '/Users/runner/work/the-aperture/the-aperture'
+2026-10-26T18:12:55.3748050Z [command]/opt/homebrew/bin/git version
+2026-10-26T18:12:55.4199050Z git version 2.56.0
+2026-10-26T18:12:55.4214530Z ##[endgroup]
+2026-10-26T18:12:55.4226990Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/bda34794-3670-45f0-9d60-85d06aea0917/.gitconfig'
+2026-10-26T18:12:55.4235010Z Temporarily overriding HOME='/Users/runner/work/_temp/bda34794-3670-45f0-9d60-85d06aea0917' before making global git config changes
+2026-10-26T18:12:55.4238190Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T18:12:55.4243090Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/the-aperture/the-aperture
+2026-10-26T18:12:55.4414230Z Deleting the contents of '/Users/runner/work/the-aperture/the-aperture'
+2026-10-26T18:12:55.4422140Z ##[group]Initializing the repository
+2026-10-26T18:12:55.4429310Z [command]/opt/homebrew/bin/git init /Users/runner/work/the-aperture/the-aperture
+2026-10-26T18:12:55.4699340Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-26T18:12:55.4700550Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-26T18:12:55.4723460Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-26T18:12:55.4725330Z hint: call:
+2026-10-26T18:12:55.4727480Z hint:
+2026-10-26T18:12:55.4729100Z hint: 	git config --global init.defaultBranch <name>
+2026-10-26T18:12:55.4730750Z hint:
+2026-10-26T18:12:55.4732220Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-26T18:12:55.4734480Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-26T18:12:55.4736350Z hint:
+2026-10-26T18:12:55.4737460Z hint: 	git branch -m <name>
+2026-10-26T18:12:55.4740150Z hint:
+2026-10-26T18:12:55.4742140Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-26T18:12:55.4745940Z Initialized empty Git repository in /Users/runner/work/the-aperture/the-aperture/.git/
+2026-10-26T18:12:55.4754550Z [command]/opt/homebrew/bin/git remote add origin https://github.com/wulfenbach-jpg/the-aperture
+2026-10-26T18:12:55.4847420Z ##[endgroup]
+2026-10-26T18:12:55.4849690Z ##[group]Disabling automatic garbage collection
+2026-10-26T18:12:55.4852030Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-10-26T18:12:55.4951470Z ##[endgroup]
+2026-10-26T18:12:55.4953430Z ##[group]Setting up auth
+2026-10-26T18:12:55.4956020Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T18:12:55.5045030Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T18:12:55.6717600Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T18:12:55.6794830Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T18:12:55.8797470Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T18:12:55.8902880Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T18:12:56.0529030Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-26T18:12:56.0984000Z ##[endgroup]
+2026-10-26T18:12:56.1011220Z ##[group]Fetching the repository
+2026-10-26T18:12:56.1155220Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +2f9318d43338b14be7851eeeb6253173495bbd86:refs/remotes/pull/46/merge
+2026-10-26T18:12:58.3252990Z From https://github.com/wulfenbach-jpg/the-aperture
+2026-10-26T18:12:58.3255680Z  * [new ref]         2f9318d43338b14be7851eeeb6253173495bbd86 -> pull/46/merge
+2026-10-26T18:12:58.3316160Z ##[endgroup]
+2026-10-26T18:12:58.3317740Z ##[group]Determining the checkout info
+2026-10-26T18:12:58.3320610Z ##[endgroup]
+2026-10-26T18:12:58.3333750Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-10-26T18:12:58.3893880Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-26T18:12:58.4078350Z ##[group]Checking out the ref
+2026-10-26T18:12:58.4080580Z [command]/opt/homebrew/bin/git checkout --progress --force refs/remotes/pull/46/merge
+2026-10-26T18:12:58.8674900Z HEAD is now at 2f9318d Merge 985d8ffe115536068606a851f8b0f34676f17898 into 60b89b54f2d930292533e12c70c38b1dba7933d2
+2026-10-26T18:12:58.8715540Z ##[endgroup]
+2026-10-26T18:12:58.8865280Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-10-26T18:12:58.8945980Z 2f9318d43338b14be7851eeeb6253173495bbd86
+2026-10-26T18:12:58.9010150Z ##[group]Removing auth
+2026-10-26T18:12:58.9012930Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T18:12:58.9152080Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T18:12:59.0361970Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T18:12:59.0438530Z http.https://github.com/.extraheader
+2026-10-26T18:12:59.0451480Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-26T18:12:59.0600980Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T18:12:59.1689170Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T18:12:59.1807800Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T18:12:59.2802830Z ##[endgroup]
+2026-10-26T18:12:59.3196170Z ##[group]Run dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
+2026-10-26T18:12:59.3196700Z with:
+2026-10-26T18:12:59.3196940Z   toolchain: stable
+2026-10-26T18:12:59.3197220Z   components: rustfmt, clippy
+2026-10-26T18:12:59.3197500Z ##[endgroup]
+2026-10-26T18:12:59.3262400Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-10-26T18:12:59.3391400Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-10-26T18:12:59.3391760Z [36;1mif [[ -z $toolchain ]]; then[0m
+2026-10-26T18:12:59.3392190Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+2026-10-26T18:12:59.3392650Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+2026-10-26T18:12:59.3393040Z [36;1m  exit 1[0m
+2026-10-26T18:12:59.3393360Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+2026-10-26T18:12:59.3393740Z [36;1m  if [[ macOS == macOS ]]; then[0m
+2026-10-26T18:12:59.3394290Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-26T18:12:59.3394720Z [36;1m  else[0m
+2026-10-26T18:12:59.3395070Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-26T18:12:59.3395440Z [36;1m  fi[0m
+2026-10-26T18:12:59.3395670Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+2026-10-26T18:12:59.3396120Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+2026-10-26T18:12:59.3396490Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+2026-10-26T18:12:59.3396920Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+2026-10-26T18:12:59.3397320Z [36;1melse[0m
+2026-10-26T18:12:59.3397460Z [36;1m  delimiter=EOF[0m
+2026-10-26T18:12:59.3397700Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+2026-10-26T18:12:59.3398160Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+2026-10-26T18:12:59.3398530Z [36;1mfi[0m
+2026-10-26T18:12:59.3456060Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:12:59.3456440Z env:
+2026-10-26T18:12:59.3456620Z   toolchain: stable
+2026-10-26T18:12:59.3456820Z ##[endgroup]
+2026-10-26T18:12:59.3975530Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=71]
+2026-10-26T18:12:59.3979640Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-10-26T18:12:59.4161560Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-10-26T18:12:59.4162640Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV[0m
+2026-10-26T18:12:59.4223620Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:12:59.4224420Z ##[endgroup]
+2026-10-26T18:12:59.4724130Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=74]
+2026-10-26T18:12:59.4726520Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-10-26T18:12:59.5035380Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-10-26T18:12:59.5036330Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+2026-10-26T18:12:59.5037940Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y[0m
+2026-10-26T18:12:59.5039650Z [36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH[0m
+2026-10-26T18:12:59.5040360Z [36;1mfi[0m
+2026-10-26T18:12:59.5098050Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:12:59.5098380Z env:
+2026-10-26T18:12:59.5098600Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:12:59.5098900Z ##[endgroup]
+2026-10-26T18:12:59.5526950Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=79]
+2026-10-26T18:12:59.5529550Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-10-26T18:12:59.5535590Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-26T18:12:59.5547500Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+2026-10-26T18:12:59.5763370Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-10-26T18:12:59.5763990Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+2026-10-26T18:12:59.5764360Z [36;1mflags=()[0m
+2026-10-26T18:12:59.5764600Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+2026-10-26T18:12:59.5764950Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+2026-10-26T18:12:59.5765400Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+2026-10-26T18:12:59.5765760Z [36;1mlog=$(mktemp)[0m
+2026-10-26T18:12:59.5765980Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+2026-10-26T18:12:59.5766210Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+2026-10-26T18:12:59.5766690Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+2026-10-26T18:12:59.5767160Z [36;1m    break[0m
+2026-10-26T18:12:59.5767330Z [36;1m  else[0m
+2026-10-26T18:12:59.5767500Z [36;1m    status=$?[0m
+2026-10-26T18:12:59.5767670Z [36;1m  fi[0m
+2026-10-26T18:12:59.5767980Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+2026-10-26T18:12:59.5768530Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+2026-10-26T18:12:59.5768920Z [36;1m    exit "$status"[0m
+2026-10-26T18:12:59.5769120Z [36;1m  fi[0m
+2026-10-26T18:12:59.5769420Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+2026-10-26T18:12:59.5769790Z [36;1m  sleep 30[0m
+2026-10-26T18:12:59.5769970Z [36;1mdone[0m
+2026-10-26T18:12:59.5806970Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:12:59.5807260Z env:
+2026-10-26T18:12:59.5807430Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:12:59.5807640Z   toolchain: stable
+2026-10-26T18:12:59.5807830Z   targets: 
+2026-10-26T18:12:59.5808310Z   components: rustfmt, clippy
+2026-10-26T18:12:59.5808510Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-10-26T18:12:59.5808700Z ##[endgroup]
+2026-10-26T18:13:00.2863700Z info: syncing channel updates for stable-aarch64-apple-darwin
+2026-10-26T18:13:00.4410960Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-26T18:13:00.4590940Z info: removing previous version of component clippy
+2026-10-26T18:13:00.4613490Z info: removing previous version of component rustfmt
+2026-10-26T18:13:00.4630870Z info: removing previous version of component cargo
+2026-10-26T18:13:00.4690810Z info: removing previous version of component rust-std
+2026-10-26T18:13:00.4854650Z info: removing previous version of component rustc
+2026-10-26T18:13:00.5001030Z info: downloading 5 components
+2026-10-26T18:13:08.7590820Z 
+2026-10-26T18:13:08.8190810Z   stable-aarch64-apple-darwin updated - rustc 1.99.1 (58cf8f9c3 2026-10-13) (from rustc 1.99.0 (b940084d7 2026-09-28))
+2026-10-26T18:13:08.8192400Z 
+2026-10-26T18:13:08.8193790Z info: self-update is disabled for this build of rustup
+2026-10-26T18:13:08.8194920Z info: any updates to rustup will need to be fetched with your system package manager
+2026-10-26T18:13:08.8688400Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=9309]
+2026-10-26T18:13:08.8705910Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+2026-10-26T18:13:08.8737950Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-10-26T18:13:08.8745290Z [36;1mrustup default "$toolchain" --force-non-host[0m
+2026-10-26T18:13:08.8841240Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:08.8842350Z env:
+2026-10-26T18:13:08.8842940Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:08.8843720Z   toolchain: stable
+2026-10-26T18:13:08.8844310Z ##[endgroup]
+2026-10-26T18:13:09.0003850Z info: using existing install for stable-aarch64-apple-darwin
+2026-10-26T18:13:09.0027970Z info: default toolchain set to stable-aarch64-apple-darwin
+2026-10-26T18:13:09.0028390Z 
+2026-10-26T18:13:09.0225820Z   stable-aarch64-apple-darwin unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-26T18:13:09.0226310Z 
+2026-10-26T18:13:09.0266550Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=155]
+2026-10-26T18:13:09.0275060Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-10-26T18:13:09.0339700Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-10-26T18:13:09.0340510Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+2026-10-26T18:13:09.0341170Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+2026-10-26T18:13:09.0341820Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+2026-10-26T18:13:09.0376970Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:09.0377320Z env:
+2026-10-26T18:13:09.0377560Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.0377890Z   toolchain: stable
+2026-10-26T18:13:09.0378240Z ##[endgroup]
+2026-10-26T18:13:09.2347960Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=207]
+2026-10-26T18:13:09.2351290Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-10-26T18:13:09.2383530Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-10-26T18:13:09.2384040Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+2026-10-26T18:13:09.2384430Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+2026-10-26T18:13:09.2384820Z [36;1mfi[0m
+2026-10-26T18:13:09.2418250Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:09.2418530Z env:
+2026-10-26T18:13:09.2418800Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.2419070Z ##[endgroup]
+2026-10-26T18:13:09.3183750Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=83]
+2026-10-26T18:13:09.3186390Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-10-26T18:13:09.3214320Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-10-26T18:13:09.3214760Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+2026-10-26T18:13:09.3215100Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+2026-10-26T18:13:09.3215410Z [36;1mfi[0m
+2026-10-26T18:13:09.3261030Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:09.3261830Z env:
+2026-10-26T18:13:09.3262270Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.3262980Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:09.3263430Z ##[endgroup]
+2026-10-26T18:13:09.4010430Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=82]
+2026-10-26T18:13:09.4078020Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-10-26T18:13:09.4147000Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-10-26T18:13:09.4147490Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+2026-10-26T18:13:09.4148240Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/Users/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+2026-10-26T18:13:09.4149410Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+2026-10-26T18:13:09.4149930Z [36;1m    touch "/Users/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-26T18:13:09.4150420Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+2026-10-26T18:13:09.4150860Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+2026-10-26T18:13:09.4151360Z [36;1m    touch "/Users/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-26T18:13:09.4151950Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+2026-10-26T18:13:09.4152230Z [36;1m  fi[0m
+2026-10-26T18:13:09.4152380Z [36;1mfi[0m
+2026-10-26T18:13:09.4185030Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:09.4185280Z env:
+2026-10-26T18:13:09.4185490Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.4185690Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:09.4185890Z   CARGO_TERM_COLOR: always
+2026-10-26T18:13:09.4186310Z   toolchain: stable
+2026-10-26T18:13:09.4186490Z ##[endgroup]
+2026-10-26T18:13:09.5329590Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=124]
+2026-10-26T18:13:09.5333280Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-10-26T18:13:09.5354170Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-10-26T18:13:09.5354850Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+2026-10-26T18:13:09.5355390Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+2026-10-26T18:13:09.5355790Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+2026-10-26T18:13:09.5356130Z [36;1mfi[0m
+2026-10-26T18:13:09.5387030Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:09.5387320Z env:
+2026-10-26T18:13:09.5387560Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.5387780Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:09.5387950Z   CARGO_TERM_COLOR: always
+2026-10-26T18:13:09.5388130Z   toolchain: stable
+2026-10-26T18:13:09.5388300Z ##[endgroup]
+2026-10-26T18:13:09.6177950Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=84]
+2026-10-26T18:13:09.6181620Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-10-26T18:13:09.6199680Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-10-26T18:13:09.6200000Z [36;1mrustc +"$toolchain" --version --verbose[0m
+2026-10-26T18:13:09.6230070Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T18:13:09.6230320Z env:
+2026-10-26T18:13:09.6230520Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.6230740Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:09.6230920Z   CARGO_TERM_COLOR: always
+2026-10-26T18:13:09.6231090Z   toolchain: stable
+2026-10-26T18:13:09.6231250Z ##[endgroup]
+2026-10-26T18:13:09.7174500Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-26T18:13:09.7179920Z binary: rustc
+2026-10-26T18:13:09.7181850Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-26T18:13:09.7183550Z commit-date: 2026-10-13
+2026-10-26T18:13:09.7185370Z host: aarch64-apple-darwin
+2026-10-26T18:13:09.7186460Z release: 1.99.1
+2026-10-26T18:13:09.7187500Z LLVM version: 23.1.1
+2026-10-26T18:13:09.7214090Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=103]
+2026-10-26T18:13:09.7366890Z ##[group]Run Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+2026-10-26T18:13:09.7367320Z with:
+2026-10-26T18:13:09.7367480Z   prefix-key: v0-rust
+2026-10-26T18:13:09.7367660Z   add-job-id-key: true
+2026-10-26T18:13:09.7367850Z   add-rust-environment-hash-key: true
+2026-10-26T18:13:09.7368070Z   cache-targets: true
+2026-10-26T18:13:09.7368230Z   cache-all-crates: false
+2026-10-26T18:13:09.7368420Z   cache-workspace-crates: false
+2026-10-26T18:13:09.7368620Z   save-if: true
+2026-10-26T18:13:09.7368780Z   cache-provider: github
+2026-10-26T18:13:09.7368970Z   cache-bin: true
+2026-10-26T18:13:09.7369130Z   lookup-only: false
+2026-10-26T18:13:09.7369290Z   cmd-format: {0}
+2026-10-26T18:13:09.7369430Z env:
+2026-10-26T18:13:09.7369590Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:09.7369790Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:09.7369960Z   CARGO_TERM_COLOR: always
+2026-10-26T18:13:09.7370160Z ##[endgroup]
+2026-10-26T18:13:10.3051770Z ##[group]Cache Configuration
+2026-10-26T18:13:10.3052490Z Cache Provider:
+2026-10-26T18:13:10.3071560Z     github
+2026-10-26T18:13:10.3072860Z Workspaces:
+2026-10-26T18:13:10.3073230Z     /Users/runner/work/the-aperture/the-aperture
+2026-10-26T18:13:10.3073560Z Cache Paths:
+2026-10-26T18:13:10.3073810Z     /Users/runner/.cargo/bin
+2026-10-26T18:13:10.3074100Z     /Users/runner/.cargo/.crates.toml
+2026-10-26T18:13:10.3074420Z     /Users/runner/.cargo/.crates2.json
+2026-10-26T18:13:10.3074770Z     /Users/runner/.cargo/registry
+2026-10-26T18:13:10.3075120Z     /Users/runner/.cargo/git
+2026-10-26T18:13:10.3075450Z     /Users/runner/work/the-aperture/the-aperture/target
+2026-10-26T18:13:10.3076740Z Restore Key:
+2026-10-26T18:13:10.3077060Z     v0-rust-rust-Darwin-arm64-fc985acc
+2026-10-26T18:13:10.3077370Z Cache Key:
+2026-10-26T18:13:10.3077660Z     v0-rust-rust-Darwin-arm64-fc985acc-0c1dedbf
+2026-10-26T18:13:10.3077990Z .. Prefix:
+2026-10-26T18:13:10.3078250Z   - v0-rust-rust-Darwin-arm64
+2026-10-26T18:13:10.3079010Z .. Environment considered:
+2026-10-26T18:13:10.3089240Z   - Rust Versions:
+2026-10-26T18:13:10.3091280Z     - 1.99.1 aarch64-apple-darwin 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-26T18:13:10.3091810Z   - CARGO_HOME
+2026-10-26T18:13:10.3092070Z   - CARGO_INCREMENTAL
+2026-10-26T18:13:10.3092380Z   - CARGO_TERM_COLOR
+2026-10-26T18:13:10.3092710Z .. Lockfiles considered:
+2026-10-26T18:13:10.3093090Z   - /Users/runner/work/the-aperture/the-aperture/.cargo/config.toml
+2026-10-26T18:13:10.3093710Z   - /Users/runner/work/the-aperture/the-aperture/Cargo.lock
+2026-10-26T18:13:10.3094200Z   - /Users/runner/work/the-aperture/the-aperture/crates/ai/Cargo.toml
+2026-10-26T18:13:10.3094770Z   - /Users/runner/work/the-aperture/the-aperture/crates/cli/Cargo.toml
+2026-10-26T18:13:10.3095740Z   - /Users/runner/work/the-aperture/the-aperture/crates/core/Cargo.toml
+2026-10-26T18:13:10.3096320Z   - /Users/runner/work/the-aperture/the-aperture/crates/import/Cargo.toml
+2026-10-26T18:13:10.3096890Z   - /Users/runner/work/the-aperture/the-aperture/crates/ui/Cargo.toml
+2026-10-26T18:13:10.3098160Z ##[endgroup]
+2026-10-26T18:13:10.3098350Z 
+2026-10-26T18:13:10.3098490Z ... Restoring cache ...
+2026-10-26T18:13:10.4088950Z Cache hit for: v0-rust-rust-Darwin-arm64-fc985acc-0c1dedbf
+2026-10-26T18:13:11.4490820Z Received 134217728 of 458293319 (29.3%), 127.6 MBs/sec
+2026-10-26T18:13:12.6049140Z Received 268435456 of 458293319 (58.6%), 118.6 MBs/sec
+2026-10-26T18:13:13.6163100Z Received 390070272 of 458293319 (85.1%), 117.5 MBs/sec
+2026-10-26T18:13:14.2815250Z Received 458293319 of 458293319 (100.0%), 113.7 MBs/sec
+2026-10-26T18:13:14.2817690Z Cache Size: ~437 MB (458293319 B)
+2026-10-26T18:13:14.3014190Z [command]/opt/homebrew/bin/gtar -xf /Users/runner/work/_temp/c5b6c757-a10b-435d-8bf9-a77d54292271/cache.tzst -P -C /Users/runner/work/the-aperture/the-aperture --delay-directory-restore --use-compress-program unzstd
+2026-10-26T18:13:20.8419590Z Cache restored successfully
+2026-10-26T18:13:20.8559630Z Restored from cache key "v0-rust-rust-Darwin-arm64-fc985acc-0c1dedbf" full match: true.
+2026-10-26T18:13:20.9204600Z ##[group]Run cargo fmt --check
+2026-10-26T18:13:20.9205130Z [36;1mcargo fmt --check[0m
+2026-10-26T18:13:20.9258280Z shell: /bin/bash -e {0}
+2026-10-26T18:13:20.9258690Z env:
+2026-10-26T18:13:20.9259000Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:20.9259270Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:20.9259740Z   CARGO_TERM_COLOR: always
+2026-10-26T18:13:20.9260030Z   CACHE_ON_FAILURE: false
+2026-10-26T18:13:20.9260390Z ##[endgroup]
+2026-10-26T18:13:22.5424110Z ##[group]Run cargo test --all-targets --locked
+2026-10-26T18:13:22.5424460Z [36;1mcargo test --all-targets --locked[0m
+2026-10-26T18:13:22.5460300Z shell: /bin/bash -e {0}
+2026-10-26T18:13:22.5460590Z env:
+2026-10-26T18:13:22.5460800Z   CARGO_HOME: /Users/runner/.cargo
+2026-10-26T18:13:22.5461150Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:13:22.5461490Z   CARGO_TERM_COLOR: always
+2026-10-26T18:13:22.5461800Z   CACHE_ON_FAILURE: false
+2026-10-26T18:13:22.5462140Z ##[endgroup]
+2026-10-26T18:13:23.0104300Z [1m[92m    Updating[0m crates.io index
+2026-10-26T18:13:28.3626580Z [1m[92m   Compiling[0m aperture-core v0.1.0 (/Users/runner/work/the-aperture/the-aperture/crates/core)
+2026-10-26T18:13:34.5874220Z [1m[92m   Compiling[0m aperture-import v0.1.0 (/Users/runner/work/the-aperture/the-aperture/crates/import)
+2026-10-26T18:13:38.8646190Z [1m[92m   Compiling[0m aperture-ai v0.1.0 (/Users/runner/work/the-aperture/the-aperture/crates/ai)
+2026-10-26T18:13:40.1246640Z [1m[92m   Compiling[0m aperture-ui v0.1.0 (/Users/runner/work/the-aperture/the-aperture/crates/ui)
+2026-10-26T18:13:53.1528050Z [1m[92m   Compiling[0m aperture-cli v0.1.0 (/Users/runner/work/the-aperture/the-aperture/crates/cli)
+2026-10-26T18:14:16.0863560Z [1m[92m    Finished[0m `test` profile [unoptimized + debuginfo] target(s) in 53.42s
+2026-10-26T18:14:16.1679690Z [1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/aperture_ai-4ad8baef0ddbda3f)
+2026-10-26T18:14:16.1737660Z 
+2026-10-26T18:14:16.1738970Z running 0 tests
+2026-10-26T18:14:16.1739420Z 
+2026-10-26T18:14:16.1739810Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:14:16.1740240Z 
+2026-10-26T18:14:16.1740730Z [1m[92m     Running[0m tests/common.rs (target/debug/deps/common-730487478a55e04e)
+2026-10-26T18:14:16.1777520Z 
+2026-10-26T18:14:16.1785350Z running 0 tests
+2026-10-26T18:14:16.1785820Z 
+2026-10-26T18:14:16.1786610Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:14:16.1787650Z 
+2026-10-26T18:14:16.1835820Z [1m[92m     Running[0m tests/decider.rs (target/debug/deps/decider-ed16842cceb2d899)
+2026-10-26T18:14:16.1836220Z 
+2026-10-26T18:14:16.1838550Z running 4 tests
+2026-10-26T18:14:16.1874450Z test a_single_legal_option_is_forced_and_never_asked_of_the_model ... ok
+2026-10-26T18:14:16.1877090Z test only_loopback_http_endpoints_are_accepted ... ok
+2026-10-26T18:14:16.1879280Z test the_request_uses_the_documented_endpoint_shape_and_masks_hidden_cards ... ok
+2026-10-26T18:14:16.1897110Z [1m[92m     Running[0m tests/decider_boundary.rs (target/debug/deps/decider_boundary-cc20e93e60bd93a7)
+2026-10-26T18:14:16.1899140Z test an_unreachable_service_falls_back_to_the_heuristic_with_a_visible_reason ... ok
+2026-10-26T18:14:16.1900270Z 
+2026-10-26T18:14:16.1900690Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:14:16.1903230Z 
+2026-10-26T18:14:16.2027750Z 
+2026-10-26T18:14:16.2028530Z running 7 tests
+2026-10-26T18:14:16.2099520Z test a_stale_envelope_falls_back_to_the_current_masked_heuristic ... ok
+2026-10-26T18:14:16.2100660Z test a_stale_forced_view_keeps_the_stale_reason_instead_of_reporting_forced ... ok
+2026-10-26T18:14:16.2101700Z test a_valid_protocol_fixture_answer_is_accepted_from_the_offered_snapshot ... ok
+2026-10-26T18:14:16.2103680Z test a_truncated_protocol_fixture_answer_falls_back_with_the_stable_reason_code ... ok
+2026-10-26T18:14:16.2105210Z test reason_codes_are_stable_for_offline_and_protocol_failures ... ok
+2026-10-26T18:14:16.2106580Z test the_envelope_binds_the_viewer_revision_decision_generation_and_offers ... ok
+2026-10-26T18:14:16.2107990Z test a_key_outside_the_current_engine_offer_is_refused_even_when_the_binding_matches ... ok
+2026-10-26T18:14:16.2108890Z 
+2026-10-26T18:14:16.2109550Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:14:16.2110570Z 
+2026-10-26T18:14:16.2113870Z [1m[92m     Running[0m tests/decider_observation.rs (target/debug/deps/decider_observation-c303a3006244daaf)
+2026-10-26T18:14:16.2164150Z 
+2026-10-26T18:14:16.2166890Z running 2 tests
+2026-10-26T18:14:16.2171710Z [1m[92m     Running[0m tests/decider_redirect.rs (target/debug/deps/decider_redirect-fa292f0c8758f436)
+2026-10-26T18:14:16.2178110Z test the_observation_does_not_hardcode_a_twenty_life_game ... ok
+2026-10-26T18:14:16.2178710Z test the_request_exposes_public_exile_command_and_card_details ... ok
+2026-10-26T18:14:16.2179110Z 
+2026-10-26T18:14:16.2179460Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:14:16.2179990Z 
+2026-10-26T18:14:16.2258540Z 
+2026-10-26T18:14:16.2259120Z running 1 test
+2026-10-26T18:14:19.2266760Z test the_decider_client_does_not_follow_a_redirect ... ok
+2026-10-26T18:14:19.2267840Z 
+2026-10-26T18:14:19.2268190Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.00s
+2026-10-26T18:14:19.2269160Z 
+2026-10-26T18:14:19.2274430Z [1m[92m     Running[0m tests/decider_schema.rs (target/debug/deps/decider_schema-b69055c84eb252c7)
+2026-10-26T18:14:19.2332650Z 
+2026-10-26T18:14:19.2363630Z running 5 tests
+2026-10-26T18:14:19.2375360Z test choose_enforces_cardinality_and_unique_keys_for_directly_built_requests ... ok
+2026-10-26T18:14:19.2481070Z test a_non_choice_decision_type_is_refused_as_malformed ... ok
+2026-10-26T18:14:19.2484490Z test an_oversized_protocol_response_body_is_refused ... ok
+2026-10-26T18:14:19.2485750Z test invalid_confidence_is_refused_instead_of_defaulted_to_zero ... ok
+2026-10-26T18:14:19.2505210Z test missing_or_malformed_usage_is_never_treated_as_clean ... ok
+2026-10-26T18:14:19.2505500Z 
+2026-10-26T18:14:19.2505870Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:14:19.2506320Z 
+2026-10-26T18:14:19.2510160Z [1m[92m     Running[0m tests/decider_usage.rs (target/debug/deps/decider_usage-2cf431cf4105c444)
+2026-10-26T18:14:19.2578880Z 
+2026-10-26T18:14:19.2580380Z running 5 tests
+2026-10-26T18:14:19.2676280Z test a_truncated_response_is_refused_with_a_truncated_error ... ok
+2026-10-26T18:14:19.2677330Z test a_truncated_response_makes_the_policy_fall_back_visibly ... ok
+2026-10-26T18:14:19.2678010Z test the_default_state_budget_is_large_enough_for_the_masked_projection ... ok
+2026-10-26T18:14:19.2680240Z test the_life_object_is_keyed_by_absolute_seat_for_a_p1_viewer ... ok
+2026-10-26T18:14:19.2694730Z test a_healthy_response_is_used_by_the_client_and_the_policy ... ok
+2026-10-26T18:14:19.2696510Z 
+2026-10-26T18:14:19.2697900Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:14:19.2698290Z 
+2026-10-26T18:14:19.2699360Z [1m[92m     Running[0m tests/heuristic.rs (target/debug/deps/heuristic-8edf30b2469fd948)
+2026-10-26T18:14:19.2793590Z 
+2026-10-26T18:14:19.2800730Z running 15 tests
+2026-10-26T18:14:19.2834880Z test attacks_for_lethal_when_the_defender_cannot_block ... ok
+2026-10-26T18:14:19.2838790Z test blocks_when_the_trade_is_good ... ok
+2026-10-26T18:14:19.2844810Z test available_mana_counts_untapped_basics_and_pool ... ok
+2026-10-26T18:14:19.2851840Z test casts_a_creature_with_its_available_mana ... ok
+2026-10-26T18:14:19.2852820Z test bottoms_a_surplus_land_when_scrying ... ok
+2026-10-26T18:14:19.2858510Z test counterspells_the_opponents_creature_spell ... ok
+2026-10-26T18:14:19.2859800Z test does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it ... ok
+2026-10-26T18:14:19.2865110Z test heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice ... ok
+2026-10-26T18:14:19.2866050Z test heuristic_casts_crack_the_earth_through_its_legal_option ... ok
+2026-10-26T18:14:19.2932680Z test keeps_a_three_land_hand_and_mulligans_a_land_flood ... ok
+2026-10-26T18:14:19.2934470Z test heuristic_uses_legal_command_zone_casts_instead_of_passing ... ok
+2026-10-26T18:14:19.2935610Z test passes_when_it_has_nothing_useful_to_do ... ok
+2026-10-26T18:14:19.2942800Z test plays_a_land_in_its_own_main_phase ... ok
+2026-10-26T18:14:19.2943610Z test the_policy_only_sees_masked_information ... ok
+2026-10-26T18:14:19.3026430Z test heuristic_observes_the_acting_seat_and_returns_a_legal_action ... ok
+2026-10-26T18:14:19.3026850Z 
+2026-10-26T18:14:19.3027060Z test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:14:19.3027440Z 
+2026-10-26T18:14:19.3033890Z [1m[92m     Running[0m tests/issue34_discard.rs (target/debug/deps/issue34_discard-9a0ed674f47c5f4e)
+2026-10-26T18:14:19.3113080Z 
+2026-10-26T18:14:19.3113960Z running 2 tests
+2026-10-26T18:14:19.3134820Z test the_heuristic_discards_from_the_engine_offer ... ok
+2026-10-26T18:14:19.3135690Z test the_decider_envelope_offers_each_legal_discard_set ... ok
+2026-10-26T18:14:19.3135970Z 
+2026-10-26T18:14:19.3136290Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:14:19.3136680Z 
+2026-10-26T18:14:19.3143310Z [1m[92m     Running[0m tests/search.rs (target/debug/deps/search-f58887b9d31ea1b7)
+2026-10-26T18:14:19.3208890Z 
+2026-10-26T18:14:19.3210790Z running 9 tests
+2026-10-26T18:14:19.3278500Z test cancellation_reports_the_labelled_fallback ... ok
+2026-10-26T18:14:19.3380450Z test budget_exhaustion_labels_the_fallback ... ok
+2026-10-26T18:14:19.4464370Z test candidates_are_only_offered_actions ... ok
+2026-10-26T18:14:19.6232740Z test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+2026-10-26T18:14:19.6336310Z test pending_decisions_are_refused_with_a_typed_reason ... ok
+2026-10-26T18:14:19.6858410Z test declared_own_deck_is_used_for_own_draws_only ... ok
+2026-10-26T18:14:19.7260800Z test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+2026-10-26T18:14:19.8782730Z test reconstruction_is_reproducible_determinization ... ok
+2026-10-26T18:15:19.7520910Z test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
+2026-10-26T18:17:29.6149630Z test small_paired_trial_against_the_frozen_heuristic ... ok
+2026-10-26T18:17:29.6150810Z 
+2026-10-26T18:17:29.6151540Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 190.20s
+2026-10-26T18:17:29.6152570Z 
+2026-10-26T18:17:29.6181040Z [1m[92m     Running[0m tests/selfplay.rs (target/debug/deps/selfplay-93bb7acdcd5fa06c)
+2026-10-26T18:17:29.6448150Z 
+2026-10-26T18:17:29.6448610Z running 3 tests
+2026-10-26T18:17:29.7079540Z test a_run_cap_is_reported_as_truncation_not_a_result ... ok
+2026-10-26T18:17:30.2108570Z test heuristic_selfplay_reaches_a_terminal_result_and_replays ... ok
+2026-10-26T18:17:31.2743680Z test identical_seeds_produce_identical_games_and_ai_digests ... ok
+2026-10-26T18:17:31.2744380Z 
+2026-10-26T18:17:31.2744710Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.63s
+2026-10-26T18:17:31.2745000Z 
+2026-10-26T18:17:31.2750090Z [1m[92m     Running[0m unittests examples/model_decide.rs (target/debug/examples/model_decide-e8a57453c5c6da4c)
+2026-10-26T18:17:31.2922540Z 
+2026-10-26T18:17:31.2923230Z running 0 tests
+2026-10-26T18:17:31.2923630Z 
+2026-10-26T18:17:31.2924380Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:17:31.2925130Z 
+2026-10-26T18:17:31.2933440Z [1m[92m     Running[0m unittests examples/search_decide.rs (target/debug/examples/search_decide-a9b56d6e4dba5666)
+2026-10-26T18:17:31.3087450Z 
+2026-10-26T18:17:31.3088170Z running 0 tests
+2026-10-26T18:17:31.3088530Z 
+2026-10-26T18:17:31.3089380Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:17:31.3090280Z 
+2026-10-26T18:17:31.3098170Z [1m[92m     Running[0m unittests src/main.rs (target/debug/deps/aperture_cli-a661756378c50f78)
+2026-10-26T18:17:31.3290570Z 
+2026-10-26T18:17:31.3291860Z running 7 tests
+2026-10-26T18:17:31.3328330Z test decks::tests::an_explicit_missing_deck_path_is_not_replaced_by_the_bundle ... ok
+2026-10-26T18:17:31.3424960Z test decks::tests::an_explicit_starter_file_keeps_its_own_identity ... ok
+2026-10-26T18:17:31.3426800Z test harness_cmd::tests::classifier_and_exit_code_are_explicit ... ok
+2026-10-26T18:17:31.3428600Z test decks::tests::non_explicit_default_loads_keep_the_human_fallback_names ... ok
+2026-10-26T18:17:31.3471220Z test tests::selfplay_help_lists_every_supported_commander_and_the_bounded_scope ... ok
+2026-10-26T18:17:31.4523150Z test harness_cmd::tests::capped_harness_emits_paired_rows_and_exit_2 ... ok
+2026-10-26T18:17:48.0970880Z test harness_cmd::tests::terminal_harness_emits_rows_and_exit_0 ... ok
+2026-10-26T18:17:48.0972400Z 
+2026-10-26T18:17:48.0973000Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.76s
+2026-10-26T18:17:48.0973580Z 
+2026-10-26T18:17:48.1000830Z [1m[92m     Running[0m tests/certify.rs (target/debug/deps/certify-80b74801419a552c)
+2026-10-26T18:17:48.1177720Z 
+2026-10-26T18:17:48.1184050Z running 4 tests
+2026-10-26T18:17:48.1681430Z test a_missing_snapshot_is_refused_rather_than_replaced_by_a_bundled_deck ... ok
+2026-10-26T18:17:48.1767810Z test an_edited_snapshot_stops_certifying ... ok
+2026-10-26T18:18:05.3025890Z test a_crlf_checkout_of_the_same_list_certifies_to_the_same_snapshot_hash ... ok
+2026-10-26T18:18:05.4559460Z test certify_proves_one_starter_from_its_exact_snapshot ... ok
+2026-10-26T18:18:05.4562330Z [1m[92m     Running[0m tests/commander_check.rs (target/debug/deps/commander_check-a9762cee5e587e43)
+2026-10-26T18:18:05.4563560Z 
+2026-10-26T18:18:05.4564120Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 17.33s
+2026-10-26T18:18:05.4565310Z 
+2026-10-26T18:18:05.4658120Z 
+2026-10-26T18:18:05.4660470Z running 8 tests
+2026-10-26T18:18:05.4788080Z test a_commander_section_in_a_practice_file_is_refused_by_real_consumers ... ok
+2026-10-26T18:18:05.5005460Z test commander_check_returns_0_for_a_legal_but_unplayable_deck ... ok
+2026-10-26T18:18:05.5093110Z test a_valid_mainboard_prefixed_practice_file_still_loads_and_plays ... ok
+2026-10-26T18:18:05.5272600Z test commander_check_returns_1_for_illegal_and_2_for_not_certified ... ok
+2026-10-26T18:18:05.5363560Z test parenthesized_section_headers_are_refused_by_real_consumers ... ok
+2026-10-26T18:18:05.5441100Z test commander_check_returns_2_for_malformed_input_and_out_matches_stdout ... ok
+2026-10-26T18:18:05.5539900Z test pregame_chosen_color_commander_exits_2_without_false_color_illegal ... ok
+2026-10-26T18:18:05.7863680Z test commander_check_returns_2_for_duplicates_with_incomplete_oracle_text ... ok
+2026-10-26T18:18:05.7871460Z [1m[92m     Running[0m tests/explicit_decks.rs (target/debug/deps/explicit_decks-519789ec4de7b787)
+2026-10-26T18:18:05.7871900Z 
+2026-10-26T18:18:05.7872170Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+2026-10-26T18:18:05.7872550Z 
+2026-10-26T18:18:05.7974060Z 
+2026-10-26T18:18:05.7974410Z running 1 test
+2026-10-26T18:18:05.8092020Z test coach_refuses_both_explicit_missing_deck_paths ... ok
+2026-10-26T18:18:05.8092380Z 
+2026-10-26T18:18:05.8092650Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:18:05.8093040Z 
+2026-10-26T18:18:05.8093490Z [1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/aperture_core-c6b92e5a65ada651)
+2026-10-26T18:18:05.8209300Z 
+2026-10-26T18:18:05.8210490Z running 11 tests
+2026-10-26T18:18:05.8232500Z test counters::tests::counters_store_only_nonzero_kinds_and_sum_canonically ... ok
+2026-10-26T18:18:05.8234580Z test counters::tests::paired_power_counters_annihilate_equally ... ok
+2026-10-26T18:18:05.8236420Z test counters::tests::deserialization_refuses_non_canonical_counters ... ok
+2026-10-26T18:18:05.8237840Z test counters::tests::removing_more_counters_than_held_clamps_and_never_goes_negative ... ok
+2026-10-26T18:18:05.8239180Z test layer::tests::finite_shield_absorbs_only_its_remaining_amount ... ok
+2026-10-26T18:18:05.8247260Z test layer::tests::unlimited_shield_prevents_every_applicable_instance ... ok
+2026-10-26T18:18:05.8247990Z test layer::tests::modifier_effects_describe_themselves_in_layer_7c ... ok
+2026-10-26T18:18:05.8248450Z test tokens::tests::flying_is_blocked_only_by_flying_or_reach ... ok
+2026-10-26T18:18:05.8249220Z test tokens::tests::islandwalk_forbids_every_blocker_while_the_defender_controls_an_island ... ok
+2026-10-26T18:18:05.8249770Z test counters::tests::serde_round_trip_is_canonical ... ok
+2026-10-26T18:18:05.8250530Z [1m[92m     Running[0m tests/abilities.rs (target/debug/deps/abilities-c81ea6aadff9f7cd)
+2026-10-26T18:18:05.8251100Z test tokens::tests::token_cards_are_creatures_outside_the_importable_pool ... ok
+2026-10-26T18:18:05.8251420Z 
+2026-10-26T18:18:05.8251620Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:18:05.8251960Z 
+2026-10-26T18:18:05.8357900Z 
+2026-10-26T18:18:05.8358210Z running 13 tests
+2026-10-26T18:18:05.8433920Z test activated_ability_effect_comes_before_ability_resolved_and_priority ... ok
+2026-10-26T18:18:05.8438150Z test an_ability_on_the_stack_is_not_a_spell ... ok
+2026-10-26T18:18:05.8441070Z test activated_ability_needs_its_controller_and_a_legal_target ... ok
+2026-10-26T18:18:05.8444090Z test enters_the_battlefield_trigger_draws_before_priority ... ok
+2026-10-26T18:18:05.8445080Z test sacrifice_cost_ability_moves_the_source_and_gains_life ... ok
+2026-10-26T18:18:05.8445670Z test optional_trigger_is_declined_or_used_by_its_controller ... ok
+2026-10-26T18:18:05.8446160Z test tap_ability_goes_on_the_stack_and_deals_damage ... ok
+2026-10-26T18:18:05.8446700Z test tap_ability_is_refused_while_summoning_sick_and_when_tapped ... ok
+2026-10-26T18:18:05.8447240Z test trigger_target_lost_before_resolution_makes_the_ability_fizzle ... ok
+2026-10-26T18:18:05.8447720Z test trigger_without_a_legal_target_is_removed ... ok
+2026-10-26T18:18:05.8448220Z test simultaneous_dies_triggers_use_apnap_order_and_lki ... ok
+2026-10-26T18:18:05.8448750Z test triggered_ability_effect_comes_before_ability_resolved_and_priority ... ok
+2026-10-26T18:18:05.8449220Z test mana_cost_ability_and_once_each_turn_limit ... ok
+2026-10-26T18:18:05.8449410Z 
+2026-10-26T18:18:05.8449670Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:18:05.8450010Z 
+2026-10-26T18:18:05.8451530Z [1m[92m     Running[0m tests/abilities_game.rs (target/debug/deps/abilities_game-e33876a413a97d59)
+2026-10-26T18:18:05.8566270Z 
+2026-10-26T18:18:05.8567080Z running 1 test
+2026-10-26T18:18:05.9997080Z test real_game_activates_and_triggers_abilities_and_replays_identically ... ok
+2026-10-26T18:18:05.9998010Z 
+2026-10-26T18:18:05.9998770Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+2026-10-26T18:18:05.9999520Z 
+2026-10-26T18:18:06.0000630Z [1m[92m     Running[0m tests/apnap.rs (target/debug/deps/apnap-454f2d080ff11ba7)
+2026-10-26T18:18:06.0126380Z 
+2026-10-26T18:18:06.0127120Z running 17 tests
+2026-10-26T18:18:06.0300820Z test apnap_order_anchors_at_nonzero_active_and_wraps ... ok
+2026-10-26T18:18:06.0329130Z test apnap_pending_label_and_kind_are_owner_only ... ok
+2026-10-26T18:18:06.0332940Z test apnap_skips_an_already_lost_seat ... ok
+2026-10-26T18:18:06.0336330Z test apnap_rejections_leave_the_queue_unchanged ... ok
+2026-10-26T18:18:06.0337170Z test coach_does_not_print_an_unentitled_apnap_choice_label ... ok
+2026-10-26T18:18:06.0338270Z test counterspell_prevents_the_apnap_queue ... ok
+2026-10-26T18:18:06.0344420Z test apnap_validation_rejects_rewound_source_and_nonprefix_answers ... ok
+2026-10-26T18:18:06.0345020Z test crack_the_earth_is_a_supported_normal_cast_card ... ok
+2026-10-26T18:18:06.0345670Z test departing_active_current_chooser_purges_its_answer_and_resumes ... ok
+2026-10-26T18:18:06.0346430Z test departing_participant_is_purged_and_remaining_answers_resume ... ok
+2026-10-26T18:18:06.0347250Z test last_live_seat_outcome_discards_the_pending_queue ... ok
+2026-10-26T18:18:06.0348420Z test apnap_pending_view_keeps_choices_public_and_hidden_state_masked ... ok
+2026-10-26T18:18:06.0349100Z test malformed_apnap_queue_is_rejected_by_state_validation ... ok
+2026-10-26T18:18:06.0426410Z test malformed_apnap_save_with_missing_source_returns_typed_error_not_panic ... ok
+2026-10-26T18:18:06.0430410Z test malformed_apnap_pending_save_is_rejected ... ok
+2026-10-26T18:18:06.0431730Z test real_crack_the_earth_cast_defers_all_sacrifices_until_the_last_answer ... ok
+2026-10-26T18:18:06.0595370Z test intermediate_apnap_queue_save_and_replay_round_trip ... ok
+2026-10-26T18:18:06.0596440Z 
+2026-10-26T18:18:06.0597110Z test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+2026-10-26T18:18:06.0597940Z 
+2026-10-26T18:18:06.0599270Z [1m[92m     Running[0m tests/card_printings.rs (target/debug/deps/card_printings-f98437f5fc8d875c)
+2026-10-26T18:18:06.0712780Z 
+2026-10-26T18:18:06.0713890Z running 7 tests
+2026-10-26T18:18:06.0732210Z test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+2026-10-26T18:18:06.0746320Z test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+2026-10-26T18:18:06.0747800Z test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+2026-10-26T18:18:06.0749070Z test every_krenko_package_card_matches_its_recorded_printing ... ok
+2026-10-26T18:18:06.0750210Z test every_slice5_card_matches_its_recorded_printing ... ok
+2026-10-26T18:18:06.0769130Z test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+2026-10-26T18:18:06.0780380Z test every_starter_corpus_card_matches_its_recorded_printing ... ok
+2026-10-26T18:18:06.0781310Z 
+2026-10-26T18:18:06.0785590Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:18:06.0786470Z 
+2026-10-26T18:18:06.0788490Z [1m[92m     Running[0m tests/catalog_pool.rs (target/debug/deps/catalog_pool-bbf06caaa259aeec)
+2026-10-26T18:18:06.0893360Z 
+2026-10-26T18:18:06.0893630Z running 5 tests
+2026-10-26T18:18:06.0925940Z test every_printed_ability_maps_to_implemented_semantics ... ok
+2026-10-26T18:18:06.0927090Z test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+2026-10-26T18:18:06.0927600Z test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+2026-10-26T18:18:06.0928040Z test pool_size_is_bounded_and_names_are_unique ... ok
+2026-10-26T18:18:06.0931590Z test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+2026-10-26T18:18:06.0932270Z 
+2026-10-26T18:18:06.0932950Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:18:06.0935090Z 
+2026-10-26T18:18:06.0935970Z [1m[92m     Running[0m tests/coach_trace.rs (target/debug/deps/coach_trace-673ffb5f3eb95208)
+2026-10-26T18:18:06.1044270Z 
+2026-10-26T18:18:06.1045190Z running 7 tests
+2026-10-26T18:18:06.1081170Z test the_1014_note_states_apnap_order ... ok
+2026-10-26T18:18:06.1117950Z test coaching_of_a_non_decision_seat_never_describes_anothers_hand ... ok
+2026-10-26T18:18:06.1124360Z test walkthrough_apnap_pending_teaches_apnap_order_and_keeps_private_choices_private ... ok
+2026-10-26T18:18:06.1125940Z test walkthrough_categories_are_separate_and_strategy_is_absent_by_design ... ok
+2026-10-26T18:18:06.1126570Z test walkthrough_cast_opens_a_response_window_and_names_what_resolves ... ok
+2026-10-26T18:18:06.1127090Z test walkthrough_consecutive_passes_are_listed_seat_by_seat ... ok
+2026-10-26T18:18:06.1127540Z test walkthrough_new_game_pass_round_states_the_next_resolution ... ok
+2026-10-26T18:18:06.1127890Z 
+2026-10-26T18:18:06.1128170Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:18:06.1128530Z 
+2026-10-26T18:18:06.1130950Z [1m[92m     Running[0m tests/combat.rs (target/debug/deps/combat-9036b9f671aaeae2)
+2026-10-26T18:18:06.1243830Z 
+2026-10-26T18:18:06.1244830Z running 8 tests
+2026-10-26T18:18:06.1310250Z test attackers_are_declared_only_during_the_declare_attackers_step ... ok
+2026-10-26T18:18:06.1317910Z test combat_damage_happens_once ... ok
+2026-10-26T18:18:06.1319110Z test a_blocker_can_only_block_one_attacker_and_must_be_untapped ... ok
+2026-10-26T18:18:06.1319740Z test blocking_creatures_trade_and_lethal_damage_is_a_state_based_action ... ok
+2026-10-26T18:18:06.1320650Z test summoning_sick_creature_cannot_attack ... ok
+2026-10-26T18:18:06.1321550Z test giant_growth_pumps_until_end_of_turn ... ok
+2026-10-26T18:18:06.1322450Z test unblocked_attacker_damages_the_defending_player ... ok
+2026-10-26T18:18:06.1324940Z test two_blockers_split_damage_lethal_first_and_all_die ... ok
+2026-10-26T18:18:06.1357710Z [1m[92m     Running[0m tests/combat_teaching.rs (target/debug/deps/combat_teaching-55c2c0febc4fe017)
+2026-10-26T18:18:06.1358120Z 
+2026-10-26T18:18:06.1358400Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:18:06.1358740Z 
+2026-10-26T18:18:06.1442860Z 
+2026-10-26T18:18:06.1443440Z running 2 tests
+2026-10-26T18:18:06.1464120Z test the_5101c_note_does_not_teach_lethal_first_as_the_rule ... ok
+2026-10-26T18:18:06.1472630Z test combat_coaching_identifies_the_automatic_assignment_as_a_simplification ... ok
+2026-10-26T18:18:06.1473530Z 
+2026-10-26T18:18:06.1474260Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:18:06.1475160Z 
+2026-10-26T18:18:06.1476410Z [1m[92m     Running[0m tests/command_zone_catalog.rs (target/debug/deps/command_zone_catalog-716d3322210da392)
+2026-10-26T18:18:06.1570140Z 
+2026-10-26T18:18:06.1571630Z running 5 tests
+2026-10-26T18:18:06.1575580Z test sourced_swords_to_plowshares_is_in_the_supported_pool ... ok
+2026-10-26T18:18:06.1576690Z test sourced_plains_is_in_the_supported_pool ... ok
+2026-10-26T18:18:06.1577780Z test sourced_isamaru_is_in_the_supported_pool ... ok
+2026-10-26T18:18:06.1578690Z test sourced_time_ebb_is_in_the_supported_pool ... ok
+2026-10-26T18:18:06.1579520Z test sourced_unsummon_is_in_the_supported_pool ... ok
+2026-10-26T18:18:06.1580100Z 
+2026-10-26T18:18:06.1580800Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:18:06.1581210Z 
+2026-10-26T18:18:06.1581660Z [1m[92m     Running[0m tests/command_zone_setup.rs (target/debug/deps/command_zone_setup-66d17fdadbe2ae73)
+2026-10-26T18:18:06.1684840Z 
+2026-10-26T18:18:06.1685720Z running 33 tests
+2026-10-26T18:18:06.1870260Z test a_commander_cast_from_hand_does_not_add_tax ... ok
+2026-10-26T18:18:06.1881880Z test a_commander_is_castable_from_the_command_zone_and_counts_the_cast ... ok
+2026-10-26T18:18:06.1884140Z test a_declined_commander_draw_emits_one_real_draw_event ... ok
+2026-10-26T18:18:06.1885690Z test a_departing_commander_owner_is_purged_without_touching_other_seats ... ok
+2026-10-26T18:18:06.1888100Z test a_supported_single_commander_per_seat_constructs_a_game ... ok
+2026-10-26T18:18:06.1888680Z test a_dying_commander_gets_one_owner_return_choice_and_declining_is_final ... ok
+2026-10-26T18:18:06.1891280Z test an_unpayable_or_unauthorized_command_zone_cast_does_not_increment_or_mutate ... ok
+2026-10-26T18:18:06.2021300Z test all_lost_command_zone_save_preserves_its_original_profile ... ok
+2026-10-26T18:18:06.2022970Z test commander_tax_is_two_per_previous_command_zone_cast ... ok
+2026-10-26T18:18:06.2086690Z test a_draw_step_save_cannot_claim_additional_effect_draws ... ok
+2026-10-26T18:18:06.2087940Z test commander_zone_transitions_reset_controller_and_object_state ... ok
+2026-10-26T18:18:06.2088460Z test commanders_start_independently_in_the_command_zone ... ok
+2026-10-26T18:18:06.2088970Z test divination_draw_two_continues_after_a_commander_draw_replacement ... ok
+2026-10-26T18:18:06.2089540Z test draw_step_suspends_before_a_commander_moves_from_library_to_hand ... ok
+2026-10-26T18:18:06.2091360Z test final_commander_return_answer_restores_priority_without_advancing_the_step ... ok
+2026-10-26T18:18:06.2092360Z test forged_replacement_source_and_cursor_are_rejected ... ok
+2026-10-26T18:18:06.2092900Z test injected_departure_retains_the_unanswered_commander_return_tail ... ok
+2026-10-26T18:18:06.2093890Z test commander_view_redacts_hidden_zones_for_every_viewer ... ok
+2026-10-26T18:18:06.2094380Z test malformed_commander_return_bounds_are_typed_not_panics ... ok
+2026-10-26T18:18:06.2094950Z test command_zone_replay_and_save_round_trip_the_explicit_setup ... ok
+2026-10-26T18:18:06.2095460Z test ordinary_practice_games_refuse_a_commander_in_the_library ... ok
+2026-10-26T18:18:06.2106360Z test ordinary_practice_parser_refuses_the_commander_only_card_with_reason ... ok
+2026-10-26T18:18:06.2106950Z test malformed_commander_return_queues_are_rejected_not_repaired ... ok
+2026-10-26T18:18:06.2107410Z test repeat_command_zone_casts_stack_tax_and_a_countered_cast_still_counts ... ok
+2026-10-26T18:18:06.2108170Z test opt_and_consider_commander_draws_validate_after_the_first_instruction ... ok
+2026-10-26T18:18:06.2108720Z test simultaneous_commander_returns_wait_for_every_owner_then_apply_apnap_batch ... ok
+2026-10-26T18:18:06.2112870Z test swords_exiles_then_offers_return_with_controller_life_gain ... ok
+2026-10-26T18:18:06.2125900Z test terminal_sba_wins_immediately_without_an_irrelevant_return_choice ... ok
+2026-10-26T18:18:06.2126450Z test time_ebb_suspends_before_the_library_move_and_declining_puts_it_on_top ... ok
+2026-10-26T18:18:06.2127040Z test unsummon_suspends_before_the_move_and_declining_proceeds_to_hand ... ok
+2026-10-26T18:18:06.2127590Z test unsupported_commander_and_multi_commander_setups_are_refused ... ok
+2026-10-26T18:18:06.2178880Z test replacement_save_is_bound_to_the_producer_destination_and_target ... ok
+2026-10-26T18:18:06.2293170Z test sandbox_save_container_and_identity_corruption_is_rejected ... ok
+2026-10-26T18:18:06.2293980Z 
+2026-10-26T18:18:06.2294730Z test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+2026-10-26T18:18:06.2295690Z 
+2026-10-26T18:18:06.2296830Z [1m[92m     Running[0m tests/counters_tokens_library.rs (target/debug/deps/counters_tokens_library-bf28dd909b85e7ea)
+2026-10-26T18:18:06.2440160Z 
+2026-10-26T18:18:06.2440840Z running 16 tests
+2026-10-26T18:18:06.2562120Z test a_bounced_token_ceases_to_exist_and_never_reaches_a_hand ... ok
+2026-10-26T18:18:06.2562690Z test a_destroyed_token_ceases_to_exist_and_never_enters_a_graveyard ... ok
+2026-10-26T18:18:06.2566490Z test a_flying_token_can_only_be_blocked_by_flying_or_reach ... ok
+2026-10-26T18:18:06.2571570Z test a_created_token_has_its_own_characteristics_ownership_and_visibility ... ok
+2026-10-26T18:18:06.2646020Z test a_save_with_malformed_counters_is_refused_not_coerced ... ok
+2026-10-26T18:18:06.2647160Z test a_saved_state_with_counters_off_the_battlefield_is_refused ... ok
+2026-10-26T18:18:06.2648010Z test combat_damage_uses_counter_modified_power ... ok
+2026-10-26T18:18:06.2658210Z test a_real_game_keeps_its_digest_and_survives_a_save_load_round_trip ... ok
+2026-10-26T18:18:06.2658770Z test counters_and_tokens_survive_save_load_exactly ... ok
+2026-10-26T18:18:06.2659300Z test counters_do_not_follow_the_card_out_of_the_battlefield ... ok
+2026-10-26T18:18:06.2659970Z test minus_counters_reduce_toughness_to_zero_and_the_creature_dies ... ok
+2026-10-26T18:18:06.2661810Z test paired_plus_and_minus_counters_annihilate_at_the_next_checkpoint ... ok
+2026-10-26T18:18:06.2663150Z test mill_shuffle_reveal_and_untap_are_deterministic_and_information_safe ... ok
+2026-10-26T18:18:06.2664340Z test swords_to_plowshares_reports_a_token_truthfully ... ok
+2026-10-26T18:18:06.2665390Z test power_and_toughness_counters_change_characteristics_and_projection ... ok
+2026-10-26T18:18:06.2720000Z test a_real_pre16_v10_save_still_loads_and_replays ... ok
+2026-10-26T18:18:06.2720830Z 
+2026-10-26T18:18:06.2721440Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-26T18:18:06.2722330Z 
+2026-10-26T18:18:06.2723860Z [1m[92m     Running[0m tests/counterspell.rs (target/debug/deps/counterspell-8d16c612e0f6b1d6)
+2026-10-26T18:18:06.2829590Z 
+2026-10-26T18:18:06.2830950Z running 4 tests
+2026-10-26T18:18:06.2909620Z test counterspell_counters_the_target_spell_and_nothing_else_happens ... ok
+2026-10-26T18:18:06.2910800Z test counterspell_needs_a_spell_target ... ok
+2026-10-26T18:18:06.2911640Z test a_spell_whose_targets_died_does_not_resolve ... ok
+2026-10-26T18:18:06.2912690Z test counterspell_resolution_revalidates_its_target ... ok
+2026-10-26T18:18:06.2913220Z 
+2026-10-26T18:18:06.2913730Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:18:06.2914600Z 
+2026-10-26T18:18:06.2915820Z [1m[92m     Running[0m tests/issue13_commander_combat.rs (target/debug/deps/issue13_commander_combat-b04e520fbace18b5)
+2026-10-26T18:18:06.3052800Z 
+2026-10-26T18:18:06.3054140Z running 43 tests
+2026-10-26T18:18:06.3165910Z test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+2026-10-26T18:18:06.3166830Z test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+2026-10-26T18:18:06.3189230Z test commander_combat_damage_is_publicly_credited ... ok
+2026-10-26T18:18:06.3203370Z test commander_damage_to_a_creature_never_credits_a_player ... ok
+2026-10-26T18:18:06.3253770Z test commander_damage_identity_survives_a_modeled_control_change ... ok
+2026-10-26T18:18:06.3332060Z test commander_draw_answer_then_owner_departure_is_atomic ... ok
+2026-10-26T18:18:06.3351000Z test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+2026-10-26T18:18:06.3351640Z test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+2026-10-26T18:18:06.3461760Z test departed_identity_omitted_from_retired_is_refused ... ok
+2026-10-26T18:18:06.3468260Z test departing_controller_battlefield_permanent_is_exiled ... ok
+2026-10-26T18:18:06.3468880Z test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+2026-10-26T18:18:06.3469410Z test discard_pending_then_active_departure_settles_once ... ok
+2026-10-26T18:18:06.3469980Z test commander_return_queue_survives_a_departing_owner ... ok
+2026-10-26T18:18:06.3470410Z test fabricated_retired_commander_identity_is_refused ... ok
+2026-10-26T18:18:06.3470870Z test fog_does_not_prevent_noncombat_damage ... ok
+2026-10-26T18:18:06.3471210Z test fog_is_a_sourced_catalog_card ... ok
+2026-10-26T18:18:06.3471650Z test exact_commander_damage_boundaries ... ok
+2026-10-26T18:18:06.3472070Z test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+2026-10-26T18:18:06.3472730Z test fog_prevents_combat_damage_to_creatures ... ok
+2026-10-26T18:18:06.3473210Z test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+2026-10-26T18:18:06.3474780Z test fog_shield_expires_after_cleanup ... ok
+2026-10-26T18:18:06.3475260Z test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+2026-10-26T18:18:06.3509050Z test four_seat_co_loser_apnap_source_departure_continues_survivors ... FAILED
+2026-10-26T18:18:06.3610300Z test independent_commanders_do_not_pool ... ok
+2026-10-26T18:18:06.3658190Z test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+2026-10-26T18:18:06.3658950Z test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+2026-10-26T18:18:06.3659680Z test live_commander_cannot_be_listed_as_retired ... ok
+2026-10-26T18:18:06.3660090Z test malformed_commander_damage_ledgers_are_refused ... ok
+2026-10-26T18:18:06.3661150Z test named_20_life_profiles_are_unchanged ... ok
+2026-10-26T18:18:06.3701400Z test noncombat_damage_never_credits_the_ledger ... ok
+2026-10-26T18:18:06.3701890Z test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+2026-10-26T18:18:06.3702360Z test previous_replay_schema_version_is_rejected ... ok
+2026-10-26T18:18:06.3702780Z test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+2026-10-26T18:18:06.3703410Z test real_departure_retires_identity_and_keeps_historic_row ... ok
+2026-10-26T18:18:06.3703760Z test previous_save_schema_version_is_rejected ... ok
+2026-10-26T18:18:06.3704100Z test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+2026-10-26T18:18:06.3705240Z test serialized_commander_combat_profile_reconstructs_40_life ... ok
+2026-10-26T18:18:06.3705600Z test simultaneous_losses_settle_once_in_seat_order ... ok
+2026-10-26T18:18:06.3705920Z test survivor_owned_source_exiled_but_queue_continues ... ok
+2026-10-26T18:18:06.3706280Z test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+2026-10-26T18:18:06.3706610Z test twenty_two_commander_damage_is_a_loss ... ok
+2026-10-26T18:18:06.3706910Z test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+2026-10-26T18:18:06.8371550Z test accepted_action_midledger_save_and_replay_roundtrip ... ok
+2026-10-26T18:18:06.8372200Z 
+2026-10-26T18:18:06.8372420Z failures:
+2026-10-26T18:18:06.8372640Z 
+2026-10-26T18:18:06.8373110Z ---- four_seat_co_loser_apnap_source_departure_continues_survivors stdout ----
+2026-10-26T18:18:06.8373800Z 
+2026-10-26T18:18:06.8374870Z thread 'four_seat_co_loser_apnap_source_departure_continues_survivors' (27748) panicked at crates/core/tests/issue13_commander_combat.rs:2070:5:
+2026-10-26T18:18:06.8376350Z source-left provenance validates
+2026-10-26T18:18:06.8377220Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-10-26T18:18:06.8377900Z 
+2026-10-26T18:18:06.8377910Z 
+2026-10-26T18:18:06.8378100Z failures:
+2026-10-26T18:18:06.8378670Z     four_seat_co_loser_apnap_source_departure_continues_survivors
+2026-10-26T18:18:06.8379300Z 
+2026-10-26T18:18:06.8379910Z test result: FAILED. 42 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+2026-10-26T18:18:06.8380800Z 
+2026-10-26T18:18:06.8382570Z [1m[91merror[0m: test failed, to rerun pass `-p aperture-core --test issue13_commander_combat`
+2026-10-26T18:18:06.8476140Z ##[error]Process completed with exit code 101.
+2026-10-26T18:18:06.8666700Z Post job cleanup.
+2026-10-26T18:18:07.2600210Z [command]/opt/homebrew/bin/git version
+2026-10-26T18:18:07.2909550Z git version 2.56.0
+2026-10-26T18:18:07.2939550Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/ec5f9259-5d84-434e-be57-469c7168883b/.gitconfig'
+2026-10-26T18:18:07.2955620Z Temporarily overriding HOME='/Users/runner/work/_temp/ec5f9259-5d84-434e-be57-469c7168883b' before making global git config changes
+2026-10-26T18:18:07.2957570Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T18:18:07.2961370Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/the-aperture/the-aperture
+2026-10-26T18:18:07.3115940Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T18:18:07.3663360Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T18:18:07.5706030Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T18:18:07.5789810Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T18:18:07.6841400Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T18:18:07.6924750Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T18:18:07.8222920Z Cleaning up orphan processes
+2026-10-26T18:18:09.4231880Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

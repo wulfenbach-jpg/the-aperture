@@ -1,0 +1,20 @@
+Working...
+**Repair 3 complete and pushed.** Head `985d8ff` on `aperture/issue-17`; no merge/master push.
+
+## R12-R2-F1 — inert archival tokens now strictly inert
+- **Genuine RED:** archived token inserted into `trigger_queue` or `revealed` validated `Ok(())`.
+- Fix: typed `GameState::object_is_referenced(id)` covering trigger-queue sources, stack object/targets, resolving, all pending variants (viewed/bottom, APNAP choices/source-left, commander choices, trigger targets/queued), combat, continuous effects, shields, activation uses, revealed, commander objects, and zone lists.
+- Archived `Zone::Removed` token allowed only for a departed owner **and** zero live references. Live-owner Removed and real off-battlefield tokens still refused; ordinary token cessation and source-left triggers unchanged.
+- Negative controls cover trigger_queue, revealed, activation_uses, stack object, stack target, pending trigger, resolving, effect target, shield target — all RED before, GREEN after.
+- Save/replay digests unchanged: `328dadbdbdc6` / 7051, `d3eade58f133` / 6981, fresh save-out same, old slice8 `ffbeaee0db38` / 6087.
+
+## UI sentinel (test-only)
+- Remaining `Sol Ring` unsupported sentinels in `crates/ui/src/app.rs` inline viewport test and `crates/ui/tests/session.rs` replaced with **Darksteel Ingot**; all unsupported/refusal assertions preserved. No production UI/import changes.
+
+## Verification
+- slice12 **11/11**, tokens 10/10, slice6 13/13, import `start_flow` 21/21.
+- UI inline viewport test 1/1; UI session suite 22/22.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Handoff: `evidence/issue17/slice12/REPAIR3-HANDOFF.md`; stale “no push yet”/prior false save claim superseded in REPAIR2 handoff.
+
+Full #17 remains unfinished; no self-approval or certification claim.

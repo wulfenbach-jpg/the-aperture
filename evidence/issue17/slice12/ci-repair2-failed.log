@@ -1,0 +1,1889 @@
+﻿2026-10-26T17:59:20.6672071Z Current runner version: '2.338.0'
+2026-10-26T17:59:20.6689061Z ##[group]Runner Image Provisioner
+2026-10-26T17:59:20.6689882Z Hosted Compute Agent
+2026-10-26T17:59:20.6690226Z Version: 20261021.618
+2026-10-26T17:59:20.6690702Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-26T17:59:20.6691160Z Build Date: 2026-10-21T00:45:21Z
+2026-10-26T17:59:20.6691600Z Worker ID: {922cdae5-52d4-4616-bff2-2e85b2411cbf}
+2026-10-26T17:59:20.6692015Z Region: centralus
+2026-10-26T17:59:20.6692340Z Cloud: Azure
+2026-10-26T17:59:20.6692710Z ##[endgroup]
+2026-10-26T17:59:20.6693987Z ##[group]Operating System
+2026-10-26T17:59:20.6694399Z Ubuntu
+2026-10-26T17:59:20.6694724Z 24.04.5
+2026-10-26T17:59:20.6695037Z LTS
+2026-10-26T17:59:20.6695386Z ##[endgroup]
+2026-10-26T17:59:20.6695773Z ##[group]Runner Image
+2026-10-26T17:59:20.6696147Z Image: ubuntu-24.04
+2026-10-26T17:59:20.6696497Z Version: 20261012.334.1
+2026-10-26T17:59:20.6697273Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-26T17:59:20.6698179Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-26T17:59:20.6698752Z ##[endgroup]
+2026-10-26T17:59:20.6699502Z ##[group]GITHUB_TOKEN Permissions
+2026-10-26T17:59:20.6700872Z Contents: read
+2026-10-26T17:59:20.6701260Z Metadata: read
+2026-10-26T17:59:20.6701637Z ##[endgroup]
+2026-10-26T17:59:20.6703013Z Secret source: Actions
+2026-10-26T17:59:20.6703556Z Cache mode: write
+2026-10-26T17:59:20.6704036Z Prepare workflow directory
+2026-10-26T17:59:20.6923122Z Prepare all required actions
+2026-10-26T17:59:20.6954342Z Getting action download info
+2026-10-26T17:59:20.9562786Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-26T17:59:21.0453967Z Download action repository 'dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+2026-10-26T17:59:21.2344079Z Download action repository 'Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6' (SHA:6323deb102c322ba6fcbdcafc7e3dddab59af2b6)
+2026-10-26T17:59:21.7505493Z Complete job name: rust (ubuntu-latest)
+2026-10-26T17:59:21.8129866Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+2026-10-26T17:59:21.8130546Z with:
+2026-10-26T17:59:21.8130802Z   persist-credentials: false
+2026-10-26T17:59:21.8131109Z   repository: wulfenbach-jpg/the-aperture
+2026-10-26T17:59:21.8133975Z   token: ***
+2026-10-26T17:59:21.8134216Z   ssh-strict: true
+2026-10-26T17:59:21.8134463Z   ssh-user: git
+2026-10-26T17:59:21.8134701Z   clean: true
+2026-10-26T17:59:21.8134951Z   sparse-checkout-cone-mode: true
+2026-10-26T17:59:21.8135245Z   fetch-depth: 1
+2026-10-26T17:59:21.8135493Z   fetch-tags: false
+2026-10-26T17:59:21.8135748Z   show-progress: true
+2026-10-26T17:59:21.8135997Z   lfs: false
+2026-10-26T17:59:21.8136242Z   submodules: false
+2026-10-26T17:59:21.8136506Z   set-safe-directory: true
+2026-10-26T17:59:21.8136817Z   allow-unsafe-pr-checkout: false
+2026-10-26T17:59:21.8137316Z ##[endgroup]
+2026-10-26T17:59:21.8787875Z Syncing repository: wulfenbach-jpg/the-aperture
+2026-10-26T17:59:21.8789789Z ##[group]Getting Git version info
+2026-10-26T17:59:21.8790495Z Working directory is '/home/runner/work/the-aperture/the-aperture'
+2026-10-26T17:59:21.8791535Z [command]/usr/bin/git version
+2026-10-26T17:59:21.8834363Z git version 2.55.0
+2026-10-26T17:59:21.8856455Z ##[endgroup]
+2026-10-26T17:59:21.8862995Z Temporarily overriding HOME='/home/runner/work/_temp/0f1f90e2-8daf-4cdf-b1a0-7ba3e7004963' before making global git config changes
+2026-10-26T17:59:21.8864598Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T17:59:21.8866131Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/the-aperture/the-aperture
+2026-10-26T17:59:21.8910468Z Deleting the contents of '/home/runner/work/the-aperture/the-aperture'
+2026-10-26T17:59:21.8913516Z ##[group]Initializing the repository
+2026-10-26T17:59:21.8919762Z [command]/usr/bin/git init /home/runner/work/the-aperture/the-aperture
+2026-10-26T17:59:21.8993888Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-26T17:59:21.8994949Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-26T17:59:21.8995855Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-26T17:59:21.8996862Z hint: call:
+2026-10-26T17:59:21.8997246Z hint:
+2026-10-26T17:59:21.8997803Z hint: 	git config --global init.defaultBranch <name>
+2026-10-26T17:59:21.8998465Z hint:
+2026-10-26T17:59:21.8999042Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-26T17:59:21.9000230Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-26T17:59:21.9000938Z hint:
+2026-10-26T17:59:21.9001298Z hint: 	git branch -m <name>
+2026-10-26T17:59:21.9001863Z hint:
+2026-10-26T17:59:21.9002609Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-26T17:59:21.9003679Z Initialized empty Git repository in /home/runner/work/the-aperture/the-aperture/.git/
+2026-10-26T17:59:21.9005525Z [command]/usr/bin/git remote add origin https://github.com/wulfenbach-jpg/the-aperture
+2026-10-26T17:59:21.9048096Z ##[endgroup]
+2026-10-26T17:59:21.9048883Z ##[group]Disabling automatic garbage collection
+2026-10-26T17:59:21.9050775Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-26T17:59:21.9096014Z ##[endgroup]
+2026-10-26T17:59:21.9096775Z ##[group]Setting up auth
+2026-10-26T17:59:21.9103443Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T17:59:21.9141827Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T17:59:21.9419884Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T17:59:21.9447313Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T17:59:21.9612965Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T17:59:21.9640314Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T17:59:21.9803128Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-26T17:59:21.9895222Z ##[endgroup]
+2026-10-26T17:59:21.9896370Z ##[group]Fetching the repository
+2026-10-26T17:59:21.9897352Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +5c7e01341390a3203c5eb00b28e3e44bbda3cc77:refs/remotes/pull/46/merge
+2026-10-26T17:59:23.1235153Z From https://github.com/wulfenbach-jpg/the-aperture
+2026-10-26T17:59:23.1236724Z  * [new ref]         5c7e01341390a3203c5eb00b28e3e44bbda3cc77 -> pull/46/merge
+2026-10-26T17:59:23.1239835Z ##[endgroup]
+2026-10-26T17:59:23.1240903Z ##[group]Determining the checkout info
+2026-10-26T17:59:23.1241994Z ##[endgroup]
+2026-10-26T17:59:23.1247144Z [command]/usr/bin/git sparse-checkout disable
+2026-10-26T17:59:23.1297000Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-26T17:59:23.1324612Z ##[group]Checking out the ref
+2026-10-26T17:59:23.1326876Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/46/merge
+2026-10-26T17:59:23.3425540Z Note: switching to 'refs/remotes/pull/46/merge'.
+2026-10-26T17:59:23.3426469Z 
+2026-10-26T17:59:23.3427221Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-26T17:59:23.3429226Z changes and commit them, and you can discard any commits you make in this
+2026-10-26T17:59:23.3431460Z state without impacting any branches by switching back to a branch.
+2026-10-26T17:59:23.3432937Z 
+2026-10-26T17:59:23.3433604Z If you want to create a new branch to retain commits you create, you may
+2026-10-26T17:59:23.3435044Z do so (now or later) by using -c with the switch command. Example:
+2026-10-26T17:59:23.3435862Z 
+2026-10-26T17:59:23.3436239Z   git switch -c <new-branch-name>
+2026-10-26T17:59:23.3436804Z 
+2026-10-26T17:59:23.3437155Z Or undo this operation with:
+2026-10-26T17:59:23.3437677Z 
+2026-10-26T17:59:23.3438003Z   git switch -
+2026-10-26T17:59:23.3438422Z 
+2026-10-26T17:59:23.3439086Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-26T17:59:23.3440334Z 
+2026-10-26T17:59:23.3441407Z HEAD is now at 5c7e013 Merge 5870716ff523b042ac6ea57cdee9d04def75c81e into 60b89b54f2d930292533e12c70c38b1dba7933d2
+2026-10-26T17:59:23.3444831Z ##[endgroup]
+2026-10-26T17:59:23.3470903Z [command]/usr/bin/git log -1 --format=%H
+2026-10-26T17:59:23.3494303Z 5c7e01341390a3203c5eb00b28e3e44bbda3cc77
+2026-10-26T17:59:23.3502751Z ##[group]Removing auth
+2026-10-26T17:59:23.3505190Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T17:59:23.3533210Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T17:59:23.3711019Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T17:59:23.3734481Z http.https://github.com/.extraheader
+2026-10-26T17:59:23.3738528Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-26T17:59:23.3766960Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T17:59:23.3937059Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T17:59:23.3964423Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T17:59:23.4133595Z ##[endgroup]
+2026-10-26T17:59:23.4341632Z ##[group]Run sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config libx11-dev libxi-dev libxrandr-dev libxcursor-dev libxinerama-dev libxkbcommon-dev libwayland-dev libegl1-mesa-dev
+2026-10-26T17:59:23.4345034Z [36;1msudo apt-get update && sudo apt-get install -y libssl-dev pkg-config libx11-dev libxi-dev libxrandr-dev libxcursor-dev libxinerama-dev libxkbcommon-dev libwayland-dev libegl1-mesa-dev[0m
+2026-10-26T17:59:23.4555731Z shell: /usr/bin/bash -e {0}
+2026-10-26T17:59:23.4556391Z ##[endgroup]
+2026-10-26T17:59:23.5237430Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-26T17:59:23.5541498Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-26T17:59:23.5550989Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-26T17:59:23.5613274Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-26T17:59:23.5668927Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-26T17:59:23.5681054Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-26T17:59:23.6431056Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [661 kB]
+2026-10-26T17:59:23.6553959Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-26T17:59:23.6580138Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [598 kB]
+2026-10-26T17:59:23.6886857Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1400 kB]
+2026-10-26T17:59:23.6936341Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [310 kB]
+2026-10-26T17:59:23.6957676Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1706 kB]
+2026-10-26T17:59:23.7009627Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-26T17:59:23.7026370Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-26T17:59:23.7091229Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-26T17:59:23.7610510Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1146 kB]
+2026-10-26T17:59:23.7654666Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-26T17:59:23.7667508Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-26T17:59:23.7711884Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-26T17:59:23.8190960Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-26T17:59:23.8255212Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-26T17:59:29.1649078Z Fetched 12.6 MB in 1s (13.1 MB/s)
+2026-10-26T17:59:29.7306906Z Reading package lists...
+2026-10-26T17:59:29.7546912Z Reading package lists...
+2026-10-26T17:59:29.9296070Z Building dependency tree...
+2026-10-26T17:59:29.9301714Z Reading state information...
+2026-10-26T17:59:30.0416254Z libssl-dev is already the newest version (3.0.13-0ubuntu3.16).
+2026-10-26T17:59:30.0416761Z pkg-config is already the newest version (1.8.1-2build1).
+2026-10-26T17:59:30.0417138Z The following additional packages will be installed:
+2026-10-26T17:59:30.0417533Z   libegl-dev libegl-mesa0 libegl1 libgl-dev libgles-dev libgles1 libgles2
+2026-10-26T17:59:30.0417974Z   libglvnd-core-dev libglvnd-dev libglx-dev libopengl-dev libopengl0
+2026-10-26T17:59:30.0418400Z   libpthread-stubs0-dev libwayland-bin libwayland-server0 libxau-dev
+2026-10-26T17:59:30.0419210Z   libxcb1-dev libxdmcp-dev libxext-dev libxfixes-dev libxrender-dev
+2026-10-26T17:59:30.0423473Z   x11proto-dev xorg-sgml-doctools xtrans-dev
+2026-10-26T17:59:30.0423719Z Suggested packages:
+2026-10-26T17:59:30.0424632Z   libwayland-doc libx11-doc libxcb-doc libxext-doc
+2026-10-26T17:59:30.0635254Z The following NEW packages will be installed:
+2026-10-26T17:59:30.0635696Z   libegl-dev libegl-mesa0 libegl1 libegl1-mesa-dev libgl-dev libgles-dev
+2026-10-26T17:59:30.0649733Z   libgles1 libgles2 libglvnd-core-dev libglvnd-dev libglx-dev libopengl-dev
+2026-10-26T17:59:30.0650665Z   libopengl0 libpthread-stubs0-dev libwayland-bin libwayland-dev
+2026-10-26T17:59:30.0651295Z   libwayland-server0 libx11-dev libxau-dev libxcb1-dev libxcursor-dev
+2026-10-26T17:59:30.0651856Z   libxdmcp-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev
+2026-10-26T17:59:30.0652415Z   libxkbcommon-dev libxrandr-dev libxrender-dev x11proto-dev
+2026-10-26T17:59:30.0652832Z   xorg-sgml-doctools xtrans-dev
+2026-10-26T17:59:30.0791394Z 0 upgraded, 32 newly installed, 0 to remove and 100 not upgraded.
+2026-10-26T17:59:30.0792033Z Need to get 2545 kB of archives.
+2026-10-26T17:59:30.0792591Z After this operation, 11.5 MB of additional disk space will be used.
+2026-10-26T17:59:30.0793147Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-26T17:59:30.1432968Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl-mesa0 amd64 25.2.8-0ubuntu0.24.04.4 [117 kB]
+2026-10-26T17:59:30.1820499Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libegl1 amd64 1.7.0-1build1 [28.7 kB]
+2026-10-26T17:59:30.2183248Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xorg-sgml-doctools all 1:1.11-1.1 [10.9 kB]
+2026-10-26T17:59:30.2552873Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 x11proto-dev all 2023.2-1 [602 kB]
+2026-10-26T17:59:30.2933656Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxau-dev amd64 1:1.0.9-1build6 [9570 B]
+2026-10-26T17:59:30.3287270Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxdmcp-dev amd64 1:1.1.3-0ubuntu6 [26.5 kB]
+2026-10-26T17:59:30.3644960Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xtrans-dev all 1.4.0-1 [68.9 kB]
+2026-10-26T17:59:30.4003582Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpthread-stubs0-dev amd64 0.4-1build3 [4746 B]
+2026-10-26T17:59:30.4357945Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb1-dev amd64 1.15-1ubuntu2 [85.8 kB]
+2026-10-26T17:59:30.4789550Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libx11-dev amd64 2:1.8.7-1ubuntu0.1 [732 kB]
+2026-10-26T17:59:30.5136602Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglx-dev amd64 1.7.0-1build1 [14.2 kB]
+2026-10-26T17:59:30.5452707Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgl-dev amd64 1.7.0-1build1 [102 kB]
+2026-10-26T17:59:30.5774038Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libegl-dev amd64 1.7.0-1build1 [18.2 kB]
+2026-10-26T17:59:30.6090708Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglvnd-core-dev amd64 1.7.0-1build1 [13.6 kB]
+2026-10-26T17:59:30.6408453Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles1 amd64 1.7.0-1build1 [11.6 kB]
+2026-10-26T17:59:30.6724894Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles2 amd64 1.7.0-1build1 [17.1 kB]
+2026-10-26T17:59:30.7040830Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libgles-dev amd64 1.7.0-1build1 [50.5 kB]
+2026-10-26T17:59:30.7358759Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libopengl0 amd64 1.7.0-1build1 [32.8 kB]
+2026-10-26T17:59:30.8099821Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libopengl-dev amd64 1.7.0-1build1 [3454 B]
+2026-10-26T17:59:30.8417112Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglvnd-dev amd64 1.7.0-1build1 [3198 B]
+2026-10-26T17:59:30.8755092Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libegl1-mesa-dev amd64 25.2.8-0ubuntu0.24.04.4 [26.8 kB]
+2026-10-26T17:59:30.9072816Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-server0 amd64 1.22.0-2.1build1 [33.9 kB]
+2026-10-26T17:59:30.9389523Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxrender-dev amd64 1:0.9.10-1.1build1 [26.3 kB]
+2026-10-26T17:59:30.9710636Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxfixes-dev amd64 1:6.0.0-2build1 [12.1 kB]
+2026-10-26T17:59:31.0029111Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcursor-dev amd64 1:1.2.1-1build1 [31.8 kB]
+2026-10-26T17:59:31.0346846Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxext-dev amd64 2:1.3.4-1build2 [83.5 kB]
+2026-10-26T17:59:31.0667074Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxi-dev amd64 2:1.8.1-1build1 [194 kB]
+2026-10-26T17:59:31.1067303Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxinerama-dev amd64 2:1.1.4-3build1 [7988 B]
+2026-10-26T17:59:31.1384758Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxkbcommon-dev amd64 1.6.0-1build1 [56.3 kB]
+2026-10-26T17:59:31.1702542Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxrandr-dev amd64 2:1.5.2-2build1 [26.4 kB]
+2026-10-26T17:59:31.2024508Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-bin amd64 1.22.0-2.1build1 [20.6 kB]
+2026-10-26T17:59:31.2343023Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwayland-dev amd64 1.22.0-2.1build1 [71.3 kB]
+2026-10-26T17:59:31.4443879Z Fetched 2545 kB in 1s (2186 kB/s)
+2026-10-26T17:59:31.4601809Z Selecting previously unselected package libegl-mesa0:amd64.
+2026-10-26T17:59:31.4808955Z (Reading database ... 
+2026-10-26T17:59:31.4809223Z (Reading database ... 5%
+2026-10-26T17:59:31.4809601Z (Reading database ... 10%
+2026-10-26T17:59:31.4809810Z (Reading database ... 15%
+2026-10-26T17:59:31.4809996Z (Reading database ... 20%
+2026-10-26T17:59:31.4810212Z (Reading database ... 25%
+2026-10-26T17:59:31.4810698Z (Reading database ... 30%
+2026-10-26T17:59:31.4811176Z (Reading database ... 35%
+2026-10-26T17:59:31.4811340Z (Reading database ... 40%
+2026-10-26T17:59:31.4811508Z (Reading database ... 45%
+2026-10-26T17:59:31.4811648Z (Reading database ... 50%
+2026-10-26T17:59:31.4840491Z (Reading database ... 55%
+2026-10-26T17:59:31.5536358Z (Reading database ... 60%
+2026-10-26T17:59:31.7435752Z (Reading database ... 65%
+2026-10-26T17:59:31.9473182Z (Reading database ... 70%
+2026-10-26T17:59:32.1496764Z (Reading database ... 75%
+2026-10-26T17:59:32.2103111Z (Reading database ... 80%
+2026-10-26T17:59:32.3010268Z (Reading database ... 85%
+2026-10-26T17:59:32.4256663Z (Reading database ... 90%
+2026-10-26T17:59:32.5182520Z (Reading database ... 95%
+2026-10-26T17:59:32.5183044Z (Reading database ... 100%
+2026-10-26T17:59:32.5183528Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-26T17:59:32.5219679Z Preparing to unpack .../00-libegl-mesa0_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-26T17:59:32.5323135Z Unpacking libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-26T17:59:32.5514027Z Selecting previously unselected package libegl1:amd64.
+2026-10-26T17:59:32.5608077Z Preparing to unpack .../01-libegl1_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.5614575Z Unpacking libegl1:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.5776196Z Selecting previously unselected package xorg-sgml-doctools.
+2026-10-26T17:59:32.5869695Z Preparing to unpack .../02-xorg-sgml-doctools_1%3a1.11-1.1_all.deb ...
+2026-10-26T17:59:32.5875448Z Unpacking xorg-sgml-doctools (1:1.11-1.1) ...
+2026-10-26T17:59:32.6057496Z Selecting previously unselected package x11proto-dev.
+2026-10-26T17:59:32.6149587Z Preparing to unpack .../03-x11proto-dev_2023.2-1_all.deb ...
+2026-10-26T17:59:32.6155640Z Unpacking x11proto-dev (2023.2-1) ...
+2026-10-26T17:59:32.6491137Z Selecting previously unselected package libxau-dev:amd64.
+2026-10-26T17:59:32.6584475Z Preparing to unpack .../04-libxau-dev_1%3a1.0.9-1build6_amd64.deb ...
+2026-10-26T17:59:32.6590612Z Unpacking libxau-dev:amd64 (1:1.0.9-1build6) ...
+2026-10-26T17:59:32.6781230Z Selecting previously unselected package libxdmcp-dev:amd64.
+2026-10-26T17:59:32.6873474Z Preparing to unpack .../05-libxdmcp-dev_1%3a1.1.3-0ubuntu6_amd64.deb ...
+2026-10-26T17:59:32.6914283Z Unpacking libxdmcp-dev:amd64 (1:1.1.3-0ubuntu6) ...
+2026-10-26T17:59:32.7094099Z Selecting previously unselected package xtrans-dev.
+2026-10-26T17:59:32.7188803Z Preparing to unpack .../06-xtrans-dev_1.4.0-1_all.deb ...
+2026-10-26T17:59:32.7196120Z Unpacking xtrans-dev (1.4.0-1) ...
+2026-10-26T17:59:32.7387032Z Selecting previously unselected package libpthread-stubs0-dev:amd64.
+2026-10-26T17:59:32.7481548Z Preparing to unpack .../07-libpthread-stubs0-dev_0.4-1build3_amd64.deb ...
+2026-10-26T17:59:32.7487984Z Unpacking libpthread-stubs0-dev:amd64 (0.4-1build3) ...
+2026-10-26T17:59:32.7640675Z Selecting previously unselected package libxcb1-dev:amd64.
+2026-10-26T17:59:32.7732985Z Preparing to unpack .../08-libxcb1-dev_1.15-1ubuntu2_amd64.deb ...
+2026-10-26T17:59:32.7739063Z Unpacking libxcb1-dev:amd64 (1.15-1ubuntu2) ...
+2026-10-26T17:59:32.7910107Z Selecting previously unselected package libx11-dev:amd64.
+2026-10-26T17:59:32.8002307Z Preparing to unpack .../09-libx11-dev_2%3a1.8.7-1ubuntu0.1_amd64.deb ...
+2026-10-26T17:59:32.8008520Z Unpacking libx11-dev:amd64 (2:1.8.7-1ubuntu0.1) ...
+2026-10-26T17:59:32.8236363Z Selecting previously unselected package libglx-dev:amd64.
+2026-10-26T17:59:32.8329940Z Preparing to unpack .../10-libglx-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.8336842Z Unpacking libglx-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.8495007Z Selecting previously unselected package libgl-dev:amd64.
+2026-10-26T17:59:32.8586552Z Preparing to unpack .../11-libgl-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.8592136Z Unpacking libgl-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.8769145Z Selecting previously unselected package libegl-dev:amd64.
+2026-10-26T17:59:32.8861169Z Preparing to unpack .../12-libegl-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.8999211Z Unpacking libegl-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.9155814Z Selecting previously unselected package libglvnd-core-dev:amd64.
+2026-10-26T17:59:32.9247313Z Preparing to unpack .../13-libglvnd-core-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.9255941Z Unpacking libglvnd-core-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.9417098Z Selecting previously unselected package libgles1:amd64.
+2026-10-26T17:59:32.9506224Z Preparing to unpack .../14-libgles1_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.9511915Z Unpacking libgles1:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.9674252Z Selecting previously unselected package libgles2:amd64.
+2026-10-26T17:59:32.9763575Z Preparing to unpack .../15-libgles2_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:32.9769710Z Unpacking libgles2:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:32.9920235Z Selecting previously unselected package libgles-dev:amd64.
+2026-10-26T17:59:33.0011789Z Preparing to unpack .../16-libgles-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:33.0019046Z Unpacking libgles-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.0213398Z Selecting previously unselected package libopengl0:amd64.
+2026-10-26T17:59:33.0308586Z Preparing to unpack .../17-libopengl0_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:33.0314680Z Unpacking libopengl0:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.0475273Z Selecting previously unselected package libopengl-dev:amd64.
+2026-10-26T17:59:33.0570066Z Preparing to unpack .../18-libopengl-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:33.0575984Z Unpacking libopengl-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.0731555Z Selecting previously unselected package libglvnd-dev:amd64.
+2026-10-26T17:59:33.0826430Z Preparing to unpack .../19-libglvnd-dev_1.7.0-1build1_amd64.deb ...
+2026-10-26T17:59:33.0832595Z Unpacking libglvnd-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.1098299Z Selecting previously unselected package libegl1-mesa-dev:amd64.
+2026-10-26T17:59:33.1196577Z Preparing to unpack .../20-libegl1-mesa-dev_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-26T17:59:33.1203237Z Unpacking libegl1-mesa-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-26T17:59:33.1379805Z Selecting previously unselected package libwayland-server0:amd64.
+2026-10-26T17:59:33.1475812Z Preparing to unpack .../21-libwayland-server0_1.22.0-2.1build1_amd64.deb ...
+2026-10-26T17:59:33.1482787Z Unpacking libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-10-26T17:59:33.1641974Z Selecting previously unselected package libxrender-dev:amd64.
+2026-10-26T17:59:33.1740524Z Preparing to unpack .../22-libxrender-dev_1%3a0.9.10-1.1build1_amd64.deb ...
+2026-10-26T17:59:33.1746707Z Unpacking libxrender-dev:amd64 (1:0.9.10-1.1build1) ...
+2026-10-26T17:59:33.1910084Z Selecting previously unselected package libxfixes-dev:amd64.
+2026-10-26T17:59:33.2004235Z Preparing to unpack .../23-libxfixes-dev_1%3a6.0.0-2build1_amd64.deb ...
+2026-10-26T17:59:33.2010372Z Unpacking libxfixes-dev:amd64 (1:6.0.0-2build1) ...
+2026-10-26T17:59:33.2166927Z Selecting previously unselected package libxcursor-dev:amd64.
+2026-10-26T17:59:33.2261917Z Preparing to unpack .../24-libxcursor-dev_1%3a1.2.1-1build1_amd64.deb ...
+2026-10-26T17:59:33.2267945Z Unpacking libxcursor-dev:amd64 (1:1.2.1-1build1) ...
+2026-10-26T17:59:33.2467398Z Selecting previously unselected package libxext-dev:amd64.
+2026-10-26T17:59:33.2562672Z Preparing to unpack .../25-libxext-dev_2%3a1.3.4-1build2_amd64.deb ...
+2026-10-26T17:59:33.2568633Z Unpacking libxext-dev:amd64 (2:1.3.4-1build2) ...
+2026-10-26T17:59:33.2785304Z Selecting previously unselected package libxi-dev:amd64.
+2026-10-26T17:59:33.2876951Z Preparing to unpack .../26-libxi-dev_2%3a1.8.1-1build1_amd64.deb ...
+2026-10-26T17:59:33.2882487Z Unpacking libxi-dev:amd64 (2:1.8.1-1build1) ...
+2026-10-26T17:59:33.3296970Z Selecting previously unselected package libxinerama-dev:amd64.
+2026-10-26T17:59:33.3387156Z Preparing to unpack .../27-libxinerama-dev_2%3a1.1.4-3build1_amd64.deb ...
+2026-10-26T17:59:33.3392294Z Unpacking libxinerama-dev:amd64 (2:1.1.4-3build1) ...
+2026-10-26T17:59:33.3542653Z Selecting previously unselected package libxkbcommon-dev:amd64.
+2026-10-26T17:59:33.3631451Z Preparing to unpack .../28-libxkbcommon-dev_1.6.0-1build1_amd64.deb ...
+2026-10-26T17:59:33.3636569Z Unpacking libxkbcommon-dev:amd64 (1.6.0-1build1) ...
+2026-10-26T17:59:33.3794151Z Selecting previously unselected package libxrandr-dev:amd64.
+2026-10-26T17:59:33.3885597Z Preparing to unpack .../29-libxrandr-dev_2%3a1.5.2-2build1_amd64.deb ...
+2026-10-26T17:59:33.3890571Z Unpacking libxrandr-dev:amd64 (2:1.5.2-2build1) ...
+2026-10-26T17:59:33.4047953Z Selecting previously unselected package libwayland-bin.
+2026-10-26T17:59:33.4137912Z Preparing to unpack .../30-libwayland-bin_1.22.0-2.1build1_amd64.deb ...
+2026-10-26T17:59:33.4143252Z Unpacking libwayland-bin (1.22.0-2.1build1) ...
+2026-10-26T17:59:33.4288509Z Selecting previously unselected package libwayland-dev:amd64.
+2026-10-26T17:59:33.4377234Z Preparing to unpack .../31-libwayland-dev_1.22.0-2.1build1_amd64.deb ...
+2026-10-26T17:59:33.4382182Z Unpacking libwayland-dev:amd64 (1.22.0-2.1build1) ...
+2026-10-26T17:59:33.4792078Z Setting up libwayland-server0:amd64 (1.22.0-2.1build1) ...
+2026-10-26T17:59:33.4806981Z Setting up libglvnd-core-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.4819214Z Setting up libxkbcommon-dev:amd64 (1.6.0-1build1) ...
+2026-10-26T17:59:33.4831962Z Setting up libpthread-stubs0-dev:amd64 (0.4-1build3) ...
+2026-10-26T17:59:33.4844365Z Setting up libopengl0:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.4858419Z Setting up xtrans-dev (1.4.0-1) ...
+2026-10-26T17:59:33.4872428Z Setting up libwayland-bin (1.22.0-2.1build1) ...
+2026-10-26T17:59:33.4884461Z Setting up libegl-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-26T17:59:33.4896532Z Setting up libgles2:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.4909515Z Setting up libgles1:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.4922733Z Setting up libegl1:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.4936413Z Setting up xorg-sgml-doctools (1:1.11-1.1) ...
+2026-10-26T17:59:33.4951495Z Setting up libopengl-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.4965474Z Setting up libwayland-dev:amd64 (1.22.0-2.1build1) ...
+2026-10-26T17:59:33.5030004Z Processing triggers for sgml-base (1.31) ...
+2026-10-26T17:59:33.5274947Z Setting up x11proto-dev (2023.2-1) ...
+2026-10-26T17:59:33.5289933Z Setting up libxau-dev:amd64 (1:1.0.9-1build6) ...
+2026-10-26T17:59:33.5308045Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-26T17:59:33.6966489Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-26T17:59:33.6984981Z Not building database; man-db/auto-update is not 'true'.
+2026-10-26T17:59:33.6994570Z Setting up libxdmcp-dev:amd64 (1:1.1.3-0ubuntu6) ...
+2026-10-26T17:59:33.7022932Z Setting up libxcb1-dev:amd64 (1.15-1ubuntu2) ...
+2026-10-26T17:59:33.7041440Z Setting up libx11-dev:amd64 (2:1.8.7-1ubuntu0.1) ...
+2026-10-26T17:59:33.7060178Z Setting up libxfixes-dev:amd64 (1:6.0.0-2build1) ...
+2026-10-26T17:59:33.7256744Z Setting up libxext-dev:amd64 (2:1.3.4-1build2) ...
+2026-10-26T17:59:33.7274422Z Setting up libglx-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.7292866Z Setting up libxi-dev:amd64 (2:1.8.1-1build1) ...
+2026-10-26T17:59:33.7307670Z Setting up libxrender-dev:amd64 (1:0.9.10-1.1build1) ...
+2026-10-26T17:59:33.7323291Z Setting up libgl-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.7341088Z Setting up libegl-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.7355741Z Setting up libxcursor-dev:amd64 (1:1.2.1-1build1) ...
+2026-10-26T17:59:33.7374488Z Setting up libxrandr-dev:amd64 (2:1.5.2-2build1) ...
+2026-10-26T17:59:33.7388081Z Setting up libxinerama-dev:amd64 (2:1.1.4-3build1) ...
+2026-10-26T17:59:33.7403572Z Setting up libgles-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.7420923Z Setting up libglvnd-dev:amd64 (1.7.0-1build1) ...
+2026-10-26T17:59:33.7437662Z Setting up libegl1-mesa-dev:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-26T17:59:34.1711929Z 
+2026-10-26T17:59:34.1712740Z Running kernel seems to be up-to-date.
+2026-10-26T17:59:34.1712960Z 
+2026-10-26T17:59:34.1713047Z No services need to be restarted.
+2026-10-26T17:59:34.1713193Z 
+2026-10-26T17:59:34.1713293Z No containers need to be restarted.
+2026-10-26T17:59:34.1713444Z 
+2026-10-26T17:59:34.1713547Z No user sessions are running outdated binaries.
+2026-10-26T17:59:34.1713723Z 
+2026-10-26T17:59:34.1713889Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-26T17:59:34.9724684Z ##[group]Run dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec
+2026-10-26T17:59:34.9724910Z with:
+2026-10-26T17:59:34.9725028Z   toolchain: stable
+2026-10-26T17:59:34.9725152Z   components: rustfmt, clippy
+2026-10-26T17:59:34.9725290Z ##[endgroup]
+2026-10-26T17:59:34.9771458Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-10-26T17:59:34.9802035Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-10-26T17:59:34.9802254Z [36;1mif [[ -z $toolchain ]]; then[0m
+2026-10-26T17:59:34.9802549Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+2026-10-26T17:59:34.9802834Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+2026-10-26T17:59:34.9802995Z [36;1m  exit 1[0m
+2026-10-26T17:59:34.9803177Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+2026-10-26T17:59:34.9803410Z [36;1m  if [[ Linux == macOS ]]; then[0m
+2026-10-26T17:59:34.9803727Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-26T17:59:34.9804000Z [36;1m  else[0m
+2026-10-26T17:59:34.9804221Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-26T17:59:34.9804461Z [36;1m  fi[0m
+2026-10-26T17:59:34.9804623Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+2026-10-26T17:59:34.9804904Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+2026-10-26T17:59:34.9805146Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+2026-10-26T17:59:34.9805438Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+2026-10-26T17:59:34.9805698Z [36;1melse[0m
+2026-10-26T17:59:34.9805808Z [36;1m  delimiter=EOF[0m
+2026-10-26T17:59:34.9805974Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+2026-10-26T17:59:34.9806240Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+2026-10-26T17:59:34.9806454Z [36;1mfi[0m
+2026-10-26T17:59:34.9857885Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:34.9858067Z env:
+2026-10-26T17:59:34.9858174Z   toolchain: stable
+2026-10-26T17:59:34.9858287Z ##[endgroup]
+2026-10-26T17:59:34.9967163Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=19]
+2026-10-26T17:59:34.9970525Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-10-26T17:59:34.9988599Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-10-26T17:59:34.9988869Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV[0m
+2026-10-26T17:59:35.0037501Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:35.0037698Z ##[endgroup]
+2026-10-26T17:59:35.0106658Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=13]
+2026-10-26T17:59:35.0108164Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-10-26T17:59:35.0124630Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-10-26T17:59:35.0124841Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+2026-10-26T17:59:35.0125247Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y[0m
+2026-10-26T17:59:35.0125755Z [36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH[0m
+2026-10-26T17:59:35.0125906Z [36;1mfi[0m
+2026-10-26T17:59:35.0168702Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:35.0168877Z env:
+2026-10-26T17:59:35.0168989Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:35.0169124Z ##[endgroup]
+2026-10-26T17:59:35.0232733Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=12]
+2026-10-26T17:59:35.0234269Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-10-26T17:59:35.0238424Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-26T17:59:35.0247977Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+2026-10-26T17:59:35.0261119Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-10-26T17:59:35.0261499Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+2026-10-26T17:59:35.0261728Z [36;1mflags=()[0m
+2026-10-26T17:59:35.0261875Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+2026-10-26T17:59:35.0262093Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+2026-10-26T17:59:35.0262369Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+2026-10-26T17:59:35.0262601Z [36;1mlog=$(mktemp)[0m
+2026-10-26T17:59:35.0262731Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+2026-10-26T17:59:35.0262874Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+2026-10-26T17:59:35.0263176Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+2026-10-26T17:59:35.0263468Z [36;1m    break[0m
+2026-10-26T17:59:35.0263580Z [36;1m  else[0m
+2026-10-26T17:59:35.0263695Z [36;1m    status=$?[0m
+2026-10-26T17:59:35.0263809Z [36;1m  fi[0m
+2026-10-26T17:59:35.0263994Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+2026-10-26T17:59:35.0264367Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+2026-10-26T17:59:35.0264613Z [36;1m    exit "$status"[0m
+2026-10-26T17:59:35.0264734Z [36;1m  fi[0m
+2026-10-26T17:59:35.0264928Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+2026-10-26T17:59:35.0265150Z [36;1m  sleep 30[0m
+2026-10-26T17:59:35.0265259Z [36;1mdone[0m
+2026-10-26T17:59:35.0309083Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:35.0309262Z env:
+2026-10-26T17:59:35.0309515Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:35.0309661Z   toolchain: stable
+2026-10-26T17:59:35.0309777Z   targets: 
+2026-10-26T17:59:35.0309887Z   components: rustfmt, clippy
+2026-10-26T17:59:35.0310030Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-10-26T17:59:35.0310160Z ##[endgroup]
+2026-10-26T17:59:35.2133715Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+2026-10-26T17:59:35.4347952Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-26T17:59:35.4539782Z info: removing previous version of component rustfmt
+2026-10-26T17:59:35.4552049Z info: removing previous version of component clippy
+2026-10-26T17:59:35.4560544Z info: removing previous version of component cargo
+2026-10-26T17:59:35.4593085Z info: removing previous version of component rust-std
+2026-10-26T17:59:35.4628638Z info: removing previous version of component rustc
+2026-10-26T17:59:35.4663329Z info: downloading 5 components
+2026-10-26T17:59:41.8258794Z 
+2026-10-26T17:59:41.8314180Z   stable-x86_64-unknown-linux-gnu updated - rustc 1.99.1 (58cf8f9c3 2026-10-13) (from rustc 1.99.0 (b940084d7 2026-09-28))
+2026-10-26T17:59:41.8314577Z 
+2026-10-26T17:59:41.8370755Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=6812]
+2026-10-26T17:59:41.8376234Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+2026-10-26T17:59:41.8388986Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-10-26T17:59:41.8389224Z [36;1mrustup default "$toolchain" --force-non-host[0m
+2026-10-26T17:59:41.8438888Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.8439067Z env:
+2026-10-26T17:59:41.8439313Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.8439650Z   toolchain: stable
+2026-10-26T17:59:41.8439811Z ##[endgroup]
+2026-10-26T17:59:41.8532323Z info: using existing install for stable-x86_64-unknown-linux-gnu
+2026-10-26T17:59:41.8537421Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+2026-10-26T17:59:41.8537654Z 
+2026-10-26T17:59:41.8586719Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-26T17:59:41.8587002Z 
+2026-10-26T17:59:41.8599916Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=22]
+2026-10-26T17:59:41.8602449Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-10-26T17:59:41.8614846Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-10-26T17:59:41.8615322Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+2026-10-26T17:59:41.8615674Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+2026-10-26T17:59:41.8615942Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+2026-10-26T17:59:41.8661503Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.8661676Z env:
+2026-10-26T17:59:41.8661789Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.8661921Z   toolchain: stable
+2026-10-26T17:59:41.8662044Z ##[endgroup]
+2026-10-26T17:59:41.8910473Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=30]
+2026-10-26T17:59:41.8912449Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-10-26T17:59:41.8925760Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-10-26T17:59:41.8925983Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+2026-10-26T17:59:41.8926177Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+2026-10-26T17:59:41.8926330Z [36;1mfi[0m
+2026-10-26T17:59:41.8975028Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.8975209Z env:
+2026-10-26T17:59:41.8975326Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.8975463Z ##[endgroup]
+2026-10-26T17:59:41.9038774Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=12]
+2026-10-26T17:59:41.9040312Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-10-26T17:59:41.9052898Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-10-26T17:59:41.9053099Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+2026-10-26T17:59:41.9053280Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+2026-10-26T17:59:41.9053441Z [36;1mfi[0m
+2026-10-26T17:59:41.9096912Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.9097091Z env:
+2026-10-26T17:59:41.9097219Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.9097360Z   CARGO_INCREMENTAL: 0
+2026-10-26T17:59:41.9097478Z ##[endgroup]
+2026-10-26T17:59:41.9157263Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=11]
+2026-10-26T17:59:41.9160029Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-10-26T17:59:41.9173697Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-10-26T17:59:41.9174077Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+2026-10-26T17:59:41.9174654Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+2026-10-26T17:59:41.9175144Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+2026-10-26T17:59:41.9175525Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-26T17:59:41.9187568Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+2026-10-26T17:59:41.9187851Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+2026-10-26T17:59:41.9188181Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-26T17:59:41.9188457Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+2026-10-26T17:59:41.9188639Z [36;1m  fi[0m
+2026-10-26T17:59:41.9188751Z [36;1mfi[0m
+2026-10-26T17:59:41.9231366Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.9231538Z env:
+2026-10-26T17:59:41.9231648Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.9231785Z   CARGO_INCREMENTAL: 0
+2026-10-26T17:59:41.9231906Z   CARGO_TERM_COLOR: always
+2026-10-26T17:59:41.9232028Z   toolchain: stable
+2026-10-26T17:59:41.9232138Z ##[endgroup]
+2026-10-26T17:59:41.9462602Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=30]
+2026-10-26T17:59:41.9465493Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-10-26T17:59:41.9478687Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-10-26T17:59:41.9479091Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+2026-10-26T17:59:41.9479609Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+2026-10-26T17:59:41.9479873Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+2026-10-26T17:59:41.9480041Z [36;1mfi[0m
+2026-10-26T17:59:41.9525850Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.9526025Z env:
+2026-10-26T17:59:41.9526142Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.9526281Z   CARGO_INCREMENTAL: 0
+2026-10-26T17:59:41.9526400Z   CARGO_TERM_COLOR: always
+2026-10-26T17:59:41.9526533Z   toolchain: stable
+2026-10-26T17:59:41.9526645Z ##[endgroup]
+2026-10-26T17:59:41.9671703Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=20]
+2026-10-26T17:59:41.9674920Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-10-26T17:59:41.9687013Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-10-26T17:59:41.9687214Z [36;1mrustc +"$toolchain" --version --verbose[0m
+2026-10-26T17:59:41.9730887Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-26T17:59:41.9731074Z env:
+2026-10-26T17:59:41.9731184Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.9731323Z   CARGO_INCREMENTAL: 0
+2026-10-26T17:59:41.9731443Z   CARGO_TERM_COLOR: always
+2026-10-26T17:59:41.9731563Z   toolchain: stable
+2026-10-26T17:59:41.9731672Z ##[endgroup]
+2026-10-26T17:59:41.9862144Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-26T17:59:41.9862426Z binary: rustc
+2026-10-26T17:59:41.9862707Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-26T17:59:41.9863024Z commit-date: 2026-10-13
+2026-10-26T17:59:41.9863233Z host: x86_64-unknown-linux-gnu
+2026-10-26T17:59:41.9863394Z release: 1.99.1
+2026-10-26T17:59:41.9863507Z LLVM version: 23.1.1
+2026-10-26T17:59:41.9873862Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=19]
+2026-10-26T17:59:41.9946237Z ##[group]Run Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+2026-10-26T17:59:41.9946446Z with:
+2026-10-26T17:59:41.9946685Z   prefix-key: v0-rust
+2026-10-26T17:59:41.9946825Z   add-job-id-key: true
+2026-10-26T17:59:41.9946958Z   add-rust-environment-hash-key: true
+2026-10-26T17:59:41.9947102Z   cache-targets: true
+2026-10-26T17:59:41.9947222Z   cache-all-crates: false
+2026-10-26T17:59:41.9947353Z   cache-workspace-crates: false
+2026-10-26T17:59:41.9947483Z   save-if: true
+2026-10-26T17:59:41.9947592Z   cache-provider: github
+2026-10-26T17:59:41.9947712Z   cache-bin: true
+2026-10-26T17:59:41.9947822Z   lookup-only: false
+2026-10-26T17:59:41.9947932Z   cmd-format: {0}
+2026-10-26T17:59:41.9948034Z env:
+2026-10-26T17:59:41.9948139Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T17:59:41.9948272Z   CARGO_INCREMENTAL: 0
+2026-10-26T17:59:41.9948389Z   CARGO_TERM_COLOR: always
+2026-10-26T17:59:41.9948509Z ##[endgroup]
+2026-10-26T17:59:42.2045397Z ##[group]Cache Configuration
+2026-10-26T17:59:42.2045681Z Cache Provider:
+2026-10-26T17:59:42.2045800Z     github
+2026-10-26T17:59:42.2045902Z Workspaces:
+2026-10-26T17:59:42.2046207Z     /home/runner/work/the-aperture/the-aperture
+2026-10-26T17:59:42.2046514Z Cache Paths:
+2026-10-26T17:59:42.2046694Z     /home/runner/.cargo/bin
+2026-10-26T17:59:42.2046957Z     /home/runner/.cargo/.crates.toml
+2026-10-26T17:59:42.2047234Z     /home/runner/.cargo/.crates2.json
+2026-10-26T17:59:42.2047496Z     /home/runner/.cargo/registry
+2026-10-26T17:59:42.2047748Z     /home/runner/.cargo/git
+2026-10-26T17:59:42.2048007Z     /home/runner/work/the-aperture/the-aperture/target
+2026-10-26T17:59:42.2048286Z Restore Key:
+2026-10-26T17:59:42.2048471Z     v0-rust-rust-Linux-x64-01b81e85
+2026-10-26T17:59:42.2048720Z Cache Key:
+2026-10-26T17:59:42.2048909Z     v0-rust-rust-Linux-x64-01b81e85-0c1dedbf
+2026-10-26T17:59:42.2049174Z .. Prefix:
+2026-10-26T17:59:42.2049469Z   - v0-rust-rust-Linux-x64
+2026-10-26T17:59:42.2049720Z .. Environment considered:
+2026-10-26T17:59:42.2049941Z   - Rust Versions:
+2026-10-26T17:59:42.2050212Z     - 1.99.1 x86_64-unknown-linux-gnu 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-26T17:59:42.2050501Z   - CARGO_HOME
+2026-10-26T17:59:42.2050671Z   - CARGO_INCREMENTAL
+2026-10-26T17:59:42.2050896Z   - CARGO_TERM_COLOR
+2026-10-26T17:59:42.2051079Z .. Lockfiles considered:
+2026-10-26T17:59:42.2051396Z   - /home/runner/work/the-aperture/the-aperture/.cargo/config.toml
+2026-10-26T17:59:42.2051749Z   - /home/runner/work/the-aperture/the-aperture/Cargo.lock
+2026-10-26T17:59:42.2052116Z   - /home/runner/work/the-aperture/the-aperture/crates/ai/Cargo.toml
+2026-10-26T17:59:42.2052494Z   - /home/runner/work/the-aperture/the-aperture/crates/cli/Cargo.toml
+2026-10-26T17:59:42.2052868Z   - /home/runner/work/the-aperture/the-aperture/crates/core/Cargo.toml
+2026-10-26T17:59:42.2053251Z   - /home/runner/work/the-aperture/the-aperture/crates/import/Cargo.toml
+2026-10-26T17:59:42.2053622Z   - /home/runner/work/the-aperture/the-aperture/crates/ui/Cargo.toml
+2026-10-26T17:59:42.2054071Z ##[endgroup]
+2026-10-26T17:59:42.2054193Z 
+2026-10-26T17:59:42.2054410Z ... Restoring cache ...
+2026-10-26T17:59:42.3274312Z Cache hit for: v0-rust-rust-Linux-x64-01b81e85-0c1dedbf
+2026-10-26T17:59:43.4720399Z Received 104857600 of 765980779 (13.7%), 100.0 MBs/sec
+2026-10-26T17:59:44.4699146Z Received 268435456 of 765980779 (35.0%), 128.0 MBs/sec
+2026-10-26T17:59:45.4730581Z Received 461373440 of 765980779 (60.2%), 146.6 MBs/sec
+2026-10-26T17:59:46.4719665Z Received 671088640 of 765980779 (87.6%), 159.9 MBs/sec
+2026-10-26T17:59:46.9023706Z Received 765980779 of 765980779 (100.0%), 164.8 MBs/sec
+2026-10-26T17:59:46.9024085Z Cache Size: ~730 MB (765980779 B)
+2026-10-26T17:59:46.9070061Z [command]/usr/bin/tar -xf /home/runner/work/_temp/94cd48e6-1311-4770-a32b-9847a5cc64c2/cache.tzst -P -C /home/runner/work/the-aperture/the-aperture --use-compress-program unzstd
+2026-10-26T18:00:00.2424438Z Cache restored successfully
+2026-10-26T18:00:00.2714451Z Restored from cache key "v0-rust-rust-Linux-x64-01b81e85-0c1dedbf" full match: true.
+2026-10-26T18:00:00.3664028Z ##[group]Run cargo fmt --check
+2026-10-26T18:00:00.3664330Z [36;1mcargo fmt --check[0m
+2026-10-26T18:00:00.3714932Z shell: /usr/bin/bash -e {0}
+2026-10-26T18:00:00.3715075Z env:
+2026-10-26T18:00:00.3715198Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T18:00:00.3715346Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:00:00.3715475Z   CARGO_TERM_COLOR: always
+2026-10-26T18:00:00.3715607Z   CACHE_ON_FAILURE: false
+2026-10-26T18:00:00.3715737Z ##[endgroup]
+2026-10-26T18:00:01.0760463Z ##[group]Run cargo test --all-targets --locked
+2026-10-26T18:00:01.0760811Z [36;1mcargo test --all-targets --locked[0m
+2026-10-26T18:00:01.0820055Z shell: /usr/bin/bash -e {0}
+2026-10-26T18:00:01.0820208Z env:
+2026-10-26T18:00:01.0820332Z   CARGO_HOME: /home/runner/.cargo
+2026-10-26T18:00:01.0820487Z   CARGO_INCREMENTAL: 0
+2026-10-26T18:00:01.0820619Z   CARGO_TERM_COLOR: always
+2026-10-26T18:00:01.0820762Z   CACHE_ON_FAILURE: false
+2026-10-26T18:00:01.0820899Z ##[endgroup]
+2026-10-26T18:00:01.2511530Z [1m[92m    Updating[0m crates.io index
+2026-10-26T18:00:03.2482016Z [1m[92m   Compiling[0m aperture-core v0.1.0 (/home/runner/work/the-aperture/the-aperture/crates/core)
+2026-10-26T18:00:05.2461890Z [1m[92m   Compiling[0m aperture-import v0.1.0 (/home/runner/work/the-aperture/the-aperture/crates/import)
+2026-10-26T18:00:05.2462548Z [1m[92m   Compiling[0m aperture-ai v0.1.0 (/home/runner/work/the-aperture/the-aperture/crates/ai)
+2026-10-26T18:00:06.2301343Z [1m[92m   Compiling[0m aperture-ui v0.1.0 (/home/runner/work/the-aperture/the-aperture/crates/ui)
+2026-10-26T18:00:07.0881039Z [1m[92m   Compiling[0m aperture-cli v0.1.0 (/home/runner/work/the-aperture/the-aperture/crates/cli)
+2026-10-26T18:00:32.4189066Z [1m[92m    Finished[0m `test` profile [unoptimized + debuginfo] target(s) in 31.19s
+2026-10-26T18:00:32.4898819Z [1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/aperture_ai-73a82eea127292c5)
+2026-10-26T18:00:32.4909723Z 
+2026-10-26T18:00:32.4909816Z running 0 tests
+2026-10-26T18:00:32.4909932Z 
+2026-10-26T18:00:32.4910133Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:00:32.4910462Z 
+2026-10-26T18:00:32.4912109Z [1m[92m     Running[0m tests/common.rs (target/debug/deps/common-2eaf7cd0b9b939fb)
+2026-10-26T18:00:32.4919562Z 
+2026-10-26T18:00:32.4919812Z running 0 tests
+2026-10-26T18:00:32.4919941Z 
+2026-10-26T18:00:32.4920180Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:00:32.4920478Z 
+2026-10-26T18:00:32.4921474Z [1m[92m     Running[0m tests/decider.rs (target/debug/deps/decider-f3a6a2c11d3275bd)
+2026-10-26T18:00:32.4936206Z 
+2026-10-26T18:00:32.4936295Z running 4 tests
+2026-10-26T18:00:32.4947654Z test the_request_uses_the_documented_endpoint_shape_and_masks_hidden_cards ... ok
+2026-10-26T18:00:32.5653835Z test a_single_legal_option_is_forced_and_never_asked_of_the_model ... ok
+2026-10-26T18:00:32.5665403Z test an_unreachable_service_falls_back_to_the_heuristic_with_a_visible_reason ... ok
+2026-10-26T18:00:32.5750635Z test only_loopback_http_endpoints_are_accepted ... ok
+2026-10-26T18:00:32.5750892Z 
+2026-10-26T18:00:32.5751113Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+2026-10-26T18:00:32.5751344Z 
+2026-10-26T18:00:32.5758372Z [1m[92m     Running[0m tests/decider_boundary.rs (target/debug/deps/decider_boundary-c992b3792be0e25e)
+2026-10-26T18:00:32.5776012Z 
+2026-10-26T18:00:32.5776129Z running 7 tests
+2026-10-26T18:00:32.6647794Z test a_stale_forced_view_keeps_the_stale_reason_instead_of_reporting_forced ... ok
+2026-10-26T18:00:32.6649268Z test a_stale_envelope_falls_back_to_the_current_masked_heuristic ... ok
+2026-10-26T18:00:32.6650703Z test a_key_outside_the_current_engine_offer_is_refused_even_when_the_binding_matches ... ok
+2026-10-26T18:00:32.6660106Z test the_envelope_binds_the_viewer_revision_decision_generation_and_offers ... ok
+2026-10-26T18:00:32.6660801Z test a_truncated_protocol_fixture_answer_falls_back_with_the_stable_reason_code ... ok
+2026-10-26T18:00:32.7040936Z test reason_codes_are_stable_for_offline_and_protocol_failures ... ok
+2026-10-26T18:00:32.7065768Z test a_valid_protocol_fixture_answer_is_accepted_from_the_offered_snapshot ... ok
+2026-10-26T18:00:32.7066059Z 
+2026-10-26T18:00:32.7066334Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+2026-10-26T18:00:32.7066540Z 
+2026-10-26T18:00:32.7074008Z [1m[92m     Running[0m tests/decider_observation.rs (target/debug/deps/decider_observation-f26383a6cf3c294b)
+2026-10-26T18:00:32.7084122Z 
+2026-10-26T18:00:32.7084201Z running 2 tests
+2026-10-26T18:00:32.7090401Z test the_observation_does_not_hardcode_a_twenty_life_game ... ok
+2026-10-26T18:00:32.7090821Z test the_request_exposes_public_exile_command_and_card_details ... ok
+2026-10-26T18:00:32.7091072Z 
+2026-10-26T18:00:32.7091316Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:00:32.7091608Z 
+2026-10-26T18:00:32.7092547Z [1m[92m     Running[0m tests/decider_redirect.rs (target/debug/deps/decider_redirect-776ef81ab87d5e23)
+2026-10-26T18:00:32.7107153Z 
+2026-10-26T18:00:32.7107241Z running 1 test
+2026-10-26T18:00:33.7423114Z test the_decider_client_does_not_follow_a_redirect ... ok
+2026-10-26T18:00:33.7423363Z 
+2026-10-26T18:00:33.7423567Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.03s
+2026-10-26T18:00:33.7423883Z 
+2026-10-26T18:00:33.7428687Z [1m[92m     Running[0m tests/decider_schema.rs (target/debug/deps/decider_schema-5d64a5ec917419df)
+2026-10-26T18:00:33.7445426Z 
+2026-10-26T18:00:33.7445508Z running 5 tests
+2026-10-26T18:00:33.8337518Z test an_oversized_protocol_response_body_is_refused ... ok
+2026-10-26T18:00:33.8353155Z test choose_enforces_cardinality_and_unique_keys_for_directly_built_requests ... ok
+2026-10-26T18:00:33.8794462Z test a_non_choice_decision_type_is_refused_as_malformed ... ok
+2026-10-26T18:00:33.9748138Z test invalid_confidence_is_refused_instead_of_defaulted_to_zero ... ok
+2026-10-26T18:00:34.0268026Z test missing_or_malformed_usage_is_never_treated_as_clean ... ok
+2026-10-26T18:00:34.0268311Z 
+2026-10-26T18:00:34.0268464Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.28s
+2026-10-26T18:00:34.0268667Z 
+2026-10-26T18:00:34.0284868Z [1m[92m     Running[0m tests/decider_usage.rs (target/debug/deps/decider_usage-10b44bdc81836bc8)
+2026-10-26T18:00:34.0302775Z 
+2026-10-26T18:00:34.0302910Z running 5 tests
+2026-10-26T18:00:34.0306708Z test the_default_state_budget_is_large_enough_for_the_masked_projection ... ok
+2026-10-26T18:00:34.0318744Z test the_life_object_is_keyed_by_absolute_seat_for_a_p1_viewer ... ok
+2026-10-26T18:00:34.1005239Z test a_truncated_response_is_refused_with_a_truncated_error ... ok
+2026-10-26T18:00:34.1005802Z test a_truncated_response_makes_the_policy_fall_back_visibly ... ok
+2026-10-26T18:00:34.1157910Z test a_healthy_response_is_used_by_the_client_and_the_policy ... ok
+2026-10-26T18:00:34.1158204Z 
+2026-10-26T18:00:34.1158416Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+2026-10-26T18:00:34.1158758Z 
+2026-10-26T18:00:34.1164081Z [1m[92m     Running[0m tests/heuristic.rs (target/debug/deps/heuristic-ac36e46ac1cd58a1)
+2026-10-26T18:00:34.1175017Z 
+2026-10-26T18:00:34.1175124Z running 15 tests
+2026-10-26T18:00:34.1180255Z test available_mana_counts_untapped_basics_and_pool ... ok
+2026-10-26T18:00:34.1180650Z test attacks_for_lethal_when_the_defender_cannot_block ... ok
+2026-10-26T18:00:34.1180976Z test blocks_when_the_trade_is_good ... ok
+2026-10-26T18:00:34.1183355Z test casts_a_creature_with_its_available_mana ... ok
+2026-10-26T18:00:34.1186127Z test counterspells_the_opponents_creature_spell ... ok
+2026-10-26T18:00:34.1186563Z test bottoms_a_surplus_land_when_scrying ... ok
+2026-10-26T18:00:34.1187420Z test heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice ... ok
+2026-10-26T18:00:34.1188133Z test does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it ... ok
+2026-10-26T18:00:34.1200185Z test heuristic_casts_crack_the_earth_through_its_legal_option ... ok
+2026-10-26T18:00:34.1201242Z test keeps_a_three_land_hand_and_mulligans_a_land_flood ... ok
+2026-10-26T18:00:34.1204167Z test heuristic_uses_legal_command_zone_casts_instead_of_passing ... ok
+2026-10-26T18:00:34.1204783Z test passes_when_it_has_nothing_useful_to_do ... ok
+2026-10-26T18:00:34.1205344Z test plays_a_land_in_its_own_main_phase ... ok
+2026-10-26T18:00:34.1205661Z test the_policy_only_sees_masked_information ... ok
+2026-10-26T18:00:34.1271099Z test heuristic_observes_the_acting_seat_and_returns_a_legal_action ... ok
+2026-10-26T18:00:34.1271400Z 
+2026-10-26T18:00:34.1271649Z test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:00:34.1271952Z 
+2026-10-26T18:00:34.1274355Z [1m[92m     Running[0m tests/issue34_discard.rs (target/debug/deps/issue34_discard-eb473a9beffca9d2)
+2026-10-26T18:00:34.1284689Z 
+2026-10-26T18:00:34.1285021Z running 2 tests
+2026-10-26T18:00:34.1295305Z test the_heuristic_discards_from_the_engine_offer ... ok
+2026-10-26T18:00:34.1295743Z test the_decider_envelope_offers_each_legal_discard_set ... ok
+2026-10-26T18:00:34.1296024Z 
+2026-10-26T18:00:34.1296305Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:00:34.1299136Z [1m[92m     Running[0m tests/search.rs (target/debug/deps/search-b99b29f09366fc83)
+2026-10-26T18:00:34.1299643Z 
+2026-10-26T18:00:34.1307595Z 
+2026-10-26T18:00:34.1307822Z running 9 tests
+2026-10-26T18:00:34.1349860Z test cancellation_reports_the_labelled_fallback ... ok
+2026-10-26T18:00:34.1369698Z test budget_exhaustion_labels_the_fallback ... ok
+2026-10-26T18:00:34.2607417Z test candidates_are_only_offered_actions ... ok
+2026-10-26T18:00:34.2612009Z test pending_decisions_are_refused_with_a_typed_reason ... ok
+2026-10-26T18:00:34.2755750Z test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+2026-10-26T18:00:34.4664034Z test declared_own_deck_is_used_for_own_draws_only ... ok
+2026-10-26T18:00:34.5000944Z test reconstruction_is_reproducible_determinization ... ok
+2026-10-26T18:00:34.5210740Z test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+2026-10-26T18:01:34.2757149Z test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
+2026-10-26T18:02:27.0916260Z test small_paired_trial_against_the_frozen_heuristic ... ok
+2026-10-26T18:02:27.0917873Z 
+2026-10-26T18:02:27.0918190Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 112.96s
+2026-10-26T18:02:27.0918429Z 
+2026-10-26T18:02:27.0920383Z [1m[92m     Running[0m tests/selfplay.rs (target/debug/deps/selfplay-7cdefc63f77e94ca)
+2026-10-26T18:02:27.0931033Z 
+2026-10-26T18:02:27.0931111Z running 3 tests
+2026-10-26T18:02:27.1331463Z test a_run_cap_is_reported_as_truncation_not_a_result ... ok
+2026-10-26T18:02:27.4496019Z test heuristic_selfplay_reaches_a_terminal_result_and_replays ... ok
+2026-10-26T18:02:28.3071140Z test identical_seeds_produce_identical_games_and_ai_digests ... ok
+2026-10-26T18:02:28.3071476Z 
+2026-10-26T18:02:28.3071692Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.21s
+2026-10-26T18:02:28.3072010Z 
+2026-10-26T18:02:28.3074581Z [1m[92m     Running[0m unittests examples/model_decide.rs (target/debug/examples/model_decide-b5888caa0ff003bc)
+2026-10-26T18:02:28.3084770Z 
+2026-10-26T18:02:28.3084857Z running 0 tests
+2026-10-26T18:02:28.3084994Z 
+2026-10-26T18:02:28.3086832Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:28.3087115Z 
+2026-10-26T18:02:28.3087963Z [1m[92m     Running[0m unittests examples/search_decide.rs (target/debug/examples/search_decide-b57e6d886004a8a2)
+2026-10-26T18:02:28.3096067Z 
+2026-10-26T18:02:28.3096214Z running 0 tests
+2026-10-26T18:02:28.3097534Z 
+2026-10-26T18:02:28.3097799Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:28.3097990Z 
+2026-10-26T18:02:28.3098977Z [1m[92m     Running[0m unittests src/main.rs (target/debug/deps/aperture_cli-b19d3903052f928b)
+2026-10-26T18:02:28.3106057Z 
+2026-10-26T18:02:28.3106140Z running 7 tests
+2026-10-26T18:02:28.3114755Z test decks::tests::an_explicit_missing_deck_path_is_not_replaced_by_the_bundle ... ok
+2026-10-26T18:02:28.3116812Z test decks::tests::non_explicit_default_loads_keep_the_human_fallback_names ... ok
+2026-10-26T18:02:28.3117262Z test decks::tests::an_explicit_starter_file_keeps_its_own_identity ... ok
+2026-10-26T18:02:28.3120845Z test harness_cmd::tests::classifier_and_exit_code_are_explicit ... ok
+2026-10-26T18:02:28.3130149Z test tests::selfplay_help_lists_every_supported_commander_and_the_bounded_scope ... ok
+2026-10-26T18:02:28.4025709Z test harness_cmd::tests::capped_harness_emits_paired_rows_and_exit_2 ... ok
+2026-10-26T18:02:39.1758293Z test harness_cmd::tests::terminal_harness_emits_rows_and_exit_0 ... ok
+2026-10-26T18:02:39.1758594Z 
+2026-10-26T18:02:39.1758843Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.87s
+2026-10-26T18:02:39.1759182Z 
+2026-10-26T18:02:39.1761530Z [1m[92m     Running[0m tests/certify.rs (target/debug/deps/certify-3ac865a028369db3)
+2026-10-26T18:02:39.1771745Z 
+2026-10-26T18:02:39.1771856Z running 4 tests
+2026-10-26T18:02:39.1820436Z test a_missing_snapshot_is_refused_rather_than_replaced_by_a_bundled_deck ... ok
+2026-10-26T18:02:39.1820714Z test an_edited_snapshot_stops_certifying ... ok
+2026-10-26T18:02:50.6785401Z test a_crlf_checkout_of_the_same_list_certifies_to_the_same_snapshot_hash ... ok
+2026-10-26T18:02:51.3856645Z test certify_proves_one_starter_from_its_exact_snapshot ... ok
+2026-10-26T18:02:51.3856933Z 
+2026-10-26T18:02:51.3857149Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.21s
+2026-10-26T18:02:51.3857485Z 
+2026-10-26T18:02:51.3859802Z [1m[92m     Running[0m tests/commander_check.rs (target/debug/deps/commander_check-83cf5b1c485854a2)
+2026-10-26T18:02:51.3869982Z 
+2026-10-26T18:02:51.3870061Z running 8 tests
+2026-10-26T18:02:51.3930417Z test a_commander_section_in_a_practice_file_is_refused_by_real_consumers ... ok
+2026-10-26T18:02:51.4069934Z test commander_check_returns_0_for_a_legal_but_unplayable_deck ... ok
+2026-10-26T18:02:51.4099833Z test a_valid_mainboard_prefixed_practice_file_still_loads_and_plays ... ok
+2026-10-26T18:02:51.4159707Z test parenthesized_section_headers_are_refused_by_real_consumers ... ok
+2026-10-26T18:02:51.4249998Z test commander_check_returns_2_for_malformed_input_and_out_matches_stdout ... ok
+2026-10-26T18:02:51.4280808Z test commander_check_returns_1_for_illegal_and_2_for_not_certified ... ok
+2026-10-26T18:02:51.4321193Z test pregame_chosen_color_commander_exits_2_without_false_color_illegal ... ok
+2026-10-26T18:02:51.6112661Z test commander_check_returns_2_for_duplicates_with_incomplete_oracle_text ... ok
+2026-10-26T18:02:51.6113019Z 
+2026-10-26T18:02:51.6113230Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s
+2026-10-26T18:02:51.6113549Z 
+2026-10-26T18:02:51.6114919Z [1m[92m     Running[0m tests/explicit_decks.rs (target/debug/deps/explicit_decks-4dad6d98306d4093)
+2026-10-26T18:02:51.6122711Z 
+2026-10-26T18:02:51.6122787Z running 1 test
+2026-10-26T18:02:51.6160621Z test coach_refuses_both_explicit_missing_deck_paths ... ok
+2026-10-26T18:02:51.6160891Z 
+2026-10-26T18:02:51.6161125Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.6161410Z 
+2026-10-26T18:02:51.6162444Z [1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/aperture_core-3a9f9d6a3f2eb0a5)
+2026-10-26T18:02:51.6169936Z 
+2026-10-26T18:02:51.6170066Z running 11 tests
+2026-10-26T18:02:51.6172481Z test counters::tests::counters_store_only_nonzero_kinds_and_sum_canonically ... ok
+2026-10-26T18:02:51.6172922Z test counters::tests::paired_power_counters_annihilate_equally ... ok
+2026-10-26T18:02:51.6173325Z test counters::tests::deserialization_refuses_non_canonical_counters ... ok
+2026-10-26T18:02:51.6174055Z test layer::tests::finite_shield_absorbs_only_its_remaining_amount ... ok
+2026-10-26T18:02:51.6174416Z test counters::tests::serde_round_trip_is_canonical ... ok
+2026-10-26T18:02:51.6174786Z test layer::tests::unlimited_shield_prevents_every_applicable_instance ... ok
+2026-10-26T18:02:51.6175562Z test counters::tests::removing_more_counters_than_held_clamps_and_never_goes_negative ... ok
+2026-10-26T18:02:51.6176020Z test layer::tests::modifier_effects_describe_themselves_in_layer_7c ... ok
+2026-10-26T18:02:51.6176279Z test tokens::tests::flying_is_blocked_only_by_flying_or_reach ... ok
+2026-10-26T18:02:51.6176536Z test tokens::tests::token_cards_are_creatures_outside_the_importable_pool ... ok
+2026-10-26T18:02:51.6176930Z test tokens::tests::islandwalk_forbids_every_blocker_while_the_defender_controls_an_island ... ok
+2026-10-26T18:02:51.6177257Z 
+2026-10-26T18:02:51.6177450Z test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.6177748Z 
+2026-10-26T18:02:51.6178105Z [1m[92m     Running[0m tests/abilities.rs (target/debug/deps/abilities-01f48e30d472ba04)
+2026-10-26T18:02:51.6185791Z 
+2026-10-26T18:02:51.6185894Z running 13 tests
+2026-10-26T18:02:51.6188992Z test activated_ability_needs_its_controller_and_a_legal_target ... ok
+2026-10-26T18:02:51.6189577Z test an_ability_on_the_stack_is_not_a_spell ... ok
+2026-10-26T18:02:51.6189937Z test activated_ability_effect_comes_before_ability_resolved_and_priority ... ok
+2026-10-26T18:02:51.6190333Z test enters_the_battlefield_trigger_draws_before_priority ... ok
+2026-10-26T18:02:51.6192117Z test optional_trigger_is_declined_or_used_by_its_controller ... ok
+2026-10-26T18:02:51.6192506Z test simultaneous_dies_triggers_use_apnap_order_and_lki ... ok
+2026-10-26T18:02:51.6192860Z test sacrifice_cost_ability_moves_the_source_and_gains_life ... ok
+2026-10-26T18:02:51.6194683Z test tap_ability_goes_on_the_stack_and_deals_damage ... ok
+2026-10-26T18:02:51.6195838Z test tap_ability_is_refused_while_summoning_sick_and_when_tapped ... ok
+2026-10-26T18:02:51.6196213Z test trigger_target_lost_before_resolution_makes_the_ability_fizzle ... ok
+2026-10-26T18:02:51.6196489Z test triggered_ability_effect_comes_before_ability_resolved_and_priority ... ok
+2026-10-26T18:02:51.6197830Z test trigger_without_a_legal_target_is_removed ... ok
+2026-10-26T18:02:51.6198087Z test mana_cost_ability_and_once_each_turn_limit ... ok
+2026-10-26T18:02:51.6198645Z [1m[92m     Running[0m tests/abilities_game.rs (target/debug/deps/abilities_game-11cfc248d4898293)
+2026-10-26T18:02:51.6198940Z 
+2026-10-26T18:02:51.6199090Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.6199267Z 
+2026-10-26T18:02:51.6206597Z 
+2026-10-26T18:02:51.6206673Z running 1 test
+2026-10-26T18:02:51.6954445Z test real_game_activates_and_triggers_abilities_and_replays_identically ... ok
+2026-10-26T18:02:51.6954617Z 
+2026-10-26T18:02:51.6954750Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+2026-10-26T18:02:51.6954939Z 
+2026-10-26T18:02:51.6957157Z [1m[92m     Running[0m tests/apnap.rs (target/debug/deps/apnap-e9118e77d92a4a30)
+2026-10-26T18:02:51.6966208Z 
+2026-10-26T18:02:51.6966379Z running 17 tests
+2026-10-26T18:02:51.6974975Z test apnap_order_anchors_at_nonzero_active_and_wraps ... ok
+2026-10-26T18:02:51.6975388Z test apnap_rejections_leave_the_queue_unchanged ... ok
+2026-10-26T18:02:51.6975699Z test apnap_pending_label_and_kind_are_owner_only ... ok
+2026-10-26T18:02:51.6977504Z test apnap_skips_an_already_lost_seat ... ok
+2026-10-26T18:02:51.6977831Z test apnap_validation_rejects_rewound_source_and_nonprefix_answers ... ok
+2026-10-26T18:02:51.6978545Z test crack_the_earth_is_a_supported_normal_cast_card ... ok
+2026-10-26T18:02:51.6980877Z test departing_active_current_chooser_purges_its_answer_and_resumes ... ok
+2026-10-26T18:02:51.6982455Z test departing_participant_is_purged_and_remaining_answers_resume ... ok
+2026-10-26T18:02:51.6986948Z test apnap_pending_view_keeps_choices_public_and_hidden_state_masked ... ok
+2026-10-26T18:02:51.6988241Z test last_live_seat_outcome_discards_the_pending_queue ... ok
+2026-10-26T18:02:51.6998161Z test coach_does_not_print_an_unentitled_apnap_choice_label ... ok
+2026-10-26T18:02:51.6998797Z test counterspell_prevents_the_apnap_queue ... ok
+2026-10-26T18:02:51.6999196Z test malformed_apnap_pending_save_is_rejected ... ok
+2026-10-26T18:02:51.7006102Z test malformed_apnap_queue_is_rejected_by_state_validation ... ok
+2026-10-26T18:02:51.7006543Z test real_crack_the_earth_cast_defers_all_sacrifices_until_the_last_answer ... ok
+2026-10-26T18:02:51.7007024Z test malformed_apnap_save_with_missing_source_returns_typed_error_not_panic ... ok
+2026-10-26T18:02:51.7122800Z test intermediate_apnap_queue_save_and_replay_round_trip ... ok
+2026-10-26T18:02:51.7123036Z 
+2026-10-26T18:02:51.7123243Z test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:02:51.7123528Z 
+2026-10-26T18:02:51.7125298Z [1m[92m     Running[0m tests/card_printings.rs (target/debug/deps/card_printings-1e7d9d1efbfab811)
+2026-10-26T18:02:51.7132865Z 
+2026-10-26T18:02:51.7132941Z running 7 tests
+2026-10-26T18:02:51.7138422Z test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+2026-10-26T18:02:51.7138994Z test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+2026-10-26T18:02:51.7139651Z test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+2026-10-26T18:02:51.7140082Z test every_krenko_package_card_matches_its_recorded_printing ... ok
+2026-10-26T18:02:51.7169985Z [1m[92m     Running[0m tests/catalog_pool.rs (target/debug/deps/catalog_pool-ef6db838924ccd11)
+2026-10-26T18:02:51.7170409Z test every_slice5_card_matches_its_recorded_printing ... ok
+2026-10-26T18:02:51.7171690Z test every_starter_corpus_card_matches_its_recorded_printing ... ok
+2026-10-26T18:02:51.7172357Z test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+2026-10-26T18:02:51.7172601Z 
+2026-10-26T18:02:51.7172804Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7173074Z 
+2026-10-26T18:02:51.7173077Z 
+2026-10-26T18:02:51.7173150Z running 5 tests
+2026-10-26T18:02:51.7177479Z test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+2026-10-26T18:02:51.7178043Z test every_printed_ability_maps_to_implemented_semantics ... ok
+2026-10-26T18:02:51.7178626Z test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+2026-10-26T18:02:51.7179116Z test pool_size_is_bounded_and_names_are_unique ... ok
+2026-10-26T18:02:51.7179629Z test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+2026-10-26T18:02:51.7179941Z 
+2026-10-26T18:02:51.7180225Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7180763Z [1m[92m     Running[0m tests/coach_trace.rs (target/debug/deps/coach_trace-05cad99611785cf5)
+2026-10-26T18:02:51.7181127Z 
+2026-10-26T18:02:51.7188036Z 
+2026-10-26T18:02:51.7188173Z running 7 tests
+2026-10-26T18:02:51.7192140Z test the_1014_note_states_apnap_order ... ok
+2026-10-26T18:02:51.7192564Z test walkthrough_cast_opens_a_response_window_and_names_what_resolves ... ok
+2026-10-26T18:02:51.7193041Z test walkthrough_apnap_pending_teaches_apnap_order_and_keeps_private_choices_private ... ok
+2026-10-26T18:02:51.7193498Z test coaching_of_a_non_decision_seat_never_describes_anothers_hand ... ok
+2026-10-26T18:02:51.7193882Z test walkthrough_consecutive_passes_are_listed_seat_by_seat ... ok
+2026-10-26T18:02:51.7194143Z test walkthrough_categories_are_separate_and_strategy_is_absent_by_design ... ok
+2026-10-26T18:02:51.7194408Z test walkthrough_new_game_pass_round_states_the_next_resolution ... ok
+2026-10-26T18:02:51.7194553Z 
+2026-10-26T18:02:51.7194684Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7194860Z 
+2026-10-26T18:02:51.7195262Z [1m[92m     Running[0m tests/combat.rs (target/debug/deps/combat-2c5c85f2b3d045cf)
+2026-10-26T18:02:51.7202752Z 
+2026-10-26T18:02:51.7202841Z running 8 tests
+2026-10-26T18:02:51.7207056Z test attackers_are_declared_only_during_the_declare_attackers_step ... ok
+2026-10-26T18:02:51.7207627Z test a_blocker_can_only_block_one_attacker_and_must_be_untapped ... ok
+2026-10-26T18:02:51.7209057Z test blocking_creatures_trade_and_lethal_damage_is_a_state_based_action ... ok
+2026-10-26T18:02:51.7210671Z test combat_damage_happens_once ... ok
+2026-10-26T18:02:51.7212355Z test giant_growth_pumps_until_end_of_turn ... ok
+2026-10-26T18:02:51.7212638Z test summoning_sick_creature_cannot_attack ... ok
+2026-10-26T18:02:51.7212944Z test unblocked_attacker_damages_the_defending_player ... ok
+2026-10-26T18:02:51.7213274Z test two_blockers_split_damage_lethal_first_and_all_die ... ok
+2026-10-26T18:02:51.7213480Z 
+2026-10-26T18:02:51.7213677Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7213957Z 
+2026-10-26T18:02:51.7220538Z 
+2026-10-26T18:02:51.7220884Z running 2 tests
+2026-10-26T18:02:51.7221408Z [1m[92m     Running[0m tests/combat_teaching.rs (target/debug/deps/combat_teaching-06e33dfd2a151ced)
+2026-10-26T18:02:51.7222419Z test the_5101c_note_does_not_teach_lethal_first_as_the_rule ... ok
+2026-10-26T18:02:51.7222780Z test combat_coaching_identifies_the_automatic_assignment_as_a_simplification ... ok
+2026-10-26T18:02:51.7223073Z 
+2026-10-26T18:02:51.7223261Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7223434Z 
+2026-10-26T18:02:51.7224395Z [1m[92m     Running[0m tests/command_zone_catalog.rs (target/debug/deps/command_zone_catalog-dbb151fafa5e1fdc)
+2026-10-26T18:02:51.7231323Z 
+2026-10-26T18:02:51.7231387Z running 5 tests
+2026-10-26T18:02:51.7233910Z test sourced_isamaru_is_in_the_supported_pool ... ok
+2026-10-26T18:02:51.7234287Z test sourced_plains_is_in_the_supported_pool ... ok
+2026-10-26T18:02:51.7234630Z test sourced_swords_to_plowshares_is_in_the_supported_pool ... ok
+2026-10-26T18:02:51.7234959Z test sourced_time_ebb_is_in_the_supported_pool ... ok
+2026-10-26T18:02:51.7235276Z test sourced_unsummon_is_in_the_supported_pool ... ok
+2026-10-26T18:02:51.7235465Z 
+2026-10-26T18:02:51.7235676Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7235865Z 
+2026-10-26T18:02:51.7236354Z [1m[92m     Running[0m tests/command_zone_setup.rs (target/debug/deps/command_zone_setup-550d7fc23501a581)
+2026-10-26T18:02:51.7244962Z 
+2026-10-26T18:02:51.7245124Z running 33 tests
+2026-10-26T18:02:51.7253547Z test a_commander_cast_from_hand_does_not_add_tax ... ok
+2026-10-26T18:02:51.7254091Z test a_commander_is_castable_from_the_command_zone_and_counts_the_cast ... ok
+2026-10-26T18:02:51.7270159Z test a_departing_commander_owner_is_purged_without_touching_other_seats ... ok
+2026-10-26T18:02:51.7279951Z test a_declined_commander_draw_emits_one_real_draw_event ... ok
+2026-10-26T18:02:51.7280687Z test a_dying_commander_gets_one_owner_return_choice_and_declining_is_final ... ok
+2026-10-26T18:02:51.7281246Z test a_supported_single_commander_per_seat_constructs_a_game ... ok
+2026-10-26T18:02:51.7281797Z test an_unpayable_or_unauthorized_command_zone_cast_does_not_increment_or_mutate ... ok
+2026-10-26T18:02:51.7282340Z test commander_tax_is_two_per_previous_command_zone_cast ... ok
+2026-10-26T18:02:51.7282836Z test commander_view_redacts_hidden_zones_for_every_viewer ... ok
+2026-10-26T18:02:51.7293416Z test commander_zone_transitions_reset_controller_and_object_state ... ok
+2026-10-26T18:02:51.7314686Z test commanders_start_independently_in_the_command_zone ... ok
+2026-10-26T18:02:51.7340008Z test all_lost_command_zone_save_preserves_its_original_profile ... ok
+2026-10-26T18:02:51.7340429Z test divination_draw_two_continues_after_a_commander_draw_replacement ... ok
+2026-10-26T18:02:51.7345863Z test draw_step_suspends_before_a_commander_moves_from_library_to_hand ... ok
+2026-10-26T18:02:51.7350510Z test final_commander_return_answer_restores_priority_without_advancing_the_step ... ok
+2026-10-26T18:02:51.7351707Z test forged_replacement_source_and_cursor_are_rejected ... ok
+2026-10-26T18:02:51.7357893Z test a_draw_step_save_cannot_claim_additional_effect_draws ... ok
+2026-10-26T18:02:51.7358690Z test injected_departure_retains_the_unanswered_commander_return_tail ... ok
+2026-10-26T18:02:51.7360893Z test malformed_commander_return_bounds_are_typed_not_panics ... ok
+2026-10-26T18:02:51.7361914Z test ordinary_practice_games_refuse_a_commander_in_the_library ... ok
+2026-10-26T18:02:51.7367160Z test malformed_commander_return_queues_are_rejected_not_repaired ... ok
+2026-10-26T18:02:51.7374375Z test repeat_command_zone_casts_stack_tax_and_a_countered_cast_still_counts ... ok
+2026-10-26T18:02:51.7380930Z test ordinary_practice_parser_refuses_the_commander_only_card_with_reason ... ok
+2026-10-26T18:02:51.7394308Z test opt_and_consider_commander_draws_validate_after_the_first_instruction ... ok
+2026-10-26T18:02:51.7394995Z test simultaneous_commander_returns_wait_for_every_owner_then_apply_apnap_batch ... ok
+2026-10-26T18:02:51.7402859Z test swords_exiles_then_offers_return_with_controller_life_gain ... ok
+2026-10-26T18:02:51.7403519Z test terminal_sba_wins_immediately_without_an_irrelevant_return_choice ... ok
+2026-10-26T18:02:51.7407640Z test time_ebb_suspends_before_the_library_move_and_declining_puts_it_on_top ... ok
+2026-10-26T18:02:51.7413734Z test unsummon_suspends_before_the_move_and_declining_proceeds_to_hand ... ok
+2026-10-26T18:02:51.7418049Z test command_zone_replay_and_save_round_trip_the_explicit_setup ... ok
+2026-10-26T18:02:51.7420710Z test unsupported_commander_and_multi_commander_setups_are_refused ... ok
+2026-10-26T18:02:51.7488056Z test replacement_save_is_bound_to_the_producer_destination_and_target ... ok
+2026-10-26T18:02:51.7579256Z test sandbox_save_container_and_identity_corruption_is_rejected ... ok
+2026-10-26T18:02:51.7579595Z 
+2026-10-26T18:02:51.7579814Z test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-26T18:02:51.7580084Z 
+2026-10-26T18:02:51.7582743Z [1m[92m     Running[0m tests/counters_tokens_library.rs (target/debug/deps/counters_tokens_library-a16f2dfc9899943f)
+2026-10-26T18:02:51.7592205Z 
+2026-10-26T18:02:51.7592293Z running 16 tests
+2026-10-26T18:02:51.7596464Z test a_bounced_token_ceases_to_exist_and_never_reaches_a_hand ... ok
+2026-10-26T18:02:51.7597033Z test a_destroyed_token_ceases_to_exist_and_never_enters_a_graveyard ... ok
+2026-10-26T18:02:51.7597588Z test a_flying_token_can_only_be_blocked_by_flying_or_reach ... ok
+2026-10-26T18:02:51.7598020Z test a_created_token_has_its_own_characteristics_ownership_and_visibility ... ok
+2026-10-26T18:02:51.7623744Z test a_saved_state_with_counters_off_the_battlefield_is_refused ... ok
+2026-10-26T18:02:51.7624167Z test a_save_with_malformed_counters_is_refused_not_coerced ... ok
+2026-10-26T18:02:51.7626539Z test combat_damage_uses_counter_modified_power ... ok
+2026-10-26T18:02:51.7630562Z test counters_do_not_follow_the_card_out_of_the_battlefield ... ok
+2026-10-26T18:02:51.7637173Z test counters_and_tokens_survive_save_load_exactly ... ok
+2026-10-26T18:02:51.7637599Z test mill_shuffle_reveal_and_untap_are_deterministic_and_information_safe ... ok
+2026-10-26T18:02:51.7638080Z test minus_counters_reduce_toughness_to_zero_and_the_creature_dies ... ok
+2026-10-26T18:02:51.7638623Z test paired_plus_and_minus_counters_annihilate_at_the_next_checkpoint ... ok
+2026-10-26T18:02:51.7639114Z test power_and_toughness_counters_change_characteristics_and_projection ... ok
+2026-10-26T18:02:51.7639688Z test swords_to_plowshares_reports_a_token_truthfully ... ok
+2026-10-26T18:02:51.7650789Z test a_real_game_keeps_its_digest_and_survives_a_save_load_round_trip ... ok
+2026-10-26T18:02:51.7686179Z test a_real_pre16_v10_save_still_loads_and_replays ... ok
+2026-10-26T18:02:51.7686317Z 
+2026-10-26T18:02:51.7686456Z test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:02:51.7686865Z 
+2026-10-26T18:02:51.7688745Z [1m[92m     Running[0m tests/counterspell.rs (target/debug/deps/counterspell-fedaee003dac3e6d)
+2026-10-26T18:02:51.7696145Z 
+2026-10-26T18:02:51.7696235Z running 4 tests
+2026-10-26T18:02:51.7700024Z test counterspell_resolution_revalidates_its_target ... ok
+2026-10-26T18:02:51.7700349Z test counterspell_needs_a_spell_target ... ok
+2026-10-26T18:02:51.7700694Z test counterspell_counters_the_target_spell_and_nothing_else_happens ... ok
+2026-10-26T18:02:51.7701088Z test a_spell_whose_targets_died_does_not_resolve ... ok
+2026-10-26T18:02:51.7701282Z 
+2026-10-26T18:02:51.7701465Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:51.7701640Z 
+2026-10-26T18:02:51.7702166Z [1m[92m     Running[0m tests/issue13_commander_combat.rs (target/debug/deps/issue13_commander_combat-dd2b607d0fcc85b6)
+2026-10-26T18:02:51.7710343Z 
+2026-10-26T18:02:51.7710430Z running 43 tests
+2026-10-26T18:02:51.7716006Z test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+2026-10-26T18:02:51.7716553Z test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+2026-10-26T18:02:51.7725399Z test commander_combat_damage_is_publicly_credited ... ok
+2026-10-26T18:02:51.7734279Z test commander_damage_to_a_creature_never_credits_a_player ... ok
+2026-10-26T18:02:51.7749810Z test commander_damage_identity_survives_a_modeled_control_change ... ok
+2026-10-26T18:02:51.7794760Z test commander_draw_answer_then_owner_departure_is_atomic ... ok
+2026-10-26T18:02:51.7807401Z test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+2026-10-26T18:02:51.7808059Z test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+2026-10-26T18:02:51.7808482Z test departing_controller_battlefield_permanent_is_exiled ... ok
+2026-10-26T18:02:51.7808938Z test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+2026-10-26T18:02:51.7810199Z test discard_pending_then_active_departure_settles_once ... ok
+2026-10-26T18:02:51.7810766Z test departed_identity_omitted_from_retired_is_refused ... ok
+2026-10-26T18:02:51.7821571Z test commander_return_queue_survives_a_departing_owner ... ok
+2026-10-26T18:02:51.7825600Z test fog_does_not_prevent_noncombat_damage ... ok
+2026-10-26T18:02:51.7826062Z test fog_is_a_sourced_catalog_card ... ok
+2026-10-26T18:02:51.7837787Z test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+2026-10-26T18:02:51.7838622Z test fog_prevents_combat_damage_to_creatures ... ok
+2026-10-26T18:02:51.7839130Z test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+2026-10-26T18:02:51.7842254Z test fabricated_retired_commander_identity_is_refused ... ok
+2026-10-26T18:02:51.7849226Z test fog_shield_expires_after_cleanup ... ok
+2026-10-26T18:02:51.7871937Z test exact_commander_damage_boundaries ... ok
+2026-10-26T18:02:51.7889867Z test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+2026-10-26T18:02:51.7903584Z test independent_commanders_do_not_pool ... ok
+2026-10-26T18:02:51.7904103Z test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+2026-10-26T18:02:51.7904683Z test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+2026-10-26T18:02:51.7905273Z test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+2026-10-26T18:02:51.7908674Z test live_commander_cannot_be_listed_as_retired ... ok
+2026-10-26T18:02:51.7912672Z test named_20_life_profiles_are_unchanged ... ok
+2026-10-26T18:02:51.7924142Z test noncombat_damage_never_credits_the_ledger ... ok
+2026-10-26T18:02:51.7936593Z test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+2026-10-26T18:02:51.7937154Z test malformed_commander_damage_ledgers_are_refused ... ok
+2026-10-26T18:02:51.7950296Z test previous_replay_schema_version_is_rejected ... ok
+2026-10-26T18:02:51.7956629Z test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+2026-10-26T18:02:51.7992784Z test real_departure_retires_identity_and_keeps_historic_row ... ok
+2026-10-26T18:02:51.7994684Z test previous_save_schema_version_is_rejected ... ok
+2026-10-26T18:02:51.7999616Z test serialized_commander_combat_profile_reconstructs_40_life ... ok
+2026-10-26T18:02:51.8026225Z test simultaneous_losses_settle_once_in_seat_order ... ok
+2026-10-26T18:02:51.8042077Z test survivor_owned_source_exiled_but_queue_continues ... ok
+2026-10-26T18:02:51.8046993Z test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+2026-10-26T18:02:51.8047591Z test twenty_two_commander_damage_is_a_loss ... ok
+2026-10-26T18:02:51.8047898Z test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+2026-10-26T18:02:51.8059950Z test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+2026-10-26T18:02:52.1966715Z test accepted_action_midledger_save_and_replay_roundtrip ... ok
+2026-10-26T18:02:52.1966923Z 
+2026-10-26T18:02:52.1967069Z test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.43s
+2026-10-26T18:02:52.1967284Z 
+2026-10-26T18:02:52.1970410Z [1m[92m     Running[0m tests/issue13_loss.rs (target/debug/deps/issue13_loss-119a97cdb31b1f44)
+2026-10-26T18:02:52.1980676Z 
+2026-10-26T18:02:52.1980775Z running 2 tests
+2026-10-26T18:02:52.1983454Z test d1_ordinary_empty_library_draw_loses_before_priority ... ok
+2026-10-26T18:02:52.1984362Z test d1_idle_command_empty_library_draw_loses_before_priority ... ok
+2026-10-26T18:02:52.1984590Z 
+2026-10-26T18:02:52.1984793Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.1985035Z 
+2026-10-26T18:02:52.1986238Z [1m[92m     Running[0m tests/issue15_effects.rs (target/debug/deps/issue15_effects-8315dfc393ffef43)
+2026-10-26T18:02:52.1993950Z 
+2026-10-26T18:02:52.1994068Z running 4 tests
+2026-10-26T18:02:52.1998008Z test mending_hands_refuses_a_spell_as_an_any_target ... ok
+2026-10-26T18:02:52.1998351Z test prevention_is_applied_before_the_multiplier ... ok
+2026-10-26T18:02:52.1998722Z test damage_multiplier_doubles_every_source_its_controller_controls ... ok
+2026-10-26T18:02:52.1999113Z test prevention_shield_absorbs_its_amount_and_stops_applying ... ok
+2026-10-26T18:02:52.1999503Z 
+2026-10-26T18:02:52.1999711Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.1999984Z 
+2026-10-26T18:02:52.2000556Z [1m[92m     Running[0m tests/issue15_layers.rs (target/debug/deps/issue15_layers-613393ec42eb4912)
+2026-10-26T18:02:52.2007935Z 
+2026-10-26T18:02:52.2008040Z running 4 tests
+2026-10-26T18:02:52.2020196Z test printed_wight_is_a_one_one_with_empty_graveyards ... ok
+2026-10-26T18:02:52.2020671Z test printed_wight_counts_only_opponents_creature_cards ... ok
+2026-10-26T18:02:52.2020998Z test until_end_of_turn_effects_end_in_cleanup ... ok
+2026-10-26T18:02:52.2225518Z test a_real_game_logs_the_new_effects_and_replays_to_the_same_digest ... ok
+2026-10-26T18:02:52.2225698Z 
+2026-10-26T18:02:52.2225849Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:02:52.2226025Z 
+2026-10-26T18:02:52.2227657Z [1m[92m     Running[0m tests/issue17_cross_package.rs (target/debug/deps/issue17_cross_package-6add530553e8a0e3)
+2026-10-26T18:02:52.2234768Z 
+2026-10-26T18:02:52.2234845Z running 8 tests
+2026-10-26T18:02:52.2238765Z test eliminated_opponents_are_skipped_by_guttersnipe ... ok
+2026-10-26T18:02:52.2241141Z test guttersnipe_hits_each_opponent_but_not_its_controller ... ok
+2026-10-26T18:02:52.2241548Z test guttersnipe_source_left_damage_uses_the_controllers_damage_multiplier ... ok
+2026-10-26T18:02:52.2241996Z test living_guttersnipe_damage_is_doubled_and_opponent_angrath_does_not_apply ... ok
+2026-10-26T18:02:52.2242452Z test guttersnipe_trigger_still_deals_damage_after_the_source_leaves ... ok
+2026-10-26T18:02:52.2242845Z test forest_bear_is_vanilla_and_striped_bears_draws_on_entry ... ok
+2026-10-26T18:02:52.2243170Z test sourced_cross_package_cards_match_their_printings ... ok
+2026-10-26T18:02:52.2243715Z test swamp_taps_for_black_and_lightning_bolt_deals_three ... ok
+2026-10-26T18:02:52.2243949Z 
+2026-10-26T18:02:52.2244159Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2244465Z 
+2026-10-26T18:02:52.2245107Z [1m[92m     Running[0m tests/issue17_slice10_certification.rs (target/debug/deps/issue17_slice10_certification-bc7cb420700db223)
+2026-10-26T18:02:52.2251788Z 
+2026-10-26T18:02:52.2251867Z running 3 tests
+2026-10-26T18:02:52.2257554Z test the_exact_certified_snapshot_is_ninety_nine_supported_cards ... ok
+2026-10-26T18:02:52.2264730Z test the_manifest_certification_record_matches_the_real_snapshot ... ok
+2026-10-26T18:02:52.2267991Z test every_non_vanilla_card_in_the_exact_list_casts_and_resolves ... ok
+2026-10-26T18:02:52.2268152Z 
+2026-10-26T18:02:52.2268286Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2268472Z 
+2026-10-26T18:02:52.2270196Z [1m[92m     Running[0m tests/issue17_slice11.rs (target/debug/deps/issue17_slice11-acf10963fa15fb0a)
+2026-10-26T18:02:52.2277275Z 
+2026-10-26T18:02:52.2277389Z running 6 tests
+2026-10-26T18:02:52.2281244Z test pale_bears_and_river_bear_match_their_printed_text ... ok
+2026-10-26T18:02:52.2282933Z test another_players_island_never_makes_the_attacker_unblockable ... ok
+2026-10-26T18:02:52.2283458Z test an_islandwalk_attacker_cannot_be_blocked_while_the_defender_controls_an_island ... ok
+2026-10-26T18:02:52.2283985Z test an_islandwalk_attacker_is_blockable_when_the_defender_controls_no_island ... ok
+2026-10-26T18:02:52.2284477Z test the_greedy_blocking_plan_only_stops_an_islandwalker_without_an_island ... ok
+2026-10-26T18:02:52.2284995Z test the_islandwalk_flag_and_the_blocking_table_agree_with_the_printed_text ... ok
+2026-10-26T18:02:52.2285304Z 
+2026-10-26T18:02:52.2285612Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2285888Z 
+2026-10-26T18:02:52.2286439Z [1m[92m     Running[0m tests/issue17_slice12.rs (target/debug/deps/issue17_slice12-175b65a8233f0cbf)
+2026-10-26T18:02:52.2293398Z 
+2026-10-26T18:02:52.2293481Z running 10 tests
+2026-10-26T18:02:52.2299939Z test hedron_archive_mana_and_sacrifice_draw_two_with_source_left ... ok
+2026-10-26T18:02:52.2303293Z test artifact_cast_requires_sorcery_timing_and_negate_sees_noncreature ... ok
+2026-10-26T18:02:52.2303635Z test all_three_artifacts_cast_from_hand_and_activate_same_turn ... ok
+2026-10-26T18:02:52.2303865Z test mind_stone_mana_then_sacrifice_draws_on_the_stack ... ok
+2026-10-26T18:02:52.2304106Z test removed_tokens_are_valid_only_as_inert_archives_of_departed_owners ... ok
+2026-10-26T18:02:52.2304374Z test insufficient_generic_mana_refusal_preserves_state ... ok
+2026-10-26T18:02:52.2304613Z test sourced_artifacts_match_printings_and_are_noncreature_permanents ... ok
+2026-10-26T18:02:52.2304861Z test mind_and_hedron_mana_abilities_produce_printed_amounts ... ok
+2026-10-26T18:02:52.2305103Z test sol_ring_taps_immediately_for_two_colorless_and_cannot_repeat ... ok
+2026-10-26T18:02:52.2305351Z test tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability ... ok
+2026-10-26T18:02:52.2305500Z 
+2026-10-26T18:02:52.2305638Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2305813Z 
+2026-10-26T18:02:52.2306710Z [1m[92m     Running[0m tests/issue17_slice4.rs (target/debug/deps/issue17_slice4-b062289ad113cc93)
+2026-10-26T18:02:52.2313951Z 
+2026-10-26T18:02:52.2314034Z running 13 tests
+2026-10-26T18:02:52.2316641Z test a_creature_without_flash_is_refused_at_instant_timing ... ok
+2026-10-26T18:02:52.2318116Z test ordinary_bear_is_a_vanilla_creature_with_no_abilities ... ok
+2026-10-26T18:02:52.2318462Z test owlbear_draws_a_card_when_it_enters ... ok
+2026-10-26T18:02:52.2318849Z test a_non_trample_attacker_never_damages_the_player_through_a_blocker ... ok
+2026-10-26T18:02:52.2319220Z test printed_flash_allows_a_creature_spell_outside_the_own_main_phase ... ok
+2026-10-26T18:02:52.2319899Z test soul_warden_triggers_for_an_opponents_creature_too ... ok
+2026-10-26T18:02:52.2320271Z test soul_warden_gains_life_only_for_another_creature ... ok
+2026-10-26T18:02:52.2320585Z test soul_warden_does_not_trigger_for_itself ... ok
+2026-10-26T18:02:52.2323315Z test sourced_slice4_cards_match_their_live_printings ... ok
+2026-10-26T18:02:52.2323553Z test soul_warden_triggers_for_creature_tokens_too ... ok
+2026-10-26T18:02:52.2323758Z test trample_assigns_only_lethal_damage_to_the_blocker ... ok
+2026-10-26T18:02:52.2323961Z test trample_carries_surplus_across_two_blockers ... ok
+2026-10-26T18:02:52.2324585Z test trample_counts_damage_already_marked_on_the_blocker ... ok
+2026-10-26T18:02:52.2324727Z 
+2026-10-26T18:02:52.2324857Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2325029Z 
+2026-10-26T18:02:52.2326881Z [1m[92m     Running[0m tests/issue17_slice5.rs (target/debug/deps/issue17_slice5-e76676f58f0844e1)
+2026-10-26T18:02:52.2334385Z 
+2026-10-26T18:02:52.2334458Z running 10 tests
+2026-10-26T18:02:52.2337979Z test negate_never_offers_a_creature_spell_and_refuses_a_forged_one ... ok
+2026-10-26T18:02:52.2338372Z test preordain_scries_two_then_draws_one ... ok
+2026-10-26T18:02:52.2338677Z test negate_counters_a_noncreature_spell ... ok
+2026-10-26T18:02:52.2341013Z test pyretic_ritual_and_seething_song_add_red_mana_to_the_pool ... ok
+2026-10-26T18:02:52.2341373Z test sourced_slice5_cards_match_their_live_printings ... ok
+2026-10-26T18:02:52.2341735Z test ruin_crab_mills_each_opponent_on_landfall_but_not_its_controller ... ok
+2026-10-26T18:02:52.2342114Z test stitchers_supplier_mills_three_again_when_it_dies ... ok
+2026-10-26T18:02:52.2342342Z test stitchers_supplier_mills_three_when_it_enters ... ok
+2026-10-26T18:02:52.2342573Z test the_mill_counter_and_ritual_package_is_reachable_from_real_decks ... ok
+2026-10-26T18:02:52.2342977Z test stitchers_supplier_registers_both_printed_trigger_events ... ok
+2026-10-26T18:02:52.2343236Z 
+2026-10-26T18:02:52.2343447Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2343726Z 
+2026-10-26T18:02:52.2343965Z [1m[92m     Running[0m tests/issue17_slice6.rs (target/debug/deps/issue17_slice6-a570b9de79e78d6c)
+2026-10-26T18:02:52.2350743Z 
+2026-10-26T18:02:52.2350819Z running 13 tests
+2026-10-26T18:02:52.2354784Z test blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature ... ok
+2026-10-26T18:02:52.2355354Z test blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player ... ok
+2026-10-26T18:02:52.2360112Z test hedron_crab_may_target_its_own_controller ... ok
+2026-10-26T18:02:52.2360442Z test creature_tokens_dying_are_seen_by_death_watchers ... ok
+2026-10-26T18:02:52.2360753Z test hedron_crab_mills_the_targeted_player_not_its_controller ... ok
+2026-10-26T18:02:52.2360998Z test dying_watcher_self_trigger_fires_exactly_once_both_death_orders ... ok
+2026-10-26T18:02:52.2361282Z test simultaneous_deaths_each_trigger_the_watchers_regardless_of_id_order ... ok
+2026-10-26T18:02:52.2361627Z test life_loss_is_not_damage_and_a_damage_shield_never_stops_it ... ok
+2026-10-26T18:02:52.2361896Z test single_dying_watcher_self_trigger_fires_exactly_once ... ok
+2026-10-26T18:02:52.2362114Z test sourced_slice6_cards_match_their_live_printings ... ok
+2026-10-26T18:02:52.2362342Z test target_player_spec_offers_every_live_seat_and_refuses_a_creature ... ok
+2026-10-26T18:02:52.2362577Z test surviving_watcher_still_counts_both_deaths_once ... ok
+2026-10-26T18:02:52.2362847Z test zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death ... ok
+2026-10-26T18:02:52.2363030Z 
+2026-10-26T18:02:52.2363180Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2363456Z 
+2026-10-26T18:02:52.2363958Z [1m[92m     Running[0m tests/issue17_slice8.rs (target/debug/deps/issue17_slice8-beee19dfae9982ec)
+2026-10-26T18:02:52.2371255Z 
+2026-10-26T18:02:52.2371337Z running 9 tests
+2026-10-26T18:02:52.2374495Z test dramatic_reversal_untaps_nonlands_but_not_lands ... ok
+2026-10-26T18:02:52.2375561Z test goblin_war_strike_damages_target_player_for_each_goblin ... ok
+2026-10-26T18:02:52.2376158Z test razorclaw_triggers_once_with_two_blockers_and_not_when_unblocked ... ok
+2026-10-26T18:02:52.2376519Z test razorclaw_bear_gets_plus_two_when_blocked_and_reverts ... ok
+2026-10-26T18:02:52.2376902Z test razorclaw_unblocked_does_not_trigger_or_pump ... ok
+2026-10-26T18:02:52.2380578Z test sourced_slice8_cards_match_printings ... ok
+2026-10-26T18:02:52.2380948Z test souls_attendant_optional_another_creature_enters_gain_life ... ok
+2026-10-26T18:02:52.2381736Z test volley_veteran_damages_opponent_creature_for_each_goblin ... ok
+2026-10-26T18:02:52.2383595Z test volley_opponent_only_target_and_source_left_runtime_count ... ok
+2026-10-26T18:02:52.2383746Z 
+2026-10-26T18:02:52.2383882Z test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2384066Z 
+2026-10-26T18:02:52.2385510Z [1m[92m     Running[0m tests/issue17_slice9.rs (target/debug/deps/issue17_slice9-9f66ee53d99faeb6)
+2026-10-26T18:02:52.2393018Z 
+2026-10-26T18:02:52.2393139Z running 6 tests
+2026-10-26T18:02:52.2410109Z test mana_pool_render_is_bounded_for_max_quantity_and_exact_for_small_pools ... ok
+2026-10-26T18:02:52.2410385Z test multicolor_pool_above_255_pays_generic_and_colored_exactly ... ok
+2026-10-26T18:02:52.2410614Z test mana_geyser_counts_only_opponent_tapped_lands ... ok
+2026-10-26T18:02:52.2410849Z test rite_of_flame_zero_copies_and_all_graveyards_with_runtime_change ... ok
+2026-10-26T18:02:52.2411090Z test mana_pool_adds_and_pays_above_255_without_truncation ... ok
+2026-10-26T18:02:52.2413684Z test brightstone_counts_all_goblins_including_opponents_and_above_255 ... ok
+2026-10-26T18:02:52.2413848Z 
+2026-10-26T18:02:52.2413979Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2414153Z 
+2026-10-26T18:02:52.2415740Z [1m[92m     Running[0m tests/issue17_talrand.rs (target/debug/deps/issue17_talrand-5244b7b97e3c07a7)
+2026-10-26T18:02:52.2423217Z 
+2026-10-26T18:02:52.2423352Z running 6 tests
+2026-10-26T18:02:52.2430101Z test flyers_can_block_either_flyers_or_nonflyers ... ok
+2026-10-26T18:02:52.2430524Z test nonflyers_cannot_block_flyers_and_the_refusal_preserves_state ... ok
+2026-10-26T18:02:52.2430959Z test talrand_and_drake_are_sourced_and_the_drake_is_not_importable ... ok
+2026-10-26T18:02:52.2431413Z test casting_an_instant_stages_the_trigger_above_it_and_creates_a_drake ... ok
+2026-10-26T18:02:52.2431827Z test an_opponents_spell_does_not_trigger_talrand ... ok
+2026-10-26T18:02:52.2432669Z test the_trigger_still_resolves_after_the_spell_is_countered ... ok
+2026-10-26T18:02:52.2432895Z 
+2026-10-26T18:02:52.2433092Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2433349Z 
+2026-10-26T18:02:52.2434616Z [1m[92m     Running[0m tests/issue17_tatyova.rs (target/debug/deps/issue17_tatyova-30e94f1441a531a7)
+2026-10-26T18:02:52.2442046Z 
+2026-10-26T18:02:52.2442216Z running 5 tests
+2026-10-26T18:02:52.2448908Z test catalog_def_and_catalog_all_agree_on_jaddi_defender ... ok
+2026-10-26T18:02:52.2449156Z test sourced_tatyova_and_jaddi_match_their_printings ... ok
+2026-10-26T18:02:52.2449593Z test tatyova_landfall_fires_only_for_its_controller_and_gains_then_draws ... ok
+2026-10-26T18:02:52.2449848Z test jaddi_landfall_gains_life_and_defender_blocks_attacks ... ok
+2026-10-26T18:02:52.2450101Z test a_landfall_trigger_still_resolves_after_its_source_leaves ... ok
+2026-10-26T18:02:52.2450246Z 
+2026-10-26T18:02:52.2450460Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2450746Z 
+2026-10-26T18:02:52.2451124Z [1m[92m     Running[0m tests/issue17_tokens.rs (target/debug/deps/issue17_tokens-3479e617d073c5d3)
+2026-10-26T18:02:52.2458330Z 
+2026-10-26T18:02:52.2458397Z running 10 tests
+2026-10-26T18:02:52.2462935Z test a_token_ceases_to_exist_instead_of_going_to_the_graveyard ... ok
+2026-10-26T18:02:52.2463471Z test goblin_instigator_and_beetleback_chief_trigger_on_entry_in_apnap_order ... ok
+2026-10-26T18:02:52.2467489Z test sourced_token_package_matches_its_recorded_printings ... ok
+2026-10-26T18:02:52.2468049Z test krenko_counts_goblins_including_tokens_and_needs_untapped_untaunted_source ... ok
+2026-10-26T18:02:52.2468541Z test token_death_is_a_real_graveyard_change_then_cessation ... ok
+2026-10-26T18:02:52.2469032Z test token_bounce_and_exile_record_the_destination_before_cessation ... ok
+2026-10-26T18:02:52.2469636Z test token_cards_are_not_importable ... ok
+2026-10-26T18:02:52.2474620Z test token_sorceries_create_the_printed_count_with_unique_objects ... ok
+2026-10-26T18:02:52.2475099Z test token_state_round_trips_through_serialization_with_an_equal_digest ... ok
+2026-10-26T18:02:52.2581823Z test krenko_never_silently_truncates_a_goblin_count_above_255 ... ok
+2026-10-26T18:02:52.2582062Z 
+2026-10-26T18:02:52.2582268Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:02:52.2582492Z 
+2026-10-26T18:02:52.2583898Z [1m[92m     Running[0m tests/issue20_sandbox.rs (target/debug/deps/issue20_sandbox-0974f940142a2e8c)
+2026-10-26T18:02:52.2591897Z 
+2026-10-26T18:02:52.2592039Z running 6 tests
+2026-10-26T18:02:52.2599199Z test surveil_to_the_graveyard_counter_and_life_edits_are_recorded ... ok
+2026-10-26T18:02:52.2599833Z test draw_untap_mill_and_reveal_are_traceable_and_deterministic ... ok
+2026-10-26T18:02:52.2610138Z test a_scry_look_is_private_to_the_seat_that_looked ... ok
+2026-10-26T18:02:52.2610692Z test the_zone_inspector_and_search_read_only_the_masked_projection ... ok
+2026-10-26T18:02:52.2617682Z test a_control_is_refused_while_a_rules_choice_is_pending ... ok
+2026-10-26T18:02:52.2677084Z test the_taint_record_survives_save_load_and_cannot_be_laundered ... ok
+2026-10-26T18:02:52.2677258Z 
+2026-10-26T18:02:52.2677393Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:02:52.2677576Z 
+2026-10-26T18:02:52.2679544Z [1m[92m     Running[0m tests/issue23_branch.rs (target/debug/deps/issue23_branch-672e47d66579f57e)
+2026-10-26T18:02:52.2686894Z 
+2026-10-26T18:02:52.2686978Z running 5 tests
+2026-10-26T18:02:52.2717183Z test a_branch_beyond_the_recorded_line_is_refused ... ok
+2026-10-26T18:02:52.2729978Z test the_accepted_action_comparison_shows_only_the_public_action_axis ... ok
+2026-10-26T18:02:52.2750124Z test the_diff_never_reveals_the_base_tail_beyond_the_branchs_recorded_history ... ok
+2026-10-26T18:02:52.2750657Z test branching_then_playing_forward_stays_deterministic_under_the_same_seed ... ok
+2026-10-26T18:02:52.2766698Z test a_branch_keeps_exactly_the_chosen_prefix_and_replays_it_deterministically ... ok
+2026-10-26T18:02:52.2766993Z 
+2026-10-26T18:02:52.2767200Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:02:52.2767387Z 
+2026-10-26T18:02:52.2769061Z [1m[92m     Running[0m tests/issue34_discard.rs (target/debug/deps/issue34_discard-276a60324c41ee03)
+2026-10-26T18:02:52.2777010Z 
+2026-10-26T18:02:52.2777213Z running 4 tests
+2026-10-26T18:02:52.2782821Z test single_card_cleanup_discard_offers_every_hand_card ... ok
+2026-10-26T18:02:52.2783187Z test multi_card_cleanup_discard_offer_is_bounded_and_legal ... ok
+2026-10-26T18:02:52.2783513Z test the_offer_only_lists_the_choosing_seats_cards ... ok
+2026-10-26T18:02:52.2783917Z test invalid_discard_submissions_are_refused_with_the_state_untouched ... ok
+2026-10-26T18:02:52.2784182Z 
+2026-10-26T18:02:52.2784389Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:52.2784665Z 
+2026-10-26T18:02:52.2786360Z [1m[92m     Running[0m tests/m1_multiplayer.rs (target/debug/deps/m1_multiplayer-5b2f7365360984c9)
+2026-10-26T18:02:52.2794190Z 
+2026-10-26T18:02:52.2794542Z running 28 tests
+2026-10-26T18:02:52.2798139Z test a_response_resets_the_priority_pass_mask ... ok
+2026-10-26T18:02:52.2798805Z test active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_live_seat ... ok
+2026-10-26T18:02:52.2801311Z test four_seat_eliminated_seat_projects_no_hidden_information ... ok
+2026-10-26T18:02:52.2806506Z test first_multiplayer_mulligan_is_free_but_the_second_bottoms_one ... ok
+2026-10-26T18:02:52.2811352Z test last_live_seat_wins_after_simultaneous_losses ... ok
+2026-10-26T18:02:52.2838657Z test later_mulligan_round_reversal_is_rejected_independently_of_metadata ... ok
+2026-10-26T18:02:52.2839456Z test four_seat_turn_order_skips_eliminated_seats_and_wraps ... ok
+2026-10-26T18:02:52.2839971Z test four_seat_unequal_views_keep_pending_choices_owner_only ... ok
+2026-10-26T18:02:52.2840481Z test masked_projection_digest_does_not_depend_on_hidden_state ... ok
+2026-10-26T18:02:52.2840998Z test mulligan_round_counter_must_match_eligible_mulligan_counts ... ok
+2026-10-26T18:02:52.2841469Z test mulligan_rounds_wrap_and_lock_kept_hands ... ok
+2026-10-26T18:02:52.2842032Z test mulligan_declarations_start_with_the_starting_player_and_do_not_redraw_early ... ok
+2026-10-26T18:02:52.2846091Z test mulligan_validation_rejects_malformed_first_rounds ... ok
+2026-10-26T18:02:52.2846585Z test paid_bottom_count_and_hand_shape_are_validated ... ok
+2026-10-26T18:02:52.2859227Z test all_viewers_ignore_hidden_state_for_2_3_4_seats ... ok
+2026-10-26T18:02:52.2864529Z test replay_rejects_a_mismatched_rules_revision ... ok
+2026-10-26T18:02:52.2979899Z test mulligan_intermediate_and_bottom_states_save_and_replay ... ok
+2026-10-26T18:02:52.2985910Z test save_rejects_a_missing_object_reference_and_stale_replay_invariants ... ok
+2026-10-26T18:02:52.2986532Z test save_rejects_a_tampered_embedded_replay ... ok
+2026-10-26T18:02:52.2994016Z test three_seat_first_player_draws_but_two_seat_first_player_skips ... ok
+2026-10-26T18:02:52.2998427Z test three_seat_game_has_valid_ordered_seats_and_no_panic ... ok
+2026-10-26T18:02:52.2999680Z test three_seat_priority_round_resolves_exactly_one_item ... ok
+2026-10-26T18:02:52.3016683Z test save_rejects_malformed_mulligan_state ... ok
+2026-10-26T18:02:52.3029919Z test pending_choice_survives_a_save_round_trip ... ok
+2026-10-26T18:02:52.3030410Z test unequal_seats_are_masked_and_only_the_owner_has_legal_actions ... ok
+2026-10-26T18:02:52.3058386Z test wrong_seat_mulligan_is_rejected_without_mutation ... ok
+2026-10-26T18:02:52.3060094Z test save_v3_is_rejected_explicitly ... ok
+2026-10-26T18:02:52.3143656Z test three_seat_replay_and_save_round_trip_and_v1_is_rejected ... ok
+2026-10-26T18:02:52.3143827Z 
+2026-10-26T18:02:52.3143969Z test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-26T18:02:52.3144149Z 
+2026-10-26T18:02:52.3147620Z [1m[92m     Running[0m tests/ordering_persistence.rs (target/debug/deps/ordering_persistence-576ad1334f140527)
+2026-10-26T18:02:52.3158469Z 
+2026-10-26T18:02:52.3170379Z running 2 tests
+2026-10-26T18:02:52.6520748Z test ordinary_and_command_opt_consider_both_order_answers_save_resume_and_replay ... ok
+2026-10-26T18:02:53.0546682Z test legal_time_ebb_decline_consider_all_owner_answers_preserve_draw_identity_tax_and_replay ... ok
+2026-10-26T18:02:53.0546927Z 
+2026-10-26T18:02:53.0547103Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.74s
+2026-10-26T18:02:53.0547286Z 
+2026-10-26T18:02:53.0549843Z [1m[92m     Running[0m tests/practice_commander_guard.rs (target/debug/deps/practice_commander_guard-591e7f97b53e9c9e)
+2026-10-26T18:02:53.0559955Z 
+2026-10-26T18:02:53.0560043Z running 6 tests
+2026-10-26T18:02:53.0562466Z test a_valid_forty_card_mainboard_prefixed_list_still_parses ... ok
+2026-10-26T18:02:53.0562895Z test commander_section_is_refused_by_the_practice_parser ... ok
+2026-10-26T18:02:53.0563356Z test companion_and_sideboard_sections_are_refused_by_the_practice_parser ... ok
+2026-10-26T18:02:53.0563752Z test parenthesized_commander_or_sideboard_headers_are_refused ... ok
+2026-10-26T18:02:53.0564475Z test the_acknowledged_deck_header_still_works ... ok
+2026-10-26T18:02:53.0564832Z test the_bundled_practice_lists_still_parse_at_exactly_forty_cards ... ok
+2026-10-26T18:02:53.0565574Z [1m[92m     Running[0m tests/priority_stack.rs (target/debug/deps/priority_stack-0ed45e324617eb0e)
+2026-10-26T18:02:53.0565765Z 
+2026-10-26T18:02:53.0566027Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:53.0566326Z 
+2026-10-26T18:02:53.0572692Z 
+2026-10-26T18:02:53.0572771Z running 7 tests
+2026-10-26T18:02:53.0575757Z test no_priority_is_granted_during_the_untap_step ... ok
+2026-10-26T18:02:53.0576076Z test caster_receives_priority_after_casting ... ok
+2026-10-26T18:02:53.0576366Z test single_pass_does_not_resolve_the_stack ... ok
+2026-10-26T18:02:53.0576683Z test active_player_receives_priority_after_resolution ... ok
+2026-10-26T18:02:53.0577007Z test two_passes_resolve_exactly_one_stack_item ... ok
+2026-10-26T18:02:53.0577432Z test two_passes_with_an_empty_stack_end_the_step ... ok
+2026-10-26T18:02:53.0580077Z test untap_step_untaps_only_the_active_players_permanents ... ok
+2026-10-26T18:02:53.0580296Z 
+2026-10-26T18:02:53.0580500Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:53.0580785Z 
+2026-10-26T18:02:53.0581147Z [1m[92m     Running[0m tests/projection.rs (target/debug/deps/projection-1210c8ea940ff503)
+2026-10-26T18:02:53.0587611Z 
+2026-10-26T18:02:53.0587706Z running 4 tests
+2026-10-26T18:02:53.0593297Z test log_rendering_masks_the_opponents_draws ... ok
+2026-10-26T18:02:53.0593735Z test projection_carries_the_decision_identity_and_legal_actions ... ok
+2026-10-26T18:02:53.0594432Z test a_scry_owners_view_shows_the_looked_at_card_and_the_other_seat_does_not ... ok
+2026-10-26T18:02:53.0599107Z test libraries_and_the_opponent_hand_are_not_projected ... ok
+2026-10-26T18:02:53.0599321Z 
+2026-10-26T18:02:53.0599667Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:02:53.0599941Z 
+2026-10-26T18:02:53.0601276Z [1m[92m     Running[0m tests/replay_digest.rs (target/debug/deps/replay_digest-155bc3f247134836)
+2026-10-26T18:02:53.0609752Z 
+2026-10-26T18:02:53.0609866Z running 6 tests
+2026-10-26T18:02:53.0630113Z test london_mulligan_bottoms_one_card_per_mulligan ... ok
+2026-10-26T18:02:53.0659858Z test library_order_comes_from_the_seed_not_from_stored_state ... ok
+2026-10-26T18:02:53.0700009Z test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+2026-10-26T18:02:53.0715995Z test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+2026-10-26T18:02:53.0772468Z test replaying_a_recorded_game_reproduces_the_digest ... ok
+2026-10-26T18:02:53.0827887Z test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+2026-10-26T18:02:53.0828129Z 
+2026-10-26T18:02:53.0828338Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:02:53.0828640Z 
+2026-10-26T18:02:53.0830825Z [1m[92m     Running[0m tests/review110.rs (target/debug/deps/review110-f8d9e6af098d1a52)
+2026-10-26T18:02:53.0839483Z 
+2026-10-26T18:02:53.0839616Z running 3 tests
+2026-10-26T18:02:53.0846664Z test commander_surveilled_to_graveyard_does_not_panic_and_resolution_continues ... ok
+2026-10-26T18:02:53.0849995Z test real_time_ebb_decline_then_consider_surveils_the_commander ... ok
+2026-10-26T18:02:53.1099684Z test ordinary_pending_scry_save_roundtrip ... ok
+2026-10-26T18:02:53.1099892Z 
+2026-10-26T18:02:53.1100105Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-26T18:02:53.1100345Z 
+2026-10-26T18:02:53.1102525Z [1m[92m     Running[0m tests/review112.rs (target/debug/deps/review112-10ed067364b6966b)
+2026-10-26T18:02:53.1111365Z 
+2026-10-26T18:02:53.1111449Z running 4 tests
+2026-10-26T18:02:53.1139896Z test ordinary_draw_step_still_grants_priority_normally ... ok
+2026-10-26T18:02:53.1169794Z test synthetic_draw_step_suspension_has_no_priority_until_answered ... ok
+2026-10-26T18:02:53.2584900Z test legal_time_ebb_decline_to_draw_decline_resumes_with_exactly_one_priority ... ok
+2026-10-26T18:02:53.2587753Z test legal_time_ebb_decline_to_draw_accept_resumes_with_exactly_one_priority ... ok
+2026-10-26T18:02:53.2588050Z 
+2026-10-26T18:02:53.2588598Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+2026-10-26T18:02:53.2588777Z 
+2026-10-26T18:02:53.2592054Z [1m[92m     Running[0m tests/review115.rs (target/debug/deps/review115-f9f84d7ae925df5b)
+2026-10-26T18:02:53.2602660Z 
+2026-10-26T18:02:53.2602755Z running 1 test
+2026-10-26T18:02:53.4142069Z test legal_pending_commander_return_refuses_all_ordinary_actions_then_resumes ... ok
+2026-10-26T18:02:53.4142366Z 
+2026-10-26T18:02:53.4142508Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+2026-10-26T18:02:53.4142694Z 
+2026-10-26T18:02:53.4144952Z [1m[92m     Running[0m tests/review117.rs (target/debug/deps/review117-5191614e69c6638e)
+2026-10-26T18:02:53.4155777Z 
+2026-10-26T18:02:53.4155866Z running 4 tests
+2026-10-26T18:02:53.4170027Z test synthetic_repeated_cleanup_waits_for_discard_then_removes_damage_and_pump ... ok
+2026-10-26T18:02:53.4170631Z test ordinary_end_step_growth_expires_in_cleanup_without_cleanup_priority ... ok
+2026-10-26T18:02:53.8169971Z test declined_cleanup_return_repeats_cleanup_and_expires_growth ... ok
+2026-10-26T18:02:53.8177514Z test accepted_cleanup_return_repeats_cleanup_and_expires_growth ... ok
+2026-10-26T18:02:53.8177766Z 
+2026-10-26T18:02:53.8177913Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+2026-10-26T18:02:53.8178104Z 
+2026-10-26T18:02:53.8182138Z [1m[92m     Running[0m tests/review119.rs (target/debug/deps/review119-b8a1deafa5711706)
+2026-10-26T18:02:53.8193256Z 
+2026-10-26T18:02:53.8193352Z running 4 tests
+2026-10-26T18:02:53.9140283Z test nonlethal_combat_priority_control ... ok
+2026-10-26T18:02:54.1733638Z test two_seat_commander_combat_sbas_precede_priority ... ok
+2026-10-26T18:02:54.4039074Z test three_seat_commander_combat_sbas_precede_priority ... ok
+2026-10-26T18:02:54.6740868Z test four_seat_commander_combat_sbas_precede_priority ... ok
+2026-10-26T18:02:54.6741128Z 
+2026-10-26T18:02:54.6741303Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.85s
+2026-10-26T18:02:54.6741485Z 
+2026-10-26T18:02:54.6744223Z [1m[92m     Running[0m tests/review158.rs (target/debug/deps/review158-b4c9cb02c8dd8025)
+2026-10-26T18:02:54.6755492Z 
+2026-10-26T18:02:54.6755730Z running 6 tests
+2026-10-26T18:02:55.0050579Z test ordinary_cast_is_refused_during_pending_without_mutation_even_if_priority_is_forged ... ok
+2026-10-26T18:02:55.1463573Z test legal_return_pending_invariant_and_both_continuations ... ok
+2026-10-26T18:02:55.1519762Z test legal_replacement_pending_invariant_and_both_continuations ... ok
+2026-10-26T18:02:55.2758365Z test pending_priority_is_rejected_in_state_and_sandbox_save ... ok
+2026-10-26T18:02:56.5292234Z test ordinary_terminal_empty_draw_emits_one_terminal_event ... ok
+2026-10-26T18:03:02.0690235Z test commander_lethal_combat_emits_exactly_one_terminal_event ... ok
+2026-10-26T18:03:02.0690527Z 
+2026-10-26T18:03:02.0690779Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.39s
+2026-10-26T18:03:02.0691070Z 
+2026-10-26T18:03:02.0695690Z [1m[92m     Running[0m tests/review_regressions.rs (target/debug/deps/review_regressions-33dafefe07b6614b)
+2026-10-26T18:03:02.0705568Z 
+2026-10-26T18:03:02.0705653Z running 10 tests
+2026-10-26T18:03:02.0710642Z test a_destroyed_attacker_assigns_no_combat_damage ... ok
+2026-10-26T18:03:02.0711141Z test a_blocker_that_died_absorbs_nothing_and_the_attacker_stays_blocked ... ok
+2026-10-26T18:03:02.0731158Z test a_dead_attacker_cannot_be_blocked ... ok
+2026-10-26T18:03:02.0731500Z test a_mana_ability_is_refused_while_a_choice_is_pending ... ok
+2026-10-26T18:03:02.0732325Z test a_resolved_spell_runs_sbas_before_priority_is_granted ... ok
+2026-10-26T18:03:02.0732696Z test coaching_never_describes_another_seats_hand ... ok
+2026-10-26T18:03:02.0739022Z test the_player_who_plays_first_skips_their_first_draw_step ... ok
+2026-10-26T18:03:02.0745673Z test the_game_start_log_does_not_reveal_the_replay_seed ... ok
+2026-10-26T18:03:02.0746272Z test a_mulligan_that_could_never_be_bottomed_is_refused ... ok
+2026-10-26T18:03:02.0746646Z test the_opponent_does_not_learn_a_private_scry_or_surveil_choice ... ok
+2026-10-26T18:03:02.0746889Z 
+2026-10-26T18:03:02.0747091Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:02.0747374Z 
+2026-10-26T18:03:02.0747753Z [1m[92m     Running[0m tests/rules_conformance.rs (target/debug/deps/rules_conformance-c273be8061913d46)
+2026-10-26T18:03:02.0755116Z 
+2026-10-26T18:03:02.0755201Z running 5 tests
+2026-10-26T18:03:02.0761481Z test conformance_manifest_pins_the_engine_rules_revision ... ok
+2026-10-26T18:03:02.0761820Z test cleanup_cases ... ok
+2026-10-26T18:03:02.0762035Z test state_based_action_cases ... ok
+2026-10-26T18:03:02.0762271Z test multi_blocker_damage_cases ... ok
+2026-10-26T18:03:02.0762444Z test timing_and_priority_cases ... ok
+2026-10-26T18:03:02.0762544Z 
+2026-10-26T18:03:02.0762703Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:02.0762884Z 
+2026-10-26T18:03:02.0763908Z [1m[92m     Running[0m tests/sba_cleanup.rs (target/debug/deps/sba_cleanup-35d1d8d02e33ea95)
+2026-10-26T18:03:02.0771832Z 
+2026-10-26T18:03:02.0771909Z running 7 tests
+2026-10-26T18:03:02.0775048Z test a_creature_with_zero_toughness_dies_to_state_based_actions ... ok
+2026-10-26T18:03:02.0775376Z test a_player_who_lost_cannot_act ... ok
+2026-10-26T18:03:02.0776283Z test cleanup_discards_down_to_seven_cards ... ok
+2026-10-26T18:03:02.0777319Z test cleanup_removes_damage_and_ends_until_end_of_turn_effects ... ok
+2026-10-26T18:03:02.0777711Z test drawing_from_an_empty_library_loses_the_game ... ok
+2026-10-26T18:03:02.0778038Z test reaching_zero_life_loses_the_game ... ok
+2026-10-26T18:03:02.0778426Z test lethal_damage_from_a_noncombat_spell_kills_before_priority ... ok
+2026-10-26T18:03:02.0778668Z 
+2026-10-26T18:03:02.0778943Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:02.0779637Z [1m[92m     Running[0m tests/scry_surveil.rs (target/debug/deps/scry_surveil-0224c184221bc7ba)
+2026-10-26T18:03:02.0779914Z 
+2026-10-26T18:03:02.0787134Z 
+2026-10-26T18:03:02.0787254Z running 5 tests
+2026-10-26T18:03:02.0790737Z test a_scry_choice_cannot_be_skipped_by_passing ... ok
+2026-10-26T18:03:02.0791079Z test consider_surveils_into_the_graveyard_then_draws ... ok
+2026-10-26T18:03:02.0791390Z test opt_keeping_the_card_on_top_draws_it ... ok
+2026-10-26T18:03:02.0791706Z test opt_scries_then_draws_and_respects_the_bottom_choice ... ok
+2026-10-26T18:03:02.0793178Z test scry_with_an_empty_library_does_nothing_and_the_draw_loses ... ok
+2026-10-26T18:03:02.0793404Z 
+2026-10-26T18:03:02.0793796Z [1m[92m     Running[0m tests/security_mutation_fuzz.rs (target/debug/deps/security_mutation_fuzz-33429d109de54de5)
+2026-10-26T18:03:02.0794394Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:02.0794634Z 
+2026-10-26T18:03:02.0801792Z 
+2026-10-26T18:03:02.0801869Z running 7 tests
+2026-10-26T18:03:02.0900540Z test deeply_nested_json_is_refused_not_stack_overflowing ... ok
+2026-10-26T18:03:02.1630056Z test generic_mutations_of_replay_json_never_panic ... ok
+2026-10-26T18:03:02.1817004Z test tampered_saves_are_refused ... ok
+2026-10-26T18:03:02.3034654Z test generic_mutations_of_save_json_never_panic ... ok
+2026-10-26T18:03:02.3231234Z test targeted_replay_mutations_are_refused ... ok
+2026-10-26T18:03:02.3253932Z test oversized_replay_padding_is_bounded_and_inert ... ok
+2026-10-26T18:03:02.4538237Z test engine_rejects_mutated_submissions_without_state_drift ... ok
+2026-10-26T18:03:02.4538844Z 
+2026-10-26T18:03:02.4538980Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+2026-10-26T18:03:02.4539157Z 
+2026-10-26T18:03:02.4547363Z [1m[92m     Running[0m tests/starter_corpus.rs (target/debug/deps/starter_corpus-ddaa699a52fef1e6)
+2026-10-26T18:03:02.4557749Z 
+2026-10-26T18:03:02.4558014Z running 8 tests
+2026-10-26T18:03:02.4569826Z test jasmine_boreal_is_a_typed_supported_commander ... ok
+2026-10-26T18:03:02.4574100Z test jasmine_commander_cast_tax_and_return_use_the_existing_paths ... ok
+2026-10-26T18:03:02.4574772Z test jasmine_is_refused_in_every_ordinary_library ... ok
+2026-10-26T18:03:02.4581487Z test jasmine_commander_damage_uses_the_existing_ledger ... ok
+2026-10-26T18:03:02.4592659Z test every_sourced_vanilla_creature_matches_its_printing ... ok
+2026-10-26T18:03:02.4593074Z test the_starter_manifest_names_eight_targets_and_claims_only_one ... ok
+2026-10-26T18:03:02.4598203Z test the_first_starter_library_is_exact_and_fully_supported ... ok
+2026-10-26T18:03:02.4609574Z test every_sourced_vanilla_creature_casts_and_resolves ... ok
+2026-10-26T18:03:02.4609788Z 
+2026-10-26T18:03:02.4609986Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:03:02.4610263Z 
+2026-10-26T18:03:02.4612603Z [1m[92m     Running[0m tests/timing_mana.rs (target/debug/deps/timing_mana-48eb354395f4a1ad)
+2026-10-26T18:03:02.4620090Z 
+2026-10-26T18:03:02.4620163Z running 12 tests
+2026-10-26T18:03:02.4623571Z test land_can_be_played_once_in_your_own_main_phase ... ok
+2026-10-26T18:03:02.4623896Z test cost_is_paid_on_cast_by_tapping_lands ... ok
+2026-10-26T18:03:02.4624263Z test casting_a_creature_puts_it_onto_the_battlefield_with_summoning_sickness ... ok
+2026-10-26T18:03:02.4624833Z test land_cannot_be_played_outside_your_main_phase_or_turn ... ok
+2026-10-26T18:03:02.4625163Z test land_cannot_be_played_with_a_nonempty_stack ... ok
+2026-10-26T18:03:02.4625797Z test sorcery_requires_your_main_phase_with_an_empty_stack ... ok
+2026-10-26T18:03:02.4626151Z test illegal_action_attempts_leave_the_state_unchanged ... ok
+2026-10-26T18:03:02.4626751Z test mana_ability_is_only_for_untapped_basic_lands ... ok
+2026-10-26T18:03:02.4627071Z test spell_target_that_is_not_on_the_stack_is_rejected ... ok
+2026-10-26T18:03:02.4627367Z test stale_submissions_are_rejected ... ok
+2026-10-26T18:03:02.4627645Z test mana_pool_empties_when_the_step_or_phase_ends ... ok
+2026-10-26T18:03:02.4629198Z test unaffordable_spell_is_rejected_and_state_is_identical ... ok
+2026-10-26T18:03:02.4629498Z 
+2026-10-26T18:03:02.4629654Z test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:02.4629828Z 
+2026-10-26T18:03:02.4631498Z [1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/aperture_import-8d457c5de2ccc7e7)
+2026-10-26T18:03:02.4637980Z 
+2026-10-26T18:03:02.4638064Z running 0 tests
+2026-10-26T18:03:02.4638307Z 
+2026-10-26T18:03:02.4638593Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:02.4638899Z 
+2026-10-26T18:03:02.4640469Z [1m[92m     Running[0m tests/commander_acceptance.rs (target/debug/deps/commander_acceptance-d57ec2ec12e5a172)
+2026-10-26T18:03:02.4647668Z 
+2026-10-26T18:03:02.4647786Z running 8 tests
+2026-10-26T18:03:02.4680033Z test a_printed_name_alias_with_the_same_oracle_is_not_certified ... ok
+2026-10-26T18:03:02.4809785Z test a_commander_quantity_other_than_one_is_illegal ... ok
+2026-10-26T18:03:02.4960107Z test a_snapshot_without_an_eligible_commander_never_claims_legal ... ok
+2026-10-26T18:03:02.4962244Z test incomplete_or_unexpected_face_metadata_is_not_certified ... ok
+2026-10-26T18:03:02.5080010Z test banned_cards_are_illegal_and_staleness_is_disclosed_without_changing_the_ban_result ... ok
+2026-10-26T18:03:02.5198393Z test count_boundaries_are_99_illegal_100_legal_101_illegal ... ok
+2026-10-26T18:03:02.5201667Z test missing_or_tampered_snapshot_metadata_fails_closed ... ok
+2026-10-26T18:03:02.5230321Z test background_variants_are_not_certified ... ok
+2026-10-26T18:03:02.5230512Z 
+2026-10-26T18:03:02.5230718Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+2026-10-26T18:03:02.5230987Z 
+2026-10-26T18:03:02.5234085Z [1m[92m     Running[0m tests/commander_adversarial.rs (target/debug/deps/commander_adversarial-3b581c454336cbfd)
+2026-10-26T18:03:02.5244035Z 
+2026-10-26T18:03:02.5244110Z running 5 tests
+2026-10-26T18:03:02.5749851Z test an_unknown_type_line_token_is_not_certified ... ok
+2026-10-26T18:03:02.5750260Z test partner_rules_text_without_keywords_is_still_not_certified ... ok
+2026-10-26T18:03:02.5750671Z test a_null_oracle_text_on_a_commander_is_not_certified ... ok
+2026-10-26T18:03:02.6104668Z test conflicting_metadata_for_the_same_oracle_id_is_not_certified_in_any_order ... ok
+2026-10-26T18:03:02.6133652Z test the_same_english_name_with_two_oracle_ids_is_not_certified ... ok
+2026-10-26T18:03:02.6134139Z 
+2026-10-26T18:03:02.6134370Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+2026-10-26T18:03:02.6134641Z 
+2026-10-26T18:03:02.6137359Z [1m[92m     Running[0m tests/commander_edges.rs (target/debug/deps/commander_edges-750d5194f9931cb1)
+2026-10-26T18:03:02.6145942Z 
+2026-10-26T18:03:02.6146025Z running 8 tests
+2026-10-26T18:03:02.6169789Z test a_restricted_legality_value_is_not_certified ... ok
+2026-10-26T18:03:02.6199636Z test empty_color_identity_does_not_excuse_a_basic_land_type ... ok
+2026-10-26T18:03:02.6219641Z test missing_color_identity_is_not_certified ... ok
+2026-10-26T18:03:02.6259616Z test the_basic_supertype_must_precede_the_type_separator ... ok
+2026-10-26T18:03:02.6304789Z test a_banned_commander_is_illegal_even_when_engine_unsupported ... ok
+2026-10-26T18:03:02.6305170Z test a_non_normal_commander_is_not_certified ... ok
+2026-10-26T18:03:02.6316822Z test zero_commanders_is_illegal ... ok
+2026-10-26T18:03:02.6409789Z test every_two_commander_variant_is_not_certified ... ok
+2026-10-26T18:03:02.6410015Z 
+2026-10-26T18:03:02.6410227Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-26T18:03:02.6410515Z 
+2026-10-26T18:03:02.6413489Z [1m[92m     Running[0m tests/commander_grist.rs (target/debug/deps/commander_grist-f6c4f5af63e80b4d)
+2026-10-26T18:03:02.6422198Z 
+2026-10-26T18:03:02.6422341Z running 1 test
+2026-10-26T18:03:02.6538605Z test grist_zone_dependent_eligibility_is_not_certified_not_illegal ... ok
+2026-10-26T18:03:02.6538884Z 
+2026-10-26T18:03:02.6539096Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:03:02.6539469Z 
+2026-10-26T18:03:02.6541167Z [1m[92m     Running[0m tests/commander_identity_tracer.rs (target/debug/deps/commander_identity_tracer-5f1ae50073e7e08b)
+2026-10-26T18:03:02.6548906Z 
+2026-10-26T18:03:02.6549043Z running 1 test
+2026-10-26T18:03:02.6663544Z test an_off_color_library_card_is_illegal ... ok
+2026-10-26T18:03:02.6663758Z 
+2026-10-26T18:03:02.6663978Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:03:02.6664274Z 
+2026-10-26T18:03:02.6666298Z [1m[92m     Running[0m tests/commander_laundering.rs (target/debug/deps/commander_laundering-44262dc2448e5eac)
+2026-10-26T18:03:02.6673626Z 
+2026-10-26T18:03:02.6673721Z running 3 tests
+2026-10-26T18:03:02.6810739Z test raw_sha256_must_bind_the_embedded_card_bytes ... ok
+2026-10-26T18:03:02.6849932Z test commander_output_cannot_deserialize_as_practice_deck_or_report ... ok
+2026-10-26T18:03:02.6880363Z test provenance_digests_bind_the_embedded_bytes ... ok
+2026-10-26T18:03:02.6880574Z 
+2026-10-26T18:03:02.6880789Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:03:02.6881049Z 
+2026-10-26T18:03:02.6882666Z [1m[92m     Running[0m tests/commander_legal_tracer.rs (target/debug/deps/commander_legal_tracer-153bda96de853aa0)
+2026-10-26T18:03:02.6889933Z 
+2026-10-26T18:03:02.6890560Z running 1 test
+2026-10-26T18:03:02.7004805Z test a_legal_100_card_deck_is_legal_but_not_playable ... ok
+2026-10-26T18:03:02.7004987Z 
+2026-10-26T18:03:02.7005125Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:03:02.7005304Z 
+2026-10-26T18:03:02.7007321Z [1m[92m     Running[0m tests/commander_metadata_tracer.rs (target/debug/deps/commander_metadata_tracer-f835eea33d0c2247)
+2026-10-26T18:03:02.7014433Z 
+2026-10-26T18:03:02.7014519Z running 4 tests
+2026-10-26T18:03:02.7029854Z test missing_card_metadata_is_not_certified_not_guessed_legal ... ok
+2026-10-26T18:03:02.7132928Z test a_pregame_chosen_color_commander_is_not_certified ... ok
+2026-10-26T18:03:02.7177069Z test a_partner_commander_is_not_certified ... ok
+2026-10-26T18:03:02.7177435Z test a_non_normal_library_card_is_not_certified_with_face_evidence ... ok
+2026-10-26T18:03:02.7177694Z 
+2026-10-26T18:03:02.7177910Z test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:03:02.7178215Z 
+2026-10-26T18:03:02.7180490Z [1m[92m     Running[0m tests/commander_pregame_color.rs (target/debug/deps/commander_pregame_color-ce8e1f26a4514b42)
+2026-10-26T18:03:02.7187881Z 
+2026-10-26T18:03:02.7187970Z running 7 tests
+2026-10-26T18:03:02.7360275Z test faceless_one_with_colored_lands_is_not_certified_without_dependent_color_illegals ... ok
+2026-10-26T18:03:02.7360891Z test faceless_one_with_a_colored_spell_is_not_certified ... ok
+2026-10-26T18:03:02.7389695Z test ordinary_known_identity_off_color_is_still_illegal ... ok
+2026-10-26T18:03:02.7519841Z test ordinary_mono_green_control_is_legal ... ok
+2026-10-26T18:03:02.7540039Z test unsupported_variant_with_known_identity_retains_off_color_illegal ... ok
+2026-10-26T18:03:02.7612182Z test chosen_color_independent_count_banned_and_duplicate_violations_still_apply ... ok
+2026-10-26T18:03:02.7730123Z test synthetic_chosen_color_only_without_background_or_partner_is_not_certified ... ok
+2026-10-26T18:03:02.7730339Z 
+2026-10-26T18:03:02.7730485Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+2026-10-26T18:03:02.7730667Z 
+2026-10-26T18:03:02.7732774Z [1m[92m     Running[0m tests/commander_shorikai.rs (target/debug/deps/commander_shorikai-c9d711ab03ea2e72)
+2026-10-26T18:03:02.7740059Z 
+2026-10-26T18:03:02.7740159Z running 1 test
+2026-10-26T18:03:02.7856206Z test a_vehicle_commander_is_not_certified_not_illegal ... ok
+2026-10-26T18:03:02.7856363Z 
+2026-10-26T18:03:02.7856507Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-26T18:03:02.7856692Z 
+2026-10-26T18:03:02.7858625Z [1m[92m     Running[0m tests/commander_singleton_tracer.rs (target/debug/deps/commander_singleton_tracer-01c2c58973a42ec8)
+2026-10-26T18:03:02.7865781Z 
+2026-10-26T18:03:02.7865871Z running 10 tests
+2026-10-26T18:03:02.8049839Z test card_specific_allowances_are_not_certified_not_illegal ... ok
+2026-10-26T18:03:02.8338083Z test basic_land_exemption_does_not_need_oracle_text ... ok
+2026-10-26T18:03:02.9309858Z test duplicate_cards_with_missing_oracle_text_are_not_certified ... ok
+2026-10-26T18:03:02.9448180Z test duplicate_nonbasic_cards_are_illegal ... ok
+2026-10-26T18:03:02.9489656Z test duplicate_cards_with_null_oracle_text_are_not_certified ... ok
+2026-10-26T18:03:02.9909848Z test empty_but_present_oracle_text_still_proves_an_ordinary_duplicate ... ok
+2026-10-26T18:03:03.0045352Z test repeated_basic_lands_are_exempt ... ok
+2026-10-26T18:03:03.0363350Z test incomplete_singleton_semantics_do_not_hide_proven_count_or_ban_violations ... ok
+2026-10-26T18:03:03.0617151Z test duplicate_cards_with_unusable_type_metadata_are_not_certified ... ok
+2026-10-26T18:03:03.2438573Z test duplicate_cards_with_nonstring_oracle_text_are_not_certified ... ok
+2026-10-26T18:03:03.2438910Z 
+2026-10-26T18:03:03.2439229Z test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+2026-10-26T18:03:03.2439633Z 
+2026-10-26T18:03:03.2443359Z [1m[92m     Running[0m tests/commander_zones_tracer.rs (target/debug/deps/commander_zones_tracer-008e19d5efa021f5)
+2026-10-26T18:03:03.2453854Z 
+2026-10-26T18:03:03.2453946Z running 2 tests
+2026-10-26T18:03:03.2620213Z test a_companion_is_not_certified_and_not_counted ... ok
+2026-10-26T18:03:03.2620829Z test a_sideboard_is_not_certified_and_not_counted ... ok
+2026-10-26T18:03:03.2621025Z 
+2026-10-26T18:03:03.2621242Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:03:03.2621440Z 
+2026-10-26T18:03:03.2623012Z [1m[92m     Running[0m tests/normal_cards.rs (target/debug/deps/normal_cards-629ab48b34a2009b)
+2026-10-26T18:03:03.2631438Z 
+2026-10-26T18:03:03.2631519Z running 6 tests
+2026-10-26T18:03:03.2635256Z test a_negative_quantity_is_rejected ... ok
+2026-10-26T18:03:03.2635561Z test a_quantity_above_the_u8_range_is_rejected ... ok
+2026-10-26T18:03:03.2635870Z test a_string_quantity_is_rejected ... ok
+2026-10-26T18:03:03.2636186Z test a_zero_quantity_is_an_error_not_a_silent_skip ... ok
+2026-10-26T18:03:03.2636983Z test normal_single_face_cards_are_supported_and_launchable ... ok
+2026-10-26T18:03:03.2637929Z test duplicate_entries_are_preserved_exactly_and_merged_at_plan_time ... ok
+2026-10-26T18:03:03.2638200Z 
+2026-10-26T18:03:03.2638431Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:03.2638719Z 
+2026-10-26T18:03:03.2640428Z [1m[92m     Running[0m tests/normalize_real.rs (target/debug/deps/normalize_real-eae0b78a34cdc6c0)
+2026-10-26T18:03:03.2648627Z 
+2026-10-26T18:03:03.2648704Z running 2 tests
+2026-10-26T18:03:03.2694291Z test real_deck_metadata_and_entry_counts_are_exact ... ok
+2026-10-26T18:03:03.2695132Z test real_deck_is_honestly_unsupported_and_cannot_launch ... ok
+2026-10-26T18:03:03.2695361Z 
+2026-10-26T18:03:03.2695577Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:03.2695868Z 
+2026-10-26T18:03:03.2697480Z [1m[92m     Running[0m tests/plan.rs (target/debug/deps/plan-be7a440f72b5720b)
+2026-10-26T18:03:03.2705093Z 
+2026-10-26T18:03:03.2705242Z running 6 tests
+2026-10-26T18:03:03.2715972Z test a_deck_that_is_too_small_is_refused_by_the_practice_profile ... ok
+2026-10-26T18:03:03.2716542Z test an_unsupported_main_deck_card_refuses_to_launch ... ok
+2026-10-26T18:03:03.2716794Z test a_fully_supported_import_launches_with_merged_entries ... ok
+2026-10-26T18:03:03.2717023Z test commander_sections_are_reported_and_refused ... ok
+2026-10-26T18:03:03.2723643Z test deleted_and_faceless_entries_are_reported_not_ignored ... ok
+2026-10-26T18:03:03.2725661Z test private_decks_are_refused_with_an_explanation ... ok
+2026-10-26T18:03:03.2725875Z 
+2026-10-26T18:03:03.2726085Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:03.2726351Z 
+2026-10-26T18:03:03.2728156Z [1m[92m     Running[0m tests/security_mutation_fuzz.rs (target/debug/deps/security_mutation_fuzz-44cd43b97fdd149e)
+2026-10-26T18:03:03.2735104Z 
+2026-10-26T18:03:03.2735189Z running 7 tests
+2026-10-26T18:03:03.2750246Z test hostile_quantities_are_refused_not_wrapped ... ok
+2026-10-26T18:03:03.2750752Z test mutated_deck_urls_only_ever_produce_the_canonical_request ... ok
+2026-10-26T18:03:03.2849982Z test mutated_deck_text_is_refused_or_reported_honestly ... ok
+2026-10-26T18:03:03.2859305Z test mutated_text_import_refuses_or_plans_within_bounds ... ok
+2026-10-26T18:03:03.9789300Z test mutated_provider_json_never_panics ... ok
+2026-10-26T18:03:04.0666335Z test hostile_url_shapes_are_refused_or_canonical ... ok
+2026-10-26T18:03:35.8472249Z test oversized_provider_shapes_stay_bounded_and_honest ... ok
+2026-10-26T18:03:35.8472533Z 
+2026-10-26T18:03:35.8472752Z test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 32.57s
+2026-10-26T18:03:35.8473047Z 
+2026-10-26T18:03:35.8476558Z [1m[92m     Running[0m tests/start_flow.rs (target/debug/deps/start_flow-2a894239d24e99cb)
+2026-10-26T18:03:35.8493629Z 
+2026-10-26T18:03:35.8493706Z running 21 tests
+2026-10-26T18:03:35.8498403Z test a_commander_outside_the_supported_pool_is_refused_with_its_own_reason ... ok
+2026-10-26T18:03:35.8507562Z test a_colorless_provider_identity_is_known_and_passes_the_identity_check ... ok
+2026-10-26T18:03:35.8508329Z test a_duplicated_unsupported_nonbasic_is_refused_by_the_singleton_check ... ok
+2026-10-26T18:03:35.8508777Z test a_missing_provider_identity_is_not_certified_rather_than_assumed_legal ... ok
+2026-10-26T18:03:35.8509245Z test a_supported_legal_hundred_card_list_stays_startable_after_the_singleton_repair ... ok
+2026-10-26T18:03:35.8509805Z test a_wrong_deck_size_is_a_seat_fit_refusal_with_the_numbers ... ok
+2026-10-26T18:03:35.8510198Z test command_seat_certifies_and_plans_the_exact_list_with_its_commander ... ok
+2026-10-26T18:03:35.8510662Z test multiple_commanders_are_refused_instead_of_silently_picking_one ... ok
+2026-10-26T18:03:35.8511080Z test format_legality_and_engine_support_are_reported_as_separate_outcomes ... ok
+2026-10-26T18:03:35.8511440Z test commander_eligibility_is_judged_from_the_provider_type_line_only ... ok
+2026-10-26T18:03:35.8511702Z test a_text_repeat_without_a_type_line_is_not_certified_rather_than_legal ... ok
+2026-10-26T18:03:35.8511980Z test practice_profile_refuses_a_commander_deck_instead_of_dropping_the_commander ... ok
+2026-10-26T18:03:35.8512251Z test practice_profile_still_certifies_a_plain_40_card_list ... ok
+2026-10-26T18:03:35.8512474Z test split_text_lines_of_one_card_are_counted_together ... ok
+2026-10-26T18:03:35.8512718Z test sidelined_and_excluded_cards_never_reach_the_seat_list ... ok
+2026-10-26T18:03:35.8512948Z test the_unsupported_sentinel_remains_outside_the_catalog ... ok
+2026-10-26T18:03:35.8513191Z test the_basic_exception_and_supported_duplicates_keep_their_verdicts ... ok
+2026-10-26T18:03:35.8513535Z test split_provider_entries_of_one_card_are_counted_together ... ok
+2026-10-26T18:03:35.8513917Z test unsupported_card_is_named_with_its_reason_and_start_is_refused ... ok
+2026-10-26T18:03:35.8514348Z test provider_color_identity_is_normalized_and_checked_against_the_commander ... ok
+2026-10-26T18:03:35.8515106Z [1m[92m     Running[0m tests/start_flow_network.rs (target/debug/deps/start_flow_network-25cba86f63e4a5e0)
+2026-10-26T18:03:35.8515562Z test url_guard_still_runs_before_any_network_work ... ok
+2026-10-26T18:03:35.8515759Z 
+2026-10-26T18:03:35.8515960Z test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:35.8516240Z 
+2026-10-26T18:03:35.8526203Z 
+2026-10-26T18:03:35.8526288Z running 1 test
+2026-10-26T18:03:35.8526917Z test a_real_archidekt_commander_deck_is_certified_with_exact_unsupported_cards ... ignored, network: fetches one real public Archidekt deck
+2026-10-26T18:03:35.8527204Z 
+2026-10-26T18:03:35.8527330Z test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:35.8527504Z 
+2026-10-26T18:03:35.8529753Z [1m[92m     Running[0m tests/starter_corpus_analyzer.rs (target/debug/deps/starter_corpus_analyzer-20a1200bafe5b063)
+2026-10-26T18:03:35.8536982Z 
+2026-10-26T18:03:35.8537061Z running 3 tests
+2026-10-26T18:03:35.8601390Z test the_deck_snapshot_binds_the_exact_text_library ... ok
+2026-10-26T18:03:35.8698820Z test analyzer_gameplay_refusal_is_preserved ... ok
+2026-10-26T18:03:35.8725981Z test the_exact_starter_list_is_format_legal_and_engine_supported ... ok
+2026-10-26T18:03:35.8726225Z 
+2026-10-26T18:03:35.8726434Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-26T18:03:35.8726710Z 
+2026-10-26T18:03:35.8729329Z [1m[92m     Running[0m tests/starter_corpus_planned.rs (target/debug/deps/starter_corpus_planned-838814e89ec45e8f)
+2026-10-26T18:03:35.8736430Z 
+2026-10-26T18:03:35.8736511Z running 1 test
+2026-10-26T18:03:35.9884037Z test eight_targets_have_exact_desired_lists_and_honest_missing_cards ... ok
+2026-10-26T18:03:35.9884331Z 
+2026-10-26T18:03:35.9884542Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+2026-10-26T18:03:35.9885262Z 
+2026-10-26T18:03:35.9886233Z [1m[92m     Running[0m tests/text_import.rs (target/debug/deps/text_import-4dd8cba6996d2342)
+2026-10-26T18:03:35.9895924Z 
+2026-10-26T18:03:35.9896032Z running 5 tests
+2026-10-26T18:03:35.9899030Z test an_empty_text_list_is_an_error ... ok
+2026-10-26T18:03:35.9899324Z test a_supported_text_list_launches ... ok
+2026-10-26T18:03:35.9899796Z test an_unsupported_card_in_a_text_list_is_refused_with_its_name ... ok
+2026-10-26T18:03:35.9900156Z test crack_the_earth_is_certified_by_text_import ... ok
+2026-10-26T18:03:35.9900456Z test sideboard_and_commander_sections_are_kept_out_of_the_deck ... ok
+2026-10-26T18:03:35.9900607Z 
+2026-10-26T18:03:35.9900762Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:35.9900941Z 
+2026-10-26T18:03:35.9901991Z [1m[92m     Running[0m tests/url_guard.rs (target/debug/deps/url_guard-c3a1b2a7213127dd)
+2026-10-26T18:03:35.9909674Z 
+2026-10-26T18:03:35.9909757Z running 5 tests
+2026-10-26T18:03:35.9912420Z test api_endpoint_is_built_from_the_numeric_id ... ok
+2026-10-26T18:03:35.9912842Z test accepts_canonical_slug_query_and_fragment_forms ... ok
+2026-10-26T18:03:35.9913210Z test accepts_the_documented_deck_url_forms ... ok
+2026-10-26T18:03:35.9913521Z test host_allowlist_is_exact ... ok
+2026-10-26T18:03:35.9913704Z test rejects_non_approved_schemes_hosts_and_paths ... ok
+2026-10-26T18:03:35.9913861Z 
+2026-10-26T18:03:35.9914189Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-26T18:03:35.9914464Z 
+2026-10-26T18:03:35.9915624Z [1m[92m     Running[0m unittests src/lib.rs (target/debug/deps/aperture_ui-649e505a7c4b0eb7)
+2026-10-26T18:03:35.9935438Z 
+2026-10-26T18:03:35.9935520Z running 36 tests
+2026-10-26T18:03:36.1581204Z test app::viewport_tests::a_capture_launch_can_start_in_high_contrast_and_reduced_motion ... ok
+2026-10-26T18:03:36.3174067Z test app::viewport_tests::a_failed_destructive_action_is_an_error_state_not_a_hint ... ok
+2026-10-26T18:03:36.3210236Z test app::viewport_tests::a_performance_note_is_a_declared_condition_never_a_synthetic_delay ... ok
+2026-10-26T18:03:36.3319991Z test app::viewport_tests::a_pending_table_selection_is_not_overwritten_by_the_live_table ... ok
+2026-10-26T18:03:36.4617276Z test app::viewport_tests::absolute_life_labels_remain_correct_when_the_human_is_p1 ... ok
+2026-10-26T18:03:36.4650107Z test app::viewport_tests::command_zone_inspection_does_not_invent_a_battlefield_location ... ok
+2026-10-26T18:03:36.4699852Z test app::viewport_tests::explicit_startup_decks_override_the_bounded_default ... ok
+2026-10-26T18:03:36.5860619Z test app::viewport_tests::a_large_board_and_long_per_seat_reports_stay_renderable_and_reachable ... ok
+2026-10-26T18:03:36.6075077Z test app::viewport_tests::a_destructive_action_waits_for_an_explicit_confirmation ... ok
+2026-10-26T18:03:36.7395908Z test app::viewport_tests::four_seat_panels_and_primary_actions_are_actually_visible_at_1280x720 ... ok
+2026-10-26T18:03:36.7650477Z test app::viewport_tests::four_seat_panels_are_visible_at_a_large_viewport ... ok
+2026-10-26T18:03:36.9000581Z test app::viewport_tests::four_seat_panels_are_visible_at_the_minimum_viewport ... ok
+2026-10-26T18:03:37.0466574Z test app::viewport_tests::partial_apnap_shows_generic_waiting_without_the_owner_label ... ok
+2026-10-26T18:03:37.0560580Z test app::viewport_tests::imported_match_controls_are_reachable_in_the_actual_minimum_sized_frame ... ok
+2026-10-26T18:03:37.0931101Z test app::viewport_tests::fixed_controls_stay_visible_at_200_percent_and_high_dpi_minimum_windows ... ok
+2026-10-26T18:03:37.2870876Z test app::viewport_tests::accessibility_opens_only_without_text_focus_and_escape_closes_it_first ... ok
+2026-10-26T18:03:37.5930591Z test app::viewport_tests::the_accessibility_panel_states_are_words_and_install_high_contrast_richtext ... ok
+2026-10-26T18:03:37.6925245Z test app::viewport_tests::real_clicks_start_a_four_seat_bounded_table ... ok
+2026-10-26T18:03:37.6938323Z test app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start ... FAILED
+2026-10-26T18:03:37.7200407Z test app::viewport_tests::reduced_motion_uses_static_working_text_without_blocking_worker_polling ... ok
+2026-10-26T18:03:37.9591466Z test app::viewport_tests::the_g_shortcut_refuses_an_empty_or_busy_study_request ... ok
+2026-10-26T18:03:37.9790424Z test app::viewport_tests::the_g_shortcut_asks_before_it_replaces_the_live_position ... ok
+2026-10-26T18:03:38.0360467Z test app::viewport_tests::the_import_panel_starts_a_command_seat_from_certified_lists ... ok
+2026-10-26T18:03:38.5745381Z test app::viewport_tests::the_opt_in_performance_probe_reports_bounded_native_samples ... ok
+2026-10-26T18:03:38.5786386Z test app::viewport_tests::the_startup_accessibility_flags_seed_the_app_settings ... ok
+2026-10-26T18:03:38.5800301Z test app::viewport_tests::the_postgame_review_replaces_the_action_strip_at_1280x720 ... ok
+2026-10-26T18:03:38.7090504Z test app::viewport_tests::the_written_report_keeps_a_note_out_of_synthetic_delays ... ok
+2026-10-26T18:03:38.7309643Z test app::viewport_tests::the_zone_inspector_is_searchable_and_usable_at_1280x720 ... ok
+2026-10-26T18:03:38.8829992Z test app::viewport_tests::undo_is_only_offered_on_an_untainted_recorded_line ... ok
+2026-10-26T18:03:39.0008792Z test app::viewport_tests::the_new_controls_are_reachable_at_the_programmatic_minimum_1024x640 ... ok
+2026-10-26T18:03:39.0049966Z test perf::tests::nearest_rank_p95_uses_the_smallest_value_covering_95_percent ... ok
+2026-10-26T18:03:39.0051811Z test perf::tests::samples_are_bounded_and_the_window_finishes_once ... ok
+2026-10-26T18:03:39.0052387Z test session::tests::an_accepted_action_invalidates_an_in_flight_load ... ok
+2026-10-26T18:03:39.0355964Z test app::viewport_tests::the_zone_inspector_reports_hidden_zones_as_counts_only ... ok
+2026-10-26T18:03:39.4485465Z test app::viewport_tests::zoom_is_repeatable_caps_at_200_percent_and_has_a_100_percent_reset ... ok
+2026-10-26T18:03:39.5065894Z test app::viewport_tests::the_sandbox_panel_separates_overrides_and_shows_the_taint_at_1280x720 ... ok
+2026-10-26T18:03:39.5066192Z 
+2026-10-26T18:03:39.5066372Z failures:
+2026-10-26T18:03:39.5066466Z 
+2026-10-26T18:03:39.5066692Z ---- app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start stdout ----
+2026-10-26T18:03:39.5066911Z 
+2026-10-26T18:03:39.5067150Z thread 'app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start' (6282) panicked at crates/ui/src/app.rs:3858:9:
+2026-10-26T18:03:39.5067488Z assertion failed: !import.certified()
+2026-10-26T18:03:39.5067696Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-10-26T18:03:39.5067853Z 
+2026-10-26T18:03:39.5067855Z 
+2026-10-26T18:03:39.5067897Z failures:
+2026-10-26T18:03:39.5068102Z     app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start
+2026-10-26T18:03:39.5068293Z 
+2026-10-26T18:03:39.5068577Z test result: FAILED. 35 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.51s
+2026-10-26T18:03:39.5068827Z 
+2026-10-26T18:03:39.5089993Z [1m[91merror[0m: test failed, to rerun pass `-p aperture-ui --lib`
+2026-10-26T18:03:39.5151070Z ##[error]Process completed with exit code 101.
+2026-10-26T18:03:39.5292873Z Post job cleanup.
+2026-10-26T18:03:39.6823917Z [command]/usr/bin/git version
+2026-10-26T18:03:39.6869957Z git version 2.55.0
+2026-10-26T18:03:39.6910086Z Temporarily overriding HOME='/home/runner/work/_temp/f65521d6-7f81-4555-873c-d7d59e3fab97' before making global git config changes
+2026-10-26T18:03:39.6950067Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-26T18:03:39.6950676Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/the-aperture/the-aperture
+2026-10-26T18:03:39.6959932Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-26T18:03:39.6960948Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-26T18:03:39.7214962Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-26T18:03:39.7283799Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-26T18:03:39.7504702Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-26T18:03:39.7534790Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-26T18:03:39.7864393Z Cleaning up orphan processes
+2026-10-26T18:03:39.8263660Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

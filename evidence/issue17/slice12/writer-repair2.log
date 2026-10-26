@@ -1,0 +1,24 @@
+Working...
+**Repair 2 complete and pushed to PR46 branch.** Head `5870716` on `aperture/issue-17`; no merge/master push.
+
+## R12-F1 — save roundtrip fixed
+- Reproduced exact failures for token #541 (demo save) and #507 (package save).
+- Genuine RED test: departed owner’s Removed token rejected by validator.
+- Fix: `Zone::Removed` tokens are valid **only** as inert archival records for a departed owner, with no list/stack/combat/live references; live-owner Removed and any Hand/Graveyard/Exile/Stack/Library token still refused. Ordinary token death/cessation unchanged; ephemeral counters cleared at departure.
+- No version bump. Verified unchanged:
+  - package save → `328dadbdbdc6`, 7051 events
+  - demo save → `d3eade58f133`, 6981 events
+  - fresh `--save-out` of demo replay → same digest
+  - old slice8 replay → `ffbeaee0db38`, 6087 events
+
+## R12-F2 — Elas prose
+- Corrected 55 → **53** unsupported nonland names.
+
+## CI sentinel
+- Four `start_flow` tests used now-supported Sol Ring as the unsupported sentinel. Replaced test-only with **Darksteel Ingot**, preserved all Unsupported/NotCertified/singleton/start-refusal assertions, and added a guard proving it is absent from the catalog. No production import/UI changes.
+
+## Verification
+- slice12 **10/10**, tokens 10, slice6 13, commander 43, catalog 5, printings **7** (review count confirmed), import `start_flow` 21.
+- fmt, clippy `-D warnings`, locked-style release CLI build clean.
+
+Handoff: `evidence/issue17/slice12/REPAIR2-HANDOFF.md`. Full #17 unfinished; no certification claim.

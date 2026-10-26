@@ -1,0 +1,16 @@
+[
+  {
+    "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+    "backup": "evidence\\issue17\\slice13-final-backup\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+    "bytes": 6102079,
+    "sha256": "404923fc965a8160cad36241680e201faeacb24327a99605463c871d5897dced",
+    "equal": true
+  },
+  {
+    "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+    "backup": "evidence\\issue17\\slice13-final-backup\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+    "bytes": 3690996,
+    "sha256": "1762993adf6fb4332b8a804856acd3e43ffeb045f90e6b7354b429b3a42d2e57",
+    "equal": true
+  }
+]

@@ -1,0 +1,3 @@
+replay seed 1201 — 4 seat(s), 1573 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  certified session save of the finished game written to evidence/issue17/slice12-review3-fresh-save.json (digest d3eade58f133)
+  replayed digest d3eade58f133 | matches recorded | events 6981

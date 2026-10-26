@@ -1,0 +1,20 @@
+Working...
+**review_outcome: REQUEST_CHANGES** at `5870716ff523b042ac6ea57cdee9d04def75c81e`.
+`full_issue17_accepted: false`.
+
+**Blocking finding — archived-token validation is too permissive.**
+`crates/core/src/state.rs:1588-1612` checks player zones, stack object ids and combat, but not `trigger_queue`, `pending`/`resolving`, stack targets, `effects`/`shields`, `activation_uses` or `revealed`. Review probe: load the repaired demo save, push an archived Goblin Token (#541) into `trigger_queue`, call `validate()` → `VALIDATED archived token in trigger_queue`. The same with `revealed` also validates. These are phantom trigger/visibility references the repair was meant to refuse. Reject archived tokens referenced by any live structure and add strict negative controls; keep ordinary BF→GY cessation unchanged.
+Repro: `cargo run --manifest-path evidence/issue17/slice12-review-probe/Cargo.toml` → validates; expected rejection.
+
+**Verified repairs**
+
+- **R12-F1 fixed:** fresh demo save-out/reload replays `d3eade58f133` (1573 actions/6981 events); retained `slice12/save.json` reloads at `328dadbdbdc6` (1746/7051); old slice8 replay still `ffbeaee0db38`/6087.
+- **R12-F2 fixed:** docs Elas now 53, matching manifest/audit.
+- **CI sentinel fixed test-only:** `start_flow` 21/21 with Darksteel Ingot; absent-catalog guard retained; no production import/UI edits.
+- Focused: slice12 10/10, tokens 10/10, slice6 13/13, issue13 43/43, catalog 5/5, printings 7/7; fmt/diff-check pass.
+
+Artifact behavior, source receipts and the representative journey are reused unchanged. Current CI is not claimed green; prior `9ec90aa` failure was the test sentinel.
+
+Remaining gaps: full #17 is **1 certified / 7 planned**, 119 catalog, 459 union = 107 supported + 352 missing; artifact mana remains explicit-only for the product heuristic; Commander’s Sphere, Friendly Teddy, Aetherize and broader mechanics remain unsupported. No merge/closure or release/#26/#32 unlock. Handoff “No push yet” is stale metadata, nonblocking.
+
+Reports: `evidence/issue17/slice12/REVIEW12-R2.md`, `.json`.

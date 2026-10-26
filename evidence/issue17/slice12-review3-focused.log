@@ -1,0 +1,20 @@
+    Blocking waiting for file lock on package cache
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.48s
+     Running tests\issue17_slice12.rs (target\debug\deps\issue17_slice12-92fee262fbf05d7d.exe)
+
+running 11 tests
+test sourced_artifacts_match_printings_and_are_noncreature_permanents ... ok
+test archived_tokens_cannot_anchor_live_engine_references ... ok
+test hedron_archive_mana_and_sacrifice_draw_two_with_source_left ... ok
+test removed_tokens_are_valid_only_as_inert_archives_of_departed_owners ... ok
+test mind_stone_mana_then_sacrifice_draws_on_the_stack ... ok
+test artifact_cast_requires_sorcery_timing_and_negate_sees_noncreature ... ok
+test insufficient_generic_mana_refusal_preserves_state ... ok
+test tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability ... ok
+test sol_ring_taps_immediately_for_two_colorless_and_cannot_repeat ... ok
+test mind_and_hedron_mana_abilities_produce_printed_amounts ... ok
+test all_three_artifacts_cast_from_hand_and_activate_same_turn ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

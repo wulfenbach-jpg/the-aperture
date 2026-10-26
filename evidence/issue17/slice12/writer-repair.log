@@ -1,0 +1,23 @@
+Working...
+**Artifact castability repaired.** No push — the required journey still shows zero artifact casts, so I’m not claiming full verification.
+
+## Fix
+- `CardDef::spell_spec()` and `is_permanent_spell()` now canonically include artifacts, not creatures only.
+- Artifacts in hand are real noncreature permanent spells: offered, cast with printed costs, resolve to the battlefield, then their tap-mana/stacked sacrifice abilities work.
+- No card-specific shortcuts.
+
+## Genuine RED
+At `fd18dfc`, real `Action::CastSpell` returned **“Sol Ring is not a spell”** (and same for Mind Stone/Hedron Archive). Corrected second RED; the original slice12 RED was absent-catalog, now reported honestly.
+
+## Tests (9/9)
+- All three artifacts cast from hand with lands, resolve as noncreature permanents, then activate printed mana same turn.
+- Sorcery-timing refusal; Negate counters an artifact as a noncreature spell.
+- Same-turn mana tap leaves it tapped, so the sacrifice-draw ability is refused with unchanged state.
+- Existing mana amounts, sacrifice/draw, source-left, insufficient-cost, and artifact-permanent tests retained.
+- Focused: slice12 9, slice9 6, tokens 10, catalog 5, printings 6, commander 43.
+- fmt, clippy `-D warnings`, release CLI build clean.
+
+## Journey blocker
+Four-seat `package-slice12.txt`, seed 1201, remains terminal (P3, 1746 steps, digest `328dadbdbdc6…`, replay matches 7051 events) but the unmodified heuristic casts/activates **0 artifacts**. No AI source changes allowed, so I did not fabricate cast events. Focused tests prove playability; journey does not meet the “observed artifact cast” acceptance requirement.
+
+Head `7266ee5`; handoff updated: `evidence/issue17/slice12/WRITER-HANDOFF.md`. Next step needs either a chosen non-heuristic journey driver or native permission for a minimal heuristic artifact-cast rule.
