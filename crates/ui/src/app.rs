@@ -155,6 +155,9 @@ pub struct ApertureApp {
     show_sandbox: bool,
     show_import: bool,
     show_zones: bool,
+    /// Move-review panel: ranked engine-offered alternatives for the reviewing
+    /// seat's current decision, computed on the background worker.
+    show_review: bool,
     show_coach: bool,
     show_study: bool,
     show_help: bool,
@@ -408,6 +411,7 @@ impl ApertureApp {
             show_sandbox: false,
             show_import: deck_refusal.is_some(),
             show_zones: false,
+            show_review: false,
             show_coach: true,
             show_study: false,
             show_help: false,
@@ -656,6 +660,15 @@ impl ApertureApp {
         }
         if coach {
             self.show_coach = !self.show_coach;
+        }
+        // V opens the move-review panel and asks the worker for a fresh
+        // analysis of the decision in front of the reviewing seat. It never
+        // acts on the table.
+        if ctx.input(|input| input.key_pressed(egui::Key::V)) {
+            self.show_review = !self.show_review;
+            if self.show_review {
+                self.request_move_review();
+            }
         }
         if help {
             self.show_help = !self.show_help;
@@ -1667,7 +1680,103 @@ impl ApertureApp {
         }
     }
 
-    /// Study panel: branch a recorded line (from a session save or a bare
+    /// Ask the background worker for a fresh move review of the reviewing
+    /// seat's current decision. A refusal to start (one is already running) is
+    /// reported as an error state, never as a silent no-op.
+    fn request_move_review(&mut self) {
+        if self.session.request_move_review() {
+            self.session.message =
+                "move review requested: the ranked alternatives are computed on a background worker and appear in the MOVE REVIEW panel when they are ready".to_string();
+        } else {
+            self.session.message =
+                "refused: a move review is already running; wait for it to finish or change the table".to_string();
+        }
+    }
+
+    /// One labelled block of the move-review panel. The title and the source
+    /// label are per-section, so a policy ordering can never be read as a rule.
+    fn review_block(
+        ui: &mut egui::Ui,
+        section: &crate::review::ReviewSection,
+        color: egui::Color32,
+    ) {
+        theme::heading(ui, section.title);
+        ui.label(
+            RichText::new(section.source)
+                .small()
+                .color(theme::muted_color(ui)),
+        );
+        egui::ScrollArea::vertical()
+            .id_salt(format!("move-review-{}", section.title))
+            .max_height(240.0)
+            .auto_shrink([false, true])
+            .show(ui, |ui| {
+                for line in &section.lines {
+                    ui.label(RichText::new(line).small().monospace().color(color));
+                }
+            });
+    }
+
+    /// The move-review surface. Everything expensive already happened on the
+    /// worker thread; this only formats its finished report. The panel is
+    /// read-only: it carries no action, submits nothing, grants no priority and
+    /// unlocks no sandbox or undo control.
+    fn move_review_panel(&mut self, ui: &mut egui::Ui, human: PlayerId, view: &PlayerView) {
+        // Rules come from the engine trace path, live, and are always current.
+        let rules =
+            crate::review::rules_section(&coach::explain(&self.session.game, human, &view.legal));
+        let busy = self.session.review_busy;
+        let stale = self.session.review_fresh();
+        let report = self.session.review.clone();
+
+        if busy {
+            theme::heading(ui, crate::review::POLICY_TITLE);
+            theme::muted(
+                ui,
+                "computing ranked alternatives on the background worker — the frame loop is not blocked and the table is unchanged until you act",
+            );
+            ui.ctx().request_repaint_after(Duration::from_millis(120));
+        } else {
+            match (&stale, &report) {
+                (Some(code), Some(report)) => {
+                    theme::heading(
+                        ui,
+                        "MOVE REVIEW — the stored review no longer matches the table",
+                    );
+                    ui.label(
+                        RichText::new(format!(
+                            "[{code}] that review was computed for engine decision {} of revision {} (seat P{}); the table has moved on, so none of its ranking is shown",
+                            report.decision_serial, report.revision, report.seat
+                        ))
+                        .color(theme::warn(ui)),
+                    );
+                }
+                (None, Some(report)) => {
+                    Self::review_block(ui, &report.policy_section(), theme::text_color(ui));
+                }
+                (_, None) => {
+                    theme::heading(ui, crate::review::POLICY_TITLE);
+                    theme::muted(
+                        ui,
+                        "no review has been computed for this decision yet. \"Move review\" (V) asks the background worker to rank the actions the engine is offering you right now; nothing is ranked until it answers.",
+                    );
+                }
+            }
+        }
+        ui.separator();
+        Self::review_block(ui, &rules, theme::brass(ui));
+        if ui
+            .add_enabled(
+                !busy,
+                egui::Button::new("Move review (V) — rank this decision"),
+            )
+            .clicked()
+        {
+            self.request_move_review();
+        }
+    }
+
+    /// The study panel: branch from a recorded line (a session save or a bare
     /// replay file) at an explicitly chosen action boundary, and show the
     /// public comparison of accepted actions between the base line and the
     /// live branch.
@@ -1949,6 +2058,18 @@ impl ApertureApp {
                 if ui.button("Study branches (B)").clicked() {
                     self.show_study = !self.show_study;
                 }
+                if ui
+                    .selectable_label(self.show_review, "Move review (V)")
+                    .on_hover_text(
+                        "Rank the actions the engine is offering you right now, with the analysis's own counts, its compute budget and its stated uncertainty. Runs on a background worker; read-only.",
+                    )
+                    .clicked()
+                {
+                    self.show_review = !self.show_review;
+                    if self.show_review {
+                        self.request_move_review();
+                    }
+                }
                 let review_label = if self.session.review_mode {
                     "Leave review (R)"
                 } else {
@@ -1975,7 +2096,7 @@ impl ApertureApp {
             if self.show_help {
                 ui.label(
                     RichText::new(
-                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control (a 2 px outline marks focus) · Ctrl+0 resets text zoom to 100% · +/− text zoom (up to 200%) · A accessibility panel (high contrast, reduced motion) · P pass · U undo · N new game (keeps seats/profile, asks first) · S save · L load (asks first) · I import · B study-branch panel · G branch from the prefilled study inputs (asks first) · R postgame review (game over only) · Z zone inspector · K sandbox · C coaching · H help · Esc closes the accessibility panel first, then cancels a target pick, a confirmation or the inspector; it never performs a destructive action. Single-letter shortcuts are ignored while a text field has focus.",
+                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control (a 2 px outline marks focus) · Ctrl+0 resets text zoom to 100% · +/− text zoom (up to 200%) · A accessibility panel (high contrast, reduced motion) · P pass · U undo · N new game (keeps seats/profile, asks first) · S save · L load (asks first) · I import · B study-branch panel · G branch from the prefilled study inputs (asks first) · R postgame review (game over only) · V move review (ranks the engine's offers for your current decision on a background worker; read-only) · Z zone inspector · K sandbox · C coaching · H help · Esc closes the accessibility panel first, then cancels a target pick, a confirmation or the inspector; it never performs a destructive action. Single-letter shortcuts are ignored while a text field has focus.",
                     )
                     .small()
                     .color(theme::muted_color(ui)),
@@ -2173,6 +2294,11 @@ impl ApertureApp {
                                 );
                             }
                         });
+                    }
+
+                    if self.show_review {
+                        ui.separator();
+                        self.move_review_panel(ui, human, &view);
                     }
 
                     ui.separator();
@@ -2706,6 +2832,7 @@ mod viewport_tests {
             show_sandbox: false,
             show_import: true,
             show_zones: false,
+            show_review: false,
             show_coach: true,
             show_study: false,
             show_help: false,
@@ -2754,6 +2881,7 @@ mod viewport_tests {
             show_sandbox: false,
             show_import: false,
             show_zones: false,
+            show_review: false,
             show_coach: true,
             show_study: false,
             show_help: false,
@@ -2871,6 +2999,304 @@ mod viewport_tests {
                 _ => None,
             })
             .collect()
+    }
+
+    // ------------------------------------------------------- move review (#28)
+
+    /// A synthetic but structurally real review, used only by the layout tests:
+    /// the renderer must show exactly what a finished search report contains.
+    /// Its labels are taken from the live engine offer when one exists.
+    fn canned_review(app: &ApertureApp, mean: Option<f32>) -> crate::review::MoveReview {
+        let seat = app.session.human_seat();
+        let offers: Vec<String> = app
+            .session
+            .view(seat)
+            .legal
+            .iter()
+            .map(|legal| legal.label.clone())
+            .collect();
+        let first = offers.first().cloned().unwrap_or("Pass".to_string());
+        let second = offers.get(1).cloned().unwrap_or("Pass".to_string());
+        crate::review::MoveReview {
+            seat,
+            generation: app.session.generation,
+            revision: app.session.game.revision(),
+            decision_serial: app.session.game.decision(),
+            budget: crate::review::REVIEW_BUDGET,
+            decisions_used: 1_234,
+            fidelity: "opponents: neutral belief deck (1 opponent(s)); no real hand or library order read; own future draws sampled from declared deck".to_string(),
+            cancelled: false,
+            candidates: vec![
+                crate::review::CandidateRow {
+                    label: first.clone(),
+                    mean,
+                    scored_samples: 2,
+                    without_result: 0,
+                    refused_times: 0,
+                    chosen: true,
+                },
+                crate::review::CandidateRow {
+                    label: second,
+                    mean: mean.map(|value| -value),
+                    scored_samples: 2,
+                    without_result: 1,
+                    refused_times: 0,
+                    chosen: false,
+                },
+            ],
+            preference: crate::review::Preference::Search(first),
+            refusal: None,
+        }
+    }
+
+    /// The review panel must be reachable, fully inside a clip rect and inside
+    /// the window at the size eframe actually enforces (1024x640), not merely
+    /// present somewhere in the widget tree.
+    #[test]
+    fn the_move_review_panel_is_readable_at_the_minimum_1024x640() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.show_coach = false;
+        app.show_review = true;
+        app.session.review = Some(canned_review(&app, Some(0.5)));
+        for needle in [
+            "MOVE REVIEW — ranked practice outcomes",
+            "source: aperture_ai::search over engine-offered actions",
+            "ordering: highest mean practice outcome first",
+            "policy preference",
+            "RULES FOR THESE OFFERED ACTIONS",
+            "source: engine rule/trace explanations",
+        ] {
+            assert!(
+                scroll_until_visible(&mut app, needle, 1024.0, 640.0),
+                "{needle:?} is not fully visible inside a clip rect at the enforced minimum 1024x640"
+            );
+        }
+        // The candidate row itself (label + mean + sample count) must be
+        // readable at that size, not just the headings.
+        let review = app.session.review.clone().expect("the canned review");
+        let row = review
+            .policy_section()
+            .lines
+            .into_iter()
+            .find(|line| line.contains("mean +0.50"))
+            .expect("a scored candidate row");
+        assert!(
+            scroll_until_visible(&mut app, &row, 1024.0, 640.0),
+            "the scored candidate row is not readable at 1024x640: {row}"
+        );
+    }
+
+    /// A refusal and a stale panel each show their own reason and never a
+    /// ranking, at the enforced minimum size.
+    #[test]
+    fn the_move_review_refusal_and_stale_states_show_no_ranking_at_the_minimum() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        app.show_coach = false;
+        app.show_review = true;
+        let seat = app.session.human_seat();
+        let reason =
+            "non-priority decision (pending kind mulligan); search not enabled there".to_string();
+        app.session.review = Some(crate::review::MoveReview::refused(
+            seat,
+            app.session.generation,
+            app.session.game.revision(),
+            app.session.game.decision(),
+            crate::review::REVIEW_BUDGET,
+            reason.clone(),
+        ));
+        assert!(
+            scroll_until_visible(&mut app, "no alternative is ranked", 1024.0, 640.0),
+            "a refusal must say plainly that nothing is ranked"
+        );
+
+        let mut stale = canned_review(&app, Some(0.5));
+        stale.decision_serial = stale.decision_serial.wrapping_add(9);
+        app.session.review = Some(stale);
+        assert!(
+            scroll_until_visible(
+                &mut app,
+                "the stored review no longer matches the table",
+                1024.0,
+                640.0
+            ),
+            "a stale review must say so instead of showing its ranking"
+        );
+        assert!(
+            scroll_until_visible(&mut app, "[stale_decision]", 1024.0, 640.0),
+            "a stale review must carry its stale code"
+        );
+    }
+
+    /// V opens the panel and asks the worker; it never acts on the table.
+    #[test]
+    fn the_v_shortcut_opens_the_move_review_without_acting() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let digest = app.session.game.digest();
+        let revision = app.session.game.revision();
+        assert!(!app.show_review, "the panel starts closed");
+        press_key(&mut app, 1024.0, 640.0, egui::Key::V);
+        assert!(app.show_review, "V must open the move review panel");
+        assert!(
+            app.session.review_busy || app.session.review.is_some(),
+            "V must request a review (or receive an immediate typed refusal)"
+        );
+        assert_eq!(
+            app.session.game.digest(),
+            digest,
+            "opening the review must not change the table"
+        );
+        assert_eq!(
+            app.session.game.revision(),
+            revision,
+            "opening the review must not move the engine revision"
+        );
+    }
+
+    /// The one end-to-end journey: real click on the panel control, the real
+    /// background search, and the ranking read back out of the rendered
+    /// interface. Driven headlessly through the same widget tree the window
+    /// draws (egui frame loop, no GPU surface), so this is interaction
+    /// evidence, not a screenshot.
+    #[test]
+    fn the_move_review_journey_reads_its_ranking_back_from_the_interface() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let human = app.session.human_seat();
+        let mut guard = 0;
+        while app.session.owner() != Some(human) {
+            assert!(
+                app.session.step_ai().is_some(),
+                "the table stopped before the human seat held priority"
+            );
+            guard += 1;
+            assert!(
+                guard < 400,
+                "the journey never reached a human priority decision"
+            );
+        }
+        // Walk the legal trace forward until the reviewing seat faces a real
+        // choice (several engine offers, no pending sub-decision), so the
+        // journey reviews a decision with something to rank. Every step is an
+        // engine-offered action; nothing here invents a move.
+        loop {
+            let view = app.session.view(human);
+            if view.pending_kind.is_none() && view.legal.len() >= 3 {
+                break;
+            }
+            while app.session.owner() != Some(human) {
+                assert!(
+                    app.session.step_ai().is_some(),
+                    "the table stopped before the human seat held priority"
+                );
+                guard += 1;
+                assert!(guard < 800, "the journey never reached a real choice");
+            }
+            let view = app.session.view(human);
+            if view.pending_kind.is_none() && view.legal.len() >= 3 {
+                break;
+            }
+            let pass = view
+                .legal
+                .iter()
+                .find(|legal| legal.action == Action::Pass)
+                .map(|legal| legal.action.clone())
+                .or_else(|| view.legal.first().map(|legal| legal.action.clone()));
+            let Some(action) = pass else { break };
+            app.session
+                .submit_human(action)
+                .expect("the engine-offered step of the walk must be legal");
+            guard += 1;
+            assert!(guard < 800, "the journey never reached a real choice");
+        }
+        println!(
+            "journey: reached the reviewing seat's decision (turn {}, step {}, {} engine offers)",
+            app.session.view(human).turn_number,
+            app.session.view(human).step.name(),
+            app.session.view(human).legal.len()
+        );
+        assert!(!app.show_review, "the panel starts closed");
+        click_text(&mut app, 1280.0, 720.0, "Move review (V)");
+        assert!(app.show_review, "the click must open the review panel");
+        assert!(
+            app.session.review_busy || app.session.review.is_some(),
+            "the click must request a review"
+        );
+        // The frame loop is the only thing that applies worker results, so pump
+        // real frames until the review lands.
+        let mut frames = 0;
+        while app.session.review_busy {
+            let _ = run_frame(&mut app, 1280.0, 720.0, frames);
+            frames += 1;
+            assert!(
+                frames < 4_000,
+                "the background review never produced a result"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(2));
+        }
+        let review = app
+            .session
+            .review
+            .clone()
+            .expect("the journey must produce a review panel");
+        println!(
+            "journey: review applied after {frames} frame(s) · refused={:?} · {} candidate(s) · {} engine decisions · budget {:?}",
+            review.refusal,
+            review.candidates.len(),
+            review.decisions_used,
+            review.budget
+        );
+        assert!(
+            review.refusal.is_none(),
+            "the priority decision must not be refused: {:?}",
+            review.refusal
+        );
+        let offers: Vec<String> = app
+            .session
+            .view(human)
+            .legal
+            .iter()
+            .map(|legal| legal.label.clone())
+            .collect();
+        for candidate in &review.candidates {
+            assert!(
+                offers.contains(&candidate.label),
+                "the panel ranked an action the engine never offered: {candidate:?}"
+            );
+        }
+        // Read the panel back out of the interface, through a real scroll.
+        assert!(
+            scroll_until_visible(&mut app, "ordering:", 1280.0, 720.0),
+            "the ranking is not readable in the rendered frame"
+        );
+        let shown = app.session.review.as_ref().unwrap().policy_section().lines;
+        let visible: Vec<String> = run_frame(&mut app, 1280.0, 720.0, 0);
+        let shown_rows = shown
+            .iter()
+            .filter(|line| visible.iter().any(|label| label.contains(line.as_str())))
+            .count();
+        println!("journey: policy section lines read back from the panel:");
+        for line in &shown {
+            println!("  {line}");
+        }
+        assert!(
+            shown_rows >= 2,
+            "the panel's own lines (not just its heading) must be rendered: {shown_rows} of {} matched",
+            shown.len()
+        );
+        assert!(
+            shown
+                .iter()
+                .any(|line| line.contains("no real hand or library order read")),
+            "the journey must show the analysis' fidelity line"
+        );
+        println!(
+            "journey: {} of {} policy lines were present in the rendered frame at 1280x720",
+            shown_rows,
+            shown.len()
+        );
     }
 
     #[test]
@@ -3290,6 +3716,7 @@ mod viewport_tests {
             show_sandbox: false,
             show_import: false,
             show_zones: false,
+            show_review: false,
             show_coach: true,
             show_study: false,
             show_help: false,
