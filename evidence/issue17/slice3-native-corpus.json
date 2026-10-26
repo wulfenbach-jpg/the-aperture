@@ -1,14 +1,14 @@
 {
-  "catalog": 106,
+  "catalog": 93,
   "union": 459,
-  "supported": 94,
-  "missing": 365,
-  "manifest_missing": 365,
+  "supported": 81,
+  "missing": 378,
+  "manifest_missing": 378,
   "matches": true,
   "rows": [
     {
       "id": "isamaru-white-aggro",
-      "missing": 56,
+      "missing": 57,
       "status": "planned"
     },
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "talrand-draw-go",
-      "missing": 52,
+      "missing": 54,
       "status": "planned"
     },
     {
@@ -28,22 +28,22 @@
     },
     {
       "id": "ayula-bear-counters",
-      "missing": 47,
+      "missing": 50,
       "status": "planned"
     },
     {
       "id": "elas-sacrifice",
-      "missing": 55,
+      "missing": 58,
       "status": "planned"
     },
     {
       "id": "tatyova-landfall",
-      "missing": 54,
+      "missing": 56,
       "status": "planned"
     },
     {
       "id": "zada-spells",
-      "missing": 55,
+      "missing": 57,
       "status": "planned"
     }
   ],

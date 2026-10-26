@@ -4567,12 +4567,11 @@ impl Game {
                             delta: power,
                             life,
                         });
-                        // CR 111.7: a token that leaves the battlefield ceases to
-                        // exist, so the follow-up line must not claim an exile
-                        // that the token never became part of. Life is still
-                        // gained from its last known power (CR 608.2h).
+                        // The token really enters exile; CR 111.7 removes it at
+                        // the next SBA check, not as an exile replacement. Life
+                        // gain uses last-known power (CR 608.2h).
                         let fate = if token {
-                            "ceases to exist instead of being exiled (CR 111.7)"
+                            "is exiled (token cessation awaits the next SBA check, CR 111.7)"
                         } else {
                             "is exiled"
                         };

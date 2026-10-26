@@ -604,6 +604,10 @@ fn token_bounce_and_exile_record_the_destination_before_cessation() {
         exiled.is_some() && ceased.is_some() && exiled < ceased,
         "exile then cease: {events:?}"
     );
+    assert!(
+        !events.iter().any(|event| matches!(event, Event::StateBasedAction { description } if description.contains("instead of being exiled"))),
+        "no trace may describe token cessation as replacing exile: {events:?}"
+    );
     assert_eq!(
         game.state.player(P0).life,
         life + 1,

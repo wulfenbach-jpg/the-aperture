@@ -1,7 +1,7 @@
 import pathlib,json,re,subprocess,collections
 r=pathlib.Path('.')
 m=json.loads((r/'decks/starter-corpus/manifest.json').read_text())
-cat={n:c for c,n in re.findall(r'card(?:!|_[a-z]+!)\(\s*(\w+),\s*"([^"]+)"',(r/'crates/core/src/catalog.rs').read_text())}
+cat={n:c for c,n in re.findall(r'card(?:_defender)?!\(\s*(\w+),\s*"([^"]+)"',(r/'crates/core/src/catalog.rs').read_text())}
 u=set(); miss=set(); rows=[]
 for s in m['starters']:
     names={s['commander']}

@@ -1,20 +1,17 @@
 //! Creature tokens (CR 111) and the keyword set the practice slice enforces.
 //!
-//! A token is not a card: it has no mana cost, never exists in a library or
-//! hand, is owned by the player who created it (CR 111.2), is controlled by that
-//! player (CR 111.3) and ceases to exist the instant it leaves the battlefield
-//! (CR 111.7) instead of moving to the graveyard/hand/library.
+//! A token is not a card: it is never importable or cast from a deck. It is
+//! owned by its creator (CR 111.2) and controlled by that player (CR 111.3).
+//! A departing token reaches its destination and applicable abilities trigger;
+//! it then ceases to exist at the next state-based-action check (CR 111.7).
 //!
-//! Token characteristics are compiled in [`TOKEN_CARDS`], which is deliberately
-//! *not* part of [`crate::catalog::CARDS`]: the deck importer can name pool
-//! cards only, so a token can never be imported, put in a deck, or cast. The
-//! 28-card playable pool is unchanged.
+//! Soldier/Spirit characteristics are compiled in [`TOKEN_CARDS`]; corpus
+//! Goblin/Drake characteristics live in the catalog's separate token table.
+//! Neither table is part of the importable [`crate::catalog::CARDS`] pool.
 //!
-//! Keywords are typed and enforced at the two places the engine can observe
-//! them: attacking (CR 508.1) and blocking (CR 509.1b, 702.9b/c, 702.17b). The
-//! certified 28-card pool contains no keyword creatures, so today the only
-//! source of a keyword is a token; a card keyword lands by adding a `card` arm
-//! to [`keywords`], never by trusting card text at runtime.
+//! Typed flying/reach/defender keywords are enforced by attacking and blocking
+//! rules (CR 508.1, 509.1b, 702.9b/c, 702.17b). The keyword lookup is explicit;
+//! it never infers mechanics by interpreting card text at runtime.
 
 use crate::card::{CardDef, CardId, Kind};
 use crate::counters::Counters;
