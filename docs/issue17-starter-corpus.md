@@ -43,7 +43,7 @@ complete, so all seven remain `planned`.
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice9/corpus-audit.py` + `slice9/corpus-state.json`):
+`evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
 * **110** are in the supported 122-card catalog and **349** are missing;
@@ -54,9 +54,36 @@ basic lands (coordinator evidence
   the Swamp basic in Elas is now supported, but the rest of that desired list
   still needs its unsupported cards and interactions.
 
-Slice 11 adds the two islandwalk bears from the Ayula list, `Pale Bears` and
-`River Bear`, and models CR 702.14c from the defending player's board. That
-leaves `ayula-bear-counters` with 42 of its names missing.
+Slices 11–13 add the islandwalk bears `Pale Bears` and `River Bear`, Sol Ring,
+and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
+the defending player's board. Ayula currently has **42** missing names.
+
+### Slices 12–13: reusable artifact and landfall packages
+
+* **Sol Ring, Mind Stone, Hedron Archive:** real noncreature artifact spells,
+  immediate tap-mana abilities, and Mind Stone/Archive's printed mana + tap +
+  sacrifice costs for stacked draw abilities. Artifact mana must be activated
+  explicitly; the land-only automatic payment planner and product heuristic do
+  not automatically use it. Commander's Sphere stays unsupported because its
+  commander-color-identity mana ability is not implemented.
+* **Sazh's Chocobo:** controller-only landfall adds a real typed +1/+1 counter
+  to the same battlefield object, not an end-of-turn pump.
+* **Rampaging Baloths:** printed trample and controller-only landfall creating
+  a 4/4 green Beast Token.
+* **Professor of Zoomancy:** enters creating a 1/1 black and green Pest Token.
+  A Pest's death queues its controller's gain-1-life trigger before cessation;
+  that ability resolves later from the stack. Beast/Pest tokens are engine-only
+  objects, never importable cards.
+
+Printing sources and retrieval dates are in
+`fixtures/starter-corpus/slice12-sourced.json` and `slice13-sourced.json`.
+Conformance is in `crates/core/tests/issue17_slice12.rs` and
+`issue17_slice13.rs`. Both packages have actual four-seat 40-life terminal,
+replay-verified journeys and fresh session-save roundtrips. The artifact
+journey uses an explicitly labeled evidence-only masked demonstrator; it is
+not a product-AI improvement. These 40-card packages do **not** certify another
+100-card starter. The seven planned starters and arbitrary-deck compatibility
+remain unsupported.
 
 Slices 8–9 currently support eight sourced cards: Soul's Attendant, Razorclaw
 Bear, Volley Veteran, Dramatic Reversal, Goblin War Strike, Brightstone Ritual,
@@ -93,8 +120,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    broader activated abilities remain unimplemented (Elas);
 4. keyword semantics: **implemented** for printed Flash (Ashcoat Bear may be cast
    at instant timing) and printed Trample (Owlbear assigns lethal damage to
-   blockers first and tramples the surplus to the player); haste (Krenko) and
-   every other keyword remain unimplemented;
+   blockers first and tramples the surplus to the player); defender, token
+   flying and printed islandwalk are also implemented in their named packages.
+   Haste and wider keyword semantics remain unimplemented;
 5. typed counters exist in the core (issue #16); Ayula's printed counter/tribal text is not implemented;
 6. single-target spell copying and go-wide pump (Zada);
 7. legend rule, equipment and Aura permanents (Isamaru and any future legend);
@@ -235,7 +263,9 @@ plays it well.
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
    `missing_interactions` entries in the manifest.
-2. **Commanders.** Six target commanders are not in the supported pool.
+2. **Commanders.** Three target commanders remain unsupported: Ayula, Elas and
+   Zada. Isamaru, Jasmine, Krenko, Talrand and Tatyova have named bounded support,
+   not complete desired starter lists.
    Extending the typed registry is deliberately explicit: adding a name to
    `SUPPORTED_COMMANDERS` without implementing its printed text would fake
    support.

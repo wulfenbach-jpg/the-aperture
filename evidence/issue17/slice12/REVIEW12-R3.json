@@ -1,0 +1,44 @@
+{
+  "review_outcome": "APPROVED_INCREMENT",
+  "reviewed_head": "985d8ffe115536068606a851f8b0f34676f17898",
+  "base": "5870716",
+  "full_issue17_accepted": false,
+  "findings": [],
+  "prior_finding": {
+    "id": "R12-R2-F1",
+    "disposition": "fixed",
+    "evidence": "GameState::object_is_referenced now covers trigger_queue sources, revealed, activation_uses, commanders, stack object/targets, combat, effects, shields, resolving and all typed Pending variants. My same probe now rejects both trigger_queue and revealed with 'archived token #541 is still referenced...'. A hand-list injection is also rejected by the container check. The new 11-test slice12 suite covers trigger_queue, revealed, activation history, stack object/target, pending trigger, resolving, effect target and shield target."
+  },
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice12 --locked",
+      "result": "exit 0; 11/11 including archived_tokens_cannot_anchor_live_engine_references (evidence/issue17/slice12-review3-focused.log)."
+    },
+    {
+      "command": "cargo test -p aperture-ui --lib app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start --locked; cargo test -p aperture-ui --test session --locked",
+      "result": "UI lib 1/1 and UI session 22/22 pass; Darksteel Ingot sentinel only in test fixtures, no production UI/import behavior change (evidence/issue17/slice12-review3-ui-*.log)."
+    },
+    {
+      "command": "replay --file slice12/demo-replay.json --save-out scratch; replay scratch; replay slice12/save.json; replay slice8/game.replay.json",
+      "result": "fresh d3eade58f133 save-out/reload passes 1573 actions/6981 events; retained default save reloads 328dadbdbdc6/7051 events; old slice8 replay still ffbeaee0db38/6087 events."
+    },
+    {
+      "command": "same trigger_queue/revealed/hand-list probe against repaired GameState",
+      "result": "trigger_queue: REJECTED; revealed: REJECTED; hand-list: REJECTED by container validation."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check; read docs/manifest/corpus",
+      "result": "fmt/diff exit 0. Docs 119 catalog/107 supported/352 missing, Elas 53; manifest arrays 55/0/51/48/43/53/54/53 match. UI/import production source unchanged."
+    }
+  ],
+  "reuse": [
+    "Artifact implementation, native demo d3eade journey and source receipts reused; no new game or full historical matrix.",
+    "Import start_flow 21/21 and prior artifact/source inspections reused; no production import/UI behavior changed.",
+    "Current exact-head CI is not claimed green; prior 9ec sentinel failure was test-only."
+  ],
+  "remaining_gaps": [
+    "Full #17 remains unfinished: 119 catalog, 459 union = 107 supported + 352 missing, 1 certified / 7 planned desired lists.",
+    "Artifact mana remains explicit-only for the product heuristic; Commander's Sphere, Friendly Teddy, Aetherize and broader mechanics remain unsupported.",
+    "Handoff 'No push yet' is stale metadata, nonblocking; no merge/closure or release/#26/#32 unlock follows."
+  ]
+}

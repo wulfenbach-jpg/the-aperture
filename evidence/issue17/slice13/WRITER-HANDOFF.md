@@ -31,8 +31,9 @@ Token names follow pinned CR 111.4 generated-token naming: **Beast Token** /
   source-left token-creating landfall still creates the token; a targetless
   counter effect whose source has left is a normal no-op, never a stale
   ObjectId replacement.
-* Pest has its own typed dies trigger; it gains 1 life exactly once after
-  death, before the token ceases, and causes no opponent drain.
+* Pest has its own typed dies trigger, queued before cessation. Its controller
+  gains 1 life exactly once when the ability resolves later from the stack;
+  the effect does not drain opponents.
 * Existing token creation/ETB watcher hook is reused; Goblin/Drake and slice12
   Removed archive compatibility unchanged.
 
@@ -70,8 +71,10 @@ cargo build --release -p aperture-cli   exit 0
   4, 18 +1/+1 counter events, 1 Beast token creation, 4 Pest token creations
 * separate replay matches 5018 events; `--save-out` save reloads/replays to the
   same digest
-* no Pest death occurred in this heuristic trace; the focused test proves the
-  dies/gain-life behavior. No event count is inferred from cards merely drawn.
+* A Pest enters the graveyard and ceases at the terminal mass-death/game-over
+  point. No Pest dies-trigger/life resolution appears in this terminal trace;
+  the fully drained focused test proves the trigger's behavior. No event count
+  is inferred from cards merely drawn.
 
 ## Corpus/docs
 

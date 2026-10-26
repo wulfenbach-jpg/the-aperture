@@ -1,0 +1,48 @@
+{
+  "review_outcome": "APPROVED_INCREMENT",
+  "reviewed_head": "1d99b74371f06bdb645a3d4494ddb48e02d81e14",
+  "base": "985d8ff",
+  "full_issue17_accepted": false,
+  "findings": [],
+  "nonblocking_notes": [
+    "Handoff says no Pest death occurred in the heuristic journey, but game.log records a Pest Token put into a graveyard and then ceasing at the terminal mass-death/game-over point (no Pest dies-trigger/life line). The focused test proves the dies trigger; the prose should say no Pest dies-trigger resolved in the journey rather than no death.",
+    "Handoff says the Pest gains life 'before the token ceases'; the ability triggers before CR 111.7 cessation but the gain-life effect resolves later from the stack. This is wording, not behavior.",
+    "slice13/gates.log contains only release-build output; the test/fmt/clippy receipt is not fully represented there. This review independently reran the focused suites."
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice13 --test issue17_slice12 --test issue17_tokens --test issue17_slice6 --test issue13_commander_combat --locked",
+      "result": "exit 0: slice13 4/4, slice12 11/11 including archived_tokens_cannot_anchor_live_engine_references, tokens 10/10, slice6 13/13, issue13 43/43 including four_seat_co_loser_apnap_source_departure_continues_survivors."
+    },
+    {
+      "command": "cargo test -p aperture-ui --lib viewport sentinel; cargo test -p aperture-ui --test session; cargo test -p aperture-import --test start_flow",
+      "result": "UI lib 1/1, UI session 22/22, import start_flow 21/21; no production import behavior change."
+    },
+    {
+      "command": "same archival probe: trigger_queue, revealed, hand-list",
+      "result": "all REJECTED at current head; live-owner Removed/off-zone token controls also pass."
+    },
+    {
+      "command": "replay --file evidence/issue17/slice13/game.replay.json; fresh --save-out then replay; old slice8 replay",
+      "result": "seed1301 replay 1568 actions/34 turns/5018 events/digest 4cbaa34f0de1; fresh save-out/reload matches; old slice8 ffbeaee0db38/6087 unchanged."
+    },
+    {
+      "command": "inspect game.log and source/corpus receipts",
+      "result": "actual casts Sazh 2 / Baloths 3 / Professor 4, 18 +1/+1 counter events, 1 Beast and 4 Pest creations; native source check all seven fields true. Catalog 122, union 459 = 110 supported + 349 missing; desired snapshots unchanged. Token names Beast Token/Pest Token are CR111.4 names and nonimportable."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    }
+  ],
+  "reuse": [
+    "Artifact/source/journey receipts from slices 8–12 were reused; no new historical matrix or full product game was generated.",
+    "The real seed1301 game was inspected and independently replayed; save-out/reload was independently rerun.",
+    "Current exact-head CI is not claimed green; native owner still waits required checks."
+  ],
+  "remaining_gaps": [
+    "Full #17 remains unfinished: 122 catalog / 459 union = 110 supported + 349 missing, 1 certified / 7 planned desired lists.",
+    "Artifact mana remains explicit-only for the product heuristic; Friendly Teddy, Aetherize, Commander's Sphere and broader legend/equipment/tutor/reanimation/Ayula/Tatyova mechanics remain unsupported.",
+    "No original #17 acceptance, merge/closure, or release/#26/#32 unlock."
+  ]
+}

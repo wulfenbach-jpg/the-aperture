@@ -1,0 +1,53 @@
+{
+  "review_outcome": "REQUEST_CHANGES",
+  "reviewed_head": "5870716ff523b042ac6ea57cdee9d04def75c81e",
+  "base": "9ec90aa",
+  "full_issue17_accepted": false,
+  "findings": [
+    {
+      "severity": "high",
+      "file": "crates/core/src/state.rs:1588-1612",
+      "summary": "The new archival-token exception is too narrow in the wrong direction: it checks player zone lists, stack object ids and combat, but not trigger_queue, pending/resolving references, stack targets, effects/shields, activation_uses or revealed. An archived token claimed by a departed owner can therefore still be a live phantom trigger/target/visibility reference and is accepted by validate().",
+      "repro": "A review probe loads the repaired evidence/issue17/slice12-review-demo-save.json, then pushes TriggerRef { source: ObjectId(541) (the archived Goblin Token), card: GoblinToken, controller: 0, ability: 0, seq: 0 } into game.trigger_queue and calls validate(); it prints 'VALIDATED archived token in trigger_queue'. The same probe with the id inserted in game.revealed also validates (archived token in revealed).",
+      "expected": "Reject the archived token whenever any live structure references it: trigger_queue, pending/resolving, stack items/targets, effects/shields, activation_uses, revealed, combat and all player zones. Keep ordinary BF->GY token cessation unchanged. Add strict negative regressions for these references.",
+      "smallest_discriminator": "cargo run --manifest-path evidence/issue17/slice12-review-probe/Cargo.toml -> VALIDATED archived token in trigger_queue; expected REJECTED."
+    }
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice12 --test issue17_tokens --test issue17_slice6 --test issue13_commander_combat --test catalog_pool --test card_printings --locked",
+      "result": "exit 0: slice12 10/10 (including removed_tokens_are_valid_only_as_inert_archives...), tokens 10/10, slice6 13/13, issue13 43/43, catalog 5/5, printings 7/7."
+    },
+    {
+      "command": "cargo test -p aperture-import --test start_flow --locked",
+      "result": "21/21 passed; the Darksteel Ingot sentinel and absent-catalog guard are test-only, with no production import/UI edits."
+    },
+    {
+      "command": "replay --file evidence/issue17/slice12-review-fresh-save-after.json (fresh save-out of demo-replay then replay)",
+      "result": "save-out digest d3eade58f133; save replay exits 0, recomputes d3eade58f133, 1573 actions/6981 events. Retained slice12-review-demo-save.json and slice12/save.json also load/replay at d3eade58f133 and 328dadbdbdc6 respectively; old slice8 replay still matches ffbeaee0db38/6087 events."
+    },
+    {
+      "command": "malicious archived-token probe",
+      "result": "trigger_queue and revealed references were VALIDATED, demonstrating the strictness gap above. The intended frozen saves still replay correctly."
+    },
+    {
+      "command": "read docs/corpus and source receipts",
+      "result": "docs Elas now 53, matching manifest/audit; artifact source check and artifact package behavior unchanged; catalog 119, union 459 = 107 supported + 352 missing; desired files unchanged."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    }
+  ],
+  "reuse": [
+    "Artifact implementation, source receipts and representative d3eade journey were reused; no separate 100-card starter audit or full historical matrix.",
+    "R12-F1 ordinary save compatibility is fixed; R12-F2 prose fixed; CI sentinel test-only repaired.",
+    "Current head CI is not claimed green; prior 9ec CI failure log was test-sentinel only."
+  ],
+  "remaining_gaps": [
+    "Full #17 remains 1 certified / 7 planned desired lists; 119 catalog, 459 union = 107 supported + 352 missing.",
+    "Artifact mana is explicit-only for the product heuristic; Commander's Sphere, Friendly Teddy, Aetherize and broader legend/equipment/tutor/reanimation/Ayula support remain unsupported.",
+    "Handoff metadata still says 'No push yet' though the repair head is on PR46; nonblocking stale sentence, not a reason to restart implementation.",
+    "No original #17 acceptance, merge/closure, or release/#26/#32 unlock."
+  ]
+}

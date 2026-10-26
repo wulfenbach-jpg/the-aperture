@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-10-26T18:23:59.451426+00:00",
+  "results": [
+    {
+      "name": "Professor of Zoomancy",
+      "id": "8347f2e8-ef70-4879-860a-12f7cab25902",
+      "checks": {
+        "name": true,
+        "mana_cost": true,
+        "oracle_text": true,
+        "type_line": true,
+        "power": true,
+        "toughness": true,
+        "color_identity": true
+      }
+    },
+    {
+      "name": "Rampaging Baloths",
+      "id": "84aa18de-6acc-46cc-8e28-3046790a6751",
+      "checks": {
+        "name": true,
+        "mana_cost": true,
+        "oracle_text": true,
+        "type_line": true,
+        "power": true,
+        "toughness": true,
+        "color_identity": true
+      }
+    },
+    {
+      "name": "Sazh's Chocobo",
+      "id": "dda6b4d0-1b60-46b0-b321-b9ffe15afff4",
+      "checks": {
+        "name": true,
+        "mana_cost": true,
+        "oracle_text": true,
+        "type_line": true,
+        "power": true,
+        "toughness": true,
+        "color_identity": true
+      }
+    }
+  ]
+}

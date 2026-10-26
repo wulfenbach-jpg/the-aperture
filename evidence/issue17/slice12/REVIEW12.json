@@ -1,0 +1,77 @@
+{
+  "review_outcome": "REQUEST_CHANGES",
+  "reviewed_head": "9ec90aa7ff45d9d20981321b64da16234ba0b776",
+  "base": "c10ebfe",
+  "full_issue17_accepted": false,
+  "findings": [
+    {
+      "severity": "high",
+      "file": "crates/core/src/engine.rs (leave_game/validate interaction); evidence/issue17/slice12/save.json",
+      "summary": "Session save roundtrip is broken for the representative artifact package when a player is eliminated. A freshly written save is rejected on reload because a token owned by the departing player remains in Zone::Removed and state validation forbids tokens off the battlefield. The writer's handoff claim that save replay matches is false for both the retained save and a fresh save-out.",
+      "repro": "target/release/aperture-cli.exe replay --file evidence/issue17/slice12/demo-replay.json --save-out evidence/issue17/slice12-review-demo-save.json -> save written, digest d3eade58f133. Then target/release/aperture-cli.exe replay --file evidence/issue17/slice12-review-demo-save.json -> Error: could not construct the recorded game: invalid game state: token #541 (Goblin Token) is in the removed from the game zone; tokens cease to exist off the battlefield. The retained evidence/issue17/slice12/save.json fails the same way at token #507.",
+      "expected": "The fresh save must reload and replay to d3eade58f133 / 6981 events; a departing player's tokens must not produce an unreloadable canonical state (remove/cease them at the leave-game boundary or otherwise keep save validation consistent). Add a save roundtrip regression using the artifact package.",
+      "smallest_discriminator": "The save-out command exits 0 but replaying the written save exits 1 with the token-in-Removed validation error."
+    },
+    {
+      "severity": "medium",
+      "file": "docs/issue17-starter-corpus.md:120",
+      "summary": "The Elas paragraph still says 55 unsupported nonland names; the verified Elas missing count is 53, and the manifest interaction string already says 53.",
+      "repro": "Read manifest Elas missing_cards (53) or evidence/issue17/slice12/corpus-state.json; docs line 120 says 55.",
+      "expected": "Change the Elas prose to 53; no code change.",
+      "smallest_discriminator": "Manifest/docs mismatch 53 vs 55 for elas-sacrifice."
+    }
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice12 --test issue17_slice9 --test issue17_tokens --test catalog_pool --test card_printings --test issue13_commander_combat --locked",
+      "result": "exit 0: slice12 9/9, slice9 6/6, tokens 10/10, catalog 5/5, printings 7/7, issue13 43/43 (evidence/issue17/slice12-review-focused.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice12/demo-replay.json",
+      "result": "exit 0; 1573 actions, 6981 events, digest d3eade58f133 matches. Native demo-journey reports terminal P3, 32 turns, four exact 40-card snapshots, casts Sol Ring 7 / Mind Stone 8 / Hedron 10, mana activations 53/7/6, draw 8/9; driver is evidence-only, not product AI."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice12/demo-replay.json --save-out evidence/issue17/slice12-review-demo-save.json; aperture-cli replay --file evidence/issue17/slice12-review-demo-save.json",
+      "result": "save-out exits 0 and writes digest d3eade58f133; replaying the save exits 1 with token #541 in Removed zone. Retained slice12/save.json fails likewise at token #507."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice8/game.replay.json",
+      "result": "exit 0; old digest ffbeaee0db38 / 6087 events unchanged."
+    },
+    {
+      "command": "read native-source-check.json and slice12-sourced.json",
+      "result": "Sol Ring, Mind Stone and Hedron Archive all six live fields match; Commander's Sphere remains absent/excluded. Catalog 119, union 459 = 107 supported + 352 missing; manifest arrays match; desired deck files unchanged."
+    },
+    {
+      "command": "read docs/manifest",
+      "result": "docs correctly state 107/352 and Krenko 48, but Elas still has stale 55 instead of manifest 53; artifact behavior is covered by focused tests, not by the unmodified product heuristic (which casts zero artifacts)."
+    }
+  ],
+  "journey": {
+    "seed": 1201,
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1573,
+    "turns": 32,
+    "events": 6981,
+    "digest": "d3eade58f133c278114cb1289b5ac42e1be51999b4179faca972ec9800fac0ec",
+    "seats": "four exact 40-card package snapshots; Krenko commander each",
+    "replay": "matches",
+    "note": "Native evidence-only artifact-preferring driver; not product heuristic/strength evidence."
+  },
+  "reuse": [
+    "Prior approved slices1-11 and their evidence were not re-audited.",
+    "The writer's original 40-card heuristic journey (1746 steps/42 turns, digest 328dad…, zero artifact casts/activations) was retained as truthful product limitation; native demo driver evidence was inspected and independently replayed.",
+    "Bridge source check and package snapshots were reused; no full historical matrix or product-AI change."
+  ],
+  "remaining_gaps": [
+    "Full #17 remains unfinished: catalog 119, union 459 = 107 supported + 352 missing, 1 certified / 7 planned desired lists.",
+    "Artifact mana is not auto-paid by the product heuristic; the native demonstration uses an evidence-only driver and is not a strength/policy claim.",
+    "Commander's Sphere, Friendly Teddy, Aetherize and broader mechanics (legend/equipment/tutor/reanimation/Ayula text) remain unsupported/excluded.",
+    "No original #17 acceptance, merge/closure, or release/#26/#32 unlock follows from an increment verdict."
+  ]
+}
