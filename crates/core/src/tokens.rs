@@ -27,6 +27,10 @@ pub enum Keyword {
     Reach,
     /// CR 702.3: can't attack.
     Defender,
+    /// CR 702.14a: "This creature can't be blocked as long as defending player
+    /// controls an Island." Modelled as a blocking restriction only; nothing
+    /// grants or removes it, and no other landwalk variant is supported.
+    Islandwalk,
 }
 
 impl Keyword {
@@ -35,13 +39,28 @@ impl Keyword {
             Keyword::Flying => "flying",
             Keyword::Reach => "reach",
             Keyword::Defender => "defender",
+            Keyword::Islandwalk => "islandwalk",
         }
     }
 }
 
 /// CR 509.1b: a blocking creature must be able to block the attacker.
-/// Evasion is the only restriction this slice models.
-pub fn can_block(attacker: &[Keyword], blocker: &[Keyword]) -> bool {
+/// Evasion is the only restriction this slice models: flying (CR 702.9b) and
+/// islandwalk (CR 702.14b).
+///
+/// `defender_controls_island` is read from the battlefield of the player being
+/// attacked, never from the attacker's own lands, because landwalk is a
+/// property of the defending player's board (CR 702.14b).
+pub fn can_block(
+    attacker: &[Keyword],
+    blocker: &[Keyword],
+    defender_controls_island: bool,
+) -> bool {
+    // Islandwalk is checked first: it forbids every blocker, whatever keywords
+    // that blocker has, so no finite keyword list can answer it.
+    if attacker.contains(&Keyword::Islandwalk) && defender_controls_island {
+        return false;
+    }
     if !attacker.contains(&Keyword::Flying) {
         return true;
     }
@@ -50,11 +69,15 @@ pub fn can_block(attacker: &[Keyword], blocker: &[Keyword]) -> bool {
     blocker.contains(&Keyword::Flying) || blocker.contains(&Keyword::Reach)
 }
 
-/// The keyword list for a card. Pool cards have none; token cards carry theirs.
+/// The keyword list for a card. Token cards carry theirs here, and so do pool
+/// cards whose printed keyword changes blocking legality: this table is the one
+/// source the blocking path reads, so an islandwalk card is declared here rather
+/// than in a `CardDef` flag that no pair check consults.
 pub fn keywords(card: CardId) -> &'static [Keyword] {
     match card {
         CardId::SpiritToken | CardId::DrakeToken => &[Keyword::Flying],
         CardId::JaddiOffshoot => &[Keyword::Defender],
+        CardId::PaleBears | CardId::RiverBear => &[Keyword::Islandwalk],
         _ => &[],
     }
 }
@@ -184,12 +207,28 @@ mod tests {
 
     #[test]
     fn flying_is_blocked_only_by_flying_or_reach() {
-        assert!(can_block(&[], &[]));
-        assert!(can_block(&[Keyword::Defender], &[]));
-        assert!(!can_block(&[Keyword::Flying], &[]));
-        assert!(!can_block(&[Keyword::Flying], &[Keyword::Defender]));
-        assert!(can_block(&[Keyword::Flying], &[Keyword::Flying]));
-        assert!(can_block(&[Keyword::Flying], &[Keyword::Reach]));
+        assert!(can_block(&[], &[], false));
+        assert!(can_block(&[Keyword::Defender], &[], false));
+        assert!(!can_block(&[Keyword::Flying], &[], false));
+        assert!(!can_block(&[Keyword::Flying], &[Keyword::Defender], false));
+        assert!(can_block(&[Keyword::Flying], &[Keyword::Flying], false));
+        assert!(can_block(&[Keyword::Flying], &[Keyword::Reach], false));
+    }
+
+    #[test]
+    fn islandwalk_forbids_every_blocker_while_the_defender_controls_an_island() {
+        // CR 702.14b: no blocker is legal, whatever its keywords.
+        assert!(!can_block(&[Keyword::Islandwalk], &[], true));
+        assert!(!can_block(&[Keyword::Islandwalk], &[Keyword::Reach], true));
+        // Without an Island on the defending board the restriction is inert.
+        assert!(can_block(&[Keyword::Islandwalk], &[], false));
+        assert!(can_block(
+            &[Keyword::Islandwalk],
+            &[Keyword::Defender],
+            false
+        ));
+        // It is not a grant: a plain creature is unaffected either way.
+        assert!(can_block(&[], &[Keyword::Islandwalk], true));
     }
 
     #[test]

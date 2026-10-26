@@ -292,9 +292,23 @@ impl CardDef {
     /// The Goblin creature subtype (CR 205.3m), read from the printed type
     /// line. Krenko counts Goblins by this predicate, tokens included.
     pub fn is_goblin(&self) -> bool {
+        self.has_subtype("Goblin")
+    }
+
+    /// A creature/land subtype (CR 205.3) from the printed type line, which is
+    /// written `Types — Subtype Subtype`. Landwalk (CR 702.14b) and tribal
+    /// counts both read subtypes here rather than special-casing a card name.
+    pub fn has_subtype(&self, subtype: &str) -> bool {
         self.type_line
             .split_once('—')
-            .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|s| s == "Goblin"))
+            .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|s| s == subtype))
+    }
+
+    /// An Island land (CR 305.6), read from the subtype so a nonbasic land with
+    /// the Island subtype counts and a card merely named "Island" elsewhere does
+    /// not. Islandwalk asks the defending player's battlefield for this.
+    pub fn is_island(&self) -> bool {
+        self.is_land() && self.has_subtype("Island")
     }
 
     pub fn is_instant(&self) -> bool {
@@ -454,6 +468,8 @@ pub enum CardId {
     ZulaportCutthroat,
     BloodArtist,
     HedronCrab,
+    PaleBears,
+    RiverBear,
     /// 1/1 vanilla Soldier token (CR 111). Never importable.
     SoldierToken,
     /// 1/1 flying Spirit token (CR 111, 702.9).

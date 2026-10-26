@@ -38,6 +38,7 @@ const SLICE8_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slic
 const SLICE9_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice9-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
 const SLICE6_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice6-sourced.json");
+const SLICE11_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice11-sourced.json");
 
 fn starter_new_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
@@ -110,6 +111,11 @@ fn slice8_cards() -> Vec<Value> {
 
 fn slice9_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE9_SOURCED).expect("sourced slice9 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice11_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE11_SOURCED).expect("sourced slice11 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -404,6 +410,71 @@ fn every_slice4_card_matches_its_recorded_printing_and_keywords() {
     }
 }
 
+/// Slice 11 adds two cards whose printed text is Islandwalk, so the catalog must
+/// agree with the printing on the keyword *and* on the table the blocking path
+/// consults. A card that prints Islandwalk while the engine lets it be blocked,
+/// or one that is unblockable without printing it, fails here.
+#[test]
+fn every_slice11_card_matches_its_recorded_printing_and_islandwalk() {
+    let cards = slice11_cards();
+    assert_eq!(cards.len(), 2, "slice 11 adds two sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let id = catalog::by_name(name).unwrap_or_else(|| panic!("{name} is not in the pool"));
+        let def = id.def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str(),
+            "{name} toughness"
+        );
+        assert_eq!(
+            def.oracle.matches("Islandwalk").count(),
+            1,
+            "{name} prints exactly one evasion keyword"
+        );
+        assert_eq!(
+            aperture_core::tokens::keywords(id),
+            &[aperture_core::tokens::Keyword::Islandwalk],
+            "{name} must be islandwalk in the table the blocker check reads"
+        );
+        assert_eq!(
+            record["distinct_printed_texts"].as_u64(),
+            Some(1),
+            "{name} wording is identical across its printings"
+        );
+        assert!(record["prints"].as_u64().unwrap_or(0) >= 1);
+        assert_eq!(
+            sourced_text(&record, "printing_set"),
+            record["printing"]["set"].as_str().expect("set"),
+            "{name} records the set it was copied from"
+        );
+        assert!(
+            sourced_text(&record, "scryfall_uri").starts_with("https://scryfall.com/card/"),
+            "{name} records a printable source"
+        );
+    }
+}
+
 #[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
     let starter: Vec<Value> = starter_new_cards()
@@ -417,6 +488,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice6_cards())
         .chain(slice8_cards())
         .chain(slice9_cards())
+        .chain(slice11_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

@@ -397,3 +397,27 @@ Auras, planeswalkers and nonbasic lands are absent; native table, trainer,
 playing strength and arbitrary Archidekt compatibility remain non-goals. The
 credential is a bounded commander-combat practice game under the built-in
 heuristic, not the Commander format and not a strength claim.
+
+## 13. Issue 17 corpus slice 11 — islandwalk, and one snapshot hash basis
+
+Two sourced cards close part of the Ayula gap: `Pale Bears` ({2}{G} 2/2) and
+`River Bear` ({3}{G} 3/3), both printing exactly
+"Islandwalk (This creature can't be blocked as long as defending player controls
+an Island.)" from Scryfall (ice 256 and 9ed 266; one distinct printed text across
+1 and 4 printings; `fixtures/starter-corpus/slice11-sourced.json`, retrieved
+2026-10-26). The engine now models CR 702.14b: `can_block` takes whether the
+*defending* player controls an Island, the greedy blocking plan never offers an
+illegal islandwalk block, and a forged block is refused with a message naming
+the keyword. Pool size 114 → 116; the eight-list union is 459 names with 104
+supported and 355 missing; `ayula-bear-counters` has 44 missing. Still **1
+certified / 0 more** of eight.
+
+The `certify` snapshot hash now has one basis: `aperture_core::digest::
+normalize_snapshot_text` /`snapshot_digest` decode the file as UTF-8 and fold
+CRLF to LF, and the command, the core certification test and the CLI acceptance
+test all use it. Previously the command hashed normalized text while the CLI test
+hashed raw checkout bytes, so the same 1444-byte list certified as `4312ab2a` on
+an LF checkout and `1fbaf76e` on the CRLF Windows runner — the Windows CI
+failure at `7d6c62e`. A new control re-encodes the identical list with CRLF and
+requires the same snapshot hash.
+

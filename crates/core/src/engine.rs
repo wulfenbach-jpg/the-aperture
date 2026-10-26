@@ -2192,18 +2192,33 @@ impl Game {
                 ));
             }
             // CR 509.1b: the pair must be legal, not just each object. Flying is
-            // the only evasion this slice models (CR 702.9b, 702.17b).
+            // the only evasion this slice models (CR 702.9b, 702.17b), plus
+            // islandwalk on the defending player's own board (CR 702.14b).
             let attacker = self.state.object(block.attacker);
             let blocker = self.state.object(block.blocker);
-            if !crate::tokens::can_block(attacker.keywords(), blocker.keywords()) {
-                return Err(EngineError::illegal(
-                    "declare blockers",
+            let defender_controls_island = self.controls_island(player);
+            if !crate::tokens::can_block(
+                attacker.keywords(),
+                blocker.keywords(),
+                defender_controls_island,
+            ) {
+                let reason = if attacker
+                    .keywords()
+                    .contains(&crate::tokens::Keyword::Islandwalk)
+                    && defender_controls_island
+                {
+                    format!(
+                        "{} has islandwalk and you control an Island, so it can't be blocked (CR 702.14b)",
+                        attacker.name()
+                    )
+                } else {
                     format!(
                         "{} cannot block {} without flying or reach (CR 509.1b, 702.9b)",
                         blocker.name(),
                         attacker.name()
-                    ),
-                ));
+                    )
+                };
+                return Err(EngineError::illegal("declare blockers", reason));
             }
         }
         Ok(())
@@ -2238,6 +2253,15 @@ impl Game {
             })
             .map(|o| o.id)
             .collect()
+    }
+
+    /// CR 702.14b: whether `player` controls an Island land. Islandwalk reads
+    /// this from the defending player's battlefield only; the attacker's own
+    /// lands never matter.
+    fn controls_island(&self, player: PlayerId) -> bool {
+        self.state.objects.values().any(|o| {
+            o.zone == Zone::Battlefield && o.controller == player && o.card.def().is_island()
+        })
     }
 
     // --------------------------------------------------------------- mutation
@@ -5683,9 +5707,14 @@ impl Game {
                 continue;
             };
             // Only offer a pair the rules actually allow (CR 509.1b).
+            let defender_controls_island = self.controls_island(player);
             let Some((attacker, _)) = attackers.iter().find(|(id, _)| {
                 self.state.try_object(*id).is_some_and(|a| {
-                    crate::tokens::can_block(a.keywords(), blocker_object.keywords())
+                    crate::tokens::can_block(
+                        a.keywords(),
+                        blocker_object.keywords(),
+                        defender_controls_island,
+                    )
                 })
             }) else {
                 continue;

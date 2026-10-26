@@ -1,0 +1,52 @@
+{
+  "schema": "aperture.corpus-sources/1",
+  "slice": 11,
+  "retrieved_at_utc": "2026-10-26T16:34:49.826901+00:00",
+  "source": "https://api.scryfall.com/cards/search?unique=prints",
+  "cards": [
+    {
+      "name": "Pale Bears",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Landwalk",
+        "Islandwalk"
+      ],
+      "printing": {
+        "set": "ice",
+        "collector_number": "256"
+      },
+      "printing_set": "ice",
+      "prints": 1,
+      "distinct_printed_texts": 1,
+      "catalog_oracle_matches_printed": true,
+      "scryfall_uri": "https://scryfall.com/card/ice/256/pale-bears?utm_source=api"
+    },
+    {
+      "name": "River Bear",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Landwalk",
+        "Islandwalk"
+      ],
+      "printing": {
+        "set": "9ed",
+        "collector_number": "266"
+      },
+      "printing_set": "9ed",
+      "prints": 4,
+      "distinct_printed_texts": 1,
+      "catalog_oracle_matches_printed": true,
+      "scryfall_uri": "https://scryfall.com/card/9ed/266/river-bear?utm_source=api"
+    }
+  ]
+}

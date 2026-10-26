@@ -174,7 +174,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 114] = [
+pub static CARDS: [CardDef; 116] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -815,6 +815,18 @@ pub static CARDS: [CardDef; 114] = [
         HedronCrab, "Hedron Crab", cost: Some("{U}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Crab", power: Some(0), toughness: Some(2),
         oracle: "Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)",
+        spell: None
+    ),
+    card!(
+        PaleBears, "Pale Bears", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+        spell: None
+    ),
+    card!(
+        RiverBear, "River Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(3),
+        oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
         spell: None
     ),
 ];
