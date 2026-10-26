@@ -1,0 +1,13 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-16\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.17s
+     Running unittests src\lib.rs (target\debug\deps\aperture_core-c91fdc64247c3b50.exe)
+
+running 5 tests
+test counters::tests::removing_more_counters_than_held_clamps_and_never_goes_negative ... ok
+test counters::tests::counters_store_only_nonzero_kinds_and_sum_canonically ... ok
+test counters::tests::paired_power_counters_annihilate_equally ... ok
+test counters::tests::serde_round_trip_is_canonical ... ok
+test counters::tests::deserialization_refuses_non_canonical_counters ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+

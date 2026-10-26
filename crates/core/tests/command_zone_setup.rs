@@ -173,6 +173,7 @@ fn add_permanent(
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: aperture_core::counters::Counters::default(),
         },
     );
     id
@@ -362,6 +363,7 @@ fn add_to_hand(
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: aperture_core::counters::Counters::default(),
         },
     );
     game.state.players[p as usize].hand.push(id);

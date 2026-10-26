@@ -129,6 +129,56 @@ fn candidates_are_only_offered_actions() {
     }
 }
 
+/// A card revealed from a hidden zone is public, but the reconstruction
+/// rebuilds the zone lists it lives in and keeps only the real counts, so the
+/// search world models no reveal. This guards that a live reveal neither
+/// breaks the world nor turns into a pointed refusal, and that every candidate
+/// is still an engine-offered action. It does NOT assert the world's own reveal
+/// state or hidden-identity independence: the analysis exposes neither, and the
+/// naive "copy the revealed ids only" variant would also pass.
+#[test]
+fn a_live_reveal_leaves_the_search_world_runnable_and_legal() {
+    let mut game = common::fixture(11)
+        .battlefield(P0, &[CardId::Forest, CardId::Mountain])
+        .hand(P0, &[CardId::GrizzlyBears])
+        .library(P0, &[CardId::Shock, CardId::Mountain, CardId::Forest])
+        .library(P1, &[CardId::Island; 3])
+        .hand(P1, &[CardId::Island, CardId::Island])
+        .mana(P0, red_pool())
+        .main(P0, aperture_core::state::Step::PrecombatMain)
+        .build();
+    let revealed = game.state.reveal_top(P0, 1);
+    assert_eq!(revealed.len(), 1, "the engine reveals exactly one card");
+    let view = game.view_for(P0, &[]);
+    assert_eq!(
+        view.revealed.len(),
+        1,
+        "a live reveal is public in the masked view"
+    );
+
+    let outcome = search(
+        &game,
+        &view,
+        &Knowledge { own_deck: None },
+        &small_config(),
+        &SearchCancellation::new(),
+    )
+    .expect("a live reveal must not make the search unavailable");
+    assert!(
+        !outcome.analysis.candidates.is_empty(),
+        "the search must still offer scored, engine-legal candidates"
+    );
+    for candidate in &outcome.analysis.candidates {
+        assert!(
+            view.legal
+                .iter()
+                .any(|legal| legal.action == candidate.action),
+            "candidate \"{}\" is not in the engine's offer",
+            candidate.label
+        );
+    }
+}
+
 /// The identity-leak pair test: two real worlds identical except the actual
 /// hidden contents of the opponent's hand must give identical reports, because
 /// the search model re-deals hidden zones from the disclosed belief deck. Any

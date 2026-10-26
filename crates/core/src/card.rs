@@ -240,6 +240,11 @@ pub enum CardId {
     MendingHands,
     AngrathsMarauders,
     WightOfPrecinctSix,
+    /// 1/1 vanilla Soldier token (CR 111). Never importable: it is absent from
+    /// [`crate::catalog::CARDS`] and only reachable from `GameState::create_token`.
+    SoldierToken,
+    /// 1/1 flying Spirit token (CR 111, 702.9).
+    SpiritToken,
 }
 
 impl CardId {
@@ -260,6 +265,12 @@ impl CardId {
     /// this slice.
     pub fn is_supported_commander(self) -> bool {
         matches!(self, CardId::IsamaruHoundOfKonda)
+    }
+
+    /// True for a token's synthetic characteristic card (CR 111.1: a token is
+    /// not a card, but it needs characteristics and an identity).
+    pub fn is_token(self) -> bool {
+        matches!(self, CardId::SoldierToken | CardId::SpiritToken)
     }
 }
 

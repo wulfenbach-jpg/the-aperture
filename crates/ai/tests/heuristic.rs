@@ -223,6 +223,7 @@ fn bottoms_a_surplus_land_when_scrying() {
                 pump_power: 0,
                 pump_toughness: 0,
                 plus_one_counters: 0,
+                counters: aperture_core::counters::Counters::default(),
             },
         );
     }
@@ -444,6 +445,7 @@ fn heuristic_uses_legal_command_zone_casts_instead_of_passing() {
             pump_power: 0,
             pump_toughness: 0,
             plus_one_counters: 0,
+            counters: aperture_core::counters::Counters::default(),
         },
     );
     let view = game.view_for(P0, &[]);

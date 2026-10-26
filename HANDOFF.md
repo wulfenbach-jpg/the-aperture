@@ -302,11 +302,41 @@ capture even with `--decider`.
   doubling or copying, and same-controller trigger ordering as a *choice*
   (simultaneous triggers from one controller are ordered by source arrival
   order, not by CR 603.3b player choice).
-* Static abilities, replacement/prevention effects, tokens, planeswalkers,
-  battles, milling/tutoring/searching, library manipulation beyond scry/surveil
-  1, multi-face cards.
-* Counters are stored and displayed but do not affect rules math
-  (`Object.plus_one_counters`); no layers — a single until-end-of-turn pump only.
+* Static abilities, replacement/prevention effects, planeswalkers, battles,
+  milling/tutoring/searching *as card text*, library manipulation beyond
+  scry/surveil 1, multi-face cards.
+* Counters are typed rules objects (`Object.counters`, CR 122): +1/+1 and
+  -1/-1 change power/toughness, feed combat and state-based actions, clear on
+  every zone change and are public in every projection. A permanent holding both
+  kinds loses N of each at every state-based-action checkpoint (CR 704.5q). No
+  card in the 28-card pool creates a counter yet; the *sandbox*
+  `Object.plus_one_counters` display field is still storage only. No layers — a
+  single until-end-of-turn pump.
+* **Player counters do not exist**: the issue named "object and player
+  counters", but only object counters are typed and stored. Nothing in the 28-card
+  pool puts a counter on a player (no poison, experience, energy or commander tax
+  counter is modelled), so player counters are deliberately absent rather than
+  approximated.
+* Save/replay compatibility at `SAVE_VERSION` 10 / `REPLAY_VERSION` 6: a pre-#16
+  save has no `counters` and no `revealed` key. Both fields are
+  `#[serde(default)]`, so such a save still loads with empty counters, and an
+  empty value is skipped when serializing, so a state that uses neither keeps its
+  pre-#16 serialized form and digest — old replays still verify instead of
+  failing as digest mismatches. A malformed counters payload (zero-count kind,
+  unknown kind, negative count, wrong JSON type) is refused as a load error and
+  never silently repaired.
+* Creature tokens are rules objects (`crates/core/src/tokens.rs`, CR 111):
+  owned/controlled by their creator, summoning sick, cease to exist on any
+  zone change and never enter a graveyard/hand/library/stack. Token
+  characteristics live outside the importable pool, so a token can never be
+  imported or cast, and no pool card creates one yet.
+* Keywords are typed and enforced where the engine can observe them (flying /
+  reach blocking, defender attacking). No card in the 28-card pool prints a
+  keyword; only the flying Spirit token carries one today.
+* Library operations `mill`, `shuffle`, `reveal`, `tap`/`untap` exist as
+  deterministic state primitives (CR 701.13/701.16/701.20/701.26) with
+  information-safe projections; no pool card uses them yet, and `mill` stops
+  before a commander so it can never bypass the CR 903.9a owner choice.
 * Object identity is stable across zone changes (real Magic creates a new object
   per zone change); unobservable in this pool but relevant before scaling cards.
 * Damage assignment for a multi-blocked attacker is automatic and lethal-first.

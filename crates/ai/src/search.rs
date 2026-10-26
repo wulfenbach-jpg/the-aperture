@@ -40,6 +40,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
+use aperture_core::counters::Counters;
 use aperture_core::rng::Pcg32;
 use aperture_core::state::{GameState, Object, Player, Turn};
 use aperture_core::view::{CardView, OpponentView, PendingKind, PlayerView};
@@ -509,6 +510,14 @@ impl BeliefFiller {
 /// counts, seat names/deck labels). Opponent hands and library membership are
 /// never read; they are re-dealt from the belief deck with the real counts.
 /// No seat's real library order is ever used.
+///
+/// Typed counters (CR 122) travel with the copied public objects, so a
+/// permanent's counters and its counter-adjusted characteristics survive into
+/// the world; fabricated belief objects carry none. Cards revealed from a
+/// hidden zone are deliberately NOT modelled: a reveal stays inside a zone list
+/// this function rebuilds (re-dealt belief entries for opponents, real ids for
+/// the viewer's own hand or a supplied known library), so the world has no
+/// place to put the id and reports no reveals at all.
 fn reconstruct(
     real: &Game,
     view: &PlayerView,
@@ -550,6 +559,9 @@ fn reconstruct(
         pump_power: 0,
         pump_toughness: 0,
         plus_one_counters: 0,
+        // A fabricated belief object is unknown by construction: no counter
+        // information is invented for it (CR 122 counters are real state).
+        counters: Counters::new(),
     };
 
     let mut players = Vec::with_capacity(real_state.players.len());
@@ -687,6 +699,16 @@ fn reconstruct(
         commander_damage: real_state.commander_damage.clone(),
         retired_commanders: real_state.retired_commanders.clone(),
         prevent_all_combat_damage_turn: real_state.prevent_all_combat_damage_turn,
+        // Deliberate simplification: a card revealed from a hidden zone is
+        // public information, but its id stays inside a zone list this
+        // reconstruction rebuilds — re-dealt belief entries for the opponent,
+        // real ids only for the viewer's own hand or a supplied known library.
+        // The ledger therefore never copies a revealed object, and naming an id
+        // the world does not place would leave a state that fails the engine's
+        // zone-container invariant (and is currently masked by the
+        // `revealed_hidden` projection). The world models no reveals; nothing
+        // hidden is read to build this field.
+        revealed: Vec::new(),
         players,
         stack: Vec::new(),
         turn,

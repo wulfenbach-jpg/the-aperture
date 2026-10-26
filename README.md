@@ -262,12 +262,16 @@ networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
 Earth sacrifice candidate, triggered abilities, activated abilities other
-than basic-land mana abilities, static abilities beyond the two supported forms,
-replacement effects beyond damage doubling, redirection,
-tokens, planeswalkers, counters as rules objects (the sandbox counter display is
-storage only), milling/tutoring/libraries as
+than basic-land mana abilities, static abilities beyond the supported forms,
+replacement effects beyond the implemented CR 614/615/616 set, full redirection,
+planeswalkers, counters and tokens *as card text* (the rules layer implements
+typed +1/+1 and -1/-1 counters, creature tokens with correct ownership/
+cessation and the flying/reach/defender keywords, but no card in the 28-card
+pool creates or prints one; the sandbox counter display is storage only; player
+counters do not exist),
+milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
-layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
+layers 4–6/7b/7d, Arcane/splice interactions, and any
 card outside this branch candidate's 31-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/

@@ -4403,6 +4403,9 @@ Deck
                         pump_power: 0,
                         pump_toughness: 0,
                         plus_one_counters: 0,
+                        // A synthetic board-filling permanent starts with no
+                        // typed counters; this fixture only needs board bulk.
+                        counters: aperture_core::counters::Counters::new(),
                     },
                 );
             }

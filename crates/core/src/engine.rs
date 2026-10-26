@@ -75,6 +75,7 @@ fn blank_object(id: ObjectId, card: CardId, owner: PlayerId) -> Object {
         pump_power: 0,
         pump_toughness: 0,
         plus_one_counters: 0,
+        counters: crate::counters::Counters::default(),
     }
 }
 
@@ -283,11 +284,15 @@ impl Game {
             next_object: 1,
             trigger_queue: Vec::new(),
             next_trigger_seq: 0,
+            revealed: Vec::new(),
             activation_uses: BTreeMap::new(),
             effects: Vec::new(),
             shields: Vec::new(),
-            next_effect: 1,
-            next_timestamp: 1,
+            // Allocator cursors start at zero so a state with no live effect has
+            // exactly the canonical JSON it had before the effect pipeline
+            // existed; recorded save/replay digests therefore stay verifiable.
+            next_effect: 0,
+            next_timestamp: 0,
             revision: 0,
             decision: 0,
             outcome: None,
@@ -399,6 +404,21 @@ impl Game {
         let id = self.state.next_effect;
         self.state.next_effect += 1;
         id
+    }
+
+    /// Drop the effect/timestamp allocator cursors once nothing is live.
+    ///
+    /// The canonical digest is SHA-256 over the serialized state, so a cursor
+    /// left behind by an effect that has already ended would permanently change
+    /// the serialization of an otherwise identical position. Resetting while no
+    /// effect exists keeps such a position byte-identical to the same position
+    /// recorded before the effect pipeline existed, which is what lets earlier
+    /// saves and replays still verify. A live effect always keeps its cursor.
+    fn release_idle_effect_cursors(&mut self) {
+        if self.state.effects.is_empty() && self.state.shields.is_empty() {
+            self.state.next_effect = 0;
+            self.state.next_timestamp = 0;
+        }
     }
 
     /// How many cards a printed count-based static ability counts for the
@@ -679,6 +699,7 @@ impl Game {
             let now_remaining = self.state.shields[index].remaining;
             if self.state.shields[index].exhausted() {
                 self.state.shields.remove(index);
+                self.release_idle_effect_cursors();
             }
             events.push(Event::DamagePrevented {
                 source,
@@ -874,6 +895,13 @@ impl Game {
         let owner = object.owner;
         let commander = object.commander;
         let old_id = object.id;
+        // CR 111.7: a token that leaves the battlefield ceases to exist. It is
+        // never a card, so it must not be re-keyed, inserted into a zone list or
+        // put on the stack; callers see the stale id and their zone move is a
+        // no-op. Nothing is inserted, so the token simply stops existing.
+        if object.card.is_token() && zone != Zone::Battlefield {
+            return old_id;
+        }
         let new_id = if commander.is_some() {
             let id = ObjectId(self.state.next_object);
             self.state.next_object += 1;
@@ -883,6 +911,9 @@ impl Game {
             old_id
         };
         object.zone = zone;
+        // CR 122.2: counters cease to exist with the object that carried them,
+        // so a zone change can never deliver counters to the new object.
+        object.counters.clear();
         if commander.is_some() {
             // A zone change creates a new object (CR 400.7): no previous
             // battlefield-only memory may follow the commander.
@@ -1074,6 +1105,15 @@ impl Game {
         };
         let owner = object.owner;
         let card = object.card;
+        // CR 111.7: a token never reaches a library; it ceases to exist.
+        if object.card.is_token() {
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "token {card} ceases to exist instead of moving to the library (CR 111.7)"
+                ),
+            });
+            return;
+        }
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -1091,10 +1131,19 @@ impl Game {
     fn move_to_exile(&mut self, id: ObjectId, events: &mut Vec<Event>) -> Option<ObjectId> {
         let object = self.detach_object(id)?;
         let card = object.card;
+        let token = object.card.is_token();
         let new_id = self.insert_object(object, Zone::Exile);
-        events.push(Event::StateBasedAction {
-            description: format!("{card} ({new_id}) is exiled"),
-        });
+        if token {
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "token {card} ceases to exist instead of being exiled (CR 111.7)"
+                ),
+            });
+        } else {
+            events.push(Event::StateBasedAction {
+                description: format!("{card} ({new_id}) is exiled"),
+            });
+        }
         Some(new_id)
     }
 
@@ -1103,6 +1152,15 @@ impl Game {
             return;
         };
         let card = object.card;
+        // CR 111.7: a token returned to a hand ceases to exist instead.
+        if object.card.is_token() {
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "token {card} ceases to exist instead of moving to a hand (CR 111.7)"
+                ),
+            });
+            return;
+        }
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -1118,6 +1176,10 @@ impl Game {
         let dying = self.state.try_object(id).and_then(|object| {
             (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
         });
+        let token = self
+            .state
+            .try_object(id)
+            .is_some_and(|object| object.card.is_token());
         let Some(mut object) = self.detach_object(id) else {
             return;
         };
@@ -1128,10 +1190,18 @@ impl Game {
         object.pump_power = 0;
         object.pump_toughness = 0;
         let new_id = self.insert_object(object, Zone::Graveyard);
-        events.push(Event::Destroyed {
-            object: new_id,
-            card,
-        });
+        if token {
+            // CR 111.7: the token is put into the graveyard as it dies, then
+            // ceases to exist; it is never a card and never stays in a zone.
+            events.push(Event::StateBasedAction {
+                description: format!("token {card} dies and ceases to exist (CR 111.7)"),
+            });
+        } else {
+            events.push(Event::Destroyed {
+                object: new_id,
+                card,
+            });
+        }
         // CR 700.4 + 603.6c: a permanent put into a graveyard from the
         // battlefield "dies". The trigger keeps the card and its controller as
         // last known information; `source` is the graveyard object.
@@ -1944,6 +2014,20 @@ impl Game {
                     ),
                 ));
             }
+            // CR 509.1b: the pair must be legal, not just each object. Flying is
+            // the only evasion this slice models (CR 702.9b, 702.17b).
+            let attacker = self.state.object(block.attacker);
+            let blocker = self.state.object(block.blocker);
+            if !crate::tokens::can_block(attacker.keywords(), blocker.keywords()) {
+                return Err(EngineError::illegal(
+                    "declare blockers",
+                    format!(
+                        "{} cannot block {} without flying or reach (CR 509.1b, 702.9b)",
+                        blocker.name(),
+                        attacker.name()
+                    ),
+                ));
+            }
         }
         Ok(())
     }
@@ -1958,6 +2042,8 @@ impl Game {
                     && o.is_creature()
                     && !o.tapped
                     && !o.summoning_sick
+                    // CR 702.3b: defender can't attack.
+                    && !o.has_keyword(crate::tokens::Keyword::Defender)
             })
             .map(|o| o.id)
             .collect()
@@ -2481,6 +2567,9 @@ impl Game {
         object.pump_power = 0;
         object.pump_toughness = 0;
         object.plus_one_counters = 0;
+        // CR 122.2: the stack object is not the battlefield permanent, so it can
+        // never carry the counters it had (defensive: only permanents do).
+        object.counters.clear();
         self.state.objects.insert(new_id, object);
         new_id
     }
@@ -3113,6 +3202,7 @@ impl Game {
             .retain(|effect| effect.duration != EffectDuration::UntilEndOfTurn);
         let expired_shields = self.state.shields.len();
         self.state.shields.clear();
+        self.release_idle_effect_cursors();
         if expired_effects > 0 || expired_shields > 0 {
             changed = true;
         }
@@ -3469,6 +3559,35 @@ impl Game {
             }
             for (p, _) in &loss_reasons {
                 self.leave_game(*p, events);
+                changed = true;
+            }
+
+            // CR 704.5q: a permanent that holds both +1/+1 and -1/-1 counters
+            // loses N of each, where N is the smaller count. Removing an equal
+            // number of both kinds leaves power and toughness unchanged, so this
+            // action neither causes nor prevents a CR 704.5f/704.5g death; it is
+            // applied at this same checkpoint so no stored state keeps an
+            // illegal pair. Iteration is by object id, so the trace is stable.
+            let mut annihilated: Vec<(CardId, u32)> = Vec::new();
+            for object in self.state.objects.values_mut() {
+                if object.zone != Zone::Battlefield {
+                    continue;
+                }
+                if let Some(removed) = object.counters.annihilate() {
+                    annihilated.push((object.card, removed));
+                }
+            }
+            if !annihilated.is_empty() {
+                let affected: Vec<String> = annihilated
+                    .iter()
+                    .map(|(card, removed)| format!("{card} ({removed} +1/+1 and {removed} -1/-1)"))
+                    .collect();
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "paired +1/+1 and -1/-1 counters were removed from {} (CR 704.5q)",
+                        affected.join(", ")
+                    ),
+                });
                 changed = true;
             }
 
@@ -4183,8 +4302,13 @@ impl Game {
             Effect::ExileAndGainLife => {
                 for target in &item.targets {
                     if let Target::Permanent(id) = target {
-                        let (controller, power, card) = match self.state.try_object(*id) {
-                            Some(object) => (object.controller, object.power(), object.card),
+                        let (controller, power, card, token) = match self.state.try_object(*id) {
+                            Some(object) => (
+                                object.controller,
+                                object.power(),
+                                object.card,
+                                object.card.is_token(),
+                            ),
                             None => continue,
                         };
                         let exiled = self.move_to_exile(*id, events);
@@ -4195,9 +4319,18 @@ impl Game {
                             delta: power,
                             life,
                         });
+                        // CR 111.7: a token that leaves the battlefield ceases to
+                        // exist, so the follow-up line must not claim an exile
+                        // that the token never became part of. Life is still
+                        // gained from its last known power (CR 608.2h).
+                        let fate = if token {
+                            "ceases to exist instead of being exiled (CR 111.7)"
+                        } else {
+                            "is exiled"
+                        };
                         events.push(Event::StateBasedAction {
                             description: format!(
-                                "{card} is exiled; P{controller} gains {power} life (now {life})"
+                                "{card} {fate}; P{controller} gains {power} life (now {life})"
                             ),
                         });
                         let _ = exiled;
@@ -4948,8 +5081,16 @@ impl Game {
         attackers.sort_by_key(|(id, power)| (std::cmp::Reverse(*power), id.0));
         let mut out = Vec::new();
         for blocker in self.legal_blockers(player) {
-            let Some((attacker, _)) = attackers.first() else {
-                break;
+            let Some(blocker_object) = self.state.try_object(blocker) else {
+                continue;
+            };
+            // Only offer a pair the rules actually allow (CR 509.1b).
+            let Some((attacker, _)) = attackers.iter().find(|(id, _)| {
+                self.state.try_object(*id).is_some_and(|a| {
+                    crate::tokens::can_block(a.keywords(), blocker_object.keywords())
+                })
+            }) else {
+                continue;
             };
             out.push(BlockDecl {
                 blocker,

@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 use crate::card::{CardId, Effect};
+use crate::counters::Counters;
 use crate::error::EngineError;
 use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
 use crate::mana::ManaPool;
@@ -457,9 +458,19 @@ pub struct Object {
     /// fields are owned by the counters lane, so this lane adds none.
     pub pump_power: i32,
     pub pump_toughness: i32,
-    /// +1/+1 counters are stored for display and sandbox editing only. They do
-    /// not affect combat math yet; see HANDOFF.md "not implemented".
+    /// Legacy sandbox storage used by the native UI's editing tools only. The
+    /// rules layer never reads it: typed counters live in `Object::counters`.
     pub plus_one_counters: u32,
+    /// Typed counters on this permanent (CR 122). Only battlefield permanents
+    /// may carry counters; leaving the battlefield clears them (CR 122.2) and
+    /// the projections expose them as public information.
+    ///
+    /// `#[serde(default)]` keeps every pre-#16 v10 save loadable (counters were
+    /// simply absent then), and `skip_serializing_if` keeps the serialized form
+    /// of a counter-free state byte-identical to that format, so the canonical
+    /// digest of an unchanged game does not move.
+    #[serde(default, skip_serializing_if = "Counters::is_empty")]
+    pub counters: Counters,
 }
 
 impl Object {
@@ -467,16 +478,35 @@ impl Object {
         self.card.def().is_creature()
     }
 
+    /// CR 111.7: a token is not a card and ceases to exist when it leaves the
+    /// battlefield.
+    pub fn is_token(&self) -> bool {
+        self.card.is_token()
+    }
+
+    /// CR 613.4c: power/toughness counters modify the permanent's actual
+    /// characteristics, so combat and state-based actions see them.
     pub fn power(&self) -> i32 {
-        self.card.def().power.unwrap_or(0) + self.pump_power
+        self.card.def().power.unwrap_or(0) + self.pump_power + self.counters.power_delta()
     }
 
     pub fn toughness(&self) -> i32 {
-        self.card.def().toughness.unwrap_or(0) + self.pump_toughness
+        self.card.def().toughness.unwrap_or(0)
+            + self.pump_toughness
+            + self.counters.toughness_delta()
     }
 
     pub fn name(&self) -> &'static str {
         self.card.name()
+    }
+
+    /// Keywords this permanent has. None are printed on the 28-card pool.
+    pub fn keywords(&self) -> &'static [crate::tokens::Keyword] {
+        crate::tokens::keywords(self.card)
+    }
+
+    pub fn has_keyword(&self, keyword: crate::tokens::Keyword) -> bool {
+        self.keywords().contains(&keyword)
     }
 }
 
@@ -619,21 +649,34 @@ pub struct GameState {
     pub trigger_queue: Vec<TriggerRef>,
     /// Next arrival serial for `trigger_queue`.
     pub next_trigger_seq: u64,
+    /// Cards currently revealed from a hidden zone (CR 701.16a). Public
+    /// information for every viewer while the card stays in that hidden zone;
+    /// see `crate::view`. Serialized so save/replay keep the same visibility,
+    /// skipped when empty so a state with nothing revealed keeps the pre-#16
+    /// serialized form (and therefore its digest).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub revealed: Vec<ObjectId>,
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.
     pub activation_uses: BTreeMap<ObjectId, u8>,
     /// Continuous effects with their layer, timestamp and duration (CR 613).
     /// Serialized so a save or replay reproduces the exact layer state.
-    #[serde(default)]
+    ///
+    /// Empty collections and zero counters are skipped so a state that uses no
+    /// effect still serializes byte-for-byte as it did before the effect
+    /// pipeline existed. The canonical digest is taken over this JSON, so
+    /// skipping the empty form is what keeps pre-existing saves and replays
+    /// verifiable instead of failing as digest mismatches.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub effects: Vec<crate::layer::ContinuousEffect>,
     /// One-shot prevention shields (CR 615), in creation order.
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub shields: Vec<crate::layer::DamageShield>,
     /// Next rule-visible effect id.
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
     pub next_effect: u32,
     /// Next rule-visible timestamp (CR 613.7 order, never wall-clock).
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_zero_u64")]
     pub next_timestamp: u64,
     /// Incremented on every accepted state mutation.
     pub revision: u64,
@@ -1503,6 +1546,30 @@ impl GameState {
                     ),
                 });
             }
+            // CR 122.2: counters exist only on battlefield permanents; a save
+            // that carries counters in any other zone is not a reachable state.
+            if !object.counters.is_empty() && object.zone != Zone::Battlefield {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "object {} carries {} counter(s) in the {} zone",
+                        object.id,
+                        object.counters.describe(),
+                        object.zone.name()
+                    ),
+                });
+            }
+            // CR 111.7: a token exists only on the battlefield. It is never a
+            // card, so it can never be in a zone list or on the stack.
+            if object.card.is_token() && object.zone != Zone::Battlefield {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "token {} ({}) is in the {} zone; tokens cease to exist off the battlefield",
+                        object.id,
+                        object.card.name(),
+                        object.zone.name()
+                    ),
+                });
+            }
         }
         // Bidirectional container/identity checks. The list->object pass below
         // is not enough: a duplicated or missing zone entry, a key/object id
@@ -2058,4 +2125,15 @@ impl GameState {
         }
         self.turn.priority.filter(|p| self.is_live(*p))
     }
+}
+
+/// Serde helper: skip a zero `u32` so state written before the effect pipeline
+/// keeps its original canonical JSON (and therefore its recorded digest).
+fn is_zero_u32(value: &u32) -> bool {
+    *value == 0
+}
+
+/// Serde helper for `next_timestamp`, same reason as [`is_zero_u32`].
+fn is_zero_u64(value: &u64) -> bool {
+    *value == 0
 }
