@@ -477,3 +477,179 @@ fn commander_eligibility_is_judged_from_the_provider_type_line_only() {
         eligibility.detail
     );
 }
+
+/// The format axis is not allowed to look only at the cards this build can
+/// seat. A repeated *unsupported* nonbasic is still a singleton violation, and
+/// the provider's own type line is enough to say so.
+#[test]
+fn a_duplicated_unsupported_nonbasic_is_refused_by_the_singleton_check() {
+    let payload = json!({
+        "id": 424245,
+        "name": "Unsupported singleton probe",
+        "deckFormat": 3,
+        "private": false,
+        "categories": [{"name": "Deck", "includedInDeck": true}],
+        "cards": [
+            {"quantity": 1, "categories": ["Commander"], "card": {"oracleCard": {
+                "name": "Isamaru, Hound of Konda", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Legendary"], "types": ["Creature"], "faces": []}}},
+            {"quantity": 2, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Sol Ring", "layout": "normal", "colorIdentity": [],
+                "superTypes": [], "types": ["Artifact"], "faces": []}}},
+            {"quantity": 38, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Basic"], "types": ["Land"], "faces": []}}}
+        ]
+    })
+    .to_string();
+    let cert = certify(&normalize(&payload).unwrap(), Profile::CommanderCombat40);
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(
+        singleton.status,
+        LegalityStatus::Illegal,
+        "an unsupported repeat must not certify legal: {}",
+        singleton.detail
+    );
+    assert!(
+        singleton.detail.contains("Sol Ring x2"),
+        "detail must name the repeated card: {}",
+        singleton.detail
+    );
+    // The axes stay separate: the same entry is still an engine-support gap.
+    assert_eq!(cert.support.status, SupportStatus::Unsupported);
+    assert!(!cert.startable);
+    assert!(
+        cert.support
+            .unsupported
+            .iter()
+            .any(|c| c.name == "Sol Ring" && c.quantity == 2),
+        "unsupported report keeps the exact quantity: {:?}",
+        cert.support.unsupported
+    );
+}
+
+/// A text/file list carries no type line at all, so a repeat there cannot be
+/// examined: the honest answer is `not_certified`, never a positive `legal`.
+#[test]
+fn a_text_repeat_without_a_type_line_is_not_certified_rather_than_legal() {
+    let list = "\
+Commander
+1 Isamaru, Hound of Konda
+Deck
+2 Sol Ring
+38 Plains
+";
+    let cert = certify_text("P0 text singleton probe", list, Profile::CommanderCombat40).unwrap();
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(singleton.status, LegalityStatus::NotCertified);
+    assert!(
+        singleton.detail.contains("Sol Ring x2") && singleton.detail.contains("no type line"),
+        "detail: {}",
+        singleton.detail
+    );
+}
+
+/// The Basic exception is preserved on real facts only: a provider `Basic`
+/// supertype excuses repeats, and a supported nonbasic duplicate stays illegal.
+#[test]
+fn the_basic_exception_and_supported_duplicates_keep_their_verdicts() {
+    let payload = json!({
+        "id": 424246,
+        "name": "Basic exception probe",
+        "deckFormat": 3,
+        "private": false,
+        "categories": [{"name": "Deck", "includedInDeck": true}],
+        "cards": [
+            {"quantity": 1, "categories": ["Commander"], "card": {"oracleCard": {
+                "name": "Isamaru, Hound of Konda", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Legendary"], "types": ["Creature"], "faces": []}}},
+            {"quantity": 39, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Basic"], "types": ["Land"], "faces": []}}}
+        ]
+    })
+    .to_string();
+    let cert = certify(&normalize(&payload).unwrap(), Profile::CommanderCombat40);
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(
+        singleton.status,
+        LegalityStatus::Legal,
+        "39 Basic Plains are unlimited: {}",
+        singleton.detail
+    );
+
+    let duplicate = "\
+Commander
+1 Isamaru, Hound of Konda
+Deck
+4 Grizzly Bears
+36 Plains
+";
+    let cert = certify_text("P0 duplicate probe", duplicate, Profile::CommanderCombat40).unwrap();
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(singleton.status, LegalityStatus::Illegal);
+    assert!(
+        singleton.detail.contains("Grizzly Bears x4"),
+        "detail: {}",
+        singleton.detail
+    );
+}
+
+/// A fully supported, fully legal 100-card list is still startable: the repair
+/// must not turn an examined-and-clean deck into a refusal.
+#[test]
+fn a_supported_legal_hundred_card_list_stays_startable_after_the_singleton_repair() {
+    let payload = json!({
+        "id": 424247,
+        "name": "Supported hundred probe",
+        "deckFormat": 3,
+        "private": false,
+        "categories": [{"name": "Deck", "includedInDeck": true}],
+        "cards": [
+            {"quantity": 1, "categories": ["Commander"], "card": {"oracleCard": {
+                "name": "Isamaru, Hound of Konda", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Legendary"], "types": ["Creature"], "faces": []}}},
+            {"quantity": 97, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Basic"], "types": ["Land"], "faces": []}}},
+            {"quantity": 1, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Swords to Plowshares", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": [], "types": ["Instant"], "faces": []}}},
+            {"quantity": 1, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Mending Hands", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": [], "types": ["Instant"], "faces": []}}}
+        ]
+    })
+    .to_string();
+    let cert = certify(&normalize(&payload).unwrap(), Profile::CommanderCombat40);
+    assert_eq!(
+        cert.format.status,
+        LegalityStatus::Legal,
+        "{:?}",
+        cert.format
+    );
+    assert_eq!(cert.support.status, SupportStatus::Supported);
+    assert!(cert.startable, "refusals: {:?}", cert.refusals);
+    let plan = plan_start(&cert).expect("a legal supported list plans");
+    assert_eq!(plan.deck.size(), 99);
+}

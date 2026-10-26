@@ -362,42 +362,71 @@ pub fn certify(deck: &NormalizedDeck, profile: Profile) -> DeckCertification {
         )
     });
 
-    let mut singleton = LegalityStatus::Legal;
-    let mut singleton_detail: Vec<String> = Vec::new();
-    for entry in deck
-        .entries
-        .iter()
-        .filter(|e| classify(e, &deck.excluded_categories).0 == EntryStatus::Supported)
-    {
+    // Singleton (CR 903.5b) examines every card *in the library*, whether or not
+    // this build can seat it. Engine support is a separate axis and must never
+    // narrow a format check: skipping unsupported entries would let a repeated
+    // unsupported nonbasic certify as `legal` without ever being looked at.
+    let mut singleton_illegal: Vec<String> = Vec::new();
+    let mut singleton_unknown: Vec<String> = Vec::new();
+    for entry in deck.entries.iter().filter(|e| {
+        matches!(
+            classify(e, &deck.excluded_categories).0,
+            EntryStatus::Supported | EntryStatus::Unsupported
+        )
+    }) {
         if entry.quantity <= 1 {
             continue;
         }
-        match catalog::by_name(&entry.name) {
-            Some(id) if id.def().basic_mana.is_some() => {}
-            Some(_) => {
-                singleton = LegalityStatus::Illegal;
-                singleton_detail.push(format!("{} x{}", entry.name, entry.quantity));
-            }
-            None => {
-                singleton = worst(singleton, LegalityStatus::NotCertified);
-                singleton_detail.push(format!(
-                    "{} x{} (not in the pool)",
-                    entry.name, entry.quantity
-                ));
-            }
+        // Basics are unlimited, but only on a fact: the provider's own `Basic`
+        // supertype, or the catalog's basic-land data for a card this build
+        // implements. Absence of a type line is not a fact, so a repeated card
+        // with no type data stays not_certified instead of being called legal.
+        let provider_basic = entry
+            .supertypes
+            .iter()
+            .any(|s| s.eq_ignore_ascii_case("basic"));
+        let catalog_card = catalog::by_name(&entry.name);
+        let catalog_basic = catalog_card
+            .map(|id| id.def().basic_mana.is_some())
+            .unwrap_or(false);
+        if provider_basic || catalog_basic {
+            continue;
+        }
+        // A nonbasic card is a known nonbasic either because this build
+        // implements it (the catalog says so) or because the provider sent a
+        // type line. With neither, the source cannot answer the question.
+        let known_nonbasic =
+            catalog_card.is_some() || !(entry.supertypes.is_empty() && entry.types.is_empty());
+        let repeated = format!("{} x{}", entry.name, entry.quantity);
+        if known_nonbasic {
+            singleton_illegal.push(repeated);
+        } else {
+            singleton_unknown.push(repeated);
         }
     }
-    checks.push(if singleton_detail.is_empty() {
+    checks.push(if !singleton_illegal.is_empty() {
+        let mut detail = format!("singleton broken by {}", singleton_illegal.join(", "));
+        if !singleton_unknown.is_empty() {
+            detail.push_str(&format!(
+                "; also not certified: {}",
+                singleton_unknown.join(", ")
+            ));
+        }
+        check("singleton", LegalityStatus::Illegal, detail)
+    } else if !singleton_unknown.is_empty() {
         check(
             "singleton",
-            LegalityStatus::Legal,
-            "no nonbasic card appears more than once; basics are unlimited".to_string(),
+            LegalityStatus::NotCertified,
+            format!(
+                "singleton not certified: {} appear more than once and the source carries no type line, so basic-land status is unknown",
+                singleton_unknown.join(", ")
+            ),
         )
     } else {
         check(
             "singleton",
-            singleton,
-            format!("singleton broken by {}", singleton_detail.join(", ")),
+            LegalityStatus::Legal,
+            "no nonbasic card appears more than once; basics are unlimited".to_string(),
         )
     });
 

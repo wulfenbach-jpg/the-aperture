@@ -7,7 +7,7 @@
   "profile": "commander-combat-practice-40",
   "format": {
     "format": "commander",
-    "status": "illegal",
+    "status": "legal",
     "basis": "provider card data: commander designation, card count, quantities, color identity. Per-card banned/errata status from the provider's legalities field is not re-certified.",
     "checks": [
       {
@@ -17,8 +17,8 @@
       },
       {
         "code": "deck_size",
-        "status": "illegal",
-        "detail": "a Commander deck is exactly 100 cards including the commander; this deck has 101 (100 library + 1 command zone)"
+        "status": "legal",
+        "detail": "100 cards including the commander (99 + 1)"
       },
       {
         "code": "singleton",
@@ -39,9 +39,9 @@
   },
   "support": {
     "status": "unsupported",
-    "total_cards": 100,
+    "total_cards": 99,
     "supported_cards": 8,
-    "unsupported_cards": 92,
+    "unsupported_cards": 91,
     "unsupported": [
       {
         "name": "Magda, the Hoardmaster",
@@ -62,6 +62,11 @@
         "name": "Morbid Opportunist",
         "quantity": 1,
         "reason": "'Morbid Opportunist' is not in the supported pool (31 cards)"
+      },
+      {
+        "name": "Wake the Dragon",
+        "quantity": 1,
+        "reason": "'Wake the Dragon' is not in the supported pool (31 cards)"
       },
       {
         "name": "J. Jonah Jameson",
@@ -115,7 +120,7 @@
       },
       {
         "name": "Swamp",
-        "quantity": 9,
+        "quantity": 8,
         "reason": "'Swamp' is not in the supported pool (31 cards)"
       },
       {
@@ -217,11 +222,6 @@
         "name": "Rakdos Carnarium",
         "quantity": 1,
         "reason": "'Rakdos Carnarium' is not in the supported pool (31 cards)"
-      },
-      {
-        "name": "Mind Stone",
-        "quantity": 1,
-        "reason": "'Mind Stone' is not in the supported pool (31 cards)"
       },
       {
         "name": "Xantcha, Sleeper Agent",
@@ -469,7 +469,7 @@
     "profile": "commander-combat-practice-40",
     "starting_life": 40,
     "command_zone": true,
-    "library_cards": 100,
+    "library_cards": 99,
     "compatible": true,
     "reason": null
   },
@@ -589,15 +589,6 @@
       "detail": "category 'Wishlist' is excluded from the deck"
     },
     {
-      "name": "Wake the Dragon",
-      "quantity": 1,
-      "categories": [
-        "Wishlist"
-      ],
-      "status": "Excluded",
-      "detail": "category 'Wishlist' is excluded from the deck"
-    },
-    {
       "name": "Unholy Annex // Ritual Chamber",
       "quantity": 1,
       "categories": [
@@ -617,6 +608,25 @@
     },
     {
       "name": "Prosper, Tome-Bound",
+      "quantity": 1,
+      "categories": [
+        "Wishlist"
+      ],
+      "status": "Excluded",
+      "detail": "category 'Wishlist' is excluded from the deck"
+    },
+    {
+      "name": "Wake the Dragon",
+      "quantity": 1,
+      "categories": [
+        "Menace",
+        "Disruption"
+      ],
+      "status": "Unsupported",
+      "detail": "'Wake the Dragon' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Gallia, Tragic Host",
       "quantity": 1,
       "categories": [
         "Wishlist"
@@ -736,7 +746,7 @@
     },
     {
       "name": "Swamp",
-      "quantity": 9,
+      "quantity": 8,
       "categories": [
         "Land"
       ],
@@ -993,10 +1003,11 @@
       "name": "Mind Stone",
       "quantity": 1,
       "categories": [
+        "Sideboard",
         "Ramp"
       ],
-      "status": "Unsupported",
-      "detail": "'Mind Stone' is not in the supported pool (31 cards)"
+      "status": "Sideboard",
+      "detail": null
     },
     {
       "name": "Butch DeLoria, Tunnel Snake",
@@ -1921,7 +1932,13 @@
       "detail": "'Tentative Connection' is not in the supported pool (31 cards)"
     }
   ],
-  "sideboard": [],
+  "sideboard": [
+    {
+      "name": "Mind Stone",
+      "quantity": 1,
+      "reason": "sideboard: reported and never added to the deck"
+    }
+  ],
   "excluded": [
     {
       "name": "Chaos Warp",
@@ -1974,12 +1991,12 @@
       "reason": "category 'Wishlist' is excluded from the deck"
     },
     {
-      "name": "Wake the Dragon",
+      "name": "Prosper, Tome-Bound",
       "quantity": 1,
       "reason": "category 'Wishlist' is excluded from the deck"
     },
     {
-      "name": "Prosper, Tome-Bound",
+      "name": "Gallia, Tragic Host",
       "quantity": 1,
       "reason": "category 'Wishlist' is excluded from the deck"
     },
@@ -2281,14 +2298,13 @@
   ],
   "startable": false,
   "refusals": [
-    "engine support: 92 card(s) cannot be seated — Magda, the Hoardmaster x1 ('Magda, the Hoardmaster' is not in the supported pool (31 cards)); Rattleback Apothecary x1 ('Rattleback Apothecary' is not in the supported pool (31 cards)); Unholy Annex // Ritual Chamber x1 (multi-face card (layout 'split, faces: Unholy Annex / Ritual Chamber): not modeled); Morbid Opportunist x1 ('Morbid Opportunist' is not in the supported pool (31 cards)); J. Jonah Jameson x1 ('J. Jonah Jameson' is not in the supported pool (31 cards)) (+79 more listed above). Unsupported cards are refused, never substituted",
+    "engine support: 91 card(s) cannot be seated — Magda, the Hoardmaster x1 ('Magda, the Hoardmaster' is not in the supported pool (31 cards)); Rattleback Apothecary x1 ('Rattleback Apothecary' is not in the supported pool (31 cards)); Unholy Annex // Ritual Chamber x1 (multi-face card (layout 'split, faces: Unholy Annex / Ritual Chamber): not modeled); Morbid Opportunist x1 ('Morbid Opportunist' is not in the supported pool (31 cards)); Wake the Dragon x1 ('Wake the Dragon' is not in the supported pool (31 cards)) (+79 more listed above). Unsupported cards are refused, never substituted",
     "commander: 'Seifer, Balamb Rival' is not in the supported pool, so the command zone cannot hold it"
   ],
   "notes": [
-    "this deck is not Commander-legal (see the format checks); the bounded practice profiles are not the Commander format, so format legality is reported, not enforced",
     "excluded categories honored: Cuts, Wishlist, Maybeboard",
-    "certification cached at C:/Users/alex3/AppData/Local/hermes/cache/scratch/i21cache\\archidekt-27701327.start-commander-combat-practice-40.json"
+    "certification cached at evidence/issue21/cache\\archidekt-27701327.start-commander-combat-practice-40.json"
   ],
-  "raw_sha256": "60d1a8a1f05765df0e760601b13209cf216bedebb796a51214d2086f718374fe",
-  "cached_path": "C:/Users/alex3/AppData/Local/hermes/cache/scratch/i21cache\\archidekt-27701327.json"
+  "raw_sha256": "648223ca33b004d7d5320bd65bed45bb5eeec2da3670a61c0b4ff6494a29cf6c",
+  "cached_path": "evidence/issue21/cache\\archidekt-27701327.json"
 }
