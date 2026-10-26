@@ -108,6 +108,10 @@ fn run(config_path: &str, outdir: &str, allow_dirty: bool) -> anyhow::Result<()>
         aperture_eval::report::mark_dirty_evidence(&mut report);
     }
     let versioned_config = serde_json::to_string_pretty(&session.eval)?;
+    // Untracked output directories do not affect the tracked-tree gate above;
+    // fresh outdir paths must still be creatable.
+    fs::create_dir_all(outdir)?;
+    fs::create_dir_all(Path::new(outdir).join("replays"))?;
     fs::write(Path::new(outdir).join("config.json"), versioned_config)?;
     fs::write(Path::new(outdir).join("config-insha256.txt"), parsed_sha)?;
     // Raw latency sidecar; report.json itself carries NO timing bytes.
