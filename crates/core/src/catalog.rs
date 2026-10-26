@@ -237,7 +237,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 119] = [
+pub static CARDS: [CardDef; 122] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -436,6 +436,24 @@ pub static CARDS: [CardDef; 119] = [
         type_line: "Sorcery", power: None, toughness: None,
         oracle: "Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.",
         spell: Some(SpellSpec { target: TargetSpec::Player, instant: false, effects: &[Effect::DamageTargetPlayerForEachGoblin] })
+    ),
+    card!(
+        SazhsChocobo, "Sazh's Chocobo", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bird", power: Some(0), toughness: Some(1),
+        oracle: "Landfall — Whenever a land you control enters, put a +1/+1 counter on this creature.",
+        spell: None
+    ),
+    card_trample!(
+        RampagingBaloths, "Rampaging Baloths", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(6), toughness: Some(6),
+        oracle: "Trample\nLandfall — Whenever a land you control enters, create a 4/4 green Beast creature token.",
+        spell: None
+    ),
+    card!(
+        ProfessorOfZoomancy, "Professor of Zoomancy", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Druid", power: Some(4), toughness: Some(3),
+        oracle: "When this creature enters, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+        spell: None
     ),
     card_artifact!(
         SolRing, "Sol Ring", cost: Some("{1}"), type_line: "Artifact",
@@ -914,7 +932,7 @@ pub fn all() -> &'static [CardDef] {
 
 /// Token definitions. Deliberately separate from `CARDS`: tokens are engine
 /// objects, never importable or analyzer-supported cards.
-pub static TOKENS: [CardDef; 2] = [
+pub static TOKENS: [CardDef; 4] = [
     CardDef {
         id: CardId::GoblinToken,
         name: "Goblin Token",
@@ -951,6 +969,44 @@ pub static TOKENS: [CardDef; 2] = [
         power: Some(2),
         toughness: Some(2),
         oracle: "Flying",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::BeastToken,
+        name: "Beast Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Beast",
+        colors: &[ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(4),
+        toughness: Some(4),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::PestToken,
+        name: "Pest Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Pest",
+        colors: &[ManaColor::Black, ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(1),
+        toughness: Some(1),
+        oracle: "When this token dies, you gain 1 life.",
         spell: None,
     },
 ];

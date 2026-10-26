@@ -307,6 +307,38 @@ const VOLLEY_VETERAN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::DamageTargetCreatureForEachGoblin],
 })];
 
+const SAZH: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, put a +1/+1 counter on this creature.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::PutPlusOneCounterOnSource],
+})];
+
+const RAMPAGING_BALOTHS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, create a 4/4 green Beast creature token.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateBeastToken],
+})];
+
+const PROFESSOR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreatePestToken],
+})];
+
+const PEST_DIES: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this token dies, you gain 1 life.",
+    event: TriggerEvent::Dies,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::GainLife(1)],
+})];
+
 const MIND_STONE: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "{1}, {T}, Sacrifice this artifact: Draw a card.",
     cost: AbilityCost {
@@ -461,6 +493,10 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::HedronCrab => HEDRON_CRAB,
         CardId::Owlbear => OWLBEAR,
         CardId::SoulWarden => SOUL_WARDEN,
+        CardId::SazhsChocobo => SAZH,
+        CardId::RampagingBaloths => RAMPAGING_BALOTHS,
+        CardId::ProfessorOfZoomancy => PROFESSOR,
+        CardId::PestToken => PEST_DIES,
         CardId::MindStone => MIND_STONE,
         CardId::HedronArchive => HEDRON_ARCHIVE,
         CardId::SoulsAttendant => SOULS_ATTENDANT,

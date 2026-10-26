@@ -1369,7 +1369,7 @@ fn fog_is_a_sourced_catalog_card() {
     // starter cards, to 79 when issue 17 added the 47 vanilla starter
     // creatures plus Jasmine Boreal, to 85 with the Krenko token package, to 86 with Talrand, to 88 with Tatyova/Jaddi Offshoot, to 93 with the cross-corpus package, to 97 with the slice-4 Ayula/Isamaru package (Ordinary Bear, Ashcoat Bear, Owlbear, Soul Warden), to 103 with the slice-5 mill/counter/ritual package, and to 106 with the slice-6 death-watcher package (Blood Artist, Zulaport Cutthroat, Hedron Crab);
     // Fog's own sourced semantics are unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 119);
+    assert_eq!(aperture_core::catalog::pool_size(), 122);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
@@ -2069,7 +2069,8 @@ fn four_seat_co_loser_apnap_source_departure_continues_survivors() {
     assert_eq!(game.state.object(p3_forest).zone, Zone::Battlefield);
     assert!(
         game.state.validate().is_ok(),
-        "source-left provenance validates"
+        "source-left provenance validates: {:?}",
+        game.state.validate()
     );
     events.extend(submit_ok(
         &mut game,

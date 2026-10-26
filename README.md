@@ -301,7 +301,7 @@ storage only), tokens beyond the typed 1/1 red Goblin package, target-player
 milling (self-mill and each-opponent mill are implemented), tutoring, libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
-card outside this branch candidate's 119-card pool.
+card outside this branch candidate's 122-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

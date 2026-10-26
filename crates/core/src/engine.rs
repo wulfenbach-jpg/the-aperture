@@ -4899,6 +4899,30 @@ impl Game {
                 self.add_red_mana(controller, u32::try_from(count).unwrap_or(u32::MAX), events);
                 false
             }
+            Effect::PutPlusOneCounterOnSource => {
+                if self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|o| o.zone == Zone::Battlefield)
+                {
+                    let object = self.state.objects.get_mut(&item.object).unwrap();
+                    let total = object
+                        .counters
+                        .add(crate::counters::CounterKind::PlusOnePlusOne, 1);
+                    events.push(Event::StateBasedAction {
+                        description: format!("{} has {total} +1/+1 counter(s)", object.card.name()),
+                    });
+                }
+                false
+            }
+            Effect::CreateBeastToken => {
+                self.create_tokens(controller, CardId::BeastToken, 1, events);
+                false
+            }
+            Effect::CreatePestToken => {
+                self.create_tokens(controller, CardId::PestToken, 1, events);
+                false
+            }
             Effect::AddManaForRiteOfFlame => {
                 let copies = self
                     .state

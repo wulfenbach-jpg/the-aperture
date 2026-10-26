@@ -157,6 +157,12 @@ pub enum Effect {
     AddManaForEachTappedOpponentLand,
     /// Add {R}{R}, then {R} for each Rite of Flame card in all graveyards.
     AddManaForRiteOfFlame,
+    /// Put one +1/+1 counter on the ability's source (landfall Sazh's Chocobo).
+    PutPlusOneCounterOnSource,
+    /// Create one 4/4 green Beast token (Rampaging Baloths).
+    CreateBeastToken,
+    /// Create one 1/1 black and green Pest token with its dies trigger.
+    CreatePestToken,
 }
 
 impl Effect {
@@ -219,6 +225,9 @@ impl Effect {
             Effect::MillTargetPlayer(n) => format!("target player mills {n}"),
             Effect::LoseLife(n) => format!("the target player loses {n} life"),
             Effect::LoseLifeEachOpponent(n) => format!("each opponent loses {n} life"),
+            Effect::PutPlusOneCounterOnSource => "put a +1/+1 counter on this creature".to_string(),
+            Effect::CreateBeastToken => "create a 4/4 green Beast token".to_string(),
+            Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
         }
     }
 }
@@ -417,6 +426,11 @@ pub enum CardId {
     SolRing,
     MindStone,
     HedronArchive,
+    SazhsChocobo,
+    RampagingBaloths,
+    ProfessorOfZoomancy,
+    BeastToken,
+    PestToken,
     BrightstoneRitual,
     ManaGeyser,
     RiteOfFlame,
@@ -513,7 +527,12 @@ pub const SUPPORTED_COMMANDERS: &[CardId] = &[
 /// Token cards exist as engine objects but are never importable: `catalog::all`
 /// and `catalog::by_name` deliberately exclude them, and the deck parser
 /// refuses them like any other unknown name.
-pub const TOKEN_CARDS: &[CardId] = &[CardId::GoblinToken, CardId::DrakeToken];
+pub const TOKEN_CARDS: &[CardId] = &[
+    CardId::GoblinToken,
+    CardId::DrakeToken,
+    CardId::BeastToken,
+    CardId::PestToken,
+];
 
 impl CardId {
     pub fn def(self) -> &'static CardDef {
@@ -537,7 +556,12 @@ impl CardId {
     pub fn is_token(self) -> bool {
         matches!(
             self,
-            CardId::SoldierToken | CardId::SpiritToken | CardId::GoblinToken | CardId::DrakeToken
+            CardId::SoldierToken
+                | CardId::SpiritToken
+                | CardId::GoblinToken
+                | CardId::DrakeToken
+                | CardId::BeastToken
+                | CardId::PestToken
         )
     }
 }

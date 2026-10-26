@@ -217,7 +217,10 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::UntapAllNonlandsYouControl
                 | Effect::AddManaForEachGoblin
                 | Effect::AddManaForEachTappedOpponentLand
-                | Effect::AddManaForRiteOfFlame => {
+                | Effect::AddManaForRiteOfFlame
+                | Effect::PutPlusOneCounterOnSource
+                | Effect::CreateBeastToken
+                | Effect::CreatePestToken => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
                 Effect::DamageTargetCreatureForEachGoblin => {

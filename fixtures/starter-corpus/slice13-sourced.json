@@ -1,0 +1,73 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T17:44:38.065317+00:00",
+ "note": "Extracted from the coordinator /cards/collection capture; three card records only. Token names follow CR111.4 generated-token naming, not Scryfall token labels.",
+ "cards": [
+  {
+   "name": "Professor of Zoomancy",
+   "oracle_id": "a22b8220-b41d-4b58-aa68-2c65ce37c517",
+   "scryfall_id": "8347f2e8-ef70-4879-860a-12f7cab25902",
+   "set": "stx",
+   "collector_number": "140",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Creature — Bear Druid",
+   "power": "4",
+   "toughness": "3",
+   "oracle_text": "When this creature enters, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/8347f2e8-ef70-4879-860a-12f7cab25902",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  },
+  {
+   "name": "Rampaging Baloths",
+   "oracle_id": "2d3e6549-6cc6-434f-a189-ba3b55e64c34",
+   "scryfall_id": "84aa18de-6acc-46cc-8e28-3046790a6751",
+   "set": "eoc",
+   "collector_number": "104",
+   "layout": "normal",
+   "mana_cost": "{4}{G}{G}",
+   "type_line": "Creature — Beast",
+   "power": "6",
+   "toughness": "6",
+   "oracle_text": "Trample\nLandfall — Whenever a land you control enters, create a 4/4 green Beast creature token.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Trample",
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/84aa18de-6acc-46cc-8e28-3046790a6751",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  },
+  {
+   "name": "Sazh's Chocobo",
+   "oracle_id": "c2b082b4-5d9c-4125-b353-d1cf4f334720",
+   "scryfall_id": "dda6b4d0-1b60-46b0-b321-b9ffe15afff4",
+   "set": "fin",
+   "collector_number": "200",
+   "layout": "normal",
+   "mana_cost": "{G}",
+   "type_line": "Creature — Bird",
+   "power": "0",
+   "toughness": "1",
+   "oracle_text": "Landfall — Whenever a land you control enters, put a +1/+1 counter on this creature.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/dda6b4d0-1b60-46b0-b321-b9ffe15afff4",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  }
+ ]
+}

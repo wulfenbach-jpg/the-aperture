@@ -1666,7 +1666,7 @@ impl GameState {
                     ),
                 });
             }
-            if archival && self.object_is_referenced(object.id) {
+            if archival && object.card.is_token() && self.object_is_referenced(object.id) {
                 return Err(EngineError::InvalidState {
                     reason: format!(
                         "archived token {} is still referenced by a live zone/stack/combat/pending/effect structure",
