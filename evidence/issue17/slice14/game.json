@@ -21,40 +21,40 @@
   ],
   "counts": {
     "abilities_declined": 0,
-    "abilities_resolved": 14,
-    "ability_activations": 14,
+    "abilities_resolved": 20,
+    "ability_activations": 20,
     "attacks": 21,
-    "blocks": 10,
-    "casts": 27,
+    "blocks": 12,
+    "casts": 30,
     "commander_damage_events": 0,
     "commander_damage_losses": 0,
     "counterspells": 0,
-    "damage_events": 164,
-    "events": 4304,
+    "damage_events": 320,
+    "events": 5897,
     "triggered_abilities": 0
   },
   "decider": null,
   "decision_sources": {
-    "heuristic": 1391
+    "heuristic": 1785
   },
-  "final_digest": "51fdc345d490d0ab5a9c3d343ede3ee5508f11343be2abe1305f8826a72602cc",
+  "final_digest": "fdc9b089f8f97a07b9afe58f090d6e9846d45b9acdd91edb70979cfc53fde1e6",
   "first_player": 0,
   "policies": "heuristic vs heuristic vs heuristic vs heuristic",
   "policy_notes": [],
-  "pool_size": 125,
+  "pool_size": 126,
   "profile": "commander-combat-practice-40",
   "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
   "replay_digest_matches": true,
   "replay_error": null,
-  "replay_steps": 1391,
+  "replay_steps": 1785,
   "rules_revision": "2026-09-25",
   "schema": "aperture-selfplay/2",
   "seat_count": 4,
   "seats": [
     {
       "cards": 40,
-      "library": 0,
-      "life": -7,
+      "library": 21,
+      "life": 40,
       "name": "package-slice14",
       "seat": 0,
       "source": "decks/package-slice14.txt"
@@ -62,15 +62,15 @@
     {
       "cards": 40,
       "library": 0,
-      "life": -10,
+      "life": -7,
       "name": "package-slice14",
       "seat": 1,
       "source": "decks/package-slice14.txt"
     },
     {
       "cards": 40,
-      "library": 22,
-      "life": 6,
+      "library": 0,
+      "life": -31,
       "name": "package-slice14",
       "seat": 2,
       "source": "decks/package-slice14.txt"
@@ -78,7 +78,7 @@
     {
       "cards": 40,
       "library": 0,
-      "life": 0,
+      "life": -74,
       "name": "package-slice14",
       "seat": 3,
       "source": "decks/package-slice14.txt"
@@ -87,9 +87,9 @@
   "seed": 1401,
   "starting_life": 40,
   "status": "terminal",
-  "steps": 1391,
+  "steps": 1785,
   "truncated": null,
-  "turns": 34,
-  "winner": 2,
-  "winner_label": "P2"
+  "turns": 40,
+  "winner": 0,
+  "winner_label": "P0"
 }

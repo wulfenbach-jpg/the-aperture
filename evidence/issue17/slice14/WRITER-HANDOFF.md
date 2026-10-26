@@ -1,7 +1,7 @@
 # Issue 17 slice 14 — dynamic mana and threshold
 
 Exact head reported after commit. No merge/master push. Full #17 unfinished:
-**125 catalog / 459 union = 113 supported + 346 missing**, 1 certified / 7 planned.
+**126 catalog / 459 union = 114 supported + 345 missing**, 1 certified / 7 planned.
 
 ## Sources
 
@@ -13,6 +13,7 @@ only these three, with Scryfall id/printing URL/retrieval stamp.
 * **Arcane Signet** `{2}` Artifact — `{T}: Add one mana of any color in your commander's color identity.`
 * **Fellwar Stone** `{2}` Artifact — `{T}: Add one mana of any color that a land an opponent controls could produce.`
 * **Werebear** `{1}{G}` 1/1 Human Bear Druid — `{T}: Add {G}.`; Threshold +3/+3 with ≥7 cards in your graveyard.
+* **Commander's Sphere** `{3}` Artifact — `{T}: Add one mana of any color in your commander's color identity.` / `Sacrifice this artifact: Draw a card.` (added from the same immutable candidate source; four source records total).
 
 ## Behavior
 
@@ -32,6 +33,15 @@ only these three, with Scryfall id/printing URL/retrieval stamp.
 * Existing Sol Ring/Mind Stone/Hedron Archive fixed mana behavior and Goblin/
   Drake/Beast/Pest token semantics unchanged.
 
+## Commander's Sphere
+
+Hand-cast/stack/battlefield test: dynamic colors offered from registered
+commander identity, immediate mana activation, then sacrifice as a cost while
+the artifact is tapped removes it before the draw ability resolves; draw goes on
+the stack, resolves, and a second activation is refused. Implemented by reusing
+the Arcane Signet dynamic choice plus Mind Stone sacrifice/draw machinery; no new
+broad mechanism.
+
 ## Genuine RED
 
 Absent-catalog failure first; after scaffolding cards/fields/action with no
@@ -43,7 +53,7 @@ A test assertion was corrected to match the engine’s correct
 ## Verification
 
 ```
-issue17_slice14            5 passed
+issue17_slice14            8 passed
 catalog_pool               5 passed
 card_printings             7 passed
 issue13_commander_combat  43 passed
@@ -59,18 +69,22 @@ cargo build --release -p aperture-cli   exit 0
 `decks/package-slice14.txt` — 40-card supported package, not a desired starter;
 four seats, Krenko commander each, 40 life, seed 1401:
 
-* terminal, P2 wins, 1391 steps / 34 turns, digest `51fdc345d490…`
-* separate replay matches 4304 events; fresh `--save-out` save reloads/replays to
-  the same digest
-* actual events: **Werebear cast 6 times**; Arcane Signet/Fellwar Stone were
-  drawn but not cast/activated; **0 dynamic mana activations** in this product
-  heuristic trace. Focused tests prove casts/activations; no inferred counts.
+* the package file was updated to include Commander's Sphere (still 40 cards).
+* default product-heuristic run, seed 1401: terminal P0, 1785 steps / 40 turns,
+  digest `fdc9b089f8f9…`; 17 Werebear casts, **0 artifact casts and 0 mana
+  activations**; replay and fresh save-out/reload match 5897 events.
+* the evidence-only slice14 driver was adapted but **did not complete**: it cast
+  and activated the three artifacts, but could not force a Werebear mana
+  activation before termination, and its mandatory assertions therefore abort.
+  It is left uncommitted with the exact incomplete command
+  `CARGO_TARGET_DIR=C:/AI/aperture-worktrees/issue-17/target cargo run --manifest-path evidence/issue17/slice14/journey-driver/Cargo.toml`.
+  Focused tests prove all four cards; no journey activation claim is inferred.
 
 ## Corpus/docs
 
 New audit only: `evidence/issue17/slice14/corpus-audit.py` →
-`corpus-state.json`. Catalog **125**, union 459, supported **113**, missing
-**346**, manifest matches. Per-list: Isamaru 55, Jasmine 0, Talrand 51, Krenko
+`corpus-state.json`. Catalog **126**, union 459, supported **114**, missing
+**345**, manifest matches. Per-list: Isamaru 55, Jasmine 0, Talrand 51, Krenko
 48, Ayula 39, Elas 53, Tatyova 52, Zada 53. Eight desired snapshots unchanged.
 Current docs counts refreshed; historical evidence untouched.
 

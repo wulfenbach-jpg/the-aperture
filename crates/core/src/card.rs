@@ -439,6 +439,7 @@ pub enum CardId {
     ArcaneSignet,
     FellwarStone,
     Werebear,
+    CommandersSphere,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,
@@ -565,6 +566,7 @@ impl CardId {
         match self {
             CardId::ArcaneSignet => Some(ManaChoice::CommanderIdentity),
             CardId::FellwarStone => Some(ManaChoice::OpponentLandColors),
+            CardId::CommandersSphere => Some(ManaChoice::CommanderIdentity),
             _ => None,
         }
     }

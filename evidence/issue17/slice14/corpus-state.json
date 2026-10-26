@@ -1,9 +1,9 @@
 {
-  "catalog": 125,
+  "catalog": 126,
   "union": 459,
-  "supported": 113,
-  "missing": 346,
-  "manifest_missing": 346,
+  "supported": 114,
+  "missing": 345,
+  "manifest_missing": 345,
   "matches": true,
   "rows": [
     {
@@ -33,7 +33,7 @@
     },
     {
       "id": "elas-sacrifice",
-      "missing": 53,
+      "missing": 52,
       "status": "planned"
     },
     {

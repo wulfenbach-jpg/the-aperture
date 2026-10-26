@@ -339,6 +339,15 @@ const PEST_DIES: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::GainLife(1)],
 })];
 
+const COMMANDERS_SPHERE: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Sacrifice this artifact: Draw a card.",
+    cost: AbilityCost::SACRIFICE_SELF,
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::Draw(1)],
+    once_per_turn: false,
+})];
+
 const MIND_STONE: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "{1}, {T}, Sacrifice this artifact: Draw a card.",
     cost: AbilityCost {
@@ -497,6 +506,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::RampagingBaloths => RAMPAGING_BALOTHS,
         CardId::ProfessorOfZoomancy => PROFESSOR,
         CardId::PestToken => PEST_DIES,
+        CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::MindStone => MIND_STONE,
         CardId::HedronArchive => HEDRON_ARCHIVE,
         CardId::SoulsAttendant => SOULS_ATTENDANT,

@@ -61,6 +61,24 @@
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/973310bb-ab32-46dc-8f59-8a5d3e1c58cc",
    "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
+  },
+  {
+   "name": "Commander's Sphere",
+   "oracle_id": "0b67c4e2-f88b-4e01-85a1-9d5f5b8db13b",
+   "scryfall_id": "a145fe99-1cca-45c6-aa7e-ec5d8a7bcd13",
+   "set": "trc",
+   "collector_number": "487",
+   "layout": "normal",
+   "mana_cost": "{3}",
+   "type_line": "Artifact",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "{T}: Add one mana of any color in your commander's color identity.\nSacrifice this artifact: Draw a card.",
+   "color_identity": [],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/a145fe99-1cca-45c6-aa7e-ec5d8a7bcd13",
+   "retrieved_at": "2026-10-26T17:44:38.065317+00:00"
   }
  ]
 }

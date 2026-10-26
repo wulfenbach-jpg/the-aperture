@@ -249,7 +249,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 125] = [
+pub static CARDS: [CardDef; 126] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -475,6 +475,11 @@ pub static CARDS: [CardDef; 125] = [
     card_artifact!(
         FellwarStone, "Fellwar Stone", cost: Some("{2}"), type_line: "Artifact",
         oracle: "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        mana: None, spell: None
+    ),
+    card_artifact!(
+        CommandersSphere, "Commander's Sphere", cost: Some("{3}"), type_line: "Artifact",
+        oracle: "{T}: Add one mana of any color in your commander's color identity.\nSacrifice this artifact: Draw a card.",
         mana: None, spell: None
     ),
     card!(
