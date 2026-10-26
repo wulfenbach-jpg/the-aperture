@@ -49,7 +49,7 @@ pub enum Event {
     },
     ManaPoolEmptied {
         player: PlayerId,
-        amount: u8,
+        amount: u32,
     },
     Cast {
         player: PlayerId,
@@ -107,8 +107,8 @@ pub enum Event {
     ManaAdded {
         player: PlayerId,
         color: ManaColor,
-        amount: u8,
-        pool_total: u8,
+        amount: u32,
+        pool_total: u32,
     },
     Scried {
         player: PlayerId,

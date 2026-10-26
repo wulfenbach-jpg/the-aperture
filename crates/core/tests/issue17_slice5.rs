@@ -470,7 +470,7 @@ fn pyretic_ritual_and_seething_song_add_red_mana_to_the_pool() {
             .mana(
                 P0,
                 ManaPool {
-                    red: cost_mana,
+                    red: u32::from(cost_mana),
                     ..ManaPool::default()
                 },
             )
@@ -490,7 +490,7 @@ fn pyretic_ritual_and_seething_song_add_red_mana_to_the_pool() {
         });
         assert_eq!(
             game.state.player(P0).mana.red,
-            expected,
+            u32::from(expected),
             "{name}: the cost is paid from the pool and the ritual adds {expected} red"
         );
         let added = log
@@ -502,7 +502,7 @@ fn pyretic_ritual_and_seething_song_add_red_mana_to_the_pool() {
                 _ => None,
             })
             .unwrap_or_else(|| panic!("{name} must emit a ManaAdded event"));
-        assert_eq!(added, (expected, expected));
+        assert_eq!(added, (u32::from(expected), u32::from(expected)));
     }
 }
 

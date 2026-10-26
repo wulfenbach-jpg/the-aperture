@@ -30,7 +30,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-111-card pool. Isamaru itself is supported, and the slice-4 package implemented
+114-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -45,7 +45,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice5/update_manifest.py` + `slice5-corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **99** are in the supported 111-card catalog and **360** are missing;
+* **99** are in the supported 114-card catalog and **360** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.
@@ -53,13 +53,14 @@ basic lands (coordinator evidence
   the Swamp basic in Elas is now supported, but the rest of that desired list
   still needs its unsupported cards and interactions.
 
-Slice 8 currently supports five sourced cards: Soul's Attendant, Razorclaw
-Bear, Volley Veteran, Dramatic Reversal and Goblin War Strike. Brightstone
-Ritual, Friendly Teddy and Aetherize are explicitly excluded (bounded mana,
-serialized multi-player draw, and attacker-list commander replacement,
-respectively) and remain manifest-missing. Goblin War Strike's printed
-planeswalker target is not usable because no planeswalker permanents exist in
-the pool; the player target is implemented.
+Slices 8–9 currently support eight sourced cards: Soul's Attendant, Razorclaw
+Bear, Volley Veteran, Dramatic Reversal, Goblin War Strike, Brightstone Ritual,
+Mana Geyser and Rite of Flame. Friendly Teddy and Aetherize remain explicitly
+excluded (serialized multi-player draw and attacker-list commander replacement,
+respectively) and are manifest-missing. Goblin War Strike's printed planeswalker
+target is not usable because no planeswalker permanents exist in the pool; the
+player target is implemented. Slice 9 widened the stored mana pool to `u32` so
+Brightstone can produce more than 255 red mana without truncation.
 
 Staged interaction roadmap (derived from the manifest `missing_interactions`):
 

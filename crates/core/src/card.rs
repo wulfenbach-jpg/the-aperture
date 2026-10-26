@@ -149,6 +149,12 @@ pub enum Effect {
     /// Untap every nonland permanent the effect's controller controls
     /// (Dramatic Reversal).
     UntapAllNonlandsYouControl,
+    /// Add {R} for each Goblin on the battlefield (Brightstone Ritual).
+    AddManaForEachGoblin,
+    /// Add {R} for each tapped land an opponent controls (Mana Geyser).
+    AddManaForEachTappedOpponentLand,
+    /// Add {R}{R}, then {R} for each Rite of Flame card in all graveyards.
+    AddManaForRiteOfFlame,
 }
 
 impl Effect {
@@ -193,6 +199,15 @@ impl Effect {
             }
             Effect::UntapAllNonlandsYouControl => {
                 "untap all nonland permanents you control".to_string()
+            }
+            Effect::AddManaForEachGoblin => {
+                "add {R} for each Goblin on the battlefield".to_string()
+            }
+            Effect::AddManaForEachTappedOpponentLand => {
+                "add {R} for each tapped land an opponent controls".to_string()
+            }
+            Effect::AddManaForRiteOfFlame => {
+                "add {R}{R}, then {R} per graveyard Rite of Flame".to_string()
             }
             Effect::MillSelf(n) => format!("mill {n}"),
             Effect::MillEachOpponent(n) => format!("each opponent mills {n}"),
@@ -368,6 +383,9 @@ pub enum CardId {
     VolleyVeteran,
     DramaticReversal,
     GoblinWarStrike,
+    BrightstoneRitual,
+    ManaGeyser,
+    RiteOfFlame,
     DrakeToken,
     DragonFodder,
     KrenkosCommand,

@@ -203,7 +203,10 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::CreateGoblinTokensForEachGoblin
                 | Effect::CreateDrakeToken
                 | Effect::DamageEachOpponent(_)
-                | Effect::UntapAllNonlandsYouControl => {
+                | Effect::UntapAllNonlandsYouControl
+                | Effect::AddManaForEachGoblin
+                | Effect::AddManaForEachTappedOpponentLand
+                | Effect::AddManaForRiteOfFlame => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
                 Effect::DamageTargetCreatureForEachGoblin => {

@@ -174,7 +174,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 111] = [
+pub static CARDS: [CardDef; 114] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -373,6 +373,24 @@ pub static CARDS: [CardDef; 111] = [
         type_line: "Sorcery", power: None, toughness: None,
         oracle: "Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.",
         spell: Some(SpellSpec { target: TargetSpec::Player, instant: false, effects: &[Effect::DamageTargetPlayerForEachGoblin] })
+    ),
+    card!(
+        BrightstoneRitual, "Brightstone Ritual", cost: Some("{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R} for each Goblin on the battlefield.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::AddManaForEachGoblin] })
+    ),
+    card!(
+        ManaGeyser, "Mana Geyser", cost: Some("{3}{R}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Add {R} for each tapped land your opponents control.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::AddManaForEachTappedOpponentLand] })
+    ),
+    card!(
+        RiteOfFlame, "Rite of Flame", cost: Some("{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Add {R}{R}, then add {R} for each card named Rite of Flame in each graveyard.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::AddManaForRiteOfFlame] })
     ),
     card!(
         Swamp, "Swamp", cost: None, kinds: LAND, basic: Some(ManaColor::Black),

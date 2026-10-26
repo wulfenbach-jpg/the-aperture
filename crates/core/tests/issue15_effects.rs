@@ -12,14 +12,14 @@ use common::*;
 
 fn white(n: u8) -> ManaPool {
     ManaPool {
-        white: n,
+        white: u32::from(n),
         ..Default::default()
     }
 }
 
 fn red(n: u8) -> ManaPool {
     ManaPool {
-        red: n,
+        red: u32::from(n),
         ..Default::default()
     }
 }

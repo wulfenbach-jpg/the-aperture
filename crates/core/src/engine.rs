@@ -4702,12 +4702,12 @@ impl Game {
             Effect::AddMana { color, amount } => {
                 self.state.players[controller as usize]
                     .mana
-                    .add(color, amount);
+                    .add(color, u32::from(amount));
                 let pool_total = self.state.players[controller as usize].mana.get(color);
                 events.push(Event::ManaAdded {
                     player: controller,
                     color,
-                    amount,
+                    amount: u32::from(amount),
                     pool_total,
                 });
                 false
@@ -4821,6 +4821,43 @@ impl Game {
                 }
                 false
             }
+            Effect::AddManaForEachGoblin => {
+                let count = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|o| o.zone == Zone::Battlefield && o.card.def().is_goblin())
+                    .count();
+                self.add_red_mana(controller, u32::try_from(count).unwrap_or(u32::MAX), events);
+                false
+            }
+            Effect::AddManaForEachTappedOpponentLand => {
+                let count = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|o| {
+                        o.zone == Zone::Battlefield
+                            && o.tapped
+                            && o.card.def().is_land()
+                            && o.controller != controller
+                            && self.state.is_live(o.controller)
+                    })
+                    .count();
+                self.add_red_mana(controller, u32::try_from(count).unwrap_or(u32::MAX), events);
+                false
+            }
+            Effect::AddManaForRiteOfFlame => {
+                let copies = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|o| o.zone == Zone::Graveyard && o.card.name() == "Rite of Flame")
+                    .count();
+                let amount = 2u32.saturating_add(u32::try_from(copies).unwrap_or(u32::MAX));
+                self.add_red_mana(controller, amount, events);
+                false
+            }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
                     Target::Spell(id) => Some(*id),
@@ -4930,6 +4967,19 @@ impl Game {
                 TriggerEvent::AnotherCreatureEnters,
             );
         }
+    }
+
+    /// Add red mana with a widened, explicitly bounded pool payload.
+    fn add_red_mana(&mut self, controller: PlayerId, amount: u32, events: &mut Vec<Event>) {
+        self.state.players[controller as usize]
+            .mana
+            .add(ManaColor::Red, amount);
+        events.push(Event::ManaAdded {
+            player: controller,
+            color: ManaColor::Red,
+            amount,
+            pool_total: self.state.players[controller as usize].mana.red,
+        });
     }
 
     fn begin_order(

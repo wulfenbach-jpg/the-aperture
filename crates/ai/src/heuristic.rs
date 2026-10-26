@@ -43,7 +43,7 @@ fn affordable(view: &PlayerView, cost: &ManaCost) -> bool {
             return false;
         }
     }
-    pool.total() >= cost.generic
+    pool.total() >= u32::from(cost.generic)
 }
 
 fn cost_of(card: CardId) -> ManaCost {
