@@ -169,10 +169,11 @@ accessibility tree and is how the control names above were discovered.
 P0 until the human-side choices are proven, then sets both `Let the AI play my
 seat too` and `AI autoplay` (state read back with `TogglePattern`) so all four
 seats play the game out. While autoplay runs it samples the live header every
-15 s, so the record shows the position **moving** (52 distinct sampled positions
-across the finished run) instead of just asserting a wall-clock wait. If no
-terminal result arrives within `-FinishTimeoutSec` (default 900 s) the step fails
-and the harness writes two timestamped dumps of the same process 75 s apart
+15 s, so the record shows the position **moving** (53 distinct sampled positions
+across the finished run, as counted in `journey/journey-state.json`) instead of
+just asserting a wall-clock wait. If no terminal result arrives within
+`-FinishTimeoutSec` (default 900 s) the step fails and the harness writes two
+timestamped dumps of the same process 75 s apart
 (`stall/dump-a.txt`, `stall/dump-b.txt`) and reports whether the position moved.
 
 `import` mode executes the positive import path: the packaged CLI imports a
@@ -182,13 +183,20 @@ start a real table from that same list.
 ## Results
 
 The numbers below are transcribed from `evidence/issue30/**`, not from a separate
-narrative.
+narrative. Three of them are properties of a run rather than of the build, and do
+differ between runs on this same package: the UIA node count (**134** here), the
+autoplay duration in seconds (**821** here) and the number of sampled positions
+(**53** here). Each is quoted from that run's own `journey/harness-run.json` and
+`journey/journey-state.json` (`autoplay_seconds`, 53 progress entries), which are
+the authoritative files; an independent re-run of the same package recorded 135
+nodes, 815.4 s and 52 samples. No acceptance claim below depends on any of the
+three — they are reported because the record contains them.
 
 ### Journey on the packaged binary (seed 4242, four seats, ordinary 20-life)
 
 | Step | Result | What was actually observed |
 | --- | --- | --- |
-| launch | PASS | requested 1280x720 → window manager made the outer window **1618x947** (125% system DPI); 135 UIA nodes on a 4-seat table |
+| launch | PASS | requested 1280x720 → window manager made the outer window **1618x947** (125% system DPI); 134 UIA nodes on a 4-seat table |
 | mulligan | PASS | kept the dealt hand through the `Keep this hand` control (`InvokePattern`) |
 | table | PASS | reached an offered main-phase action after **33 real priority passes** (the human seat is not on the play); header digest `03e29ff44952` |
 | priority/land | PASS | invoked the engine-offered `Play Forest [CR 305.2, 701.18a]`; header digest `03e29ff44952` → `a4af239af81d` |
@@ -198,7 +206,7 @@ narrative.
 | mutate | PASS | a further real pass moved the position past the save (`f6a40af635b9` → `0f954215d14d`) |
 | load | PASS | `Confirm load` restored the saved position: the live header digest came back to **`f6a40af635b9`** |
 | autoplay enable | PASS | both `Let the AI play my seat too` and `AI autoplay` ended in state **On** (read back with `TogglePattern`, not assumed) |
-| finish | **PASS** | terminal text `P0 wins — opponents' life totals reached 0 or less (CR 704.5a)` after **817 s** of four-seat AI-vs-AI autoplay (52 distinct sampled positions); the terminal save records `{"Win":{"winner":0,"reason":"opponents' life totals reached 0 or less (CR 704.5a)"}}`, **1,534 actions**, turn **38**, digest **`3f574cca93c0`** |
+| finish | **PASS** | terminal text `P0 wins — opponents' life totals reached 0 or less (CR 704.5a)` after **821 s** of four-seat AI-vs-AI autoplay (53 distinct sampled positions); the terminal save records `{"Win":{"winner":0,"reason":"opponents' life totals reached 0 or less (CR 704.5a)"}}`, **1,534 actions**, turn **38**, digest **`3f574cca93c0`** |
 | replay | **PASS** | packaged CLI replay of the finished game: exit 0, stored digest `3f574cca93c0` = recomputed `3f574cca93c0`, 4 seats, 1,534 actions, 3,826 events, "reproduces the save" |
 | finish driver | PASS (declared) | the terminal phase was driven by the built-in AI autoplay on every seat; the harness declares that rather than implying a hand-played finish |
 | focus untouched | PASS | the foreground window title was unchanged before and after the whole journey |
@@ -246,7 +254,7 @@ recorded line, arrives at the same position.
 | Step | Artifact | Observed |
 | --- | --- | --- |
 | supported list imported | `aperture-cli import-txt --file decks/izzet-control.txt --json` | exit **0**, `launchable=true`, `unsupported_cards=0`, printed `text list is playable as-is` |
-| that list starts a table | `aperture.exe --seats 4 --deck-a decks/izzet-control.txt --autoplay` | mulligan offer appeared, `Keep this hand` invoked, table reached with header `· 4 seats · profile practice-20 (20 life) …` and P0's hand dealt from the imported list |
+| that list starts a table | `aperture.exe --seats 4 --deck-a decks/izzet-control.txt --autoplay` | mulligan offer appeared, `Keep this hand` invoked, table reached with header `· 4 seats · profile practice-20 (20 life) …` and P0's hand dealt from the imported list: `Island`, `Divination`, `Hill Giant`, `Consider` — none of which appears in the bundled practice deck A (`decks/temur-beats.txt`), so the hand is the proof the list was used. The seat label still reads `Temur Beats` even though `--deck-a` was supplied, because `crates/ui/src/app.rs` hardcodes it; the label is not evidence either way |
 
 Both captures are in `import/` (`cli-*.out.txt`, `30-import-start-tree.json`,
 `harness-run.json`).
@@ -332,7 +340,7 @@ the outcome on the package rather than in a Cargo worktree.
 
 **Closure evidence (this run):** the same packaged revision now reaches a terminal
 result — four seats, AI autoplay on every seat, `P0 wins` at turn 38, digest
-`3f574cca93c0`, 1,534 actions, 817 s — and the packaged CLI replays that line to
+`3f574cca93c0`, 1,534 actions, 821 s — and the packaged CLI replays that line to
 the same digest. The closure condition written into the previous revision of this
 document ("the exact packaged revision must complete this journey — autoplay from
 the same seed reaching a terminal result that the save file records") is
