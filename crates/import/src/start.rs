@@ -366,6 +366,25 @@ pub fn certify(deck: &NormalizedDeck, profile: Profile) -> DeckCertification {
     // this build can seat it. Engine support is a separate axis and must never
     // narrow a format check: skipping unsupported entries would let a repeated
     // unsupported nonbasic certify as `legal` without ever being looked at.
+    //
+    // The rule counts cards, not provider rows. Archidekt may split one card
+    // into several entries (different printings) and a pasted text list may
+    // repeat a line, so entries are aggregated by card name first; otherwise
+    // two one-copy entries of the same nonbasic would certify as `legal`.
+    struct SingletonGroup {
+        key: String,
+        name: String,
+        quantity: u32,
+        /// The provider said *Basic* on at least one entry for this card.
+        provider_basic: bool,
+        /// The provider sent a type line for at least one entry for this card,
+        /// which is enough to know a nonbasic card is a nonbasic card.
+        provider_type_line: bool,
+        /// Entries carried no name at all: not a repeat we can certify.
+        nameless: bool,
+    }
+
+    let mut library: Vec<SingletonGroup> = Vec::new();
     let mut singleton_illegal: Vec<String> = Vec::new();
     let mut singleton_unknown: Vec<String> = Vec::new();
     for entry in deck.entries.iter().filter(|e| {
@@ -374,30 +393,57 @@ pub fn certify(deck: &NormalizedDeck, profile: Profile) -> DeckCertification {
             EntryStatus::Supported | EntryStatus::Unsupported
         )
     }) {
-        if entry.quantity <= 1 {
+        let name = entry.name.trim();
+        let key = name.to_lowercase();
+        let provider_basic = entry
+            .supertypes
+            .iter()
+            .any(|s| s.eq_ignore_ascii_case("basic"));
+        let provider_type_line = !(entry.supertypes.is_empty() && entry.types.is_empty());
+        match library
+            .iter_mut()
+            .find(|group| !group.nameless && !key.is_empty() && group.key == key)
+        {
+            Some(group) => {
+                group.quantity += entry.quantity as u32;
+                group.provider_basic |= provider_basic;
+                group.provider_type_line |= provider_type_line;
+            }
+            None => library.push(SingletonGroup {
+                key,
+                name: name.to_string(),
+                quantity: entry.quantity as u32,
+                provider_basic,
+                provider_type_line,
+                nameless: name.is_empty(),
+            }),
+        }
+    }
+
+    for group in library.iter() {
+        if group.quantity <= 1 {
+            continue;
+        }
+        if group.nameless {
+            singleton_unknown.push(format!("{} unnamed entries", group.quantity));
             continue;
         }
         // Basics are unlimited, but only on a fact: the provider's own `Basic`
         // supertype, or the catalog's basic-land data for a card this build
         // implements. Absence of a type line is not a fact, so a repeated card
         // with no type data stays not_certified instead of being called legal.
-        let provider_basic = entry
-            .supertypes
-            .iter()
-            .any(|s| s.eq_ignore_ascii_case("basic"));
-        let catalog_card = catalog::by_name(&entry.name);
+        let catalog_card = catalog::by_name(&group.name);
         let catalog_basic = catalog_card
             .map(|id| id.def().basic_mana.is_some())
             .unwrap_or(false);
-        if provider_basic || catalog_basic {
+        if group.provider_basic || catalog_basic {
             continue;
         }
         // A nonbasic card is a known nonbasic either because this build
         // implements it (the catalog says so) or because the provider sent a
         // type line. With neither, the source cannot answer the question.
-        let known_nonbasic =
-            catalog_card.is_some() || !(entry.supertypes.is_empty() && entry.types.is_empty());
-        let repeated = format!("{} x{}", entry.name, entry.quantity);
+        let known_nonbasic = catalog_card.is_some() || group.provider_type_line;
+        let repeated = format!("{} x{}", group.name, group.quantity);
         if known_nonbasic {
             singleton_illegal.push(repeated);
         } else {

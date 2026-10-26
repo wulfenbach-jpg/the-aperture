@@ -653,3 +653,132 @@ fn a_supported_legal_hundred_card_list_stays_startable_after_the_singleton_repai
     let plan = plan_start(&cert).expect("a legal supported list plans");
     assert_eq!(plan.deck.size(), 99);
 }
+
+/// Singleton counts cards, not provider rows: two one-copy entries of the same
+/// nonbasic are two copies in the library. Nothing merges names during
+/// normalization, so the check itself has to aggregate before judging.
+#[test]
+fn split_provider_entries_of_one_card_are_counted_together() {
+    let payload = json!({
+        "id": 424248,
+        "name": "Split entry singleton probe",
+        "deckFormat": 3,
+        "private": false,
+        "categories": [{"name": "Deck", "includedInDeck": true}],
+        "cards": [
+            {"quantity": 1, "categories": ["Commander"], "card": {"oracleCard": {
+                "name": "Isamaru, Hound of Konda", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Legendary"], "types": ["Creature"], "faces": []}}},
+            {"quantity": 1, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Swords to Plowshares", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": [], "types": ["Instant"], "faces": []}}},
+            {"quantity": 1, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Swords to Plowshares", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": [], "types": ["Instant"], "faces": []}}},
+            {"quantity": 97, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Basic"], "types": ["Land"], "faces": []}}}
+        ]
+    })
+    .to_string();
+    let cert = certify(&normalize(&payload).unwrap(), Profile::CommanderCombat40);
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(
+        singleton.status,
+        LegalityStatus::Illegal,
+        "two split entries of one nonbasic must not certify legal: {}",
+        singleton.detail
+    );
+    assert!(
+        singleton.detail.contains("Swords to Plowshares x2"),
+        "detail must report the library total: {}",
+        singleton.detail
+    );
+    assert_eq!(cert.support.status, SupportStatus::Supported);
+    // The axes stay separate, exactly as the bounded-seat contract already
+    // documents: format legality is reported before start, while start itself
+    // is gated on engine support and seat fit. The list is still seated
+    // verbatim, never trimmed to hide the repeat.
+    let plan = plan_start(&cert).expect("a supported seatable list plans");
+    assert_eq!(plan.deck.size(), 99);
+    assert_eq!(
+        plan.deck
+            .count_of(aperture_core::CardId::SwordsToPlowshares),
+        2,
+        "the exact imported list is preserved"
+    );
+
+    // Split *basic* entries stay unlimited: aggregation must not turn the
+    // Basic exception into a false violation.
+    let basics = json!({
+        "id": 424249,
+        "name": "Split basic probe",
+        "deckFormat": 3,
+        "private": false,
+        "categories": [{"name": "Deck", "includedInDeck": true}],
+        "cards": [
+            {"quantity": 1, "categories": ["Commander"], "card": {"oracleCard": {
+                "name": "Isamaru, Hound of Konda", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Legendary"], "types": ["Creature"], "faces": []}}},
+            {"quantity": 20, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Basic"], "types": ["Land"], "faces": []}}},
+            {"quantity": 19, "categories": ["Deck"], "card": {"oracleCard": {
+                "name": "Plains", "layout": "normal", "colorIdentity": ["White"],
+                "superTypes": ["Basic"], "types": ["Land"], "faces": []}}}
+        ]
+    })
+    .to_string();
+    let cert = certify(&normalize(&basics).unwrap(), Profile::CommanderCombat40);
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(
+        singleton.status,
+        LegalityStatus::Legal,
+        "split Basic Plains entries are unlimited: {}",
+        singleton.detail
+    );
+}
+
+/// The same hole in a pasted list: the identical card on two `1 <name>` lines
+/// is two cards, and a hand-typed list may not keep the provider's casing.
+/// Text data carries no type line, so the honest verdict is `not_certified`,
+/// never a positive `legal`.
+#[test]
+fn split_text_lines_of_one_card_are_counted_together() {
+    let list = "\
+Commander
+1 Isamaru, Hound of Konda
+Deck
+1 Sol Ring
+1 sol ring
+38 Plains
+";
+    let cert = certify_text("P1 split text probe", list, Profile::CommanderCombat40).unwrap();
+    let singleton = cert
+        .format
+        .checks
+        .iter()
+        .find(|c| c.code == "singleton")
+        .expect("singleton check present");
+    assert_eq!(
+        singleton.status,
+        LegalityStatus::NotCertified,
+        "text split lines must not certify legal: {}",
+        singleton.detail
+    );
+    assert!(
+        singleton.detail.contains("Sol Ring x2") && singleton.detail.contains("no type line"),
+        "detail: {}",
+        singleton.detail
+    );
+}
