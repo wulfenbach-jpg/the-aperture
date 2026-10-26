@@ -1,0 +1,20 @@
+PRACTICE CALIBRATION ONLY: fixtures are declared practice decks, not the eight certified #17 starters. This report proves the driver/replay/report pipeline and must not be reported as 1000 certified games; issue #26 full acceptance still requires the certified corpus run with hardware/budgets pinned.
+run_id: practice-calibration-paired-seeds-v1
+source config sha256: 131c41454e449a5313e75904cd5369a534b3c7b2263879d108005660e5c6f30e
+[
+  [
+    "decks/temur-beats.txt",
+    "70aa7895ccaf9f9cae439830545e09dad4f5070465f7e1d77495cc032e00a766"
+  ],
+  [
+    "decks/izzet-control.txt",
+    "51dccd5cefc4ff8cc56ebd4102ca6a8f0bbb89190626575d48a74fe15698d883"
+  ]
+]
+2026-09-25
+hardware: 12 logical cpus, os windows, profile dev
+
+games: 20 recorded / 20 declared | terminal 20 (search wins 2, losses 18, draws 0), capped 0, failed 0, replay mismatches 0
+paired: 10 units; pinned t table, df=9; paired units n=10; instances=20 
+practice calibration: search did not exceed parity within disclosed uncertainty (10 calibration units); no strength claim
+policy note: The baseline heuristic was not altered for this run; search-budget only differences are pinned in the versioned config.
