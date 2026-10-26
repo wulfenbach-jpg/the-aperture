@@ -66,6 +66,7 @@ const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
 const INSTANT: &[Kind] = &[Kind::Instant];
 const SORCERY: &[Kind] = &[Kind::Sorcery];
+const ARTIFACT_CREATURE: &[Kind] = &[Kind::Artifact, Kind::Creature];
 
 macro_rules! card {
     (
@@ -174,7 +175,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 106] = [
+pub static CARDS: [CardDef; 114] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -346,6 +347,50 @@ pub static CARDS: [CardDef; 106] = [
         type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
         oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
         spell: None
+    ),
+    card!(
+        SoulsAttendant, "Soul's Attendant", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Cleric", power: Some(1), toughness: Some(1),
+        oracle: "Whenever another creature enters, you may gain 1 life.", spell: None
+    ),
+    card!(
+        RazorclawBear, "Razorclaw Bear", cost: Some("{2}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(3),
+        oracle: "Whenever this creature becomes blocked, it gets +2/+2 until end of turn.", spell: None
+    ),
+    card!(
+        VolleyVeteran, "Volley Veteran", cost: Some("{3}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(4), toughness: Some(2),
+        oracle: "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.", spell: None
+    ),
+    card!(
+        BrightstoneRitual, "Brightstone Ritual", cost: Some("{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R} for each Goblin on the battlefield.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::AddManaForEachGoblin] })
+    ),
+    card!(
+        Aetherize, "Aetherize", cost: Some("{3}{U}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Return all attacking creatures to their owner's hand.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::ReturnAllAttackersToHand] })
+    ),
+    card!(
+        DramaticReversal, "Dramatic Reversal", cost: Some("{1}{U}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Untap all nonland permanents you control.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::UntapAllNonlandsYouControl] })
+    ),
+    card!(
+        FriendlyTeddy, "Friendly Teddy", cost: Some("{2}"), kinds: ARTIFACT_CREATURE, basic: None,
+        type_line: "Artifact Creature — Bear Toy", power: Some(2), toughness: Some(2),
+        oracle: "When this creature dies, each player draws a card.", spell: None
+    ),
+    card!(
+        GoblinWarStrike, "Goblin War Strike", cost: Some("{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.",
+        spell: Some(SpellSpec { target: TargetSpec::Player, instant: false, effects: &[Effect::DamageTargetPlayerForEachGoblin] })
     ),
     card!(
         Swamp, "Swamp", cost: None, kinds: LAND, basic: Some(ManaColor::Black),

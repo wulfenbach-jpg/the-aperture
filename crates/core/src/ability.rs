@@ -36,6 +36,8 @@ pub enum TriggerEvent {
     SpellCast,
     /// CR 603.6a: a land entered under this source's controller.
     LandEnters,
+    /// CR 509.3c: this creature became blocked.
+    BecomesBlocked,
     /// CR 603.6a with the printed word "another" (CR 603.6a + 109.5): a
     /// creature other than the source entered the battlefield. The entering
     /// permanent's controller is irrelevant; the trigger's controller is the
@@ -62,6 +64,7 @@ impl TriggerEvent {
             TriggerEvent::Dies => "dies",
             TriggerEvent::SpellCast => "you cast an instant or sorcery spell",
             TriggerEvent::LandEnters => "a land you control enters",
+            TriggerEvent::BecomesBlocked => "this creature becomes blocked",
             TriggerEvent::AnotherCreatureEnters => "another creature enters",
             TriggerEvent::CreatureDies => "a creature dies",
             TriggerEvent::CreatureYouControlDies => {
@@ -280,6 +283,38 @@ const GUTTERSNIPE: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::DamageEachOpponent(2)],
 })];
 
+const SOULS_ATTENDANT: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever another creature enters, you may gain 1 life.",
+    event: TriggerEvent::AnotherCreatureEnters,
+    optional: true,
+    target: TargetSpec::None,
+    effects: &[Effect::GainLife(1)],
+})];
+
+const RAZORCLAW_BEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever this creature becomes blocked, it gets +2/+2 until end of turn.",
+    event: TriggerEvent::BecomesBlocked,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::PumpSource(2, 2)],
+})];
+
+const VOLLEY_VETERAN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::OpponentCreature,
+    effects: &[Effect::DamageTargetCreatureForEachGoblin],
+})];
+
+const FRIENDLY_TEDDY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature dies, each player draws a card.",
+    event: TriggerEvent::Dies,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::EachPlayerDraws(1)],
+})];
+
 const TATYOVA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
     event: TriggerEvent::LandEnters,
@@ -408,6 +443,10 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::HedronCrab => HEDRON_CRAB,
         CardId::Owlbear => OWLBEAR,
         CardId::SoulWarden => SOUL_WARDEN,
+        CardId::SoulsAttendant => SOULS_ATTENDANT,
+        CardId::RazorclawBear => RAZORCLAW_BEAR,
+        CardId::VolleyVeteran => VOLLEY_VETERAN,
+        CardId::FriendlyTeddy => FRIENDLY_TEDDY,
         CardId::StripedBears => STRIPED_BEARS,
         CardId::Guttersnipe => GUTTERSNIPE,
         CardId::TatyovaBenthicDruid => TATYOVA,

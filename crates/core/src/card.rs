@@ -43,6 +43,7 @@ pub enum Kind {
     Creature,
     Instant,
     Sorcery,
+    Artifact,
 }
 
 impl Kind {
@@ -52,6 +53,7 @@ impl Kind {
             Kind::Creature => "Creature",
             Kind::Instant => "Instant",
             Kind::Sorcery => "Sorcery",
+            Kind::Artifact => "Artifact",
         }
     }
 }
@@ -67,6 +69,8 @@ pub enum TargetSpec {
     /// Artist).
     Player,
     Creature,
+    /// A creature controlled by an opponent of the effect's controller.
+    OpponentCreature,
     Spell,
     /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
     /// (Negate). A creature spell on the stack is not a legal target.
@@ -138,6 +142,21 @@ pub enum Effect {
     /// CR 118.2 + 119.3: each opponent of the effect's controller loses N life
     /// (Zulaport Cutthroat). Loss of life is not damage.
     LoseLifeEachOpponent(i32),
+    /// Damage to the spell's target creature equal to the number of Goblins its
+    /// controller controls (Volley Veteran).
+    DamageTargetCreatureForEachGoblin,
+    /// Damage to the spell's target player equal to the number of Goblins its
+    /// controller controls (Goblin War Strike).
+    DamageTargetPlayerForEachGoblin,
+    /// Add one red mana for each Goblin on the battlefield (Brightstone Ritual).
+    AddManaForEachGoblin,
+    /// Return every attacking creature to its owner's hand (Aetherize).
+    ReturnAllAttackersToHand,
+    /// Untap every nonland permanent the effect's controller controls
+    /// (Dramatic Reversal).
+    UntapAllNonlandsYouControl,
+    /// Each player draws N cards (Friendly Teddy).
+    EachPlayerDraws(u8),
 }
 
 impl Effect {
@@ -174,6 +193,22 @@ impl Effect {
             }
             Effect::CreateDrakeToken => "create a 2/2 blue Drake token with flying".to_string(),
             Effect::DamageEachOpponent(n) => format!("deal {n} damage to each opponent"),
+            Effect::DamageTargetCreatureForEachGoblin => {
+                "deal damage to the target creature equal to Goblins you control".to_string()
+            }
+            Effect::DamageTargetPlayerForEachGoblin => {
+                "deal damage to the target player equal to Goblins you control".to_string()
+            }
+            Effect::AddManaForEachGoblin => {
+                "add {R} for each Goblin on the battlefield".to_string()
+            }
+            Effect::ReturnAllAttackersToHand => {
+                "return all attacking creatures to hand".to_string()
+            }
+            Effect::UntapAllNonlandsYouControl => {
+                "untap all nonland permanents you control".to_string()
+            }
+            Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
             Effect::MillSelf(n) => format!("mill {n}"),
             Effect::MillEachOpponent(n) => format!("each opponent mills {n}"),
             Effect::AddMana { color, amount } => {
@@ -343,6 +378,14 @@ pub enum CardId {
     ForestBear,
     StripedBears,
     Guttersnipe,
+    SoulsAttendant,
+    RazorclawBear,
+    VolleyVeteran,
+    BrightstoneRitual,
+    Aetherize,
+    DramaticReversal,
+    FriendlyTeddy,
+    GoblinWarStrike,
     DrakeToken,
     DragonFodder,
     KrenkosCommand,

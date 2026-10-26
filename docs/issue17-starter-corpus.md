@@ -30,7 +30,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-103-card pool. Isamaru itself is supported, and the slice-4 package implemented
+114-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 56 missing
 cards; it stays `planned` because 56 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -45,7 +45,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice5/update_manifest.py` + `slice5-corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **91** are in the supported 103-card catalog and **368** are missing;
+* **102** are in the supported 114-card catalog and **357** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.

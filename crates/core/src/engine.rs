@@ -1919,6 +1919,15 @@ impl Game {
                 .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
+            TargetSpec::OpponentCreature => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield && o.is_creature() && o.controller != _caster
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
             TargetSpec::Spell => self
                 .state
                 .stack
@@ -2879,6 +2888,23 @@ impl Game {
             player,
             blocks: self.state.turn.blockers.clone(),
         });
+        let mut blocked_attackers: Vec<ObjectId> = self
+            .state
+            .turn
+            .blockers
+            .iter()
+            .map(|(_, attacker)| *attacker)
+            .collect();
+        blocked_attackers.sort_unstable();
+        blocked_attackers.dedup();
+        for attacker in blocked_attackers {
+            if let Some(object) = self.state.try_object(attacker) {
+                let card = object.card;
+                let controller = object.controller;
+                self.queue_triggers(attacker, card, controller, TriggerEvent::BecomesBlocked);
+            }
+        }
+        self.put_triggers(events);
         // CR 509.2: the active player gets priority after blockers are declared.
         let active = self.state.turn.active;
         self.grant_priority(active, events);
@@ -4716,6 +4742,134 @@ impl Game {
                 }
                 false
             }
+            Effect::DamageTargetCreatureForEachGoblin => {
+                let amount = self.goblin_count(controller) as u32;
+                for target in item.targets.clone() {
+                    if let Target::Permanent(id) = target {
+                        let dealt = self.deal_damage_from(
+                            Some(item.object),
+                            Some(controller),
+                            DamageTarget::Permanent(id),
+                            amount,
+                            false,
+                            events,
+                        );
+                        if dealt > 0 {
+                            events.push(Event::Damage {
+                                source: Some(item.object),
+                                target: self.describe_object(id),
+                                amount: dealt,
+                            });
+                        }
+                    }
+                }
+                false
+            }
+            Effect::DamageTargetPlayerForEachGoblin => {
+                let amount = self.goblin_count(controller) as u32;
+                for target in item.targets.clone() {
+                    if let Target::Player(p) = target {
+                        let dealt = self.deal_damage_from(
+                            Some(item.object),
+                            Some(controller),
+                            DamageTarget::Player(p),
+                            amount,
+                            false,
+                            events,
+                        );
+                        if dealt > 0 {
+                            let life = self.state.players[p as usize].life;
+                            events.push(Event::Damage {
+                                source: Some(item.object),
+                                target: format!("P{p}"),
+                                amount: dealt,
+                            });
+                            events.push(Event::LifeChange {
+                                player: p,
+                                delta: -(dealt as i32),
+                                life,
+                            });
+                        }
+                    }
+                }
+                false
+            }
+            Effect::AddManaForEachGoblin => {
+                let amount = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|o| o.zone == Zone::Battlefield && o.card.def().is_goblin())
+                    .count()
+                    .min(u8::MAX as usize) as u8;
+                self.state.players[controller as usize]
+                    .mana
+                    .add(ManaColor::Red, amount);
+                events.push(Event::ManaAdded {
+                    player: controller,
+                    color: ManaColor::Red,
+                    amount,
+                    pool_total: self.state.players[controller as usize].mana.red,
+                });
+                false
+            }
+            Effect::ReturnAllAttackersToHand => {
+                let attackers = self.state.turn.attackers.clone();
+                for id in attackers {
+                    self.move_to_hand(id, events);
+                }
+                self.prune_combat();
+                false
+            }
+            Effect::UntapAllNonlandsYouControl => {
+                let ids: Vec<ObjectId> = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|o| {
+                        o.zone == Zone::Battlefield
+                            && o.controller == controller
+                            && !o.card.def().is_land()
+                    })
+                    .map(|o| o.id)
+                    .collect();
+                for id in &ids {
+                    if let Some(object) = self.state.objects.get_mut(id) {
+                        object.tapped = false;
+                    }
+                }
+                if !ids.is_empty() {
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} untaps {} nonland permanent(s)",
+                            ids.len()
+                        ),
+                    });
+                }
+                false
+            }
+            Effect::EachPlayerDraws(n) => {
+                for p in 0..self.state.seat_count() as PlayerId {
+                    if !self.state.is_live(p) {
+                        continue;
+                    }
+                    for _ in 0..n {
+                        let remaining = n - 1;
+                        if self.draw_with_resume(
+                            p,
+                            DrawResume::Effect {
+                                source: item.object,
+                                cursor: item.cursor + 1,
+                            },
+                            remaining,
+                            events,
+                        ) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
                     Target::Spell(id) => Some(*id),
@@ -5601,6 +5755,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::AnyTarget => "any target: CR 115.4",
         TargetSpec::Player => "target player: CR 115.4",
         TargetSpec::Creature => "target creature: CR 115.1",
+        TargetSpec::OpponentCreature => "target creature an opponent controls: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
     }

@@ -202,8 +202,18 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 }
                 Effect::CreateGoblinTokensForEachGoblin
                 | Effect::CreateDrakeToken
-                | Effect::DamageEachOpponent(_) => {
+                | Effect::DamageEachOpponent(_)
+                | Effect::AddManaForEachGoblin
+                | Effect::ReturnAllAttackersToHand
+                | Effect::UntapAllNonlandsYouControl
+                | Effect::EachPlayerDraws(_) => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                Effect::DamageTargetCreatureForEachGoblin => {
+                    assert_eq!(spec.target, TargetSpec::OpponentCreature, "{}", card.name);
+                }
+                Effect::DamageTargetPlayerForEachGoblin => {
+                    assert_eq!(spec.target, TargetSpec::Player, "{}", card.name);
                 }
                 Effect::MillSelf(n) | Effect::MillEachOpponent(n) => {
                     assert!(*n > 0, "{} has a no-op mill effect", card.name);

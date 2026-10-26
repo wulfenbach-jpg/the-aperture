@@ -34,6 +34,7 @@ const TATYOVA_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/tat
 const CROSS_SOURCED: &str =
     include_str!("../../../fixtures/starter-corpus/cross-package-sourced.json");
 const SLICE4_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice4-sourced.json");
+const SLICE8_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice8-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
 const SLICE6_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice6-sourced.json");
 
@@ -92,6 +93,11 @@ fn slice5_cards() -> Vec<Value> {
 
 fn slice6_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE6_SOURCED).expect("sourced slice6 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice8_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE8_SOURCED).expect("sourced slice8 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -397,6 +403,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice4_cards())
         .chain(slice5_cards())
         .chain(slice6_cards())
+        .chain(slice8_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()
