@@ -307,13 +307,20 @@ fn the_default_async_decider_reports_a_single_legal_option_as_forced_without_htt
 }
 
 #[test]
-fn an_ai_completion_outside_the_live_offer_is_discarded_with_a_reason() {
+fn an_ai_completion_outside_the_live_offer_is_refused_and_a_legal_offer_completes_it() {
     let mut ui = session(38);
     let opening = ui.owner().expect("opening declarer");
     ui.ai.human_seat = if opening == P0 { P1 } else { P0 };
     ui.ai.ai_seats = vec![opening];
+    let offered = ui
+        .view(opening)
+        .legal
+        .first()
+        .cloned()
+        .expect("the opening decision offers at least one action");
     // Pass is not a legal answer to the opening mulligan decision, so the
-    // completion must be refused instead of mutating the table.
+    // completion itself must be refused. Since #34 a refused completion is not a
+    // terminal state for a legal position: the engine's own offer is applied.
     assert!(ui.request_ai_decision(|_view| Decision::heuristic(Action::Pass)));
     let deadline = Instant::now() + Duration::from_secs(10);
     while ui.busy_note.is_none() && Instant::now() < deadline {
@@ -325,15 +332,32 @@ fn an_ai_completion_outside_the_live_offer_is_discarded_with_a_reason() {
             .as_deref()
             .unwrap_or("")
             .contains("illegal_choice"),
-        "the discard needs a stable diagnostic: {:?}",
+        "the refusal needs a stable diagnostic: {:?}",
         ui.busy_note
     );
-    assert_eq!(ui.game.revision(), 0, "the table was not mutated");
-    assert_eq!(
-        ui.game.state.pending,
-        Some(Pending::Mulligan { player: opening })
+    assert!(
+        ui.busy_note
+            .as_deref()
+            .unwrap_or("")
+            .contains("applied the engine's legal offer"),
+        "the table must not be left waiting on a refused answer: {:?}",
+        ui.busy_note
     );
-    assert!(ui.replay.steps.is_empty(), "no action was recorded");
+    assert_eq!(
+        ui.game.revision(),
+        1,
+        "exactly one legal completion was applied"
+    );
+    assert_eq!(ui.replay.steps.len(), 1, "exactly one action was recorded");
+    assert_eq!(
+        ui.replay.steps[0].action, offered.action,
+        "the recorded action must be the engine's offered action"
+    );
+    assert_ne!(
+        ui.replay.steps[0].action,
+        Action::Pass,
+        "the refused completion must never be recorded as played"
+    );
     assert!(!ui.ai_busy);
 }
 

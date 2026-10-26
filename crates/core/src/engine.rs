@@ -38,6 +38,21 @@ use crate::state::{
 /// truncation event, never a silently invented result.
 const SETTLE_LIMIT: usize = 20_000;
 const STARTING_HAND: usize = 7;
+
+/// Cap on a multi-card "choose cards from hand" offer: the cleanup discard
+/// (CR 514.1) and the London mulligan bottoming (CR 103.5). Every combination
+/// cannot be offered, so the engine publishes a bounded, deterministic set; a
+/// single-card choice lists every card in hand instead (bounded by hand size).
+pub const MAX_DISCARD_OFFER: usize = 12;
+
+/// Which pending decision a hand-card offer belongs to.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum HandChoice {
+    /// CR 514.1 — cleanup: discard down to the maximum hand size.
+    Discard,
+    /// CR 103.5 — London mulligan: put cards on the bottom of the library.
+    Bottom,
+}
 const MAX_HAND_SIZE: usize = 7;
 
 /// Total mulligans a player may take: the first is free in multiplayer
@@ -4826,13 +4841,9 @@ impl Game {
                 }
                 out
             }
-            Pending::BottomCards { player, count } => vec![LegalAction {
-                action: Action::BottomCards {
-                    cards: self.sample_bottom(*player, *count),
-                },
-                label: format!("Put the last {count} card(s) of hand on the bottom"),
-                rules: vec!["103.5"],
-            }],
+            Pending::BottomCards { player, count } => {
+                self.hand_choice_offers(*player, *count, HandChoice::Bottom)
+            }
             Pending::DeclareAttackers { player } => {
                 let legal = self.legal_attackers(*player);
                 let mut out = vec![LegalAction {
@@ -4922,13 +4933,9 @@ impl Game {
                     },
                 ]
             }
-            Pending::Discard { player, count } => vec![LegalAction {
-                action: Action::Discard {
-                    cards: self.sample_discard(*player, *count),
-                },
-                label: format!("Discard the last {count} card(s) of hand"),
-                rules: vec!["514.1"],
-            }],
+            Pending::Discard { player, count } => {
+                self.hand_choice_offers(*player, *count, HandChoice::Discard)
+            }
             Pending::ApnapSacrifice { player, .. } => {
                 let permanents = self.controlled_permanents(*player);
                 if permanents.is_empty() {
@@ -5048,23 +5055,89 @@ impl Game {
         }
     }
 
-    fn sample_bottom(&self, player: PlayerId, count: u8) -> Vec<ObjectId> {
-        let hand = &self.state.player(player).hand;
-        hand.iter()
-            .rev()
-            .take(count as usize)
-            .rev()
-            .copied()
-            .collect()
-    }
-
-    fn sample_discard(&self, player: PlayerId, count: u8) -> Vec<ObjectId> {
-        let hand = &self.state.player(player).hand;
-        hand.iter()
-            .rev()
-            .take(count as usize)
-            .rev()
-            .copied()
+    /// CR 514.1 (cleanup discard) and CR 103.5 (London mulligan bottoming): the
+    /// player chooses which `count` cards leave their hand, and `check_selection`
+    /// accepts any legal set. A single hard-coded sample therefore under-describes
+    /// the decision — a policy that answers with a different legal set looked
+    /// "illegal" to consumers that only compared against the offer. The offer is
+    /// the engine's real choice space:
+    ///
+    /// * `count == 1`: one action per card in hand (a bounded, exact list);
+    /// * `count > 1`: the historical "last `count` cards" sample first, then a
+    ///   deterministic lexicographic prefix of the combinations, capped at
+    ///   [`MAX_DISCARD_OFFER`] actions so the offer can never explode.
+    fn hand_choice_offers(
+        &self,
+        player: PlayerId,
+        count: u8,
+        choice: HandChoice,
+    ) -> Vec<LegalAction> {
+        let hand = self.state.player(player).hand.clone();
+        let n = count as usize;
+        let mut sets: Vec<Vec<ObjectId>> = Vec::new();
+        if n == 0 {
+            sets.push(Vec::new());
+        } else if n <= hand.len() {
+            // Preserve the pre-existing default as the first offer, so a caller
+            // that takes the first entry keeps the old behaviour.
+            sets.push(hand.iter().rev().take(n).rev().copied().collect());
+            let limit = if n == 1 {
+                hand.len()
+            } else {
+                MAX_DISCARD_OFFER
+            };
+            let mut extra = Vec::new();
+            collect_bounded_combinations(&hand, n, limit, &mut extra);
+            for combo in extra {
+                if sets.len() >= limit {
+                    break;
+                }
+                if !sets.contains(&combo) {
+                    sets.push(combo);
+                }
+            }
+        }
+        // `n > hand.len()` cannot be satisfied by any submission, so the offer is
+        // empty rather than an illegal set; the engine never produces it.
+        sets.into_iter()
+            .map(|cards| {
+                // Every label carries the card's 1-based position in hand: two
+                // different sets of same-named cards are different choices, and
+                // a duplicate label would make the offer ambiguous to a human and
+                // unanswerable for a model.
+                let named: Vec<String> = cards
+                    .iter()
+                    .map(|id| {
+                        let name = self
+                            .state
+                            .try_object(*id)
+                            .map(|object| object.card.name())
+                            .unwrap_or("a card");
+                        match hand.iter().position(|held| held == id) {
+                            Some(index) => format!("{name} (#{})", index + 1),
+                            None => name.to_string(),
+                        }
+                    })
+                    .collect();
+                let names = named.join(", ");
+                let (action, label, rules) = match choice {
+                    HandChoice::Discard => (
+                        Action::Discard { cards },
+                        format!("Discard {names}"),
+                        vec!["514.1"],
+                    ),
+                    HandChoice::Bottom => (
+                        Action::BottomCards { cards },
+                        format!("Put {names} on the bottom of the library"),
+                        vec!["103.5"],
+                    ),
+                };
+                LegalAction {
+                    action,
+                    label,
+                    rules,
+                }
+            })
             .collect()
     }
 
@@ -5099,6 +5172,50 @@ impl Game {
         }
         out
     }
+}
+
+/// A deterministic, bounded prefix of the `count`-card combinations of `pool`,
+/// in lexicographic hand order. Stops at `limit` entries, so a large hand or a
+/// large `count` can never make the offer explode.
+fn collect_bounded_combinations(
+    pool: &[ObjectId],
+    count: usize,
+    limit: usize,
+    out: &mut Vec<Vec<ObjectId>>,
+) {
+    fn walk(
+        pool: &[ObjectId],
+        start: usize,
+        need: usize,
+        limit: usize,
+        current: &mut Vec<ObjectId>,
+        out: &mut Vec<Vec<ObjectId>>,
+    ) {
+        if out.len() >= limit {
+            return;
+        }
+        if need == 0 {
+            out.push(current.clone());
+            return;
+        }
+        for index in start..pool.len() {
+            if out.len() >= limit {
+                return;
+            }
+            // Not enough cards left to complete the set.
+            if pool.len() - index < need {
+                return;
+            }
+            current.push(pool[index]);
+            walk(pool, index + 1, need - 1, limit, current, out);
+            current.pop();
+        }
+    }
+    if count == 0 || count > pool.len() {
+        return;
+    }
+    let mut current = Vec::with_capacity(count);
+    walk(pool, 0, count, limit, &mut current, out);
 }
 
 fn check_selection(
