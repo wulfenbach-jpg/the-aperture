@@ -1,0 +1,17 @@
+{
+  "reference": "Windows10-Ryzen3600-RTX3070",
+  "collected_at": "2026-10-26T00:11:49-07:00",
+  "source": "Get-CimInstance Win32_Processor/ComputerSystem/VideoController/OperatingSystem",
+  "cpu": "AMD Ryzen 5 3600 6-Core Processor",
+  "cores": 6,
+  "logical_processors": 12,
+  "physical_memory_bytes": 34265088000,
+  "gpu": "NVIDIA GeForce RTX 3070",
+  "driver": "32.0.16.1062",
+  "display_pixels": [2560, 1440],
+  "display_refresh_hz_reported": 143,
+  "os": "Microsoft Windows 10 Pro 10.0.19045 build19045",
+  "rustc": "1.97.1 (8bab26f4f 2026-07-14)",
+  "cargo": "1.97.1 (c980f4866 2026-06-30)",
+  "conditions": "Shared interactive desktop; existing user game and other applications remained open. No GPU/model service started, no unrelated process terminated. Per-window DPI/client measurements are recorded by native-input.ps1."
+}

@@ -17,6 +17,7 @@ use aperture_core::view::{CardView, PlayerView, ZONE_ORDER};
 use aperture_core::{Action, AiSettings, ObjectId, P0, PlayerId, Profile, Zone, catalog, coach};
 use eframe::egui::{self, RichText};
 
+use crate::perf::{Conditions, PerformanceProbe};
 use crate::session::{
     SandboxOp, UiSession, block_list, import_seat_file_for, import_seat_text_for,
     import_seat_url_for, load_explicit_deck,
@@ -46,6 +47,15 @@ pub struct Startup {
     pub study_file: Option<String>,
     /// Optional prefilled divergence action index for `study_file`.
     pub branch_at: usize,
+    /// Opt-in native frame instrumentation report path.
+    pub performance_report: Option<PathBuf>,
+    /// Conditions to disclose in that report (e.g. a synthetic worker delay).
+    pub performance_conditions: Vec<String>,
+    /// Initial accessibility settings for a capture/launch (`--a11y
+    /// high-contrast,reduced-motion`). Only seeds the two settings the
+    /// Accessibility panel exposes; the panel still owns them afterwards.
+    pub initial_high_contrast: bool,
+    pub initial_reduced_motion: bool,
 }
 
 /// A destructive action that must be confirmed before it runs. Everything in
@@ -146,6 +156,13 @@ pub struct ApertureApp {
     show_coach: bool,
     show_study: bool,
     show_help: bool,
+    show_accessibility: bool,
+    high_contrast: bool,
+    reduced_motion: bool,
+    /// Last (high contrast, reduced motion) pair whose style was installed.
+    observed_theme: (bool, bool),
+    /// Opt-in native frame probe; `None` unless --performance-report was used.
+    perf: Option<PerformanceProbe>,
     /// Table setup controls; kept in sync with the live table.
     setup_seats: u8,
     setup_profile: Profile,
@@ -356,6 +373,25 @@ impl ApertureApp {
                 session.step_ai();
             }
         }
+        let perf = startup
+            .performance_report
+            .clone()
+            .map(|path| {
+                let note = startup.performance_conditions.clone();
+                PerformanceProbe::new(path).with_conditions(Conditions {
+                    synthetic_delays: note.clone(),
+                    notes: if note.is_empty() {
+                        Vec::new()
+                    } else {
+                        vec![
+                            "the declared synthetic delay was a controlled test condition, not real model or network latency"
+                                .to_string(),
+                        ]
+                    },
+                })
+            });
+        let initial_high_contrast = startup.initial_high_contrast;
+        let initial_reduced_motion = startup.initial_reduced_motion;
         ApertureApp {
             session,
             startup,
@@ -369,6 +405,11 @@ impl ApertureApp {
             show_coach: true,
             show_study: false,
             show_help: false,
+            show_accessibility: false,
+            high_contrast: initial_high_contrast,
+            reduced_motion: initial_reduced_motion,
+            observed_theme: (initial_high_contrast, initial_reduced_motion),
+            perf,
             setup_seats: seat_count as u8,
             setup_profile: initial_profile,
             observed_seats: seat_count as u8,
@@ -454,7 +495,7 @@ impl ApertureApp {
         ui.horizontal_wrapped(|ui| {
             ui.label(
                 RichText::new(format!("CONFIRM: {}", pending.question()))
-                    .color(theme::WARN)
+                    .color(theme::warn(ui))
                     .strong(),
             );
             if ui.button(pending.confirm_label()).clicked() {
@@ -491,13 +532,24 @@ impl ApertureApp {
     }
 
     fn set_zoom(&mut self, ctx: &egui::Context, zoom: f32) {
-        self.zoom = zoom.clamp(0.7, 1.9);
+        // 200% is the usable upper bound: the fixed strip stays reachable
+        // inside its own bounded scroll area at the 1024x640 minimum.
+        self.zoom = zoom.clamp(0.7, 2.0);
         ctx.set_zoom_factor(self.zoom);
     }
 
     /// Keyboard controls that do not conflict with a focused text field. Tab
     /// and Shift+Tab move egui focus; Enter activates the focused control.
     fn keyboard_shortcuts(&mut self, ctx: &egui::Context) {
+        // Esc is handled before the text-focus guard so it can dismiss the
+        // accessibility panel even from a focused field. When the panel is
+        // open Esc closes only the panel and returns: it never falls through
+        // to cancelling a confirmation or any other state in the same press.
+        let esc = ctx.input(|input| input.key_pressed(egui::Key::Escape));
+        if esc && self.show_accessibility {
+            self.show_accessibility = false;
+            return;
+        }
         if ctx.text_edit_focused() {
             return;
         }
@@ -513,9 +565,10 @@ impl ApertureApp {
             study,
             review,
             help,
+            accessibility,
             plus,
             minus,
-            esc,
+            reset_zoom,
             undo,
         ) = ctx.input(|input| {
             (
@@ -530,9 +583,20 @@ impl ApertureApp {
                 input.key_pressed(egui::Key::B),
                 input.key_pressed(egui::Key::R),
                 input.key_pressed(egui::Key::H),
+                input.key_pressed(egui::Key::A),
                 input.key_pressed(egui::Key::Plus) || input.key_pressed(egui::Key::Equals),
                 input.key_pressed(egui::Key::Minus),
-                input.key_pressed(egui::Key::Escape),
+                input.events.iter().any(|event| {
+                    matches!(
+                        event,
+                        egui::Event::Key {
+                            key: egui::Key::Num0,
+                            pressed: true,
+                            modifiers,
+                            ..
+                        } if modifiers.command
+                    )
+                }),
                 input.key_pressed(egui::Key::U),
             )
         });
@@ -590,6 +654,12 @@ impl ApertureApp {
         if help {
             self.show_help = !self.show_help;
         }
+        if accessibility {
+            self.show_accessibility = !self.show_accessibility;
+        }
+        if reset_zoom {
+            self.set_zoom(ctx, 1.0);
+        }
         if plus {
             let zoom = self.zoom + 0.1;
             self.set_zoom(ctx, zoom);
@@ -605,6 +675,94 @@ impl ApertureApp {
             self.show_zones = false;
             self.confirm = None;
         }
+    }
+
+    /// Install the selected contrast/animation mode when it changes. egui
+    /// applies the `active` widget style to keyboard focus, so the installed
+    /// 2 px focus stroke is what Tab/Enter users see. No widget is focused
+    /// programmatically here.
+    fn apply_theme_if_needed(&mut self, ctx: &egui::Context) {
+        // The palette is per-context data, so publish it on every pass; only
+        // the (more expensive) style install runs when the mode changes.
+        theme::publish_palette(ctx, self.high_contrast);
+        let mode = (self.high_contrast, self.reduced_motion);
+        if self.frame_count <= 4 || self.observed_theme != mode {
+            theme::apply_mode(ctx, self.high_contrast, self.reduced_motion);
+            self.observed_theme = mode;
+        }
+    }
+
+    /// Busy indicator. Reduced motion renders static text instead of an
+    /// animated spinner; the worker polling itself is unaffected.
+    fn working_indicator(&self, ui: &mut egui::Ui) {
+        if self.reduced_motion {
+            ui.label(RichText::new("Working...").color(theme::brass(ui)));
+        } else {
+            ui.spinner();
+        }
+    }
+
+    fn accessibility_panel(&mut self, ctx: &egui::Context) {
+        if !self.show_accessibility {
+            return;
+        }
+        let mut open = true;
+        let mut high_contrast = self.high_contrast;
+        let mut reduced_motion = self.reduced_motion;
+        egui::Window::new("Accessibility (A)")
+            .open(&mut open)
+            .resizable(false)
+            .default_width(430.0)
+            .show(ctx, |ui| {
+                theme::muted(
+                    ui,
+                    "Explicit settings for this window. Tab / Shift+Tab move focus, Enter activates the focused control, and the focused control gets a 2 px outline.",
+                );
+                ui.separator();
+                ui.checkbox(
+                    &mut high_contrast,
+                    "High contrast (white text, near-black surfaces, bright borders)",
+                );
+                ui.label(format!(
+                    "High contrast: {}",
+                    if high_contrast {
+                        "ON — white text on near-black surfaces, bright borders and accent text"
+                    } else {
+                        "OFF — original charcoal/brass palette"
+                    }
+                ));
+                ui.checkbox(
+                    &mut reduced_motion,
+                    "Reduced motion (static busy text, no animation)",
+                );
+                ui.label(format!(
+                    "Reduced motion: {}",
+                    if reduced_motion {
+                        "ON — spinners are replaced by static 'Working...' text and animation time is 0"
+                    } else {
+                        "OFF — normal spinner animation"
+                    }
+                ));
+                ui.separator();
+                theme::muted(
+                    ui,
+                    "Esc closes this panel first; a second Esc cancels the next pending UI state (never a destructive action). A opens or closes this panel only when no text field is focused.",
+                );
+                if let Some(perf) = &self.perf {
+                    ui.separator();
+                    ui.label(format!(
+                        "Performance report: {}",
+                        perf.status().unwrap_or_else(|| format!(
+                            "collecting {:.1}s of {:.0}s",
+                            perf.elapsed().as_secs_f32(),
+                            10.0
+                        ))
+                    ));
+                }
+            });
+        self.show_accessibility = open;
+        self.high_contrast = high_contrast;
+        self.reduced_motion = reduced_motion;
     }
 
     fn inspect_card(&mut self, card: &CardView) {
@@ -655,7 +813,7 @@ impl ApertureApp {
         };
         theme::heading(ui, "Pending choice");
         if let Some(description) = &view.pending {
-            ui.label(RichText::new(description).color(theme::WARN));
+            ui.label(RichText::new(description).color(theme::warn(ui)));
         }
         match kind {
             aperture_core::view::PendingKind::Mulligan => {
@@ -991,9 +1149,9 @@ impl ApertureApp {
             for card in cards {
                 let label = Self::card_label(card);
                 let text = RichText::new(label).color(if card.card.def().is_land() {
-                    theme::MUTED
+                    theme::muted_color(ui)
                 } else {
-                    theme::TEXT
+                    theme::text_color(ui)
                 });
                 let response = ui.add(egui::Button::new(text).min_size(egui::vec2(104.0, 32.0)));
                 if response.clicked() || response.secondary_clicked() {
@@ -1039,20 +1197,20 @@ impl ApertureApp {
                 };
                 ui.label(
                     RichText::new(format!("P{seat}{role}"))
-                        .color(theme::BRASS)
+                        .color(theme::brass(ui))
                         .strong(),
                 );
                 if active {
-                    ui.label(RichText::new("ACTIVE").color(theme::GOOD).small());
+                    ui.label(RichText::new("ACTIVE").color(theme::good(ui)).small());
                 }
                 if priority {
-                    ui.label(RichText::new("PRIORITY").color(theme::BRASS).small());
+                    ui.label(RichText::new("PRIORITY").color(theme::brass(ui)).small());
                 }
                 if pending_owner {
-                    ui.label(RichText::new("PENDING").color(theme::WARN).small());
+                    ui.label(RichText::new("PENDING").color(theme::warn(ui)).small());
                 }
                 if data.eliminated {
-                    ui.label(RichText::new("ELIMINATED").color(theme::BAD).strong());
+                    ui.label(RichText::new("ELIMINATED").color(theme::bad(ui)).strong());
                 }
             });
             ui.label(
@@ -1098,7 +1256,7 @@ impl ApertureApp {
                             .unwrap_or("hidden (hand/library)")
                     ))
                     .small()
-                    .color(theme::BRASS),
+                    .color(theme::brass(ui)),
                 );
             }
             let damage: Vec<String> = view
@@ -1119,7 +1277,7 @@ impl ApertureApp {
                 ui.label(
                     RichText::new(format!("Commander damage: {}", damage.join(" · ")))
                         .small()
-                        .color(theme::WARN),
+                        .color(theme::warn(ui)),
                 );
             }
             self.battlefield_ui(ui, &data.battlefield);
@@ -1149,9 +1307,9 @@ impl ApertureApp {
                             let response = ui.add_enabled(
                                 enabled,
                                 egui::Button::new(RichText::new(label).color(if enabled {
-                                    theme::TEXT
+                                    theme::text_color(ui)
                                 } else {
-                                    theme::MUTED
+                                    theme::muted_color(ui)
                                 })),
                             );
                             if response.clicked() {
@@ -1214,7 +1372,7 @@ impl ApertureApp {
                             " (your seat)"
                         }
                     ))
-                    .color(theme::BRASS)
+                    .color(theme::brass(ui))
                     .strong(),
                 );
             });
@@ -1266,18 +1424,20 @@ impl ApertureApp {
                         .request_import(seat, move || import_seat_file_for(seat, &path, profile));
                 }
                 if busy {
-                    ui.spinner();
-                    ui.label("working…");
+                    self.working_indicator(ui);
+                    if !self.reduced_motion {
+                        ui.label("working…");
+                    }
                 }
             });
             if let Some(err) = &self.session.seat_error[index] {
-                ui.label(RichText::new(format!("ERROR: {err}")).color(theme::BAD));
+                ui.label(RichText::new(format!("ERROR: {err}")).color(theme::bad(ui)));
             }
             if let Some(import) = &self.session.seat_import[index] {
                 let (status, color) = if import.certified() {
-                    ("CERTIFIED", theme::GOOD)
+                    ("CERTIFIED", theme::good(ui))
                 } else {
-                    ("REFUSED", theme::BAD)
+                    ("REFUSED", theme::bad(ui))
                 };
                 ui.label(
                     RichText::new(format!("{status} — {}", import.status_line()))
@@ -1311,7 +1471,7 @@ impl ApertureApp {
                             "unsupported cards ({} card(s), exact reasons):",
                             import.unsupported.len()
                         ))
-                        .color(theme::BAD)
+                        .color(theme::bad(ui))
                         .small(),
                     );
                     egui::ScrollArea::vertical()
@@ -1333,7 +1493,7 @@ impl ApertureApp {
                 if let Some(refusal) = &import.refusal {
                     ui.label(
                         RichText::new(format!("refused: {refusal}"))
-                            .color(theme::BAD)
+                            .color(theme::bad(ui))
                             .small(),
                     );
                 }
@@ -1347,8 +1507,13 @@ impl ApertureApp {
         ui.separator();
         let ready = self.session.can_start_imported();
         ui.horizontal_wrapped(|ui| {
+            let start_label = if ready {
+                "Start imported match"
+            } else {
+                "Start imported match (disabled — every seat must be certified)"
+            };
             if ui
-                .add_enabled(ready, egui::Button::new("Start imported match"))
+                .add_enabled(ready, egui::Button::new(start_label))
                 .clicked()
             {
                 let seed = self.session.seed.wrapping_add(1);
@@ -1393,11 +1558,12 @@ impl ApertureApp {
                 });
             }
             if self.session.health_busy {
-                ui.spinner();
+                self.working_indicator(ui);
+                ui.label("checking local health…");
             }
         });
         if let Some(status) = &self.session.decider_status {
-            ui.label(RichText::new(status).color(theme::BRASS).small());
+            ui.label(RichText::new(status).color(theme::brass(ui)).small());
         }
         ui.horizontal_wrapped(|ui| {
             ui.label("save/load path:");
@@ -1460,7 +1626,9 @@ impl ApertureApp {
                     .try_object(card)
                     .map(|o| o.name())
                     .unwrap_or("spell");
-                ui.label(RichText::new(format!("Choose a target for {name}:")).color(theme::BRASS));
+                ui.label(
+                    RichText::new(format!("Choose a target for {name}:")).color(theme::brass(ui)),
+                );
                 ui.horizontal_wrapped(|ui| {
                     for action in options {
                         let label = view
@@ -1549,12 +1717,16 @@ impl ApertureApp {
 
     fn render_ui(&mut self, ui: &mut egui::Ui) {
         let ctx = ui.ctx().clone();
+        let perf_started = self
+            .perf
+            .as_mut()
+            .and_then(|probe| probe.callback_started(Instant::now()));
+        let had_input = ctx.input(|input| !input.events.is_empty());
         self.frame_count += 1;
-        if self.frame_count <= 3 {
-            // eframe applies its own style when the window is created, so the
-            // palette is (re)asserted over the first frames.
-            theme::apply(&ctx);
-        }
+        // eframe applies its own style when the window is created, so the
+        // palette is (re)asserted over the first frames and whenever the
+        // accessibility panel changes contrast or motion.
+        self.apply_theme_if_needed(&ctx);
         // Finished background work is applied here, on the main thread only.
         let applied = self.session.poll_workers();
         if !applied.is_empty() {
@@ -1586,25 +1758,76 @@ impl ApertureApp {
         let owner = self.session.owner();
 
         egui::Panel::top("primary-strip").show(ui, |ui| {
+            let viewport_height = ui.available_height();
+            let header_cap = (viewport_height * 0.38).max(72.0);
+            let action_cap = (viewport_height * 0.30).clamp(96.0, 210.0);
+            // Fixed row: title, zoom, accessibility and help are never inside
+            // the scrollable header, so a 200% zoom or a high-DPI window can
+            // never hide them.
             ui.horizontal_wrapped(|ui| {
-                ui.label(RichText::new("THE APERTURE").heading().color(theme::BRASS));
+                ui.label(RichText::new("THE APERTURE").heading().color(theme::brass(ui)));
                 theme::muted(ui, crate::session::profile_line());
                 ui.separator();
-                if ui.small_button("A−").clicked() {
+                if ui
+                    .small_button("A−")
+                    .on_hover_text("Text zoom out (also the − key)")
+                    .clicked()
+                {
                     let zoom = self.zoom - 0.1;
                     self.set_zoom(&ctx, zoom);
                 }
                 ui.label(format!("text {:.0}%", self.zoom * 100.0));
-                if ui.small_button("A+").clicked() {
+                if ui
+                    .small_button("A+")
+                    .on_hover_text("Text zoom in (also the + key), up to 200%")
+                    .clicked()
+                {
                     let zoom = self.zoom + 0.1;
                     self.set_zoom(&ctx, zoom);
+                }
+                if ui
+                    .small_button("100%")
+                    .on_hover_text("Reset text zoom to 100% (Ctrl+0)")
+                    .clicked()
+                {
+                    self.set_zoom(&ctx, 1.0);
+                }
+                if ui
+                    .selectable_label(self.show_accessibility, "Accessibility (A)")
+                    .on_hover_text(
+                        "High-contrast and reduced-motion settings. A opens/closes this panel; Esc closes it first.",
+                    )
+                    .clicked()
+                {
+                    self.show_accessibility = !self.show_accessibility;
                 }
                 if ui.small_button("Help (H)").clicked() {
                     self.show_help = !self.show_help;
                 }
+                if let Some(probe) = &self.perf {
+                    let status = probe.status().unwrap_or_else(|| {
+                        format!(
+                            "collecting {:.1}s of 10s",
+                            probe.elapsed().as_secs_f32()
+                        )
+                    });
+                    ui.label(
+                        RichText::new(format!("Performance report: {status}"))
+                            .small()
+                            .color(theme::muted_color(ui)),
+                    );
+                }
             });
+            // A pending destructive confirmation stays fixed too: it can never
+            // scroll out of sight at high zoom.
+            self.confirm_bar(ui);
+            egui::ScrollArea::vertical()
+                .id_salt("primary-header")
+                .max_height(header_cap)
+                .auto_shrink([false, true])
+                .show(ui, |ui| {
             ui.horizontal_wrapped(|ui| {
-                ui.label(RichText::new("TABLE:").color(theme::BRASS).small());
+                ui.label(RichText::new("TABLE:").color(theme::brass(ui)).small());
                 for count in 2..=4u8 {
                     if ui
                         .selectable_label(self.setup_seats == count, format!("{count} seats"))
@@ -1614,7 +1837,7 @@ impl ApertureApp {
                     }
                 }
                 ui.separator();
-                ui.label(RichText::new("PROFILE:").color(theme::BRASS).small());
+                ui.label(RichText::new("PROFILE:").color(theme::brass(ui)).small());
                 if ui
                     .selectable_label(
                         self.setup_profile == Profile::Practice20,
@@ -1731,26 +1954,26 @@ impl ApertureApp {
                 ui.checkbox(&mut self.show_import, "Import (I)");
                 ui.checkbox(&mut self.show_zones, "Zones (Z)");
             });
-            self.confirm_bar(ui);
             if self.show_help {
                 ui.label(
                     RichText::new(
-                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control · P pass · U undo · N new game (keeps seats/profile, asks first) · S save · L load (asks first) · I import · B study-branch panel · G branch from the prefilled study inputs (asks first) · R postgame review (game over only) · Z zone inspector · K sandbox · C coaching · H help · +/− text zoom · Esc cancels a target pick, a confirmation or the inspector. Shortcuts are ignored while a text field has focus.",
+                        "Keyboard: Tab / Shift+Tab move focus · Enter activates the focused control (a 2 px outline marks focus) · Ctrl+0 resets text zoom to 100% · +/− text zoom (up to 200%) · A accessibility panel (high contrast, reduced motion) · P pass · U undo · N new game (keeps seats/profile, asks first) · S save · L load (asks first) · I import · B study-branch panel · G branch from the prefilled study inputs (asks first) · R postgame review (game over only) · Z zone inspector · K sandbox · C coaching · H help · Esc closes the accessibility panel first, then cancels a target pick, a confirmation or the inspector; it never performs a destructive action. Single-letter shortcuts are ignored while a text field has focus.",
                     )
                     .small()
-                    .color(theme::MUTED),
+                    .color(theme::muted_color(ui)),
                 );
             }
+            }); // primary-header scroll
             ui.horizontal_wrapped(|ui| {
                 if let Some((label, _)) = &self.session.branch {
                     ui.label(
                         RichText::new(format!("branch: {label}"))
-                            .color(theme::BRASS)
+                            .color(theme::brass(ui))
                             .small(),
                     );
                 }
                 if let Some(pending) = &view.pending {
-                    ui.label(RichText::new(format!("WAITING: {pending}")).color(theme::WARN));
+                    ui.label(RichText::new(format!("WAITING: {pending}")).color(theme::warn(ui)));
                 } else if let Some(owner) = owner {
                     if owner == human || view.priority == Some(owner) {
                         ui.label(format!("P{owner} holds priority"));
@@ -1759,11 +1982,11 @@ impl ApertureApp {
                             RichText::new(format!(
                                 "Waiting on P{owner} (no player has priority)"
                             ))
-                            .color(theme::WARN),
+                            .color(theme::warn(ui)),
                         );
                     }
                 } else if let Some(conclusion) = self.session.conclude() {
-                    ui.label(RichText::new(conclusion).color(theme::GOOD).strong());
+                    ui.label(RichText::new(conclusion).color(theme::good(ui)).strong());
                 }
             });
             ui.horizontal_wrapped(|ui| {
@@ -1802,7 +2025,7 @@ impl ApertureApp {
                 {
                     ui.label(
                         RichText::new(format!("pending owner P{pending_owner}"))
-                            .color(theme::WARN)
+                            .color(theme::warn(ui))
                             .small(),
                     );
                 }
@@ -1812,20 +2035,20 @@ impl ApertureApp {
                             "SANDBOX-MODIFIED — NOT A LEGAL MATCH RESULT ({})",
                             self.session.sandbox_record.summary()
                         ))
-                        .color(theme::BAD)
+                        .color(theme::bad(ui))
                         .strong(),
                     );
                 }
                 if self.session.ai.use_decider {
-                    ui.label(RichText::new("decider-2b opt-in").color(theme::BRASS));
+                    ui.label(RichText::new("decider-2b opt-in").color(theme::brass(ui)));
                 }
                 if self.session.worker_busy() {
-                    ui.spinner();
-                    ui.label(RichText::new("background work running").color(theme::BRASS));
+                    self.working_indicator(ui);
+                    ui.label(RichText::new("background work running").color(theme::brass(ui)));
                 }
             });
             if let Some(note) = &self.session.busy_note {
-                ui.label(RichText::new(note).color(theme::MUTED).small());
+                ui.label(RichText::new(note).color(theme::muted_color(ui)).small());
             }
             ui.separator();
             // The persistent primary strip: own pending choices and legal
@@ -1839,7 +2062,7 @@ impl ApertureApp {
                 );
                 egui::ScrollArea::vertical()
                     .id_salt("review-strip")
-                    .max_height(210.0)
+                    .max_height(action_cap)
                     .auto_shrink([false, true])
                     .show(ui, |ui| {
                         if let Some(review) = &self.session.review_cache {
@@ -1853,7 +2076,7 @@ impl ApertureApp {
                 theme::heading(ui, "YOUR ACTIONS — only engine-offered decisions are accepted");
                 egui::ScrollArea::vertical()
                     .id_salt("primary-actions")
-                    .max_height(210.0)
+                    .max_height(action_cap)
                     .auto_shrink([false, true])
                     .show(ui, |ui| {
                         self.primary_actions(ui, &view, owner, human);
@@ -1866,7 +2089,7 @@ impl ApertureApp {
                 }
             }
             if let Some(note) = &self.session.note {
-                ui.label(RichText::new(note).color(theme::BRASS).small());
+                ui.label(RichText::new(note).color(theme::brass(ui)).small());
             }
             if !self.session.message.is_empty() {
                 // A refusal or a failed load/branch is an error state, not a
@@ -1875,7 +2098,7 @@ impl ApertureApp {
                 let failed = message_is_error(&self.session.message);
                 ui.label(
                     RichText::new(&self.session.message)
-                        .color(if failed { theme::BAD } else { theme::WARN })
+                        .color(if failed { theme::bad(ui) } else { theme::warn(ui) })
                         .small(),
                 );
             }
@@ -1891,7 +2114,7 @@ impl ApertureApp {
                     if let Some(refusal) = self.session.deck_refusal.clone() {
                         ui.label(
                             RichText::new(format!("DECK REFUSED — {refusal}"))
-                                .color(theme::BAD)
+                                .color(theme::bad(ui))
                                 .strong(),
                         );
                         theme::muted(
@@ -1975,11 +2198,11 @@ impl ApertureApp {
                                         coach::ExplanationKind::Rule
                                             if explanation.topic.contains("unavailable") =>
                                         {
-                                            theme::MUTED
+                                            theme::muted_color(ui)
                                         }
-                                        coach::ExplanationKind::Rule => theme::TEXT,
-                                        coach::ExplanationKind::Simplification => theme::WARN,
-                                        coach::ExplanationKind::Strategy => theme::BRASS,
+                                        coach::ExplanationKind::Rule => theme::text_color(ui),
+                                        coach::ExplanationKind::Simplification => theme::warn(ui),
+                                        coach::ExplanationKind::Strategy => theme::brass(ui),
                                     };
                                     ui.label(
                                         RichText::new(format!(
@@ -1993,7 +2216,7 @@ impl ApertureApp {
                                             ui.label(
                                                 RichText::new(format!("    CR {rule}: {note}"))
                                                     .small()
-                                                    .color(theme::MUTED),
+                                                    .color(theme::muted_color(ui)),
                                             );
                                         }
                                     }
@@ -2020,7 +2243,7 @@ impl ApertureApp {
                                 "LEGAL MATCH ACTIONS stay in YOUR ACTIONS at the top of the window. Every control below is a manual table override: it bypasses the rules, it is written into this session's taint record, and the table can then never be presented as a legal match result.",
                             )
                             .small()
-                            .color(theme::WARN),
+                            .color(theme::warn(ui)),
                         );
                         if self.session.tainted() {
                             ui.label(
@@ -2028,14 +2251,14 @@ impl ApertureApp {
                                     "TAINTED — {}",
                                     self.session.sandbox_record.summary()
                                 ))
-                                .color(theme::BAD)
+                                .color(theme::bad(ui))
                                 .strong(),
                             );
                         }
                         ui.horizontal_wrapped(|ui| {
                             ui.label(
                                 RichText::new(format!("on your seat (P{human}):"))
-                                    .color(theme::BRASS)
+                                    .color(theme::brass(ui))
                                     .small(),
                             );
                             for (label, op) in [
@@ -2184,7 +2407,7 @@ impl ApertureApp {
                                 }
                             ))
                             .small()
-                            .color(theme::MUTED),
+                            .color(theme::muted_color(ui)),
                         );
                     }
                 });
@@ -2235,7 +2458,7 @@ impl ApertureApp {
                         }
                     });
                     ui.horizontal_wrapped(|ui| {
-                        ui.label(RichText::new("seat:").color(theme::BRASS).small());
+                        ui.label(RichText::new("seat:").color(theme::brass(ui)).small());
                         if ui
                             .selectable_label(self.zone_seat_filter.is_none(), "all")
                             .clicked()
@@ -2254,7 +2477,7 @@ impl ApertureApp {
                             }
                         }
                         ui.separator();
-                        ui.label(RichText::new("zone:").color(theme::BRASS).small());
+                        ui.label(RichText::new("zone:").color(theme::brass(ui)).small());
                         if ui
                             .selectable_label(self.zone_zone_filter.is_none(), "all")
                             .clicked()
@@ -2281,7 +2504,7 @@ impl ApertureApp {
                                     "P{seat} '{}' · life {} · hand {} · library {}",
                                     data.name, data.life, data.hand_count, data.library_count
                                 ))
-                                .color(theme::BRASS)
+                                .color(theme::brass(ui))
                                 .small(),
                             );
                             for (zone, count) in [
@@ -2334,6 +2557,28 @@ impl ApertureApp {
             }
             if !open {
                 self.show_zones = false;
+            }
+        }
+
+        // ------------------------------ accessibility shell
+        self.accessibility_panel(&ctx);
+
+        // ------------------------------ opt-in performance probe
+        let callback_end = Instant::now();
+        if let Some(started) = perf_started
+            && let Some(probe) = self.perf.as_mut()
+            && probe.callback_finished(started, callback_end, had_input)
+        {
+            // Serialization and the filesystem write happen on a background
+            // thread after this frame; no IO runs here.
+            probe.finish_and_write();
+        }
+        if let Some(probe) = &self.perf {
+            if probe.collecting() {
+                // Forced ~60 Hz sampling only while the bounded window runs.
+                ctx.request_repaint_after(Duration::from_millis(16));
+            } else if !probe.write_done() {
+                ctx.request_repaint_after(Duration::from_millis(200));
             }
         }
 
@@ -2397,7 +2642,8 @@ impl eframe::App for ApertureApp {
 mod viewport_tests {
     use super::*;
     use crate::session::{BUNDLED_A, BUNDLED_B};
-    use aperture_core::{CardId, DeckList, Game, Step};
+    use aperture_ai::Policy;
+    use aperture_core::{CardId, DeckList, Game, ObjectId, Step, Zone};
 
     fn startup() -> Startup {
         Startup {
@@ -2416,6 +2662,10 @@ mod viewport_tests {
             window: None,
             study_file: None,
             branch_at: 0,
+            performance_report: None,
+            performance_conditions: Vec::new(),
+            initial_high_contrast: false,
+            initial_reduced_motion: false,
         }
     }
 
@@ -2441,6 +2691,11 @@ mod viewport_tests {
             show_coach: true,
             show_study: false,
             show_help: false,
+            show_accessibility: false,
+            high_contrast: false,
+            reduced_motion: false,
+            observed_theme: (false, false),
+            perf: None,
             setup_seats: 2,
             setup_profile: Profile::Practice20,
             observed_seats: 2,
@@ -2484,6 +2739,11 @@ mod viewport_tests {
             show_coach: true,
             show_study: false,
             show_help: false,
+            show_accessibility: false,
+            high_contrast: false,
+            reduced_motion: false,
+            observed_theme: (false, false),
+            perf: None,
             setup_seats: 4,
             setup_profile: Profile::CommanderCombat40,
             observed_seats: 4,
@@ -2498,6 +2758,33 @@ mod viewport_tests {
             zoom: 1.0,
             frame_count: 0,
         }
+    }
+
+    #[test]
+    fn a_capture_launch_can_start_in_high_contrast_and_reduced_motion() {
+        // `--a11y` only seeds the panel's two settings; rendering must keep
+        // them and install the reduced-motion style (animation_time 0).
+        let mut app = four_seat_app();
+        app.high_contrast = true;
+        app.reduced_motion = true;
+        app.observed_theme = (true, true);
+        app.session.ai_busy = true;
+        let labels = run_frame(&mut app, 1280.0, 720.0, 6);
+        assert!(
+            labels.iter().any(|label| label == "Working..."),
+            "reduced motion must show static Working... while a worker runs: {labels:?}"
+        );
+        assert!(app.high_contrast && app.reduced_motion);
+    }
+
+    #[test]
+    fn the_startup_accessibility_flags_seed_the_app_settings() {
+        let startup = Startup {
+            initial_high_contrast: true,
+            initial_reduced_motion: true,
+            ..startup()
+        };
+        assert!(startup.initial_high_contrast && startup.initial_reduced_motion);
     }
 
     #[test]
@@ -2988,6 +3275,11 @@ mod viewport_tests {
             show_coach: true,
             show_study: false,
             show_help: false,
+            show_accessibility: false,
+            high_contrast: false,
+            reduced_motion: false,
+            observed_theme: (false, false),
+            perf: None,
             setup_seats: 2,
             setup_profile: Profile::Practice20,
             observed_seats: 2,
@@ -3120,6 +3412,16 @@ mod viewport_tests {
 
     /// Press one key in a real frame, the way the native window receives it.
     fn press_key(app: &mut ApertureApp, width: f32, height: f32, key: egui::Key) {
+        press_key_with(app, width, height, key, egui::Modifiers::NONE);
+    }
+
+    fn press_key_with(
+        app: &mut ApertureApp,
+        width: f32,
+        height: f32,
+        key: egui::Key,
+        modifiers: egui::Modifiers,
+    ) {
         let ctx = egui::Context::default();
         let input = egui::RawInput {
             screen_rect: Some(egui::Rect::from_min_size(
@@ -3136,7 +3438,7 @@ mod viewport_tests {
             physical_key: None,
             pressed: true,
             repeat: false,
-            modifiers: egui::Modifiers::NONE,
+            modifiers,
         }];
         let mut frame = ctx.run_ui(pressed, |ui| app.render_ui(ui));
         frame.textures_delta.clear();
@@ -3604,6 +3906,533 @@ Deck
                 .iter()
                 .all(|deck| deck.name.contains("imported command")),
             "the certified lists were applied verbatim"
+        );
+    }
+
+    fn frame_shapes_at(
+        ctx: &egui::Context,
+        app: &mut ApertureApp,
+        width: f32,
+        height: f32,
+        zoom: f32,
+        frames: usize,
+    ) -> Vec<(String, egui::Rect, egui::Rect)> {
+        ctx.set_zoom_factor(zoom);
+        let mut output = None;
+        for frame in 0..frames.max(1) {
+            let input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(width, height),
+                )),
+                time: Some(frame as f64 / 30.0),
+                ..Default::default()
+            };
+            let mut run = ctx.run_ui(input, |ui| app.render_ui(ui));
+            run.textures_delta.clear();
+            output = Some(run);
+        }
+        output
+            .expect("at least one frame")
+            .shapes
+            .into_iter()
+            .filter_map(|clipped| match clipped.shape {
+                egui::Shape::Text(text) => {
+                    let bounds = text.visual_bounding_rect();
+                    Some((text.galley.text().to_owned(), clipped.clip_rect, bounds))
+                }
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn visible_at(
+        shapes: &[(String, egui::Rect, egui::Rect)],
+        height: f32,
+    ) -> impl Fn(&str) -> bool {
+        move |needle| {
+            shapes.iter().any(|(text, clip, bounds)| {
+                text.contains(needle) && clip.intersects(*bounds) && bounds.min.y < height
+            })
+        }
+    }
+
+    #[test]
+    fn zoom_is_repeatable_caps_at_200_percent_and_has_a_100_percent_reset() {
+        let mut app = four_seat_app();
+        let ctx = egui::Context::default();
+        app.set_zoom(&ctx, 5.0);
+        assert_eq!(app.zoom, 2.0, "200% must be the usable ceiling");
+        app.set_zoom(&ctx, 0.1);
+        assert_eq!(app.zoom, 0.7, "the minimum remains 70%");
+        app.set_zoom(&ctx, 1.0);
+
+        // Bare + repeats, as the existing shortcut did.
+        for expected in [1.1_f32, 1.2, 1.3] {
+            press_key(&mut app, 1280.0, 720.0, egui::Key::Plus);
+            assert!(
+                (app.zoom - expected).abs() < 0.001,
+                "repeatable zoom broke: {} != {expected}",
+                app.zoom
+            );
+        }
+        // Ctrl+0 is the documented reset and does not fight egui's built-in
+        // zoom (which this app disables).
+        press_key_with(
+            &mut app,
+            1280.0,
+            720.0,
+            egui::Key::Num0,
+            egui::Modifiers {
+                command: true,
+                ctrl: true,
+                ..Default::default()
+            },
+        );
+        assert_eq!(app.zoom, 1.0);
+
+        // The visible 100% control performs the same reset.
+        app.set_zoom(&ctx, 2.0);
+        click_text(&mut app, 1280.0, 720.0, "100%");
+        assert_eq!(app.zoom, 1.0);
+    }
+
+    #[test]
+    fn accessibility_opens_only_without_text_focus_and_escape_closes_it_first() {
+        let mut app = four_seat_app();
+        press_key(&mut app, 1280.0, 720.0, egui::Key::A);
+        assert!(
+            app.show_accessibility,
+            "A must open the accessibility panel"
+        );
+        app.confirm = Some(PendingAction::NewGame { seed: 9 });
+        press_key(&mut app, 1280.0, 720.0, egui::Key::A);
+        assert!(!app.show_accessibility);
+        assert!(
+            app.confirm.is_some(),
+            "A must not disturb a pending confirmation"
+        );
+        press_key(&mut app, 1280.0, 720.0, egui::Key::A);
+        press_key(&mut app, 1280.0, 720.0, egui::Key::Escape);
+        assert!(
+            !app.show_accessibility,
+            "Esc must close the accessibility panel first"
+        );
+        assert!(
+            app.confirm.is_some(),
+            "the same Esc press must not also cancel the confirmation"
+        );
+        press_key(&mut app, 1280.0, 720.0, egui::Key::Escape);
+        assert!(
+            app.confirm.is_none(),
+            "a second Esc cancels the confirmation"
+        );
+
+        // With a real focused text field, A is ignored; Esc still closes the
+        // panel because it is handled before the text-focus guard.
+        let mut text = String::new();
+        let focus_id = egui::Id::unique("issue22-focus-probe");
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(1280.0, 720.0),
+            )),
+            ..Default::default()
+        };
+        let ctx = egui::Context::default();
+        let mut edit = ctx.run_ui(input.clone(), |ui| {
+            ui.add(egui::TextEdit::singleline(&mut text).id(focus_id));
+        });
+        edit.textures_delta.clear();
+        ctx.memory_mut(|memory| memory.request_focus(focus_id));
+        // Keep the focused TextEdit in the same passes as the app so egui does
+        // not drop focus for a widget that was not shown.
+        let mut warm = ctx.run_ui(input.clone(), |ui| {
+            ui.add(egui::TextEdit::singleline(&mut text).id(focus_id));
+            app.render_ui(ui);
+        });
+        warm.textures_delta.clear();
+        assert!(ctx.text_edit_focused());
+        let mut pressed = input;
+        pressed.events = vec![egui::Event::Key {
+            key: egui::Key::A,
+            physical_key: None,
+            pressed: true,
+            repeat: false,
+            modifiers: egui::Modifiers::NONE,
+        }];
+        let mut frame = ctx.run_ui(pressed.clone(), |ui| {
+            ui.add(egui::TextEdit::singleline(&mut text).id(focus_id));
+            app.render_ui(ui);
+        });
+        frame.textures_delta.clear();
+        assert!(
+            !app.show_accessibility,
+            "a single-letter shortcut must not fire while a text field is focused"
+        );
+        app.show_accessibility = true;
+        pressed.events = vec![egui::Event::Key {
+            key: egui::Key::Escape,
+            physical_key: None,
+            pressed: true,
+            repeat: false,
+            modifiers: egui::Modifiers::NONE,
+        }];
+        let mut frame = ctx.run_ui(pressed, |ui| {
+            ui.add(egui::TextEdit::singleline(&mut text).id(focus_id));
+            app.render_ui(ui);
+        });
+        frame.textures_delta.clear();
+        assert!(
+            !app.show_accessibility,
+            "Esc must close the accessibility panel even while text has focus"
+        );
+    }
+
+    #[test]
+    fn the_accessibility_panel_states_are_words_and_install_high_contrast_richtext() {
+        let mut app = four_seat_app();
+        app.show_accessibility = true;
+        let ctx = egui::Context::default();
+        let shapes = frame_shapes_at(&ctx, &mut app, 1280.0, 720.0, 1.0, 2);
+        let visible = visible_at(&shapes, 720.0);
+        assert!(visible("Accessibility (A)"), "the panel did not open");
+        assert!(visible("High contrast: OFF"), "the state is not a word");
+        assert!(visible("Reduced motion: OFF"), "the state is not a word");
+
+        app.high_contrast = true;
+        app.reduced_motion = true;
+        let ctx = egui::Context::default();
+        let shapes = frame_shapes_at(&ctx, &mut app, 1280.0, 720.0, 1.0, 3);
+        let visible = visible_at(&shapes, 720.0);
+        assert!(visible("High contrast: ON"), "high contrast state missing");
+        assert!(
+            visible("Reduced motion: ON"),
+            "reduced motion state missing"
+        );
+        let style = ctx.global_style();
+        assert_eq!(
+            style.animation_time, 0.0,
+            "reduced motion must set egui animation_time to zero"
+        );
+        assert_eq!(
+            style.visuals.override_text_color,
+            Some(theme::HC_TEXT),
+            "high contrast must use explicit light body text"
+        );
+        assert!(
+            (style.visuals.widgets.active.bg_stroke.width - 2.0).abs() < f32::EPSILON,
+            "keyboard focus must have a 2 px outline"
+        );
+
+        // Rich text is palette-aware, not merely a background change: the
+        // heading keeps a bright accent and card/body text is the HC text.
+        let mut heading_colors = Vec::new();
+        let ctx = egui::Context::default();
+        for frame in 0..3 {
+            let input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(1280.0, 720.0),
+                )),
+                time: Some(frame as f64 / 30.0),
+                ..Default::default()
+            };
+            let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+            output.textures_delta.clear();
+            heading_colors.extend(output.shapes.into_iter().filter_map(|clipped| {
+                if let egui::Shape::Text(text) = clipped.shape
+                    && text.galley.text().contains("THE APERTURE")
+                {
+                    return text
+                        .galley
+                        .job
+                        .sections
+                        .first()
+                        .map(|section| section.format.color);
+                }
+                None
+            }));
+        }
+        assert!(
+            heading_colors.contains(&theme::HC_BRASS),
+            "the heading richtext was not recoloured for high contrast: {heading_colors:?}"
+        );
+    }
+
+    #[test]
+    fn reduced_motion_uses_static_working_text_without_blocking_worker_polling() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let mut guard = 0;
+        while app.session.owner() != Some(1) {
+            app.session.submit(Action::Pass).expect("pass to P1");
+            guard += 1;
+            assert!(guard < 32, "never reached the AI seat");
+        }
+        // A warm renderer pass before the synthetic work so the measurement is
+        // not dominated by first-frame font/theme initialisation.
+        let ctx = egui::Context::default();
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(1280.0, 720.0),
+            )),
+            ..Default::default()
+        };
+        let mut warm = ctx.run_ui(input.clone(), |ui| app.render_ui(ui));
+        warm.textures_delta.clear();
+
+        // SYNTHETIC delay, explicitly test-only: no model or network service is
+        // contacted. The heuristic computes the decision after the sleep.
+        let requested = app.session.request_ai_decision(|view| {
+            std::thread::sleep(Duration::from_millis(500));
+            aperture_ai::HeuristicPolicy::new().decide(&view)
+        });
+        assert!(requested, "the AI seat should accept the injected work");
+        app.reduced_motion = true;
+
+        let mut durations = Vec::new();
+        let mut labels = Vec::new();
+        for frame in 0..4 {
+            let input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(1280.0, 720.0),
+                )),
+                time: Some(frame as f64 / 30.0),
+                ..Default::default()
+            };
+            let started = Instant::now();
+            let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+            durations.push(started.elapsed());
+            output.textures_delta.clear();
+            labels.extend(output.shapes.into_iter().filter_map(|clipped| {
+                if let egui::Shape::Text(text) = clipped.shape {
+                    Some(text.galley.text().to_owned())
+                } else {
+                    None
+                }
+            }));
+            assert!(
+                app.session.ai_busy,
+                "the frame must report the worker as pending, not block on it"
+            );
+        }
+        assert!(
+            labels.iter().any(|text| text.contains("Working...")),
+            "reduced motion must show static 'Working...' text: {labels:?}"
+        );
+        for (index, duration) in durations.iter().enumerate() {
+            assert!(
+                *duration < Duration::from_millis(250),
+                "frame {index} blocked on the synthetic worker delay for {duration:?}"
+            );
+        }
+        for _ in 0..400 {
+            app.session.poll_workers();
+            if !app.session.ai_busy {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        assert!(!app.session.ai_busy, "the injected worker never finished");
+        let input = egui::RawInput {
+            screen_rect: Some(egui::Rect::from_min_size(
+                egui::Pos2::ZERO,
+                egui::vec2(1280.0, 720.0),
+            )),
+            ..Default::default()
+        };
+        let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+        output.textures_delta.clear();
+        assert!(
+            !app.session.ai_busy,
+            "polling did not apply the worker result"
+        );
+    }
+
+    #[test]
+    fn the_opt_in_performance_probe_reports_bounded_native_samples() {
+        let path =
+            std::env::temp_dir().join(format!("aperture-issue22-perf-{}.json", std::process::id()));
+        let mut app = four_seat_app();
+        app.perf = Some(PerformanceProbe::with_window(
+            path.clone(),
+            Duration::from_millis(600),
+        ));
+        let ctx = egui::Context::default();
+        for frame in 0..80 {
+            let input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(
+                    egui::Pos2::ZERO,
+                    egui::vec2(1280.0, 720.0),
+                )),
+                time: Some(frame as f64 / 60.0),
+                ..Default::default()
+            };
+            let mut output = ctx.run_ui(input, |ui| app.render_ui(ui));
+            output.textures_delta.clear();
+            if app.perf.as_ref().is_some_and(|probe| probe.finished()) {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(6));
+        }
+        let probe = app.perf.as_ref().expect("probe is installed");
+        assert!(probe.finished(), "the bounded window never finished");
+        for _ in 0..400 {
+            if probe.write_done() {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        assert!(
+            probe.write_done(),
+            "the background report write never finished"
+        );
+        let text = std::fs::read_to_string(&path).expect("report written");
+        let report: serde_json::Value = serde_json::from_str(&text).expect("valid JSON");
+        assert_eq!(report["schema"], "aperture-ui-performance/1");
+        assert_eq!(report["forced_repaint_hz"], 60);
+        assert!(
+            report["callback_duration_us"]["samples"]
+                .as_u64()
+                .unwrap_or(0)
+                > 0
+        );
+        assert!(report["callback_duration_us"]["p95"].as_u64().is_some());
+        assert!(
+            report["inter_callback_interval_us"]["samples"]
+                .as_u64()
+                .unwrap_or(0)
+                > 0
+        );
+        assert_eq!(report["input_frame_render_us"]["limited"], true);
+        assert_eq!(
+            report["callback_duration_us"]["method"],
+            "nearest-rank over bounded in-memory samples"
+        );
+        assert!(
+            report["synthetic_delays"]
+                .as_array()
+                .is_some_and(|delays| delays.is_empty())
+        );
+        let _ = std::fs::remove_file(&path);
+    }
+
+    fn inject_large_board(app: &mut ApertureApp, per_seat: usize) {
+        use aperture_core::state::Object;
+        let state = &mut app.session.game.state;
+        for seat in 0..state.players.len() as PlayerId {
+            for index in 0..per_seat {
+                let id = ObjectId(state.next_object);
+                state.next_object += 1;
+                state.objects.insert(
+                    id,
+                    Object {
+                        id,
+                        card: if index % 2 == 0 {
+                            CardId::GrizzlyBears
+                        } else {
+                            CardId::Forest
+                        },
+                        owner: seat,
+                        controller: seat,
+                        zone: Zone::Battlefield,
+                        commander: None,
+                        tapped: false,
+                        damage: 0,
+                        summoning_sick: false,
+                        pump_power: 0,
+                        pump_toughness: 0,
+                        plus_one_counters: 0,
+                    },
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn fixed_controls_stay_visible_at_200_percent_and_high_dpi_minimum_windows() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        // 1024x640 physical at 200% is 512x320 logical points.
+        let ctx = egui::Context::default();
+        let shapes = frame_shapes_at(&ctx, &mut app, 512.0, 320.0, 2.0, 3);
+        let visible = visible_at(&shapes, 320.0);
+        for needle in [
+            "THE APERTURE",
+            "100%",
+            "Accessibility (A)",
+            "A+",
+            "YOUR ACTIONS",
+        ] {
+            assert!(
+                visible(needle),
+                "{needle:?} was hidden at the 200%/1024x640 minimum"
+            );
+        }
+
+        // The acceptance 1280x720 viewport at 200%.
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let ctx = egui::Context::default();
+        let shapes = frame_shapes_at(&ctx, &mut app, 640.0, 360.0, 2.0, 3);
+        let visible = visible_at(&shapes, 360.0);
+        for needle in ["YOUR ACTIONS", "Accessibility (A)", "100%"] {
+            assert!(visible(needle), "{needle:?} was hidden at 1280x720/200%");
+        }
+
+        // High DPI without text zoom: 512x320 points at 2 physical px/point.
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        let ctx = egui::Context::default();
+        ctx.set_pixels_per_point(2.0);
+        let shapes = frame_shapes_at(&ctx, &mut app, 512.0, 320.0, 1.0, 3);
+        let visible = visible_at(&shapes, 320.0);
+        assert!(
+            visible("YOUR ACTIONS"),
+            "the primary action strip was hidden by high DPI"
+        );
+        assert!(visible("Accessibility (A)"));
+    }
+
+    #[test]
+    fn a_large_board_and_long_per_seat_reports_stay_renderable_and_reachable() {
+        let mut app = four_seat_app();
+        finish_opening(&mut app);
+        inject_large_board(&mut app, 12);
+        app.show_coach = false;
+        let shapes = frame_shapes_at(&egui::Context::default(), &mut app, 1024.0, 640.0, 1.0, 2);
+        let visible = visible_at(&shapes, 640.0);
+        assert!(
+            visible("Grizzly Bears"),
+            "injected permanents did not render"
+        );
+        assert!(
+            visible("YOUR ACTIONS"),
+            "the fixed action strip vanished on a large board"
+        );
+        assert!(
+            scroll_until_visible(&mut app, "STACK", 1024.0, 640.0),
+            "the stack area is unreachable on a large board"
+        );
+
+        let mut app = imported_app();
+        let mut list = String::from("40 Forest\n");
+        for index in 0..28 {
+            list.push_str(&format!("1 Unsupported Card {index}\n"));
+        }
+        let import =
+            crate::session::import_seat_text_for(0, "P0 long report", &list, app.session.profile)
+                .expect("the import path reports unsupported entries");
+        assert!(!import.certified());
+        assert_eq!(import.unsupported.len(), 28);
+        app.session.seat_import[0] = Some(import);
+        app.show_import = true;
+        assert!(
+            scroll_until_visible(&mut app, "Start imported match", 1024.0, 640.0),
+            "a long per-seat report hid the start control"
         );
     }
 }

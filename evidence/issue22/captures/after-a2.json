@@ -1,0 +1,16 @@
+{
+    "names":  [
+
+              ],
+    "action":  "Key",
+    "dpi":  120,
+    "client":  {
+                   "height":  0,
+                   "width":  0
+               },
+    "timestamp":  "2026-10-26T01:11:53.5980423-07:00",
+    "foreground_before":  1710780,
+    "pid":  3500,
+    "window":  1907448,
+    "foreground_after":  1710780
+}

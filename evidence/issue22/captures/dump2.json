@@ -1,0 +1,1063 @@
+{
+    "action":  "Dump",
+    "dpi":  120,
+    "foreground_before":  596694,
+    "client":  {
+                   "height":  900,
+                   "width":  1600
+               },
+    "timestamp":  "2026-10-26T01:04:12.1433861-07:00",
+    "elements":  [
+                     {
+                         "name":  "",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Pane",
+                         "rect":  "Empty",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "THE APERTURE",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,328,153,26",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "practice slice · supported pool: 31 cards · 2-4 live seats (native table: 2-4) · 20-life ordinary or bounded 40-life one-Isamaru-per-seat profile · London mulligan · NOT Commander",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "470,328,869,26",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "A−",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1366,332,39,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "text 100%",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1415,328,74,26",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "A+",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1500,332,39,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "100%",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1550,332,61,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Accessibility (A)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1621,329,131,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Help (H)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1762,332,78,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "TABLE:",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,357,34,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "2 seats",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "351,357,70,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "3 seats",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "431,357,70,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "4 seats",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "512,357,70,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "PROFILE:",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "608,357,46,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "ordinary 20 life",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "665,357,129,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "bounded 40 life · Isamaru each seat",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "804,357,274,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Start new table with these options",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1088,357,268,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "bounded 40 life gives every seat the command-zone library so Isamaru is castable — practice, not Commander",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,357,1545,38",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "New game",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "307,399,97,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Pass (P)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "414,399,74,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "AI step",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "499,399,69,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "AI autoplay",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "578,399,103,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Let the AI play my seat too",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "692,399,213,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Use local Decider-2B",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "916,399,170,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Save (S)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1096,399,75,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Load (L)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1181,399,77,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Set branch",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1269,399,97,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Return to branch",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1376,399,142,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Undo (U)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1528,399,84,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Study branches (B)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1622,399,154,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Postgame review (R)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "307,428,168,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Coaching (C)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "485,428,112,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Sandbox (K)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "607,428,108,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Import (I)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "726,428,89,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Zones (Z)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.CheckBox",
+                         "rect":  "825,428,88,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "WAITING: P2: keep or mulligan the opening hand (CR 103.5)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,457,427,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 40 / P1 40 / P2 40 / P3 40",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,486,203,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "· 4 seats · profile commander-combat-practice-40 (40 life) · turn 1 · untap step · active P2 · stack 0 · digest 862ce08e21bd",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "520,486,861,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "pending owner P2",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1390,486,91,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "YOUR ACTIONS — only engine-offered decisions are accepted",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,526,445,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "WAITING ON P2",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,549,114,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 has a pending decision; details are private to that seat. No player has priority.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,571,398,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Let the AI answer (step)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "307,588,190,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Pane",
+                         "rect":  "Empty",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 · YOU",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,635,62,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 · Command zone practice · life 40 · hand 7 · library 33",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,664,277,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "graveyard 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,684,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "exile 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "433,684,66,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "command 1",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "512,684,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "public zones",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "629,681,61,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Commander Isamaru, Hound of Konda · tax {+0} · zone: command",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,710,323,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "(no permanents)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,726,82,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "YOUR HAND",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,743,90,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Forest",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,766,66,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Plains",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,794,62,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Grizzly Bears  {1}{G}  2/2",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,823,190,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Forest",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,852,66,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Unsummon  {U}",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,881,131,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Forest",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,909,66,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "Plains",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,938,62,25",
+                         "enabled":  false
+                     },
+                     {
+                         "name":  "",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.ScrollBar",
+                         "rect":  "493,766,12,80",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 · heuristic AI",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,635,110,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 · Command zone practice · life 40 · hand 7 · library 33",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,664,277,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "graveyard 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1112,684,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "exile 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1229,684,66,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "command 1",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1308,684,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "public zones; hand/library contents hidden",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1425,681,212,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Commander Isamaru, Hound of Konda · tax {+0} · zone: command",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,710,323,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "(no permanents)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,726,82,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 · heuristic AI",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,867,110,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "ACTIVE",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "437,867,37,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "PENDING",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "486,867,47,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 · Command zone practice P2 · life 40 · hand 7 · library 33",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,896,293,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "graveyard 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "315,916,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "exile 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "433,916,66,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "command 1",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "512,916,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "public zones; hand/library contents hidden",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "629,913,212,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Commander Isamaru, Hound of Konda · tax {+0} · zone: command",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,941,323,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "(no permanents)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "315,958,82,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 · heuristic AI",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,867,110,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 · Command zone practice P3 · life 40 · hand 7 · library 33",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,896,293,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "graveyard 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1112,916,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "exile 0",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1229,916,66,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "command 1",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Button",
+                         "rect":  "1308,916,104,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "public zones; hand/library contents hidden",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1425,913,212,25",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Commander Isamaru, Hound of Konda · tax {+0} · zone: command",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,941,323,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "(no permanents)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "1112,958,82,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "STACK",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,995,46,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "(stack empty)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1018,67,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "COACHING (derived from the engine trace)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1046,309,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "[RULE] [priority] Turn 1 — P2 is the active player. P2 must answer a pending choice in the untap step.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1069,720,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "[RULE] [pending choice] P2: keep or mulligan the opening hand (CR 103.5)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1091,530,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "    CR 103.5: Opening hands: a player may mulligan; the London mulligan draws a fresh seven and then puts a number of cards on the bottom equal to the mulligans taken.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1114,845,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "[RULE] [board] Board (public counts): P0: 40 life, 0 permanent(s), 7 card(s) in hand, 33 in library; P1: 40 life, 0 permanent(s), 7 card(s) in hand, 33 in library; P2: 40 life, 0 permanent(s), 7 card(s) in hand, 33 in library; P3: 40 life, 0 permanent(s), 7 card(s) in hand, 33 in library.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1131,1561,38",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "[RULE] [legal actions] 0 legal action(s) generated for the current decision point.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1172,566,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "    CR 117.1a: An instant may be cast any time its controller has priority; a noninstant spell only during its controller\u0027s main phase with an empty stack.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1195,738,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "[STRATEGY] [strategy] No strategic suggestions are shown: this panel renders only engine-derived facts and pinned rule text. Any future strategy entry must carry the strategy label and is advice, not a rule or a win projection.",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1212,1526,38",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.ScrollBar",
+                         "rect":  "1856,1068,12,147",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "LOG (viewer-masked)",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1231,152,18",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "— Turn 1: P2 —",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1254,77,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "Game start — P2 plays first",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1270,135,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1287,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1304,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1321,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1337,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1354,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1371,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P3 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1388,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1404,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1421,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1438,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1455,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1471,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1488,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P2 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1505,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1522,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1538,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1555,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1572,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1589,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1605,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P1 draws a card",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1622,78,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Plains",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1639,77,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Forest",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1656,80,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Unsummon",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1672,105,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Forest",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1689,80,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Grizzly Bears",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1706,111,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Plains",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1723,77,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "P0 draws Forest",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.Text",
+                         "rect":  "307,1739,80,13",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.ScrollBar",
+                         "rect":  "429,1253,12,80",
+                         "enabled":  true
+                     },
+                     {
+                         "name":  "",
+                         "focus":  false,
+                         "offscreen":  false,
+                         "type":  "ControlType.ScrollBar",
+                         "rect":  "1874,627,12,588",
+                         "enabled":  true
+                     }
+                 ],
+    "pid":  45960,
+    "window":  596694,
+    "foreground_after":  596694
+}
