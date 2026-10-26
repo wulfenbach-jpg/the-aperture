@@ -69,15 +69,26 @@ Command: `python scripts/security/scan_credentials.py [--history]`.
 - High-signal secret patterns (PEM keys, GitHub/AWS/Slack/OpenAI/Anthropic/
   Google token shapes), credential-assignment review patterns, and
   sensitive-filename checks over all tracked files: **0 findings**.
+- Tracked worktree at this head: **0 secret-tier findings, 4 review-tier
+  matches**, all benign — two MTG `token` identifiers in the new harnesses,
+  the audit document's own regex text, and the scanner matching its own
+  pattern literal.
 - Full object database (every blob, reachable or not — deleted secrets
   included; 1 MiB bound, binary skip): **0 secret-tier findings**; 13
-  review-tier matches, all verified benign — the generic
+  review-tier matches at the audited baseline `055fde7` (that count predates
+  this lane's five new blobs), all verified benign — the generic
   credential-assignment regex caught MTG *token*-mechanics identifiers in old
   engine/test revisions (e.g. `let token = object.card.is_token();`), not
   credentials.
 - Findings are redacted by construction (≤3-char prefix + length); the scanner
   cannot print a credential value. Boundary: this scanned the repository only,
   never the user's unrelated machine or credential files.
+- Known limits: tracked files that are binary or larger than 1 MiB are skipped
+  (sensitive-filename checks still apply; at this head the largest tracked file
+  is 422 KB and the only binaries are evidence PNGs), and an unexpected git
+  failure raises rather than returning `2`, so any gate must test `exit != 0`
+  rather than `exit == 2`. The scanner is not wired into CI — see the release
+  checklist below.
 
 ## 4. Untrusted-input mutation harness
 
@@ -100,7 +111,9 @@ Properties proven (all green):
    id-normalization shapes (`+id`, leading-zero, uppercase scheme, default
    port), any accepted parse rebuilds `https://archidekt.com/decks/<id>` from
    the numeric id alone; hostile shapes (`%00`, RTL override, id overflow,
-   10 MiB URL) are refused. Existing fixed-case coverage in
+   10 MiB URL) are refused or canonicalized — the harness asserts that
+   disjunction, so it does not by itself prove each of those shapes is
+   rejected. Existing fixed-case coverage in
    `crates/import/tests/url_guard.rs` (scheme/host/path/SSRF forms) is
    unchanged and still green.
 3. **No quantity wrap:** hostile counts (`99999999`, `-3`, `2.5`, `1e3`,
@@ -111,13 +124,15 @@ Properties proven (all green):
    wrong version/seats/rules revision → typed errors; u64::MAX
    revision/decision and nonexistent object ids are rejected at replay/submit.
 5. **No state drift:** every rejected mutant submission leaves the engine
-   digest bit-identical; `validate()` (action legality) and `submit()`
-   (legality + submission identity/staleness) were exercised at 40 real
-   decision points × 9 mutant classes.
+   digest bit-identical; `submit()` — including its internal `validate()`
+   gate, which is reached transitively and not called directly by the harness —
+   was exercised at 40 real decision points × 9 mutant classes.
 6. **Bounded hostile sizes:** 100 000-row provider payloads normalize with an
-   honest count; 128–100 000-deep nesting hits serde's recursion guard; a
-   10 MiB-padded replay either loads (whitespace-inert, digest reproduced) or
-   is refused.
+   honest count; deeply nested or malformed JSON with 128–100 000 nesting
+   markers is refused without a stack overflow (these probes are unbalanced
+   JSON, so the refusal is not attributable to serde's recursion guard
+   specifically); a 10 MiB-padded replay either loads (whitespace-inert,
+   digest reproduced) or is refused.
 
 **Observation F-2 (low, recorded, accepted):** the local replay/save parse
 boundary has no file-size cap (the remote fetch path has the 8 MiB cap).
@@ -147,8 +162,8 @@ lists), `BUILD-STAMP.txt`, `README-PACKAGE.md`, `launch.cmd`,
   card database. `ASSETS.md` correctly gates packaging of any card data on a
   separate third-party content review.
 - **Model weights/art:** none bundled; the optional Decider is a separate
-  loopback service (`127.0.0.1:8765`, refusal enforced at
-  `crates/ai/src/decider.rs:218`), never a bundled model.
+  loopback service (`127.0.0.1:8765`, refusal enforced by the `loopback_ok` guard in
+  `crates/ai/src/decider.rs`), never a bundled model.
 - **Docs site:** links only to `api.github.com` and the project's own GitHub
   pages; no third-party asset loading; the board scripts are token-free
   (authentication stays in `gh`'s credential store).
@@ -175,3 +190,26 @@ lists), `BUILD-STAMP.txt`, `README-PACKAGE.md`, `launch.cmd`,
   unlicensed bundled asset **at release**": nothing high-severity was found
   at this head; the final statement belongs to the release gate (#33) after
   the #17/#25 deltas land and are rechecked against this audit.
+
+## 7. Release checklist carried forward (not satisfied by this slice)
+
+These are known, non-blocking-at-this-head items that must be closed before the
+v1 release statement is made:
+
+1. **Local parse size cap.** Add a file-size cap at the local replay/save read
+   boundary (the remote path already caps at 8 MiB). `ui::parse_replay_file`
+   additionally builds a full `serde_json::Value` DOM before re-parsing, so a
+   crafted file costs roughly three parses plus one DOM.
+2. **Ship or reference the font notices.** `docs/security-audit-notices/` is
+   in-repo only; `scripts/package.ps1` does not copy it into the zip.
+3. **Gate the credential scanner.** Wire `python scripts/security/scan_credentials.py
+   --history` into a CI job or the release checklist, asserting `exit != 0`
+   semantics (an unexpected git failure raises rather than returning `2`).
+4. **Recheck this audit** after the incoming #17 corpus and #25 model deltas and
+   after the packaging change: dependency advisory set, licence/font inventory,
+   credential scan and distributed-content inventory are all versioned to
+   baseline `055fde7`.
+5. **Digest wording.** `digest` is an unkeyed SHA-256 over canonical state:
+   integrity against accidental corruption and un-resealed tampering, not
+   authenticity or provenance. Do not describe it as tamper-proofing against an
+   adversary who can recompute the hash.
