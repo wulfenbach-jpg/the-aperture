@@ -1,0 +1,36 @@
+{
+  "artifact_casts": {
+    "Hedron Archive": 10,
+    "Mind Stone": 8,
+    "Sol Ring": 7
+  },
+  "artifact_draw_activations": {
+    "Hedron Archive": 9,
+    "Mind Stone": 8
+  },
+  "artifact_mana_activations": {
+    "Hedron Archive": 6,
+    "Mind Stone": 7,
+    "Sol Ring": 53
+  },
+  "deck": "decks/package-slice12.txt",
+  "digest": "d3eade58f133c278114cb1289b5ac42e1be51999b4179faca972ec9800fac0ec",
+  "driver": "evidence-only masked artifact-preferring demonstrator; NOT product heuristic/strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 6981,
+  "seats": 4,
+  "seed": 1201,
+  "snapshot_sha256": "60d0fc2de967b95cbc9208d2abfc60cba9eefcf6231b37c8c96d766d4afc6cef",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1573,
+  "turns": 32
+}

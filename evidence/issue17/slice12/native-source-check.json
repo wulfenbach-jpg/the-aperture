@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-10-26T17:35:14.643201+00:00",
+  "results": [
+    {
+      "id": "8ee443cc-e17a-493b-9c93-1f9e141a30e4",
+      "name": "Sol Ring",
+      "checks": {
+        "name": true,
+        "mana_cost": true,
+        "oracle_text": true,
+        "type_line": true,
+        "color_identity": true,
+        "layout": true
+      }
+    },
+    {
+      "id": "b30a8f92-ce42-4b27-a893-bcf97fde228d",
+      "name": "Mind Stone",
+      "checks": {
+        "name": true,
+        "mana_cost": true,
+        "oracle_text": true,
+        "type_line": true,
+        "color_identity": true,
+        "layout": true
+      }
+    },
+    {
+      "id": "535b9ac6-dba2-4162-86ed-df3e9fad0306",
+      "name": "Hedron Archive",
+      "checks": {
+        "name": true,
+        "mana_cost": true,
+        "oracle_text": true,
+        "type_line": true,
+        "color_identity": true,
+        "layout": true
+      }
+    }
+  ]
+}

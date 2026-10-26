@@ -93,6 +93,22 @@ Krenko 48, Ayula 43, Elas 53, Tatyova 54, Zada 53. Desired snapshots unchanged.
 Docs current counts and islandwalk citation (`CR 702.14c`) corrected; historical
 checkpoints not rewritten.
 
+## Native representative journey (after writer stopped)
+
+The native coordinator supplied an evidence-only masked, artifact-preferring
+legal-action driver at `journey-driver/` without changing the product AI. It
+reads the exact same `decks/package-slice12.txt` into all four replay snapshots;
+no fixture state injection, replacement decks or rejected-action fallback.
+Seed1201 reaches terminal P3 in1573 accepted actions/32turns, digest
+`d3eade58f133c278114cb1289b5ac42e1be51999b4179faca972ec9800fac0ec`;
+replay6981events matches. Real casts SolRing7/MindStone8/HedronArchive10;
+real mana activations53/7/6 respectively; stacked sacrifice/draw activations
+MindStone8/HedronArchive9. See `demo-journey.json` and `demo-replay.json`.
+This demonstrates the package, not a new starter certificate or product policy.
+The original unmodified-heuristic journey and its zero-artifact limitation above
+remain truthful and retained. Native live immutable source checks match all six
+recorded fields on each of the three cards (`native-source-check.json`).
+
 ## Remaining gaps
 
 No 100-card desired starter is newly certified. Artifact mana is explicit, not

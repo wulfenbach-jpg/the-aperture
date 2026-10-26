@@ -1,0 +1,138 @@
+    Updating crates.io index
+     Locking 134 packages to latest Rust 1.97.1 compatible versions
+   Compiling stable_deref_trait v1.2.1
+   Compiling windows-link v0.2.1
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.12.1
+   Compiling futures-core v0.3.34
+   Compiling itoa v1.0.18
+   Compiling writeable v0.6.4
+   Compiling smallvec v1.16.4
+   Compiling litemap v0.8.3
+   Compiling icu_normalizer_data v2.4.0
+   Compiling utf8_iter v1.0.4
+   Compiling syn v3.0.9
+   Compiling windows-sys v0.61.2
+   Compiling memchr v2.8.3
+   Compiling icu_properties_data v2.4.0
+   Compiling futures-sink v0.3.34
+   Compiling typenum v1.20.1
+   Compiling slab v0.4.12
+   Compiling futures-io v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling percent-encoding v2.3.2
+   Compiling serde_core v1.0.229
+   Compiling httparse v1.10.1
+   Compiling tower-service v0.3.3
+   Compiling try-lock v0.2.5
+   Compiling once_cell v1.21.4
+   Compiling want v0.3.2
+   Compiling libc v0.2.191
+   Compiling native-tls v0.2.18
+   Compiling zmij v1.0.23
+   Compiling tracing-core v0.1.36
+   Compiling http v1.5.0
+   Compiling futures-util v0.3.34
+   Compiling cfg-if v1.0.5
+   Compiling atomic-waker v1.1.2
+   Compiling serde_json v1.0.154
+   Compiling serde v1.0.229
+   Compiling tracing v0.1.44
+   Compiling hybrid-array v0.4.15
+   Compiling form_urlencoded v1.2.2
+   Compiling futures-channel v0.3.34
+   Compiling sync_wrapper v1.0.2
+   Compiling http-body v1.1.0
+   Compiling tower-layer v0.3.3
+   Compiling const-oid v0.10.2
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling ipnet v2.12.2
+   Compiling base64 v0.23.1
+   Compiling thiserror v2.0.21
+   Compiling http-body-util v0.1.5
+   Compiling encoding_rs v0.8.42
+   Compiling simdutf8 v0.1.5
+   Compiling core_detect v1.0.0
+   Compiling synstructure v0.14.0
+   Compiling bitflags v2.13.2
+   Compiling cpufeatures v0.3.1
+   Compiling zeroize v1.9.1
+   Compiling digest v0.11.3
+   Compiling scopeguard v1.2.0
+   Compiling sha2 v0.11.1
+   Compiling rustls-pki-types v1.15.1
+   Compiling log v0.4.34
+   Compiling mime v0.3.17
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.7
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.4
+   Compiling zerovec v0.11.9
+   Compiling zerotrie v0.2.5
+   Compiling tinystr v0.8.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_collections v2.4.0
+   Compiling icu_locale_core v2.4.0
+   Compiling mio v1.2.4
+   Compiling socket2 v0.6.5
+   Compiling schannel v0.1.30
+   Compiling tokio v1.54.1
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling icu_provider v2.4.0
+   Compiling icu_normalizer v2.4.0
+   Compiling icu_properties v2.4.0
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice12-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice12\journey-driver)
+    Finished `release` profile [optimized] target(s) in 43.23s
+     Running `target\release\issue17-slice12-journey.exe`
+{
+  "artifact_casts": {
+    "Hedron Archive": 10,
+    "Mind Stone": 8,
+    "Sol Ring": 7
+  },
+  "artifact_draw_activations": {
+    "Hedron Archive": 9,
+    "Mind Stone": 8
+  },
+  "artifact_mana_activations": {
+    "Hedron Archive": 6,
+    "Mind Stone": 7,
+    "Sol Ring": 53
+  },
+  "deck": "decks/package-slice12.txt",
+  "digest": "d3eade58f133c278114cb1289b5ac42e1be51999b4179faca972ec9800fac0ec",
+  "driver": "evidence-only masked artifact-preferring demonstrator; NOT product heuristic/strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 6981,
+  "seats": 4,
+  "seed": 1201,
+  "snapshot_sha256": "60d0fc2de967b95cbc9208d2abfc60cba9eefcf6231b37c8c96d766d4afc6cef",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1573,
+  "turns": 32
+}
