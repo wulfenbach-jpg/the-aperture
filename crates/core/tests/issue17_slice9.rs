@@ -150,21 +150,13 @@ fn mana_geyser_counts_only_opponent_tapped_lands() {
 }
 
 #[test]
-fn rite_of_flame_counts_base_and_all_graveyard_copies() {
+fn rite_of_flame_zero_copies_and_all_graveyards_with_runtime_change() {
+    // Zero-copy control: base {R}{R} only.
     let mut game = fixture(104)
         .hand(P0, &[card("Rite of Flame")])
         .battlefield(P0, &[CardId::Mountain])
         .main(P0, Step::PrecombatMain)
         .build();
-    // Two Rite of Flame cards already in graveyards before resolution.
-    let first = add_permanent(&mut game, P0, card("Rite of Flame"), false);
-    let second = add_permanent(&mut game, P1, card("Rite of Flame"), false);
-    game.state.players[P0 as usize]
-        .graveyard
-        .extend([first, second]);
-    for id in game.state.players[P0 as usize].graveyard.clone() {
-        game.state.objects.get_mut(&id).unwrap().zone = Zone::Graveyard;
-    }
     let spell = hand_card(&game, P0, card("Rite of Flame"));
     submit_ok(
         &mut game,
@@ -175,6 +167,89 @@ fn rite_of_flame_counts_base_and_all_graveyard_copies() {
         },
     );
     resolve_all(&mut game);
-    // 2 base + 1 for each of two graveyard copies = 4.
-    assert_eq!(game.state.player(P0).mana.red, 4);
+    assert_eq!(game.state.player(P0).mana.red, 2);
+
+    // One copy in each player's physical graveyard, then a third copy moves to
+    // P0's graveyard after the cast but before resolution: 2 + 3 = 5.
+    let mut game = fixture(105)
+        .hand(P0, &[card("Rite of Flame")])
+        .battlefield(P0, &[CardId::Mountain])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let first = add_permanent(&mut game, P0, card("Rite of Flame"), false);
+    let second = add_permanent(&mut game, P1, card("Rite of Flame"), false);
+    let third = add_permanent(&mut game, P1, card("Rite of Flame"), false);
+    for (owner, id) in [(P0, first), (P1, second)] {
+        game.state.objects.get_mut(&id).unwrap().zone = Zone::Graveyard;
+        game.state.players[owner as usize].graveyard.push(id);
+    }
+    assert_eq!(game.state.player(P0).graveyard.len(), 1);
+    assert_eq!(game.state.player(P1).graveyard.len(), 1);
+    let spell = hand_card(&game, P0, card("Rite of Flame"));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: spell,
+            targets: Vec::new(),
+        },
+    );
+    // Runtime alteration after the cast, before resolution.
+    game.state.objects.get_mut(&third).unwrap().zone = Zone::Graveyard;
+    game.state.players[P1 as usize].graveyard.push(third);
+    resolve_all(&mut game);
+    assert_eq!(game.state.player(P0).mana.red, 5);
+}
+
+#[test]
+fn mana_pool_render_is_bounded_for_max_quantity_and_exact_for_small_pools() {
+    let mut small = ManaPool::default();
+    small.add(ManaColor::Blue, 2);
+    assert_eq!(small.render(), "{U}{U}");
+    let mut huge = ManaPool::default();
+    huge.add(ManaColor::Red, u32::MAX);
+    let rendered = huge.render();
+    assert_eq!(rendered, "{R}x4294967295");
+    assert!(
+        rendered.len() < 64,
+        "aggregate render is bounded: {rendered}"
+    );
+    let mut saturated = ManaPool::default();
+    saturated.add(ManaColor::White, u32::MAX);
+    saturated.add(ManaColor::White, 1);
+    assert_eq!(saturated.white, u32::MAX, "explicit no-panic saturation");
+}
+
+#[test]
+fn multicolor_pool_above_255_pays_generic_and_colored_exactly() {
+    let mut game = fixture(106)
+        .hand(P0, &[CardId::Divination])
+        .battlefield(P0, &[])
+        .main(P0, Step::PrecombatMain)
+        .library(P0, &[CardId::Forest; 2])
+        .build();
+    game.state.players[P0 as usize]
+        .mana
+        .add(ManaColor::Red, 300);
+    game.state.players[P0 as usize]
+        .mana
+        .add(ManaColor::Blue, 300);
+    assert_eq!(game.state.player(P0).mana.total(), 600);
+    let spell = hand_card(&game, P0, CardId::Divination);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: spell,
+            targets: Vec::new(),
+        },
+    );
+    resolve_all(&mut game);
+    assert_eq!(
+        game.state.player(P0).mana.blue,
+        297,
+        "one U pip + two generic from blue"
+    );
+    assert_eq!(game.state.player(P0).mana.red, 300);
+    assert_eq!(game.state.player(P0).mana.total(), 597);
 }

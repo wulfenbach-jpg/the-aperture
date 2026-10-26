@@ -133,8 +133,12 @@ impl ManaPool {
             (ManaColor::Red, self.red),
             (ManaColor::Green, self.green),
         ] {
-            for _ in 0..n {
-                s.push_str(color.symbol());
+            if n > 32 {
+                s.push_str(&format!("{}x{n}", color.symbol()));
+            } else {
+                for _ in 0..n {
+                    s.push_str(color.symbol());
+                }
             }
         }
         if s.is_empty() {
