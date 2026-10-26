@@ -215,7 +215,6 @@ fn hostile_quantities_are_refused_not_wrapped() {
             Err(_) => {}
             Ok(report) => {
                 let written: u64 = line
-                    .trim()
                     .split_whitespace()
                     .next()
                     .and_then(|q| q.parse().ok())
