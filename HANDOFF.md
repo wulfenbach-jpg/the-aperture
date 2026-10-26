@@ -303,7 +303,9 @@ capture even with `--decider`.
   doubling or copying, and same-controller trigger ordering as a *choice*
   (simultaneous triggers from one controller are ordered by source arrival
   order, not by CR 603.3b player choice).
-* Static abilities, replacement/prevention effects, tokens, planeswalkers,
+* Static abilities, replacement/prevention effects, token types beyond the
+  bounded engine-only 1/1 red Goblin and 2/2 blue Drake packages (and token
+  interactions beyond those packages), planeswalkers,
   battles, milling/tutoring/searching, library manipulation beyond scry/surveil
   1, multi-face cards.
 * Counters are stored and displayed but do not affect rules math

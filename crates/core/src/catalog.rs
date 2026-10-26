@@ -538,7 +538,7 @@ pub fn all() -> &'static [CardDef] {
 pub static TOKENS: [CardDef; 2] = [
     CardDef {
         id: CardId::GoblinToken,
-        name: "Goblin",
+        name: "Goblin Token",
         cost: None,
         kinds: CREATURE,
         basic_mana: None,

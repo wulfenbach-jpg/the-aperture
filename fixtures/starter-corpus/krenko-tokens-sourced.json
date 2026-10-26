@@ -149,7 +149,9 @@
    "keywords": [],
    "legalities_commander": "not_legal",
    "printing_url": "https://api.scryfall.com/cards/tfdn/18",
-   "retrieved_at": "2026-10-25T08:32:00Z"
+   "retrieved_at": "2026-10-25T08:32:00Z",
+   "rules_name": "Goblin Token",
+   "name_note": "Scryfall printing label is \"Goblin\"; CR 111.4 makes the generated token name \"Goblin Token\" because the effect does not specify a name."
   }
  ]
 }

@@ -2,7 +2,7 @@
  "schema": "aperture.starter-sourced-cards.v1",
  "provider": "scryfall",
  "retrieved_at": "2026-10-25T08:32:00Z",
- "note": "Talrand copied from stored real planned-list printing; Drake token from a live Scryfall token search. No metadata invented.",
+ "note": "Talrand copied from stored real planned-list printing; Drake token from a live Scryfall token search. No metadata invented. Source printing labels are not generated-token names; CR 111.4 adds Token when the effect names no token.",
  "cards": [
   {
    "name": "Talrand, Sky Summoner",
@@ -46,7 +46,9 @@
    ],
    "legalities_commander": "not_legal",
    "printing_url": "https://api.scryfall.com/cards/tfdn/8",
-   "retrieved_at": "2026-10-25T08:32:00Z"
+   "retrieved_at": "2026-10-25T08:32:00Z",
+   "rules_name": "Drake Token",
+   "name_note": "Scryfall printing label is \"Drake\"; CR 111.4 makes the generated token name \"Drake Token\" because the effect does not specify a name."
   }
  ]
 }

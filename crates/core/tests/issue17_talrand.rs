@@ -131,6 +131,7 @@ fn casting_an_instant_stages_the_trigger_above_it_and_creates_a_drake() {
     assert_eq!(drakes(&game, P0).len(), 1);
     assert_eq!(game.state.stack.len(), 1, "the spell is still on the stack");
     let drake = drakes(&game, P0)[0];
+    assert_eq!(drake.name(), "Drake Token", "CR 111.4 generated-token name");
     assert!(drake.has_flying());
     assert_eq!((drake.power(), drake.toughness()), (2, 2));
 }

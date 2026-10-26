@@ -114,6 +114,7 @@ fn sourced_token_package_matches_its_recorded_printings() {
 #[test]
 fn token_cards_are_not_importable() {
     assert!(catalog::by_name("Goblin").is_none());
+    assert!(catalog::by_name("Goblin Token").is_none());
     assert!(
         !catalog::all()
             .iter()
@@ -335,6 +336,11 @@ fn a_token_ceases_to_exist_instead_of_going_to_the_graveyard() {
         submit_ok(&mut game, P1, Action::Pass);
     }
     let token = token_objects(&game, P0)[0].id;
+    assert_eq!(
+        token_objects(&game, P0)[0].name(),
+        "Goblin Token",
+        "CR 111.4: an unnamed token is its subtype(s) plus Token"
+    );
     game.state.objects.get_mut(&token).unwrap().damage = 1;
     for _ in 0..4 {
         if game

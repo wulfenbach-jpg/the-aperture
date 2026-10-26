@@ -54,9 +54,14 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    blue Drake with functional flying for Talrand, Sky Summoner. Ayula and Zada
    still need their own token types; the exact Krenko starter is still planned
    (52 missing) and Talrand's desired list has 54 missing cards;
-2. triggered abilities, especially spell-cast, landfall, death and tribal
-   triggers (Talrand, Elas, Tatyova, Ayula);
-3. activated non-mana abilities and sacrifice outlets (Krenko, Elas);
+2. triggered abilities: **bounded implemented package** for Talrand's
+   controller-only instant/sorcery cast trigger (staged above the spell,
+   independent of counters). Landfall, death and tribal triggers remain
+   unimplemented (Elas, Tatyova, Ayula);
+3. activated non-mana abilities: **bounded implemented package** for Krenko's
+   `{T}` Goblin-count token production (including >255 counts) and the existing
+   Prodigal Sorcerer/Rootwalla/Brindle Boar abilities. Sacrifice outlets and
+   broader activated abilities remain unimplemented (Elas);
 4. keyword semantics (haste for Krenko);
 5. counters as rules objects (Ayula);
 6. single-target spell copying and go-wide pump (Zada);

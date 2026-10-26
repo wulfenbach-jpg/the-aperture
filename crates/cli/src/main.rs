@@ -68,7 +68,9 @@ pub enum Command {
         /// command-zone profile (`--command-zone-practice` or
         /// `--commander-combat-practice`). Example:
         /// `0:Krenko, Mob Boss`. Supported commanders: Isamaru, Hound of
-        /// Konda; Jasmine Boreal; Krenko, Mob Boss.
+        /// Konda; Jasmine Boreal; Krenko, Mob Boss; Talrand, Sky Summoner.
+        /// Both explicit profiles are bounded practice, not the Commander
+        /// format (no legend rule, no full 100-card construction).
         #[arg(long = "commander")]
         commander: Vec<String>,
     },
@@ -325,5 +327,30 @@ fn main() -> anyhow::Result<()> {
             std::process::exit(commander_cmd::run(&deck, &cards, json, out.as_deref()));
         }
         Command::DeciderHealth { base_url } => import_cmd::decider_health(&base_url),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::CommandFactory;
+
+    #[test]
+    fn selfplay_help_lists_every_supported_commander_and_the_bounded_scope() {
+        let mut command = Cli::command();
+        let selfplay = command.find_subcommand_mut("selfplay").expect("selfplay");
+        let help = selfplay.render_long_help().to_string();
+        for commander in [
+            "Isamaru, Hound of Konda",
+            "Jasmine Boreal",
+            "Krenko, Mob Boss",
+            "Talrand, Sky Summoner",
+        ] {
+            assert!(help.contains(commander), "help omits {commander}: {help}");
+        }
+        assert!(
+            help.to_lowercase().contains("bounded"),
+            "help must state the bounded Commander-combat scope: {help}"
+        );
     }
 }
