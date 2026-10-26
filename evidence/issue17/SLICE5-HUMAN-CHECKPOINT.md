@@ -11,6 +11,13 @@ issue closure or successor activation was performed.
   the three review repairs.
 * **approved head: `a8f10a2`** — documentation only (`git show --stat a8f10a2`
   touches `HANDOFF.md` and nothing else), confirmed by the round-3 review.
+* **exact-head CI 10/10 SUCCESS on `4e77136` and again on `767212a`** — every
+  check-run (board and roadmap, rust ubuntu/windows/macos ×2, windows package)
+  completed `success` for both heads (`slice5-final-ci-check-runs.json` holds the
+  `4e77136` receipt; the `767212a` receipt is attached to the kanban card).
+  Commits after `4c03673` are documentation/evidence only: `git diff
+  --name-only 4c03673 <head>` touches nothing outside `HANDOFF.md` and
+  `evidence/issue17/`.
 * earlier candidate `eb0a6f5` was independently approved (round 1,
   `approve_increment`, three findings) and is superseded by `4c03673`.
 * PR OPEN, MERGEABLE, still draft; branch is behind master by other lanes'
