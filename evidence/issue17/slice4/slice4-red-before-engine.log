@@ -1,0 +1,48 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.25s
+     Running tests\issue17_slice4.rs (target\debug\deps\issue17_slice4-2131696323d45952.exe)
+
+running 10 tests
+test a_creature_without_flash_is_refused_at_instant_timing ... ok
+test sourced_slice4_cards_match_their_live_printings ... ok
+test soul_warden_does_not_trigger_for_itself ... ok
+test ordinary_bear_is_a_vanilla_creature_with_no_abilities ... ok
+test owlbear_draws_a_card_when_it_enters ... ok
+test printed_flash_allows_a_creature_spell_outside_the_own_main_phase ... FAILED
+test a_non_trample_attacker_never_damages_the_player_through_a_blocker ... ok
+test soul_warden_triggers_for_an_opponents_creature_too ... FAILED
+test trample_assigns_only_lethal_damage_to_the_blocker ... FAILED
+test soul_warden_gains_life_only_for_another_creature ... FAILED
+
+failures:
+
+---- printed_flash_allows_a_creature_spell_outside_the_own_main_phase stdout ----
+
+thread 'printed_flash_allows_a_creature_spell_outside_the_own_main_phase' (29800) panicked at crates\core\tests\common\mod.rs:203:21:
+expected 0 to be able to act, got: Ashcoat Bear cannot be cast right now: a noninstant spell can be cast only during its controller's main phase (CR 117.1a)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- soul_warden_triggers_for_an_opponents_creature_too stdout ----
+
+thread 'soul_warden_triggers_for_an_opponents_creature_too' (22312) panicked at crates\core\tests\issue17_slice4.rs:369:5:
+assertion failed: run_until(&mut game, &mut log, |g| g.state.player(P0).life == 21, 64)
+
+---- trample_assigns_only_lethal_damage_to_the_blocker stdout ----
+
+thread 'trample_assigns_only_lethal_damage_to_the_blocker' (44140) panicked at crates\core\tests\issue17_slice4.rs:177:5:
+assertion failed: run_until(&mut game, &mut log, |g| g.state.player(P1).life == 17, 64)
+
+---- soul_warden_gains_life_only_for_another_creature stdout ----
+
+thread 'soul_warden_gains_life_only_for_another_creature' (37340) panicked at crates\core\tests\issue17_slice4.rs:318:5:
+assertion failed: run_until(&mut game, &mut log, |g| g.state.player(P0).life == 21, 64)
+
+
+failures:
+    printed_flash_allows_a_creature_spell_outside_the_own_main_phase
+    soul_warden_gains_life_only_for_another_creature
+    soul_warden_triggers_for_an_opponents_creature_too
+    trample_assigns_only_lethal_damage_to_the_blocker
+
+test result: FAILED. 6 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice4`

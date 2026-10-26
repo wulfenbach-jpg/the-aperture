@@ -1,0 +1,4211 @@
+P0 draws Forest
+P0 draws Ashcoat Bear
+P0 draws Striped Bears
+P0 draws Striped Bears
+P0 draws Forest
+P0 draws Centaur Courser
+P0 draws Forest Bear
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+Game start — P1 plays first
+— Turn 1: P1 —
+P1 keeps a hand of 7
+P0 keeps a hand of 7
+P2 mulligans (mulligan count 1)
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 mulligans (mulligan count 1)
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P2 mulligans (mulligan count 2)
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 mulligans (mulligan count 2)
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P2 puts 1 card(s) on the bottom of their library
+P3 puts 1 card(s) on the bottom of their library
+P2 keeps a hand of 6
+P3 keeps a hand of 6
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 2: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 3: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 4: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 5: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Forest Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Forest Bear resolves (controlled by P1)
+Forest Bear enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 6: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 7: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Ashcoat Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ashcoat Bear resolves (controlled by P3)
+Ashcoat Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 8: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Forest Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 casts Ashcoat Bear
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Ashcoat Bear resolves (controlled by P0)
+Ashcoat Bear enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 9: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Centaur Courser
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Centaur Courser resolves (controlled by P1)
+Centaur Courser enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Forest Bear
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 38)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 10: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+— Turn 11: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Ashcoat Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ashcoat Bear resolves (controlled by P3)
+Ashcoat Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 36)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 12: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Giant Growth
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Forest Bear
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Forest Bear resolves (controlled by P0)
+Forest Bear enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Ashcoat Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 34)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 13: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Ashcoat Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Ashcoat Bear resolves (controlled by P1)
+Ashcoat Bear enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Forest Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 32)
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 29)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 14: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+— Turn 15: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Centaur Courser
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Centaur Courser resolves (controlled by P3)
+Centaur Courser enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Ashcoat Bear
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 27)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 25)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 16: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Giant Growth
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Forest Bear
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Forest Bear resolves (controlled by P0)
+Forest Bear enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Ashcoat Bear, Forest Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 23)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 21)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 17: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Ashcoat Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Ashcoat Bear resolves (controlled by P1)
+Ashcoat Bear enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Ashcoat Bear, Forest Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 19)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 17)
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 14)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 18: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Ashcoat Bear
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Ashcoat Bear resolves (controlled by P2)
+Ashcoat Bear enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 19: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Centaur Courser
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Centaur Courser resolves (controlled by P3)
+Centaur Courser enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Ashcoat Bear, Centaur Courser
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P2 declares 1 blocker(s)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 damage to Ashcoat Bear (#86)
+2 combat damage to Ashcoat Bear
+2 damage to Ashcoat Bear (#124)
+2 combat damage to Ashcoat Bear
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 12)
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 9)
+Ashcoat Bear is put into a graveyard
+Ashcoat Bear is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 20: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Rootwalla
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Giant Growth targeting Forest Bear (#15)
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Giant Growth starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Giant Growth resolves (controlled by P0)
+Giant Growth is put into a graveyard
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Ashcoat Bear, Forest Bear, Forest Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 7)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 5)
+5 combat damage to a player
+5 damage to P2
+P2 loses 5 life (now 0)
+state-based action: P2 loses: life total is 0 (CR 704.5a)
+state-based action: P2 leaves the game; all objects owned by P2 leave the game (CR 800.4a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 21: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Ashcoat Bear, Ashcoat Bear, Forest Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 38)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 36)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 34)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 31)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 22: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Ashcoat Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Ashcoat Bear resolves (controlled by P3)
+Ashcoat Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Centaur Courser, Centaur Courser
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 29)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 26)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 23)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 23: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Ashcoat Bear, Forest Bear, Forest Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 damage to Grizzly Bears (#61)
+2 combat damage to Grizzly Bears
+2 damage to Ashcoat Bear (#6)
+2 combat damage to Ashcoat Bear
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 38)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 36)
+Ashcoat Bear is put into a graveyard
+Grizzly Bears is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 24: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Rootwalla
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Rootwalla resolves (controlled by P1)
+Rootwalla enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Ashcoat Bear, Ashcoat Bear, Forest Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Grizzly Bears (#21)
+2 combat damage to Grizzly Bears
+2 damage to Ashcoat Bear (#44)
+2 combat damage to Ashcoat Bear
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 21)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 19)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 16)
+Grizzly Bears is put into a graveyard
+Ashcoat Bear is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 25: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Grizzly Bears
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Grizzly Bears resolves (controlled by P3)
+Grizzly Bears enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Ashcoat Bear, Centaur Courser, Centaur Courser
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 14)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 12)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 9)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 6)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 26: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Ordinary Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Forest Bear, Forest Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 damage to Rootwalla (#67)
+2 combat damage to Rootwalla
+2 damage to Forest Bear (#14)
+2 combat damage to Forest Bear
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 34)
+Forest Bear is put into a graveyard
+Rootwalla is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 27: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Ashcoat Bear, Forest Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Grizzly Bears (#22)
+2 combat damage to Grizzly Bears
+2 damage to Ashcoat Bear (#45)
+2 combat damage to Ashcoat Bear
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 4)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 1)
+Grizzly Bears is put into a graveyard
+Ashcoat Bear is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 casts Giant Growth targeting Centaur Courser (#63)
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Giant Growth starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Giant Growth resolves (controlled by P1)
+Giant Growth is put into a graveyard
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 28: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Grizzly Bears
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Grizzly Bears resolves (controlled by P3)
+Grizzly Bears enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Ashcoat Bear, Grizzly Bears, Centaur Courser, Centaur Courser
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now -1)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now -3)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now -5)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now -8)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now -11)
+state-based action: P0 loses: life total is -11 (CR 704.5a)
+state-based action: P0 leaves the game; all objects owned by P0 leave the game (CR 800.4a)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 29: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Ordinary Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Ordinary Bear resolves (controlled by P1)
+Ordinary Bear enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Forest Bear, Grizzly Bears, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 damage to Grizzly Bears (#140)
+2 combat damage to Grizzly Bears
+2 damage to Forest Bear (#53)
+2 combat damage to Forest Bear
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 38)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 35)
+Forest Bear is put into a graveyard
+Grizzly Bears is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 30: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Rootwalla
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Rootwalla resolves (controlled by P3)
+Rootwalla enters the battlefield under P3
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 31: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Centaur Courser
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Centaur Courser resolves (controlled by P1)
+Centaur Courser enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Ordinary Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now 31)
+3 damage to Centaur Courser (#144)
+3 combat damage to Centaur Courser
+3 damage to Centaur Courser (#63)
+3 combat damage to Centaur Courser
+Centaur Courser is put into a graveyard
+Centaur Courser is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 32: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 activates Rootwalla: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Rootwalla starts a continuous effect in layer 7c: +2/+2 until end of turn (CR 613.4c power/toughness modifiers)
+P3's ability from Rootwalla resolves: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Centaur Courser, Rootwalla
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 damage to Centaur Courser (#65)
+3 combat damage to Centaur Courser
+3 damage to Centaur Courser (#146)
+3 combat damage to Centaur Courser
+4 combat damage to a player
+4 damage to P1
+P1 loses 4 life (now 30)
+Centaur Courser is put into a graveyard
+Centaur Courser is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 33: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Striped Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Striped Bears resolves (controlled by P1)
+Striped Bears enters the battlefield under P1
+P1's triggered ability from Striped Bears goes on the stack: When this creature enters, draw a card.
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P1 draws a card
+P1's ability from Striped Bears resolves: When this creature enters, draw a card.
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Ordinary Bear, Grizzly Bears
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now 27)
+2 damage to Ashcoat Bear (#125)
+2 combat damage to Ashcoat Bear
+2 damage to Grizzly Bears (#60)
+2 combat damage to Grizzly Bears
+Grizzly Bears is put into a graveyard
+Ashcoat Bear is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 34: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 activates Rootwalla: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Rootwalla starts a continuous effect in layer 7c: +2/+2 until end of turn (CR 613.4c power/toughness modifiers)
+P3's ability from Rootwalla resolves: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Grizzly Bears, Rootwalla
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Striped Bears (#58)
+2 combat damage to Striped Bears
+2 damage to Ashcoat Bear (#127)
+2 combat damage to Ashcoat Bear
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 28)
+4 combat damage to a player
+4 damage to P1
+P1 loses 4 life (now 24)
+Striped Bears is put into a graveyard
+Ashcoat Bear is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 35: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Centaur Courser
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Centaur Courser resolves (controlled by P1)
+Centaur Courser enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Ordinary Bear
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now 23)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 36: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 activates Rootwalla: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Rootwalla starts a continuous effect in layer 7c: +2/+2 until end of turn (CR 613.4c power/toughness modifiers)
+P3's ability from Rootwalla resolves: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Forest Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Forest Bear resolves (controlled by P3)
+Forest Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Rootwalla
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P1
+P1 loses 4 life (now 20)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 37: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Owlbear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Owlbear resolves (controlled by P1)
+Owlbear enters the battlefield under P1
+P1's triggered ability from Owlbear goes on the stack: Keen Senses — When this creature enters, draw a card.
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P1 draws a card
+P1's ability from Owlbear resolves: Keen Senses — When this creature enters, draw a card.
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Ordinary Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares no blockers
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now 19)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 16)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 38: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 activates Rootwalla: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Rootwalla starts a continuous effect in layer 7c: +2/+2 until end of turn (CR 613.4c power/toughness modifiers)
+P3's ability from Rootwalla resolves: {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Ashcoat Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Ashcoat Bear resolves (controlled by P3)
+Ashcoat Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Rootwalla
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+4 damage to Owlbear (#41)
+4 combat damage to Owlbear
+4 damage to Rootwalla (#147)
+4 combat damage to Rootwalla
+Owlbear is put into a graveyard
+Rootwalla is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 39: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Owlbear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Owlbear resolves (controlled by P1)
+Owlbear enters the battlefield under P1
+P1's triggered ability from Owlbear goes on the stack: Keen Senses — When this creature enters, draw a card.
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+P1 draws a card
+P1's ability from Owlbear resolves: Keen Senses — When this creature enters, draw a card.
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Ordinary Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares no blockers
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now 12)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 9)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 40: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Ordinary Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Ordinary Bear resolves (controlled by P3)
+Ordinary Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 41: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Forest Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Forest Bear resolves (controlled by P1)
+Forest Bear enters the battlefield under P1
+P1 receives priority
+P1 casts Forest Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Forest Bear resolves (controlled by P1)
+Forest Bear enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Owlbear, Ordinary Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 damage to Ordinary Bear (#129)
+4 combat damage to Ordinary Bear
+4 damage to Owlbear (#42)
+4 combat damage to Owlbear
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now 5)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 2)
+Owlbear is put into a graveyard
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 42: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Forest Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+Forest Bear resolves (controlled by P3)
+Forest Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P3 attacks with Ashcoat Bear, Ordinary Bear, Forest Bear, Grizzly Bears
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 2 blocker(s)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Forest Bear (#54)
+2 combat damage to Forest Bear
+2 damage to Ashcoat Bear (#126)
+2 combat damage to Ashcoat Bear
+4 combat damage to a player
+4 damage to P1
+P1 loses 4 life (now 16)
+2 damage to Forest Bear (#55)
+2 combat damage to Forest Bear
+2 damage to Forest Bear (#133)
+2 combat damage to Forest Bear
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 14)
+Forest Bear is put into a graveyard
+Forest Bear is put into a graveyard
+Ashcoat Bear is put into a graveyard
+Forest Bear is put into a graveyard
+state-based action: 4 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 43: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 casts Rootwalla
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+Rootwalla resolves (controlled by P1)
+Rootwalla enters the battlefield under P1
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Ordinary Bear, Centaur Courser
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares no blockers
+P1 receives priority
+P1 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P3
+P3 loses 4 life (now -2)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now -5)
+state-based action: P3 loses: life total is -5 (CR 704.5a)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+Game over — P1 wins: opponents' life totals reached 0 or less (CR 704.5a)
+selfplay seed=17 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P1 in 1567 steps (43 turns)
+  digest 5e905fdc0399 | replay verified | casts 37 attacks 30 blocks 13 counters 0

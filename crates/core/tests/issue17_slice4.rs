@@ -426,3 +426,191 @@ fn soul_warden_triggers_for_an_opponents_creature_too() {
         "the entering creature's controller gains nothing"
     );
 }
+
+// ---------------------------------------------------------------- review R211-1
+
+/// R211-1: a creature token entering is "another creature enters" for Soul
+/// Warden. Goblin Instigator's own entry and its Goblin token are two separate
+/// entries, so a Warden on the battlefield gains exactly 2 life.
+#[test]
+fn soul_warden_triggers_for_creature_tokens_too() {
+    let warden = card("Soul Warden");
+    let mut game = fixture(79)
+        .hand(P0, &[CardId::GoblinInstigator])
+        .battlefield(P0, &[CardId::Mountain, CardId::Mountain, warden])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let instigator = hand_card(&game, P0, CardId::GoblinInstigator);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: instigator,
+            targets: vec![],
+        },
+    );
+    submit_ok(&mut game, P0, Action::Pass);
+    submit_ok(&mut game, P1, Action::Pass);
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.player(P0).life == 22,
+        64
+    ));
+    let goblins = game
+        .state
+        .battlefield(P0)
+        .iter()
+        .filter(|object| object.card == CardId::GoblinToken)
+        .count();
+    assert_eq!(goblins, 1, "the Instigator made one Goblin token");
+    let gains = log
+        .iter()
+        .filter(|event| {
+            matches!(
+                event,
+                Event::LifeChange {
+                    player: P0,
+                    delta: 1,
+                    ..
+                }
+            )
+        })
+        .count();
+    assert_eq!(
+        gains, 2,
+        "one trigger for the Instigator and one for its Goblin token"
+    );
+}
+
+/// Trample with two blockers: lethal to each (1 + 1) and the remaining 2 damage
+/// tramples over to the player.
+#[test]
+fn trample_carries_surplus_across_two_blockers() {
+    let mut game = fixture(80)
+        .battlefield(P0, &[CardId::Owlbear])
+        .battlefield(P1, &[CardId::WillowElf, CardId::WillowElf])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let owlbear = battlefield_card(&game, P0, CardId::Owlbear);
+    let blockers: Vec<ObjectId> = game.state.battlefield(P1).iter().map(|o| o.id).collect();
+    assert_eq!(blockers.len(), 2);
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![owlbear],
+            defender: Some(P1),
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.pending.is_some() && g.state.turn.step == Step::DeclareBlockers,
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P1,
+        Action::DeclareBlockers {
+            blocks: blockers
+                .iter()
+                .map(|blocker| BlockDecl {
+                    blocker: *blocker,
+                    attacker: owlbear,
+                })
+                .collect(),
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.player(P1).life == 18,
+        64
+    ));
+    assert!(
+        game.state.battlefield(P1).is_empty(),
+        "both 1/1 blockers took lethal damage"
+    );
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::CombatDamage {
+                amount: 2,
+                blocker: None,
+                ..
+            }
+        )),
+        "the 2 surplus damage trampled over after lethal was assigned twice"
+    );
+}
+
+/// Trample accounts for damage already marked on a blocker: a 2/2 with 1 damage
+/// needs only 1 more, so 3 damage tramples over.
+#[test]
+fn trample_counts_damage_already_marked_on_the_blocker() {
+    let mut game = fixture(81)
+        .battlefield(P0, &[CardId::Owlbear])
+        .battlefield(P1, &[CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let owlbear = battlefield_card(&game, P0, CardId::Owlbear);
+    let bears = battlefield_card(&game, P1, CardId::GrizzlyBears);
+    object_mut(&mut game.state, bears).damage = 1;
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![owlbear],
+            defender: Some(P1),
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.pending.is_some() && g.state.turn.step == Step::DeclareBlockers,
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P1,
+        Action::DeclareBlockers {
+            blocks: vec![BlockDecl {
+                blocker: bears,
+                attacker: owlbear,
+            }],
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.player(P1).life == 17,
+        64
+    ));
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::CombatDamage {
+                amount: 3,
+                blocker: None,
+                ..
+            }
+        )),
+        "only 1 damage was needed for lethal, so 3 trampled over"
+    );
+}

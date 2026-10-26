@@ -1,0 +1,27 @@
+{
+ "vanilla": [
+  [
+   "Ordinary Bear",
+   "{3}{G}",
+   "Creature \u2014 Bear",
+   "4",
+   "5",
+   "hob",
+   "133"
+  ]
+ ],
+ "lands": [],
+ "vanilla_per_list": {
+  "isamaru-white-aggro": [],
+  "jasmine-vanilla-stompy": [],
+  "talrand-draw-go": [],
+  "krenko-goblin-tokens": [],
+  "ayula-bear-counters": [
+   "Ordinary Bear"
+  ],
+  "elas-sacrifice": [],
+  "tatyova-landfall": [],
+  "zada-spells": []
+ },
+ "other_count": 377
+}

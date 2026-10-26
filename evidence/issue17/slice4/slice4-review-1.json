@@ -1,0 +1,63 @@
+{
+  "review_outcome": "request_changes",
+  "reviewed_head": "86aebf9b1acf298a8dd9e0f0c908d2a62bfe63bc",
+  "base": "9cecd62ddb56d44e6853f9f9098fd3a473635b66",
+  "full_issue17_accepted": false,
+  "scope": "Bounded slice-4 delta only: Ordinary Bear, Ashcoat Bear, Owlbear, Soul Warden, Flash, Trample and another-creature-enters. This is not full issue-17, #16 integration, release or merge approval.",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "crates/core/src/engine.rs",
+      "line": "1187, 4482",
+      "summary": "Soul Warden's 'Whenever another creature enters' trigger is queued only by enter_battlefield. create_tokens inserts creature tokens directly on the battlefield and queues only the token's own ETB trigger, so Soul Warden never triggers for Goblin/Drake creature tokens already supported by this pool.",
+      "repro": "aperture-cli selfplay --seed 1 --deck evidence/issue17/slice4/slice4-probe-warden.txt --deck evidence/issue17/slice4/slice4-probe-warden.txt --max-steps 3000 --verbose (deck: 10 Soul Warden, 10 Goblin Instigator, 10 Plains, 10 Mountain).",
+      "observed": "Log slice4-probe-warden-token.log: P0 casts Goblin Instigator; the Instigator entry queues Soul Warden; then 'state-based action: P0 creates Goblin Token token (#81)' immediately follows with no Soul Warden trigger for the token.",
+      "expected": "The token is another creature entering, so each Soul Warden controlled by P0/P1 should queue its life-gain trigger for that token exactly as for a nontoken ETB. Current tests cover self, opponent nontoken and noncreature exclusions but not the token path.",
+      "required_repair": "Share the AnotherCreatureEnters watcher-queue step between enter_battlefield and create_tokens (excluding the entering token itself), and add a token-entry regression."
+    }
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice4 --locked",
+      "result": "exit 0; 10/10 tests passed (evidence/issue17/slice4-focused.log)."
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "result": "exit 0; full workspace tests completed without failure (evidence/issue17/slice4-workspace.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check",
+      "result": "both exit 0."
+    },
+    {
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "result": "exit 0; no warnings (evidence/issue17/slice4-clippy.log)."
+    },
+    {
+      "command": "cargo run --release --bin aperture-cli -- selfplay --seed 17 with four decks/package-ayula-slice4.txt seats, --commander-combat-practice, Jasmine Boreal each seat",
+      "result": "exit 0; terminal P1, 1567 steps / 43 turns, 40 life, digest 5e905fdc0399…, replay_digest_matches true; four embedded 40-card package seats; replay --file exits 0 with the same digest (evidence/issue17/slice4/slice4-journey*)."
+    },
+    {
+      "command": "live Scryfall reads of hob/133, tsp/190, afr/198, mm3/24",
+      "result": "Ordinary Bear {3}{G} 4/5 vanilla; Ashcoat Bear {1}{G} 2/2 Flash; Owlbear {3}{G}{G} 4/4 Trample + Keen Senses; Soul Warden {W} 1/1 Human Cleric 'Whenever another creature enters, you gain 1 life.' All match slice4-sourced.json and catalog."
+    },
+    {
+      "command": "read trample assignment in deal_combat_damage",
+      "result": "Trample assigns lethal damage per blocker (toughness minus marked damage, minimum 1), carries surplus across blockers, then assigns only the remainder to the defending player; non-trample keeps all remaining damage on the last blocker. One-blocker and non-trample controls pass; multi-blocker and pre-damaged-blocker cases are code-consistent but not separately tested."
+    },
+    {
+      "command": "python manifest/corpus audit and desired-list diff",
+      "result": "catalog 97 unique names; union 459 = 85 supported + 374 missing; manifest missing union matches 374; Isamaru 56, Ayula 47, seven planned/one implemented/zero certified; no decks/starter-corpus/planned content changes."
+    },
+    {
+      "command": "source/probe check for token trigger",
+      "result": "create_tokens (engine.rs:4482) queues EntersBattlefield for the token itself but does not scan other permanents for AnotherCreatureEnters; the CLI probe confirms no Soul Warden life gain for Goblin Token."
+    }
+  ],
+  "limitations": [
+    "Only the bounded slice-4 package is reviewed; seven desired 100-card starters remain planned/unsupported and full issue-17 remains open.",
+    "No #16 integration approval, no GUI/import/search audit, no full historical matrix and no playing-strength claim.",
+    "Trample multi-blocker/pre-damaged cases were checked by reading the assignment loop; the focused test file covers one-blocker and non-trample controls, not every multi-blocker permutation.",
+    "The token-entry defect must be repaired and regressed before this increment is approved; no full issue-17 certification follows from that repair."
+  ]
+}

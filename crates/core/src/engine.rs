@@ -1187,31 +1187,8 @@ impl Game {
         // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
         // is on the battlefield.
         self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
-        // CR 603.6a: "another creature enters" triggers on other permanents fire
-        // for this creature; the source's controller is the trigger's
-        // controller, regardless of who controls the entering creature. The
-        // entering permanent is excluded because the printed word is "another".
         if is_creature {
-            let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
-                .state
-                .objects
-                .values()
-                .filter(|object| object.zone == Zone::Battlefield && object.id != new_id)
-                .filter(|object| {
-                    ability::triggers_on(object.card, TriggerEvent::AnotherCreatureEnters)
-                        .next()
-                        .is_some()
-                })
-                .map(|object| (object.id, object.card, object.controller))
-                .collect();
-            for (source, source_card, source_controller) in watchers {
-                self.queue_triggers(
-                    source,
-                    source_card,
-                    source_controller,
-                    TriggerEvent::AnotherCreatureEnters,
-                );
-            }
+            self.queue_another_creature_enters(new_id);
         }
     }
 
@@ -4503,6 +4480,42 @@ impl Game {
                 description: format!("P{controller} creates {card} token ({id})"),
             });
             self.queue_triggers(id, card, controller, TriggerEvent::EntersBattlefield);
+            // CR 603.6a: a creature token entering is a creature entering for
+            // every "another creature enters" trigger. Sharing the permanent
+            // path here is what keeps Soul Warden visible to Goblin/Drake
+            // tokens instead of only to represented cards.
+            if card.def().is_creature() {
+                self.queue_another_creature_enters(id);
+            }
+        }
+    }
+
+    /// Queue every "another creature enters" trigger on another battlefield
+    /// permanent (CR 603.6a). The entering permanent is excluded because the
+    /// printed word is "another", and the trigger's controller is the source
+    /// permanent's controller, never the entering creature's controller.
+    /// Shared by `enter_battlefield` and `create_tokens` so a creature token is
+    /// not invisible to these triggers.
+    fn queue_another_creature_enters(&mut self, entering: ObjectId) {
+        let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield && object.id != entering)
+            .filter(|object| {
+                ability::triggers_on(object.card, TriggerEvent::AnotherCreatureEnters)
+                    .next()
+                    .is_some()
+            })
+            .map(|object| (object.id, object.card, object.controller))
+            .collect();
+        for (source, source_card, source_controller) in watchers {
+            self.queue_triggers(
+                source,
+                source_card,
+                source_controller,
+                TriggerEvent::AnotherCreatureEnters,
+            );
         }
     }
 
