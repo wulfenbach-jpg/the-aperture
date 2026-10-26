@@ -110,6 +110,35 @@ fn certify_proves_one_starter_from_its_exact_snapshot() {
             > 0,
         "the certified games must observe real play"
     );
+    // Coverage arithmetic is a published claim, not prose: the separately
+    // supplied commander counts like every other card, so observed plus
+    // unobserved must add up to the total (an earlier build undercounted by one
+    // because it iterated the library only).
+    let observed = coverage["unique_names_observed"]
+        .as_u64()
+        .expect("observed");
+    let not_observed = coverage["not_observed"]
+        .as_array()
+        .expect("not_observed")
+        .len() as u64;
+    assert_eq!(
+        observed + not_observed,
+        coverage["unique_names_total"].as_u64().expect("total"),
+        "observed + not observed must equal the published name total"
+    );
+    assert!(
+        coverage["cast_names"]
+            .as_array()
+            .expect("cast names")
+            .iter()
+            .any(|name| name == "Jasmine Boreal")
+            || coverage["not_observed"]
+                .as_array()
+                .expect("not observed")
+                .iter()
+                .any(|name| name == "Jasmine Boreal"),
+        "the commander must appear in the coverage ledger"
+    );
     let exclusions = certificate["interaction_exclusions"]
         .as_array()
         .expect("exclusions");

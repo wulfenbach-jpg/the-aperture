@@ -3,4 +3,4 @@ certify jasmine-vanilla-stompy (4 seats, seeds 1,2,3) -> certified
   seed 1 terminal winner 1 steps 2364 turns 53 digest 8e4feea3a9e1 | replay verified
   seed 2 terminal winner 2 steps 2802 turns 69 digest 4677eb42988a | replay verified
   seed 3 terminal winner 3 steps 1685 turns 40 digest 520e8a0dd58d | replay verified
-  observed in play: 54/61 unique names (100 copies); 6 not observed (covered by conformance suites)
+  observed in play: 55/61 unique names (100 copies); 6 not observed (covered by conformance suites)

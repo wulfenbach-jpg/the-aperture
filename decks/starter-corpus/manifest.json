@@ -93,7 +93,7 @@
         ],
         "games_terminal": 3,
         "games_replay_verified": 3,
-        "unique_names_observed_in_play": 54,
+        "unique_names_observed_in_play": 55,
         "unique_names_total": 61,
         "evidence": "evidence/issue17/slice10/certification.json",
         "reproduce": "cargo run --release -p aperture-cli -- certify --starter jasmine-vanilla-stompy --seats 4 --seeds 1,2,3 --out evidence/issue17/slice10/certification.json",

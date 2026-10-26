@@ -176,7 +176,8 @@ pub enum Command {
     /// declared deck file, verify every card is supported, play real four-seat
     /// Commander-combat games with that snapshot in every seat, and require a
     /// terminal outcome whose replay reproduces the same digest. Exit 0
-    /// certified, 1 not certified, 2 invalid request.
+    /// certified; any other outcome (not certified, or a refused/unreadable
+    /// input) exits non-zero with the reason on stderr.
     Certify {
         /// Starter corpus manifest (decks/starter-corpus/manifest.json).
         #[arg(long, default_value = "decks/starter-corpus/manifest.json")]

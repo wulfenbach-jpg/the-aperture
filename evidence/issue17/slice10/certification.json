@@ -1,6 +1,6 @@
 {
   "coverage": {
-    "cards_observed_in_play": 54,
+    "cards_observed_in_play": 55,
     "cast_names": [
       "Alaborn Trooper",
       "Alpine Grizzly",
@@ -70,7 +70,7 @@
       "Mending Hands"
     ],
     "note": "observed counts come from these exact-snapshot games only. Cards not observed are covered by engine conformance suites, not by this trace; the certificate never infers behavior from a catalog entry.",
-    "unique_names_observed": 54,
+    "unique_names_observed": 55,
     "unique_names_total": 61
   },
   "evidence_note": "the snapshot hash is over the deck file bytes actually parsed; rerun this command with the same seeds to reproduce every digest",

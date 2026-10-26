@@ -301,17 +301,9 @@ pub fn run(args: Args) -> anyhow::Result<i32> {
         games.push(report);
     }
 
-    let mut observed: Vec<String> = Vec::new();
-    let mut not_observed: Vec<String> = Vec::new();
     let mut cards: Vec<Value> = Vec::new();
     for (card, count) in &deck.cards {
         let name = card.name().to_string();
-        let seen = casts.contains_key(&name) || land_plays.contains_key(&name);
-        if seen {
-            observed.push(name.clone());
-        } else {
-            not_observed.push(name.clone());
-        }
         cards.push(json!({
             "name": name,
             "count": count,
@@ -335,6 +327,22 @@ pub fn run(args: Args) -> anyhow::Result<i32> {
         "observed_cast": casts.get(commander_name).copied().unwrap_or(0),
         "observed_land_play": 0,
     }));
+    // Coverage is derived from the same rows the certificate publishes, so the
+    // separately supplied commander counts like every other card. Counting only
+    // the library would understate observed play by one and make
+    // observed + not_observed disagree with the total.
+    let mut observed: Vec<String> = Vec::new();
+    let mut not_observed: Vec<String> = Vec::new();
+    for card in &cards {
+        let name = card["name"].as_str().unwrap_or_default().to_string();
+        let seen = card["observed_cast"].as_u64().unwrap_or(0) > 0
+            || card["observed_land_play"].as_u64().unwrap_or(0) > 0;
+        if seen {
+            observed.push(name);
+        } else {
+            not_observed.push(name);
+        }
+    }
 
     let certified = failures.is_empty();
     let certificate = json!({
@@ -366,7 +374,7 @@ pub fn run(args: Args) -> anyhow::Result<i32> {
         "coverage": {
             "cards_observed_in_play": observed.len(),
             "unique_names_observed": observed.len(),
-            "unique_names_total": deck.cards.len() + 1,
+            "unique_names_total": cards.len(),
             "copies_total": deck.size() + 1,
             "cast_names": casts.keys().cloned().collect::<Vec<_>>(),
             "land_played_names": land_plays.keys().cloned().collect::<Vec<_>>(),

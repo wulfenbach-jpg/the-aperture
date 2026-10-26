@@ -33,7 +33,7 @@ desired lists are untouched.
   * seed 1 — winner P1, 2364 steps, 53 turns, digest `8e4feea3a9e18c7d…`
   * seed 2 — winner P2, 2802 steps, 69 turns, digest `4677eb42988acd68…`
   * seed 3 — winner P3, 1685 steps, 40 turns, digest `520e8a0dd58d51e3…`
-* coverage by execution: 54 of 61 unique names were cast or played in those
+* coverage by execution: 55 of 61 unique names were cast or played in those
   games. The 6 never cast (Knight Errant, Alpha Tyrranax, Enormous Baloth, Fog,
   Swords to Plowshares, Mending Hands) are listed, not glossed: their evidence
   is the engine conformance suites, not these traces.

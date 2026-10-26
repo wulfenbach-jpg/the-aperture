@@ -385,7 +385,7 @@ or played rather than inferring coverage from catalog membership.
 Recorded certificate `evidence/issue17/slice10/certification.json`: snapshot
 SHA-256 `4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491`,
 99 library cards + 1 commander, seeds 1/2/3 all terminal and replay-verified
-(2364/2802/1685 steps, winners P1/P2/P3), 54 of 61 unique names observed in play
+(2364/2802/1685 steps, winners P1/P2/P3), 55 of 61 unique names observed in play
 and the other 6 named explicitly. The manifest entry is `certified` with a
 machine-checked `certification` block, and two conformance suites fail if the
 record stops matching the real file (`crates/core/tests/

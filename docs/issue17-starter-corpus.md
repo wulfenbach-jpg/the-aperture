@@ -189,15 +189,16 @@ Recorded certificate (`evidence/issue17/slice10/certification.json`, schema
   seed 1 winner P1, 2364 steps/53 turns, digest `8e4feea3a9e1…`;
   seed 2 winner P2, 2802 steps/69 turns, digest `4677eb42988a…`;
   seed 3 winner P3, 1685 steps/40 turns, digest `520e8a0dd58d…`.
-* coverage by execution: 54 of 61 unique names were actually cast or played as
+* coverage by execution: 55 of 61 unique names were actually cast or played as
   lands across those games. The 6 names those particular games never cast
   (Knight Errant, Alpha Tyrranax, Enormous Baloth, Fog, Swords to Plowshares,
   Mending Hands) are covered by engine conformance suites instead; the
   certificate lists them rather than implying in-play evidence for them.
 * conformance: `crates/core/tests/starter_corpus.rs` proves all 47 sourced
   vanilla creatures match their printings and cast/resolve;
-  `crates/core/tests/issue17_slice10_certification.rs` proves the exact snapshot
-  is 99 supported singleton cards with exactly one legendary card, casts all 11
+  `crates/core/tests/issue17_slice10_certification.rs` proves the exact library
+  is 99 supported singleton cards and the whole 100-card snapshot holds exactly
+  one legendary card (the separately supplied commander), casts all 11
   remaining non-vanilla cards from that exact set, and fails if the manifest
   certification record stops matching the real deck file;
   `crates/cli/tests/certify.rs` runs the shipped binary, including the
