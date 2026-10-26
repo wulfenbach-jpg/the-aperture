@@ -1,6 +1,6 @@
 # Issue 17 slice 9 — widened mana and count-scaled red rituals
 
-Exact head after repair commit (see below). No push. Full #17 unfinished:
+Exact head `4e8a856`. No push. Full #17 unfinished:
 114 catalog, 459 union = 102 supported + 357 missing, 1 implemented / 0
 certified of 8. Eight desired deck files unchanged.
 
@@ -42,11 +42,27 @@ Counts resolve at resolution:
 * Rite of Flame adds 2 plus 1 per Rite of Flame card in all graveyards; the
   resolving spell is on the stack, not yet in a graveyard.
 
+## Repair pass (bounded render + stronger tests)
+
+* `ManaPool.render` no longer emits one symbol per unit unbounded. Per colour it
+  keeps the exact old repeated format for quantities ≤32 and emits an aggregate
+  `{R}x4294967295` above that, so max-quantity deserialize/render is bounded.
+* Rite of Flame test corrected: cards are placed in their owners' physical
+  graveyards and zones; zero-copy base-2 control added; a third copy moves into a
+  graveyard after casting but before resolution, proving runtime counting
+  (`2 + 3 = 5`).
+* Added explicit `u32::MAX` saturation/no-panic test and multicolor 600-pool
+  payment: Divination pays `{U}` + two generic from blue, leaving exactly
+  blue 297 / red 300 / total 597.
+* Genuine RED before implementation is retained in
+  `evidence/issue17/slice9/retained-red-results.json` (actual absent-catalog and
+  pre-engine pool saturation failures); no nonexistent named RED log is claimed.
+
 ## Verification
 
 ```
 cargo test -q -p aperture-core --test issue17_slice9
-  -> 4 passed
+  -> 6 passed
 cargo fmt --all --check
 cargo clippy -q --all-targets -- -D warnings
 cargo build --release -p aperture-cli
