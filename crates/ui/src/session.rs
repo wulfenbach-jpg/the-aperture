@@ -14,7 +14,8 @@ use std::sync::mpsc::{Receiver, Sender, channel};
 use std::thread;
 
 use aperture_ai::{
-    DeciderConfig, DeciderPolicy, Decision, DecisionSource, HeuristicPolicy, Policy,
+    DeciderConfig, DeciderPolicy, Decision, DecisionBinding, DecisionEnvelope, DecisionSource,
+    HeuristicPolicy, MIN_OPTIONS, Policy,
 };
 use aperture_core::sandbox::{SandboxOp as EngineSandboxOp, SandboxRecord};
 use aperture_core::view::{PendingKind, PlayerView};
@@ -469,6 +470,16 @@ impl UiSession {
     where
         F: FnOnce(PlayerView) -> Decision + Send + 'static,
     {
+        self.request_ai_decision_bound(move |view, _binding| work(view))
+    }
+
+    /// Generation-aware worker request: the closure also receives the exact
+    /// viewer/revision/decision/generation binding observed before the spawn, so
+    /// a decider envelope can be validated against it.
+    fn request_ai_decision_bound<F>(&mut self, work: F) -> bool
+    where
+        F: FnOnce(PlayerView, DecisionBinding) -> Decision + Send + 'static,
+    {
         if self.ai_busy {
             return false;
         }
@@ -482,9 +493,15 @@ impl UiSession {
         let revision = self.game.revision();
         let decision_serial = self.game.decision();
         let generation = self.generation;
+        let binding = DecisionBinding {
+            viewer: seat,
+            revision,
+            decision: decision_serial,
+            generation,
+        };
         let tx = self.worker_tx.clone();
         thread::spawn(move || {
-            let decision = work(view);
+            let decision = work(view, binding);
             let _ = tx.send(WorkerMessage::Ai {
                 generation,
                 revision,
@@ -498,23 +515,54 @@ impl UiSession {
     }
 
     /// Convenience wrapper: the configured policy (decider when opted in,
-    /// baseline heuristic otherwise), built on the worker thread.
+    /// baseline heuristic otherwise), built on the worker thread. The decider
+    /// answer is applied only through an envelope bound to this snapshot.
     pub fn request_ai_decision_default(&mut self) -> bool {
         let config = if self.ai.use_decider {
             self.decider_config.clone()
         } else {
             None
         };
-        self.request_ai_decision(move |view| match config {
-            Some(config) => match DeciderPolicy::new(config) {
-                Ok(mut policy) => policy.decide(&view),
-                Err(err) => Decision {
-                    action: HeuristicPolicy::new().decide(&view).action,
-                    source: DecisionSource::DeciderFallback,
-                    note: Some(format!("decider not usable, used the heuristic: {err}")),
-                    preference: None,
-                },
-            },
+        self.request_ai_decision_bound(move |view, binding| match config {
+            Some(config) => {
+                // A single legal option is forced, not a model question. Check
+                // before preparing an envelope: prepare would reject fewer than
+                // two options and mislabel a forced move as a fallback.
+                if view.legal.len() < MIN_OPTIONS {
+                    return Decision {
+                        action: HeuristicPolicy::new().decide(&view).action,
+                        source: DecisionSource::Forced,
+                        note: Some(format!(
+                            "only {} legal option(s): the choice is forced and no model call was made",
+                            view.legal.len()
+                        )),
+                        preference: None,
+                    };
+                }
+                match DeciderPolicy::new(config) {
+                    Ok(mut policy) => match DecisionEnvelope::prepare(&view, binding) {
+                        Ok(envelope) => policy.decide_bound(&view, &envelope, binding),
+                        Err(err) => Decision {
+                            action: HeuristicPolicy::new().decide(&view).action,
+                            source: DecisionSource::DeciderFallback,
+                            note: Some(format!(
+                                "no decision request sent [{}]: {err}",
+                                err.reason_code()
+                            )),
+                            preference: None,
+                        },
+                    },
+                    Err(err) => Decision {
+                        action: HeuristicPolicy::new().decide(&view).action,
+                        source: DecisionSource::DeciderFallback,
+                        note: Some(format!(
+                            "decider not usable [{}], used the heuristic: {err}",
+                            err.reason_code()
+                        )),
+                        preference: None,
+                    },
+                }
+            }
             None => HeuristicPolicy::new().decide(&view),
         })
     }
@@ -577,17 +625,40 @@ impl UiSession {
                     decision,
                 } => {
                     if generation != self.generation {
-                        self.busy_note =
-                            Some("discarded a stale AI decision (the game changed)".to_string());
+                        self.busy_note = Some(
+                            "discarded a stale AI decision [stale_generation] (the game changed)"
+                                .to_string(),
+                        );
                         continue;
                     }
                     self.ai_busy = false;
-                    if self.game.revision() != revision
-                        || self.game.decision() != decision_serial
-                        || self.owner() != Some(seat)
+                    let stale_code = if self.game.revision() != revision {
+                        Some("stale_revision")
+                    } else if self.game.decision() != decision_serial {
+                        Some("stale_decision")
+                    } else if self.owner() != Some(seat) {
+                        Some("wrong_seat")
+                    } else {
+                        None
+                    };
+                    if let Some(code) = stale_code {
+                        self.busy_note = Some(format!(
+                            "discarded a stale AI decision [{code}] (the decision point moved)"
+                        ));
+                        continue;
+                    }
+                    // The engine remains the final authority; this check only
+                    // avoids applying a completion whose offered action has
+                    // already disappeared from the live legal offer.
+                    if !self
+                        .view(seat)
+                        .legal
+                        .iter()
+                        .any(|legal| legal.action == decision.action)
                     {
                         self.busy_note = Some(
-                            "discarded a stale AI decision (the decision point moved)".to_string(),
+                            "discarded an AI decision [illegal_choice] (not in the live legal offer)"
+                                .to_string(),
                         );
                         continue;
                     }
