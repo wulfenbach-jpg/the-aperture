@@ -4348,6 +4348,35 @@ impl Game {
                 self.create_tokens(controller, CardId::DrakeToken, 1, events);
                 false
             }
+            Effect::DamageEachOpponent(n) => {
+                for opponent in 0..self.state.seat_count() as PlayerId {
+                    if opponent == controller || !self.state.is_live(opponent) {
+                        continue;
+                    }
+                    let dealt = self.deal_damage(
+                        Some(item.object),
+                        DamageTarget::Player(opponent),
+                        u32::from(n),
+                        false,
+                        events,
+                    );
+                    if dealt == 0 {
+                        continue;
+                    }
+                    let life = self.state.players[opponent as usize].life;
+                    events.push(Event::Damage {
+                        source: Some(item.object),
+                        target: format!("P{opponent}"),
+                        amount: dealt,
+                    });
+                    events.push(Event::LifeChange {
+                        player: opponent,
+                        delta: -(dealt as i32),
+                        life,
+                    });
+                }
+                false
+            }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
                     Target::Spell(id) => Some(*id),

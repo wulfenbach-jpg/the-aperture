@@ -1,9 +1,9 @@
 {
-  "catalog": 88,
+  "catalog": 93,
   "union": 459,
-  "supported": 76,
-  "missing": 383,
-  "manifest_missing": 383,
+  "supported": 81,
+  "missing": 378,
+  "manifest_missing": 378,
   "matches": true,
   "rows": [
     {
@@ -23,17 +23,17 @@
     },
     {
       "id": "krenko-goblin-tokens",
-      "missing": 52,
+      "missing": 51,
       "status": "planned"
     },
     {
       "id": "ayula-bear-counters",
-      "missing": 52,
+      "missing": 50,
       "status": "planned"
     },
     {
       "id": "elas-sacrifice",
-      "missing": 59,
+      "missing": 58,
       "status": "planned"
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "id": "zada-spells",
-      "missing": 58,
+      "missing": 57,
       "status": "planned"
     }
   ],

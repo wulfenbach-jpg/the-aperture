@@ -145,7 +145,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     assert!(*n > 0, "{} has a no-op token effect", card.name);
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
-                Effect::CreateGoblinTokensForEachGoblin | Effect::CreateDrakeToken => {
+                Effect::CreateGoblinTokensForEachGoblin
+                | Effect::CreateDrakeToken
+                | Effect::DamageEachOpponent(_) => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
             }

@@ -241,6 +241,22 @@ const OCULUS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::Draw(1)],
 })];
 
+const STRIPED_BEARS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, draw a card.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::Draw(1)],
+})];
+
+const GUTTERSNIPE: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent.",
+    event: TriggerEvent::SpellCast,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::DamageEachOpponent(2)],
+})];
+
 const TATYOVA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
     event: TriggerEvent::LandEnters,
@@ -293,6 +309,8 @@ const BEETLEBACK_CHIEF: &[Ability] = &[Ability::Triggered(TriggeredAbility {
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::StripedBears => STRIPED_BEARS,
+        CardId::Guttersnipe => GUTTERSNIPE,
         CardId::TatyovaBenthicDruid => TATYOVA,
         CardId::JaddiOffshoot => JADDI,
         CardId::TalrandSkySummoner => TALRAND,

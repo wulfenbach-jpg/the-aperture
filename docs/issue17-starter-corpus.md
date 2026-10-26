@@ -40,13 +40,13 @@ basic lands (coordinator evidence
 `evidence/issue17/slice3-native-corpus.py/json`):
 
 * union of all referenced names: **459 unique names**;
-* **76** are in the supported 88-card catalog and **383** are missing;
+* **81** are in the supported 93-card catalog and **378** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.
 * Structure per list is still 99 library cards + a separately named commander;
-  the Swamp basic in Elas is unsupported, so Elas cannot be built even as a
-  99-card practice library.
+  the Swamp basic in Elas is now supported, but the rest of that desired list
+  still needs its unsupported cards and interactions.
 
 Staged interaction roadmap (derived from the manifest `missing_interactions`):
 
@@ -69,7 +69,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
 5. counters as rules objects (Ayula);
 6. single-target spell copying and go-wide pump (Zada);
 7. legend rule, equipment and Aura permanents (Isamaru and any future legend);
-8. black basic land support (Elas).
+8. black basic land support (Elas): **implemented** as the sourced Swamp basic;
 
 A further count gap: the current pool has no black basic land, so Elas cannot
 be constructed even as a legal 99-card practice library until `Swamp` is added.

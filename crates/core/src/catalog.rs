@@ -89,7 +89,7 @@ macro_rules! card_defender {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 88] = [
+pub static CARDS: [CardDef; 93] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -260,6 +260,33 @@ pub static CARDS: [CardDef; 88] = [
         WightOfPrecinctSix, "Wight of Precinct Six", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
         oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
+        spell: None
+    ),
+    card!(
+        Swamp, "Swamp", cost: None, kinds: LAND, basic: Some(ManaColor::Black),
+        type_line: "Basic Land — Swamp", power: None, toughness: None,
+        oracle: "({T}: Add {B}.)", spell: None
+    ),
+    card!(
+        LightningBolt, "Lightning Bolt", cost: Some("{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Lightning Bolt deals 3 damage to any target.",
+        spell: Some(SpellSpec { target: TargetSpec::AnyTarget, instant: true, effects: STRIKE })
+    ),
+    card!(
+        ForestBear, "Forest Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        StripedBears, "Striped Bears", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "When this creature enters, draw a card.", spell: None
+    ),
+    card!(
+        Guttersnipe, "Guttersnipe", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Shaman", power: Some(2), toughness: Some(2),
+        oracle: "Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent.",
         spell: None
     ),
     card!(

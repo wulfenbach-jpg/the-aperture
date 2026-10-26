@@ -107,6 +107,9 @@ pub enum Effect {
     CreateGoblinTokensForEachGoblin,
     /// Create one 2/2 blue Drake creature token with flying (Talrand).
     CreateDrakeToken,
+    /// Deal N damage to each opponent of the ability's controller, excluding
+    /// the controller and eliminated seats (Guttersnipe).
+    DamageEachOpponent(u8),
 }
 
 impl Effect {
@@ -142,6 +145,7 @@ impl Effect {
                 "create a 1/1 red Goblin token for each Goblin you control".to_string()
             }
             Effect::CreateDrakeToken => "create a 2/2 blue Drake token with flying".to_string(),
+            Effect::DamageEachOpponent(n) => format!("deal {n} damage to each opponent"),
         }
     }
 }
@@ -278,6 +282,11 @@ pub enum CardId {
     TalrandSkySummoner,
     TatyovaBenthicDruid,
     JaddiOffshoot,
+    Swamp,
+    LightningBolt,
+    ForestBear,
+    StripedBears,
+    Guttersnipe,
     DrakeToken,
     DragonFodder,
     KrenkosCommand,

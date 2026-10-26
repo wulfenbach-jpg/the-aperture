@@ -1,0 +1,113 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-25T08:32:00Z",
+ "note": "Five records copied from stored real Scryfall planned-list printing responses; no metadata invented.",
+ "cards": [
+  {
+   "name": "Swamp",
+   "role": "basic_land",
+   "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+   "scryfall_id": "b233b117-9369-45c1-80c5-cc857386b6be",
+   "set": "mdd",
+   "collector_number": "296",
+   "layout": "normal",
+   "mana_cost": "",
+   "type_line": "Basic Land — Swamp",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "({T}: Add {B}.)",
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/mdd/296",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Lightning Bolt",
+   "role": "cross_package",
+   "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+   "scryfall_id": "7673784e-db4b-43a1-8d55-1bb9fc1e284f",
+   "set": "msc",
+   "collector_number": "806",
+   "layout": "normal",
+   "mana_cost": "{R}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Lightning Bolt deals 3 damage to any target.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/msc/806",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Forest Bear",
+   "role": "vanilla",
+   "oracle_id": "0994d596-0b15-4156-8e94-5b566dcad6cd",
+   "scryfall_id": "fae9abc7-ecd3-4042-a5b0-5f2b24491fa6",
+   "set": "ptk",
+   "collector_number": "135",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Creature — Bear",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/ptk/135",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Striped Bears",
+   "role": "cross_package",
+   "oracle_id": "ac856e91-1b88-464b-9420-dc311ce814ea",
+   "scryfall_id": "0bf54365-56ae-485d-b931-784a4cf9d8f2",
+   "set": "wth",
+   "collector_number": "140",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Creature — Bear",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "When this creature enters, draw a card.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/wth/140",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Guttersnipe",
+   "role": "cross_package",
+   "oracle_id": "c6bdaf76-6a03-4695-9c4b-f040e73435af",
+   "scryfall_id": "f6bb1ffc-2251-4655-b8f9-4c8047dd5d5f",
+   "set": "hoc",
+   "collector_number": "196",
+   "layout": "normal",
+   "mana_cost": "{2}{R}",
+   "type_line": "Creature — Goblin Shaman",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/hoc/196",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  }
+ ]
+}
