@@ -198,12 +198,16 @@ The baseline AI is a deterministic heuristic. A local Decider-2B service can be
 opted into (`--decider`, or the UI checkbox) through its documented typed readout
 API (`POST /v1/systemone` with `state`/`questions`/`model` on
 `http://127.0.0.1:8765`). It is off by default, receives only the masked
-projection of the acting seat, and any timeout, HTTP error, unparsable answer or
+projection of the acting seat, and any timeout, HTTP error, malformed or
+oversized response, unparsable answer, invalid confidence or
 **response-indicated truncation** (`usage.truncated`, `state_tokens_dropped > 0`
-or a non-empty `truncated_questions`) falls back to the heuristic with a visible
-reason — a choice the model made without seeing the whole projection is never
-used. A returned confidence is option preference concentration, never a win
-probability. See HANDOFF.md for the tested/untested status of that path.
+or a non-empty `truncated_questions`) falls back to the heuristic with a stable
+visible reason code. A model answer is applied only through an envelope bound to
+the viewer, revision, decision serial and session generation, and only when the
+returned key resolves to an action still in the live engine offer. A returned
+confidence is option preference concentration, never a win probability or a
+search evaluation. No weights or model packages are bundled; a local checkpoint
+is obtained and licensed separately. See `docs/issue25-local-model.md`.
 
 ## Command-zone practice (explicit profile, not Commander)
 

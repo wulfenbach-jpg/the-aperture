@@ -7,8 +7,9 @@ mod search;
 mod selfplay;
 
 pub use decider::{
-    ChoiceAnswer, DeciderClient, DeciderConfig, DeciderError, DeciderPolicy, DecisionRequest,
-    OptionSpec, decision_request,
+    ChoiceAnswer, DeciderClient, DeciderConfig, DeciderError, DeciderPolicy, DecisionBinding,
+    DecisionEnvelope, DecisionRequest, MAX_OPTIONS, MAX_RESPONSE_BYTES, MIN_OPTIONS, OptionSpec,
+    Proposal, decision_request,
 };
 pub use heuristic::{HeuristicPolicy, available_mana, card_mana_value, land_color, pool_size};
 pub use search::{

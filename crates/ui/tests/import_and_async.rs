@@ -2,13 +2,15 @@
 //! silent deck substitution, and background workers that never apply a stale
 //! result to a replaced game.
 
+use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::channel;
 use std::time::{Duration, Instant};
 
-use aperture_ai::Decision;
+use aperture_ai::{DeciderConfig, Decision};
+use aperture_core::state::Step;
 use aperture_core::{Action, AiSettings, DeckList, P0, P1, Pending};
 use aperture_ui::session::{
     BUNDLED_A, BUNDLED_B, UiSession, import_seat_file, import_seat_text, load_explicit_deck,
@@ -238,6 +240,100 @@ fn a_fresh_worker_completion_is_applied() {
     assert!(ran.load(Ordering::SeqCst), "the worker ran");
     assert!(!applied.is_empty(), "a fresh completion is applied");
     assert!(ui.game.revision() > 0, "the action reached the engine");
+    assert!(!ui.ai_busy);
+}
+
+#[test]
+fn the_default_async_decider_reports_a_single_legal_option_as_forced_without_http() {
+    let mut ui = session(39);
+    let opening = ui.owner().expect("opening declarer");
+    ui.ai.human_seat = if opening == P0 { P1 } else { P0 };
+    ui.ai.ai_seats = vec![opening];
+
+    // Strip the table to a position with exactly one legal action (Pass).
+    ui.game.state.pending = None;
+    ui.game.state.objects.clear();
+    for player in &mut ui.game.state.players {
+        player.hand.clear();
+        player.library.clear();
+        player.graveyard.clear();
+        player.exile.clear();
+        player.command_zone.clear();
+    }
+    ui.game.state.stack.clear();
+    ui.game.state.turn.active = opening;
+    ui.game.state.turn.step = Step::PrecombatMain;
+    ui.game.state.turn.priority = Some(opening);
+    ui.game.state.turn.passed = 0;
+    assert_eq!(ui.owner(), Some(opening));
+    assert_eq!(ui.view(opening).legal.len(), 1, "the fixture is forced");
+
+    // Any request would be visible here; a forced choice must not contact it.
+    let listener = TcpListener::bind("127.0.0.1:0").expect("bind fixture");
+    let port = listener.local_addr().unwrap().port();
+    let contacted = Arc::new(AtomicBool::new(false));
+    let flag = contacted.clone();
+    std::thread::spawn(move || {
+        if listener.accept().is_ok() {
+            flag.store(true, Ordering::SeqCst);
+        }
+    });
+    ui.ai.use_decider = true;
+    ui.decider_config = Some(DeciderConfig {
+        base_url: format!("http://127.0.0.1:{port}"),
+        timeout_ms: 300,
+        ..DeciderConfig::default()
+    });
+    assert!(ui.request_ai_decision_default());
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while ui.note.is_none() && Instant::now() < deadline {
+        ui.poll_workers();
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    let note = ui.note.clone().unwrap_or_default();
+    assert!(
+        note.contains("forced"),
+        "a single legal option must be labelled Forced, got: {note}"
+    );
+    assert!(
+        !note.contains("too_few_options"),
+        "the forced path must not be reported as a prepare fallback: {note}"
+    );
+    assert!(
+        !contacted.load(Ordering::SeqCst),
+        "a forced choice must not contact the model endpoint"
+    );
+    assert!(!ui.ai_busy);
+}
+
+#[test]
+fn an_ai_completion_outside_the_live_offer_is_discarded_with_a_reason() {
+    let mut ui = session(38);
+    let opening = ui.owner().expect("opening declarer");
+    ui.ai.human_seat = if opening == P0 { P1 } else { P0 };
+    ui.ai.ai_seats = vec![opening];
+    // Pass is not a legal answer to the opening mulligan decision, so the
+    // completion must be refused instead of mutating the table.
+    assert!(ui.request_ai_decision(|_view| Decision::heuristic(Action::Pass)));
+    let deadline = Instant::now() + Duration::from_secs(10);
+    while ui.busy_note.is_none() && Instant::now() < deadline {
+        ui.poll_workers();
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    assert!(
+        ui.busy_note
+            .as_deref()
+            .unwrap_or("")
+            .contains("illegal_choice"),
+        "the discard needs a stable diagnostic: {:?}",
+        ui.busy_note
+    );
+    assert_eq!(ui.game.revision(), 0, "the table was not mutated");
+    assert_eq!(
+        ui.game.state.pending,
+        Some(Pending::Mulligan { player: opening })
+    );
+    assert!(ui.replay.steps.is_empty(), "no action was recorded");
     assert!(!ui.ai_busy);
 }
 
