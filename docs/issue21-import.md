@@ -17,7 +17,11 @@ for the model that produced it.
      commander, 100 cards including it, singleton (basics unlimited), color identity
      inside the commander's identity. A check the payload cannot answer is reported as
      `not_certified`, never assumed legal. `not_certified` and `illegal` are different
-     answers and are shown as different answers.
+     answers and are shown as different answers. The singleton check looks at every card
+     in the library, including cards this build cannot seat: engine support never narrows
+     a format check. Basics are exempt only on a fact (the provider's `Basic` supertype,
+     or the catalog's basic-land data); a repeat whose source carries no type line at all
+     is `not_certified`, not `legal`.
    * **engine support** — every main-deck card against this build's supported pool,
      with the exact reason per card (not in the pool, multi-face, commander-only, no
      provider card data, …). Counts and the full list are shown before start.
