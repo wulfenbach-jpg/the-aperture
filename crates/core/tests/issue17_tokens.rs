@@ -356,7 +356,7 @@ fn a_token_ceases_to_exist_instead_of_going_to_the_graveyard() {
     }
     assert!(
         game.state.try_object(token).is_none(),
-        "a token ceases to exist (CR 111.7)"
+        "the ceased token object is removed from canonical state"
     );
     assert!(
         game.state
@@ -475,14 +475,25 @@ fn token_death_is_a_real_graveyard_change_then_cessation() {
         let player = game.decision_owner().expect("priority");
         events.extend(submit_ok(&mut game, player, Action::Pass));
     }
-    let died = events.iter().position(|event| {
-        matches!(event, Event::StateBasedAction { description } if description.contains("dies and ceases to exist"))
+    let destroyed = events.iter().position(|event| {
+        matches!(event, Event::Destroyed { object, card } if *object == token && *card == CardId::GoblinToken)
     });
-    assert!(died.is_some(), "the token dies before ceasing: {events:?}");
+    let ceased = events.iter().position(|event| {
+        matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist"))
+    });
     assert!(
-        game.state.try_object(token).is_none(),
-        "the token left the game"
+        destroyed.is_some(),
+        "the token really dies (CR 700.4): {events:?}"
     );
+    assert!(
+        ceased.is_some(),
+        "the token ceases as an SBA (CR 111.7): {events:?}"
+    );
+    assert!(
+        destroyed < ceased,
+        "death is recorded before cessation: {events:?}"
+    );
+    assert!(game.state.try_object(token).is_none());
     assert!(
         game.state
             .players
@@ -542,9 +553,20 @@ fn token_bounce_and_exile_record_the_destination_before_cessation() {
         events.extend(submit_ok(&mut game, P0, Action::Pass));
         events.extend(submit_ok(&mut game, P1, Action::Pass));
     }
+    let returned = events.iter().position(|event| {
+        matches!(event, Event::StateBasedAction { description } if description.contains("returned to its owner's hand"))
+    });
+    let ceased = events.iter().position(|event| {
+        matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist"))
+    });
     assert!(
-        events.iter().any(|event| matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist instead of moving to a hand"))),
-        "bounce is answered by immediate token cessation: {events:?}"
+        returned.is_some(),
+        "bounce records the hand zone change: {events:?}"
+    );
+    assert!(ceased.is_some(), "the token then ceases: {events:?}");
+    assert!(
+        returned < ceased,
+        "destination precedes cessation: {events:?}"
     );
     assert!(game.state.try_object(token).is_none());
     assert!(
@@ -572,9 +594,15 @@ fn token_bounce_and_exile_record_the_destination_before_cessation() {
         events.extend(submit_ok(&mut game, P0, Action::Pass));
         events.extend(submit_ok(&mut game, P1, Action::Pass));
     }
+    let exiled = events.iter().position(|event| {
+        matches!(event, Event::StateBasedAction { description } if description.contains("is exiled"))
+    });
+    let ceased = events.iter().position(|event| {
+        matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist"))
+    });
     assert!(
-        events.iter().any(|event| matches!(event, Event::StateBasedAction { description } if description.contains("ceases to exist instead of being exiled"))),
-        "exile is answered by immediate token cessation: {events:?}"
+        exiled.is_some() && ceased.is_some() && exiled < ceased,
+        "exile then cease: {events:?}"
     );
     assert_eq!(
         game.state.player(P0).life,

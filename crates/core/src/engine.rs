@@ -919,13 +919,6 @@ impl Game {
         let owner = object.owner;
         let commander = object.commander;
         let old_id = object.id;
-        // CR 111.7: a token that leaves the battlefield ceases to exist. It is
-        // never a card, so it must not be re-keyed, inserted into a zone list or
-        // put on the stack; callers see the stale id and their zone move is a
-        // no-op. Nothing is inserted, so the token simply stops existing.
-        if object.card.is_token() && zone != Zone::Battlefield {
-            return old_id;
-        }
         let new_id = if commander.is_some() {
             let id = ObjectId(self.state.next_object);
             self.state.next_object += 1;
@@ -1129,15 +1122,6 @@ impl Game {
         };
         let owner = object.owner;
         let card = object.card;
-        // CR 111.7: a token never reaches a library; it ceases to exist.
-        if object.card.is_token() {
-            events.push(Event::StateBasedAction {
-                description: format!(
-                    "token {card} ceases to exist instead of moving to the library (CR 111.7)"
-                ),
-            });
-            return;
-        }
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -1155,19 +1139,10 @@ impl Game {
     fn move_to_exile(&mut self, id: ObjectId, events: &mut Vec<Event>) -> Option<ObjectId> {
         let object = self.detach_object(id)?;
         let card = object.card;
-        let token = object.card.is_token();
         let new_id = self.insert_object(object, Zone::Exile);
-        if token {
-            events.push(Event::StateBasedAction {
-                description: format!(
-                    "token {card} ceases to exist instead of being exiled (CR 111.7)"
-                ),
-            });
-        } else {
-            events.push(Event::StateBasedAction {
-                description: format!("{card} ({new_id}) is exiled"),
-            });
-        }
+        events.push(Event::StateBasedAction {
+            description: format!("{card} ({new_id}) is exiled"),
+        });
         Some(new_id)
     }
 
@@ -1176,15 +1151,6 @@ impl Game {
             return;
         };
         let card = object.card;
-        // CR 111.7: a token returned to a hand ceases to exist instead.
-        if object.card.is_token() {
-            events.push(Event::StateBasedAction {
-                description: format!(
-                    "token {card} ceases to exist instead of moving to a hand (CR 111.7)"
-                ),
-            });
-            return;
-        }
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -1228,16 +1194,15 @@ impl Game {
         object.pump_power = 0;
         object.pump_toughness = 0;
         let new_id = self.insert_object(object, Zone::Graveyard);
+        events.push(Event::Destroyed {
+            object: new_id,
+            card,
+        });
         if token {
-            // CR 111.7: the token is put into the graveyard as it dies, then
-            // ceases to exist; it is never a card and never stays in a zone.
             events.push(Event::StateBasedAction {
-                description: format!("token {card} dies and ceases to exist (CR 111.7)"),
-            });
-        } else {
-            events.push(Event::Destroyed {
-                object: new_id,
-                card,
+                description: format!(
+                    "token {card} is put into the graveyard and will cease to exist (CR 111.7)"
+                ),
             });
         }
         // CR 700.4 + 603.6c: a permanent put into a graveyard from the
@@ -3887,7 +3852,6 @@ impl Game {
                 for id in tokens {
                     if let Some(object) = self.detach_object(id) {
                         let card = object.card;
-                        self.insert_object(object, Zone::Removed);
                         events.push(Event::StateBasedAction {
                             description: format!("{card} token ceases to exist (CR 111.7)"),
                         });
