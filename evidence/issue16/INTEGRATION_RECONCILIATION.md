@@ -31,17 +31,29 @@ information-set reconstruction never set:
    belief objects needed an explicit empty `Counters::new()`; nothing is
    invented for hidden information.
 2. `GameState.revealed` — deliberately not modelled. A revealed card is public,
-   but it still sits in a library/hand list that the reconstruction re-deals
-   from the belief deck with real counts only, so copying the id would create a
-   reference the world never places. The world reports no reveals and reads
-   nothing hidden to build the field. Disclosed in the `reconstruct` doc comment.
+   but its id stays in a zone list the reconstruction rebuilds (belief entries
+   for opponents, real ids only for the viewer's own hand or a supplied known
+   library). Copying the id alone leaves a state that fails the engine's
+   zone-container invariant — currently masked, because the `revealed_hidden`
+   projection filters unknown ids — and copying the object too is rejected by
+   validation. The world reports no reveals and reads nothing hidden to build
+   the field. Disclosed in the `reconstruct` doc comment.
 3. `crates/ui/src/app.rs` test fixture `inject_large_board` builds an `Object`
    literal; it sets no typed counters (synthetic board bulk only).
 
-Regression test added: `crates/ai/tests/search.rs::a_live_reveal_neither_breaks_the_world_nor_leaks_a_hidden_card`
+Regression test added: `crates/ai/tests/search.rs::a_live_reveal_leaves_the_search_world_runnable_and_legal`
 — a real engine reveal (`reveal_top`) is public in the masked view, the search
 still returns scored candidates, and every candidate is an engine-offered
-action.
+action. It deliberately does not claim to observe the world's reveal state or
+hidden-identity independence.
+
+## Independent review of this delta
+
+`evidence/issue16/REVIEW_COMPAT.md` — VERDICT: APPROVED (`385ac67`), no blocking
+finding, three non-blocking accuracy notes. Those notes are applied as this
+doc-only follow-up: the "dangling reference" wording is corrected to the actual
+invariant violation, the belief re-deal sentence is scoped to the zone lists it
+really covers, and the test name/docstring now state what the test observes.
 
 ## Gates actually executed at this head
 

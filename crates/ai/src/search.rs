@@ -514,8 +514,9 @@ impl BeliefFiller {
 /// Typed counters (CR 122) travel with the copied public objects, so a
 /// permanent's counters and its counter-adjusted characteristics survive into
 /// the world; fabricated belief objects carry none. Cards revealed from a
-/// hidden zone are deliberately NOT modelled: a reveal stays inside a hidden
-/// zone list that this function re-deals from beliefs, so the world has no
+/// hidden zone are deliberately NOT modelled: a reveal stays inside a zone list
+/// this function rebuilds (re-dealt belief entries for opponents, real ids for
+/// the viewer's own hand or a supplied known library), so the world has no
 /// place to put the id and reports no reveals at all.
 fn reconstruct(
     real: &Game,
@@ -699,11 +700,14 @@ fn reconstruct(
         retired_commanders: real_state.retired_commanders.clone(),
         prevent_all_combat_damage_turn: real_state.prevent_all_combat_damage_turn,
         // Deliberate simplification: a card revealed from a hidden zone is
-        // public information, but it still lives in an opponent's (or the
-        // viewer's) library/hand list, and this reconstruction re-deals those
-        // zones from beliefs with only the real counts. Copying a revealed id
-        // here would reference an object the world never places, so the world
-        // models no reveals. Nothing hidden is read to build this field.
+        // public information, but its id stays inside a zone list this
+        // reconstruction rebuilds — re-dealt belief entries for the opponent,
+        // real ids only for the viewer's own hand or a supplied known library.
+        // The ledger therefore never copies a revealed object, and naming an id
+        // the world does not place would leave a state that fails the engine's
+        // zone-container invariant (and is currently masked by the
+        // `revealed_hidden` projection). The world models no reveals; nothing
+        // hidden is read to build this field.
         revealed: Vec::new(),
         players,
         stack: Vec::new(),

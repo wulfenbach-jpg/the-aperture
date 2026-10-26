@@ -129,13 +129,15 @@ fn candidates_are_only_offered_actions() {
     }
 }
 
-/// A card revealed from a hidden zone is public information, but the
-/// reconstruction re-deals hidden zones from the belief deck and only keeps
-/// their real counts. The search world therefore models no reveal: it must not
-/// copy a revealed id that the world never places (a dangling reference), and
-/// it must still answer with engine-offered actions while a reveal is live.
+/// A card revealed from a hidden zone is public, but the reconstruction
+/// rebuilds the zone lists it lives in and keeps only the real counts, so the
+/// search world models no reveal. This guards that a live reveal neither
+/// breaks the world nor turns into a pointed refusal, and that every candidate
+/// is still an engine-offered action. It does NOT assert the world's own reveal
+/// state or hidden-identity independence: the analysis exposes neither, and the
+/// naive "copy the revealed ids only" variant would also pass.
 #[test]
-fn a_live_reveal_neither_breaks_the_world_nor_leaks_a_hidden_card() {
+fn a_live_reveal_leaves_the_search_world_runnable_and_legal() {
     let mut game = common::fixture(11)
         .battlefield(P0, &[CardId::Forest, CardId::Mountain])
         .hand(P0, &[CardId::GrizzlyBears])
