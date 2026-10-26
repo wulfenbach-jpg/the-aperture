@@ -119,6 +119,7 @@ fn parse_options() -> Startup {
                     std::process::exit(2);
                 }
             }
+
             "--a11y" => {
                 let value = args.next().unwrap_or_default();
                 for mode in value.split(',').map(str::trim).filter(|m| !m.is_empty()) {
@@ -159,7 +160,8 @@ fn parse_options() -> Startup {
                                          opt-in ~10 s native frame timing report (background write;\n\
                                          callback duration + interval p95; no GPU timing)\n\
                      --performance-note TEXT\n\
-                                         disclose a collection condition (e.g. a synthetic delay)\n\
+                                         disclose a collection condition; recorded as a declared\n\
+                                         condition, never as a synthetic delay\n\
                      --a11y high-contrast,reduced-motion\n\
                                          start with those accessibility settings (capture aid)\n\
                      --smoke OUT.png     render, screenshot the real window, exit\n"

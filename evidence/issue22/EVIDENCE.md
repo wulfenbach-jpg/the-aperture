@@ -33,15 +33,16 @@ untouched, so #25's lane has no shared hunk with this change.
 * **Opt-in instrumentation**: `--performance-report PATH` (bounded 10 s,
   ~60 Hz forced repaint, nearest-rank p50/p95/max, JSON written by a background
   thread; no disk/network on a frame callback), `--performance-note TEXT` to
-  disclose a collection condition, and `--a11y high-contrast,reduced-motion` to
-  start a capture in that mode.
+  disclose a collection condition (recorded under `declared_conditions`; this
+  build injects no synthetic delay, so `synthetic_delays` stays empty), and
+  `--a11y high-contrast,reduced-motion` to start a capture in that mode.
 
 ## Verification actually run (this checkout, this head)
 
 | command | result |
 | --- | --- |
 | `cargo fmt --check` | clean (`verify4-fmt.log FMT=0`) |
-| `cargo test -p aperture-ui --locked` | **77 passed / 0 failed** — 34 lib (16 new renderer/accessibility/perf tests) + 11 + 6 + 4 + 22 integration (`verify4-ui-tests.log`) |
+| `cargo test -p aperture-ui --locked` | **79 passed / 0 failed** — 36 lib (13 new renderer/accessibility/perf tests on top of `fafde1d`) + 11 + 6 + 4 + 22 integration (`verify4-ui-tests.log`; the 13-test delta is `git diff fafde1d -- crates/ui/src \| grep -c '^+    #\[test\]'`) |
 | `cargo clippy -p aperture-ui --all-targets --locked -- -D warnings` | clean (`CLIPPY=0`) |
 | `cargo build --release -p aperture-ui --locked` | success (`BUILD=0`) |
 
