@@ -175,6 +175,12 @@ pub struct CardDef {
     pub colors: &'static [ManaColor],
     pub flying: bool,
     pub defender: bool,
+    /// CR 702.8a: "You may cast this spell any time you could cast an instant."
+    /// Only printed Flash is modelled; nothing grants it to another card.
+    pub flash: bool,
+    /// CR 702.19b: excess combat damage may be assigned to the defending
+    /// player once every blocker has been assigned lethal damage.
+    pub trample: bool,
     pub power: Option<i32>,
     pub toughness: Option<i32>,
     pub oracle: &'static str,
@@ -196,6 +202,20 @@ impl CardDef {
 
     pub fn has_defender(&self) -> bool {
         self.defender
+    }
+
+    pub fn has_flash(&self) -> bool {
+        self.flash
+    }
+
+    pub fn has_trample(&self) -> bool {
+        self.trample
+    }
+
+    /// CR 117.1a: an instant, or a card that prints Flash, may be cast while
+    /// any player has priority.
+    pub fn casts_at_instant_timing(&self) -> bool {
+        self.is_instant() || self.flash
     }
 
     /// The Goblin creature subtype (CR 205.3m), read from the printed type
@@ -342,6 +362,10 @@ pub enum CardId {
     GrizzledLeotau,
     Watchwolf,
     JasmineBoreal,
+    OrdinaryBear,
+    AshcoatBear,
+    Owlbear,
+    SoulWarden,
 }
 
 /// Explicit command-zone practice allow-list. This is deliberately narrower

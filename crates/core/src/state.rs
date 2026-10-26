@@ -475,6 +475,12 @@ impl Object {
         self.card.def().has_defender()
     }
 
+    /// CR 702.19a: a static ability of the printed card; nothing in this pool
+    /// grants or removes trample.
+    pub fn has_trample(&self) -> bool {
+        self.card.def().has_trample()
+    }
+
     pub fn power(&self) -> i32 {
         self.card.def().power.unwrap_or(0) + self.pump_power
     }

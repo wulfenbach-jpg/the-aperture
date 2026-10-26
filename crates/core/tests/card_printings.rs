@@ -33,6 +33,7 @@ const TALRAND_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/tal
 const TATYOVA_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/tatyova-sourced.json");
 const CROSS_SOURCED: &str =
     include_str!("../../../fixtures/starter-corpus/cross-package-sourced.json");
+const SLICE4_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice4-sourced.json");
 
 fn starter_new_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
@@ -74,6 +75,11 @@ fn tatyova_cards() -> Vec<Value> {
 
 fn cross_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(CROSS_SOURCED).expect("sourced cross JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice4_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE4_SOURCED).expect("sourced slice4 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -304,6 +310,70 @@ fn every_krenko_package_card_matches_its_recorded_printing() {
     );
 }
 
+/// Slice 4 adds two cards whose printed text is a modelled keyword, so the
+/// catalog must agree with the printing on the keyword *and* on the flag that
+/// makes the engine execute it. A silent mismatch (a card that prints Trample
+/// while the engine does not trample) is what this guard exists to catch.
+#[test]
+fn every_slice4_card_matches_its_recorded_printing_and_keywords() {
+    let cards = slice4_cards();
+    assert_eq!(cards.len(), 4, "slice 4 adds four sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str(),
+            "{name} toughness"
+        );
+        let printed_flash = record["keywords"]
+            .as_array()
+            .expect("keywords")
+            .iter()
+            .any(|keyword| keyword == "Flash");
+        let printed_trample = record["keywords"]
+            .as_array()
+            .expect("keywords")
+            .iter()
+            .any(|keyword| keyword == "Trample");
+        assert_eq!(def.has_flash(), printed_flash, "{name} flash flag");
+        assert_eq!(def.has_trample(), printed_trample, "{name} trample flag");
+        assert_eq!(sourced_text(&record, "layout"), "normal");
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert_eq!(
+            record["distinct_printing_texts"].as_u64(),
+            Some(1),
+            "{name} wording is identical across its printings"
+        );
+        assert!(record["printings_checked"].as_u64().unwrap_or(0) >= 1);
+    }
+}
+
 #[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
     let starter: Vec<Value> = starter_new_cards()
@@ -312,6 +382,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(talrand_card())
         .chain(tatyova_cards())
         .chain(cross_cards())
+        .chain(slice4_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

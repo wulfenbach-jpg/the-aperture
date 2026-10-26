@@ -30,17 +30,18 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-88-card pool. Isamaru itself is supported, but none of its 57 chosen nonland
-cards is, so `isamaru-white-aggro` stays `planned`.
+97-card pool. Isamaru itself is supported, and the slice-4 package implemented
+one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 56 missing
+cards; it stays `planned` because 56 of its chosen cards are still unsupported.
 
 ## Corpus union and staged gaps
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice3-native-corpus.py/json`):
+`evidence/issue17/slice4/update_manifest.py` + `slice4-corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **81** are in the supported 93-card catalog and **378** are missing;
+* **85** are in the supported 97-card catalog and **374** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.
@@ -58,14 +59,19 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    (51 missing) and Talrand's desired list has 54 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
-   independent of counters) and **bounded implemented** landfall for Tatyova and
-   Jaddi Offshoot (life then draw, controller-only). Death and tribal triggers
-   remain unimplemented (Elas, Ayula);
+   independent of counters), **bounded implemented** landfall for Tatyova and
+   Jaddi Offshoot (life then draw, controller-only), and the slice-4
+   "another creature enters" trigger for Soul Warden (fires for creatures the
+   Warden's controller does not control, never for the Warden itself). Death and
+   tribal triggers remain unimplemented (Elas, Ayula);
 3. activated non-mana abilities: **bounded implemented package** for Krenko's
    `{T}` Goblin-count token production (including >255 counts) and the existing
    Prodigal Sorcerer/Rootwalla/Brindle Boar abilities. Sacrifice outlets and
    broader activated abilities remain unimplemented (Elas);
-4. keyword semantics (haste for Krenko);
+4. keyword semantics: **implemented** for printed Flash (Ashcoat Bear may be cast
+   at instant timing) and printed Trample (Owlbear assigns lethal damage to
+   blockers first and tramples the surplus to the player); haste (Krenko) and
+   every other keyword remain unimplemented;
 5. counters as rules objects (Ayula);
 6. single-target spell copying and go-wide pump (Zada);
 7. legend rule, equipment and Aura permanents (Isamaru and any future legend);

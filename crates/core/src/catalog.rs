@@ -56,6 +56,8 @@ macro_rules! card {
             colors: &[],
             flying: false,
             defender: false,
+            flash: false,
+            trample: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -80,6 +82,62 @@ macro_rules! card_defender {
             colors: &[],
             flying: false,
             defender: true,
+            flash: false,
+            trample: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+/// A creature whose only printed rules text is the Flash keyword (CR 702.8a).
+macro_rules! card_flash {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: true,
+            trample: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+/// A creature that prints Trample (CR 702.19) alongside its other text.
+macro_rules! card_trample {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: true,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -89,7 +147,7 @@ macro_rules! card_defender {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 93] = [
+pub static CARDS: [CardDef; 97] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -591,6 +649,33 @@ pub static CARDS: [CardDef; 93] = [
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
     ),
+    // Issue 17 slice 4: sourced Ayula/Isamaru package. Ordinary Bear is the
+    // last printed vanilla creature left in the eight desired lists; Ashcoat
+    // Bear and Owlbear are the only two cards those lists print with nothing
+    // but Flash or Trample plus an already-modelled effect; Soul Warden is the
+    // first card in the pool with an "another creature enters" trigger.
+    card!(
+        OrdinaryBear, "Ordinary Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(4), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card_flash!(
+        AshcoatBear, "Ashcoat Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Flash (You may cast this spell any time you could cast an instant.)",
+        spell: None
+    ),
+    card_trample!(
+        Owlbear, "Owlbear", cost: Some("{3}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bird Bear", power: Some(4), toughness: Some(4),
+        oracle: "Trample\nKeen Senses — When this creature enters, draw a card.",
+        spell: None
+    ),
+    card!(
+        SoulWarden, "Soul Warden", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Cleric", power: Some(1), toughness: Some(1),
+        oracle: "Whenever another creature enters, you gain 1 life.", spell: None
+    ),
 ];
 
 pub fn all() -> &'static [CardDef] {
@@ -610,6 +695,8 @@ pub static TOKENS: [CardDef; 2] = [
         colors: &[ManaColor::Red],
         flying: false,
         defender: false,
+        flash: false,
+        trample: false,
         power: Some(1),
         toughness: Some(1),
         oracle: "",
@@ -625,6 +712,8 @@ pub static TOKENS: [CardDef; 2] = [
         colors: &[ManaColor::Blue],
         flying: true,
         defender: false,
+        flash: false,
+        trample: false,
         power: Some(2),
         toughness: Some(2),
         oracle: "Flying",

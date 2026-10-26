@@ -3,8 +3,48 @@
 
 mod common;
 
+use aperture_core::card::CardDef;
 use aperture_core::*;
 use common::*;
+
+/// True only when the card's whole printed rules text is keywords this slice
+/// models with a `CardDef` flag. The reminder text Scryfall prints in
+/// parentheses is allowed; anything else, including any keyword the engine does
+/// not execute, returns false so the caller keeps asserting on typed abilities.
+fn rules_text_is_modelled_keywords(card: &CardDef) -> bool {
+    let mut modelled: Vec<&str> = Vec::new();
+    if card.has_flash() {
+        modelled.push("Flash");
+    }
+    if card.has_trample() {
+        modelled.push("Trample");
+    }
+    if card.has_flying() {
+        modelled.push("Flying");
+    }
+    if card.has_defender() {
+        modelled.push("Defender");
+    }
+    if modelled.is_empty() {
+        return false;
+    }
+    let mut saw_keyword = false;
+    for line in card.oracle.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        let keyword = match line.split_once(" (") {
+            Some((keyword, reminder)) if reminder.ends_with(')') => keyword,
+            _ => line.trim_end_matches('.'),
+        };
+        if !modelled.contains(&keyword) {
+            return false;
+        }
+        saw_keyword = true;
+    }
+    saw_keyword
+}
 
 #[test]
 fn pool_size_is_bounded_and_names_are_unique() {
@@ -60,6 +100,11 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                         "{} has abilities but prints no text",
                         card.name
                     );
+                } else if rules_text_is_modelled_keywords(card) {
+                    // Text that is only printed keywords is covered by the
+                    // keyword fields the engine actually executes; the helper
+                    // refuses any keyword this slice does not model, so a new
+                    // unsupported keyword cannot hide behind this branch.
                 } else {
                     assert!(
                         !abilities.is_empty() || !statics.is_empty(),

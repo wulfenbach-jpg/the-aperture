@@ -36,6 +36,11 @@ pub enum TriggerEvent {
     SpellCast,
     /// CR 603.6a: a land entered under this source's controller.
     LandEnters,
+    /// CR 603.6a with the printed word "another" (CR 603.6a + 109.5): a
+    /// creature other than the source entered the battlefield. The entering
+    /// permanent's controller is irrelevant; the trigger's controller is the
+    /// source permanent's controller.
+    AnotherCreatureEnters,
 }
 
 impl TriggerEvent {
@@ -45,6 +50,7 @@ impl TriggerEvent {
             TriggerEvent::Dies => "dies",
             TriggerEvent::SpellCast => "you cast an instant or sorcery spell",
             TriggerEvent::LandEnters => "a land you control enters",
+            TriggerEvent::AnotherCreatureEnters => "another creature enters",
         }
     }
 }
@@ -306,9 +312,27 @@ const BEETLEBACK_CHIEF: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateGoblinTokens(2)],
 })];
 
+const OWLBEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Keen Senses — When this creature enters, draw a card.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::Draw(1)],
+})];
+
+const SOUL_WARDEN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever another creature enters, you gain 1 life.",
+    event: TriggerEvent::AnotherCreatureEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::GainLife(1)],
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::Owlbear => OWLBEAR,
+        CardId::SoulWarden => SOUL_WARDEN,
         CardId::StripedBears => STRIPED_BEARS,
         CardId::Guttersnipe => GUTTERSNIPE,
         CardId::TatyovaBenthicDruid => TATYOVA,
