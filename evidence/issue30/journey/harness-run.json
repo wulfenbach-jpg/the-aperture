@@ -1,0 +1,257 @@
+{
+    "mode":  "journey",
+    "harness":  "C:\\AI\\aperture-worktrees\\issue-30\\scripts\\platform_qa\\platform-qa.ps1",
+    "harness_sha256":  "f105334a30723a0984211cd03f92411cefea9301f8a8052259ab1bee9dc6ec90",
+    "exe":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe",
+    "exe_sha256":  "c1372dd036af4fd2b89532b83b1746b6482ed0fa079765030c79373a59906f65",
+    "journey":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg",
+    "seed":  4242,
+    "seats":  4,
+    "window":  "1280x720",
+    "started":  "2026-10-26T09:57:33.0306089-07:00",
+    "finished":  "2026-10-26T10:14:08.9413124-07:00",
+    "results":  [
+                    {
+                        "step":  "launch",
+                        "status":  "passed",
+                        "detail":  "packaged window requested 1280x720, actual outer 1618x947, 134 UIA nodes on a 4-seat table",
+                        "data":  null,
+                        "at":  "2026-10-26T09:57:36.3632704-07:00"
+                    },
+                    {
+                        "step":  "mulligan",
+                        "status":  "passed",
+                        "detail":  "kept the hand via Keep this hand (uia-invoke)",
+                        "data":  {
+                                     "name":  "Keep this hand",
+                                     "how":  "uia-invoke"
+                                 },
+                        "at":  "2026-10-26T09:57:37.1132314-07:00"
+                    },
+                    {
+                        "step":  "table",
+                        "status":  "passed",
+                        "detail":  "reached an offered main-phase action after 33 real priority pass(es); header digest 03e29ff44952",
+                        "data":  {
+                                     "passes":  33,
+                                     "digest":  "03e29ff44952",
+                                     "offered":  "Play Forest   [CR 305.2, 701.18a]"
+                                 },
+                        "at":  "2026-10-26T09:58:45.3601343-07:00"
+                    },
+                    {
+                        "step":  "priority-land",
+                        "status":  "passed",
+                        "detail":  "accepted the offered \u0027Play Forest   [CR 305.2, 701.18a]\u0027 (uia-invoke); digest 03e29ff44952 -\u003e a4af239af81d",
+                        "data":  {
+                                     "after":  "a4af239af81d",
+                                     "before":  "03e29ff44952",
+                                     "how":  "uia-invoke"
+                                 },
+                        "at":  "2026-10-26T09:58:46.0395113-07:00"
+                    },
+                    {
+                        "step":  "stack-cast",
+                        "status":  "passed",
+                        "detail":  "cast \u0027Cast Runeclaw Bear   [CR 117.1a, 601.2a]\u0027 (uia-invoke) after 1 extra land drop(s); header stack count 1",
+                        "data":  {
+                                     "stack":  1,
+                                     "before":  "2aac9619e929",
+                                     "lands":  1,
+                                     "how":  "uia-invoke"
+                                 },
+                        "at":  "2026-10-26T10:00:19.7099370-07:00"
+                    },
+                    {
+                        "step":  "stack-resolve",
+                        "status":  "passed",
+                        "detail":  "stack emptied by mutual passes; digest 2aac9619e929 -\u003e f6a40af635b9",
+                        "data":  {
+                                     "after":  "f6a40af635b9"
+                                 },
+                        "at":  "2026-10-26T10:00:22.8445189-07:00"
+                    },
+                    {
+                        "step":  "save",
+                        "status":  "passed",
+                        "detail":  "wrote 149145 bytes (save v10): 310 recorded action(s), turn 8, phase PrecombatMain; live header digest f6a40af635b9 unchanged by the write",
+                        "data":  {
+                                     "path":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\the-aperture-save.json",
+                                     "save_file_digest":  "885c64e49bc6a6124aaa8e9ce362815f04903ad52a5b4958569baa1943fe21ac",
+                                     "header":  "f6a40af635b9",
+                                     "steps":  310,
+                                     "turn":  8
+                                 },
+                        "at":  "2026-10-26T10:00:23.5305324-07:00"
+                    },
+                    {
+                        "step":  "mutate",
+                        "status":  "passed",
+                        "detail":  "passed priority so the live position moved past the save (digest f6a40af635b9 -\u003e 0f954215d14d)",
+                        "data":  {
+                                     "digest":  "0f954215d14d"
+                                 },
+                        "at":  "2026-10-26T10:00:24.1044990-07:00"
+                    },
+                    {
+                        "step":  "load",
+                        "status":  "passed",
+                        "detail":  "load confirmed through \u0027Confirm load\u0027; the live digest is back to the saved position f6a40af635b9",
+                        "data":  {
+                                     "digest":  "f6a40af635b9"
+                                 },
+                        "at":  "2026-10-26T10:00:25.7454196-07:00"
+                    },
+                    {
+                        "step":  "autoplay-enabled",
+                        "status":  "passed",
+                        "detail":  "AI autoplay state after the toggle step: On; AI seat: On",
+                        "data":  {
+                                     "table_seats":  4,
+                                     "autoplay":  {
+                                                      "name":  "AI autoplay",
+                                                      "how":  "already-set",
+                                                      "state":  "On"
+                                                  },
+                                     "seat":  {
+                                                  "name":  "Let the AI play my seat too",
+                                                  "how":  "uia-toggle",
+                                                  "state":  "On"
+                                              }
+                                 },
+                        "at":  "2026-10-26T10:00:26.5327339-07:00"
+                    },
+                    {
+                        "step":  "finish",
+                        "status":  "passed",
+                        "detail":  "terminal: \u0027P0 wins — opponents\u0027 life totals reached 0 or less (CR 704.5a)\u0027 after 821 s of 4-seat AI-vs-AI autoplay (53 distinct sampled positions); save records outcome {\"Win\":{\"winner\":0,\"reason\":\"opponents\\u0027 life totals reached 0 or less (CR 704.5a)\"}}, 1534 actions, turn 38, digest 3f574cca93c0",
+                        "data":  {
+                                     "turn":  38,
+                                     "outcome":  {
+                                                     "Win":  {
+                                                                 "winner":  0,
+                                                                 "reason":  "opponents\u0027 life totals reached 0 or less (CR 704.5a)"
+                                                             }
+                                                 },
+                                     "seats":  4,
+                                     "terminal_text":  "P0 wins — opponents\u0027 life totals reached 0 or less (CR 704.5a)",
+                                     "steps":  1534,
+                                     "digest":  "3f574cca93c0722d05077e8a4e367725baf6c756eea66069931cc63fd1904675",
+                                     "seconds":  821
+                                 },
+                        "at":  "2026-10-26T10:14:08.1458352-07:00"
+                    },
+                    {
+                        "step":  "replay",
+                        "status":  "passed",
+                        "detail":  "packaged CLI replay of the finished game: exit 0, stored digest 3f574cca93c0 = recomputed 3f574cca93c0, 4 seat(s), 1534 action(s), 3826 event(s), reproduces the save",
+                        "data":  {
+                                     "exit":  0,
+                                     "matches_recorded":  true,
+                                     "stored_digest":  "3f574cca93c0",
+                                     "seats":  4,
+                                     "output":  "save C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\the-aperture-save.json ΓÇö 4 seat(s): P0 \u0027Temur Beats\u0027 vs P1 \u0027Izzet Control\u0027 vs P2 \u0027Temur Beats P2\u0027 vs P3 \u0027Izzet Control P3\u0027\n  stored digest 3f574cca93c0 | recomputed 3f574cca93c0 | matches\n  turn 38 step combat damage step | pending None | sandbox modified: false\n  ai: human P0; AI seats P1, P2, P3 = deterministic baseline heuristic; autoplay on\n  replay of 1534 action(s) -\u003e digest 3f574cca93c0 | events 3826 | reproduces the save\n",
+                                     "events":  3826,
+                                     "actions":  1534,
+                                     "recomputed_digest":  "3f574cca93c0",
+                                     "file":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\the-aperture-save.json"
+                                 },
+                        "at":  "2026-10-26T10:14:08.2179368-07:00"
+                    },
+                    {
+                        "step":  "finish-driver",
+                        "status":  "passed",
+                        "detail":  "terminal phase was driven by the built-in AI autoplay for both seats (declared, not a human finish)",
+                        "data":  null,
+                        "at":  "2026-10-26T10:14:08.2189387-07:00"
+                    },
+                    {
+                        "step":  "focus-untouched",
+                        "status":  "passed",
+                        "detail":  "foreground before=\u0027THE APERTURE — practice slice\u0027 after=\u0027THE APERTURE — practice slice\u0027",
+                        "data":  null,
+                        "at":  "2026-10-26T10:14:08.2269444-07:00"
+                    }
+                ],
+    "transcript":  [
+                       "[09:57:33.103] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe --seed 4242 --seats 4 --profile ordinary --size 1280x720 --autoplay",
+                       "[09:57:35.706] window hwnd=9509696 pid=13524 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[09:57:36.364] STEP launch: PASSED - packaged window requested 1280x720, actual outer 1618x947, 134 UIA nodes on a 4-seat table",
+                       "[09:57:36.836] invoke \u0027Keep this hand\u0027 via uia-invoke",
+                       "[09:57:36.837] invoked \u0027Keep this hand\u0027 via uia-invoke",
+                       "[09:57:37.113] STEP mulligan: PASSED - kept the hand via Keep this hand (uia-invoke)",
+                       "[09:58:45.360] STEP table: PASSED - reached an offered main-phase action after 33 real priority pass(es); header digest 03e29ff44952",
+                       "[09:58:45.798] invoke \u0027Play Forest   [CR 305.2, 701.18a]\u0027 via uia-invoke",
+                       "[09:58:46.039] STEP priority-land: PASSED - accepted the offered \u0027Play Forest   [CR 305.2, 701.18a]\u0027 (uia-invoke); digest 03e29ff44952 -\u003e a4af239af81d",
+                       "[10:00:18.033] invoke \u0027Play Mountain   [CR 305.2, 701.18a]\u0027 via uia-invoke",
+                       "[10:00:18.780] invoke \u0027Cast Runeclaw Bear   [CR 117.1a, 601.2a]\u0027 via uia-invoke",
+                       "[10:00:19.709] STEP stack-cast: PASSED - cast \u0027Cast Runeclaw Bear   [CR 117.1a, 601.2a]\u0027 (uia-invoke) after 1 extra land drop(s); header stack count 1",
+                       "[10:00:22.844] STEP stack-resolve: PASSED - stack emptied by mutual passes; digest 2aac9619e929 -\u003e f6a40af635b9",
+                       "[10:00:23.530] STEP save: PASSED - wrote 149145 bytes (save v10): 310 recorded action(s), turn 8, phase PrecombatMain; live header digest f6a40af635b9 unchanged by the write",
+                       "[10:00:24.104] STEP mutate: PASSED - passed priority so the live position moved past the save (digest f6a40af635b9 -\u003e 0f954215d14d)",
+                       "[10:00:25.081] invoke \u0027Confirm load\u0027 via uia-invoke",
+                       "[10:00:25.082] invoked \u0027Confirm load\u0027 via uia-invoke",
+                       "[10:00:25.746] STEP load: PASSED - load confirmed through \u0027Confirm load\u0027; the live digest is back to the saved position f6a40af635b9",
+                       "[10:00:26.016] toggle \u0027Let the AI play my seat too\u0027 via uia-toggle",
+                       "[10:00:26.529] checkbox \u0027AI autoplay\u0027 already on",
+                       "[10:00:26.531] autoplay boxes: seat=uia-toggle/On autoplay=already-set/On",
+                       "[10:00:26.532] STEP autoplay-enabled: PASSED - AI autoplay state after the toggle step: On; AI seat: On",
+                       "[10:00:41.975] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 8 · postcombat main phase · active P0 · stack 0 · digest cc03b47462c4",
+                       "[10:00:57.860] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 9 · precombat main phase · active P1 · stack 0 · digest 4385789b4b89",
+                       "[10:01:13.524] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 9 · postcombat main phase · active P1 · stack 0 · digest 9b6760517f12",
+                       "[10:01:28.815] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 10 · declare attackers step · active P2 · stack 0 · digest 912864d629e9",
+                       "[10:01:44.371] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 11 · upkeep step · active P3 · stack 0 · digest bb42cc2c123c",
+                       "[10:01:59.701] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 11 · declare blockers step · active P3 · stack 0 · digest 769f0f89710d",
+                       "[10:02:15.262] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 12 · draw step · active P0 · stack 0 · digest 09ffce7f9a65",
+                       "[10:02:30.500] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 12 · declare blockers step · active P0 · stack 0 · digest 29468837932f",
+                       "[10:02:46.044] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 13 · draw step · active P1 · stack 0 · digest 9965c0197e6a",
+                       "[10:03:01.623] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 13 · declare blockers step · active P1 · stack 0 · digest 5aa482497511",
+                       "[10:03:17.180] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 14 · draw step · active P2 · stack 0 · digest 6597228870b7",
+                       "[10:03:32.671] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 14 · end of combat step · active P2 · stack 0 · digest 95b6fd015364",
+                       "[10:03:47.907] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 15 · precombat main phase · active P3 · stack 1 · digest 369d67defb94",
+                       "[10:04:03.389] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 15 · end of combat step · active P3 · stack 0 · digest 3fee354905d7",
+                       "[10:04:18.706] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 16 · precombat main phase · active P0 · stack 1 · digest 71202a540bde",
+                       "[10:04:34.273] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 16 · end of combat step · active P0 · stack 0 · digest 4cd8b1050e74",
+                       "[10:04:49.495] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 17 · precombat main phase · active P1 · stack 0 · digest 131ee83c2967",
+                       "[10:05:04.692] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 17 · postcombat main phase · active P1 · stack 0 · digest 802c493848aa",
+                       "[10:05:20.007] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 18 · declare attackers step · active P2 · stack 0 · digest 749d845b78de",
+                       "[10:05:35.483] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 18 · end step · active P2 · stack 0 · digest f2eed43fbc51",
+                       "[10:05:50.715] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 19 · declare attackers step · active P3 · stack 0 · digest 5b9c1a0ca127",
+                       "[10:06:06.097] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 19 · postcombat main phase · active P3 · stack 1 · digest 0151f331bb3f",
+                       "[10:06:21.664] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 20 · precombat main phase · active P0 · stack 0 · digest e57b7d607402",
+                       "[10:06:37.078] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 20 · end of combat step · active P0 · stack 0 · digest c7a29254280a",
+                       "[10:06:52.594] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 21 · beginning of combat step · active P1 · stack 0 · digest f5adaf4d3f24",
+                       "[10:07:07.953] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 21 · end step · active P1 · stack 0 · digest 242d95f1f07f",
+                       "[10:07:23.305] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 22 · beginning of combat step · active P2 · stack 0 · digest 3b772e5b6c55",
+                       "[10:07:38.795] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 22 · postcombat main phase · active P2 · stack 0 · digest b813fa6054a8",
+                       "[10:07:54.303] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 23 · declare attackers step · active P3 · stack 0 · digest f3e548e3f449",
+                       "[10:08:09.647] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 23 · postcombat main phase · active P3 · stack 0 · digest fe565f479592",
+                       "[10:08:24.900] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 24 · precombat main phase · active P0 · stack 2 · digest 798c4285f96c",
+                       "[10:08:40.235] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 24 · end of combat step · active P0 · stack 0 · digest 7a037114cd06",
+                       "[10:08:55.565] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 25 · precombat main phase · active P1 · stack 0 · digest 4d7d9ba64fa7",
+                       "[10:09:11.034] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 25 · postcombat main phase · active P1 · stack 0 · digest 12a107d97084",
+                       "[10:09:26.320] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 26 · declare attackers step · active P2 · stack 0 · digest 82e1c91fc689",
+                       "[10:09:41.580] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 26 · end step · active P2 · stack 0 · digest 0570a55b6733",
+                       "[10:09:57.000] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 27 · declare blockers step · active P3 · stack 0 · digest 09f3142eda81",
+                       "[10:10:12.349] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 27 · postcombat main phase · active P3 · stack 2 · digest b95e15c32f61",
+                       "[10:10:27.809] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 28 · draw step · active P0 · stack 0 · digest 6465acbf965e",
+                       "[10:10:43.358] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 28 · declare attackers step · active P0 · stack 0 · digest ef7866ea7674",
+                       "[10:10:58.665] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 29 · precombat main phase · active P2 · stack 0 · digest c39326d58666",
+                       "[10:11:14.003] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 29 · end step · active P2 · stack 0 · digest 7fff9f3ab5b8",
+                       "[10:11:29.317] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 30 · declare blockers step · active P3 · stack 0 · digest cfb8418ff56c",
+                       "[10:11:44.908] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 31 · draw step · active P0 · stack 0 · digest c8c1cf913bfd",
+                       "[10:12:00.425] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 31 · combat damage step · active P0 · stack 0 · digest ed97f9f4fe28",
+                       "[10:12:15.766] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 32 · beginning of combat step · active P2 · stack 0 · digest 3d9302b7ba20",
+                       "[10:12:31.278] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 33 · draw step · active P3 · stack 0 · digest a104e6b11d18",
+                       "[10:12:46.668] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 33 · postcombat main phase · active P3 · stack 0 · digest 2fe4665d27cd",
+                       "[10:13:02.100] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 34 · declare attackers step · active P0 · stack 0 · digest 3cf29424e44d",
+                       "[10:13:17.435] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 35 · declare attackers step · active P3 · stack 0 · digest 493c58e0ee05",
+                       "[10:13:32.853] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 36 · beginning of combat step · active P0 · stack 0 · digest 933875ec03ab",
+                       "[10:13:48.413] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 37 · beginning of combat step · active P3 · stack 0 · digest c62b9a98f446",
+                       "[10:14:03.731] autoplay progress: · 4 seats · profile practice-20 (20 life) · turn 38 · declare attackers step · active P0 · stack 0 · digest 209cc04c7c33",
+                       "[10:14:08.146] STEP finish: PASSED - terminal: \u0027P0 wins — opponents\u0027 life totals reached 0 or less (CR 704.5a)\u0027 after 821 s of 4-seat AI-vs-AI autoplay (53 distinct sampled positions); save records outcome {\"Win\":{\"winner\":0,\"reason\":\"opponents\\u0027 life totals reached 0 or less (CR 704.5a)\"}}, 1534 actions, turn 38, digest 3f574cca93c0",
+                       "[10:14:08.217] STEP replay: PASSED - packaged CLI replay of the finished game: exit 0, stored digest 3f574cca93c0 = recomputed 3f574cca93c0, 4 seat(s), 1534 action(s), 3826 event(s), reproduces the save",
+                       "[10:14:08.218] STEP finish-driver: PASSED - terminal phase was driven by the built-in AI autoplay for both seats (declared, not a human finish)",
+                       "[10:14:08.227] STEP focus-untouched: PASSED - foreground before=\u0027THE APERTURE — practice slice\u0027 after=\u0027THE APERTURE — practice slice\u0027"
+                   ]
+}

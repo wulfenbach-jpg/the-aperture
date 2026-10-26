@@ -1,0 +1,14 @@
+format=1
+name=the-aperture
+version=0.1.0
+commit=60b89b54f2d930292533e12c70c38b1dba7933d2
+commit_short=60b89b5
+commit_date=2026-10-26T09:11:24-07:00
+source_dirty=false
+profile=release
+target=x86_64-pc-windows-msvc
+rustc=rustc 1.97.1 (8bab26f4f 2026-07-14)
+cargo=cargo 1.97.1 (c980f4866 2026-06-30)
+rustflags=
+scope=bounded-28-card-practice
+signed=false

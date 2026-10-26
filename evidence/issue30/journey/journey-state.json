@@ -1,0 +1,255 @@
+{
+    "passes_before_action":  33,
+    "saved":  {
+                  "path":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\the-aperture-save.json",
+                  "digest":  "885c64e49bc6a6124aaa8e9ce362815f04903ad52a5b4958569baa1943fe21ac",
+                  "steps":  310,
+                  "turn":  8,
+                  "active":  0,
+                  "step":  "PrecombatMain",
+                  "outcome":  null,
+                  "log_events":  759,
+                  "version":  10
+              },
+    "autoplay_progress":  [
+                              {
+                                  "at":  "10:00:41",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 8 · postcombat main phase · active P0 · stack 0 · digest cc03b47462c4"
+                              },
+                              {
+                                  "at":  "10:00:57",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 9 · precombat main phase · active P1 · stack 0 · digest 4385789b4b89"
+                              },
+                              {
+                                  "at":  "10:01:13",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 9 · postcombat main phase · active P1 · stack 0 · digest 9b6760517f12"
+                              },
+                              {
+                                  "at":  "10:01:28",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 10 · declare attackers step · active P2 · stack 0 · digest 912864d629e9"
+                              },
+                              {
+                                  "at":  "10:01:44",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 11 · upkeep step · active P3 · stack 0 · digest bb42cc2c123c"
+                              },
+                              {
+                                  "at":  "10:01:59",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 11 · declare blockers step · active P3 · stack 0 · digest 769f0f89710d"
+                              },
+                              {
+                                  "at":  "10:02:15",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 12 · draw step · active P0 · stack 0 · digest 09ffce7f9a65"
+                              },
+                              {
+                                  "at":  "10:02:30",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 12 · declare blockers step · active P0 · stack 0 · digest 29468837932f"
+                              },
+                              {
+                                  "at":  "10:02:46",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 13 · draw step · active P1 · stack 0 · digest 9965c0197e6a"
+                              },
+                              {
+                                  "at":  "10:03:01",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 13 · declare blockers step · active P1 · stack 0 · digest 5aa482497511"
+                              },
+                              {
+                                  "at":  "10:03:17",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 14 · draw step · active P2 · stack 0 · digest 6597228870b7"
+                              },
+                              {
+                                  "at":  "10:03:32",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 14 · end of combat step · active P2 · stack 0 · digest 95b6fd015364"
+                              },
+                              {
+                                  "at":  "10:03:47",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 15 · precombat main phase · active P3 · stack 1 · digest 369d67defb94"
+                              },
+                              {
+                                  "at":  "10:04:03",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 15 · end of combat step · active P3 · stack 0 · digest 3fee354905d7"
+                              },
+                              {
+                                  "at":  "10:04:18",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 16 · precombat main phase · active P0 · stack 1 · digest 71202a540bde"
+                              },
+                              {
+                                  "at":  "10:04:34",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 16 · end of combat step · active P0 · stack 0 · digest 4cd8b1050e74"
+                              },
+                              {
+                                  "at":  "10:04:49",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 17 · precombat main phase · active P1 · stack 0 · digest 131ee83c2967"
+                              },
+                              {
+                                  "at":  "10:05:04",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 17 · postcombat main phase · active P1 · stack 0 · digest 802c493848aa"
+                              },
+                              {
+                                  "at":  "10:05:20",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 18 · declare attackers step · active P2 · stack 0 · digest 749d845b78de"
+                              },
+                              {
+                                  "at":  "10:05:35",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 18 · end step · active P2 · stack 0 · digest f2eed43fbc51"
+                              },
+                              {
+                                  "at":  "10:05:50",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 19 · declare attackers step · active P3 · stack 0 · digest 5b9c1a0ca127"
+                              },
+                              {
+                                  "at":  "10:06:06",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 19 · postcombat main phase · active P3 · stack 1 · digest 0151f331bb3f"
+                              },
+                              {
+                                  "at":  "10:06:21",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 20 · precombat main phase · active P0 · stack 0 · digest e57b7d607402"
+                              },
+                              {
+                                  "at":  "10:06:37",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 20 · end of combat step · active P0 · stack 0 · digest c7a29254280a"
+                              },
+                              {
+                                  "at":  "10:06:52",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 21 · beginning of combat step · active P1 · stack 0 · digest f5adaf4d3f24"
+                              },
+                              {
+                                  "at":  "10:07:07",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 21 · end step · active P1 · stack 0 · digest 242d95f1f07f"
+                              },
+                              {
+                                  "at":  "10:07:23",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 22 · beginning of combat step · active P2 · stack 0 · digest 3b772e5b6c55"
+                              },
+                              {
+                                  "at":  "10:07:38",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 22 · postcombat main phase · active P2 · stack 0 · digest b813fa6054a8"
+                              },
+                              {
+                                  "at":  "10:07:54",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 23 · declare attackers step · active P3 · stack 0 · digest f3e548e3f449"
+                              },
+                              {
+                                  "at":  "10:08:09",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 23 · postcombat main phase · active P3 · stack 0 · digest fe565f479592"
+                              },
+                              {
+                                  "at":  "10:08:24",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 24 · precombat main phase · active P0 · stack 2 · digest 798c4285f96c"
+                              },
+                              {
+                                  "at":  "10:08:40",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 24 · end of combat step · active P0 · stack 0 · digest 7a037114cd06"
+                              },
+                              {
+                                  "at":  "10:08:55",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 25 · precombat main phase · active P1 · stack 0 · digest 4d7d9ba64fa7"
+                              },
+                              {
+                                  "at":  "10:09:11",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 25 · postcombat main phase · active P1 · stack 0 · digest 12a107d97084"
+                              },
+                              {
+                                  "at":  "10:09:26",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 26 · declare attackers step · active P2 · stack 0 · digest 82e1c91fc689"
+                              },
+                              {
+                                  "at":  "10:09:41",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 26 · end step · active P2 · stack 0 · digest 0570a55b6733"
+                              },
+                              {
+                                  "at":  "10:09:57",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 27 · declare blockers step · active P3 · stack 0 · digest 09f3142eda81"
+                              },
+                              {
+                                  "at":  "10:10:12",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 27 · postcombat main phase · active P3 · stack 2 · digest b95e15c32f61"
+                              },
+                              {
+                                  "at":  "10:10:27",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 28 · draw step · active P0 · stack 0 · digest 6465acbf965e"
+                              },
+                              {
+                                  "at":  "10:10:43",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 28 · declare attackers step · active P0 · stack 0 · digest ef7866ea7674"
+                              },
+                              {
+                                  "at":  "10:10:58",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 29 · precombat main phase · active P2 · stack 0 · digest c39326d58666"
+                              },
+                              {
+                                  "at":  "10:11:14",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 29 · end step · active P2 · stack 0 · digest 7fff9f3ab5b8"
+                              },
+                              {
+                                  "at":  "10:11:29",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 30 · declare blockers step · active P3 · stack 0 · digest cfb8418ff56c"
+                              },
+                              {
+                                  "at":  "10:11:44",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 31 · draw step · active P0 · stack 0 · digest c8c1cf913bfd"
+                              },
+                              {
+                                  "at":  "10:12:00",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 31 · combat damage step · active P0 · stack 0 · digest ed97f9f4fe28"
+                              },
+                              {
+                                  "at":  "10:12:15",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 32 · beginning of combat step · active P2 · stack 0 · digest 3d9302b7ba20"
+                              },
+                              {
+                                  "at":  "10:12:31",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 33 · draw step · active P3 · stack 0 · digest a104e6b11d18"
+                              },
+                              {
+                                  "at":  "10:12:46",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 33 · postcombat main phase · active P3 · stack 0 · digest 2fe4665d27cd"
+                              },
+                              {
+                                  "at":  "10:13:02",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 34 · declare attackers step · active P0 · stack 0 · digest 3cf29424e44d"
+                              },
+                              {
+                                  "at":  "10:13:17",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 35 · declare attackers step · active P3 · stack 0 · digest 493c58e0ee05"
+                              },
+                              {
+                                  "at":  "10:13:32",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 36 · beginning of combat step · active P0 · stack 0 · digest 933875ec03ab"
+                              },
+                              {
+                                  "at":  "10:13:48",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 37 · beginning of combat step · active P3 · stack 0 · digest c62b9a98f446"
+                              },
+                              {
+                                  "at":  "10:14:03",
+                                  "header":  "· 4 seats · profile practice-20 (20 life) · turn 38 · declare attackers step · active P0 · stack 0 · digest 209cc04c7c33"
+                              }
+                          ],
+    "digest_at_table":  "03e29ff44952",
+    "stamp":  "format=1\nname=the-aperture\nversion=0.1.0\ncommit=60b89b54f2d930292533e12c70c38b1dba7933d2\ncommit_short=60b89b5\ncommit_date=2026-10-26T09:11:24-07:00\nsource_dirty=false\nprofile=release\ntarget=x86_64-pc-windows-msvc\nrustc=rustc 1.97.1 (8bab26f4f 2026-07-14)\ncargo=cargo 1.97.1 (c980f4866 2026-06-30)\nrustflags=\nscope=bounded-28-card-practice\nsigned=false\n",
+    "keep":  {
+                 "name":  "Keep this hand",
+                 "how":  "uia-invoke"
+             },
+    "seats":  4,
+    "actual":  "1618x947",
+    "header_at_save":  "f6a40af635b9",
+    "final":  {
+                  "path":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\the-aperture-save.json",
+                  "digest":  "3f574cca93c0722d05077e8a4e367725baf6c756eea66069931cc63fd1904675",
+                  "steps":  1534,
+                  "turn":  38,
+                  "active":  0,
+                  "step":  "CombatDamage",
+                  "outcome":  {
+                                  "Win":  {
+                                              "winner":  0,
+                                              "reason":  "opponents\u0027 life totals reached 0 or less (CR 704.5a)"
+                                          }
+                              },
+                  "log_events":  3826,
+                  "version":  10
+              },
+    "requested":  "1280x720",
+    "autoplay_seconds":  821
+}
