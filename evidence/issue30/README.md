@@ -23,6 +23,10 @@ autoplay → finish).
   `06-loaded-tree.json` — the live accessibility trees at the points where the
   journey changed state (the hand card offers, the stack sitting at 1, the loaded
   position).
+* `07-final-tree.json` — the tree at the end of the run, with the game still
+  waiting on the P1 cleanup discard (defect D1).
+* `app-stdout.txt`, `app-stderr.txt` — the packaged app's own streams: both empty,
+  i.e. the run ended in a livelock, not a panic.
 * `the-aperture-save.json` — the file the packaged app wrote, captured as evidence
   of the save size, version, digest and replay length.
 

@@ -122,7 +122,7 @@ and rendered a smoke PNG from the packaged binary before QA began. Harness
 | mutate | PASS | a further real pass moved the position past the save (`ba171b04b429` → `7ceeb335328a`) |
 | load | PASS | `Confirm load` restored the saved position: the live digest came back to **`ba171b04b429`** |
 | autoplay enable | PASS | both `Let the AI play my seat too` and `AI autoplay` ended in state **On** (read back with `TogglePattern`, not assumed) |
-| finish | **FAIL** | no terminal result. Autoplay livelocks — see defect D1. |
+| finish | **FAIL** | no terminal result after 480 s of autoplay. The harness recorded the last engine note verbatim: `WAITING: P1: discard 1 card(s) down to maximum hand size (CR 514.1)` — see defect D1. The app itself did not crash: its captured stderr and stdout were empty for the whole run. |
 
 The load/digest round trip is the strong part of this table: a load that silently
 did nothing would leave the digest at `7ceeb335328a`.

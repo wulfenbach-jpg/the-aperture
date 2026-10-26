@@ -1,0 +1,155 @@
+﻿{
+    "mode":  "journey",
+    "exe":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a\\aperture.exe",
+    "exe_sha256":  "104a79e2f06846caee69ef9ab1830b609c97d15a043761a6c18609dac5d3afad",
+    "journey":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a",
+    "seed":  4242,
+    "window":  "1280x720",
+    "started":  "2026-10-26T04:25:20.9104359-07:00",
+    "results":  [
+                    {
+                        "step":  "launch",
+                        "status":  "passed",
+                        "detail":  "packaged window requested 1280x720, actual outer 1618x947, 111 UIA nodes",
+                        "data":  null,
+                        "at":  "2026-10-26T04:16:07.5430806-07:00"
+                    },
+                    {
+                        "step":  "mulligan",
+                        "status":  "passed",
+                        "detail":  "kept the hand via Keep this hand (uia-invoke)",
+                        "data":  {
+                                     "name":  "Keep this hand",
+                                     "how":  "uia-invoke"
+                                 },
+                        "at":  "2026-10-26T04:16:08.4034139-07:00"
+                    },
+                    {
+                        "step":  "table",
+                        "status":  "passed",
+                        "detail":  "reached an offered main-phase action after 13 real priority pass(es); header digest 320e0bd4f6d5",
+                        "data":  {
+                                     "passes":  13,
+                                     "digest":  "320e0bd4f6d5",
+                                     "offered":  "Play Forest   [CR 305.2, 701.18a]"
+                                 },
+                        "at":  "2026-10-26T04:16:26.0431625-07:00"
+                    },
+                    {
+                        "step":  "priority-land",
+                        "status":  "passed",
+                        "detail":  "accepted the offered \u0027Play Forest   [CR 305.2, 701.18a]\u0027 (uia-invoke); digest 320e0bd4f6d5 -\u003e bc0c83054150",
+                        "data":  {
+                                     "after":  "bc0c83054150",
+                                     "before":  "320e0bd4f6d5",
+                                     "how":  "uia-invoke"
+                                 },
+                        "at":  "2026-10-26T04:16:26.8799825-07:00"
+                    },
+                    {
+                        "step":  "stack-cast",
+                        "status":  "passed",
+                        "detail":  "cast \u0027Cast Runeclaw Bear   [CR 117.1a, 601.2a]\u0027 (uia-invoke) after 1 extra land drop(s); header stack count 1",
+                        "data":  {
+                                     "stack":  1,
+                                     "before":  "3ee3fbfc0ca8",
+                                     "lands":  1,
+                                     "how":  "uia-invoke"
+                                 },
+                        "at":  "2026-10-26T04:16:59.8273309-07:00"
+                    },
+                    {
+                        "step":  "stack-resolve",
+                        "status":  "passed",
+                        "detail":  "stack emptied by mutual passes; digest 3ee3fbfc0ca8 -\u003e ba171b04b429",
+                        "data":  {
+                                     "after":  "ba171b04b429"
+                                 },
+                        "at":  "2026-10-26T04:17:02.0230120-07:00"
+                    },
+                    {
+                        "step":  "save",
+                        "status":  "passed",
+                        "detail":  "wrote 56423 bytes (save v10): 75 recorded action(s), turn 4, phase PrecombatMain; live header digest ba171b04b429 unchanged by the write",
+                        "data":  {
+                                     "path":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a\\the-aperture-save.json",
+                                     "save_file_digest":  "e5154b3bb8c89147a5024a5ff0bc6cb6a1283d60a1fb2ef74851fac80919d2b4",
+                                     "header":  "ba171b04b429",
+                                     "steps":  75,
+                                     "turn":  4
+                                 },
+                        "at":  "2026-10-26T04:17:02.7393141-07:00"
+                    },
+                    {
+                        "step":  "mutate",
+                        "status":  "passed",
+                        "detail":  "passed priority so the live position moved past the save (digest ba171b04b429 -\u003e 7ceeb335328a)",
+                        "data":  {
+                                     "digest":  "7ceeb335328a"
+                                 },
+                        "at":  "2026-10-26T04:17:03.3688060-07:00"
+                    },
+                    {
+                        "step":  "load",
+                        "status":  "passed",
+                        "detail":  "load confirmed through \u0027Confirm load\u0027; the live digest is back to the saved position ba171b04b429",
+                        "data":  {
+                                     "digest":  "ba171b04b429"
+                                 },
+                        "at":  "2026-10-26T04:17:05.3848828-07:00"
+                    },
+                    {
+                        "step":  "autoplay-enabled",
+                        "status":  "passed",
+                        "detail":  "AI autoplay state after the toggle step: On; AI seat: On",
+                        "data":  {
+                                     "seat":  {
+                                                  "name":  "Let the AI play my seat too",
+                                                  "how":  "uia-toggle",
+                                                  "state":  "On"
+                                              },
+                                     "autoplay":  {
+                                                      "name":  "AI autoplay",
+                                                      "how":  "already-set",
+                                                      "state":  "On"
+                                                  }
+                                 },
+                        "at":  "2026-10-26T04:17:06.2974573-07:00"
+                    },
+                    {
+                        "step":  "finish",
+                        "status":  "failed",
+                        "detail":  "the game never reached a terminal result within 480 s of autoplay; last engine note: WAITING: P1: discard 1 card(s) down to maximum hand size (CR 514.1)",
+                        "data":  {
+                                     "header":  "· 2 seats · profile practice-20 (20 life) · turn 13 · cleanup step · active P1 · stack 0 · digest 91a2c0d52cff",
+                                     "stall_note":  "WAITING: P1: discard 1 card(s) down to maximum hand size (CR 514.1)"
+                                 },
+                        "at":  "2026-10-26T04:25:06.9559053-07:00"
+                    }
+                ],
+    "transcript":  [
+                       "[04:16:04.099] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30\\journey-a\\aperture.exe --seed 4242 --seats 2 --profile ordinary --size 1280x720 --autoplay",
+                       "[04:16:06.871] window hwnd=72558 pid=26880 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[04:16:07.545] STEP launch: PASSED - packaged window requested 1280x720, actual outer 1618x947, 111 UIA nodes",
+                       "[04:16:08.086] invoke \u0027Keep this hand\u0027 via uia-invoke",
+                       "[04:16:08.089] invoked \u0027Keep this hand\u0027 via uia-invoke",
+                       "[04:16:08.403] STEP mulligan: PASSED - kept the hand via Keep this hand (uia-invoke)",
+                       "[04:16:26.044] STEP table: PASSED - reached an offered main-phase action after 13 real priority pass(es); header digest 320e0bd4f6d5",
+                       "[04:16:26.607] invoke \u0027Play Forest   [CR 305.2, 701.18a]\u0027 via uia-invoke",
+                       "[04:16:26.879] STEP priority-land: PASSED - accepted the offered \u0027Play Forest   [CR 305.2, 701.18a]\u0027 (uia-invoke); digest 320e0bd4f6d5 -\u003e bc0c83054150",
+                       "[04:16:57.842] invoke \u0027Play Mountain   [CR 305.2, 701.18a]\u0027 via uia-invoke",
+                       "[04:16:58.765] invoke \u0027Cast Runeclaw Bear   [CR 117.1a, 601.2a]\u0027 via uia-invoke",
+                       "[04:16:59.827] STEP stack-cast: PASSED - cast \u0027Cast Runeclaw Bear   [CR 117.1a, 601.2a]\u0027 (uia-invoke) after 1 extra land drop(s); header stack count 1",
+                       "[04:17:02.023] STEP stack-resolve: PASSED - stack emptied by mutual passes; digest 3ee3fbfc0ca8 -\u003e ba171b04b429",
+                       "[04:17:02.739] STEP save: PASSED - wrote 56423 bytes (save v10): 75 recorded action(s), turn 4, phase PrecombatMain; live header digest ba171b04b429 unchanged by the write",
+                       "[04:17:03.369] STEP mutate: PASSED - passed priority so the live position moved past the save (digest ba171b04b429 -\u003e 7ceeb335328a)",
+                       "[04:17:04.577] invoke \u0027Confirm load\u0027 via uia-invoke",
+                       "[04:17:04.578] invoked \u0027Confirm load\u0027 via uia-invoke",
+                       "[04:17:05.385] STEP load: PASSED - load confirmed through \u0027Confirm load\u0027; the live digest is back to the saved position ba171b04b429",
+                       "[04:17:05.730] toggle \u0027Let the AI play my seat too\u0027 via uia-toggle",
+                       "[04:17:06.291] checkbox \u0027AI autoplay\u0027 already on",
+                       "[04:17:06.295] autoplay boxes: seat=uia-toggle/On autoplay=already-set/On",
+                       "[04:17:06.297] STEP autoplay-enabled: PASSED - AI autoplay state after the toggle step: On; AI seat: On",
+                       "[04:25:06.955] STEP finish: FAILED - the game never reached a terminal result within 480 s of autoplay; last engine note: WAITING: P1: discard 1 card(s) down to maximum hand size (CR 514.1)"
+                   ]
+}
