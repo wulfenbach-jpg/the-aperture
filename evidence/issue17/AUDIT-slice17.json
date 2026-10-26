@@ -1,0 +1,19 @@
+{
+  "schema": "aperture.starter-source-audit.v1",
+  "slice": 17,
+  "generated_at": "2026-10-26T22:55:00Z",
+  "changed": [
+    "Friendly Teddy",
+    "Ulvenwald Bear",
+    "Caller of the Claw"
+  ],
+  "source_file": "fixtures/starter-corpus/slice17-sourced.json",
+  "retrieved_at": "2026-10-26T22:48:41Z",
+  "verified_against": "Scryfall API exact printing JSON",
+  "result": "PASS",
+  "errors": [],
+  "notes": [
+    "All three real printings, exact oracle text, commander legal.",
+    "Friendly Teddy artifact creature and Caller flash modelled; no invented metadata."
+  ]
+}

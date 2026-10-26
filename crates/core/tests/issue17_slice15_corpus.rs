@@ -118,9 +118,9 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
             "{name} is supported now, so it cannot be listed as missing"
         );
     }
-    // Updated by slice 16 when Fade from History and Little Bear left the gap;
+    // Updated by slice 17 when the three death-history cards left the gap;
     // the assertion's purpose (the three slice-15 cards stay supported and the
     // recorded gap matches the compiled pool) is unchanged.
-    assert_eq!(missing.len(), 34, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 131, "the compiled pool");
+    assert_eq!(missing.len(), 31, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 134, "the compiled pool");
 }

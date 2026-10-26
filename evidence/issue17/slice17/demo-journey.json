@@ -1,0 +1,44 @@
+{
+  "activations": {},
+  "bear_tokens_created": 4,
+  "casts": {
+    "Caller of the Claw": 8,
+    "Friendly Teddy": 12,
+    "Grizzly Bears": 6,
+    "Runeclaw Bear": 9,
+    "Shock": 12,
+    "Ulvenwald Bear": 8
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice17.txt",
+  "destroyed": {
+    "Bear Token": 2,
+    "Caller of the Claw": 8,
+    "Friendly Teddy": 10,
+    "Grizzly Bears": 5,
+    "Runeclaw Bear": 5,
+    "Shock": 12,
+    "Ulvenwald Bear": 6
+  },
+  "digest": "85fabffc9aa16a0f9ba53a5f64a751c43bb9ae66a3ce96f3e7402f1c633c7027",
+  "driver": "evidence-only masked card-preferring demonstrator; NOT product heuristic/strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "little_bear_untaps_with_counter": 0,
+  "little_bear_untaps_without_counter": 0,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 4952,
+  "seats": 4,
+  "seed": 1616,
+  "snapshot_sha256": "e1f9853f7d5369e3b16906c5dda789a12e955ae7225fc67f1134b32f59d75695",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1866,
+  "turns": 42
+}

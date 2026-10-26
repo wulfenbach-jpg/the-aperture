@@ -385,6 +385,30 @@ const PEST_DIES: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::GainLife(1)],
 })];
 
+const FRIENDLY_TEDDY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature dies, each player draws a card.",
+    event: TriggerEvent::Dies,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::EachPlayerDraws(1)],
+})];
+
+const ULVENWALD_BEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::Creature,
+    effects: &[Effect::PutPlusOneCountersOnTarget(2)],
+})];
+
+const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
+})];
+
 const COMMANDERS_SPHERE: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "Sacrifice this artifact: Draw a card.",
     cost: AbilityCost::SACRIFICE_SELF,
@@ -620,6 +644,9 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::RampagingBaloths => RAMPAGING_BALOTHS,
         CardId::ProfessorOfZoomancy => PROFESSOR,
         CardId::PestToken => PEST_DIES,
+        CardId::FriendlyTeddy => FRIENDLY_TEDDY,
+        CardId::UlvenwaldBear => ULVENWALD_BEAR,
+        CardId::CallerOfTheClaw => CALLER_OF_THE_CLAW,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,
         CardId::Bearscape => BEARSCAPE,

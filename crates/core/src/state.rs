@@ -235,7 +235,22 @@ pub struct ApnapSourceLeft {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DrawResume {
     Step,
-    Effect { source: ObjectId, cursor: u8 },
+    Effect {
+        source: ObjectId,
+        cursor: u8,
+    },
+    /// Serialized progress through "each player draws N": the next seat to
+    /// draw, cards it still owes, completed live seats, and the live-seat count
+    /// fixed when the instruction began. Old variants keep their encoding.
+    EachPlayer {
+        source: ObjectId,
+        cursor: u8,
+        next: PlayerId,
+        cards_left: u8,
+        per_seat: u8,
+        done: u8,
+        live_total: u8,
+    },
 }
 
 /// One exact CR 903.9a owner choice.
@@ -668,6 +683,14 @@ pub struct GameState {
     /// serialized form (and therefore its digest).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub revealed: Vec<ObjectId>,
+    /// Any creature died this turn. Only maintained while a morbid/count card is
+    /// present, so pre-slice-17 replays keep their digest.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub creature_died_this_turn: bool,
+    /// Nontoken creatures owned by each seat that moved battlefield→graveyard
+    /// this turn, indexed by owner. Empty/skipped preserves old digests.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub nontoken_creature_deaths_this_turn: Vec<u32>,
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.
     pub activation_uses: BTreeMap<ObjectId, u8>,
@@ -1569,6 +1592,34 @@ impl GameState {
                             });
                         }
                     }
+                    DrawResume::EachPlayer {
+                        source,
+                        cursor,
+                        next,
+                        cards_left,
+                        per_seat,
+                        done,
+                        live_total,
+                    } => {
+                        let Some(top) = self.stack.last() else {
+                            return Err(EngineError::InvalidState {
+                                reason: "each-player draw has no stack source".to_string(),
+                            });
+                        };
+                        if top.object != *source
+                            || top.cursor != *cursor
+                            || self.resolving != Some(*source)
+                            || *cursor == 0
+                            || *next != *player
+                            || *per_seat == 0
+                            || !(1..=*per_seat).contains(cards_left)
+                            || *done >= *live_total
+                        {
+                            return Err(EngineError::InvalidState {
+                                reason: "each-player draw resume progress is stale".to_string(),
+                            });
+                        }
+                    }
                     DrawResume::Effect { source, cursor } => {
                         let Some(top) = self.stack.last() else {
                             return Err(EngineError::InvalidState {
@@ -1829,8 +1880,11 @@ impl GameState {
                 Zone::Battlefield | Zone::Removed => listed == 0 && held == 0 && stacked == 0,
                 Zone::Stack => listed == 0 && held == 0 && stacked == 1,
                 Zone::Library => listed + held == 1 && stacked == 0,
+                // A triggered ability keeps its source card in the zone it
+                // left while the ability is on the stack (CR 603.6c/d), so a
+                // graveyard/exile/command source may also have one stack entry.
                 Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
-                    listed == 1 && held == 0 && stacked == 0
+                    listed == 1 && held == 0 && stacked <= 1
                 }
             };
             if !ok {
@@ -2081,7 +2135,7 @@ impl GameState {
                     reason: format!("stack references missing object {}", item.object),
                 });
             };
-            if object.zone != Zone::Stack {
+            if object.zone != Zone::Stack && !matches!(item.entry, StackEntry::Triggered { .. }) {
                 return Err(EngineError::InvalidState {
                     reason: format!(
                         "stack object {} is in the {} zone",
@@ -2233,6 +2287,10 @@ impl GameState {
 
 /// Serde helper: skip a zero `u32` so state written before the effect pipeline
 /// keeps its original canonical JSON (and therefore its recorded digest).
+fn is_false(value: &bool) -> bool {
+    !*value
+}
+
 fn is_zero_u32(value: &u32) -> bool {
     *value == 0
 }

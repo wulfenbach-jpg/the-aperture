@@ -1370,9 +1370,9 @@ fn fog_is_a_sourced_catalog_card() {
     // creatures plus Jasmine Boreal, to 85 with the Krenko token package, to 86 with Talrand, to 88 with Tatyova/Jaddi Offshoot, to 93 with the cross-corpus package, to 97 with the slice-4 Ayula/Isamaru package (Ordinary Bear, Ashcoat Bear, Owlbear, Soul Warden), to 103 with the slice-5 mill/counter/ritual package, and to 106 with the slice-6 death-watcher package (Blood Artist, Zulaport Cutthroat, Hedron Crab);
     // Fog's own sourced semantics are unchanged.
     // ... and to 129 with the slice-15 Bear-token package (Ayula's Influence,
-    // Bearscape, Mother Bear), and to 131 with the slice-16 pair (Fade from
-    // History, Little Bear).
-    assert_eq!(aperture_core::catalog::pool_size(), 131);
+    // Bearscape, Mother Bear), to 131 with the slice-16 pair (Fade from
+    // History, Little Bear), and to 134 with the slice-17 death-history trio.
+    assert_eq!(aperture_core::catalog::pool_size(), 134);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

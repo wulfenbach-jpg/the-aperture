@@ -142,3 +142,89 @@ read-only.
 
 The reporter pointer still targets completed m3-tabletop/#20. That discrepancy
 was disclosed; no shared ops/reporting file was touched.
+
+---
+
+# Slice 17 — death-history package
+
+**Status: PARTIAL #17. The eight-list gate remains open.** This slice is an incremental
+Ayula/death-history step, not certification of the first starter.
+
+## What changed
+
+- Three real Scryfall-sourced cards implemented:
+  - Friendly Teddy `{2}` Artifact Creature — Bear Toy 2/2; dies: each player draws.
+  - Ulvenwald Bear `{2}{G}` Creature — Bear 2/2; morbid ETB: if a creature died this turn,
+    two +1/+1 counters on target creature.
+  - Caller of the Claw `{2}{G}` Creature — Elf 2/2 flash; ETB: one 2/2 green Bear per
+    nontoken creature its controller owned that was put into their graveyard from the
+    battlefield this turn.
+- Death history: any-creature flag plus per-owner nontoken counts. Counted on the actual
+  battlefield→graveyard move, not on mill/discard; tokens excluded from Caller's count;
+  ownership, not control, selects the graveyard. **Reset only when `turn.number` advances**;
+  cleanup (including repeated cleanup priority, CR 514) keeps the same-turn history.
+- EachPlayerDraws uses serialized `DrawResume::EachPlayer` progress (next seat, cards left,
+  per-seat count, completed live seats, fixed live total). A commander replacement stops
+  only that one draw; every later live seat still draws. Save validation allows a triggered
+  ability's source card to remain in its zone while the ability is on the stack.
+- Counter placement emits the authoritative existing counter state event (same path as other counter effects) with the resulting total.
+- Intervening-if is checked when Ulvenwald's ETB trigger would be queued.
+- Friendly Teddy's draw is APNAP from the active player and resolves after the source has
+  already left the battlefield.
+- Old save/replay compatibility: the new fields are serde-default/skip-empty and are only
+  maintained while a card that reads them is present. Pre-slice-17 replays therefore do not
+  acquire new state and retain their digests.
+- Catalog/manifest/docs/analyzer counts updated truthfully: 134 catalog cards, 122
+  supported, 337 still missing. Ayula remains planned at 3/34 sourced, 31 missing.
+
+## Evidence
+
+- Sources: `fixtures/starter-corpus/slice17-sourced.json` and
+  `evidence/issue17/slice17/sources-raw.json`, retrieved 2026-10-26T22:48:41Z from Scryfall
+  exact printings. Audit: `evidence/issue17/AUDIT-slice17.json` (PASS).
+- TDD: `evidence/issue17/TDD-slice17.md` (real RED and GREEN; Ulvenwald counter assertion is exact; cleanup reset covered).
+- Repair focused tests: slice17 5, lib cleanup-history 1, command_zone_setup 34 passed.
+- Fresh save: `evidence/issue17/slice17/demo-save.json` round-trips and equals the exact
+  journey state.
+- Formatting: `cargo fmt --all`.
+- Clippy: `cargo clippy --workspace --all-targets -- -D warnings` -> clean.
+- Core suite final run: passed (Windows antivirus intermittently returned os error 5 on
+  freshly linked test executables; each such binary was rerun individually and passed).
+- Workspace suite: `cargo test -q --workspace` completed exit 0 in 628 s (last shards
+  reported 0 failed). The production code was unchanged after this run; only the focused
+  slice-17 test file and docs changed afterwards, and the focused test was rerun.
+- Legacy replay: `replay_digest` 6 passed, `ordering_persistence` 2 passed.
+- Release: `cargo build --release -p aperture-cli` succeeded; `aperture --help` inspected
+  (actual flags include `--seats`, `--profile ordinary|bounded`, `--deck-a/--deck-b`,
+  `--decider`, `--autoplay`).
+- Journey: seed 1616, 4 seats, exactly 40 cards per seat from `decks/package-slice17.txt`,
+  40 life, Jasmine Boreal injected for each seat by the evidence-only demonstrator; terminal
+  win for seat 3, 1866 decisions, 42 turns, digest
+  `85fabffc9aa16a0f9ba53a5f64a751c43bb9ae66a3ce96f3e7402f1c633c7027`, replay digest
+  matched, 4 Bear tokens created. Casts: Caller 8, Friendly Teddy 12, Ulvenwald 8. This is a
+  40-card package, not a desired 100-card starter.
+
+## Honest limitations / blockers
+
+1. **Ayula's desired list is not complete:** 31 of 34 nonland cards are still unsupported.
+   The desired Ayula list cannot be certified yet.
+2. **Eight-list gate open:** only Jasmine has a complete implemented list; other seven
+   remain planned/partial.
+3. Journey evidence proves all three new cards cast and Caller created tokens, but the AI
+   demonstrator is not product strength evidence.
+4. No four-seat 100-card Commander snapshot was run in this slice. The release CLI build
+   succeeded and `aperture --help` was inspected; its flags are UI/bounded-practice flags,
+   not a Commander-deck path.
+5. Reporter pointer still targets old #20; this worker did not touch ops/reporting files.
+
+## Files
+
+`crates/core/src/{card,catalog,ability,state,engine}.rs`, `crates/ai/src/search.rs`,
+`crates/ai/tests/common.rs`, `crates/core/tests/{issue17_slice17,card_printings,catalog_pool,issue13_commander_combat,issue17_slice15_corpus,common/mod}.rs`,
+`crates/ai/tests/common.rs`, `README.md`,
+`fixtures/starter-corpus/slice17-sourced.json`, `decks/package-slice17.txt`,
+`decks/starter-corpus/manifest.json`, `docs/issue17-starter-corpus.md`,
+`evidence/issue17/{AUDIT-slice17,TDD-slice17,IMPLEMENTATION-RESULT-slice17}.json|md`,
+`evidence/issue17/slice17/**`.
+
+No commit or push was made; coordinator owns integration/review.

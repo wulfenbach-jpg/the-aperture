@@ -83,6 +83,8 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             trigger_queue: Vec::new(),
             next_trigger_seq: 0,
             revealed: Vec::new(),
+            creature_died_this_turn: false,
+            nontoken_creature_deaths_this_turn: Vec::new(),
             activation_uses: BTreeMap::new(),
             effects: Vec::new(),
             shields: Vec::new(),

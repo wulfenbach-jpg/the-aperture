@@ -1738,3 +1738,84 @@ fn ordinary_practice_parser_refuses_the_commander_only_card_with_reason() {
     );
     assert!(text.contains("legend"), "{err}");
 }
+
+#[test]
+fn each_player_draw_continues_every_live_seat_after_a_commander_replacement() {
+    let mut game = command_zone_game();
+    put_commander_on_top_of_library(&mut game);
+    open_main(&mut game);
+    let teddy = add_permanent(&mut game, P0, CardId::FriendlyTeddy);
+    add_permanent(&mut game, P0, CardId::Mountain);
+    add_to_hand(&mut game, P0, CardId::Shock);
+    let shock = hand_card_id(&game, P0, CardId::Shock);
+    game.submit_action(
+        P0,
+        aperture_core::Action::CastSpell {
+            card: shock,
+            targets: vec![aperture_core::Target::Permanent(teddy)],
+        },
+    )
+    .expect("cast Shock");
+    game.submit_action(P0, aperture_core::Action::Pass)
+        .expect("pass Shock");
+    game.submit_action(P1, aperture_core::Action::Pass)
+        .expect("resolve Shock");
+    game.submit_action(P0, aperture_core::Action::Pass)
+        .expect("pass death trigger");
+    game.submit_action(P1, aperture_core::Action::Pass)
+        .expect("resolve death trigger into the first draw");
+    assert!(
+        matches!(
+            game.state.pending,
+            Some(aperture_core::Pending::CommanderDraw {
+                resume: aperture_core::state::DrawResume::EachPlayer { next: P0, .. },
+                ..
+            })
+        ),
+        "the first seat's commander must suspend the all-player draw: {:?}",
+        game.state.pending
+    );
+    assert_eq!(game.state.turn.priority, None, "no early priority");
+    let p1_hand = game.state.player(P1).hand.len();
+    let setups = vec![
+        aperture_core::CommanderSetup {
+            seat: P0,
+            card: CardId::IsamaruHoundOfKonda,
+        },
+        aperture_core::CommanderSetup {
+            seat: P1,
+            card: CardId::IsamaruHoundOfKonda,
+        },
+    ];
+    let replay = aperture_core::Replay::new_command_zone(
+        11,
+        game.state.first_player,
+        decks(),
+        setups,
+        aperture_core::AiSettings::default(),
+    )
+    .expect("replay");
+    let save = aperture_core::SessionSave::capture(&game, replay, Vec::new(), true);
+    let loaded = aperture_core::SessionSave::from_json(&save.to_json())
+        .expect("mid all-player draw save validates and reloads");
+    assert!(matches!(
+        loaded.game.pending,
+        Some(aperture_core::Pending::CommanderDraw {
+            resume: aperture_core::state::DrawResume::EachPlayer { .. },
+            ..
+        })
+    ));
+    game.submit_action(
+        P0,
+        aperture_core::Action::AnswerCommanderDraw {
+            to_command_zone: true,
+        },
+    )
+    .expect("answer commander draw");
+    assert!(game.state.pending.is_none(), "no second replacement");
+    assert_eq!(
+        game.state.player(P1).hand.len(),
+        p1_hand + 1,
+        "the later live seat draws exactly once"
+    );
+}

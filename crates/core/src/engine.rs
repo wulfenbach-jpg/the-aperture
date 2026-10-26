@@ -285,6 +285,8 @@ impl Game {
             trigger_queue: Vec::new(),
             next_trigger_seq: 0,
             revealed: Vec::new(),
+            creature_died_this_turn: false,
+            nontoken_creature_deaths_this_turn: Vec::new(),
             activation_uses: BTreeMap::new(),
             effects: Vec::new(),
             shields: Vec::new(),
@@ -1107,6 +1109,19 @@ impl Game {
                     }
                 }
             }
+            DrawResume::EachPlayer {
+                source,
+                cursor,
+                next,
+                cards_left,
+                per_seat,
+                done,
+                live_total,
+            } => {
+                self.each_player_draw(
+                    source, cursor, next, cards_left, per_seat, done, live_total, true, events,
+                );
+            }
         }
     }
 
@@ -1220,6 +1235,13 @@ impl Game {
     /// caller batches several simultaneous deaths and dispatches the watchers
     /// once for the whole batch (CR 704.3, 603.6c): a watcher that dies in the
     /// same batch must still see its fellow dying creatures.
+    fn tracks_death_history(&self) -> bool {
+        self.state
+            .objects
+            .values()
+            .any(|object| matches!(object.card, CardId::UlvenwaldBear | CardId::CallerOfTheClaw))
+    }
+
     fn move_to_graveyard_inner(
         &mut self,
         id: ObjectId,
@@ -1234,6 +1256,7 @@ impl Game {
             .is_some_and(|object| object.card.is_token());
         let mut object = self.detach_object(id)?;
         let card = object.card;
+        let owner = object.owner;
         object.tapped = false;
         object.damage = 0;
         object.summoning_sick = false;
@@ -1255,6 +1278,16 @@ impl Game {
         // battlefield "dies". The trigger keeps the card and its controller as
         // last known information; `source` is the graveyard object.
         if let Some((card, controller)) = dying {
+            if card.def().is_creature() && self.tracks_death_history() {
+                self.state.creature_died_this_turn = true;
+                if !card.is_token() {
+                    let seats = self.state.seat_count();
+                    self.state
+                        .nontoken_creature_deaths_this_turn
+                        .resize(seats, 0);
+                    self.state.nontoken_creature_deaths_this_turn[owner as usize] += 1;
+                }
+            }
             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
             // The dying permanent's own "this creature ... dies" trigger is
             // order-independent, so it is queued here rather than in the batch.
@@ -1289,6 +1322,62 @@ impl Game {
         self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
         if is_creature {
             self.queue_another_creature_enters(new_id);
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn each_player_draw(
+        &mut self,
+        source: ObjectId,
+        cursor: u8,
+        mut next: PlayerId,
+        mut cards_left: u8,
+        per_seat: u8,
+        mut done: u8,
+        live_total: u8,
+        mut completed_draw: bool,
+        events: &mut Vec<Event>,
+    ) -> bool {
+        loop {
+            if completed_draw {
+                cards_left -= 1;
+                completed_draw = false;
+                if cards_left == 0 {
+                    done += 1;
+                    if done >= live_total {
+                        return false;
+                    }
+                    let Some(following) = self.state.next_live_seat_after(next) else {
+                        return false;
+                    };
+                    next = following;
+                    cards_left = per_seat;
+                }
+            }
+            if !self.state.is_live(next) {
+                let Some(following) = self.state.next_live_seat_after(next) else {
+                    return false;
+                };
+                next = following;
+                continue;
+            }
+            if self.draw_with_resume(
+                next,
+                DrawResume::EachPlayer {
+                    source,
+                    cursor,
+                    next,
+                    cards_left,
+                    per_seat,
+                    done,
+                    live_total,
+                },
+                0,
+                events,
+            ) {
+                return true;
+            }
+            completed_draw = true;
         }
     }
 
@@ -2989,6 +3078,12 @@ impl Game {
         controller: PlayerId,
         event: TriggerEvent,
     ) {
+        if event == TriggerEvent::EntersBattlefield
+            && card == CardId::UlvenwaldBear
+            && !self.state.creature_died_this_turn
+        {
+            return;
+        }
         for (index, _) in ability::triggers_on(card, event) {
             let seq = self.state.next_trigger_seq;
             self.state.next_trigger_seq += 1;
@@ -3736,6 +3831,11 @@ impl Game {
             };
         if new_turn {
             self.state.turn.number += 1;
+            // CR 514/500.5: history belongs to the turn. Cleanup is still that
+            // same turn even when it repeats after SBAs or priority, so reset
+            // only when the turn number actually advances.
+            self.state.creature_died_this_turn = false;
+            self.state.nontoken_creature_deaths_this_turn.clear();
             // CR 800.4k: a departed player's turn does not begin; select the
             // next actual live seat. Seats are never renumbered.
             match self.state.next_live_seat_after(self.state.turn.active) {
@@ -5422,6 +5522,52 @@ impl Game {
                 self.add_red_mana(controller, amount, events);
                 false
             }
+            Effect::EachPlayerDraws(n) => {
+                let live_total = (0..self.state.seat_count())
+                    .filter(|p| self.state.is_live(*p as PlayerId))
+                    .count() as u8;
+                self.each_player_draw(
+                    item.object,
+                    item.cursor + 1,
+                    self.state.turn.active,
+                    n,
+                    n,
+                    0,
+                    live_total,
+                    false,
+                    events,
+                )
+            }
+            Effect::PutPlusOneCountersOnTarget(n) => {
+                for target in item.targets.clone() {
+                    if let Target::Permanent(id) = target
+                        && let Some(object) = self.state.objects.get_mut(&id)
+                        && object.zone == Zone::Battlefield
+                    {
+                        let name = object.card.name();
+                        let total = object
+                            .counters
+                            .add(crate::counters::CounterKind::PlusOnePlusOne, n);
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "{name} has {total} +1/+1 counter(s) after Ulvenwald Bear"
+                            ),
+                        });
+                    }
+                }
+                self.recompute_layers();
+                false
+            }
+            Effect::CreateBearTokensForEachDeathThisTurn => {
+                let count = self
+                    .state
+                    .nontoken_creature_deaths_this_turn
+                    .get(controller as usize)
+                    .copied()
+                    .unwrap_or(0) as usize;
+                self.create_tokens(controller, CardId::BearToken, count, events);
+                false
+            }
             Effect::CounterTargetSpell => {
                 let victim = item.targets.iter().find_map(|t| match t {
                     Target::Spell(id) => Some(*id),
@@ -6811,3 +6957,27 @@ impl Game {
 pub const MAX_SANDBOX_COUNTERS: u32 = 99;
 /// Upper bound for a sandbox life edit.
 pub const MAX_SANDBOX_LIFE: i32 = 999;
+
+#[cfg(test)]
+mod slice17_cleanup_history_tests {
+    use super::*;
+
+    #[test]
+    fn repeated_cleanup_keeps_earlier_deaths_until_the_turn_number_advances() {
+        let decks = vec![
+            DeckList::parse_practice("A", "40 Forest\n").expect("deck A"),
+            DeckList::parse_practice("B", "40 Forest\n").expect("deck B"),
+        ];
+        let mut game = Game::new(19_017, &decks).expect("game");
+        game.state.creature_died_this_turn = true;
+        game.state.nontoken_creature_deaths_this_turn = vec![1, 0];
+        game.state.turn.step = Step::Cleanup;
+        game.state.turn.priority = Some(P0);
+        let mut events = Vec::new();
+        game.finish_cleanup(&mut events);
+        game.finish_cleanup(&mut events);
+        assert!(game.state.creature_died_this_turn);
+        assert_eq!(game.state.nontoken_creature_deaths_this_turn, vec![1, 0]);
+        assert_eq!(game.state.turn.number, 1, "cleanup is still the same turn");
+    }
+}

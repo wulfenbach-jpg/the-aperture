@@ -195,6 +195,13 @@ pub enum Effect {
     /// put a +1/+1 counter on it" (Little Bear). The counter is conditional on
     /// the target's own printed subtype, never on the source's.
     UntapTargetAndCounterIfBear,
+    /// Each live player draws N cards in APNAP order from the active player.
+    EachPlayerDraws(u8),
+    /// Put N +1/+1 counters on the target creature.
+    PutPlusOneCountersOnTarget(u32),
+    /// Create one 2/2 green Bear token per nontoken creature its controller
+    /// owned that was put into their graveyard from the battlefield this turn.
+    CreateBearTokensForEachDeathThisTurn,
 }
 
 impl Effect {
@@ -267,6 +274,13 @@ impl Effect {
             }
             Effect::DestroyAllArtifactsAndEnchantments => {
                 "destroy all artifacts and enchantments".to_string()
+            }
+            Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
+            Effect::PutPlusOneCountersOnTarget(n) => {
+                format!("put {n} +1/+1 counter(s) on the target creature")
+            }
+            Effect::CreateBearTokensForEachDeathThisTurn => {
+                "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
             }
             Effect::UntapTargetAndCounterIfBear => {
                 "untap the target creature; if it is a Bear, put a +1/+1 counter on it".to_string()
@@ -481,6 +495,9 @@ pub enum CardId {
     FellwarStone,
     Werebear,
     CommandersSphere,
+    FriendlyTeddy,
+    UlvenwaldBear,
+    CallerOfTheClaw,
     AyulasInfluence,
     Bearscape,
     MotherBear,
@@ -653,6 +670,7 @@ impl CardId {
                 | CardId::DrakeToken
                 | CardId::BeastToken
                 | CardId::PestToken
+                | CardId::BearToken
         )
     }
 }

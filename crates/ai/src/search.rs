@@ -694,6 +694,8 @@ fn reconstruct(
         first_player: real_state.first_player,
         rng,
         objects,
+        creature_died_this_turn: real_state.creature_died_this_turn,
+        nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
         commanders: real_state.commanders.clone(),
         profile: real_state.profile,
         commander_damage: real_state.commander_damage.clone(),

@@ -66,6 +66,7 @@ const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
 const INSTANT: &[Kind] = &[Kind::Instant];
 const SORCERY: &[Kind] = &[Kind::Sorcery];
+const ARTIFACT_CREATURE: &[Kind] = &[Kind::Artifact, Kind::Creature];
 const ENCHANTMENT: &[Kind] = &[Kind::Enchantment];
 
 macro_rules! card {
@@ -238,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 131] = [
+pub static CARDS: [CardDef; 134] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -465,6 +466,23 @@ pub static CARDS: [CardDef; 131] = [
         FellwarStone, "Fellwar Stone", cost: Some("{2}"), type_line: "Artifact",
         oracle: "{T}: Add one mana of any color that a land an opponent controls could produce.",
         mana: None, spell: None
+    ),
+    card!(
+        FriendlyTeddy, "Friendly Teddy", cost: Some("{2}"), kinds: ARTIFACT_CREATURE, basic: None,
+        type_line: "Artifact Creature — Bear Toy", power: Some(2), toughness: Some(2),
+        oracle: "When this creature dies, each player draws a card.", spell: None
+    ),
+    card!(
+        UlvenwaldBear, "Ulvenwald Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
+        spell: None
+    ),
+    card_flash!(
+        CallerOfTheClaw, "Caller of the Claw", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf", power: Some(2), toughness: Some(2),
+        oracle: "Flash\nWhen this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
+        spell: None
     ),
     card_artifact!(
         CommandersSphere, "Commander's Sphere", cost: Some("{3}"), type_line: "Artifact",
