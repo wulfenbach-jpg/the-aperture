@@ -1139,7 +1139,8 @@ impl Game {
     }
 
     fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
-        if let Some(death) = self.move_to_graveyard_inner(id, events) {
+        if let Some((dying, new_id, card, controller)) = self.move_to_graveyard_inner(id, events) {
+            let death = (dying, new_id, card, controller);
             self.queue_watchers_for_deaths(&death_watchers(self), &[death]);
         }
     }
@@ -1153,7 +1154,7 @@ impl Game {
         &mut self,
         id: ObjectId,
         events: &mut Vec<Event>,
-    ) -> Option<(ObjectId, CardId, PlayerId)> {
+    ) -> Option<(ObjectId, ObjectId, CardId, PlayerId)> {
         let dying = self.state.try_object(id).and_then(|object| {
             (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
         });
@@ -1177,7 +1178,7 @@ impl Game {
             // The dying permanent's own "this creature ... dies" trigger is
             // order-independent, so it is queued here rather than in the batch.
             self.queue_self_death(new_id, card, controller);
-            return Some((new_id, card, controller));
+            return Some((id, new_id, card, controller));
         }
         None
     }
@@ -1350,18 +1351,25 @@ impl Game {
     fn queue_watchers_for_deaths(
         &mut self,
         watchers: &[(ObjectId, CardId, PlayerId)],
-        deaths: &[(ObjectId, CardId, PlayerId)],
+        deaths: &[(ObjectId, ObjectId, CardId, PlayerId)],
     ) {
-        let deaths: Vec<(CardId, PlayerId)> = deaths
+        let deaths: Vec<(ObjectId, CardId, PlayerId)> = deaths
             .iter()
-            .filter(|(_, card, _)| card.def().is_creature())
-            .map(|(_, card, controller)| (*card, *controller))
+            .filter(|(_, _, card, _)| card.def().is_creature())
+            .map(|(dying, _, card, controller)| (*dying, *card, *controller))
             .collect();
         if deaths.is_empty() {
             return;
         }
         for (source, source_card, source_controller) in watchers.iter().copied() {
-            for (_, death_controller) in deaths.iter().copied() {
+            for (dying, _death_card, death_controller) in deaths.iter().copied() {
+                // The dying permanent's own "this creature ... dies" triggers
+                // were already queued by `queue_self_death` at the zone change.
+                // Dispatching it again through the watcher batch would double
+                // every self-death trigger.
+                if dying == source {
+                    continue;
+                }
                 self.queue_triggers(
                     source,
                     source_card,
@@ -3742,10 +3750,12 @@ impl Game {
                 // once for every death, so the result does not depend on which
                 // dying creature happens to be moved first.
                 let watchers = death_watchers(self);
-                let mut deaths: Vec<(ObjectId, CardId, PlayerId)> = Vec::new();
+                let mut deaths: Vec<(ObjectId, ObjectId, CardId, PlayerId)> = Vec::new();
                 for id in &dying {
-                    if let Some(death) = self.move_to_graveyard_inner(*id, events) {
-                        deaths.push(death);
+                    if let Some((dying_id, new_id, card, controller)) =
+                        self.move_to_graveyard_inner(*id, events)
+                    {
+                        deaths.push((dying_id, new_id, card, controller));
                     }
                 }
                 self.queue_watchers_for_deaths(&watchers, &deaths);

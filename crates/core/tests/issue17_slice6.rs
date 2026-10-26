@@ -552,3 +552,76 @@ fn simultaneous_deaths_each_trigger_the_watchers_regardless_of_id_order() {
         cards.clear();
     }
 }
+
+fn drained(game: &Game) -> bool {
+    game.state.pending.is_none()
+        && game.state.resolving.is_none()
+        && game.state.stack.is_empty()
+        && game.state.trigger_queue.is_empty()
+}
+
+#[test]
+fn dying_watcher_self_trigger_fires_exactly_once_both_death_orders() {
+    for cards in [
+        [CardId::ZulaportCutthroat, CardId::TrainedJackal],
+        [CardId::TrainedJackal, CardId::ZulaportCutthroat],
+    ] {
+        let mut game = fixture_n(224, 4)
+            .battlefield(P0, &cards)
+            .main(P0, Step::PrecombatMain)
+            .build();
+        for object in game.state.objects.values_mut() {
+            object.damage = 5;
+        }
+        submit_ok(&mut game, P0, Action::Pass);
+        let mut log = Vec::new();
+        assert!(run_until(&mut game, &mut log, drained, 100));
+        let lives: Vec<i32> = game.state.players.iter().map(|p| p.life).collect();
+        assert_eq!(
+            lives,
+            vec![22, 18, 18, 18],
+            "two deaths must produce exactly two drains for order {cards:?}"
+        );
+    }
+}
+
+#[test]
+fn single_dying_watcher_self_trigger_fires_exactly_once() {
+    let mut game = fixture_n(226, 4)
+        .battlefield(P0, &[CardId::ZulaportCutthroat])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    for object in game.state.objects.values_mut() {
+        object.damage = 5;
+    }
+    submit_ok(&mut game, P0, Action::Pass);
+    let mut log = Vec::new();
+    assert!(run_until(&mut game, &mut log, drained, 100));
+    let lives: Vec<i32> = game.state.players.iter().map(|p| p.life).collect();
+    assert_eq!(lives, vec![21, 19, 19, 19], "one death, one drain");
+}
+
+#[test]
+fn surviving_watcher_still_counts_both_deaths_once() {
+    let mut game = fixture_n(225, 4)
+        .battlefield(
+            P0,
+            &[
+                CardId::ZulaportCutthroat,
+                CardId::TrainedJackal,
+                CardId::GrizzlyBears,
+            ],
+        )
+        .main(P0, Step::PrecombatMain)
+        .build();
+    for object in game.state.objects.values_mut() {
+        if object.card != CardId::ZulaportCutthroat {
+            object.damage = 5;
+        }
+    }
+    submit_ok(&mut game, P0, Action::Pass);
+    let mut log = Vec::new();
+    assert!(run_until(&mut game, &mut log, drained, 100));
+    let lives: Vec<i32> = game.state.players.iter().map(|p| p.life).collect();
+    assert_eq!(lives, vec![22, 18, 18, 18]);
+}
