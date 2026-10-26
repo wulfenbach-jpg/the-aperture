@@ -1,0 +1,48 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-22\crates\ui)
+error[E0382]: use of moved value: `startup`
+   --> crates\ui\src\app.rs:396:17
+    |
+312 |     pub fn new(cc: &eframe::CreationContext<'_>, startup: Startup) -> Self {
+    |                                                  ------- move occurs because `startup` has type `Startup`, which does not implement the `Copy` trait
+...
+380 |             startup,
+    |             ------- value moved here
+...
+396 |                 startup.initial_reduced_motion,
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ value used here after move
+    |
+note: if `Startup` implemented `Clone`, you could clone the value
+   --> crates\ui\src\app.rs:27:1
+    |
+ 27 | pub struct Startup {
+    | ^^^^^^^^^^^^^^^^^^ consider implementing `Clone` for this type
+...
+380 |             startup,
+    |             ------- you could clone this value
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `aperture-ui` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error[E0382]: use of moved value: `startup`
+   --> crates\ui\src\app.rs:396:17
+    |
+312 |     pub fn new(cc: &eframe::CreationContext<'_>, startup: Startup) -> Self {
+    |                                                  ------- move occurs because `startup` has type `app::Startup`, which does not implement the `Copy` trait
+...
+380 |             startup,
+    |             ------- value moved here
+...
+396 |                 startup.initial_reduced_motion,
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ value used here after move
+    |
+note: if `app::Startup` implemented `Clone`, you could clone the value
+   --> crates\ui\src\app.rs:27:1
+    |
+ 27 | pub struct Startup {
+    | ^^^^^^^^^^^^^^^^^^ consider implementing `Clone` for this type
+...
+380 |             startup,
+    |             ------- you could clone this value
+
+error: could not compile `aperture-ui` (lib test) due to 1 previous error
+TEST=101

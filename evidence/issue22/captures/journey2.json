@@ -1,0 +1,35 @@
+﻿{
+    "hc_before":  [
+                      "High contrast: ON — white text on near-black surfaces, bright borders and accent text"
+                  ],
+    "rm_before":  [
+                      "Reduced motion: OFF — normal spinner animation"
+                  ],
+    "rm_after":  [
+                     "Reduced motion: ON — spinners are replaced by static \u0027Working...\u0027 text and animation time is 0"
+                 ],
+    "hc_after":  [
+                     "High contrast: OFF — original charcoal/brass palette"
+                 ],
+    "zoom_control":  [
+                         "text 100%",
+                         "100%"
+                     ],
+    "fixed_actions":  [
+
+                      ],
+    "status_words":  [
+                         "WAITING: P2: keep or mulligan the opening hand (CR 103.5)",
+                         "WAITING ON P2",
+                         "Reduced motion: ON — spinners are replaced by static \u0027Working...\u0027 text and animation time is 0"
+                     ],
+    "seat_panels":  [
+                        "P0 40 / P1 40 / P2 40 / P3 40",
+                        "P2 has a pending decision; details are private to that seat. No player has priority.",
+                        "P0 · YOU",
+                        "P0 · Command zone practice · life 40 · hand 7 · library 33",
+                        "P1 · heuristic AI",
+                        "P1 · Command zone practice · life 40 · hand 7 · library 33"
+                    ],
+    "window_rect":  "1618x947"
+}

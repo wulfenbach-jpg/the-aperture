@@ -87,7 +87,14 @@ implementation and it says so everywhere it matters.
   records),
   viewer-masked log, pending-choice controls, one searchable zone inspector,
   an explicitly labelled sandbox with manual table controls, per-seat deck
-  import, save/load, undo, text zoom and keyboard navigation. Every model, network and
+  import, save/load, undo, text zoom (70%–200%, 100% reset, Ctrl+0) and keyboard
+  navigation. An `Accessibility (A)` panel offers an explicit high-contrast
+  palette and a reduced-motion mode (static busy text, zero animation time),
+  with native Tab/Enter focus and a 2 px focus outline. `--performance-report
+  PATH` opts into a bounded ~10 s frame report written off the render callback;
+  it reports callback duration and inter-callback interval p95 and does not
+  claim GPU or end-to-end input latency. See
+  [docs/issue22-ergonomics.md](docs/issue22-ergonomics.md). Every model, network and
   file operation runs on a background worker with a visible busy state; the
   frame callback never blocks, and a worker result is applied only while its
   session generation, engine revision, decision serial and seat all still match.

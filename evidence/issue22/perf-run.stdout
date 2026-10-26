@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "C:\AI\aperture-worktrees\issue-22\evidence\issue22\perf-run.py", line 111, in <module>
+    results["B_decider_control_present"] = wait_control(hwnd, "Use local Decider-2B")
+                                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\AI\aperture-worktrees\issue-22\evidence\issue22\perf-run.py", line 89, in wait_control
+    if uia(hwnd, probe):
+       ~~~^^^^^^^^^^^^^
+  File "C:\AI\aperture-worktrees\issue-22\evidence\issue22\perf-run.py", line 54, in uia
+    return json.loads(out.read_text(encoding="utf-8-sig"))
+                      ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alex3\AppData\Local\hermes\tools\python-3.14.9+20261021-win32-x64\Lib\pathlib\__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\alex3\AppData\Local\hermes\tools\python-3.14.9+20261021-win32-x64\Lib\pathlib\__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\AI\\aperture-worktrees\\issue-22\\evidence\\issue22\\captures\\uia-last.json'

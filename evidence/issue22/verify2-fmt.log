@@ -1,0 +1,25 @@
+Diff in \\?\C:\AI\aperture-worktrees\issue-22\crates\ui\src\app.rs:2755:
+         app.observed_theme = (true, true);
+         app.session.ai_busy = true;
+         let labels = run_frame(&mut app, 1280.0, 720.0, 6);
+[31m-        assert!(labels.iter().any(|label| label == "Working..."),
+[0m[31m-            "reduced motion must show static Working... while a worker runs: {labels:?}");
+[0m[32m+        assert!(
+[0m[32m+            labels.iter().any(|label| label == "Working..."),
+[0m[32m+            "reduced motion must show static Working... while a worker runs: {labels:?}"
+[0m[32m+        );
+[0m         assert!(app.high_contrast && app.reduced_motion);
+     }
+ 
+Diff in \\?\C:\AI\aperture-worktrees\issue-22\crates\ui\src\main.rs:115:
+                 for mode in value.split(',').map(str::trim).filter(|m| !m.is_empty()) {
+                     match mode {
+                         "high-contrast" | "high_contrast" => options.initial_high_contrast = true,
+[31m-                        "reduced-motion" | "reduced_motion" => options.initial_reduced_motion = true,
+[0m[32m+                        "reduced-motion" | "reduced_motion" => {
+[0m[32m+                            options.initial_reduced_motion = true
+[0m[32m+                        }
+[0m                         "none" => {
+                             options.initial_high_contrast = false;
+                             options.initial_reduced_motion = false;
+FMT=1

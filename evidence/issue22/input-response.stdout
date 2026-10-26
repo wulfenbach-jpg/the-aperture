@@ -1,0 +1,7 @@
+A state readback timeout at sample 0
+At C:\AI\aperture-worktrees\issue-22\evidence\issue22\native-input.ps1:64 char:33
++ ... present -ne $expected){throw "A state readback timeout at sample $i"}
++                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (A state readback timeout at sample 0:String) [], RuntimeException
+    + FullyQualifiedErrorId : A state readback timeout at sample 0
+ 
