@@ -25,6 +25,9 @@ fn rules_text_is_modelled_keywords(card: &CardDef) -> bool {
     if card.has_defender() {
         modelled.push("Defender");
     }
+    if card.has_islandwalk() {
+        modelled.push("Islandwalk");
+    }
     if modelled.is_empty() {
         return false;
     }

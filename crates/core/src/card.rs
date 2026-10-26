@@ -252,6 +252,9 @@ pub struct CardDef {
     /// CR 702.19b: excess combat damage may be assigned to the defending
     /// player once every blocker has been assigned lethal damage.
     pub trample: bool,
+    /// CR 702.14a: printed islandwalk. A blocking restriction, executed by
+    /// `tokens::can_block` through the keyword table; nothing grants it.
+    pub islandwalk: bool,
     pub power: Option<i32>,
     pub toughness: Option<i32>,
     pub oracle: &'static str,
@@ -281,6 +284,12 @@ impl CardDef {
 
     pub fn has_trample(&self) -> bool {
         self.trample
+    }
+
+    /// CR 702.14a: "This creature can't be blocked as long as defending
+    /// player controls an Island."
+    pub fn has_islandwalk(&self) -> bool {
+        self.islandwalk
     }
 
     /// CR 117.1a: an instant, or a card that prints Flash, may be cast while

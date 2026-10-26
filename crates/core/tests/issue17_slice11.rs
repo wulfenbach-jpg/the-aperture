@@ -44,7 +44,8 @@ fn pale_bears_and_river_bear_match_their_printed_text() {
     assert!(river.is_creature());
     assert!(river.oracle.contains("Islandwalk"), "{}", river.oracle);
 
-    // The keyword lives in the one table the blocking path reads.
+    // The keyword lives in the one table the blocking path reads, and the
+    // `CardDef` flag the pool guard requires agrees with it.
     assert_eq!(
         aperture_core::tokens::keywords(CardId::PaleBears),
         &[Keyword::Islandwalk]
@@ -54,6 +55,8 @@ fn pale_bears_and_river_bear_match_their_printed_text() {
         &[Keyword::Islandwalk]
     );
     assert_eq!(Keyword::Islandwalk.name(), "islandwalk");
+    assert!(pale.has_islandwalk(), "the pool guard reads this flag");
+    assert!(river.has_islandwalk());
 
     // Islandwalk is a land subtype question: only an Island land counts, and
     // neither bear is one.
@@ -63,6 +66,28 @@ fn pale_bears_and_river_bear_match_their_printed_text() {
         !printed("Forest").is_island(),
         "a Forest is not an Island (CR 305.6)"
     );
+}
+
+/// One fact, one source: a card prints Islandwalk exactly when it carries the
+/// flag, exactly when the blocker check's table says so. Any of the three
+/// drifting from the other two is a card the engine would mis-play.
+#[test]
+fn the_islandwalk_flag_and_the_blocking_table_agree_with_the_printed_text() {
+    for card in catalog::all() {
+        let printed_keyword = card.oracle.contains("Islandwalk");
+        assert_eq!(
+            card.has_islandwalk(),
+            printed_keyword,
+            "{} prints Islandwalk but the CardDef flag disagrees",
+            card.name
+        );
+        assert_eq!(
+            aperture_core::tokens::keywords(card.id).contains(&Keyword::Islandwalk),
+            printed_keyword,
+            "{} prints Islandwalk but the blocking table disagrees",
+            card.name
+        );
+    }
 }
 
 /// The real defect this slice had to avoid: islandwalk must read the defending

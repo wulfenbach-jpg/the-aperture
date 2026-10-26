@@ -85,6 +85,7 @@ macro_rules! card {
             defender: false,
             flash: false,
             trample: false,
+            islandwalk: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -111,6 +112,7 @@ macro_rules! card_defender {
             defender: true,
             flash: false,
             trample: false,
+            islandwalk: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -138,6 +140,7 @@ macro_rules! card_flash {
             defender: false,
             flash: true,
             trample: false,
+            islandwalk: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -146,7 +149,34 @@ macro_rules! card_flash {
     };
 }
 
-/// A creature that prints Trample (CR 702.19) alongside its other text.
+/// A creature whose only printed rules text is Islandwalk (CR 702.14a).
+macro_rules! card_islandwalk {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: true,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
 macro_rules! card_trample {
     (
         $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
@@ -165,6 +195,7 @@ macro_rules! card_trample {
             defender: false,
             flash: false,
             trample: true,
+            islandwalk: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -817,13 +848,13 @@ pub static CARDS: [CardDef; 116] = [
         oracle: "Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)",
         spell: None
     ),
-    card!(
+    card_islandwalk!(
         PaleBears, "Pale Bears", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
         oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
         spell: None
     ),
-    card!(
+    card_islandwalk!(
         RiverBear, "River Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear", power: Some(3), toughness: Some(3),
         oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
@@ -850,6 +881,7 @@ pub static TOKENS: [CardDef; 2] = [
         defender: false,
         flash: false,
         trample: false,
+        islandwalk: false,
         power: Some(1),
         toughness: Some(1),
         oracle: "",
@@ -867,6 +899,7 @@ pub static TOKENS: [CardDef; 2] = [
         defender: false,
         flash: false,
         trample: false,
+        islandwalk: false,
         power: Some(2),
         toughness: Some(2),
         oracle: "Flying",

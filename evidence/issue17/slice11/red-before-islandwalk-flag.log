@@ -1,0 +1,26 @@
+
+running 5 tests
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test every_printed_ability_maps_to_implemented_semantics ... FAILED
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+failures:
+
+---- every_printed_ability_maps_to_implemented_semantics stdout ----
+
+thread 'every_printed_ability_maps_to_implemented_semantics' (9036) panicked at crates\core\tests\catalog_pool.rs:112:21:
+Pale Bears prints text but has no implementation
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    every_printed_ability_maps_to_implemented_semantics
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.58s
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+error: test failed, to rerun pass `-p aperture-core --test catalog_pool`
