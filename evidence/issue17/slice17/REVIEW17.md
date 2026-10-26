@@ -1,5 +1,7 @@
 # Slice 17 independent delta review
 
+> Parent continuity correction: this review accidentally ran in a NEW root `review-sessions/` history, not the saved original. Its executed results remain evidence; the same-history claim below is incorrect. The true original history subsequently adjudicated exact3934d76 in `REVIEW17-ORIGINAL-HISTORY.md`. Preserve both records.
+
 - Reviewer: sole reviewer, same history; read-only for product source.
 - Base: `6f294cfc7c82fa00ea3344c738f6ea4f96e97dc8`
 - Exact HEAD inspected: `bfaa7827b5ffe40f9de8926efeed718dac5f6715`

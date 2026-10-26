@@ -12,7 +12,7 @@ Fresh native audit: **134 catalog;459union=122supported+337missing;1certified/7p
 
 ## Review and genuine corrections
 
-SAME-history practical review **APPROVED_INCREMENT** at `bfaa7827b5ffe40f9de8926efeed718dac5f6715` (`slice17/REVIEW17.md`), no blocking product defect. Later `e383d9d5cb1ae68d03a2ae1133083f265f9b18ad` changes only strengthened tests + result note, no product source. Native inspection confirms it removes vacuous morbid assertions and adds token-only death coverage.
+TRUE original-history practical adjudication **APPROVED_INCREMENT** at `3934d765158733a8351a594ed27564cb14431cb8` (`slice17/REVIEW17-ORIGINAL-HISTORY.md`), no blocking product defect. Parent caught a launch-path error: first review at `bfaa782` used root `review-sessions/` and created a new history, not the saved original. Its real independent evidence remains in `REVIEW17.md`, but its same-history claim is false. Both histories are preserved; the true original was subsequently resumed at the exact `evidence/issue17/review-sessions/…` path and independently ran slice17 6 / command-zone34 / replay6 plus separate replay/save checks. `e383d9d` only strengthened tests and `3934d76` only recorded evidence; no product source changed after `bfaa782`.
 
 Two first-cut defects repaired: cleanup is still same turn, so history resets only at actual turn advance; initial Teddy draw loop lost later seats after commander replacement, now explicit serialized progress preserves them. Counter events restored. `BearToken` added to `CardId::is_token`. Compatibility-only AI changes initialize/copy two public state fields (`crates/ai/src/search.rs`, `crates/ai/tests/common.rs`), no policy/search change.
 
