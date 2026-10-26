@@ -2,7 +2,7 @@
 //!
 //! `Pale Bears` and `River Bear` print one keyword each and nothing else, so
 //! they are the whole of this slice's card work: the printed text is
-//! Islandwalk, and the new behaviour is the blocking restriction of CR 702.14b
+//! Islandwalk, and the new behaviour is the blocking restriction of CR 702.14c
 //! applied from the *defending* player's battlefield. Every test below reads the
 //! engine, not the handoff.
 
@@ -238,7 +238,7 @@ fn an_islandwalk_attacker_is_blockable_when_the_defender_controls_no_island() {
     );
 }
 
-/// An opponent's Island is not the defending player's Island (CR 702.14b).
+/// An opponent's Island is not the defending player's Island (CR 702.14c).
 #[test]
 fn another_players_island_never_makes_the_attacker_unblockable() {
     let mut game = fixture_n(1113, 3)
@@ -351,7 +351,7 @@ fn the_greedy_blocking_plan_only_stops_an_islandwalker_without_an_island() {
     }
 
     // With the Island the islandwalker is unblockable: no block is offered, and
-    // the full printed power lands on the defending player (CR 702.14b, 510.1c).
+    // the full printed power lands on the defending player (CR 702.14c, 510.1c).
     let (life_with_island, offered_with_island) =
         play(1114, &[CardId::GrizzlyBears, CardId::Island]);
     assert!(

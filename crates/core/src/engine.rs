@@ -2252,7 +2252,7 @@ impl Game {
             }
             // CR 509.1b: the pair must be legal, not just each object. Flying is
             // the only evasion this slice models (CR 702.9b, 702.17b), plus
-            // islandwalk on the defending player's own board (CR 702.14b).
+            // islandwalk on the defending player's own board (CR 702.14c).
             let attacker = self.state.object(block.attacker);
             let blocker = self.state.object(block.blocker);
             let defender_controls_island = self.controls_island(player);
@@ -2267,7 +2267,7 @@ impl Game {
                     && defender_controls_island
                 {
                     format!(
-                        "{} has islandwalk and you control an Island, so it can't be blocked (CR 702.14b)",
+                        "{} has islandwalk and you control an Island, so it can't be blocked (CR 702.14c)",
                         attacker.name()
                     )
                 } else {
@@ -2314,7 +2314,7 @@ impl Game {
             .collect()
     }
 
-    /// CR 702.14b: whether `player` controls an Island land. Islandwalk reads
+    /// CR 702.14c: whether `player` controls an Island land. Islandwalk reads
     /// this from the defending player's battlefield only; the attacker's own
     /// lands never matter.
     fn controls_island(&self, player: PlayerId) -> bool {

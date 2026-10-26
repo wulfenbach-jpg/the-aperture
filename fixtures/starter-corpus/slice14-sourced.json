@@ -2,7 +2,7 @@
  "schema": "aperture.starter-sourced-cards.v1",
  "provider": "scryfall",
  "retrieved_at": "2026-10-26T17:44:38.065317+00:00",
- "note": "Extracted from coordinator candidate-source collection; three records only.",
+ "note": "Extracted from coordinator candidate-source collection; four records, one per sourced card (Arcane Signet, Fellwar Stone, Commander's Sphere, Werebear).",
  "cards": [
   {
    "name": "Arcane Signet",

@@ -43,7 +43,8 @@ Two cards, both from the Ayula desired list, both taken verbatim from Scryfall
 Oracle text, identical on every printing and byte-equal to the catalog string:
 `Islandwalk (This creature can't be blocked as long as defending player controls an Island.)`
 
-New rule: CR 702.14b. `tokens::can_block` now takes
+New rule: CR 702.14c (702.14b only names landwalk as an evasion ability; the
+blocking restriction itself is 702.14c). `tokens::can_block` now takes
 `defender_controls_island`, read by the engine from the **defending** player's
 battlefield (`Game::controls_island`, substring-free subtype test
 `CardDef::is_island`). Two call sites were updated — the block validator and the
@@ -68,12 +69,12 @@ manifest's `missing_cards` no longer lists the two supported names (verified:
 
 ## 4. Verification actually run
 
-* `crates/core/tests/issue17_slice11.rs` — 5 focused tests: printed text, refusal
+* `crates/core/tests/issue17_slice11.rs` — 6 focused tests: printed text, refusal
   while the defender controls an Island, blockable without one, another player's
   Island is irrelevant, and the paired greedy-plan run (same seed, +/- one Island)
   where the unblocked 3/3 takes exactly 3 life and the blocked one takes 0.
 * Genuine RED (`evidence/issue17/slice11/red_islandwalk.py`): removing only the
-  CR 702.14b branch from `can_block` fails exactly the two enforcement tests and
+  CR 702.14c branch from `can_block` fails exactly the two enforcement tests and
   leaves the three controls green (`red-before-islandwalk-enforcement.log`).
 * `crates/core/tests/card_printings.rs` — new provenance test plus the existing
   "every pool card added after issue 15 has a recorded printing" guard now chains

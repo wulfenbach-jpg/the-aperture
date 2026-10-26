@@ -46,10 +46,21 @@ desired starters certified (jasmine-vanilla-stompy)**. All eight desired
   `slice14/release-build.log`).
 - Evidence-only masked legal-action driver (not product AI): exact four seats,
   40 life, `decks/package-slice14.txt`, seed 1414, terminal P0, 2371 actions /
-  42 turns / 6665 events, digest `028cc2e33168…`. Casts: Arcane 7, Fellwar 7,
-  Sphere 7, Werebear 18. Mana activations: 51 / 39 / 7 / 82. Sphere
-  sacrifice-draws: 7. Separate release-CLI replay and a fresh save reload both
-  reproduce the digest (`slice14/native-demo-replay.log`).
+  42 turns / 6665 events, digest `028cc2e33168…`. Casts, read back from
+  `slice14/demo-journey.json`: Arcane Signet 7, Fellwar Stone 7, Commander's
+  Sphere 7, Werebear 18, Grizzly Bears 7, **Krenko, Mob Boss 4**. Mana
+  activations: Signet 51 / Fellwar 39 / Sphere 7 / Werebear 82 (plus Forest 21,
+  Mountain 110). Sphere sacrifice-draws: 7. Separate release-CLI replay and a
+  fresh save reload both reproduce the digest (`slice14/native-demo-replay.log`).
+- **The journey driver injects Krenko, Mob Boss as the commander of all four
+  seats** (`slice14/journey-driver/src/main.rs:15`; the replay's top-level
+  `commanders` records four Krenko entries, and the four Krenko casts in the
+  table above are that injection). This matters for reading the result: Arcane
+  Signet and Commander's Sphere derive their mana from the *commander's* color
+  identity, so every identity-based activation in this journey is red. The
+  package fixture itself carries no commander and the driver is an evidence-only
+  demonstrator, not product AI; nothing here is a claim about a desired 100-card
+  starter, and no certification rests on this journey.
 - Default product heuristic trace retained unchanged at seed 1401 (terminal,
   digest `fdc9b089f8f9…`): 17 Werebear casts, zero artifact casts/activations.
   The product heuristic still does not cast artifacts or auto-activate nonland

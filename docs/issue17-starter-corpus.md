@@ -56,7 +56,7 @@ basic lands (coordinator evidence
 
 Slices 11–13 add the islandwalk bears `Pale Bears` and `River Bear`, Sol Ring,
 and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
-the defending player's board. Ayula currently has **42** missing names.
+the defending player's board. Ayula currently has **39** missing names.
 
 ### Slices 12–13: reusable artifact and landfall packages
 

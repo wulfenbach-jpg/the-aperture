@@ -46,11 +46,11 @@ impl Keyword {
 
 /// CR 509.1b: a blocking creature must be able to block the attacker.
 /// Evasion is the only restriction this slice models: flying (CR 702.9b) and
-/// islandwalk (CR 702.14b).
+/// islandwalk (CR 702.14c).
 ///
 /// `defender_controls_island` is read from the battlefield of the player being
 /// attacked, never from the attacker's own lands, because landwalk is a
-/// property of the defending player's board (CR 702.14b).
+/// property of the defending player's board (CR 702.14c).
 pub fn can_block(
     attacker: &[Keyword],
     blocker: &[Keyword],
@@ -221,7 +221,7 @@ mod tests {
 
     #[test]
     fn islandwalk_forbids_every_blocker_while_the_defender_controls_an_island() {
-        // CR 702.14b: no blocker is legal, whatever its keywords.
+        // CR 702.14c: no blocker is legal, whatever its keywords.
         assert!(!can_block(&[Keyword::Islandwalk], &[], true));
         assert!(!can_block(&[Keyword::Islandwalk], &[Keyword::Reach], true));
         // Without an Island on the defending board the restriction is inert.
