@@ -30,18 +30,22 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-97-card pool. Isamaru itself is supported, and the slice-4 package implemented
+103-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 56 missing
 cards; it stays `planned` because 56 of its chosen cards are still unsupported.
+Slice 5 implemented one card in each of four other planned lists:
+`Stitcher's Supplier` (elas), `Ruin Crab` (tatyova), `Negate` and `Preordain`
+(talrand), `Pyretic Ritual` and `Seething Song` (zada). None of them is close to
+complete, so all seven remain `planned`.
 
 ## Corpus union and staged gaps
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice4/update_manifest.py` + `slice4-corpus-state.json`):
+`evidence/issue17/slice5/update_manifest.py` + `slice5-corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **85** are in the supported 97-card catalog and **374** are missing;
+* **91** are in the supported 103-card catalog and **368** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.
@@ -76,8 +80,22 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
 6. single-target spell copying and go-wide pump (Zada);
 7. legend rule, equipment and Aura permanents (Isamaru and any future legend);
 8. black basic land support (Elas): **implemented** as the sourced Swamp basic;
+9. graveyard filling (all four lists): **bounded implemented package** — mill
+   from the top of a library as a real zone move (Stitcher's Supplier mills its
+   controller on entering *and* on dying; Ruin Crab mills each opponent on
+   landfall). Milling an empty library does nothing and never loses the game,
+   because that is a draw-only state-based action (CR 704.5b). Target-player
+   milling (Hedron Crab) and anything that reads the graveyard are still
+   unimplemented;
+10. stack interaction (Talrand): **bounded implemented package** — "counter
+    target noncreature spell" as a real target restriction (Negate may not name a
+    creature spell on the stack, CR 205.2a). "Counter target spell" was already
+    supported (Counterspell);
+11. mana acceleration (Zada): **bounded implemented package** — adding red mana
+    to the pool without tapping a permanent (Pyretic Ritual, Seething Song), and
+    Preordain's scry-2-then-draw as an ordered two-effect resolution;
 
-Elas still has 58 unsupported desired-list nonland names plus sacrifice outlets,
+Elas still has 57 unsupported desired-list nonland names plus sacrifice outlets,
 death/drain triggers and tutor/reanimation interactions; its Swamp requirement is
 now met by the supported basic land.
 None of these planned lists is called supported, legal-for-play or certified.

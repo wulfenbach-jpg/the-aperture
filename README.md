@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (97 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (103 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -62,7 +62,15 @@ implementation and it says so everywhere it matters.
   opponent, source-left resolution). The exact 100-card Krenko
   starter remains planned; `decks/package-krenko-tokens.txt` is a clearly named
   40-card supported package fixture. The other seven target archetypes are
-  planned, not supported.
+  planned, not supported. Slice 4 adds **Ordinary Bear** (vanilla), **Ashcoat
+  Bear** (printed Flash), **Owlbear** (printed Trample plus an enters draw) and
+  **Soul Warden** (“another creature enters”, fired for any controller's
+  creature, tokens included). Slice 5 adds **Stitcher's Supplier** (mill three on
+  enters *and* on dies), **Ruin Crab** (landfall: each opponent mills three),
+  **Negate** (counter target noncreature spell), **Preordain** (scry 2 then draw)
+  and the red rituals **Pyretic Ritual**/**Seething Song** (add mana to the pool).
+  Milling, scry-then-draw and mana addition are real rules actions now;
+  target-player milling and tutoring are still not implemented.
   Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
@@ -278,10 +286,11 @@ activated abilities outside the typed supported forms (basic-land mana, Krenko,
 Prodigal Sorcerer, Rootwalla, Brindle Boar), static abilities beyond the two
 supported forms, replacement effects beyond damage doubling, redirection,
 planeswalkers, counters as rules objects (the sandbox counter display is
-storage only), tokens beyond the typed 1/1 red Goblin package, milling/tutoring/libraries as
+storage only), tokens beyond the typed 1/1 red Goblin package, target-player
+milling (self-mill and each-opponent mill are implemented), tutoring, libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
-card outside this branch candidate's 97-card pool.
+card outside this branch candidate's 103-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

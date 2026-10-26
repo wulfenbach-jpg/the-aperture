@@ -306,8 +306,12 @@ capture even with `--decider`.
 * Static abilities, replacement/prevention effects, token types beyond the
   bounded engine-only 1/1 red Goblin and 2/2 blue Drake packages (and token
   interactions beyond those packages), planeswalkers,
-  battles, milling/tutoring/searching, library manipulation beyond scry/surveil
-  1, multi-face cards.
+  battles, target-player milling (self-mill and each-opponent mill **are**
+  implemented as rule actions; a commander milled out of a library lands in the
+  graveyard and the existing CR 903.9a state-based action then offers its
+  owner the return), tutoring/searching, library manipulation beyond
+  scry/surveil 1 and the two-effect scry-then-draw of Preordain,
+  multi-face cards.
 * Counters are stored and displayed but do not affect rules math
   (`Object.plus_one_counters`); no layers — a single until-end-of-turn pump only.
 * Object identity is stable across zone changes (real Magic creates a new object

@@ -328,9 +328,40 @@ const SOUL_WARDEN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::GainLife(1)],
 })];
 
+/// "When this creature enters or dies, mill three cards." One printed ability
+/// with two trigger events is modelled as two `TriggeredAbility` entries on the
+/// same card (CR 603.6a for enters, CR 700.4/603.6c for dies); the printed text
+/// is carried on both so neither entry claims wording the card does not print.
+const STITCHERS_SUPPLIER: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "When this creature enters or dies, mill three cards.",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::MillSelf(3)],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "When this creature enters or dies, mill three cards.",
+        event: TriggerEvent::Dies,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::MillSelf(3)],
+    }),
+];
+
+const RUIN_CRAB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, each opponent mills three cards.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::MillEachOpponent(3)],
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::StitchersSupplier => STITCHERS_SUPPLIER,
+        CardId::RuinCrab => RUIN_CRAB,
         CardId::Owlbear => OWLBEAR,
         CardId::SoulWarden => SOUL_WARDEN,
         CardId::StripedBears => STRIPED_BEARS,

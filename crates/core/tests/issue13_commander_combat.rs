@@ -1368,7 +1368,7 @@ fn fog_is_a_sourced_catalog_card() {
     // starter cards, to 79 when issue 17 added the 47 vanilla starter
     // creatures plus Jasmine Boreal, to 85 with the Krenko token package, to 86 with Talrand, to 88 with Tatyova/Jaddi Offshoot, to 93 with the cross-corpus package, and to 97 with the slice-4 Ayula/Isamaru package (Ordinary Bear, Ashcoat Bear, Owlbear, Soul Warden);
     // Fog's own sourced semantics are unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 97);
+    assert_eq!(aperture_core::catalog::pool_size(), 103);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

@@ -1,4 +1,4 @@
-//! The supported card pool. Seventy-nine real cards; every printed ability is
+//! The supported card pool. One hundred and three real cards; every printed ability is
 //! implemented. Card text is the short functional Oracle wording (vanilla
 //! creatures print no text at all).
 //!
@@ -6,6 +6,12 @@
 //! and the vanilla commander Jasmine Boreal. Slice 2 adds the Krenko goblin
 //! package: six sourced cards plus an engine-only 1/1 red Goblin token card.
 //! Token creation is typed; tokens are never importable catalog cards.
+//!
+//! Slice 5 adds the sourced mill / counter / ritual package: Stitcher's Supplier
+//! (mill on enters and on dies), Ruin Crab (landfall mill for each opponent),
+//! Negate ("counter target noncreature spell"), Preordain (scry 2 then draw),
+//! Pyretic Ritual and Seething Song (add red mana to the pool). Target-player
+//! milling (Hedron Crab) is *not* implemented and stays refused at import.
 //!
 //! Activated and triggered abilities are declared in [`crate::ability`] and
 //! executed by the engine; a card with an ability this crate cannot execute is
@@ -34,6 +40,15 @@ const TOP_LIBRARY: &[Effect] = &[Effect::PutOnTopOfLibrary];
 const SWORDS: &[Effect] = &[Effect::ExileAndGainLife];
 const PREVENT_COMBAT: &[Effect] = &[Effect::PreventAllCombatDamageThisTurn];
 const PREVENT_FOUR: &[Effect] = &[Effect::PreventNextDamage(4)];
+const PREORDAIN_SCRY_TWO_DRAW: &[Effect] = &[Effect::Scry(2), Effect::Draw(1)];
+const ADD_THREE_RED: &[Effect] = &[Effect::AddMana {
+    color: ManaColor::Red,
+    amount: 3,
+}];
+const ADD_FIVE_RED: &[Effect] = &[Effect::AddMana {
+    color: ManaColor::Red,
+    amount: 5,
+}];
 
 const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
@@ -147,7 +162,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 97] = [
+pub static CARDS: [CardDef; 103] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -675,6 +690,51 @@ pub static CARDS: [CardDef; 97] = [
         SoulWarden, "Soul Warden", cost: Some("{W}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Human Cleric", power: Some(1), toughness: Some(1),
         oracle: "Whenever another creature enters, you gain 1 life.", spell: None
+    ),
+    card!(
+        StitchersSupplier, "Stitcher's Supplier", cost: Some("{B}"), kinds: CREATURE,
+        basic: None,
+        type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
+        oracle: "When this creature enters or dies, mill three cards. (Put the top three cards of your library into your graveyard.)",
+        spell: None
+    ),
+    card!(
+        RuinCrab, "Ruin Crab", cost: Some("{U}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Crab", power: Some(0), toughness: Some(3),
+        oracle: "Landfall — Whenever a land you control enters, each opponent mills three cards. (To mill a card, a player puts the top card of their library into their graveyard.)",
+        spell: None
+    ),
+    card!(
+        Negate, "Negate", cost: Some("{1}{U}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Counter target noncreature spell.",
+        spell: Some(SpellSpec {
+            target: TargetSpec::NoncreatureSpell, instant: true, effects: COUNTER
+        })
+    ),
+    card!(
+        Preordain, "Preordain", cost: Some("{U}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Scry 2, then draw a card. (To scry 2, look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+        spell: Some(SpellSpec {
+            target: TargetSpec::None, instant: false, effects: PREORDAIN_SCRY_TWO_DRAW
+        })
+    ),
+    card!(
+        PyreticRitual, "Pyretic Ritual", cost: Some("{1}{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R}{R}{R}.",
+        spell: Some(SpellSpec {
+            target: TargetSpec::None, instant: true, effects: ADD_THREE_RED
+        })
+    ),
+    card!(
+        SeethingSong, "Seething Song", cost: Some("{2}{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R}{R}{R}{R}{R}.",
+        spell: Some(SpellSpec {
+            target: TargetSpec::None, instant: true, effects: ADD_FIVE_RED
+        })
     ),
 ];
 

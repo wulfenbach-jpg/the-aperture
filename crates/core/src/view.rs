@@ -291,6 +291,29 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             let verb = if *delta > 0 { "gains" } else { "loses" };
             format!("P{player} {verb} {} life (now {life})", delta.abs())
         }
+        Event::Milled { player, card, .. } => {
+            // A graveyard is a public zone (CR 400.2), so the card name is
+            // rendered for every viewer, unlike a draw.
+            format!("P{player} mills {}", card.name())
+        }
+        Event::ManaAdded {
+            player,
+            color,
+            amount,
+            pool_total,
+        } => {
+            if *player == viewer {
+                format!(
+                    "P{player} adds {amount} {} to their mana pool (now {pool_total})",
+                    color.symbol()
+                )
+            } else {
+                format!(
+                    "P{player} adds {amount} {} to their mana pool",
+                    color.symbol()
+                )
+            }
+        }
         Event::Draw { player, card, .. } => {
             if *player == viewer {
                 format!("P{player} draws {}", card.name())

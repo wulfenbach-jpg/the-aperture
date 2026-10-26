@@ -162,7 +162,17 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 }
                 Effect::Pump(p, t) => assert!(*p != 0 || *t != 0),
                 Effect::CounterTargetSpell => {
-                    assert_eq!(spec.target, TargetSpec::Spell, "{}", card.name)
+                    // "counter target spell" vs "counter target noncreature
+                    // spell": both are the same resolution, and the printed
+                    // wording fixes which spells may be chosen.
+                    assert!(
+                        matches!(
+                            spec.target,
+                            TargetSpec::Spell | TargetSpec::NoncreatureSpell
+                        ),
+                        "{}",
+                        card.name
+                    )
                 }
                 Effect::EachPlayerSacrifice => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name)
@@ -193,6 +203,14 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::CreateGoblinTokensForEachGoblin
                 | Effect::CreateDrakeToken
                 | Effect::DamageEachOpponent(_) => {
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                Effect::MillSelf(n) | Effect::MillEachOpponent(n) => {
+                    assert!(*n > 0, "{} has a no-op mill effect", card.name);
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                Effect::AddMana { amount, .. } => {
+                    assert!(*amount > 0, "{} adds no mana", card.name);
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
             }

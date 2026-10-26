@@ -34,6 +34,7 @@ const TATYOVA_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/tat
 const CROSS_SOURCED: &str =
     include_str!("../../../fixtures/starter-corpus/cross-package-sourced.json");
 const SLICE4_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice4-sourced.json");
+const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
 
 fn starter_new_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
@@ -80,6 +81,11 @@ fn cross_cards() -> Vec<Value> {
 
 fn slice4_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE4_SOURCED).expect("sourced slice4 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice5_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE5_SOURCED).expect("sourced slice5 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -383,6 +389,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(tatyova_cards())
         .chain(cross_cards())
         .chain(slice4_cards())
+        .chain(slice5_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()
@@ -415,4 +422,68 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         PRINTINGS.len() + LEGACY_POOL.len() + starter.len(),
         "the pool size must equal the recorded, legacy and starter-sourced cards"
     );
+}
+
+/// Slice 5 adds six cards whose behaviour is new (mill, counter target
+/// noncreature spell, scry-then-draw, red rituals), so the catalog string must
+/// equal the printing's `oracle_text` and the typed ability/effect must match
+/// the printed wording. Seething Song has one prepare-layout printing whose
+/// top-level `oracle_text` is empty; every single-face printing carries the same
+/// text, which is what the check below asserts.
+#[test]
+fn every_slice5_card_matches_its_recorded_printing() {
+    let cards = slice5_cards();
+    assert_eq!(cards.len(), 6, "slice 5 adds six sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str(),
+            "{name} toughness"
+        );
+        let texts: Vec<&str> = record["distinct_printing_texts_list"]
+            .as_array()
+            .expect("distinct printing texts")
+            .iter()
+            .filter_map(|text| text.as_str())
+            .filter(|text| !text.is_empty())
+            .collect();
+        assert_eq!(
+            texts,
+            vec![def.oracle],
+            "{name} prints one rules text across its single-face printings"
+        );
+        assert!(record["printings_checked"].as_u64().unwrap_or(0) >= 1);
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(
+            !sourced_text(&record, "retrieved_at").is_empty(),
+            "{name} records when it was read"
+        );
+    }
 }

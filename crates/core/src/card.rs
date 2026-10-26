@@ -64,6 +64,9 @@ pub enum TargetSpec {
     AnyTarget,
     Creature,
     Spell,
+    /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
+    /// (Negate). A creature spell on the stack is not a legal target.
+    NoncreatureSpell,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -110,6 +113,18 @@ pub enum Effect {
     /// Deal N damage to each opponent of the ability's controller, excluding
     /// the controller and eliminated seats (Guttersnipe).
     DamageEachOpponent(u8),
+    /// CR 701.13a: the effect's controller mills N cards — the top N cards of
+    /// their library go to their graveyard (Stitcher's Supplier).
+    MillSelf(u8),
+    /// CR 701.13a: each opponent of the effect's controller mills N cards.
+    /// Eliminated seats are skipped, and the controller never mills.
+    MillEachOpponent(u8),
+    /// CR 106.4: add N mana of one colour to the effect controller's mana pool
+    /// (Pyretic Ritual, Seething Song). No permanent is tapped.
+    AddMana {
+        color: ManaColor,
+        amount: u8,
+    },
 }
 
 impl Effect {
@@ -146,6 +161,11 @@ impl Effect {
             }
             Effect::CreateDrakeToken => "create a 2/2 blue Drake token with flying".to_string(),
             Effect::DamageEachOpponent(n) => format!("deal {n} damage to each opponent"),
+            Effect::MillSelf(n) => format!("mill {n}"),
+            Effect::MillEachOpponent(n) => format!("each opponent mills {n}"),
+            Effect::AddMana { color, amount } => {
+                format!("add {amount} {} mana", color.name())
+            }
         }
     }
 }
@@ -366,6 +386,12 @@ pub enum CardId {
     AshcoatBear,
     Owlbear,
     SoulWarden,
+    StitchersSupplier,
+    RuinCrab,
+    Negate,
+    Preordain,
+    PyreticRitual,
+    SeethingSong,
 }
 
 /// Explicit command-zone practice allow-list. This is deliberately narrower

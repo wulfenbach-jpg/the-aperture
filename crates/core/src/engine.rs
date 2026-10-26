@@ -1254,6 +1254,37 @@ impl Game {
         }
     }
 
+    /// CR 701.13a: mill N cards. The top card of `player`'s library becomes the
+    /// top card of their graveyard, one card at a time, one `Milled` event each.
+    /// A milled card never entered the battlefield, so no "dies" trigger fires
+    /// (CR 700.4 requires the battlefield as the origin). Milling an empty
+    /// library is legal and simply does nothing: only a *draw* from an empty
+    /// library loses the game (CR 704.5b), and this is not a draw.
+    fn mill_cards(&mut self, player: PlayerId, count: u8, events: &mut Vec<Event>) {
+        for _ in 0..count {
+            let Some(next) = self.state.players[player as usize].library.first().copied() else {
+                break;
+            };
+            let Some(card) = self.state.try_object(next).map(|object| object.card) else {
+                break;
+            };
+            let Some(mut object) = self.detach_object(next) else {
+                break;
+            };
+            object.tapped = false;
+            object.damage = 0;
+            object.summoning_sick = false;
+            object.pump_power = 0;
+            object.pump_toughness = 0;
+            let new_id = self.insert_object(object, Zone::Graveyard);
+            events.push(Event::Milled {
+                player,
+                object: new_id,
+                card,
+            });
+        }
+    }
+
     // ------------------------------------------------------------ submission
 
     pub fn submit(&mut self, sub: &Submission) -> Result<Vec<Event>, EngineError> {
@@ -1744,6 +1775,24 @@ impl Game {
                 .iter()
                 // An ability on the stack is not a spell (CR 115.1, 602.2).
                 .filter(|s| s.object != exclude && s.entry == StackEntry::Spell)
+                .map(|s| Target::Spell(s.object))
+                .collect(),
+            TargetSpec::NoncreatureSpell => self
+                .state
+                .stack
+                .iter()
+                // CR 115.1: only a spell is a spell; and a creature spell is
+                // excluded because the printed wording says "noncreature"
+                // (CR 205.2a: the card's types on the stack are the printed
+                // types).
+                .filter(|s| {
+                    s.object != exclude
+                        && s.entry == StackEntry::Spell
+                        && !self
+                            .state
+                            .try_object(s.object)
+                            .is_some_and(|object| object.card.def().is_creature())
+                })
                 .map(|s| Target::Spell(s.object))
                 .collect(),
         }
@@ -4378,6 +4427,32 @@ impl Game {
                 self.create_tokens(controller, CardId::DrakeToken, 1, events);
                 false
             }
+            Effect::MillSelf(n) => {
+                self.mill_cards(controller, n, events);
+                false
+            }
+            Effect::MillEachOpponent(n) => {
+                for opponent in 0..self.state.seat_count() as PlayerId {
+                    if opponent == controller || !self.state.is_live(opponent) {
+                        continue;
+                    }
+                    self.mill_cards(opponent, n, events);
+                }
+                false
+            }
+            Effect::AddMana { color, amount } => {
+                self.state.players[controller as usize]
+                    .mana
+                    .add(color, amount);
+                let pool_total = self.state.players[controller as usize].mana.get(color);
+                events.push(Event::ManaAdded {
+                    player: controller,
+                    color,
+                    amount,
+                    pool_total,
+                });
+                false
+            }
             Effect::DamageEachOpponent(n) => {
                 for opponent in 0..self.state.seat_count() as PlayerId {
                     if opponent == controller || !self.state.is_live(opponent) {
@@ -5270,6 +5345,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::AnyTarget => "any target: CR 115.4",
         TargetSpec::Creature => "target creature: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
+        TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
     }
 }
 

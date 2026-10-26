@@ -94,6 +94,22 @@ pub enum Event {
     DrewFromEmpty {
         player: PlayerId,
     },
+    /// CR 701.13a: a card was put from the top of a library into its owner's
+    /// graveyard. One event per card, so a replay can show exactly what was
+    /// milled and in what order.
+    Milled {
+        player: PlayerId,
+        object: ObjectId,
+        card: CardId,
+    },
+    /// CR 106.4: mana was added to a player's mana pool without tapping a
+    /// permanent (Pyretic Ritual, Seething Song).
+    ManaAdded {
+        player: PlayerId,
+        color: ManaColor,
+        amount: u8,
+        pool_total: u8,
+    },
     Scried {
         player: PlayerId,
         count: u8,
