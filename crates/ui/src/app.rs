@@ -1609,18 +1609,30 @@ impl ApertureApp {
                 }
             }
         } else {
+            // A hand choice (CR 514.1 discard, CR 103.5 bottoming) is answered by
+            // the selection panel above, where the player picks the exact cards.
+            // The engine now offers one action per legal set (up to the documented
+            // bound), so re-listing every one of them as a button here would only
+            // duplicate that panel and crowd the strip.
+            let hand_choice = matches!(
+                view.pending_kind,
+                Some(aperture_core::view::PendingKind::Discard { .. })
+                    | Some(aperture_core::view::PendingKind::BottomCards { .. })
+            );
             if view.legal.is_empty() {
                 theme::muted(ui, "no legal action for your seat right now");
             }
             let mut chosen: Option<Action> = None;
-            ui.horizontal_wrapped(|ui| {
-                for entry in &view.legal {
-                    let label = format!("{}   [CR {}]", entry.label, entry.rules.join(", "));
-                    if ui.button(label).clicked() {
-                        chosen = Some(entry.action.clone());
+            if !hand_choice {
+                ui.horizontal_wrapped(|ui| {
+                    for entry in &view.legal {
+                        let label = format!("{}   [CR {}]", entry.label, entry.rules.join(", "));
+                        if ui.button(label).clicked() {
+                            chosen = Some(entry.action.clone());
+                        }
                     }
-                }
-            });
+                });
+            }
             if let Some(action) = chosen {
                 let _ = self.session.submit_human(action);
             }

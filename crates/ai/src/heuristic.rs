@@ -73,10 +73,10 @@ impl HeuristicPolicy {
         match view.pending_kind {
             Some(PendingKind::Mulligan) => self.mulligan(view),
             Some(PendingKind::BottomCards { count }) => Action::BottomCards {
-                cards: worst_cards(view, count),
+                cards: self.offered_hand_set(view, count, false),
             },
             Some(PendingKind::Discard { count }) => Action::Discard {
-                cards: worst_cards(view, count),
+                cards: self.offered_hand_set(view, count, true),
             },
             Some(PendingKind::OrderCard { index, .. }) => Action::OrderCard {
                 to_top: self.keep_viewed(view, index),
@@ -126,6 +126,43 @@ impl HeuristicPolicy {
         } else {
             true
         }
+    }
+
+    /// CR 514.1 (cleanup discard) and CR 103.5 (London bottoming) leave the
+    /// choice of which cards leave the hand to the player, and the engine
+    /// publishes a bounded offer of legal sets. Answer with the offered set that
+    /// gives up the worst cards, so the answer is legal at the moment it is
+    /// applied instead of an engine-legal set the offer does not contain.
+    fn offered_hand_set(&self, view: &PlayerView, count: u8, discard: bool) -> Vec<ObjectId> {
+        let lands = lands_in_play(view);
+        let mut best: Option<(u32, &Vec<ObjectId>)> = None;
+        for legal in &view.legal {
+            let cards = match (&legal.action, discard) {
+                (Action::Discard { cards }, true) => cards,
+                (Action::BottomCards { cards }, false) => cards,
+                _ => continue,
+            };
+            let score: u32 = cards
+                .iter()
+                .map(|id| {
+                    view.own_hand
+                        .iter()
+                        .find(|card| card.id == *id)
+                        .map(|card| expendability(card, lands))
+                        .unwrap_or(0)
+                })
+                .sum();
+            let better = match &best {
+                None => true,
+                Some((best_score, _)) => score > *best_score,
+            };
+            if better {
+                best = Some((score, cards));
+            }
+        }
+        // A view built without an offer keeps the heuristic's own answer.
+        best.map(|(_, cards)| cards.clone())
+            .unwrap_or_else(|| worst_cards(view, count))
     }
 
     fn attackers(&self, view: &PlayerView) -> (Vec<ObjectId>, Option<PlayerId>) {
@@ -524,6 +561,13 @@ fn worst_cards(view: &PlayerView, count: u8) -> Vec<ObjectId> {
             .then(b.id.0.cmp(&a.id.0))
     });
     hand.iter().take(count as usize).map(|c| c.id).collect()
+}
+
+/// One comparable number for how expendable a hand card is: surplus lands first,
+/// then non-land spells, then the most expensive card.
+fn expendability(card: &CardView, lands: usize) -> u32 {
+    let (surplus, spell, cost) = rank(card, lands);
+    u32::from(surplus) * 1_000_000 + u32::from(spell) * 10_000 + u32::from(cost)
 }
 
 /// The pool's catalog size, surfaced so callers can label the AI's knowledge.

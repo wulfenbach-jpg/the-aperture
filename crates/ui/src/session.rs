@@ -647,22 +647,59 @@ impl UiSession {
                         ));
                         continue;
                     }
-                    // The engine remains the final authority; this check only
-                    // avoids applying a completion whose offered action has
-                    // already disappeared from the live legal offer.
-                    if !self
+                    // The engine remains the final authority on legality; this
+                    // pre-check only notices that the completion is not one the
+                    // table is enumerating right now. An unenumerated action can
+                    // still be legal (a cleanup discard accepts any legal set of
+                    // cards, CR 514.1), so try it, and when the engine refuses it
+                    // apply a plainly legal offered action. A dropped answer must
+                    // never leave the table waiting forever.
+                    let offered: Vec<Action> = self
                         .view(seat)
                         .legal
                         .iter()
-                        .any(|legal| legal.action == decision.action)
-                    {
-                        self.busy_note = Some(
-                            "discarded an AI decision [illegal_choice] (not in the live legal offer)"
-                                .to_string(),
-                        );
+                        .map(|legal| legal.action.clone())
+                        .collect();
+                    if offered.contains(&decision.action) {
+                        applied.push(self.apply_ai_decision(decision));
                         continue;
                     }
-                    applied.push(self.apply_ai_decision(decision));
+                    self.note = decision.note.clone();
+                    let source = decision.source.label().to_string();
+                    if self.submit(decision.action).is_ok() {
+                        // Engine-validated, so it is legal at application time even
+                        // though the offer under-describes the choice space.
+                        applied.push(source);
+                        continue;
+                    }
+                    let refusal = self.message.clone();
+                    match self.view(seat).legal.first().cloned() {
+                        Some(legal) => {
+                            let label = legal.label.clone();
+                            match self.submit(legal.action) {
+                                Ok(()) => {
+                                    self.busy_note = Some(format!(
+                                        "rejected an AI decision [illegal_choice] ({refusal}); applied the engine's legal offer \"{label}\" instead"
+                                    ));
+                                    applied.push(format!(
+                                        "applied \"{label}\" after refusing an illegal completion"
+                                    ));
+                                }
+                                Err(second) => {
+                                    // Genuinely impossible: the engine refused both
+                                    // its own offer and the completion.
+                                    self.busy_note = Some(format!(
+                                        "discarded an AI decision [illegal_choice] ({refusal}); the offered action \"{label}\" was also refused ({second})"
+                                    ));
+                                }
+                            }
+                        }
+                        None => {
+                            self.busy_note = Some(format!(
+                                "discarded an AI decision [illegal_choice] ({refusal}); the table offers no action at this decision"
+                            ));
+                        }
+                    }
                 }
                 WorkerMessage::Import {
                     generation,

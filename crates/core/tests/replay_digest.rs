@@ -94,7 +94,15 @@ fn london_mulligan_bottoms_one_card_per_mulligan() {
         other => panic!("expected a bottoming decision, got {other:?}"),
     }
     let offered = game.legal_actions();
-    assert_eq!(offered.len(), 1);
+    // CR 103.5: the player who took the mulligan chooses which card goes to the
+    // bottom, so the offer lists every card in hand. (Until #34 the engine
+    // published a single hard-coded "last card" sample here, which starved an
+    // AI answer that was legal but not identical to it.)
+    assert_eq!(
+        offered.len(),
+        game.state.player(first).hand_size(),
+        "one bottom action per card in hand: {offered:?}"
+    );
     let chosen = match &offered[0].action {
         Action::BottomCards { cards } => cards.clone(),
         other => panic!("unexpected action {other:?}"),
