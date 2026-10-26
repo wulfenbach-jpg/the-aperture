@@ -15,7 +15,7 @@ use std::time::Instant;
 use aperture_ai::{
     Decision, DecisionSource, Knowledge, SearchCancellation, SearchConfig, fallback, search,
 };
-use aperture_core::{Action, DeckList, Event, Game, PlayerId, Replay, ReplayStep, Submission};
+use aperture_core::{DeckList, Event, Game, PlayerId, Replay, ReplayStep, Submission};
 
 use crate::config::EvalConfig;
 use crate::report::{GameRecord, Strategy};
@@ -132,7 +132,13 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
         seeds: cfg.search_seeds,
         node_budget: cfg.search_node_budget,
         max_rollout_nodes: cfg.search_max_rollout_nodes,
-        max_millis: cfg.search_max_millis,
+        // 0 = deterministic mode: the search policy's wall-clock cutoff is
+        // neutralized, so node/rollout budgets govern the decision alone.
+        max_millis: if cfg.search_max_millis == 0 {
+            u64::MAX
+        } else {
+            cfg.search_max_millis
+        },
         max_candidates: cfg.search_max_candidates,
     };
 
@@ -141,6 +147,7 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
     let mut steps = 0usize;
     let mut truncated: Option<String> = None;
     let mut failed = false;
+    let mut policy_rejected = false;
     let mut repeats: BTreeMap<String, u8> = BTreeMap::new();
     let cancel = SearchCancellation::new();
 
@@ -158,17 +165,12 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
             break;
         };
         let view = game.view_for(owner, &log);
+        // The search policy itself produces the typed PendingDecision refusal
+        // (with the engine's real pending kind) when the point is not a
+        // priority decision; no synthesized note is added here.
         let decision = if owner == search_at {
             let at = std::time::Instant::now();
-            let point_ok = view.pending_kind.is_none();
-            let make = if point_ok {
-                search(&game, &view, &search_knowledge, &search_config, &cancel)
-            } else {
-                Err(aperture_ai::SearchUnavailable::PendingDecision {
-                    kind: "eval driver: pending decision".to_string(),
-                })
-            };
-            match make {
+            match search(&game, &view, &search_knowledge, &search_config, &cancel) {
                 Ok(outcome) => {
                     stats.search_ms += at.elapsed().as_millis() as u64;
                     stats.search_decisions += 1;
@@ -210,37 +212,15 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
                 steps += 1;
             }
             Err(err) => {
-                let note = format!("P{owner} policy action was rejected ({err}); passing instead");
-                log.push(aperture_core::Event::Truncated {
-                    reason: note.clone(),
-                });
-                if stats.fallback_notes.len() < 5 && !stats.fallback_notes.contains(&note) {
-                    stats.fallback_notes.push(note);
-                }
-                let pass = Submission {
-                    player: owner,
-                    revision: game.revision(),
-                    decision: game.decision(),
-                    action: Action::Pass,
-                };
-                match game.submit(&pass) {
-                    Ok(events) => {
-                        log.extend(events);
-                        replay.record(ReplayStep {
-                            player: owner,
-                            revision: pass.revision,
-                            decision: pass.decision,
-                            action: pass.action,
-                        });
-                        steps += 1;
-                    }
-                    Err(second) => {
-                        truncated =
-                            Some(format!("no legal action available for P{owner}: {second}"));
-                        failed = true;
-                        break;
-                    }
-                }
+                // An illegal policy action is a POLICY FAILURE, not a pass: the
+                // game is marked failed and can never be scored as a
+                // win/loss/draw for either side.
+                let note =
+                    format!("P{owner} policy action was rejected ({err}); game marked failed");
+                truncated = Some(note);
+                failed = true;
+                policy_rejected = true;
+                break;
             }
         }
         let seen = repeats.entry(game.digest()).or_insert(0);
@@ -277,6 +257,11 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
         "capped".to_string()
     };
 
+    // Game-only wall clock stops BEFORE replay verification so the latency
+    // field is the policy game, not the verifier housekeeping.
+    let game_wall_ms = started.elapsed().as_millis() as u64;
+    let verify_started = Instant::now();
+
     replay.final_digest = game.digest();
 
     // Replay verification: round-trip through JSON, replay every recorded step
@@ -288,6 +273,7 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
             Ok(_) => (true, None),
             Err(e) => (false, Some(e.to_string())),
         };
+    let verify_ms = verify_started.elapsed().as_millis() as u64;
 
     Ok(GameRecord {
         seed,
@@ -296,10 +282,12 @@ pub fn run_game(session: &SessionConfig, seed: u64, rotation: u32) -> anyhow::Re
         seat1: strategy_for(1, rotation),
         search_seat: Some(search_at),
         status,
-        winner: winner.map(|p| p as u8),
+        winner,
         reason,
         steps,
-        wall_ms: started.elapsed().as_millis() as u64,
+        wall_ms: game_wall_ms,
+        verify_ms,
+        policy_rejected,
         search_ms: stats.search_ms,
         search_decisions: stats.search_decisions,
         sources: stats.sources,

@@ -32,9 +32,10 @@ pub struct PairedSample {
 }
 
 impl PairedSample {
-    /// Search's mean paired difference from fair odds; the t interval is around
-    /// this mean. A mean above 0 means the search policy scored better than
-    /// fair odds. n = number of seeds (each is one correlated unit).
+    /// Mean per-seed difference from fair odds (`score() - 0.5` averaged).
+    /// The t interval is centered on this mean; a mean above 0 means the search
+    /// policy outscored fair odds. n = number of seeds (one correlated unit
+    /// each). Callers must pre-subtract 0.5; this struct only averages.
     pub fn mean(&self) -> f64 {
         self.per_seed.iter().sum::<f64>() / self.per_seed.len() as f64
     }
@@ -73,11 +74,24 @@ impl PairedSample {
         Ok((mean - half, mean + half, note))
     }
 
+    pub fn mean_opt(&self) -> Option<f64> {
+        if self.per_seed.is_empty() {
+            None
+        } else {
+            Some(self.mean())
+        }
+    }
+
     /// Disclosed numerator/denominator for review, e.g.
-    /// "paired units n=10; instances=20".
-    pub fn denominator_note(&self, instances: usize) -> String {
+    /// "paired units n=10; scored terminal instances=20; no excluded seeds".
+    pub fn denominator_note(&self, scored_instances: usize, excluded: &[u64]) -> String {
+        let excluded_note = if excluded.is_empty() {
+            "no excluded seeds".to_string()
+        } else {
+            format!("excluded seeds (no scored game): {excluded:?}")
+        };
         format!(
-            "paired units n={n}; instances={instances}",
+            "paired units n={n}; scored terminal instances={scored_instances}; {excluded_note}",
             n = self.per_seed.len(),
         )
     }
@@ -170,5 +184,22 @@ mod tests {
         assert_eq!(Go::Win.score(), 1.0);
         assert_eq!(Go::Draw.score(), 0.5);
         assert_eq!(Go::Loss.score(), 0.0);
+    }
+
+    /// Raw per-game scores (like 0.30, i.e. BELOW fair odds) translate into
+    /// NEGATIVE paired differences from fair odds, so any interval around them
+    /// sits below zero: a raw mean below 0.5 can never satisfy the released
+    /// "paired interval lower bound above parity" gate (review B2).
+    #[test]
+    fn raw_scores_below_fair_odds_give_negative_diffs() {
+        // Raw per-game scores 0.30-ish (i.e. below 0.5), pre-differenced.
+        let scores = [0.3, 0.3, 0.0];
+        let sample = PairedSample {
+            per_seed: scores.iter().map(|s| s - 0.5).collect(),
+        };
+        let mean = sample.mean();
+        assert!((mean - (-0.3)).abs() < 1e-6, "mean diff {mean}");
+        let (lo, _hi, _) = sample.t_interval_95().unwrap();
+        assert!(lo < 0.0);
     }
 }

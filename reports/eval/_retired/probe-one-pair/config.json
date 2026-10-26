@@ -1,0 +1,24 @@
+{
+  "run_id": "probe-one-pair",
+  "decks": [
+    {
+      "name": "Temur Beats",
+      "path": "decks/temur-beats.txt"
+    },
+    {
+      "name": "Izzet Control",
+      "path": "decks/izzet-control.txt"
+    }
+  ],
+  "seeds": [
+    101
+  ],
+  "rotations": 2,
+  "max_steps": 4000,
+  "max_millis": 90000,
+  "search_seeds": 1,
+  "search_node_budget": 1200,
+  "search_max_rollout_nodes": 200,
+  "search_max_millis": 250,
+  "search_max_candidates": 8
+}

@@ -38,6 +38,11 @@ pub struct EvalConfig {
     pub search_seeds: usize,
     pub search_node_budget: usize,
     pub search_max_rollout_nodes: usize,
+    /// Per-decision wall-clock search cap. `0` is the DETERMINISTIC mode: the
+    /// search policy receives `u64::MAX`, so only the node / rollout budgets
+    /// stop a decision and runs are reproducible functions of
+    /// (seed, config, code). Positive values make the policy wall-clock
+    /// dependent and runs are not re-derivable.
     pub search_max_millis: u64,
     pub search_max_candidates: usize,
 }
@@ -73,9 +78,10 @@ impl EvalConfig {
         no_white(self.search_seeds, "search_seeds")?;
         no_white(self.search_node_budget, "search_node_budget")?;
         no_white(self.search_max_rollout_nodes, "search_max_rollout_nodes")?;
-        if self.search_max_millis == 0 {
-            return Err("search_max_millis must be positive".to_string());
-        }
+        // 0 = DETERMINISTIC mode: no wall-clock cutoff inside search at all,
+        // so runs are a pure function of (seed, config, code) and the node /
+        // rollout budgets govern alone. Any positive value reintroduces
+        // wall-clock nondeterminism into the search policy.
         no_white(self.search_max_candidates, "search_max_candidates")?;
         Ok(())
     }
