@@ -1,0 +1,76 @@
+{
+ "schema": "aperture.issue17.corpus-state.v1",
+ "slice": 16,
+ "union_names": 459,
+ "catalog_cards_declared": 131,
+ "supported_union_names": 119,
+ "missing_union_names": 340,
+ "desired_lists": 8,
+ "certified_lists": 1,
+ "lists": [
+  {
+   "id": "isamaru-white-aggro",
+   "status": "planned",
+   "commander": "Isamaru, Hound of Konda",
+   "library_cards": 99,
+   "distinct_names": 59,
+   "missing": 55
+  },
+  {
+   "id": "jasmine-vanilla-stompy",
+   "status": "certified",
+   "commander": "Jasmine Boreal",
+   "library_cards": 99,
+   "distinct_names": 61,
+   "missing": 0
+  },
+  {
+   "id": "talrand-draw-go",
+   "status": "planned",
+   "commander": "Talrand, Sky Summoner",
+   "library_cards": 99,
+   "distinct_names": 59,
+   "missing": 51
+  },
+  {
+   "id": "krenko-goblin-tokens",
+   "status": "planned",
+   "commander": "Krenko, Mob Boss",
+   "library_cards": 99,
+   "distinct_names": 59,
+   "missing": 48
+  },
+  {
+   "id": "ayula-bear-counters",
+   "status": "planned",
+   "commander": "Ayula, Queen Among Bears",
+   "library_cards": 99,
+   "distinct_names": 59,
+   "missing": 34
+  },
+  {
+   "id": "elas-sacrifice",
+   "status": "planned",
+   "commander": "Elas il-Kor, Sadistic Pilgrim",
+   "library_cards": 99,
+   "distinct_names": 60,
+   "missing": 52
+  },
+  {
+   "id": "tatyova-landfall",
+   "status": "planned",
+   "commander": "Tatyova, Benthic Druid",
+   "library_cards": 99,
+   "distinct_names": 60,
+   "missing": 52
+  },
+  {
+   "id": "zada-spells",
+   "status": "planned",
+   "commander": "Zada, Hedron Grinder",
+   "library_cards": 99,
+   "distinct_names": 59,
+   "missing": 53
+  }
+ ]
+}

@@ -1,0 +1,64 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.84s
+     Running tests\issue17_slice16.rs (target\debug\deps\issue17_slice16-f7e927fb3a10910b.exe)
+
+running 7 tests
+test little_bear_cannot_target_a_creature_an_opponent_controls ... FAILED
+test little_bear_untaps_another_bear_and_counters_it ... FAILED
+test fade_from_history_gives_a_bear_to_each_player_with_an_artifact_or_enchantment_then_destroys_them ... FAILED
+test little_bear_flash_casts_at_instant_timing ... FAILED
+test fade_from_history_is_a_sorcery_that_needs_its_printed_cost ... FAILED
+test little_bear_untaps_a_non_bear_without_countering_it ... FAILED
+test sourced_slice16_cards_match_their_printings ... FAILED
+
+failures:
+
+---- little_bear_cannot_target_a_creature_an_opponent_controls stdout ----
+
+thread 'little_bear_cannot_target_a_creature_an_opponent_controls' (10248) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Little Bear must be supported
+
+---- little_bear_untaps_another_bear_and_counters_it stdout ----
+
+thread 'little_bear_untaps_another_bear_and_counters_it' (17696) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Little Bear must be supported
+
+---- fade_from_history_gives_a_bear_to_each_player_with_an_artifact_or_enchantment_then_destroys_them stdout ----
+
+thread 'fade_from_history_gives_a_bear_to_each_player_with_an_artifact_or_enchantment_then_destroys_them' (27024) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Fade from History must be supported
+
+---- little_bear_flash_casts_at_instant_timing stdout ----
+
+thread 'little_bear_flash_casts_at_instant_timing' (37496) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Little Bear must be supported
+
+---- fade_from_history_is_a_sorcery_that_needs_its_printed_cost stdout ----
+
+thread 'fade_from_history_is_a_sorcery_that_needs_its_printed_cost' (2928) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Fade from History must be supported
+
+---- little_bear_untaps_a_non_bear_without_countering_it stdout ----
+
+thread 'little_bear_untaps_a_non_bear_without_countering_it' (10972) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Little Bear must be supported
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- sourced_slice16_cards_match_their_printings stdout ----
+
+thread 'sourced_slice16_cards_match_their_printings' (23592) panicked at crates\core\tests\issue17_slice16.rs:23:46:
+Fade from History must be supported
+
+
+failures:
+    fade_from_history_gives_a_bear_to_each_player_with_an_artifact_or_enchantment_then_destroys_them
+    fade_from_history_is_a_sorcery_that_needs_its_printed_cost
+    little_bear_cannot_target_a_creature_an_opponent_controls
+    little_bear_flash_casts_at_instant_timing
+    little_bear_untaps_a_non_bear_without_countering_it
+    little_bear_untaps_another_bear_and_counters_it
+    sourced_slice16_cards_match_their_printings
+
+test result: FAILED. 0 passed; 7 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice16`

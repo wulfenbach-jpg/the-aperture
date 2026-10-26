@@ -1,0 +1,44 @@
+{
+  "activations": {},
+  "bear_tokens_created": 8,
+  "casts": {
+    "Bearscape": 6,
+    "Fade from History": 8,
+    "Grizzly Bears": 7,
+    "Little Bear": 7,
+    "Sol Ring": 6,
+    "Werebear": 13
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice16.txt",
+  "destroyed": {
+    "Bear Token": 4,
+    "Bearscape": 6,
+    "Fade from History": 8,
+    "Grizzly Bears": 5,
+    "Little Bear": 5,
+    "Sol Ring": 6,
+    "Werebear": 4
+  },
+  "digest": "ad5cd86d3432bcd69f25a1a7e4f975a51cbe399d9dbb11976f37dd32682c7084",
+  "driver": "evidence-only masked card-preferring demonstrator; NOT product heuristic/strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "little_bear_untaps_with_counter": 6,
+  "little_bear_untaps_without_counter": 0,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 5060,
+  "seats": 4,
+  "seed": 1616,
+  "snapshot_sha256": "9e1eea8826940710bee5efe22e306d53292178f103d2a5d7bc12406b84beef65",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1957,
+  "turns": 44
+}
