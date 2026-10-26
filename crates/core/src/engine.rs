@@ -4794,25 +4794,6 @@ impl Game {
                 }
                 false
             }
-            Effect::AddManaForEachGoblin => {
-                let amount = self
-                    .state
-                    .objects
-                    .values()
-                    .filter(|o| o.zone == Zone::Battlefield && o.card.def().is_goblin())
-                    .count()
-                    .min(u8::MAX as usize) as u8;
-                self.state.players[controller as usize]
-                    .mana
-                    .add(ManaColor::Red, amount);
-                events.push(Event::ManaAdded {
-                    player: controller,
-                    color: ManaColor::Red,
-                    amount,
-                    pool_total: self.state.players[controller as usize].mana.red,
-                });
-                false
-            }
             Effect::ReturnAllAttackersToHand => {
                 let attackers = self.state.turn.attackers.clone();
                 for id in attackers {
@@ -4845,28 +4826,6 @@ impl Game {
                             ids.len()
                         ),
                     });
-                }
-                false
-            }
-            Effect::EachPlayerDraws(n) => {
-                for p in 0..self.state.seat_count() as PlayerId {
-                    if !self.state.is_live(p) {
-                        continue;
-                    }
-                    for _ in 0..n {
-                        let remaining = n - 1;
-                        if self.draw_with_resume(
-                            p,
-                            DrawResume::Effect {
-                                source: item.object,
-                                cursor: item.cursor + 1,
-                            },
-                            remaining,
-                            events,
-                        ) {
-                            return true;
-                        }
-                    }
                 }
                 false
             }

@@ -1,14 +1,14 @@
 {
-  "catalog": 114,
+  "catalog": 93,
   "union": 459,
-  "supported": 102,
-  "missing": 357,
-  "manifest_missing": 357,
+  "supported": 81,
+  "missing": 378,
+  "manifest_missing": 378,
   "matches": true,
   "rows": [
     {
       "id": "isamaru-white-aggro",
-      "missing": 55,
+      "missing": 57,
       "status": "planned"
     },
     {
@@ -18,32 +18,32 @@
     },
     {
       "id": "talrand-draw-go",
-      "missing": 50,
-      "status": "planned"
-    },
-    {
-      "id": "krenko-goblin-tokens",
-      "missing": 48,
-      "status": "planned"
-    },
-    {
-      "id": "ayula-bear-counters",
-      "missing": 45,
-      "status": "planned"
-    },
-    {
-      "id": "elas-sacrifice",
-      "missing": 55,
-      "status": "planned"
-    },
-    {
-      "id": "tatyova-landfall",
       "missing": 54,
       "status": "planned"
     },
     {
+      "id": "krenko-goblin-tokens",
+      "missing": 51,
+      "status": "planned"
+    },
+    {
+      "id": "ayula-bear-counters",
+      "missing": 50,
+      "status": "planned"
+    },
+    {
+      "id": "elas-sacrifice",
+      "missing": 58,
+      "status": "planned"
+    },
+    {
+      "id": "tatyova-landfall",
+      "missing": 56,
+      "status": "planned"
+    },
+    {
       "id": "zada-spells",
-      "missing": 55,
+      "missing": 57,
       "status": "planned"
     }
   ],

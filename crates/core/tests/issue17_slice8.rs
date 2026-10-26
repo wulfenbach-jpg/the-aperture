@@ -63,8 +63,6 @@ fn sourced_slice8_cards_match_printings() {
         volley.oracle,
         "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control."
     );
-    let bright = card("Brightstone Ritual").def();
-    assert_eq!(bright.oracle, "Add {R} for each Goblin on the battlefield.");
     let aether = card("Aetherize").def();
     assert_eq!(
         aether.oracle,
@@ -72,12 +70,6 @@ fn sourced_slice8_cards_match_printings() {
     );
     let reversal = card("Dramatic Reversal").def();
     assert_eq!(reversal.oracle, "Untap all nonland permanents you control.");
-    let teddy = card("Friendly Teddy").def();
-    assert_eq!(teddy.type_line, "Artifact Creature — Bear Toy");
-    assert_eq!(
-        teddy.oracle,
-        "When this creature dies, each player draws a card."
-    );
 }
 
 #[test]
@@ -240,35 +232,6 @@ fn volley_veteran_damages_opponent_creature_for_each_goblin() {
 }
 
 #[test]
-fn brightstone_ritual_adds_red_for_each_goblin_on_battlefield() {
-    let mut game = fixture(84)
-        .hand(P0, &[card("Brightstone Ritual")])
-        .battlefield(P0, &[CardId::Mountain])
-        .main(P0, Step::PrecombatMain)
-        .build();
-    add_permanent(&mut game, P0, CardId::GoblinInstigator);
-    add_permanent(&mut game, P1, CardId::GoblinInstigator);
-    add_permanent(&mut game, P1, CardId::GoblinInstigator);
-    let spell = hand_card(&game, P0, card("Brightstone Ritual"));
-    submit_ok(
-        &mut game,
-        P0,
-        Action::CastSpell {
-            card: spell,
-            targets: Vec::new(),
-        },
-    );
-    for _ in 0..6 {
-        if drained(&game) {
-            break;
-        }
-        let player = game.decision_owner().expect("priority");
-        submit_ok(&mut game, player, Action::Pass);
-    }
-    assert_eq!(game.state.player(P0).mana.red, 3);
-}
-
-#[test]
 fn aetherize_returns_all_attackers_and_dramatic_reversal_untaps_nonlands() {
     let mut game = fixture(85)
         .battlefield(P0, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
@@ -381,45 +344,6 @@ fn aetherize_returns_all_attackers_and_dramatic_reversal_untaps_nonlands() {
 }
 
 #[test]
-fn friendly_teddy_death_draws_for_each_player_once() {
-    let mut game = fixture(87)
-        .hand(P0, &[CardId::Shock])
-        .battlefield(P0, &[CardId::Mountain])
-        .library(P0, &[CardId::Forest; 3])
-        .library(P1, &[CardId::Forest; 3])
-        .main(P0, Step::PrecombatMain)
-        .build();
-    let teddy = add_permanent(&mut game, P1, card("Friendly Teddy"));
-    let shock = hand_card(&game, P0, CardId::Shock);
-    let before = [
-        game.state.player(P0).hand.len(),
-        game.state.player(P1).hand.len(),
-    ];
-    submit_ok(
-        &mut game,
-        P0,
-        Action::CastSpell {
-            card: shock,
-            targets: vec![Target::Permanent(teddy)],
-        },
-    );
-    for _ in 0..10 {
-        if drained(&game) {
-            break;
-        }
-        let player = game.decision_owner().expect("priority");
-        submit_ok(&mut game, player, Action::Pass);
-    }
-    assert!(drained(&game));
-    assert_eq!(
-        game.state.player(P0).hand.len(),
-        before[0],
-        "cast Shock (-1), Teddy draw (+1)"
-    );
-    assert_eq!(game.state.player(P1).hand.len(), before[1] + 1);
-}
-
-#[test]
 fn goblin_war_strike_damages_target_player_for_each_goblin() {
     let mut game = fixture(88)
         .hand(P0, &[card("Goblin War Strike")])
@@ -447,4 +371,172 @@ fn goblin_war_strike_damages_target_player_for_each_goblin() {
         submit_ok(&mut game, player, Action::Pass);
     }
     assert_eq!(game.state.player(P1).life, life - 2);
+}
+
+#[test]
+fn volley_opponent_only_target_and_source_left_runtime_count() {
+    let mut game = fixture(89)
+        .hand(P0, &[card("Volley Veteran"), CardId::Unsummon])
+        .battlefield(
+            P0,
+            &[
+                CardId::Mountain,
+                CardId::Mountain,
+                CardId::Mountain,
+                CardId::Mountain,
+                CardId::Island,
+            ],
+        )
+        .battlefield(P1, &[CardId::GrizzlyBears, CardId::RuneclawBear])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    add_permanent(&mut game, P0, CardId::GoblinInstigator);
+    add_permanent(&mut game, P0, CardId::GoblinInstigator);
+    let own_goblin = game
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == CardId::GoblinInstigator)
+        .unwrap()
+        .id;
+    let target = battlefield_card(&game, P1, CardId::GrizzlyBears);
+    let veteran = hand_card(&game, P0, card("Volley Veteran"));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: veteran,
+            targets: Vec::new(),
+        },
+    );
+    for _ in 0..8 {
+        if matches!(game.state.pending, Some(Pending::TriggerTarget { .. })) {
+            break;
+        }
+        let player = game.decision_owner().expect("priority");
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    // Only opponent creatures are offered; a forged own-creature target is refused.
+    assert!(
+        matches!(game.state.pending, Some(Pending::TriggerTarget { .. })),
+        "target choice is offered; pending={:?} stack={:?}",
+        game.state.pending,
+        game.state.stack
+    );
+    let before = aperture_core::digest::digest(&game.state);
+    let err = submit_err(
+        &mut game,
+        P0,
+        Action::ChooseTriggerTarget {
+            target: Target::Permanent(own_goblin),
+        },
+    );
+    assert!(
+        err.to_string().to_lowercase().contains("legal target"),
+        "{err}"
+    );
+    assert_eq!(aperture_core::digest::digest(&game.state), before);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::ChooseTriggerTarget {
+            target: Target::Permanent(target),
+        },
+    );
+    // Bounce Volley before the trigger resolves: X counts the two remaining Goblins.
+    let veteran_on_stack = game
+        .state
+        .stack
+        .iter()
+        .find(|item| item.card == card("Volley Veteran"))
+        .unwrap()
+        .object;
+    let unsummon = hand_card(&game, P0, CardId::Unsummon);
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: unsummon,
+            targets: vec![Target::Permanent(veteran_on_stack)],
+        },
+    );
+    for _ in 0..20 {
+        if drained(&game) {
+            break;
+        }
+        let player = game.decision_owner().expect("priority");
+        submit_ok(&mut game, player, Action::Pass);
+    }
+    assert!(drained(&game));
+    assert!(
+        !game.state.battlefield(P1).iter().any(|o| o.id == target),
+        "2 remaining Goblins deal lethal 2 to a 2/2; target={:?}",
+        game.state.try_object(target)
+    );
+}
+
+#[test]
+fn razorclaw_triggers_once_with_two_blockers_and_not_when_unblocked() {
+    let mut game = fixture(90)
+        .battlefield(P0, &[card("Razorclaw Bear")])
+        .battlefield(P1, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bear = battlefield_card(&game, P0, card("Razorclaw Bear"));
+    let blockers: Vec<ObjectId> = game
+        .state
+        .battlefield(P1)
+        .into_iter()
+        .map(|o| o.id)
+        .collect();
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![bear],
+            defender: Some(P1),
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| matches!(g.state.pending, Some(Pending::DeclareBlockers { .. })),
+        64
+    ));
+    submit_ok(
+        &mut game,
+        P1,
+        Action::DeclareBlockers {
+            blocks: vec![
+                BlockDecl {
+                    blocker: blockers[0],
+                    attacker: bear,
+                },
+                BlockDecl {
+                    blocker: blockers[1],
+                    attacker: bear,
+                },
+            ],
+        },
+    );
+    assert!(run_until(
+        &mut game,
+        &mut log,
+        |g| g.state.pending.is_none()
+            && g.state.stack.is_empty()
+            && g.state.trigger_queue.is_empty(),
+        64
+    ));
+    assert_eq!(
+        game.state.object(bear).power(),
+        5,
+        "one BecomesBlocked event, not one per blocker"
+    );
 }

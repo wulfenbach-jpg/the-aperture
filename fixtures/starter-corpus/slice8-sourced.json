@@ -22,7 +22,8 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Soul%27s%20Attendant",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
   },
   {
    "name": "Razorclaw Bear",
@@ -42,7 +43,8 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Razorclaw%20Bear",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
   },
   {
    "name": "Volley Veteran",
@@ -62,7 +64,8 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Volley%20Veteran",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
   },
   {
    "name": "Brightstone Ritual",
@@ -82,7 +85,10 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Brightstone%20Ritual",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "excluded",
+   "status": "excluded",
+   "exclusion_reason": "bounded mana representation saturates >255"
   },
   {
    "name": "Aetherize",
@@ -102,7 +108,8 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Aetherize",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
   },
   {
    "name": "Dramatic Reversal",
@@ -122,7 +129,8 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Dramatic%20Reversal",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
   },
   {
    "name": "Friendly Teddy",
@@ -140,7 +148,10 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Friendly%20Teddy",
-   "retrieved_at": "2026-10-26T12:50:12Z"
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "excluded",
+   "status": "excluded",
+   "exclusion_reason": "each-player draw continuation/APNAP not complete"
   },
   {
    "name": "Goblin War Strike",
@@ -160,7 +171,8 @@
    "keywords": [],
    "legalities_commander": "legal",
    "printing_url": "https://api.scryfall.com/cards/named?exact=Goblin%20War%20Strike",
-   "retrieved_at": "2026-10-26T12:53:23Z"
+   "retrieved_at": "2026-10-26T12:53:23Z",
+   "role": "implemented"
   }
  ]
 }

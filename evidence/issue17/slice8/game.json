@@ -1,36 +1,30 @@
 {
-  "commander_damage": [
-    {
-      "amount": 6,
-      "commander": 1,
-      "recipient": 1
-    }
-  ],
+  "commander_damage": [],
   "commander_damage_totals": [
     {
       "commander": 1,
       "recipient": 1,
-      "total": 6
+      "total": 12
     },
     {
       "commander": 1,
       "recipient": 2,
-      "total": 4
+      "total": 10
     },
     {
       "commander": 1,
       "recipient": 3,
-      "total": 4
-    },
-    {
-      "commander": 4,
-      "recipient": 0,
       "total": 8
     },
     {
       "commander": 4,
+      "recipient": 1,
+      "total": 14
+    },
+    {
+      "commander": 4,
       "recipient": 2,
-      "total": 6
+      "total": 10
     }
   ],
   "commanders": [
@@ -53,48 +47,48 @@
   ],
   "counts": {
     "abilities_declined": 0,
-    "abilities_resolved": 6,
+    "abilities_resolved": 14,
     "ability_activations": 0,
-    "attacks": 29,
-    "blocks": 2,
-    "casts": 17,
-    "commander_damage_events": 14,
+    "attacks": 41,
+    "blocks": 0,
+    "casts": 14,
+    "commander_damage_events": 27,
     "commander_damage_losses": 0,
     "counterspells": 0,
     "damage_events": 79,
-    "events": 4087,
-    "triggered_abilities": 6
+    "events": 5792,
+    "triggered_abilities": 14
   },
   "decider": null,
   "decision_sources": {
-    "heuristic": 1600
+    "heuristic": 2319
   },
-  "final_digest": "6fea3673e366e3b0e8622556638bdfaf9c711575dd3dd66dbb16f2cbeecde87f",
+  "final_digest": "ffb0e678e8e3956cea837154bc9f622bc5f0220d09b6bbd1f70dfec518b7e1ee",
   "first_player": 3,
   "policies": "heuristic vs heuristic vs heuristic vs heuristic",
   "policy_notes": [],
-  "pool_size": 114,
+  "pool_size": 112,
   "profile": "commander-combat-practice-40",
   "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
   "replay_digest_matches": true,
   "replay_error": null,
-  "replay_steps": 1600,
+  "replay_steps": 2319,
   "rules_revision": "2026-09-25",
   "schema": "aperture-selfplay/2",
   "seat_count": 4,
   "seats": [
     {
       "cards": 40,
-      "library": 0,
-      "life": -5,
+      "library": 14,
+      "life": 26,
       "name": "package-slice8",
       "seat": 0,
       "source": "decks/package-slice8.txt"
     },
     {
       "cards": 40,
-      "library": 19,
-      "life": 10,
+      "library": 0,
+      "life": -4,
       "name": "package-slice8",
       "seat": 1,
       "source": "decks/package-slice8.txt"
@@ -110,7 +104,7 @@
     {
       "cards": 40,
       "library": 0,
-      "life": -4,
+      "life": -5,
       "name": "package-slice8",
       "seat": 3,
       "source": "decks/package-slice8.txt"
@@ -119,9 +113,9 @@
   "seed": 801,
   "starting_life": 40,
   "status": "terminal",
-  "steps": 1600,
+  "steps": 2319,
   "truncated": null,
-  "turns": 40,
-  "winner": 1,
-  "winner_label": "P1"
+  "turns": 61,
+  "winner": 0,
+  "winner_label": "P0"
 }

@@ -98,7 +98,13 @@ fn slice6_cards() -> Vec<Value> {
 
 fn slice8_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE8_SOURCED).expect("sourced slice8 JSON");
-    value["cards"].as_array().expect("cards").to_vec()
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| card["role"] != "excluded")
+        .cloned()
+        .collect()
 }
 
 fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {

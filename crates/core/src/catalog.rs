@@ -66,7 +66,6 @@ const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
 const INSTANT: &[Kind] = &[Kind::Instant];
 const SORCERY: &[Kind] = &[Kind::Sorcery];
-const ARTIFACT_CREATURE: &[Kind] = &[Kind::Artifact, Kind::Creature];
 
 macro_rules! card {
     (
@@ -175,7 +174,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 114] = [
+pub static CARDS: [CardDef; 112] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -364,12 +363,6 @@ pub static CARDS: [CardDef; 114] = [
         oracle: "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.", spell: None
     ),
     card!(
-        BrightstoneRitual, "Brightstone Ritual", cost: Some("{R}"), kinds: INSTANT, basic: None,
-        type_line: "Instant", power: None, toughness: None,
-        oracle: "Add {R} for each Goblin on the battlefield.",
-        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::AddManaForEachGoblin] })
-    ),
-    card!(
         Aetherize, "Aetherize", cost: Some("{3}{U}"), kinds: INSTANT, basic: None,
         type_line: "Instant", power: None, toughness: None,
         oracle: "Return all attacking creatures to their owner's hand.",
@@ -380,11 +373,6 @@ pub static CARDS: [CardDef; 114] = [
         type_line: "Instant", power: None, toughness: None,
         oracle: "Untap all nonland permanents you control.",
         spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::UntapAllNonlandsYouControl] })
-    ),
-    card!(
-        FriendlyTeddy, "Friendly Teddy", cost: Some("{2}"), kinds: ARTIFACT_CREATURE, basic: None,
-        type_line: "Artifact Creature — Bear Toy", power: Some(2), toughness: Some(2),
-        oracle: "When this creature dies, each player draws a card.", spell: None
     ),
     card!(
         GoblinWarStrike, "Goblin War Strike", cost: Some("{R}"), kinds: SORCERY, basic: None,

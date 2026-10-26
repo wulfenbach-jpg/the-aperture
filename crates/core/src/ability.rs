@@ -307,14 +307,6 @@ const VOLLEY_VETERAN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::DamageTargetCreatureForEachGoblin],
 })];
 
-const FRIENDLY_TEDDY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
-    text: "When this creature dies, each player draws a card.",
-    event: TriggerEvent::Dies,
-    optional: false,
-    target: TargetSpec::None,
-    effects: &[Effect::EachPlayerDraws(1)],
-})];
-
 const TATYOVA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
     event: TriggerEvent::LandEnters,
@@ -446,7 +438,6 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::SoulsAttendant => SOULS_ATTENDANT,
         CardId::RazorclawBear => RAZORCLAW_BEAR,
         CardId::VolleyVeteran => VOLLEY_VETERAN,
-        CardId::FriendlyTeddy => FRIENDLY_TEDDY,
         CardId::StripedBears => STRIPED_BEARS,
         CardId::Guttersnipe => GUTTERSNIPE,
         CardId::TatyovaBenthicDruid => TATYOVA,

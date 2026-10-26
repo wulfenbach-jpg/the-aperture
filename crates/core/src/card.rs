@@ -43,7 +43,6 @@ pub enum Kind {
     Creature,
     Instant,
     Sorcery,
-    Artifact,
 }
 
 impl Kind {
@@ -53,7 +52,6 @@ impl Kind {
             Kind::Creature => "Creature",
             Kind::Instant => "Instant",
             Kind::Sorcery => "Sorcery",
-            Kind::Artifact => "Artifact",
         }
     }
 }
@@ -148,15 +146,11 @@ pub enum Effect {
     /// Damage to the spell's target player equal to the number of Goblins its
     /// controller controls (Goblin War Strike).
     DamageTargetPlayerForEachGoblin,
-    /// Add one red mana for each Goblin on the battlefield (Brightstone Ritual).
-    AddManaForEachGoblin,
     /// Return every attacking creature to its owner's hand (Aetherize).
     ReturnAllAttackersToHand,
     /// Untap every nonland permanent the effect's controller controls
     /// (Dramatic Reversal).
     UntapAllNonlandsYouControl,
-    /// Each player draws N cards (Friendly Teddy).
-    EachPlayerDraws(u8),
 }
 
 impl Effect {
@@ -199,16 +193,12 @@ impl Effect {
             Effect::DamageTargetPlayerForEachGoblin => {
                 "deal damage to the target player equal to Goblins you control".to_string()
             }
-            Effect::AddManaForEachGoblin => {
-                "add {R} for each Goblin on the battlefield".to_string()
-            }
             Effect::ReturnAllAttackersToHand => {
                 "return all attacking creatures to hand".to_string()
             }
             Effect::UntapAllNonlandsYouControl => {
                 "untap all nonland permanents you control".to_string()
             }
-            Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
             Effect::MillSelf(n) => format!("mill {n}"),
             Effect::MillEachOpponent(n) => format!("each opponent mills {n}"),
             Effect::AddMana { color, amount } => {
@@ -381,10 +371,8 @@ pub enum CardId {
     SoulsAttendant,
     RazorclawBear,
     VolleyVeteran,
-    BrightstoneRitual,
     Aetherize,
     DramaticReversal,
-    FriendlyTeddy,
     GoblinWarStrike,
     DrakeToken,
     DragonFodder,

@@ -1,3 +1,3 @@
-replay seed 801 — 4 seat(s), 1600 action(s), recorded outcome Some(Win { winner: 1, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
-  certified session save of the finished game written to evidence/issue17/slice8/save.json (digest 6fea3673e366)
-  replayed digest 6fea3673e366 | matches recorded | events 4087
+replay seed 801 — 4 seat(s), 2319 action(s), recorded outcome Some(Win { winner: 0, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  certified session save of the finished game written to evidence/issue17/slice8/save.json (digest ffb0e678e8e3)
+  replayed digest ffb0e678e8e3 | matches recorded | events 5792
