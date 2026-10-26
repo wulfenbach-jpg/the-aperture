@@ -89,29 +89,57 @@ pub struct AbilityCost {
     pub sacrifice_source: bool,
     /// Mana cost as printed, paid from the pool and untapped basic lands.
     pub mana: Option<&'static str>,
+    /// "Discard a land card": the activating player discards one land card from
+    /// their hand as part of paying the cost (CR 118.3, 602.2b). The card is
+    /// chosen by the activator and named in the action, never by the engine.
+    pub discard_land: bool,
+    /// "Exile N cards from your graveyard": the activating player exiles that
+    /// many cards from their own graveyard as part of the cost.
+    pub exile_graveyard_cards: u8,
+    /// "Exile this card from your graveyard": the ability is activated from the
+    /// graveyard and the source card itself is exiled to pay the cost, so the
+    /// source is already in exile when the ability is put on the stack.
+    pub exile_source_from_graveyard: bool,
 }
 
 impl AbilityCost {
-    pub const TAP: AbilityCost = AbilityCost {
-        tap: true,
+    /// No cost at all: every component off.
+    pub const NONE: AbilityCost = AbilityCost {
+        tap: false,
         sacrifice_source: false,
         mana: None,
+        discard_land: false,
+        exile_graveyard_cards: 0,
+        exile_source_from_graveyard: false,
+    };
+    pub const TAP: AbilityCost = AbilityCost {
+        tap: true,
+        ..AbilityCost::NONE
     };
     pub const SACRIFICE_SELF: AbilityCost = AbilityCost {
-        tap: false,
         sacrifice_source: true,
-        mana: None,
+        ..AbilityCost::NONE
     };
     pub const fn mana(cost: &'static str) -> AbilityCost {
         AbilityCost {
-            tap: false,
-            sacrifice_source: false,
             mana: Some(cost),
+            ..AbilityCost::NONE
         }
     }
 
+    /// How many cards the activator must name to pay this cost. The engine
+    /// validates the named cards against the source's zone rules; it never
+    /// picks them itself.
+    pub fn card_cost_count(self) -> usize {
+        usize::from(self.discard_land) + self.exile_graveyard_cards as usize
+    }
+
     pub fn is_free(self) -> bool {
-        !self.tap && !self.sacrifice_source && self.mana.is_none()
+        !self.tap
+            && !self.sacrifice_source
+            && self.mana.is_none()
+            && self.card_cost_count() == 0
+            && !self.exile_source_from_graveyard
     }
 
     /// Printed cost text, e.g. `"{T}"`, `"{1}{G}"`, `"Sacrifice this permanent"`.
@@ -125,6 +153,18 @@ impl AbilityCost {
         }
         if self.sacrifice_source {
             parts.push("Sacrifice this permanent".to_string());
+        }
+        if self.discard_land {
+            parts.push("Discard a land card".to_string());
+        }
+        if self.exile_graveyard_cards > 0 {
+            parts.push(format!(
+                "Exile {} card(s) from your graveyard",
+                self.exile_graveyard_cards
+            ));
+        }
+        if self.exile_source_from_graveyard {
+            parts.push("Exile this card from your graveyard".to_string());
         }
         if parts.is_empty() {
             "no cost".to_string()
@@ -154,6 +194,9 @@ pub struct ActivatedAbility {
     pub effects: &'static [Effect],
     /// "Activate only once each turn" (CR 602.5b restriction).
     pub once_per_turn: bool,
+    /// "Activate only as a sorcery" (CR 307.5): the ability may be activated
+    /// only during its controller's main phase, while the stack is empty.
+    pub sorcery_timing: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -223,6 +266,7 @@ const TORCHER: &[Ability] = &[Ability::Activated(ActivatedAbility {
     modes: SINGLE_MODE,
     effects: &[Effect::Damage(1)],
     once_per_turn: false,
+    sorcery_timing: false,
 })];
 
 const ROOTWALLA: &[Ability] = &[Ability::Activated(ActivatedAbility {
@@ -232,6 +276,7 @@ const ROOTWALLA: &[Ability] = &[Ability::Activated(ActivatedAbility {
     modes: SINGLE_MODE,
     effects: &[Effect::PumpSource(2, 2)],
     once_per_turn: true,
+    sorcery_timing: false,
 })];
 
 const BRINDLE_BOAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
@@ -241,6 +286,7 @@ const BRINDLE_BOAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
     modes: SINGLE_MODE,
     effects: &[Effect::GainLife(4)],
     once_per_turn: false,
+    sorcery_timing: false,
 })];
 
 const ELVISH_VISIONARY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
@@ -346,6 +392,7 @@ const COMMANDERS_SPHERE: &[Ability] = &[Ability::Activated(ActivatedAbility {
     modes: SINGLE_MODE,
     effects: &[Effect::Draw(1)],
     once_per_turn: false,
+    sorcery_timing: false,
 })];
 
 const MIND_STONE: &[Ability] = &[Ability::Activated(ActivatedAbility {
@@ -354,11 +401,13 @@ const MIND_STONE: &[Ability] = &[Ability::Activated(ActivatedAbility {
         tap: true,
         sacrifice_source: true,
         mana: Some("{1}"),
+        ..AbilityCost::NONE
     },
     target: TargetSpec::None,
     modes: SINGLE_MODE,
     effects: &[Effect::Draw(1)],
     once_per_turn: false,
+    sorcery_timing: false,
 })];
 
 const HEDRON_ARCHIVE: &[Ability] = &[Ability::Activated(ActivatedAbility {
@@ -367,11 +416,13 @@ const HEDRON_ARCHIVE: &[Ability] = &[Ability::Activated(ActivatedAbility {
         tap: true,
         sacrifice_source: true,
         mana: Some("{2}"),
+        ..AbilityCost::NONE
     },
     target: TargetSpec::None,
     modes: SINGLE_MODE,
     effects: &[Effect::Draw(2)],
     once_per_turn: false,
+    sorcery_timing: false,
 })];
 
 const TATYOVA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
@@ -405,6 +456,7 @@ const KRENKO: &[Ability] = &[Ability::Activated(ActivatedAbility {
     modes: SINGLE_MODE,
     effects: &[Effect::CreateGoblinTokensForEachGoblin],
     once_per_turn: false,
+    sorcery_timing: false,
 })];
 
 const GOBLIN_INSTIGATOR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
@@ -437,6 +489,56 @@ const SOUL_WARDEN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     optional: false,
     target: TargetSpec::None,
     effects: &[Effect::GainLife(1)],
+})];
+
+/// Ayula's Influence: the first pool card whose cost is paid with a card from
+/// hand. The land is named by the activator in `cost_cards`; the engine only
+/// checks that it is a land card in that player's hand.
+const AYULAS_INFLUENCE: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Discard a land card: Create a 2/2 green Bear creature token.",
+    cost: AbilityCost {
+        discard_land: true,
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::CreateBearTokens(1)],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
+/// Bearscape: a mana cost plus two named cards from the activator's own
+/// graveyard, exiled as the cost (CR 118.3). Nothing about the cost reads the
+/// cards' types, so any two cards qualify.
+const BEARSCAPE: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.",
+    cost: AbilityCost {
+        mana: Some("{1}{G}"),
+        exile_graveyard_cards: 2,
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::CreateBearTokens(1)],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
+/// Mother Bear: activated from the graveyard, exiling the card itself as the
+/// cost. "Activate only as a sorcery" is modelled as the CR 307.5 timing
+/// restriction on the activated ability.
+const MOTHER_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.",
+    cost: AbilityCost {
+        mana: Some("{3}{G}{G}"),
+        exile_source_from_graveyard: true,
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::CreateBearTokens(2)],
+    once_per_turn: false,
+    sorcery_timing: true,
 })];
 
 /// "When this creature enters or dies, mill three cards." One printed ability
@@ -507,6 +609,9 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::ProfessorOfZoomancy => PROFESSOR,
         CardId::PestToken => PEST_DIES,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
+        CardId::AyulasInfluence => AYULAS_INFLUENCE,
+        CardId::Bearscape => BEARSCAPE,
+        CardId::MotherBear => MOTHER_BEAR,
         CardId::MindStone => MIND_STONE,
         CardId::HedronArchive => HEDRON_ARCHIVE,
         CardId::SoulsAttendant => SOULS_ATTENDANT,

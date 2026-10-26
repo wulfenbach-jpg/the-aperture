@@ -1,0 +1,68 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T20:07:18.470199+00:00",
+ "note": "Slice-15 Bear-token package: three records, one per sourced card. Each record is the exact Scryfall printing the catalog string was copied from.",
+ "cards": [
+  {
+   "name": "Ayula's Influence",
+   "oracle_id": "25d955e3-2b98-4a75-bb51-6072000111be",
+   "scryfall_id": "1b9296ca-39a8-4aad-be92-0a56c704e950",
+   "set": "mh1",
+   "collector_number": "156",
+   "layout": "normal",
+   "mana_cost": "{G}{G}{G}",
+   "type_line": "Enchantment",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Discard a land card: Create a 2/2 green Bear creature token.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/1b9296ca-39a8-4aad-be92-0a56c704e950",
+   "retrieved_at": "2026-10-26T20:07:18.606371+00:00"
+  },
+  {
+   "name": "Bearscape",
+   "oracle_id": "7e481e22-4122-4259-8978-4727eb307195",
+   "scryfall_id": "3284b61a-bd95-4846-ad3f-903cd1158867",
+   "set": "ody",
+   "collector_number": "229",
+   "layout": "normal",
+   "mana_cost": "{1}{G}{G}",
+   "type_line": "Enchantment",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "{1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/3284b61a-bd95-4846-ad3f-903cd1158867",
+   "retrieved_at": "2026-10-26T20:07:19.221766+00:00"
+  },
+  {
+   "name": "Mother Bear",
+   "oracle_id": "fe742976-ef13-4c25-972f-254b1ed436de",
+   "scryfall_id": "efae4d84-8134-461a-a352-a5bdff7259a7",
+   "set": "mh1",
+   "collector_number": "171",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Creature — Bear",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/efae4d84-8134-461a-a352-a5bdff7259a7",
+   "retrieved_at": "2026-10-26T20:07:25.521369+00:00"
+  }
+ ]
+}

@@ -50,6 +50,12 @@ pub enum Kind {
     Instant,
     Sorcery,
     Artifact,
+    /// CR 303: an enchantment permanent. Slice 15 adds the first two pool
+    /// cards of this kind (Ayula's Influence, Bearscape); they behave as
+    /// ordinary noncreature permanents with activated abilities and are not
+    /// creatures, so nothing in combat or the layer system treats them
+    /// specially.
+    Enchantment,
 }
 
 impl Kind {
@@ -60,6 +66,7 @@ impl Kind {
             Kind::Instant => "Instant",
             Kind::Sorcery => "Sorcery",
             Kind::Artifact => "Artifact",
+            Kind::Enchantment => "Enchantment",
         }
     }
 }
@@ -169,6 +176,9 @@ pub enum Effect {
     CreateBeastToken,
     /// Create one 1/1 black and green Pest token with its dies trigger.
     CreatePestToken,
+    /// Create N 2/2 green Bear creature tokens (Ayula's Influence, Bearscape,
+    /// Mother Bear).
+    CreateBearTokens(u8),
 }
 
 impl Effect {
@@ -234,6 +244,7 @@ impl Effect {
             Effect::PutPlusOneCounterOnSource => "put a +1/+1 counter on this creature".to_string(),
             Effect::CreateBeastToken => "create a 4/4 green Beast token".to_string(),
             Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
+            Effect::CreateBearTokens(n) => format!("create {n} 2/2 green Bear token(s)"),
         }
     }
 }
@@ -291,6 +302,12 @@ impl CardDef {
 
     pub fn is_artifact(&self) -> bool {
         self.kinds.contains(&Kind::Artifact)
+    }
+
+    /// CR 303.1: an enchantment card. Enchantments are permanents but never
+    /// creatures, so combat, blocking and the layer system ignore them.
+    pub fn is_enchantment(&self) -> bool {
+        self.kinds.contains(&Kind::Enchantment)
     }
 
     pub fn has_flying(&self) -> bool {
@@ -365,11 +382,13 @@ impl CardDef {
     pub fn spell_spec(&self) -> Option<SpellSpec> {
         match self.spell {
             Some(spec) => Some(spec),
-            None if self.is_creature() || self.is_artifact() => Some(SpellSpec {
-                target: TargetSpec::None,
-                instant: false,
-                effects: NO_EFFECTS,
-            }),
+            None if self.is_creature() || self.is_artifact() || self.is_enchantment() => {
+                Some(SpellSpec {
+                    target: TargetSpec::None,
+                    instant: false,
+                    effects: NO_EFFECTS,
+                })
+            }
             None => None,
         }
     }
@@ -377,7 +396,7 @@ impl CardDef {
     /// A creature spell becomes a permanent on resolution rather than going to
     /// the graveyard (CR 608.3).
     pub fn is_permanent_spell(&self) -> bool {
-        self.is_creature() || self.is_artifact()
+        self.is_creature() || self.is_artifact() || self.is_enchantment()
     }
 }
 
@@ -436,11 +455,15 @@ pub enum CardId {
     FellwarStone,
     Werebear,
     CommandersSphere,
+    AyulasInfluence,
+    Bearscape,
+    MotherBear,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,
     BeastToken,
     PestToken,
+    BearToken,
     BrightstoneRitual,
     ManaGeyser,
     RiteOfFlame,
@@ -542,6 +565,7 @@ pub const TOKEN_CARDS: &[CardId] = &[
     CardId::DrakeToken,
     CardId::BeastToken,
     CardId::PestToken,
+    CardId::BearToken,
 ];
 
 impl CardId {

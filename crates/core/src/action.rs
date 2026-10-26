@@ -93,6 +93,22 @@ pub enum Action {
         mode: u8,
         targets: Vec<Target>,
     },
+    /// CR 118.3 + 602.2b: activate an ability whose printed cost includes
+    /// cards ("Discard a land card", "Exile two cards from your graveyard").
+    /// The activator names those cards; the engine validates each one against
+    /// the cost the card actually prints and the zone that cost reads, so a
+    /// caller can never supply a cost the card does not have. Abilities with
+    /// no card cost are still activated through [`Action::ActivateAbility`],
+    /// which keeps every pre-existing replay and test literal valid.
+    ActivateCostedAbility {
+        source: ObjectId,
+        ability: u8,
+        mode: u8,
+        targets: Vec<Target>,
+        /// Cards named to pay the cost, in the order the printed cost reads
+        /// them (the land to discard first, then the graveyard cards).
+        cost_cards: Vec<ObjectId>,
+    },
     /// CR 603.3d: choose the targets for a triggered ability being put on the
     /// stack.
     ChooseTriggerTarget {
@@ -124,6 +140,7 @@ impl Action {
             Action::AnswerCommanderReplacement { .. } => "commander replacement choice",
             Action::AnswerCommanderDraw { .. } => "commander draw replacement choice",
             Action::ActivateAbility { .. } => "activate ability",
+            Action::ActivateCostedAbility { .. } => "activate ability",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
         }

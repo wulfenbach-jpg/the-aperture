@@ -249,9 +249,7 @@
       "status": "planned",
       "deck_path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
       "missing_cards": [
-        "Ayula's Influence",
         "Ayula, Queen Among Bears",
-        "Bearscape",
         "Beorn the Fierce",
         "Beorn's Hospitality",
         "Caller of the Claw",
@@ -270,7 +268,6 @@
         "Lightning Greaves",
         "Little Bear",
         "Lumra, Bellow of the Woods",
-        "Mother Bear",
         "Owlbear Cub",
         "Rampaging Yao Guai",
         "Ruxa, Patient Professor",

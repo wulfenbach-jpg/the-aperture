@@ -1,0 +1,7 @@
+// 40-card slice-15 evidence package: Bear tokens paid for with cards.
+// Practice package, NOT one of the eight desired 100-card starters.
+14 Forest
+4 Ayula's Influence
+4 Bearscape
+4 Mother Bear
+14 Grizzly Bears

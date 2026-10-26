@@ -1568,7 +1568,32 @@ impl Game {
                 ability,
                 mode,
                 targets,
-            } => self.validate_activate_ability(player, *source, *ability, *mode, targets),
+            } => self.validate_activate_ability(
+                player,
+                ActivationRequest {
+                    source: *source,
+                    ability: *ability,
+                    mode: *mode,
+                    targets,
+                    cost_cards: &[],
+                },
+            ),
+            Action::ActivateCostedAbility {
+                source,
+                ability,
+                mode,
+                targets,
+                cost_cards,
+            } => self.validate_activate_ability(
+                player,
+                ActivationRequest {
+                    source: *source,
+                    ability: *ability,
+                    mode: *mode,
+                    targets,
+                    cost_cards,
+                },
+            ),
             Action::ChooseTriggerTarget { target } => match &state.pending {
                 Some(Pending::TriggerTarget {
                     player: p, legal, ..
@@ -2362,7 +2387,34 @@ impl Game {
                 ability,
                 mode,
                 targets,
-            } => self.apply_activate_ability(player, *source, *ability, *mode, targets, events),
+            } => self.apply_activate_ability(
+                player,
+                ActivationRequest {
+                    source: *source,
+                    ability: *ability,
+                    mode: *mode,
+                    targets,
+                    cost_cards: &[],
+                },
+                events,
+            ),
+            Action::ActivateCostedAbility {
+                source,
+                ability,
+                mode,
+                targets,
+                cost_cards,
+            } => self.apply_activate_ability(
+                player,
+                ActivationRequest {
+                    source: *source,
+                    ability: *ability,
+                    mode: *mode,
+                    targets,
+                    cost_cards,
+                },
+                events,
+            ),
             Action::ChooseTriggerTarget { target } => {
                 self.apply_trigger_target(player, *target, events)
             }
@@ -2586,11 +2638,15 @@ impl Game {
     fn validate_activate_ability(
         &self,
         player: PlayerId,
-        source: ObjectId,
-        index: u8,
-        mode: u8,
-        targets: &[Target],
+        request: ActivationRequest<'_>,
     ) -> Result<(), EngineError> {
+        let ActivationRequest {
+            source,
+            ability: index,
+            mode,
+            targets,
+            cost_cards,
+        } = request;
         if self.state.pending.is_some() {
             return Err(EngineError::illegal(
                 "activate ability",
@@ -2601,27 +2657,6 @@ impl Game {
             .state
             .try_object(source)
             .ok_or(EngineError::UnknownObject)?;
-        if object.zone != Zone::Battlefield {
-            return Err(EngineError::WrongZone {
-                name: object.card.def().name,
-                zone: "battlefield",
-            });
-        }
-        if object.controller != player {
-            return Err(EngineError::illegal(
-                "activate ability",
-                format!(
-                    "only {}'s controller may activate its abilities (CR 602.2)",
-                    object.card.def().name
-                ),
-            ));
-        }
-        if self.state.turn.priority != Some(player) {
-            return Err(EngineError::BadTiming {
-                name: object.card.def().name,
-                reason: "that player does not have priority (CR 602.2)".to_string(),
-            });
-        }
         let Some(activated) = ability::abilities(object.card)
             .get(index as usize)
             .and_then(Ability::activated)
@@ -2634,6 +2669,54 @@ impl Game {
                 ),
             ));
         };
+        // CR 602.2: an ability is activated from the zone its cost can pay for.
+        // The pool's only graveyard ability exiles its own card as the cost, so
+        // that is the only reason a non-battlefield object is ever offered.
+        if activated.cost.exile_source_from_graveyard {
+            if object.zone != Zone::Graveyard {
+                return Err(EngineError::WrongZone {
+                    name: object.card.def().name,
+                    zone: "graveyard",
+                });
+            }
+            if object.owner != player {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "only {}'s owner may activate it from their graveyard (CR 602.2)",
+                        object.card.def().name
+                    ),
+                ));
+            }
+        } else {
+            if object.zone != Zone::Battlefield {
+                return Err(EngineError::WrongZone {
+                    name: object.card.def().name,
+                    zone: "battlefield",
+                });
+            }
+            if object.controller != player {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "only {}'s controller may activate its abilities (CR 602.2)",
+                        object.card.def().name
+                    ),
+                ));
+            }
+        }
+        if self.state.turn.priority != Some(player) {
+            return Err(EngineError::BadTiming {
+                name: object.card.def().name,
+                reason: "that player does not have priority (CR 602.2)".to_string(),
+            });
+        }
+        if activated.sorcery_timing && !self.is_sorcery_timing(player) {
+            return Err(EngineError::BadTiming {
+                name: object.card.def().name,
+                reason: "that ability can be activated only as a sorcery: during its controller's main phase, with the stack empty (CR 307.5)".to_string(),
+            });
+        }
         if mode as usize >= activated.modes.len() {
             return Err(EngineError::illegal(
                 "activate ability",
@@ -2688,6 +2771,101 @@ impl Game {
             let cost = mana::parse_cost(mana_cost);
             self.plan_payment(player, &cost)?;
         }
+        self.validate_card_costs(player, object.card, activated.cost, cost_cards)?;
+        Ok(())
+    }
+
+    /// CR 307.5: "Activate only as a sorcery" — the activator's own main phase
+    /// with an empty stack.
+    fn is_sorcery_timing(&self, player: PlayerId) -> bool {
+        self.state.turn.active == player
+            && matches!(
+                self.state.turn.step,
+                crate::state::Step::PrecombatMain | crate::state::Step::PostcombatMain
+            )
+            && self.state.stack.is_empty()
+    }
+
+    /// CR 118.3 + 602.2b: every card the activator named must exist, be unique
+    /// in the list, and be in the zone the printed cost reads. Lands discarded
+    /// to Ayula's Influence come from the hand and must be land cards; the
+    /// cards exiled to Bearscape come from the activator's own graveyard; the
+    /// exiling source of Mother Bear is named by the ability, not by the
+    /// activator, so it is not part of `cost_cards`.
+    fn validate_card_costs(
+        &self,
+        player: PlayerId,
+        card: CardId,
+        cost: crate::ability::AbilityCost,
+        cost_cards: &[ObjectId],
+    ) -> Result<(), EngineError> {
+        let required = cost.card_cost_count();
+        if cost_cards.len() != required {
+            return Err(EngineError::illegal(
+                "activate ability",
+                format!(
+                    "{} costs exactly {required} named card(s), but {} were supplied (CR 118.3)",
+                    card.def().name,
+                    cost_cards.len()
+                ),
+            ));
+        }
+        let mut seen = std::collections::BTreeSet::new();
+        for id in cost_cards {
+            if !seen.insert(*id) {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "{} names the same card twice, so the cost cannot be paid (CR 118.3)",
+                        card.def().name
+                    ),
+                ));
+            }
+        }
+        let mut index = 0usize;
+        if cost.discard_land {
+            let id = cost_cards[index];
+            index += 1;
+            let in_hand = self.state.player(player).hand.contains(&id);
+            let Some(object) = self.state.try_object(id) else {
+                return Err(EngineError::UnknownObject);
+            };
+            if !in_hand || object.owner != player {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "{} must be a card in {}'s hand to be discarded (CR 118.3)",
+                        card.def().name,
+                        "the activator"
+                    ),
+                ));
+            }
+            if !object.card.def().is_land() {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "{} must discard a land card, and {} is not a land (CR 118.3)",
+                        card.def().name,
+                        object.card.def().name
+                    ),
+                ));
+            }
+        }
+        let graveyard_cards = cost.exile_graveyard_cards as usize;
+        if graveyard_cards > 0 {
+            let graveyard = &self.state.player(player).graveyard;
+            for id in &cost_cards[index..index + graveyard_cards] {
+                if !graveyard.contains(id) {
+                    return Err(EngineError::illegal(
+                        "activate ability",
+                        format!(
+                            "{} must exile cards from its activator's own graveyard (CR 118.3)",
+                            card.def().name
+                        ),
+                    ));
+                }
+            }
+        }
         Ok(())
     }
 
@@ -2701,12 +2879,16 @@ impl Game {
     fn apply_activate_ability(
         &mut self,
         player: PlayerId,
-        source: ObjectId,
-        index: u8,
-        _mode: u8,
-        targets: &[Target],
+        request: ActivationRequest<'_>,
         events: &mut Vec<Event>,
     ) {
+        let ActivationRequest {
+            source,
+            ability: index,
+            mode: _mode,
+            targets,
+            cost_cards,
+        } = request;
         let card = self.state.object(source).card;
         let Some(activated) = ability::abilities(card)
             .get(index as usize)
@@ -2720,6 +2902,17 @@ impl Game {
             if let Ok(payment) = self.plan_payment(player, &cost) {
                 self.apply_payment(player, payment, events);
             }
+        }
+        // CR 602.2b: the printed card costs are paid as part of activating.
+        // The named cards are already validated, so this only moves them.
+        let mut paid = 0usize;
+        if activated.cost.discard_land {
+            self.discard_as_cost(player, cost_cards[paid], events);
+            paid += 1;
+        }
+        let graveyard_cards = activated.cost.exile_graveyard_cards as usize;
+        for id in &cost_cards[paid..paid + graveyard_cards] {
+            self.move_to_exile(*id, events);
         }
         let target_labels = targets
             .iter()
@@ -2745,6 +2938,14 @@ impl Game {
         // is recorded afterwards and carries the source's card as LKI.
         if activated.cost.sacrifice_source {
             self.move_to_graveyard(source, events);
+        }
+        // CR 602.2b + 118.3: "Exile this card from your graveyard" is paid with
+        // the source itself, so the source has already left the graveyard when
+        // the ability is put on the stack. The stack entry keeps the card id,
+        // exactly like a sacrificed source, so resolution never needs the
+        // object to still exist.
+        if activated.cost.exile_source_from_graveyard {
+            self.move_to_exile(source, events);
         }
         self.state.stack.push(StackItem {
             object: source,
@@ -3346,6 +3547,26 @@ impl Game {
         new_library.append(&mut library);
         new_library.extend(bottom);
         self.state.players[player as usize].library = new_library;
+    }
+
+    /// Discard one card from hand as an activation cost (CR 118.3, 602.2b).
+    /// Unlike the cleanup discard this never touches pending state: the card
+    /// simply moves to the graveyard and the activation continues.
+    fn discard_as_cost(&mut self, player: PlayerId, card: ObjectId, events: &mut Vec<Event>) {
+        let Some(mut object) = self.detach_object(card) else {
+            return;
+        };
+        let card_id = object.card;
+        object.tapped = false;
+        object.damage = 0;
+        object.summoning_sick = false;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        self.insert_object(object, Zone::Graveyard);
+        events.push(Event::Discarded {
+            player,
+            card: card_id,
+        });
     }
 
     fn apply_discard(&mut self, player: PlayerId, cards: &[ObjectId], events: &mut Vec<Event>) {
@@ -5087,6 +5308,10 @@ impl Game {
                 self.create_tokens(controller, CardId::PestToken, 1, events);
                 false
             }
+            Effect::CreateBearTokens(n) => {
+                self.create_tokens(controller, CardId::BearToken, u32::from(n) as usize, events);
+                false
+            }
             Effect::AddManaForRiteOfFlame => {
                 let copies = self
                     .state
@@ -5607,49 +5832,154 @@ impl Game {
             }
         }
 
-        // Activated abilities (CR 602.2). Each legal target is its own option.
+        // Activated abilities (CR 602.2). Each legal target and each legal
+        // combination of named cost cards is its own option.
         for object in self.state.battlefield(player) {
-            let card = object.card;
-            for (index, ability) in crate::ability::abilities(card).iter().enumerate() {
-                let Ability::Activated(activated) = ability else {
-                    continue;
-                };
-                let targets: Vec<Vec<Target>> = if activated.target == TargetSpec::None {
-                    vec![Vec::new()]
-                } else {
-                    self.legal_targets(player, activated.target, object.id)
-                        .into_iter()
-                        .map(|target| vec![target])
-                        .collect()
-                };
-                for target_set in targets {
-                    let action = Action::ActivateAbility {
-                        source: object.id,
-                        ability: index as u8,
-                        mode: 0,
-                        targets: target_set.clone(),
+            self.push_activation_actions(player, object.id, object.card, &mut out);
+        }
+        // CR 602.2: an ability whose cost exiles its own card is activated from
+        // the graveyard, so it is offered from that zone and offered nowhere
+        // else (the validator refuses any other zone).
+        let graveyard_sources: Vec<(ObjectId, CardId)> = self
+            .state
+            .player(player)
+            .graveyard
+            .clone()
+            .into_iter()
+            .filter_map(|id| {
+                self.state
+                    .try_object(id)
+                    .map(|object| (object.id, object.card))
+            })
+            .filter(|(_, card)| {
+                crate::ability::abilities(*card).iter().any(|ability| {
+                    ability
+                        .activated()
+                        .is_some_and(|activated| activated.cost.exile_source_from_graveyard)
+                })
+            })
+            .collect();
+        for (source, card) in graveyard_sources {
+            self.push_activation_actions(player, source, card, &mut out);
+        }
+        out
+    }
+
+    /// Every legal way to activate one permanent's (or graveyard card's)
+    /// abilities: one entry per printed ability, target and legal set of named
+    /// cost cards. Nothing is offered that `validate` would refuse.
+    fn push_activation_actions(
+        &self,
+        player: PlayerId,
+        source: ObjectId,
+        card: CardId,
+        out: &mut Vec<LegalAction>,
+    ) {
+        for (index, ability) in crate::ability::abilities(card).iter().enumerate() {
+            let Ability::Activated(activated) = ability else {
+                continue;
+            };
+            let target_sets: Vec<Vec<Target>> = if activated.target == TargetSpec::None {
+                vec![Vec::new()]
+            } else {
+                self.legal_targets(player, activated.target, source)
+                    .into_iter()
+                    .map(|target| vec![target])
+                    .collect()
+            };
+            let cost_sets = self.legal_cost_card_sets(player, activated.cost);
+            for target_set in &target_sets {
+                for cost_set in &cost_sets {
+                    let action = if activated.cost.card_cost_count() == 0 {
+                        Action::ActivateAbility {
+                            source,
+                            ability: index as u8,
+                            mode: 0,
+                            targets: target_set.clone(),
+                        }
+                    } else {
+                        Action::ActivateCostedAbility {
+                            source,
+                            ability: index as u8,
+                            mode: 0,
+                            targets: target_set.clone(),
+                            cost_cards: cost_set.clone(),
+                        }
                     };
                     if self.validate(player, &action).is_err() {
                         continue;
                     }
-                    let rendered = if target_set.is_empty() {
-                        String::new()
-                    } else {
-                        format!(
+                    let mut rendered = String::new();
+                    if !target_set.is_empty() {
+                        rendered.push_str(&format!(
                             " -> {}",
                             target_set
                                 .iter()
                                 .map(|t| self.describe_target(*t))
                                 .collect::<Vec<_>>()
                                 .join(", ")
-                        )
-                    };
+                        ));
+                    }
+                    if !cost_set.is_empty() {
+                        rendered.push_str(&format!(
+                            " (cost: {})",
+                            cost_set
+                                .iter()
+                                .map(|id| self.state.object(*id).card.name())
+                                .collect::<Vec<_>>()
+                                .join(", ")
+                        ));
+                    }
                     out.push(LegalAction {
                         action,
                         label: format!("Activate {}: {}{rendered}", card.name(), activated.text),
                         rules: vec!["602.2", "602.2b"],
                     });
                 }
+            }
+        }
+    }
+
+    /// Every combination of cards that could pay this printed cost, in a
+    /// deterministic order (hand order for the discarded land, graveyard order
+    /// for exiled cards). The engine still validates each combination.
+    fn legal_cost_card_sets(
+        &self,
+        player: PlayerId,
+        cost: crate::ability::AbilityCost,
+    ) -> Vec<Vec<ObjectId>> {
+        if cost.card_cost_count() == 0 {
+            return vec![Vec::new()];
+        }
+        let mut prefix: Vec<Vec<ObjectId>> = vec![Vec::new()];
+        if cost.discard_land {
+            let lands: Vec<ObjectId> = self
+                .state
+                .player(player)
+                .hand
+                .iter()
+                .copied()
+                .filter(|id| {
+                    self.state
+                        .try_object(*id)
+                        .is_some_and(|object| object.card.def().is_land())
+                })
+                .collect();
+            prefix = lands.into_iter().map(|id| vec![id]).collect();
+        }
+        let wanted = cost.exile_graveyard_cards as usize;
+        if wanted == 0 {
+            return prefix;
+        }
+        let graveyard: Vec<ObjectId> = self.state.player(player).graveyard.clone();
+        let mut combinations: Vec<Vec<ObjectId>> = Vec::new();
+        collect_combinations(&graveyard, wanted, 0, &mut Vec::new(), &mut combinations);
+        let mut out = Vec::new();
+        for head in &prefix {
+            for tail in &combinations {
+                let mut set = head.clone();
+                set.extend(tail.iter().copied());
+                out.push(set);
             }
         }
         out
@@ -6011,6 +6341,40 @@ fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
         })
         .map(|object| (object.id, object.card, object.controller))
         .collect()
+}
+
+/// One activation request: which object, which printed ability and mode, which
+/// targets, and which cards the activator names for a card cost. Bundling them
+/// keeps validation and application from growing a parameter per printed cost
+/// shape.
+#[derive(Clone, Copy)]
+struct ActivationRequest<'a> {
+    source: ObjectId,
+    ability: u8,
+    mode: u8,
+    targets: &'a [Target],
+    cost_cards: &'a [ObjectId],
+}
+
+/// Every `wanted`-sized combination of `pool` in the pool's own order, used to
+/// enumerate the legal ways to pay a "exile N cards from your graveyard" cost.
+/// Order is the graveyard's, so the offered actions are deterministic.
+fn collect_combinations(
+    pool: &[ObjectId],
+    wanted: usize,
+    start: usize,
+    current: &mut Vec<ObjectId>,
+    out: &mut Vec<Vec<ObjectId>>,
+) {
+    if current.len() == wanted {
+        out.push(current.clone());
+        return;
+    }
+    for index in start..pool.len() {
+        current.push(pool[index]);
+        collect_combinations(pool, wanted, index + 1, current, out);
+        current.pop();
+    }
 }
 
 fn target_spec_rule(spec: TargetSpec) -> &'static str {

@@ -142,7 +142,12 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 assert!(
                     card.is_creature()
                         || card.artifact_mana.is_some()
-                        || card.id.dynamic_mana().is_some(),
+                        || card.id.dynamic_mana().is_some()
+                        // A noncreature permanent whose printed text is fully
+                        // covered by typed activated abilities is supported
+                        // (slice 15's two enchantments); a textless one is not.
+                        || (!aperture_core::abilities(card.id).is_empty()
+                            && !card.oracle.trim().is_empty()),
                     "{} has no rules text at all",
                     card.name
                 );
@@ -223,6 +228,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::AddManaForRiteOfFlame
                 | Effect::PutPlusOneCounterOnSource
                 | Effect::CreateBeastToken
+                | Effect::CreateBearTokens(_)
                 | Effect::CreatePestToken => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }

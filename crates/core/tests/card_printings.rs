@@ -39,6 +39,7 @@ const SLICE9_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slic
 const SLICE12_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice12-sourced.json");
 const SLICE13_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice13-sourced.json");
 const SLICE14_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice14-sourced.json");
+const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
 const SLICE6_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice6-sourced.json");
 const SLICE11_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice11-sourced.json");
@@ -134,6 +135,11 @@ fn slice13_cards() -> Vec<Value> {
 
 fn slice14_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE14_SOURCED).expect("sourced slice14 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice15_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE15_SOURCED).expect("sourced slice15 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -510,6 +516,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice12_cards())
         .chain(slice13_cards())
         .chain(slice14_cards())
+        .chain(slice15_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()
@@ -606,4 +613,106 @@ fn every_slice5_card_matches_its_recorded_printing() {
             "{name} records when it was read"
         );
     }
+}
+
+/// Slice 15 adds three cards whose cost is paid with cards, so the catalog text
+/// must equal the printing *and* the typed ability must cost exactly what the
+/// printing says: one land discarded, two graveyard cards exiled, or the card
+/// itself exiled from the graveyard — and only Mother Bear prints "activate only
+/// as a sorcery". A hand-authored ability that paid a different cost would fail
+/// here rather than in review.
+#[test]
+fn every_slice15_card_prints_the_cost_its_ability_actually_pays() {
+    use aperture_core::ability::{Ability, AbilityCost, abilities};
+
+    let cards = slice15_cards();
+    assert_eq!(cards.len(), 3, "slice 15 adds three sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert!(!sourced_text(&record, "retrieved_at").is_empty());
+        assert_eq!(
+            card_keywords(&record),
+            Vec::<String>::new(),
+            "{name} prints no keyword line"
+        );
+
+        let id = catalog::by_name(name).unwrap();
+        let activated: Vec<_> = abilities(id)
+            .iter()
+            .filter_map(Ability::activated)
+            .collect();
+        assert_eq!(
+            activated.len(),
+            1,
+            "{name} prints exactly one activated ability"
+        );
+        let cost: AbilityCost = activated[0].cost;
+        let expected = match name {
+            "Ayula's Influence" => AbilityCost {
+                discard_land: true,
+                ..AbilityCost::NONE
+            },
+            "Bearscape" => AbilityCost {
+                mana: Some("{1}{G}"),
+                exile_graveyard_cards: 2,
+                ..AbilityCost::NONE
+            },
+            "Mother Bear" => AbilityCost {
+                mana: Some("{3}{G}{G}"),
+                exile_source_from_graveyard: true,
+                ..AbilityCost::NONE
+            },
+            other => panic!("{other} has no recorded expectation"),
+        };
+        assert_eq!(cost, expected, "{name} pays exactly the printed cost");
+        let expected_sorcery = name == "Mother Bear";
+        assert_eq!(
+            activated[0].sorcery_timing, expected_sorcery,
+            "{name} 'activate only as a sorcery' matches its printing"
+        );
+        assert!(
+            activated[0]
+                .text
+                .contains(sourced_text(&record, "oracle_text")),
+            "{name} ability text is the printed sentence"
+        );
+    }
+
+    // The Bear token is engine-only, never importable, and prints 2/2 green Bear.
+    assert_eq!(CardId::BearToken.def().type_line, "Token Creature — Bear");
+    assert_eq!(CardId::BearToken.def().power, Some(2));
+    assert_eq!(CardId::BearToken.def().toughness, Some(2));
+    assert!(CardId::BearToken.def().is_creature());
+    assert!(catalog::by_name("Bear Token").is_none());
+}
+
+fn card_keywords(record: &Value) -> Vec<String> {
+    record["keywords"]
+        .as_array()
+        .expect("keywords")
+        .iter()
+        .filter_map(|keyword| keyword.as_str().map(str::to_string))
+        .collect()
 }

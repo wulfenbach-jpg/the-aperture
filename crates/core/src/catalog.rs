@@ -66,6 +66,7 @@ const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
 const INSTANT: &[Kind] = &[Kind::Instant];
 const SORCERY: &[Kind] = &[Kind::Sorcery];
+const ENCHANTMENT: &[Kind] = &[Kind::Enchantment];
 
 macro_rules! card {
     (
@@ -237,7 +238,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 126] = [
+pub static CARDS: [CardDef; 129] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -945,6 +946,32 @@ pub static CARDS: [CardDef; 126] = [
         oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
         spell: None
     ),
+    // Issue 17 slice 15: sourced Bear-token package. Each card prints one
+    // activated ability whose cost is paid with a card (a land from hand, two
+    // cards from the graveyard, or the card itself from the graveyard) and
+    // which creates 2/2 green Bear tokens. Ayula's Influence and Bearscape are
+    // the pool's first enchantment permanents (CR 303); they are noncreature
+    // permanents with no continuous effect, so the layer system never applies
+    // to them.
+    card!(
+        AyulasInfluence, "Ayula's Influence", cost: Some("{G}{G}{G}"), kinds: ENCHANTMENT,
+        basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "Discard a land card: Create a 2/2 green Bear creature token.",
+        spell: None
+    ),
+    card!(
+        Bearscape, "Bearscape", cost: Some("{1}{G}{G}"), kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "{1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.",
+        spell: None
+    ),
+    card!(
+        MotherBear, "Mother Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.",
+        spell: None
+    ),
 ];
 
 pub fn all() -> &'static [CardDef] {
@@ -953,7 +980,7 @@ pub fn all() -> &'static [CardDef] {
 
 /// Token definitions. Deliberately separate from `CARDS`: tokens are engine
 /// objects, never importable or analyzer-supported cards.
-pub static TOKENS: [CardDef; 4] = [
+pub static TOKENS: [CardDef; 5] = [
     CardDef {
         id: CardId::GoblinToken,
         name: "Goblin Token",
@@ -1028,6 +1055,25 @@ pub static TOKENS: [CardDef; 4] = [
         power: Some(1),
         toughness: Some(1),
         oracle: "When this token dies, you gain 1 life.",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::BearToken,
+        name: "Bear Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Bear",
+        colors: &[ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(2),
+        toughness: Some(2),
+        oracle: "",
         spell: None,
     },
 ];

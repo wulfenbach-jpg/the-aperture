@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-126-card pool. Isamaru itself is supported, and the slice-4 package implemented
+129-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **114** are in the supported 126-card catalog and **345** are missing;
+* **117** are in the supported 129-card catalog and **342** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.
@@ -56,7 +56,7 @@ basic lands (coordinator evidence
 
 Slices 11–13 add the islandwalk bears `Pale Bears` and `River Bear`, Sol Ring,
 and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
-the defending player's board. Ayula currently has **39** missing names.
+the defending player's board. Ayula currently has **36** missing names.
 
 ### Slices 12–13: reusable artifact and landfall packages
 
@@ -92,6 +92,37 @@ journey uses an explicitly labeled evidence-only masked demonstrator; it is
 not a product-AI improvement. These 40-card packages do **not** certify another
 100-card starter. The seven planned starters and arbitrary-deck compatibility
 remain unsupported.
+
+### Slice 15: costs paid with cards, and the first enchantments
+
+* **Ayula's Influence** (`{G}{G}{G}` enchantment) — "Discard a land card: Create
+  a 2/2 green Bear creature token." The activator names the land in the action;
+  the engine refuses a non-land, a card that is not in hand, and a missing or
+  duplicate cost card. This is the pool's first card paid from hand.
+* **Bearscape** (`{1}{G}{G}` enchantment) — "{1}{G}, Exile two cards from your
+  graveyard: …". Every legal pair is offered as its own action; the two named
+  cards are exiled as the cost. Offered only when two cards are actually there.
+* **Mother Bear** (`{1}{G}` 2/2) — "{3}{G}{G}, Exile this card from your
+  graveyard: Create two 2/2 green Bear creature tokens. Activate only as a
+  sorcery." This is the pool's first ability activated **from the graveyard**,
+  and the first "activate only as a sorcery" timing restriction (CR 307.5): it
+  is offered only in its owner's main phase with an empty stack, and the card
+  exiles itself as the cost.
+* New engine surface: `Kind::Enchantment` (noncreature permanents that cast and
+  resolve like other permanent spells), `Action::ActivateCostedAbility` (named
+  cost cards), `AbilityCost::{discard_land, exile_graveyard_cards,
+  exile_source_from_graveyard}`, `ActivatedAbility::sorcery_timing`, a 2/2 green
+  Bear token card, and `Effect::CreateBearTokens`. `Action::ActivateAbility`
+  keeps its old shape, so every earlier replay and test literal still loads.
+* The product heuristic still does not activate these abilities (no AI file was
+  touched); the journey below uses an evidence-only masked demonstrator.
+
+Printing sources and retrieval dates are in
+`fixtures/starter-corpus/slice15-sourced.json`; conformance is in
+`crates/core/tests/issue17_slice15.rs` (behaviour) and
+`issue17_slice15_corpus.rs` (the manifest's `missing_cards` must equal pool
+membership for all eight lists — a recomputation guard that did not exist
+before). Four genuine REDs are recorded in `evidence/issue17/slice15/`.
 
 Slices 8–9 currently support eight sourced cards: Soul's Attendant, Razorclaw
 Bear, Volley Veteran, Dramatic Reversal, Goblin War Strike, Brightstone Ritual,
@@ -266,7 +297,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 126 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 129 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
