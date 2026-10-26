@@ -1,0 +1,34 @@
+# cargo-deny configuration for the #31 security audit lane.
+# Scope: license clearance of the dependency graph that ships in
+# aperture.exe / aperture-cli.exe. Run with:
+#   cargo deny --config scripts/security/deny.toml check licenses
+# The engine itself is MIT OR Apache-2.0; transitive licenses below are the
+# standard permissive OSS set. Anything outside it must be triaged in
+# docs/security-audit-*.md before release.
+
+[graph]
+all-features = false
+no-default-features = false
+
+[licenses]
+version = 2
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Zlib",
+    "BSL-1.0",
+    "0BSD",
+    # Font licences: epaint_default_fonts embeds Ubuntu-Light (Ubuntu Font
+    # Licence) and Noto Emoji fonts (OFL-1.1) into the shipped binary. Both
+    # permit bundled redistribution with notice; the required notice texts are
+    # carried under docs/security-audit-notices/.
+    "OFL-1.1",
+    "Ubuntu-font-1.0",
+]
+# The workspace's own crates inherit MIT OR Apache-2.0 from the root manifest.
+confidence-threshold = 0.93
