@@ -397,3 +397,110 @@ fn removed_tokens_are_valid_only_as_inert_archives_of_departed_owners() {
     game.state.players[P1 as usize].exile.push(exiled);
     assert!(game.state.validate().is_err());
 }
+
+fn archived_token_state(seed: u64) -> (GameState, ObjectId) {
+    use aperture_core::tokens::TokenKind;
+    let game = fixture_n(seed, 2).build();
+    let mut state = game.state;
+    let token = state.create_token(TokenKind::Spirit, P1);
+    state.players[P1 as usize].lost = true;
+    state.objects.get_mut(&token).unwrap().zone = Zone::Removed;
+    (state, token)
+}
+
+#[test]
+fn archived_tokens_cannot_anchor_live_engine_references() {
+    use aperture_core::action::Target;
+    use aperture_core::layer::{ContinuousEffect, DamageShield, ShieldTarget};
+    use aperture_core::state::{Pending, StackEntry, StackItem, TriggerRef};
+
+    type ArchiveCase = (&'static str, fn(&mut GameState, ObjectId));
+    let cases: Vec<ArchiveCase> = vec![
+        ("trigger_queue source", |state, id| {
+            state.trigger_queue.push(TriggerRef {
+                source: id,
+                card: CardId::GoblinToken,
+                controller: P1,
+                ability: 0,
+                seq: 0,
+            });
+        }),
+        ("revealed", |state, id| state.revealed.push(id)),
+        ("activation_uses", |state, id| {
+            state.activation_uses.insert(id, 1);
+        }),
+        ("stack object", |state, id| {
+            state.stack.push(StackItem {
+                object: id,
+                card: CardId::GoblinToken,
+                controller: P1,
+                targets: Vec::new(),
+                cursor: 0,
+                entry: StackEntry::Activated { ability: 0 },
+                trigger_answered: false,
+            });
+        }),
+        ("stack target", |state, id| {
+            state.stack.push(StackItem {
+                object: ObjectId(state.next_object),
+                card: CardId::GoblinToken,
+                controller: P0,
+                targets: vec![Target::Permanent(id)],
+                cursor: 0,
+                entry: StackEntry::Activated { ability: 0 },
+                trigger_answered: false,
+            });
+        }),
+        ("pending trigger", |state, id| {
+            state.pending = Some(Pending::TriggerChoice {
+                player: P0,
+                trigger: TriggerRef {
+                    source: id,
+                    card: CardId::GoblinToken,
+                    controller: P1,
+                    ability: 0,
+                    seq: 0,
+                },
+            });
+        }),
+        ("resolving", |state, id| state.resolving = Some(id)),
+        ("continuous effect target", |state, id| {
+            state.effects.push(ContinuousEffect {
+                id: 1,
+                timestamp: 1,
+                source: Some(id),
+                card: CardId::GoblinToken,
+                controller: P0,
+                layer: aperture_core::layer::Layer::Modifying,
+                target: id,
+                kind: aperture_core::layer::ContinuousKind::ModifyPowerToughness {
+                    power: 1,
+                    toughness: 1,
+                },
+                duration: aperture_core::layer::EffectDuration::UntilEndOfTurn,
+            });
+        }),
+        ("shield target", |state, id| {
+            state.shields.push(DamageShield {
+                id: 1,
+                timestamp: 1,
+                source: Some(id),
+                card: CardId::GoblinToken,
+                controller: P0,
+                scope: aperture_core::layer::ShieldScope::AnyDamage,
+                target: ShieldTarget::Permanent(id),
+                remaining: Some(2),
+                created_turn: 1,
+            });
+        }),
+    ];
+    for (name, apply) in cases {
+        let (mut state, id) = archived_token_state(160);
+        apply(&mut state, id);
+        assert!(
+            state.validate().is_err(),
+            "archived token must not be referenced by {name}: {:?}",
+            state.validate()
+        );
+    }
+}

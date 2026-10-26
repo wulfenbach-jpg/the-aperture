@@ -800,6 +800,87 @@ impl GameState {
             .retain(|entry| live & (1u8 << entry.recipient) != 0);
     }
 
+    /// True when `id` is referenced by any live engine structure. Used only to
+    /// prove an internal `Zone::Removed` token archive is inert; ordinary object
+    /// references are validated by their owning structures.
+    fn object_is_referenced(&self, id: ObjectId) -> bool {
+        let target_ref = |target: &crate::action::Target| match target {
+            crate::action::Target::Permanent(object) | crate::action::Target::Spell(object) => {
+                *object == id
+            }
+            crate::action::Target::Player(_) => false,
+        };
+        let trigger_ref = |trigger: &TriggerRef| trigger.source == id;
+        if self.resolving == Some(id)
+            || self.trigger_queue.iter().any(trigger_ref)
+            || self.revealed.contains(&id)
+            || self.activation_uses.contains_key(&id)
+            || self.commanders.iter().any(|commander| commander.object == id)
+            || self
+                .stack
+                .iter()
+                .any(|item| item.object == id || item.targets.iter().any(target_ref))
+            || self.turn.attackers.contains(&id)
+            || self.turn.blocked.contains(&id)
+            || self
+                .turn
+                .blockers
+                .iter()
+                .any(|(blocker, attacker)| *blocker == id || *attacker == id)
+            || self.effects.iter().any(|effect| {
+                effect.source == Some(id) || effect.target == id
+            })
+            || self.shields.iter().any(|shield| {
+                shield.source == Some(id)
+                    || matches!(shield.target, crate::layer::ShieldTarget::Permanent(object) if object == id)
+            })
+        {
+            return true;
+        }
+        if let Some(pending) = &self.pending {
+            let hit = match pending {
+                Pending::OrderCard { viewed, to_top, .. } => {
+                    viewed.contains(&id) || to_top.contains(&id)
+                }
+                Pending::ApnapSacrifice {
+                    choices,
+                    source_left,
+                    ..
+                } => {
+                    choices.values().any(|choice| *choice == Some(id))
+                        || source_left.is_some_and(|provenance| provenance.source == id)
+                }
+                Pending::CommanderReturn { order, .. } => {
+                    order.iter().any(|entry| entry.object == id)
+                }
+                Pending::CommanderReplacement { object, source, .. } => {
+                    *object == id || *source == id
+                }
+                Pending::CommanderDraw { object, .. } => *object == id,
+                Pending::TriggerTarget {
+                    trigger,
+                    legal,
+                    queued,
+                    ..
+                } => {
+                    trigger_ref(trigger)
+                        || legal.iter().any(target_ref)
+                        || queued.iter().any(trigger_ref)
+                }
+                Pending::TriggerChoice { trigger, .. } => trigger_ref(trigger),
+                Pending::Mulligan { .. }
+                | Pending::BottomCards { .. }
+                | Pending::DeclareAttackers { .. }
+                | Pending::DeclareBlockers { .. }
+                | Pending::Discard { .. } => false,
+            };
+            if hit {
+                return true;
+            }
+        }
+        false
+    }
+
     /// Reject invalid seat/state configurations with a typed error instead of a
     /// panic or a silent repair.
     pub fn validate(&self) -> Result<(), EngineError> {
@@ -1585,30 +1666,13 @@ impl GameState {
                     ),
                 });
             }
-            if archival {
-                let in_combat =
-                    self.turn.attackers.contains(&object.id)
-                        || self.turn.blocked.contains(&object.id)
-                        || self.turn.blockers.iter().any(|(blocker, attacker)| {
-                            *blocker == object.id || *attacker == object.id
-                        });
-                if in_combat
-                    || self.stack.iter().any(|item| item.object == object.id)
-                    || self.players.iter().any(|player| {
-                        player.library.contains(&object.id)
-                            || player.hand.contains(&object.id)
-                            || player.graveyard.contains(&object.id)
-                            || player.exile.contains(&object.id)
-                            || player.command_zone.contains(&object.id)
-                    })
-                {
-                    return Err(EngineError::InvalidState {
-                        reason: format!(
-                            "archived token {} is still referenced by a live zone/stack/combat structure",
-                            object.id
-                        ),
-                    });
-                }
+            if archival && self.object_is_referenced(object.id) {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "archived token {} is still referenced by a live zone/stack/combat/pending/effect structure",
+                        object.id
+                    ),
+                });
             }
         }
         // Bidirectional container/identity checks. The list->object pass below

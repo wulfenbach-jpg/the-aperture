@@ -1,6 +1,6 @@
 # Slice 12 repair 2 — save/token archive and test-sentinel repairs
 
-No push yet. Reviewed head `9ec90aa`; repair head recorded after commit below.
+Repair head `5870716` was committed and normally pushed to origin/aperture/issue-17. Reviewed head `9ec90aa`.
 Full #17 unfinished; no independent review claim.
 
 ## R12-F1 — saved artifact journey was unreloadable
@@ -15,8 +15,7 @@ target/release/aperture-cli.exe replay --file evidence/issue17/slice12/save.json
   ... token #507 ...
 ```
 
-The writer handoff’s “save replay matches” claim was **false** for both saves;
-the failed records are preserved. This is inherited departure/validation
+The writer handoff’s earlier “save replay matches” claim was **false** for both saves; it is superseded by this repair and the failed records are preserved. This is inherited departure/validation
 behavior, not artifact casting.
 
 **Genuine RED:** `removed_tokens_are_valid_only_as_inert_archives_of_departed_owners`

@@ -3839,7 +3839,7 @@ Deck
         app.session
             .start_table(61, 2, Profile::CommanderCombat40)
             .expect("bounded command table");
-        let refused = IMPORT_JOURNEY_COMMAND_SEAT.replace("2 Unsummon", "2 Sol Ring");
+        let refused = IMPORT_JOURNEY_COMMAND_SEAT.replace("2 Unsummon", "2 Darksteel Ingot");
         let import =
             crate::session::import_seat_text_for(0, "P0 refused", &refused, app.session.profile)
                 .expect("import runs");
@@ -3860,7 +3860,7 @@ Deck
             "the support axis is not shown: {joined}"
         );
         assert!(
-            joined.contains("Sol Ring"),
+            joined.contains("Darksteel Ingot"),
             "the exact unsupported card is not listed: {joined}"
         );
         assert!(

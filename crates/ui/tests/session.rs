@@ -729,15 +729,15 @@ fn an_unsupported_card_in_a_commander_import_is_refused_and_never_substituted() 
     let mut ui = session(43, false);
     ui.start_table(43, 2, Profile::CommanderCombat40)
         .expect("bounded command table");
-    let text = COMMAND_SEAT.replace("2 Unsummon", "2 Sol Ring");
+    let text = COMMAND_SEAT.replace("2 Unsummon", "2 Darksteel Ingot");
     let import = import_seat_text_for(0, "P0 refused", &text, ui.profile).expect("import runs");
     assert!(!import.certified());
     assert_eq!(import.support_status, "unsupported");
     let sol_ring = import
         .unsupported
         .iter()
-        .find(|card| card.name == "Sol Ring")
-        .expect("Sol Ring is listed with its reason");
+        .find(|card| card.name == "Darksteel Ingot")
+        .expect("Darksteel Ingot is listed with its reason");
     assert!(sol_ring.reason.contains("not in the supported pool"));
     assert!(
         import
