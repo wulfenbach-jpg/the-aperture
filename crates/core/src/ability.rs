@@ -34,6 +34,8 @@ pub enum TriggerEvent {
     Dies,
     /// CR 603.6a + 601.2: the controller cast an instant or sorcery spell.
     SpellCast,
+    /// CR 603.6a: a land entered under this source's controller.
+    LandEnters,
 }
 
 impl TriggerEvent {
@@ -42,6 +44,7 @@ impl TriggerEvent {
             TriggerEvent::EntersBattlefield => "enters the battlefield",
             TriggerEvent::Dies => "dies",
             TriggerEvent::SpellCast => "you cast an instant or sorcery spell",
+            TriggerEvent::LandEnters => "a land you control enters",
         }
     }
 }
@@ -238,6 +241,22 @@ const OCULUS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::Draw(1)],
 })];
 
+const TATYOVA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::GainLife(1), Effect::Draw(1)],
+})];
+
+const JADDI: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, you gain 1 life.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::GainLife(1)],
+})];
+
 const TALRAND: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.",
     event: TriggerEvent::SpellCast,
@@ -274,6 +293,8 @@ const BEETLEBACK_CHIEF: &[Ability] = &[Ability::Triggered(TriggeredAbility {
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::TatyovaBenthicDruid => TATYOVA,
+        CardId::JaddiOffshoot => JADDI,
         CardId::TalrandSkySummoner => TALRAND,
         CardId::KrenkoMobBoss => KRENKO,
         CardId::GoblinInstigator => GOBLIN_INSTIGATOR,

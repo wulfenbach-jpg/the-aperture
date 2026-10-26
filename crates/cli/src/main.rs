@@ -68,7 +68,8 @@ pub enum Command {
         /// command-zone profile (`--command-zone-practice` or
         /// `--commander-combat-practice`). Example:
         /// `0:Krenko, Mob Boss`. Supported commanders: Isamaru, Hound of
-        /// Konda; Jasmine Boreal; Krenko, Mob Boss; Talrand, Sky Summoner.
+        /// Konda; Jasmine Boreal; Krenko, Mob Boss; Talrand, Sky Summoner;
+        /// Tatyova, Benthic Druid.
         /// Both explicit profiles are bounded practice, not the Commander
         /// format (no legend rule, no full 100-card construction).
         #[arg(long = "commander")]
@@ -345,6 +346,7 @@ mod tests {
             "Jasmine Boreal",
             "Krenko, Mob Boss",
             "Talrand, Sky Summoner",
+            "Tatyova, Benthic Druid",
         ] {
             assert!(help.contains(commander), "help omits {commander}: {help}");
         }

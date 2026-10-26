@@ -55,6 +55,31 @@ macro_rules! card {
             type_line: $tl,
             colors: &[],
             flying: false,
+            defender: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+macro_rules! card_defender {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: true,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -64,7 +89,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 86] = [
+pub static CARDS: [CardDef; 88] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -235,6 +260,18 @@ pub static CARDS: [CardDef; 86] = [
         WightOfPrecinctSix, "Wight of Precinct Six", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
         oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
+        spell: None
+    ),
+    card!(
+        TatyovaBenthicDruid, "Tatyova, Benthic Druid", cost: Some("{3}{G}{U}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Merfolk Druid", power: Some(3), toughness: Some(3),
+        oracle: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
+        spell: None
+    ),
+    card_defender!(
+        JaddiOffshoot, "Jaddi Offshoot", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Plant", power: Some(0), toughness: Some(3),
+        oracle: "Defender\nLandfall — Whenever a land you control enters, you gain 1 life.",
         spell: None
     ),
     card!(
@@ -545,6 +582,7 @@ pub static TOKENS: [CardDef; 2] = [
         type_line: "Token Creature — Goblin",
         colors: &[ManaColor::Red],
         flying: false,
+        defender: false,
         power: Some(1),
         toughness: Some(1),
         oracle: "",
@@ -559,6 +597,7 @@ pub static TOKENS: [CardDef; 2] = [
         type_line: "Token Creature — Drake",
         colors: &[ManaColor::Blue],
         flying: true,
+        defender: false,
         power: Some(2),
         toughness: Some(2),
         oracle: "Flying",

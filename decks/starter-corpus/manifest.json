@@ -380,7 +380,6 @@
         "Ghirapur Orrery",
         "Hedron Crab",
         "Icetill Explorer",
-        "Jaddi Offshoot",
         "Khalni Heart Expedition",
         "Kiora, the Crashing Wave",
         "Loot, Exuberant Explorer",
@@ -411,7 +410,6 @@
         "Sword of Forge and Frontier",
         "Sylvan Scrying",
         "Tato Farmer",
-        "Tatyova, Benthic Druid",
         "Tempt with Discovery",
         "Thranduil's Company",
         "Tifa Lockhart",
@@ -423,8 +421,8 @@
         "Zimone, Mystery Unraveler"
       ],
       "missing_interactions": [
-        "landfall triggers",
-        "extra land drops"
+        "landfall and defender are implemented for the bounded Tatyova/Jaddi package",
+        "remaining desired-list cards and broader landfall/ramp payoffs are unsupported"
       ]
     },
     {

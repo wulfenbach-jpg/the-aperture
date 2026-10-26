@@ -132,7 +132,9 @@ impl HeuristicPolicy {
         let mine: Vec<&CardView> = view
             .own_battlefield
             .iter()
-            .filter(|c| is_creature(c) && !c.tapped && !c.summoning_sick)
+            .filter(|c| {
+                is_creature(c) && !c.tapped && !c.summoning_sick && !c.card.def().has_defender()
+            })
             .collect();
         if mine.is_empty() {
             return (Vec::new(), None);

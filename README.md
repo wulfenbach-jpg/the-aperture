@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (86 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (88 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -54,7 +54,9 @@ implementation and it says so everywhere it matters.
   Command, Hordeling Outburst, Goblin Instigator and Beetleback Chief, plus an
   engine-only 1/1 red Goblin token (never importable), plus **Talrand, Sky
   Summoner** with a complete instant/sorcery cast trigger, an engine-only 2/2
-  blue Drake token with real flying, and flying block restriction. The exact 100-card Krenko
+  blue Drake token with real flying, and flying block restriction. Slice 3 adds
+  **Tatyova, Benthic Druid** (commander-only landfall: gain 1 life then draw) and
+  **Jaddi Offshoot** (real defender + landfall life). The exact 100-card Krenko
   starter remains planned; `decks/package-krenko-tokens.txt` is a clearly named
   40-card supported package fixture. The other seven target archetypes are
   planned, not supported.
@@ -276,7 +278,7 @@ planeswalkers, counters as rules objects (the sandbox counter display is
 storage only), tokens beyond the typed 1/1 red Goblin package, milling/tutoring/libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
-card outside this branch candidate's 86-card pool.
+card outside this branch candidate's 88-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

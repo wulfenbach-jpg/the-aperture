@@ -170,6 +170,7 @@ pub struct CardDef {
     /// because the engine only needs it for token characteristics in this slice.
     pub colors: &'static [ManaColor],
     pub flying: bool,
+    pub defender: bool,
     pub power: Option<i32>,
     pub toughness: Option<i32>,
     pub oracle: &'static str,
@@ -187,6 +188,10 @@ impl CardDef {
 
     pub fn has_flying(&self) -> bool {
         self.flying
+    }
+
+    pub fn has_defender(&self) -> bool {
+        self.defender
     }
 
     /// The Goblin creature subtype (CR 205.3m), read from the printed type
@@ -271,6 +276,8 @@ pub enum CardId {
     WightOfPrecinctSix,
     KrenkoMobBoss,
     TalrandSkySummoner,
+    TatyovaBenthicDruid,
+    JaddiOffshoot,
     DrakeToken,
     DragonFodder,
     KrenkosCommand,
@@ -339,6 +346,7 @@ pub const SUPPORTED_COMMANDERS: &[CardId] = &[
     CardId::JasmineBoreal,
     CardId::KrenkoMobBoss,
     CardId::TalrandSkySummoner,
+    CardId::TatyovaBenthicDruid,
 ];
 
 /// Token cards exist as engine objects but are never importable: `catalog::all`

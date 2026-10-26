@@ -30,6 +30,7 @@ const STARTER_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sou
 const KRENKO_SOURCED: &str =
     include_str!("../../../fixtures/starter-corpus/krenko-tokens-sourced.json");
 const TALRAND_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/talrand-sourced.json");
+const TATYOVA_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/tatyova-sourced.json");
 
 fn starter_new_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
@@ -62,6 +63,11 @@ fn talrand_card() -> Vec<Value> {
         .filter(|card| card["role"] == "commander")
         .cloned()
         .collect()
+}
+
+fn tatyova_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(TATYOVA_SOURCED).expect("sourced Tatyova JSON");
+    value["cards"].as_array().expect("cards").to_vec()
 }
 
 fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
@@ -297,6 +303,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .into_iter()
         .chain(krenko_new_cards())
         .chain(talrand_card())
+        .chain(tatyova_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

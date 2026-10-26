@@ -1889,6 +1889,15 @@ impl Game {
                 ));
             }
             seen.push(*a);
+            if self.state.try_object(*a).is_some_and(|o| o.has_defender()) {
+                return Err(EngineError::illegal(
+                    "declare attackers",
+                    format!(
+                        "{} has defender and cannot attack (CR 702.3b)",
+                        self.describe_object(*a)
+                    ),
+                ));
+            }
             if !legal.contains(a) {
                 return Err(EngineError::illegal(
                     "declare attackers",
@@ -1976,6 +1985,7 @@ impl Game {
                     && o.is_creature()
                     && !o.tapped
                     && !o.summoning_sick
+                    && !o.has_defender()
             })
             .map(|o| o.id)
             .collect()
@@ -2085,6 +2095,24 @@ impl Game {
             object: card,
             card: card_id,
         });
+        // CR 603.6a: landfall triggers fire when the land is already on the
+        // battlefield, only for permanents that player controls.
+        let sources: Vec<(ObjectId, CardId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
+            .filter(|object| {
+                ability::triggers_on(object.card, TriggerEvent::LandEnters)
+                    .next()
+                    .is_some()
+            })
+            .map(|object| (object.id, object.card))
+            .collect();
+        for (source, source_card) in sources {
+            self.queue_triggers(source, source_card, player, TriggerEvent::LandEnters);
+        }
+        self.put_triggers(events);
         events.push(Event::Priority { player });
     }
 

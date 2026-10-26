@@ -30,21 +30,23 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported and playable; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-86-card pool. Isamaru itself is supported, but none of its 57 chosen nonland
+88-card pool. Isamaru itself is supported, but none of its 57 chosen nonland
 cards is, so `isamaru-white-aggro` stays `planned`.
 
 ## Corpus union and staged gaps
 
-Computed from the exact files and the current catalog:
+Exact all-name totals over the eight desired lists, including commanders and
+basic lands (coordinator evidence
+`evidence/issue17/slice3-native-corpus.py/json`):
 
-* union of all nonbasic names across the eight lists: **447 unique cards**;
-* **66** of them are in the supported pool and **381** are missing;
-* per planned list: 57 unique nonland names + 42 basics = 99; Jasmine has 58
-  nonland + 41 basics = 99.
-* Supported overlap by desired list: Jasmine 58/58, Ayula 6/57, Krenko 5/57,
-  Talrand 3/57, Isamaru/Elas/Tatyova/Zada 0/57. Missing counts in the manifest are
-  computed from catalog membership, including the unsupported **Swamp** basic
-  in Elas (the pool has no black basic land).
+* union of all referenced names: **459 unique names**;
+* **76** are in the supported 88-card catalog and **383** are missing;
+* the manifest's `missing_cards` per list is computed from the same catalog
+  membership and sums to the same verified contents. Planned lists remain
+  metadata only; Jasmine is the only implemented/playable starter.
+* Structure per list is still 99 library cards + a separately named commander;
+  the Swamp basic in Elas is unsupported, so Elas cannot be built even as a
+  99-card practice library.
 
 Staged interaction roadmap (derived from the manifest `missing_interactions`):
 
@@ -56,8 +58,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    (52 missing) and Talrand's desired list has 54 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
-   independent of counters). Landfall, death and tribal triggers remain
-   unimplemented (Elas, Tatyova, Ayula);
+   independent of counters) and **bounded implemented** landfall for Tatyova and
+   Jaddi Offshoot (life then draw, controller-only). Death and tribal triggers
+   remain unimplemented (Elas, Ayula);
 3. activated non-mana abilities: **bounded implemented package** for Krenko's
    `{T}` Goblin-count token production (including >255 counts) and the existing
    Prodigal Sorcerer/Rootwalla/Brindle Boar abilities. Sacrifice outlets and
@@ -117,7 +120,7 @@ Commander-combat practice are still **not** the Commander format.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 86 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 88 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -131,7 +134,8 @@ Commander-combat practice are still **not** the Commander format.
    implemented list is directly under `decks/starter-corpus/`.
    A desired-list path is a planning artifact, not support: every planned list is
    engine-unsupported, non-playable and non-certified. Jasmine is the only list
-   built entirely from supported cards. A 90-land pile or duplicated nonbasic
+   built entirely from supported cards; Tatyova now has a bounded landfall
+   package (Tatyova, Benthic Druid + Jaddi Offshoot with defender). A 90-land pile or duplicated nonbasic
    singleton cards would not be a meaningful style and is not used to satisfy
    counts.
 4. **Certification.** `implemented` means an exact list exists, is analyzer
