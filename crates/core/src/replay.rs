@@ -14,6 +14,7 @@ use crate::engine::Game;
 use crate::error::EngineError;
 use crate::event::Event;
 use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, PlayerId};
+use crate::sandbox::SandboxRecord;
 use crate::settings::AiSettings;
 use crate::state::{Outcome, Profile};
 
@@ -518,6 +519,12 @@ pub struct SessionSave {
     /// True once a sandbox tool has been used; certified analysis is void from
     /// that point (the UI labels this).
     pub sandbox_modified: bool,
+    /// Typed record of every manual table override used in this session. Empty
+    /// means no override was used; a non-empty record taints the game for the
+    /// rest of the session, survives save/load and can never be presented as a
+    /// legal match result.
+    #[serde(default)]
+    pub sandbox: SandboxRecord,
     pub digest: String,
 }
 
@@ -531,8 +538,34 @@ impl SessionSave {
             replay,
             log,
             sandbox_modified,
+            sandbox: SandboxRecord::default(),
             digest: game.digest(),
         }
+    }
+
+    /// Capture a session together with its typed sandbox record. The boolean
+    /// flag is derived from the record, so the two can never disagree.
+    pub fn capture_recorded(
+        game: &Game,
+        replay: Replay,
+        log: Vec<Event>,
+        sandbox: SandboxRecord,
+    ) -> Self {
+        let mut save = SessionSave::capture(game, replay, log, sandbox.is_tainted());
+        save.sandbox = sandbox;
+        save
+    }
+
+    /// True when any manual table override was used in this session.
+    pub fn tainted(&self) -> bool {
+        self.sandbox_modified || self.sandbox.is_tainted()
+    }
+
+    /// The sentence a result surface must use: a sandbox game is never a legal
+    /// match result.
+    pub fn record_line(&self) -> String {
+        self.sandbox
+            .record_line(self.game.outcome.as_ref(), self.tainted())
     }
 
     pub fn to_json(&self) -> String {
@@ -667,10 +700,19 @@ impl SessionSave {
             });
         }
 
+        // The typed record and the boolean flag describe the same fact. A save
+        // that carries overrides but claims to be untainted is refused: clearing
+        // the flag by hand must not launder a sandbox game into a match result.
+        if self.sandbox.is_tainted() && !self.sandbox_modified {
+            return Err(ReplayError::Invariant {
+                reason: "the save records sandbox overrides but does not mark the session sandbox-modified".to_string(),
+            });
+        }
+
         // A non-sandbox save must be exactly the state its embedded action
         // sequence produces. `Replay::run` is bounded by the step list and is
         // called on the load worker, never the UI frame thread.
-        if !self.sandbox_modified {
+        if !self.tainted() {
             const MAX_SAVE_REPLAY_STEPS: usize = 1_000_000;
             if self.replay.steps.len() > MAX_SAVE_REPLAY_STEPS {
                 return Err(ReplayError::Malformed {

@@ -27,6 +27,10 @@ fn parse_options() -> Startup {
         window: None,
         study_file: None,
         branch_at: 0,
+        performance_report: None,
+        performance_conditions: Vec::new(),
+        initial_high_contrast: false,
+        initial_reduced_motion: false,
     };
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
@@ -100,6 +104,43 @@ fn parse_options() -> Startup {
             "--autoplay" => options.autoplay = true,
             "--ai-both" => options.human_autoplay = true,
             "--decider" => options.use_decider = true,
+            "--performance-report" => {
+                options.performance_report =
+                    Some(PathBuf::from(args.next().unwrap_or_else(|| {
+                        eprintln!("--performance-report expects an output PATH");
+                        std::process::exit(2);
+                    })));
+            }
+            "--performance-note" => {
+                if let Some(note) = args.next().filter(|note| !note.trim().is_empty()) {
+                    options.performance_conditions.push(note);
+                } else {
+                    eprintln!("--performance-note expects a non-empty description");
+                    std::process::exit(2);
+                }
+            }
+
+            "--a11y" => {
+                let value = args.next().unwrap_or_default();
+                for mode in value.split(',').map(str::trim).filter(|m| !m.is_empty()) {
+                    match mode {
+                        "high-contrast" | "high_contrast" => options.initial_high_contrast = true,
+                        "reduced-motion" | "reduced_motion" => {
+                            options.initial_reduced_motion = true
+                        }
+                        "none" => {
+                            options.initial_high_contrast = false;
+                            options.initial_reduced_motion = false;
+                        }
+                        other => {
+                            eprintln!(
+                                "unknown --a11y value '{other}'; use high-contrast,reduced-motion,none"
+                            );
+                            std::process::exit(2);
+                        }
+                    }
+                }
+            }
             "--help" | "-h" => {
                 println!(
                     "THE APERTURE — practice slice UI\n\
@@ -115,6 +156,14 @@ fn parse_options() -> Startup {
                      --ai-both           every seat is played by the AI (watch mode)\n\
                      --decider           opt in to the local Decider-2B service (default off)\n\
                      --size WxH          initial window size (default 1400x940; min 1024x640)\n\
+                     --performance-report PATH\n\
+                                         opt-in ~10 s native frame timing report (background write;\n\
+                                         callback duration + interval p95; no GPU timing)\n\
+                     --performance-note TEXT\n\
+                                         disclose a collection condition; recorded as a declared\n\
+                                         condition, never as a synthetic delay\n\
+                     --a11y high-contrast,reduced-motion\n\
+                                         start with those accessibility settings (capture aid)\n\
                      --smoke OUT.png     render, screenshot the real window, exit\n"
                 );
                 std::process::exit(0);

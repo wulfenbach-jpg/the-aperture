@@ -3,6 +3,7 @@
 //! the session logic stays testable.
 
 pub mod app;
+pub mod perf;
 pub mod session;
 pub mod theme;
 

@@ -10,6 +10,31 @@ Every number below comes from a command that was actually run; raw output is in
 `evidence/` (`verification.log`, `tdd.log`, `tdd-import-red.log`,
 `tdd-ai-red.log`, the per-seed JSON reports, and the screenshot).
 
+## 0. Latest milestone (issue20, M3 tabletop)
+
+Manual table controls and zone inspection are delivered on the native table, and
+the sandbox is now explicitly labelled and recorded. `Game::sandbox` is one
+deterministic engine path (no RNG draws, no scheduler run, one typed viewer-aware
+`Event::SandboxOverride`, revision/decision bumped) covering draw, untap, mill,
+scry/surveil choices, reveal, +1/+1 counter edits and life edits; it refuses
+while a rules choice is pending, mid-resolution, past a library's size, or with a
+commander on top (CR 903.9b stays a rules decision). `SandboxRecord` lives in
+`SessionSave.sandbox`, survives save/load, and a save that carries overrides but
+claims to be untainted is refused, so a sandbox game can never be presented as a
+legal match result. `PlayerView::zone_of`, `zones_for` and `search` back one
+searchable zone inspector built only from the masked projection. `Undo (U)`
+rebuilds the recorded prefix instead of patching state, restoring RNG, revision
+and decision serial exactly and dropping everything the undone action revealed;
+it is refused on a tainted line. New game / new table / load / branch / imported
+start / sandbox reset now need an explicit confirmation in the primary strip;
+the branch question is shared by the Study panel button and the `G` shortcut, so
+neither trigger can replace the live position without asking.
+Known limits: +1/+1 counters remain storage/display only (combat math ignores
+them); a sandbox game's embedded replay is uncertified; this is still bounded
+28–31-card practice, not Commander. Tests: `crates/core/tests/issue20_sandbox.rs`,
+`crates/ui/tests/issue20_controls.rs` and the app viewport tests; details in
+`docs/issue20-tabletop.md` and `evidence/issue20/DELIVERY.md`.
+
 ## 1. Contents
 
 ```

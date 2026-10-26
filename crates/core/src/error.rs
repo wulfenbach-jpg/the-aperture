@@ -65,6 +65,9 @@ pub enum EngineError {
 
     #[error("invalid command-zone practice setup: {reason}")]
     InvalidCommanderSetup { reason: String },
+
+    #[error("sandbox control refused: {reason}")]
+    SandboxRefused { reason: String },
 }
 
 impl EngineError {

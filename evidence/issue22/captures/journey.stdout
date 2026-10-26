@@ -1,0 +1,7 @@
+missing control: High contrast (white text, near-black surfaces, bright borders)
+At C:\AI\aperture-worktrees\issue-22\evidence\issue22\journey.ps1:11 char:12
++   if(!$el){throw "missing control: $label"}
++            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (missing control...bright borders):String) [], RuntimeException
+    + FullyQualifiedErrorId : missing control: High contrast (white text, near-black surfaces, bright borders)
+ 

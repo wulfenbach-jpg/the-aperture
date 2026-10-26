@@ -28,6 +28,7 @@ use crate::layer::{
 };
 use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
+use crate::sandbox::{SandboxEdit, SandboxOp, SandboxOutcome};
 use crate::state::{
     DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, Profile,
     StackEntry, StackItem, Step, TriggerRef, Turn,
@@ -5149,3 +5150,313 @@ pub fn ability_index(entry: StackEntry) -> u8 {
 pub fn pool_size() -> usize {
     catalog::pool_size()
 }
+
+// ------------------------------------------------------- sandbox table controls
+
+/// Refuse a manual control with a user-facing reason.
+fn sandbox_refused(reason: impl Into<String>) -> EngineError {
+    EngineError::SandboxRefused {
+        reason: reason.into(),
+    }
+}
+
+impl Game {
+    /// Apply one manual table control.
+    ///
+    /// This is deliberately **not** a legal-match action: it bypasses the turn
+    /// structure, so the caller must record the returned edit as session taint.
+    /// The path is deterministic (no random draws), it never runs the scheduler,
+    /// it never invents a pending choice, and it bumps the revision/decision
+    /// serial so an outstanding submission or an in-flight background decision
+    /// is stale. Exactly one typed trace event is emitted; the caller appends it
+    /// to the session log.
+    pub fn sandbox(&mut self, op: SandboxOp) -> Result<SandboxOutcome, EngineError> {
+        if self.state.is_over() {
+            return Err(EngineError::GameOver);
+        }
+        if self.state.resolving.is_some() {
+            return Err(sandbox_refused(
+                "a stack item is mid-resolution; finish the current resolution before using a sandbox control",
+            ));
+        }
+        if self.state.pending.is_some() {
+            return Err(sandbox_refused(
+                "a player has a pending choice; answer it before using a sandbox control",
+            ));
+        }
+
+        let mut events: Vec<Event> = Vec::new();
+        // (affected count, private cards, public detail, seat the edit is recorded against)
+        let (affected, private_cards, detail, edit_seat): (u32, Vec<CardId>, String, PlayerId) =
+            match op {
+                SandboxOp::Draw { seat, count } => {
+                    self.sandbox_seat(seat)?;
+                    let take = self.sandbox_top(seat, count)?;
+                    for _ in 0..take.len() {
+                        self.draw(seat, &mut events);
+                    }
+                    let drawn = take.len() as u32;
+                    (
+                        drawn,
+                        Vec::new(),
+                        format!("P{seat} drew {drawn} card(s) outside the turn structure"),
+                        seat,
+                    )
+                }
+                SandboxOp::Untap { seat } => {
+                    self.sandbox_seat(seat)?;
+                    let ids: Vec<ObjectId> = self
+                        .state
+                        .battlefield(seat)
+                        .into_iter()
+                        .map(|object| object.id)
+                        .collect();
+                    let mut untapped = 0u32;
+                    for id in ids {
+                        if let Some(object) = self.state.objects.get_mut(&id) {
+                            object.tapped = false;
+                        }
+                        untapped += 1;
+                    }
+                    (
+                        untapped,
+                        Vec::new(),
+                        format!(
+                            "P{seat} untapped {untapped} permanent(s); this is not an untap step, so summoning sickness is unchanged (CR 502)"
+                        ),
+                        seat,
+                    )
+                }
+                SandboxOp::Mill { seat, count } => {
+                    self.sandbox_seat(seat)?;
+                    let take = self.sandbox_top(seat, count)?;
+                    for id in &take {
+                        self.sandbox_mill_one(*id);
+                    }
+                    let milled = take.len() as u32;
+                    (
+                        milled,
+                        Vec::new(),
+                        format!(
+                            "P{seat} put the top {milled} card(s) of their library into their graveyard"
+                        ),
+                        seat,
+                    )
+                }
+                SandboxOp::Scry {
+                    seat,
+                    count,
+                    to_top,
+                }
+                | SandboxOp::Surveil {
+                    seat,
+                    count,
+                    to_top,
+                } => {
+                    let surveil = matches!(op, SandboxOp::Surveil { .. });
+                    self.sandbox_seat(seat)?;
+                    let take = self.sandbox_top(seat, count)?;
+                    let looked: Vec<CardId> =
+                        take.iter().map(|id| self.state.object(*id).card).collect();
+                    let looked_count = take.len() as u32;
+                    let detail = if to_top {
+                        format!(
+                            "P{seat} looked at the top {looked_count} card(s) of their library and kept them on top in the same order ({} choice, CR {})",
+                            if surveil { "surveil" } else { "scry" },
+                            if surveil { "701.25a" } else { "701.22a" }
+                        )
+                    } else if surveil {
+                        for id in &take {
+                            self.sandbox_mill_one(*id);
+                        }
+                        format!(
+                            "P{seat} looked at the top {looked_count} card(s) of their library and put them into their graveyard (surveil choice, CR 701.25a)"
+                        )
+                    } else {
+                        let library = &mut self.state.players[seat as usize].library;
+                        let moved: Vec<ObjectId> =
+                            library.drain(0..looked_count as usize).collect();
+                        library.extend(moved);
+                        format!(
+                            "P{seat} looked at the top {looked_count} card(s) of their library and put them on the bottom in the same order (scry choice, CR 701.22a)"
+                        )
+                    };
+                    (looked_count, looked, detail, seat)
+                }
+                SandboxOp::Reveal { seat, count } => {
+                    self.sandbox_seat(seat)?;
+                    let take = self.sandbox_top(seat, count)?;
+                    let names: Vec<&str> = take
+                        .iter()
+                        .map(|id| self.state.object(*id).card.name())
+                        .collect();
+                    let revealed = take.len() as u32;
+                    (
+                        revealed,
+                        Vec::new(),
+                        format!(
+                            "P{seat} revealed the top {revealed} card(s) of their library to every seat: {}",
+                            names.join(", ")
+                        ),
+                        seat,
+                    )
+                }
+                SandboxOp::SetCounters { object, .. } | SandboxOp::AddCounters { object, .. } => {
+                    let (target, controller, name, zone) = self.sandbox_permanent(object)?;
+                    debug_assert_eq!(zone, Zone::Battlefield);
+                    let current = self
+                        .state
+                        .object(target)
+                        .plus_one_counters
+                        .min(MAX_SANDBOX_COUNTERS);
+                    let next = match op {
+                        SandboxOp::SetCounters { count, .. } => count,
+                        SandboxOp::AddCounters { delta, .. } => {
+                            let wanted = current as i32 + delta;
+                            if wanted < 0 {
+                                return Err(sandbox_refused(format!(
+                                    "{name} has {current} +1/+1 counter(s); removing {} would go below zero",
+                                    -delta
+                                )));
+                            }
+                            wanted as u32
+                        }
+                        _ => unreachable!("matched above"),
+                    };
+                    if next > MAX_SANDBOX_COUNTERS {
+                        return Err(sandbox_refused(format!(
+                            "the counter editor supports 0..={MAX_SANDBOX_COUNTERS} +1/+1 counters; {next} was requested"
+                        )));
+                    }
+                    if let Some(object) = self.state.objects.get_mut(&target) {
+                        object.plus_one_counters = next;
+                    }
+                    (
+                        next,
+                        Vec::new(),
+                        format!(
+                            "{name} now has {next} +1/+1 counter(s) (tabletop storage only: this engine's combat math does not read them)"
+                        ),
+                        controller,
+                    )
+                }
+                SandboxOp::SetLife { seat, life } => {
+                    self.sandbox_seat(seat)?;
+                    if !(1..=MAX_SANDBOX_LIFE).contains(&life) {
+                        return Err(sandbox_refused(format!(
+                            "a sandbox life total must stay between 1 and {MAX_SANDBOX_LIFE}; 0 or less would end the game, which belongs to a legal match (CR 704.5a)"
+                        )));
+                    }
+                    let previous = self.state.players[seat as usize].life;
+                    self.state.players[seat as usize].life = life;
+                    (
+                        0,
+                        Vec::new(),
+                        format!(
+                            "P{seat} life {previous} → {life} (tabletop life edit, not a rules life change)"
+                        ),
+                        seat,
+                    )
+                }
+            };
+
+        let kind = op.kind();
+        events.push(Event::SandboxOverride {
+            player: edit_seat,
+            kind,
+            count: affected,
+            detail: detail.clone(),
+            private_cards,
+        });
+        // A sandbox edit is a new state: an outstanding submission and any
+        // in-flight background decision computed against the old serial are stale.
+        self.state.revision += 1;
+        self.state.decision += 1;
+        let edit = SandboxEdit {
+            kind,
+            seat: edit_seat,
+            turn: self.state.turn.number,
+            step: self.state.turn.step.name().to_string(),
+            detail,
+        };
+        Ok(SandboxOutcome { events, edit })
+    }
+
+    fn sandbox_seat(&self, seat: PlayerId) -> Result<(), EngineError> {
+        self.state
+            .try_player(seat)
+            .map(|_| ())
+            .ok_or(EngineError::UnknownSeat { seat })
+    }
+
+    /// The top `count` cards of a seat's library, validated up front so a
+    /// refused control leaves the state untouched. A commander on top is
+    /// refused: its CR 903.9b zone-change choice is a rules decision that a
+    /// sandbox control must not answer on the owner's behalf.
+    fn sandbox_top(&self, seat: PlayerId, count: u8) -> Result<Vec<ObjectId>, EngineError> {
+        if count == 0 {
+            return Err(sandbox_refused(
+                "a sandbox control needs a count of at least one card",
+            ));
+        }
+        let library = &self.state.player(seat).library;
+        if library.len() < count as usize {
+            return Err(sandbox_refused(format!(
+                "P{seat}'s library holds {} card(s); {count} were requested",
+                library.len()
+            )));
+        }
+        let top: Vec<ObjectId> = library.iter().take(count as usize).copied().collect();
+        if let Some(id) = top.iter().find(|id| {
+            self.state
+                .try_object(**id)
+                .is_some_and(|o| o.commander.is_some())
+        }) {
+            let name = self.state.object(*id).name();
+            return Err(sandbox_refused(format!(
+                "{name} is a commander on top of P{seat}'s library; its CR 903.9b zone-change choice cannot be answered from a sandbox control"
+            )));
+        }
+        Ok(top)
+    }
+
+    /// The permanent a counter edit targets. Refuses anything that is not a
+    /// permanent on the battlefield, so a hidden card can never be edited by
+    /// guessing its object id.
+    fn sandbox_permanent(
+        &self,
+        object: ObjectId,
+    ) -> Result<(ObjectId, PlayerId, &'static str, Zone), EngineError> {
+        let found = self
+            .state
+            .try_object(object)
+            .ok_or(EngineError::UnknownObject)?;
+        let name = found.name();
+        if found.zone != Zone::Battlefield {
+            return Err(sandbox_refused(format!(
+                "counters can only be edited on a permanent on the battlefield; {name} is in the {}",
+                found.zone.name()
+            )));
+        }
+        Ok((found.id, found.controller, name, found.zone))
+    }
+
+    /// Move one library card to its owner's graveyard without firing a "dies"
+    /// trigger: a milled card never entered the battlefield (CR 701.13a).
+    fn sandbox_mill_one(&mut self, id: ObjectId) {
+        let Some(mut object) = self.detach_object(id) else {
+            return;
+        };
+        object.tapped = false;
+        object.damage = 0;
+        object.summoning_sick = false;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        self.insert_object(object, Zone::Graveyard);
+    }
+}
+
+/// Upper bound for the tabletop counter editor.
+pub const MAX_SANDBOX_COUNTERS: u32 = 99;
+/// Upper bound for a sandbox life edit.
+pub const MAX_SANDBOX_LIFE: i32 = 999;

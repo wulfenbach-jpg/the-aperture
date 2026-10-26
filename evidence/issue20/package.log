@@ -1,0 +1,47 @@
+
+== Reading version, commit and toolchain
+   name    the-aperture-0.1.0-cadbf61
+   commit  cadbf610581445a5a5374b937437b32f8ae78f5b (2026-10-24T23:47:00-07:00)
+   target  x86_64-pc-windows-msvc
+   rustc   rustc 1.97.1 (8bab26f4f 2026-07-14)
+
+== Building the release executables (cargo build --release --locked)
+
+== Assembling C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61
+
+== Writing MANIFEST.sha256 (sorted, LF)
+   12 files hashed
+
+== Writing the distributable zip (fixed entry timestamps)
+   C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61.zip
+
+== Verifying the produced package (hashes, stamp, packaged launch)
+ok    BUILD-STAMP.txt  3e6da14f2c1ce058052348af9bc95cb3d65b67ac1cfc03d81b593805c1d0de65
+ok    README-PACKAGE.md  647c99a7b91f838492d79b07bcd11c6a934a3b1ff89f9e22fac23db95b0ff2f4
+ok    aperture-cli.exe  501505113711f2ae74e88f3664739dc5e8c5f9148cc3571e1146c74c93e5b823
+ok    aperture.exe  da1eeae6aef97f47b4a7bb6e337be5fdddfae3a945572da35518a1520f36762d
+ok    decks/abilities-practice-a.txt  997b1862fbff4144c4baf6a155c8190cdfaed8c6c93ddd5d6d577f7b60ec7b7a
+ok    decks/abilities-practice-b.txt  cb222af8708e345a1f4d7ad7ec50fcafc6b3b2a243efc4f6d7595f8a53db6b80
+ok    decks/command-zone-practice.txt  346a803c20b7e74ac482641f55add817e0c4c58251e7afeaa23ac31de41b1840
+ok    decks/izzet-control.txt  8f8c00c74282d4d8e2822f4e3e182d0076135d93b4d78bb983c36aabe918c4fd
+ok    decks/temur-beats.txt  18dd1f26d878f32d11464da7ddff0222f9a090f7e4c34b016c976a455535f061
+ok    launch.cmd  e04ba24784018f8c05ced027d2148ad1599a1002b9130301c5c21e17936ef981
+ok    verify-package.cmd  73104dcb18e017b1ad427ff75ccfef77ff904af76eac9eb144bf189647b01011
+ok    verify-package.ps1  f86fa8b2d666fe8932c39cb273754e5eacf601a83059ff1bddacca7326385ade
+ok    stamped version 0.1.0 confirmed by aperture-cli --version
+ok    commit cadbf610581445a5a5374b937437b32f8ae78f5b target x86_64-pc-windows-msvc rustc rustc 1.97.1 (8bab26f4f 2026-07-14)
+ok    aperture.exe --smoke launched the packaged desktop build (437339 byte PNG)
+
+PACKAGE VERIFIED: 12 file hashes re-derived, contents match MANIFEST.sha256
+
+== Package summary
+   package   C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61
+   manifest  C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61\MANIFEST.sha256
+   stamp     C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61\BUILD-STAMP.txt
+   files     12
+   ui        da1eeae6aef97f47b4a7bb6e337be5fdddfae3a945572da35518a1520f36762d
+   cli       501505113711f2ae74e88f3664739dc5e8c5f9148cc3571e1146c74c93e5b823
+   zip       C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61.zip  sha256 a6fa148a75b8849c2758aa0d8126d7338ae340738de0344736bcceb59a5511f2
+
+Verify any copy with: C:\AI\aperture-worktrees\issue-20\dist\the-aperture-0.1.0-cadbf61\verify-package.cmd
+Rebuild the same commit to re-derive the same contents; see docs/packaging.md for what is and is not claimed.

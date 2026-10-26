@@ -22,6 +22,7 @@ use serde_json::Value;
 use thiserror::Error;
 
 pub mod commander;
+pub mod start;
 
 use aperture_core::catalog;
 use aperture_core::deck::DeckList;
@@ -371,6 +372,60 @@ pub struct NormEntry {
     pub companion: bool,
     pub deleted: bool,
     pub layout: String,
+    /// Provider-declared color identity as single letters (`WUBRG`). Empty with
+    /// `color_identity_known` set means the provider certified the card as
+    /// colorless; empty with it unset means the provider sent no data at all.
+    #[serde(default)]
+    pub color_identity: Vec<String>,
+    /// True when the provider sent a color-identity field for this entry.
+    #[serde(default)]
+    pub color_identity_known: bool,
+    /// Provider-declared supertypes (`Legendary`, `Basic`, ...). Used only by
+    /// the Commander construction checks in [`crate::start`].
+    #[serde(default)]
+    pub supertypes: Vec<String>,
+    /// Provider-declared card types (`Creature`, `Planeswalker`, ...).
+    #[serde(default)]
+    pub types: Vec<String>,
+}
+
+/// Archidekt sends color-identity names (`"Red"`); normalize to letters so the
+/// Commander color-identity check is a plain set comparison. Anything already
+/// in letter form passes through, and an unrecognized token is kept verbatim so
+/// it can never be mistaken for a color the deck actually has.
+fn identity_letters(value: Option<&Value>) -> Vec<String> {
+    value
+        .and_then(|v| v.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|item| item.as_str())
+                .map(|item| {
+                    let upper = item.trim().to_ascii_uppercase();
+                    match upper.as_str() {
+                        "WHITE" => "W".to_string(),
+                        "BLUE" => "U".to_string(),
+                        "BLACK" => "B".to_string(),
+                        "RED" => "R".to_string(),
+                        "GREEN" => "G".to_string(),
+                        otherwise => otherwise.to_string(),
+                    }
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+fn plain_list(value: Option<&Value>) -> Vec<String> {
+    value
+        .and_then(|v| v.as_array())
+        .map(|items| {
+            items
+                .iter()
+                .filter_map(|i| i.as_str().map(|s| s.to_string()))
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -504,6 +559,10 @@ pub fn normalize(json: &str) -> Result<NormalizedDeck, ImportError> {
                 .and_then(|v| v.as_str())
                 .unwrap_or("normal")
                 .to_string(),
+            color_identity: identity_letters(oracle.get("colorIdentity")),
+            color_identity_known: oracle.get("colorIdentity").is_some(),
+            supertypes: plain_list(oracle.get("superTypes")),
+            types: plain_list(oracle.get("types")),
         });
     }
 
@@ -599,7 +658,7 @@ pub struct DeckReport {
     pub notes: Vec<String>,
 }
 
-fn classify(entry: &NormEntry, excluded: &[String]) -> (EntryStatus, Option<String>) {
+pub(crate) fn classify(entry: &NormEntry, excluded: &[String]) -> (EntryStatus, Option<String>) {
     let lower: Vec<String> = entry.categories.iter().map(|c| c.to_lowercase()).collect();
     if entry.deleted {
         return (
@@ -978,6 +1037,17 @@ pub fn plan_deck(report: &DeckReport) -> Result<DeckList, ImportError> {
 /// Text fallback analysis: `N Card Name` lines grouped by `Deck`, `Sideboard`,
 /// `Commander`, `Maybeboard` sections. Real counts only; nothing is inferred.
 pub fn text_report(name: &str, text: &str) -> Result<DeckReport, ImportError> {
+    let deck = normalize_text(name, text)?;
+    let report = analyze(&deck);
+    Ok(report)
+}
+
+/// Normalize a pasted list into the same shape a provider response produces, so
+/// the start-flow certification runs one code path for every source. The text
+/// form carries no provider card data, so color identity and type facts stay
+/// empty and the Commander construction checks report `not_certified` instead of
+/// guessing.
+pub(crate) fn normalize_text(name: &str, text: &str) -> Result<NormalizedDeck, ImportError> {
     let mut entries: Vec<NormEntry> = Vec::new();
     let mut section = "Deck".to_string();
     for (lineno, raw) in text.lines().enumerate() {
@@ -1033,6 +1103,10 @@ pub fn text_report(name: &str, text: &str) -> Result<DeckReport, ImportError> {
             companion: section == "Companion",
             deleted: false,
             layout: "normal".to_string(),
+            color_identity: Vec::new(),
+            color_identity_known: false,
+            supertypes: Vec::new(),
+            types: Vec::new(),
         });
     }
     if entries.is_empty() {
@@ -1058,8 +1132,7 @@ pub fn text_report(name: &str, text: &str) -> Result<DeckReport, ImportError> {
         entries,
         excluded_categories: vec!["Maybeboard".to_string()],
     };
-    let report = analyze(&deck);
-    Ok(report)
+    Ok(deck)
 }
 
 /// Text import for play: analysis plus strict refusal.

@@ -14,14 +14,17 @@ use std::sync::mpsc::{Receiver, Sender, channel};
 use std::thread;
 
 use aperture_ai::{
-    DeciderConfig, DeciderPolicy, Decision, DecisionSource, HeuristicPolicy, Policy,
+    DeciderConfig, DeciderPolicy, Decision, DecisionBinding, DecisionEnvelope, DecisionSource,
+    HeuristicPolicy, MIN_OPTIONS, Policy,
 };
+use aperture_core::sandbox::{SandboxOp as EngineSandboxOp, SandboxRecord};
 use aperture_core::view::{PendingKind, PlayerView};
 use aperture_core::{
     Action, AiSettings, BlockDecl, CardId, CommanderSetup, DeckList, Event, Game, ObjectId, P0,
-    PlayerId, Profile, Replay, ReplayStep, SessionSave, Submission, Zone,
+    PlayerId, Profile, Replay, ReplayStep, SessionSave, Submission,
 };
 use aperture_import::DeckReport;
+use aperture_import::start::{DeckCertification, plan_start};
 
 /// Everything a completed replay-branch job produces: the base recorded line,
 /// the branched line cut at the chosen action boundary, and the state the
@@ -48,15 +51,35 @@ pub fn parse_replay_file(path: &Path) -> Result<Replay, String> {
     }
 }
 
+/// A manual table control as the UI exposes it. Every variant is a sandbox
+/// override: none of them is a legal-match action.
 pub enum SandboxOp {
     Draw(u8),
     Mill(u8),
+    /// Untap every permanent the human seat controls.
+    Untap,
+    /// Look at the top N and keep them on top (a scry choice, CR 701.22a).
+    Scry(u8),
+    /// Look at the top N and put them on the bottom in the same order.
+    ScryBottom(u8),
+    /// Look at the top N and keep them on top (a surveil choice, CR 701.25a).
+    Surveil(u8),
+    /// Look at the top N and put them into the graveyard.
+    SurveilGraveyard(u8),
+    /// Reveal the top N to every seat (public information).
     RevealTop(u8),
+    /// Add (or remove, negative) +1/+1 counters on a permanent.
     Counter(ObjectId, i32),
+    /// Set a permanent's +1/+1 counter count exactly.
+    SetCounters(ObjectId, u32),
+    /// Set a seat's life total (tabletop life counter).
+    SetLife(PlayerId, i32),
 }
 
 /// One seat's certified import: the exact planned list plus the audit summary
-/// the user must see before a match can start.
+/// the user must see before a match can start. Certifying one seat produces
+/// three separate answers — Commander format legality, engine support and seat
+/// fit — and only an actually startable seat carries a list.
 #[derive(Debug, Clone)]
 pub struct SeatImport {
     pub seat: PlayerId,
@@ -68,12 +91,30 @@ pub struct SeatImport {
     /// The exact planned list; `None` when the import was refused.
     pub list: Option<DeckList>,
     pub refusal: Option<String>,
+    /// The commander this deck designates, when the engine can seat it.
+    pub commander: Option<CardId>,
+    /// Commander format legality, kept separate from engine support.
+    pub format_status: String,
+    /// Engine support verdict for the certified list.
+    pub support_status: String,
+    /// Every unsupported card with its exact reason (never truncated).
+    pub unsupported: Vec<aperture_import::UnsupportedCard>,
+    /// The profile this import was certified for.
+    pub profile: String,
 }
 
 impl SeatImport {
-    /// True only when the whole list passed the practice-profile analysis.
+    /// True only when the whole list passed the certification for its profile.
     pub fn certified(&self) -> bool {
         self.list.is_some()
+    }
+
+    /// One-line status for the import panel.
+    pub fn status_line(&self) -> String {
+        format!(
+            "'{}' — format: {} · engine support: {} ({}/{} cards)",
+            self.name, self.format_status, self.support_status, self.supported, self.total
+        )
     }
 }
 
@@ -114,6 +155,41 @@ pub enum WorkerMessage {
 /// File formats the UI shows as a label per seat.
 fn seat_label(seat: PlayerId) -> String {
     format!("P{seat}")
+}
+
+/// Build a `SeatImport` from a start-flow certification. The list is `Some` only
+/// when the engine support axis and the seat fit both pass, so an unsupported or
+/// unseatable deck can never start; the two verdicts stay separately visible.
+pub fn seat_import_from_certification(seat: PlayerId, cert: DeckCertification) -> SeatImport {
+    let plan = plan_start(&cert).ok();
+    let commander = cert.commander.as_ref().and_then(|c| c.card());
+    let refusal = if cert.refusals.is_empty() {
+        None
+    } else {
+        Some(cert.refusals.join(" | "))
+    };
+    SeatImport {
+        seat,
+        name: cert.deck_name.clone(),
+        supported: cert.support.supported_cards,
+        total: cert.support.total_cards
+            + cert
+                .commander
+                .as_ref()
+                .map(|c| c.quantity as u32)
+                .unwrap_or(0),
+        summary: cert.render(),
+        list: plan.as_ref().map(|p| p.deck.clone()),
+        refusal,
+        commander,
+        format_status: cert.format.status.as_str().to_string(),
+        support_status: match cert.support.status {
+            aperture_import::commander::SupportStatus::Supported => "supported".to_string(),
+            aperture_import::commander::SupportStatus::Unsupported => "unsupported".to_string(),
+        },
+        unsupported: cert.support.unsupported.clone(),
+        profile: cert.profile.clone(),
+    }
 }
 
 /// Build a `SeatImport` from a provider report: the list is `Some` only when
@@ -162,30 +238,68 @@ pub fn seat_import_from_report(seat: PlayerId, report: DeckReport) -> SeatImport
         summary,
         list,
         refusal: report.refusal.clone(),
+        commander: None,
+        format_status: "not_checked (legacy practice report)".to_string(),
+        support_status: if report.launchable {
+            "supported".to_string()
+        } else {
+            "unsupported".to_string()
+        },
+        unsupported: report.unsupported.clone(),
+        profile: "practice-20".to_string(),
     }
 }
 
-/// Import one seat from a pasted Archidekt URL (blocking; run off-thread).
+/// Import one seat from a pasted Archidekt URL for `profile` (blocking; run
+/// off-thread). The URL guard, redirect policy, timeout and size cap are the
+/// existing provider rules; nothing is fetched on the frame thread.
+pub fn import_seat_url_for(
+    seat: PlayerId,
+    url: &str,
+    cache_dir: &Path,
+    profile: Profile,
+) -> Result<SeatImport, String> {
+    let cert =
+        aperture_import::start::certify_url(url, cache_dir, profile).map_err(|e| e.to_string())?;
+    Ok(seat_import_from_certification(seat, cert))
+}
+
+/// Import one seat from a pasted text list for `profile` (blocking; run
+/// off-thread).
+pub fn import_seat_text_for(
+    seat: PlayerId,
+    name: &str,
+    text: &str,
+    profile: Profile,
+) -> Result<SeatImport, String> {
+    let cert =
+        aperture_import::start::certify_text(name, text, profile).map_err(|e| e.to_string())?;
+    Ok(seat_import_from_certification(seat, cert))
+}
+
+/// Import one seat from a deck file for `profile` (blocking; run off-thread).
+pub fn import_seat_file_for(
+    seat: PlayerId,
+    path: &Path,
+    profile: Profile,
+) -> Result<SeatImport, String> {
+    let cert = aperture_import::start::certify_file(path, profile).map_err(|e| e.to_string())?;
+    Ok(seat_import_from_certification(seat, cert))
+}
+
+/// Import one seat from a pasted Archidekt URL (practice profile; blocking).
 pub fn import_seat_url(seat: PlayerId, url: &str, cache_dir: &Path) -> Result<SeatImport, String> {
-    let report = aperture_import::import_url(url, cache_dir).map_err(|e| e.to_string())?;
-    Ok(seat_import_from_report(seat, report))
+    import_seat_url_for(seat, url, cache_dir, Profile::Practice20)
 }
 
-/// Import one seat from a pasted text list (blocking; run off-thread).
+/// Import one seat from a pasted text list (practice profile; blocking).
 pub fn import_seat_text(seat: PlayerId, name: &str, text: &str) -> Result<SeatImport, String> {
-    let report = aperture_import::text_report(name, text).map_err(|e| e.to_string())?;
-    Ok(seat_import_from_report(seat, report))
+    import_seat_text_for(seat, name, text, Profile::Practice20)
 }
 
-/// Import one seat from a text file path (blocking; run off-thread).
+/// Import one seat from a text file path (practice profile; blocking).
 pub fn import_seat_file(seat: PlayerId, path: &Path) -> Result<SeatImport, String> {
-    let text = std::fs::read_to_string(path)
-        .map_err(|e| format!("could not read {}: {e}", path.display()))?;
-    let name = path
-        .file_stem()
-        .and_then(|s| s.to_str())
-        .unwrap_or("imported list");
-    import_seat_text(seat, name, &text)
+    import_seat_file_for(seat, path, Profile::Practice20)
 }
 
 pub struct UiSession {
@@ -199,6 +313,8 @@ pub struct UiSession {
     pub profile: Profile,
     pub seed: u64,
     pub sandbox_modified: bool,
+    /// Typed record of every manual table override used in this session.
+    pub sandbox_record: SandboxRecord,
     pub human_plays_ai_seat: bool,
     pub heuristic: HeuristicPolicy,
     pub decider: Option<DeciderPolicy>,
@@ -295,6 +411,7 @@ impl UiSession {
             profile: Profile::Practice20,
             seed,
             sandbox_modified: false,
+            sandbox_record: SandboxRecord::default(),
             human_plays_ai_seat,
             heuristic: HeuristicPolicy::new(),
             decider,
@@ -353,6 +470,16 @@ impl UiSession {
     where
         F: FnOnce(PlayerView) -> Decision + Send + 'static,
     {
+        self.request_ai_decision_bound(move |view, _binding| work(view))
+    }
+
+    /// Generation-aware worker request: the closure also receives the exact
+    /// viewer/revision/decision/generation binding observed before the spawn, so
+    /// a decider envelope can be validated against it.
+    fn request_ai_decision_bound<F>(&mut self, work: F) -> bool
+    where
+        F: FnOnce(PlayerView, DecisionBinding) -> Decision + Send + 'static,
+    {
         if self.ai_busy {
             return false;
         }
@@ -366,9 +493,15 @@ impl UiSession {
         let revision = self.game.revision();
         let decision_serial = self.game.decision();
         let generation = self.generation;
+        let binding = DecisionBinding {
+            viewer: seat,
+            revision,
+            decision: decision_serial,
+            generation,
+        };
         let tx = self.worker_tx.clone();
         thread::spawn(move || {
-            let decision = work(view);
+            let decision = work(view, binding);
             let _ = tx.send(WorkerMessage::Ai {
                 generation,
                 revision,
@@ -382,23 +515,54 @@ impl UiSession {
     }
 
     /// Convenience wrapper: the configured policy (decider when opted in,
-    /// baseline heuristic otherwise), built on the worker thread.
+    /// baseline heuristic otherwise), built on the worker thread. The decider
+    /// answer is applied only through an envelope bound to this snapshot.
     pub fn request_ai_decision_default(&mut self) -> bool {
         let config = if self.ai.use_decider {
             self.decider_config.clone()
         } else {
             None
         };
-        self.request_ai_decision(move |view| match config {
-            Some(config) => match DeciderPolicy::new(config) {
-                Ok(mut policy) => policy.decide(&view),
-                Err(err) => Decision {
-                    action: HeuristicPolicy::new().decide(&view).action,
-                    source: DecisionSource::DeciderFallback,
-                    note: Some(format!("decider not usable, used the heuristic: {err}")),
-                    preference: None,
-                },
-            },
+        self.request_ai_decision_bound(move |view, binding| match config {
+            Some(config) => {
+                // A single legal option is forced, not a model question. Check
+                // before preparing an envelope: prepare would reject fewer than
+                // two options and mislabel a forced move as a fallback.
+                if view.legal.len() < MIN_OPTIONS {
+                    return Decision {
+                        action: HeuristicPolicy::new().decide(&view).action,
+                        source: DecisionSource::Forced,
+                        note: Some(format!(
+                            "only {} legal option(s): the choice is forced and no model call was made",
+                            view.legal.len()
+                        )),
+                        preference: None,
+                    };
+                }
+                match DeciderPolicy::new(config) {
+                    Ok(mut policy) => match DecisionEnvelope::prepare(&view, binding) {
+                        Ok(envelope) => policy.decide_bound(&view, &envelope, binding),
+                        Err(err) => Decision {
+                            action: HeuristicPolicy::new().decide(&view).action,
+                            source: DecisionSource::DeciderFallback,
+                            note: Some(format!(
+                                "no decision request sent [{}]: {err}",
+                                err.reason_code()
+                            )),
+                            preference: None,
+                        },
+                    },
+                    Err(err) => Decision {
+                        action: HeuristicPolicy::new().decide(&view).action,
+                        source: DecisionSource::DeciderFallback,
+                        note: Some(format!(
+                            "decider not usable [{}], used the heuristic: {err}",
+                            err.reason_code()
+                        )),
+                        preference: None,
+                    },
+                }
+            }
             None => HeuristicPolicy::new().decide(&view),
         })
     }
@@ -461,17 +625,40 @@ impl UiSession {
                     decision,
                 } => {
                     if generation != self.generation {
-                        self.busy_note =
-                            Some("discarded a stale AI decision (the game changed)".to_string());
+                        self.busy_note = Some(
+                            "discarded a stale AI decision [stale_generation] (the game changed)"
+                                .to_string(),
+                        );
                         continue;
                     }
                     self.ai_busy = false;
-                    if self.game.revision() != revision
-                        || self.game.decision() != decision_serial
-                        || self.owner() != Some(seat)
+                    let stale_code = if self.game.revision() != revision {
+                        Some("stale_revision")
+                    } else if self.game.decision() != decision_serial {
+                        Some("stale_decision")
+                    } else if self.owner() != Some(seat) {
+                        Some("wrong_seat")
+                    } else {
+                        None
+                    };
+                    if let Some(code) = stale_code {
+                        self.busy_note = Some(format!(
+                            "discarded a stale AI decision [{code}] (the decision point moved)"
+                        ));
+                        continue;
+                    }
+                    // The engine remains the final authority; this check only
+                    // avoids applying a completion whose offered action has
+                    // already disappeared from the live legal offer.
+                    if !self
+                        .view(seat)
+                        .legal
+                        .iter()
+                        .any(|legal| legal.action == decision.action)
                     {
                         self.busy_note = Some(
-                            "discarded a stale AI decision (the decision point moved)".to_string(),
+                            "discarded an AI decision [illegal_choice] (not in the live legal offer)"
+                                .to_string(),
                         );
                         continue;
                     }
@@ -482,12 +669,18 @@ impl UiSession {
                     seat,
                     outcome,
                 } => {
+                    let index = seat as usize;
                     if generation != self.generation {
+                        // The seat's busy flag belongs to the discarded run: clear
+                        // it, otherwise a session change during a fetch would
+                        // leave the panel spinning forever with no way to retry.
+                        if let Some(busy) = self.import_busy.get_mut(index) {
+                            *busy = false;
+                        }
                         self.busy_note =
                             Some(format!("discarded a stale {} import", seat_label(seat)));
                         continue;
                     }
-                    let index = seat as usize;
                     self.import_busy[index] = false;
                     match outcome {
                         Ok(mut import) => {
@@ -657,6 +850,7 @@ impl UiSession {
         self.replay = save.replay.clone();
         self.ai = save.ai.clone();
         self.sandbox_modified = save.sandbox_modified;
+        self.sandbox_record = save.sandbox.clone();
         self.selected_attackers.clear();
         self.selected_defender = None;
         self.selected_blocks.clear();
@@ -833,7 +1027,10 @@ impl UiSession {
     }
 
     /// The explicit one-supported-commander-per-seat setup for the named
-    /// command profiles. Empty for ordinary practice.
+    /// command profiles. Empty for ordinary practice. A seat whose import
+    /// certified its own commander uses that commander; every other seat falls
+    /// back to the bundled one. Nothing here can invent a commander: the
+    /// supported-pool check already ran during certification.
     pub fn commander_setup(&self) -> Vec<CommanderSetup> {
         if !self.profile.has_command_zone() {
             return Vec::new();
@@ -841,9 +1038,20 @@ impl UiSession {
         (0..self.seats.len())
             .map(|seat| CommanderSetup {
                 seat: seat as PlayerId,
-                card: CardId::IsamaruHoundOfKonda,
+                card: self
+                    .imported_commander(seat as PlayerId)
+                    .unwrap_or(CardId::IsamaruHoundOfKonda),
             })
             .collect()
+    }
+
+    /// The commander a certified command-zone import designated for `seat`.
+    pub fn imported_commander(&self, seat: PlayerId) -> Option<CardId> {
+        let import = self.seat_import.get(seat as usize)?.as_ref()?;
+        if !import.certified() {
+            return None;
+        }
+        import.commander
     }
 
     /// Build a brand-new engine, log and replay for the configured seats and
@@ -944,6 +1152,7 @@ impl UiSession {
         self.log = log;
         self.replay = replay;
         self.sandbox_modified = false;
+        self.sandbox_record = SandboxRecord::default();
         self.revealed.clear();
         self.message.clear();
         self.note = None;
@@ -963,12 +1172,17 @@ impl UiSession {
         self.replay.ai = self.ai.clone();
         self.replay.outcome = self.game.state.outcome.clone();
         self.replay.final_digest = self.game.digest();
-        SessionSave::capture(
+        // The boolean flag and the typed record are both carried: a save that
+        // was loaded from an older file can be tainted without a record, and
+        // re-saving it must never clear that taint.
+        let mut save = SessionSave::capture(
             &self.game,
             self.replay.clone(),
             self.log.clone(),
-            self.sandbox_modified,
-        )
+            self.tainted(),
+        );
+        save.sandbox = self.sandbox_record.clone();
+        save
     }
 
     /// Write the session to `path` on a background worker. The frame callback
@@ -1067,6 +1281,7 @@ impl UiSession {
         self.review_mode = false;
         self.review_cache = None;
         self.sandbox_modified = false;
+        self.sandbox_record = SandboxRecord::default();
         self.selected_attackers.clear();
         self.selected_defender = None;
         self.selected_blocks.clear();
@@ -1104,6 +1319,7 @@ impl UiSession {
         self.profile = save.game.profile;
         self.resize_seat_ui();
         self.sandbox_modified = save.sandbox_modified;
+        self.sandbox_record = save.sandbox.clone();
         self.review_mode = false;
         self.review_cache = None;
         self.branch_source = None;
@@ -1139,87 +1355,154 @@ impl UiSession {
         Ok(())
     }
 
-    /// Sandbox tools. These bypass the rules on purpose; the session is marked
-    /// so no certified claim can be made about the resulting position.
-    pub fn sandbox(&mut self, op: SandboxOp) {
+    /// Apply one manual table control.
+    ///
+    /// These are **sandbox overrides**, not legal-match actions: each one goes
+    /// through the engine's deterministic sandbox path, is recorded in the
+    /// session's typed taint record (which survives save/load) and marks the
+    /// whole session as sandbox-modified. A refusal changes nothing and reports
+    /// the engine's reason.
+    pub fn sandbox(&mut self, op: SandboxOp) -> Result<(), String> {
         if self.review_mode {
             self.message =
                 "postgame review is read-only: sandbox tools are off while review is shown"
                     .to_string();
-            return;
+            return Err(self.message.clone());
         }
-        let mut description = String::new();
-        match op {
-            SandboxOp::Draw(count) => {
-                for _ in 0..count {
-                    let seat = self.human_seat();
-                    let next = self.game.state.players[seat as usize]
+        let seat = self.human_seat();
+        let engine_op = match op {
+            SandboxOp::Draw(count) => EngineSandboxOp::Draw { seat, count },
+            SandboxOp::Mill(count) => EngineSandboxOp::Mill { seat, count },
+            SandboxOp::Untap => EngineSandboxOp::Untap { seat },
+            SandboxOp::Scry(count) => EngineSandboxOp::Scry {
+                seat,
+                count,
+                to_top: true,
+            },
+            SandboxOp::ScryBottom(count) => EngineSandboxOp::Scry {
+                seat,
+                count,
+                to_top: false,
+            },
+            SandboxOp::Surveil(count) => EngineSandboxOp::Surveil {
+                seat,
+                count,
+                to_top: true,
+            },
+            SandboxOp::SurveilGraveyard(count) => EngineSandboxOp::Surveil {
+                seat,
+                count,
+                to_top: false,
+            },
+            SandboxOp::RevealTop(count) => EngineSandboxOp::Reveal { seat, count },
+            SandboxOp::Counter(object, delta) => EngineSandboxOp::AddCounters { object, delta },
+            SandboxOp::SetCounters(object, count) => EngineSandboxOp::SetCounters { object, count },
+            SandboxOp::SetLife(target, life) => EngineSandboxOp::SetLife { seat: target, life },
+        };
+        match self.game.sandbox(engine_op) {
+            Ok(outcome) => {
+                self.invalidate_pending_work();
+                self.sandbox_modified = true;
+                let revealed_names = match outcome.events.last() {
+                    Some(Event::SandboxOverride {
+                        kind: aperture_core::SandboxKind::Reveal,
+                        count,
+                        ..
+                    }) => self
+                        .game
+                        .state
+                        .player(seat)
                         .library
-                        .first()
-                        .copied();
-                    if let Some(id) = next {
-                        self.game.state.players[seat as usize].library.remove(0);
-                        self.game.state.players[seat as usize].hand.push(id);
-                        if let Some(object) = self.game.state.objects.get_mut(&id) {
-                            object.zone = Zone::Hand;
-                        }
-                        description = format!("SANDBOX: P{seat} drew a card outside the rules");
-                    } else {
-                        description = "SANDBOX: library is empty".to_string();
-                        break;
-                    }
+                        .iter()
+                        .take(*count as usize)
+                        .map(|id| self.game.state.object(*id).card.name().to_string())
+                        .collect(),
+                    _ => Vec::new(),
+                };
+                self.log.extend(outcome.events);
+                self.sandbox_record.push(outcome.edit.clone());
+                if !revealed_names.is_empty() {
+                    self.revealed = revealed_names;
                 }
-            }
-            SandboxOp::Mill(count) => {
-                for _ in 0..count {
-                    let seat = self.human_seat();
-                    let next = self.game.state.players[seat as usize]
-                        .library
-                        .first()
-                        .copied();
-                    if let Some(id) = next {
-                        self.game.state.players[seat as usize].library.remove(0);
-                        self.game.state.players[seat as usize].graveyard.push(id);
-                        if let Some(object) = self.game.state.objects.get_mut(&id) {
-                            object.zone = Zone::Graveyard;
-                        }
-                        description = format!("SANDBOX: P{seat} milled a card outside the rules");
-                    } else {
-                        description = "SANDBOX: library is empty".to_string();
-                        break;
-                    }
-                }
-            }
-            SandboxOp::RevealTop(count) => {
-                let seat = self.human_seat();
-                let library = self.game.state.players[seat as usize].library.clone();
-                self.revealed = library
-                    .iter()
-                    .take(count as usize)
-                    .map(|id| self.game.state.object(*id).card.name().to_string())
-                    .collect();
-                description = format!(
-                    "SANDBOX: revealed the top {} card(s) of P{seat}'s library to the table",
-                    self.revealed.len()
+                self.message = format!(
+                    "SANDBOX override applied — {}. This session is tainted: no certified replay and no legal match result from here on.",
+                    outcome.edit.detail
                 );
+                Ok(())
             }
-            SandboxOp::Counter(id, delta) => {
-                if let Some(object) = self.game.state.objects.get_mut(&id) {
-                    let current = object.plus_one_counters as i32;
-                    object.plus_one_counters = (current + delta).max(0) as u32;
-                    description = format!(
-                        "SANDBOX: {} now has {} +1/+1 counter(s) (storage only; combat math ignores them)",
-                        object.card.name(),
-                        object.plus_one_counters
-                    );
-                }
+            Err(err) => {
+                self.message = format!("sandbox refused: {err}");
+                Err(err.to_string())
             }
         }
-        if !description.is_empty() {
-            self.invalidate_pending_work();
-            self.sandbox_modified = true;
-            self.log.push(Event::StateBasedAction { description });
+    }
+
+    /// True when this session's competitive record is tainted by an override.
+    pub fn tainted(&self) -> bool {
+        self.sandbox_modified || self.sandbox_record.is_tainted()
+    }
+
+    /// The one sentence any result surface must use.
+    pub fn record_line(&self) -> String {
+        self.sandbox_record
+            .record_line(self.game.state.outcome.as_ref(), self.tainted())
+    }
+
+    // ------------------------------------------------------------------- undo
+
+    /// Undo is offered only while the recorded line still describes this exact
+    /// position: after a sandbox override the line no longer produces the state,
+    /// so undoing would silently substitute a different game.
+    pub fn can_undo(&self) -> bool {
+        !self.review_mode && !self.tainted() && !self.replay.steps.is_empty()
+    }
+
+    /// Undo the most recent accepted action.
+    ///
+    /// The position is rebuilt by replaying the deterministic recorded prefix
+    /// from the same seed, so the random state, revision and decision serial are
+    /// restored *exactly* rather than patched. The log is rebuilt from that
+    /// prefix too, so nothing the undone action revealed (a draw, a scry look, a
+    /// private choice) is still readable anywhere in the session.
+    pub fn undo_last_action(&mut self) -> Result<String, String> {
+        if self.review_mode {
+            return Err("postgame review is read-only: leave review before undoing".to_string());
         }
+        if self.tainted() {
+            let message = "undo is unavailable after a sandbox override: the recorded line no longer produces this position. Start a new game or use Return to branch.".to_string();
+            self.message = message.clone();
+            return Err(message);
+        }
+        let Some(last) = self.replay.steps.last().cloned() else {
+            let message = "there is no accepted action to undo".to_string();
+            self.message = message.clone();
+            return Err(message);
+        };
+        let keep = self.replay.steps.len() - 1;
+        let branched = self
+            .replay
+            .branch_at(keep)
+            .map_err(|err| format!("could not cut the recorded line: {err}"))?;
+        let (game, log) = branched
+            .run_recorded()
+            .map_err(|err| format!("could not replay the recorded prefix: {err}"))?;
+        self.invalidate_pending_work();
+        self.game = game;
+        self.log = log;
+        self.replay = branched;
+        self.review_mode = false;
+        self.review_cache = None;
+        self.selected_attackers.clear();
+        self.selected_defender = None;
+        self.selected_blocks.clear();
+        self.selected_cards.clear();
+        self.target_pick = None;
+        self.note = None;
+        let label = format!("P{}'s {}", last.player, last.action.kind());
+        self.message = format!(
+            "undid {label}. The position was rebuilt from the recorded prefix, so the random state and decision serial are exact; anything that action revealed is gone from the log."
+        );
+        Ok(label)
     }
 
     /// Pending-choice helper text for the UI.
@@ -1259,10 +1542,24 @@ impl UiSession {
             .as_ref()
             .map(|outcome| match outcome {
                 aperture_core::Outcome::Win { winner, reason } => {
-                    format!("P{winner} wins — {reason}")
+                    if self.tainted() {
+                        format!(
+                            "P{winner} wins — {reason} — SANDBOX-MODIFIED, not a legal match result ({})",
+                            self.sandbox_record.summary()
+                        )
+                    } else {
+                        format!("P{winner} wins — {reason}")
+                    }
                 }
                 aperture_core::Outcome::Draw { reason } => {
-                    format!("the game is a draw — {reason}")
+                    if self.tainted() {
+                        format!(
+                            "the game is a draw — {reason} — SANDBOX-MODIFIED, not a legal match result ({})",
+                            self.sandbox_record.summary()
+                        )
+                    } else {
+                        format!("the game is a draw — {reason}")
+                    }
                 }
             })
     }
@@ -1312,7 +1609,7 @@ pub fn load_explicit_deck(path: &Path, name: &str) -> (DeckList, Option<String>)
 }
 
 pub fn sandbox_label() -> &'static str {
-    "SANDBOX — these tools bypass the rules and void certified replay"
+    "SANDBOX OVERRIDES — manual table controls; each one taints this session's record (never a legal match action)"
 }
 
 pub fn block_list(pairs: &[(ObjectId, ObjectId)]) -> Vec<BlockDecl> {

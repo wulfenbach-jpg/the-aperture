@@ -247,6 +247,19 @@ pub enum Event {
     StateBasedAction {
         description: String,
     },
+    /// A manual table override applied through the sandbox controls. This is
+    /// never a legal-match action: the session that uses one is tainted. The
+    /// event is rendered viewer-aware, so `private_cards` (the cards a scry or
+    /// surveil looked at) are shown only to the seat that looked.
+    SandboxOverride {
+        player: PlayerId,
+        kind: crate::sandbox::SandboxKind,
+        count: u32,
+        /// Public description; never contains a hidden card name.
+        detail: String,
+        #[serde(default)]
+        private_cards: Vec<CardId>,
+    },
     GameOver {
         winner: PlayerId,
         reason: String,

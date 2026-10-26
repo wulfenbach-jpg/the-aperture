@@ -85,8 +85,16 @@ implementation and it says so everywhere it matters.
   (category-badged: `[RULE]`, `[SIMPLIFICATION]`, `[STRATEGY]` — see
   `docs/issue19-trace-coach.md`; includes pass-round, response-window and APNAP
   records),
-  viewer-masked log, pending-choice controls, sandbox tools, per-seat deck
-  import, save/load, text zoom and keyboard navigation. Every model, network and
+  viewer-masked log, pending-choice controls, one searchable zone inspector,
+  an explicitly labelled sandbox with manual table controls, per-seat deck
+  import, save/load, undo, text zoom (70%–200%, 100% reset, Ctrl+0) and keyboard
+  navigation. An `Accessibility (A)` panel offers an explicit high-contrast
+  palette and a reduced-motion mode (static busy text, zero animation time),
+  with native Tab/Enter focus and a 2 px focus outline. `--performance-report
+  PATH` opts into a bounded ~10 s frame report written off the render callback;
+  it reports callback duration and inter-callback interval p95 and does not
+  claim GPU or end-to-end input latency. See
+  [docs/issue22-ergonomics.md](docs/issue22-ergonomics.md). Every model, network and
   file operation runs on a background worker with a visible busy state; the
   frame callback never blocks, and a worker result is applied only while its
   session generation, engine revision, decision serial and seat all still match.
@@ -104,6 +112,24 @@ implementation and it says so everywhere it matters.
   hands and libraries are counts only.
   An accepted action invalidates any in-flight load, so a delayed file read can
   never overwrite the board the player just changed.
+* **Tabletop controls, zone inspector and honest sandbox** (UI + core): `Z`
+  opens one searchable inspector over every zone this seat may legally see
+  (search by name, rules text or cost; filter by seat and zone; a command-zone
+  card is never labelled battlefield, and opponent hands and libraries stay
+  counts only). `K` opens the sandbox panel: explicit draw, mill, untap, scry
+  (keep/bottom), surveil (keep/graveyard), reveal and a +1/+1 counter and life
+  editor. Those are **overrides, never legal-match actions**: each one runs
+  through one deterministic engine path, emits a typed viewer-masked trace
+  event, and taints the session's typed record, which survives save/load and
+  makes every result read *SANDBOX-MODIFIED — not a legal match result* (a save
+  that carries overrides but claims to be untainted is refused). `Undo (U)`
+  rebuilds the position from the deterministic recorded prefix, so the RNG,
+  revision and decision serial are exact and nothing the undone action revealed
+  survives in the log; it is refused after an override. New game, new table,
+  load, branch (both the Study panel button and the `G` shortcut), imported
+  start and sandbox reset all require an explicit
+  confirmation and report failures in an error state. See
+  `docs/issue20-tabletop.md`.
 * **Per-seat import / play** (UI): each seat has its own Archidekt URL box, a
   pasted-text fallback and a text-file fallback. Each import is certified on its
   own (name, supported/total counts, practice-profile line, refusal reason);
@@ -179,12 +205,16 @@ The baseline AI is a deterministic heuristic. A local Decider-2B service can be
 opted into (`--decider`, or the UI checkbox) through its documented typed readout
 API (`POST /v1/systemone` with `state`/`questions`/`model` on
 `http://127.0.0.1:8765`). It is off by default, receives only the masked
-projection of the acting seat, and any timeout, HTTP error, unparsable answer or
+projection of the acting seat, and any timeout, HTTP error, malformed or
+oversized response, unparsable answer, invalid confidence or
 **response-indicated truncation** (`usage.truncated`, `state_tokens_dropped > 0`
-or a non-empty `truncated_questions`) falls back to the heuristic with a visible
-reason — a choice the model made without seeing the whole projection is never
-used. A returned confidence is option preference concentration, never a win
-probability. See HANDOFF.md for the tested/untested status of that path.
+or a non-empty `truncated_questions`) falls back to the heuristic with a stable
+visible reason code. A model answer is applied only through an envelope bound to
+the viewer, revision, decision serial and session generation, and only when the
+returned key resolves to an action still in the live engine offer. A returned
+confidence is option preference concentration, never a win probability or a
+search evaluation. No weights or model packages are bundled; a local checkpoint
+is obtained and licensed separately. See `docs/issue25-local-model.md`.
 
 ## Command-zone practice (explicit profile, not Commander)
 
