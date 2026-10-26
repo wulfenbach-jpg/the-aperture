@@ -213,6 +213,16 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     assert!(*amount > 0, "{} adds no mana", card.name);
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
+                // Target-player effects (slice 6) are exercised by the ability
+                // tests: none of them appears in printed spell text yet.
+                Effect::MillTargetPlayer(_)
+                | Effect::LoseLife(_)
+                | Effect::LoseLifeEachOpponent(_) => {
+                    panic!(
+                        "{} uses a target-player ability effect in its spell text",
+                        card.name
+                    )
+                }
             }
         }
         // The card's own reminder text is consistent with its cost.

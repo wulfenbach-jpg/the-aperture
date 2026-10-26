@@ -41,6 +41,18 @@ pub enum TriggerEvent {
     /// permanent's controller is irrelevant; the trigger's controller is the
     /// source permanent's controller.
     AnotherCreatureEnters,
+    /// CR 603.6c + 700.4 with the printed wording "creature dies" (no
+    /// controller restriction): any creature anywhere died, including the
+    /// source itself (Blood Artist).
+    CreatureDies,
+    /// CR 603.6c + 700.4 with the printed wording "this creature or another
+    /// creature you control dies": a creature the watcher's controller
+    /// controlled died. The dying creature may be the watcher itself
+    /// (Zulaport Cutthroat).
+    CreatureYouControlDies,
+    /// Same wording but strictly "another creature you control dies": the
+    /// dying creature must not be the watcher itself (Elas il-Kor).
+    AnotherCreatureYouControlDies,
 }
 
 impl TriggerEvent {
@@ -51,6 +63,11 @@ impl TriggerEvent {
             TriggerEvent::SpellCast => "you cast an instant or sorcery spell",
             TriggerEvent::LandEnters => "a land you control enters",
             TriggerEvent::AnotherCreatureEnters => "another creature enters",
+            TriggerEvent::CreatureDies => "a creature dies",
+            TriggerEvent::CreatureYouControlDies => {
+                "this creature or another creature you control dies"
+            }
+            TriggerEvent::AnotherCreatureYouControlDies => "another creature you control dies",
         }
     }
 }
@@ -357,11 +374,38 @@ const RUIN_CRAB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::MillEachOpponent(3)],
 })];
 
+const BLOOD_ARTIST: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.",
+    event: TriggerEvent::CreatureDies,
+    optional: false,
+    target: TargetSpec::Player,
+    effects: &[Effect::LoseLife(1), Effect::GainLife(1)],
+})];
+
+const ZULAPORT_CUTTHROAT: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+    event: TriggerEvent::CreatureYouControlDies,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::LoseLifeEachOpponent(1), Effect::GainLife(1)],
+})];
+
+const HEDRON_CRAB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, target player mills three cards.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::Player,
+    effects: &[Effect::MillTargetPlayer(3)],
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
         CardId::StitchersSupplier => STITCHERS_SUPPLIER,
         CardId::RuinCrab => RUIN_CRAB,
+        CardId::BloodArtist => BLOOD_ARTIST,
+        CardId::ZulaportCutthroat => ZULAPORT_CUTTHROAT,
+        CardId::HedronCrab => HEDRON_CRAB,
         CardId::Owlbear => OWLBEAR,
         CardId::SoulWarden => SOUL_WARDEN,
         CardId::StripedBears => STRIPED_BEARS,

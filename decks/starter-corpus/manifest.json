@@ -286,7 +286,6 @@
         "Ashnod's Altar",
         "Ayara, First of Locthwain",
         "Bastion of Remembrance",
-        "Blood Artist",
         "Bolas's Citadel",
         "Boromir, Warden of the Tower",
         "Braids, Arisen Nightmare",
@@ -335,8 +334,7 @@
         "Viscera Seer",
         "Warren Soultrader",
         "Wayfarer's Bauble",
-        "Yawgmoth, Thran Physician",
-        "Zulaport Cutthroat"
+        "Yawgmoth, Thran Physician"
       ],
       "missing_interactions": [
         "remaining 58 desired-list nonland names are unsupported",
@@ -367,7 +365,6 @@
         "Explore",
         "Floral Evoker",
         "Ghirapur Orrery",
-        "Hedron Crab",
         "Icetill Explorer",
         "Khalni Heart Expedition",
         "Kiora, the Crashing Wave",

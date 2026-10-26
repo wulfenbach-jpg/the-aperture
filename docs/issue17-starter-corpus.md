@@ -66,8 +66,13 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    independent of counters), **bounded implemented** landfall for Tatyova and
    Jaddi Offshoot (life then draw, controller-only), and the slice-4
    "another creature enters" trigger for Soul Warden (fires for creatures the
-   Warden's controller does not control, never for the Warden itself). Death and
-   tribal triggers remain unimplemented (Elas, Ayula);
+   Warden's controller does not control, never for the Warden itself). Slice 6
+   adds the "creature dies" watcher family: any creature (Blood Artist), a
+   creature you control including the watcher itself (Zulaport Cutthroat), and
+   "another creature you control" (modelled, no card in the pool uses it yet).
+   Card deaths and creature-token deaths alike fire them. Tribal triggers and
+   "creature card put into a graveyard from anywhere" triggers remain
+   unimplemented (Ayula, Syr Konrad);
 3. activated non-mana abilities: **bounded implemented package** for Krenko's
    `{T}` Goblin-count token production (including >255 counts) and the existing
    Prodigal Sorcerer/Rootwalla/Brindle Boar abilities. Sacrifice outlets and
@@ -84,9 +89,12 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    from the top of a library as a real zone move (Stitcher's Supplier mills its
    controller on entering *and* on dying; Ruin Crab mills each opponent on
    landfall). Milling an empty library does nothing and never loses the game,
-   because that is a draw-only state-based action (CR 704.5b). Target-player
-   milling (Hedron Crab) and anything that reads the graveyard are still
-   unimplemented;
+   because that is a draw-only state-based action (CR 704.5b). Slice 6 adds the
+   first **targeted** player effect: `TargetSpec::Player` with "target player
+   mills three cards" (Hedron Crab), together with "target player loses N life"
+   and "each opponent loses N life" as life loss that is *not* damage (CR 118.2),
+   so damage prevention cannot stop it. Anything that *reads* the graveyard is
+   still unimplemented;
 10. stack interaction (Talrand): **bounded implemented package** — "counter
     target noncreature spell" as a real target restriction (Negate may not name a
     creature spell on the stack, CR 205.2a). "Counter target spell" was already
@@ -95,9 +103,11 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
     to the pool without tapping a permanent (Pyretic Ritual, Seething Song), and
     Preordain's scry-2-then-draw as an ordered two-effect resolution;
 
-Elas still has 57 unsupported desired-list nonland names plus sacrifice outlets,
-death/drain triggers and tutor/reanimation interactions; its Swamp requirement is
-now met by the supported basic land.
+Elas still has 55 unsupported desired-list nonland names plus sacrifice outlets,
+tutor/reanimation interactions and keyword text on its own commander (Elas
+prints Deathtouch, which the rules layer does not model, so Elas itself stays
+refused at import); its Swamp requirement is now met by the supported basic land,
+and Blood Artist plus Zulaport Cutthroat now supply the death-drain payoff.
 None of these planned lists is called supported, legal-for-play or certified.
 
 ## First implemented package: jasmine-vanilla-stompy

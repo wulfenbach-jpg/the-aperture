@@ -1,0 +1,18 @@
+// package-slice6-dies — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises the slice-6 primitives: "creature dies" watchers (any creature, and
+// creatures you control), life loss that is not damage, and "target player
+// mills three" on landfall.
+3 Blood Artist
+3 Zulaport Cutthroat
+3 Hedron Crab
+3 Goblin Instigator
+3 Grizzly Bears
+3 Runeclaw Bear
+3 Trained Jackal
+2 Trained Armodon
+2 Soul Warden
+2 Lightning Bolt
+4 Island
+4 Swamp
+3 Forest
+2 Mountain

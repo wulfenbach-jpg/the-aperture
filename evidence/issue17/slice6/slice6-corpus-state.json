@@ -1,0 +1,36 @@
+{
+  "catalog_cards": 106,
+  "catalog_unique_names": 106,
+  "exact_union_names": 459,
+  "supported_union_names": 94,
+  "missing_union_names": 365,
+  "manifest_missing_names": 365,
+  "manifest_matches_catalog": true,
+  "changed_lists": {
+    "elas-sacrifice": [
+      57,
+      55
+    ],
+    "tatyova-landfall": [
+      55,
+      54
+    ]
+  },
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "newly_supported": [
+    "Blood Artist",
+    "Hedron Crab",
+    "Zulaport Cutthroat"
+  ],
+  "slice6_cards_per_list": {
+    "elas-sacrifice": [
+      "Blood Artist",
+      "Zulaport Cutthroat"
+    ],
+    "tatyova-landfall": [
+      "Hedron Crab"
+    ]
+  },
+  "slice6_cards_not_in_any_desired_list": []
+}

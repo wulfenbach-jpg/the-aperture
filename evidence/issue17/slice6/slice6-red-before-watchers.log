@@ -1,0 +1,66 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: method `queue_creature_dies` is never used
+    --> crates\core\src\engine.rs:1315:8
+     |
+  81 | impl Game {
+     | --------- method in this implementation
+...
+1315 |     fn queue_creature_dies(&mut self, dying: ObjectId, card: CardId, controller: PlayerId) {
+     |        ^^^^^^^^^^^^^^^^^^^
+     |
+     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.18s
+     Running tests\issue17_slice6.rs (target\debug\deps\issue17_slice6-163b663ee6b23de2.exe)
+
+running 9 tests
+test sourced_slice6_cards_match_their_live_printings ... ok
+test hedron_crab_may_target_its_own_controller ... ok
+test hedron_crab_mills_the_targeted_player_not_its_controller ... ok
+test target_player_spec_offers_every_live_seat_and_refuses_a_creature ... ok
+test blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature ... FAILED
+test zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death ... FAILED
+test blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player ... FAILED
+test life_loss_is_not_damage_and_a_damage_shield_never_stops_it ... FAILED
+test creature_tokens_dying_are_seen_by_death_watchers ... FAILED
+
+failures:
+
+---- blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature stdout ----
+
+thread 'blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature' (13468) panicked at crates\core\tests\issue17_slice6.rs:37:5:
+the scripted driver never reached the expected state
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death stdout ----
+
+thread 'zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death' (37320) panicked at crates\core\tests\issue17_slice6.rs:37:5:
+the scripted driver never reached the expected state
+
+---- blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player stdout ----
+
+thread 'blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player' (2752) panicked at crates\core\tests\issue17_slice6.rs:37:5:
+the scripted driver never reached the expected state
+
+---- life_loss_is_not_damage_and_a_damage_shield_never_stops_it stdout ----
+
+thread 'life_loss_is_not_damage_and_a_damage_shield_never_stops_it' (42228) panicked at crates\core\tests\issue17_slice6.rs:37:5:
+the scripted driver never reached the expected state
+
+---- creature_tokens_dying_are_seen_by_death_watchers stdout ----
+
+thread 'creature_tokens_dying_are_seen_by_death_watchers' (25236) panicked at crates\core\tests\issue17_slice6.rs:37:5:
+the scripted driver never reached the expected state
+
+
+failures:
+    blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player
+    blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature
+    creature_tokens_dying_are_seen_by_death_watchers
+    life_loss_is_not_damage_and_a_damage_shield_never_stops_it
+    zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death
+
+test result: FAILED. 4 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice6`

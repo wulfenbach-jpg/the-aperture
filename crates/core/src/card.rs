@@ -62,6 +62,10 @@ pub enum TargetSpec {
     None,
     /// "any target": a player or a creature (CR 115.4 covers the wider set).
     AnyTarget,
+    /// CR 115.1 + 115.4: a player ("target player"). Every live seat is a legal
+    /// target, including the ability's own controller (Hedron Crab, Blood
+    /// Artist).
+    Player,
     Creature,
     Spell,
     /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
@@ -125,6 +129,15 @@ pub enum Effect {
         color: ManaColor,
         amount: u8,
     },
+    /// CR 701.13a: the *target player* mills N cards (Hedron Crab).
+    MillTargetPlayer(u8),
+    /// CR 118.2 + 119.3: the *target player* loses N life. This is life loss,
+    /// not damage: nothing is dealt, so damage prevention and damage triggers
+    /// never apply (Blood Artist).
+    LoseLife(i32),
+    /// CR 118.2 + 119.3: each opponent of the effect's controller loses N life
+    /// (Zulaport Cutthroat). Loss of life is not damage.
+    LoseLifeEachOpponent(i32),
 }
 
 impl Effect {
@@ -166,6 +179,9 @@ impl Effect {
             Effect::AddMana { color, amount } => {
                 format!("add {amount} {} mana", color.name())
             }
+            Effect::MillTargetPlayer(n) => format!("target player mills {n}"),
+            Effect::LoseLife(n) => format!("the target player loses {n} life"),
+            Effect::LoseLifeEachOpponent(n) => format!("each opponent loses {n} life"),
         }
     }
 }
@@ -392,6 +408,9 @@ pub enum CardId {
     Preordain,
     PyreticRitual,
     SeethingSong,
+    ZulaportCutthroat,
+    BloodArtist,
+    HedronCrab,
 }
 
 /// Explicit command-zone practice allow-list. This is deliberately narrower

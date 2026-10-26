@@ -338,3 +338,33 @@ capture even with `--decider`.
   permanently mark the session `SANDBOX-MODIFIED`; certified replay claims end
   there.
 * No undo; branching is done by loading a save or re-running a replay.
+
+## 11. Issue 17 corpus slice 6 — death watchers and target-player effects
+
+Three more sourced cards are supported (pool 103 → **106**), all read from live
+Scryfall this run (`fixtures/starter-corpus/slice6-sourced.json`, one distinct
+printed text per card across every printing):
+
+| card | printing | new behaviour |
+|---|---|---|
+| Blood Artist | soc 209 | any creature dies → **target player** loses 1 life, you gain 1 |
+| Zulaport Cutthroat | soc 233 | a creature you control (or itself) dies → each opponent loses 1 life, you gain 1 |
+| Hedron Crab | tdc 155 | landfall → **target player** mills three cards |
+
+New primitives: `TargetSpec::Player` (every live seat, controller included),
+`Effect::MillTargetPlayer`, `Effect::LoseLife`, `Effect::LoseLifeEachOpponent`,
+and the `TriggerEvent::{CreatureDies, CreatureYouControlDies,
+AnotherCreatureYouControlDies}` watcher family. Life loss is *not* damage
+(CR 118.2): it emits `LifeChange` only, so a real damage-prevention shield
+(Mending Hands) cannot stop it. Card deaths and creature-token deaths both fire
+the watchers, because `move_to_graveyard` is the single departure path.
+
+Corpus: catalog **106**, eight-list union 459 = **94 supported + 365 missing**
+(Elas 57→55, Tatyova 55→54), **1 implemented / 0 certified** starters. Elas il-Kor
+itself was sourced but **not** added: it prints Deathtouch, which the rules layer
+does not model.
+
+Known limits of this slice: sacrifice outlets, equipment/artifacts, counters as
+rules objects, tutors, reanimation, Deathtouch and every graveyard *reader* stay
+unimplemented, so no desired 100-card starter is certified. Details:
+`docs/issue17-starter-corpus.md`, `evidence/issue17/SLICE6-HUMAN-CHECKPOINT.md`.

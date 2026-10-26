@@ -10,8 +10,16 @@
 //! Slice 5 adds the sourced mill / counter / ritual package: Stitcher's Supplier
 //! (mill on enters and on dies), Ruin Crab (landfall mill for each opponent),
 //! Negate ("counter target noncreature spell"), Preordain (scry 2 then draw),
-//! Pyretic Ritual and Seething Song (add red mana to the pool). Target-player
-//! milling (Hedron Crab) is *not* implemented and stays refused at import.
+//! Pyretic Ritual and Seething Song (add red mana to the pool).
+//!
+//! Slice 6 adds the sourced death-watcher package: Blood Artist (any creature
+//! dies → target player loses 1 life, you gain 1), Zulaport Cutthroat (a
+//! creature you control dies → each opponent loses 1 life, you gain 1) and
+//! Hedron Crab (landfall → target player mills three). It introduces
+//! `TargetSpec::Player`, life loss as distinct from damage, and the "creature
+//! dies" watcher family. `Effect::LoseLifeEachOpponent` and
+//! `Effect::MillTargetPlayer` are ability-only for now; no printed spell text in
+//! the pool uses them.
 //!
 //! Activated and triggered abilities are declared in [`crate::ability`] and
 //! executed by the engine; a card with an ability this crate cannot execute is
@@ -162,7 +170,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 103] = [
+pub static CARDS: [CardDef; 106] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -735,6 +743,30 @@ pub static CARDS: [CardDef; 103] = [
         spell: Some(SpellSpec {
             target: TargetSpec::None, instant: true, effects: ADD_FIVE_RED
         })
+    ),
+    // Issue 17 slice 6: sourced death-trigger and target-player package. All
+    // three creatures print nothing but already-modelled behaviour, so no new
+    // keyword is claimed: Blood Artist and Zulaport Cutthroat use the new
+    // "creature dies" watchers plus life loss (which is not damage), and
+    // Hedron Crab is the first "target player" mill.
+    card!(
+        BloodArtist, "Blood Artist", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Vampire", power: Some(0), toughness: Some(1),
+        oracle: "Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.",
+        spell: None
+    ),
+    card!(
+        ZulaportCutthroat, "Zulaport Cutthroat", cost: Some("{1}{B}"), kinds: CREATURE,
+        basic: None,
+        type_line: "Creature — Human Rogue Ally", power: Some(1), toughness: Some(1),
+        oracle: "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+        spell: None
+    ),
+    card!(
+        HedronCrab, "Hedron Crab", cost: Some("{U}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Crab", power: Some(0), toughness: Some(2),
+        oracle: "Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)",
+        spell: None
     ),
 ];
 

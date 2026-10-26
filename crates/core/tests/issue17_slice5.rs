@@ -524,11 +524,20 @@ fn the_mill_counter_and_ritual_package_is_reachable_from_real_decks() {
     ] {
         assert!(catalog::by_name(name).is_some(), "{name} is supported");
     }
-    let err = DeckList::parse_practice("Mill package", "1 Hedron Crab\n")
-        .expect_err("target-player mill is not implemented yet");
+    let err = DeckList::parse_practice("Drain package", "1 Ayara, First of Locthwain\n")
+        .expect_err("a card with unmodelled text is still refused");
     assert!(
-        err.to_string().contains("Hedron Crab"),
+        err.to_string().contains("Ayara, First of Locthwain"),
         "the refusal names the unsupported card, got {err}"
+    );
+    // Slice 6 implemented target-player mill, so Hedron Crab is no longer the
+    // refusal example this test used to assert.
+    let crab = DeckList::parse_practice("Mill package", "1 Hedron Crab\n1 Island\n1 Swamp\n")
+        .expect("target-player mill is implemented");
+    assert!(
+        crab.cards
+            .iter()
+            .any(|(held, _)| *held == card("Hedron Crab"))
     );
 }
 

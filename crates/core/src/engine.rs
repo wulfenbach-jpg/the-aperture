@@ -1161,6 +1161,9 @@ impl Game {
         // last known information; `source` is the graveyard object.
         if let Some((card, controller)) = dying {
             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
+            // CR 603.6c: the same event is a "creature dies" trigger for every
+            // watcher, so death payoffs see card deaths and token deaths alike.
+            self.queue_creature_dies(new_id, card, controller);
         }
     }
 
@@ -1282,6 +1285,92 @@ impl Game {
                 object: new_id,
                 card,
             });
+        }
+    }
+
+    /// CR 118.2 + 119.3: a player loses life. Life loss is not damage — nothing
+    /// is dealt, so damage prevention, damage replacement and "is dealt damage"
+    /// triggers never see it. Only the life total (and a single `LifeChange`
+    /// event) changes; CR 704.5a is then checked by the SBA pass.
+    fn lose_life(&mut self, player: PlayerId, amount: i32, events: &mut Vec<Event>) {
+        if amount <= 0 || !self.state.is_live(player) {
+            return;
+        }
+        let life = self.state.players[player as usize].life - amount;
+        self.state.players[player as usize].life = life;
+        events.push(Event::LifeChange {
+            player,
+            delta: -amount,
+            life,
+        });
+    }
+
+    /// CR 603.6c + 700.4: a creature that was on the battlefield is put into a
+    /// graveyard, so it "dies". Every matching watcher on the battlefield
+    /// triggers, and the dying creature itself can watch its own death when its
+    /// printed wording includes itself ("this creature or another creature you
+    /// control dies"). Shared by the card path and the token path through
+    /// `move_to_graveyard`, so creature tokens are not invisible to these
+    /// triggers.
+    fn queue_creature_dies(&mut self, dying: ObjectId, card: CardId, controller: PlayerId) {
+        // CR 700.4: only a creature dying is a "creature dies" event; a milled
+        // creature card or a sacrificed artifact never triggers these.
+        if !card.def().is_creature() {
+            return;
+        }
+        // The dying permanent's own ability still triggers if it prints
+        // "this creature ... dies" (Blood Artist prints "this creature or
+        // another creature dies", Zulaport Cutthroat restricts that to
+        // creatures its controller controls, which includes itself).
+        self.queue_triggers(dying, card, controller, TriggerEvent::CreatureDies);
+        self.queue_triggers(
+            dying,
+            card,
+            controller,
+            TriggerEvent::CreatureYouControlDies,
+        );
+        let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield)
+            .filter(|object| {
+                ability::triggers_on(object.card, TriggerEvent::CreatureDies)
+                    .next()
+                    .is_some()
+                    || ability::triggers_on(object.card, TriggerEvent::CreatureYouControlDies)
+                        .next()
+                        .is_some()
+                    || ability::triggers_on(
+                        object.card,
+                        TriggerEvent::AnotherCreatureYouControlDies,
+                    )
+                    .next()
+                    .is_some()
+            })
+            .map(|object| (object.id, object.card, object.controller))
+            .collect();
+        for (source, source_card, source_controller) in watchers {
+            self.queue_triggers(
+                source,
+                source_card,
+                source_controller,
+                TriggerEvent::CreatureDies,
+            );
+            if source_controller == controller {
+                self.queue_triggers(
+                    source,
+                    source_card,
+                    source_controller,
+                    TriggerEvent::CreatureYouControlDies,
+                );
+                self.queue_triggers(
+                    source,
+                    source_card,
+                    source_controller,
+                    TriggerEvent::AnotherCreatureYouControlDies,
+                );
+            }
         }
     }
 
@@ -1762,6 +1851,12 @@ impl Game {
                 );
                 out
             }
+            // CR 115.4: "target player" is every live player, the ability's own
+            // controller included (Hedron Crab, Blood Artist).
+            TargetSpec::Player => (0..self.state.seat_count() as PlayerId)
+                .filter(|p| self.state.is_live(*p))
+                .map(Target::Player)
+                .collect(),
             TargetSpec::Creature => self
                 .state
                 .objects
@@ -4440,6 +4535,36 @@ impl Game {
                 }
                 false
             }
+            Effect::MillTargetPlayer(n) => {
+                // CR 701.13a: "target player mills N cards" is the targeted
+                // player's library, never the effect controller's.
+                for target in item.targets.clone() {
+                    if let Target::Player(p) = target {
+                        self.mill_cards(p, n, events);
+                    }
+                }
+                false
+            }
+            Effect::LoseLife(amount) => {
+                // CR 118.2 + 119.3: losing life is not damage. No `Damage`
+                // event, no damage replacement or prevention, no damage
+                // trigger.
+                for target in item.targets.clone() {
+                    if let Target::Player(p) = target {
+                        self.lose_life(p, amount, events);
+                    }
+                }
+                false
+            }
+            Effect::LoseLifeEachOpponent(amount) => {
+                for opponent in 0..self.state.seat_count() as PlayerId {
+                    if opponent == controller || !self.state.is_live(opponent) {
+                        continue;
+                    }
+                    self.lose_life(opponent, amount, events);
+                }
+                false
+            }
             Effect::AddMana { color, amount } => {
                 self.state.players[controller as usize]
                     .mana
@@ -5343,6 +5468,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
     match spec {
         TargetSpec::None => "CR 601.2c",
         TargetSpec::AnyTarget => "any target: CR 115.4",
+        TargetSpec::Player => "target player: CR 115.4",
         TargetSpec::Creature => "target creature: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
