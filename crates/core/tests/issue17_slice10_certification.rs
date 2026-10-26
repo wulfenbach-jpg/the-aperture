@@ -20,16 +20,18 @@ use sha2::{Digest, Sha256};
 const DECK: &str = include_str!("../../../decks/starter-corpus/jasmine-vanilla-stompy.txt");
 const MANIFEST: &str = include_str!("../../../decks/starter-corpus/manifest.json");
 
-/// The snapshot's text with line endings normalized to LF. A git checkout gives
-/// this file CRLF on Windows and LF elsewhere, so the certificate must identify
-/// the list's content rather than the checkout's line endings.
+/// The snapshot's text with line endings normalized to LF, through the same
+/// `aperture_core::digest` helper the `certify` command hashes with. A git
+/// checkout gives this file CRLF on Windows and LF elsewhere, so the certificate
+/// must identify the list's content rather than the checkout's line endings.
 fn deck_bytes() -> Vec<u8> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../decks/starter-corpus/jasmine-vanilla-stompy.txt");
     let raw =
         std::fs::read(&path).unwrap_or_else(|err| panic!("{} is readable: {err}", path.display()));
-    let text = String::from_utf8(raw).expect("the snapshot is UTF-8");
-    text.replace("\r\n", "\n").into_bytes()
+    aperture_core::digest::normalize_snapshot_text(&raw)
+        .expect("the snapshot is UTF-8")
+        .into_bytes()
 }
 
 fn sha256_hex(bytes: &[u8]) -> String {

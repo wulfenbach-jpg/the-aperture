@@ -1,0 +1,21 @@
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.55s
+     Running tests\certify.rs (target\debug\deps\certify-94d1a149835aa163.exe)
+
+running 1 test
+
+thread 'certify_proves_one_starter_from_its_exact_snapshot' (36732) panicked at crates\cli\tests\certify.rs:69:5:
+assertion `left == right` failed: the certificate hashes the bytes it actually parsed
+  left: String("4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491")
+ right: "1fbaf76e10320beeea6b69fb5b2cadcf4437040a63eb954f3b06dce52d53d25c"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test certify_proves_one_starter_from_its_exact_snapshot ... FAILED
+
+failures:
+
+failures:
+    certify_proves_one_starter_from_its_exact_snapshot
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 25.43s
+
+error: test failed, to rerun pass `-p aperture-cli --test certify`
