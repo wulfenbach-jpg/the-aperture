@@ -1,0 +1,50 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T21:38:37.229839+00:00",
+ "note": "Slice-16 sourced cards: two records, one per card (Fade from History, Little Bear). Each record is the exact Scryfall printing the catalog string was copied from.",
+ "cards": [
+  {
+   "name": "Fade from History",
+   "oracle_id": "533767ca-7208-4c88-b160-375479b68285",
+   "scryfall_id": "71f13f67-e852-4a6a-8f32-b16195e53ec3",
+   "set": "bro",
+   "collector_number": "177",
+   "layout": "normal",
+   "mana_cost": "{2}{G}{G}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Each player who controls an artifact or enchantment creates a 2/2 green Bear creature token. Then destroy all artifacts and enchantments.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/71f13f67-e852-4a6a-8f32-b16195e53ec3",
+   "retrieved_at": "2026-10-26T21:38:40.362427+00:00"
+  },
+  {
+   "name": "Little Bear",
+   "oracle_id": "53c6c6bf-0256-424d-b937-1cc7d9e2d574",
+   "scryfall_id": "8a50858a-33b5-4c45-9c31-5956ae5a33a6",
+   "set": "hob",
+   "collector_number": "128",
+   "layout": "normal",
+   "mana_cost": "{2}{G}",
+   "type_line": "Creature — Bear",
+   "power": "3",
+   "toughness": "2",
+   "oracle_text": "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Flash"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/8a50858a-33b5-4c45-9c31-5956ae5a33a6",
+   "retrieved_at": "2026-10-26T21:38:41.550982+00:00"
+  }
+ ]
+}

@@ -238,7 +238,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 129] = [
+pub static CARDS: [CardDef; 131] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -970,6 +970,23 @@ pub static CARDS: [CardDef; 129] = [
         MotherBear, "Mother Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
         oracle: "{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.",
+        spell: None
+    ),
+    // Issue 17 slice 16: two more sourced Ayula-list cards. Fade from History
+    // needs one mass destruction and a per-controller token; Little Bear needs
+    // a targeted untap whose counter is conditional on the target's subtype.
+    // Both printed texts are copied verbatim from the printings recorded in
+    // fixtures/starter-corpus/slice16-sourced.json.
+    card!(
+        FadeFromHistory, "Fade from History", cost: Some("{2}{G}{G}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Each player who controls an artifact or enchantment creates a 2/2 green Bear creature token. Then destroy all artifacts and enchantments.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::BearTokenForEachPlayerWithPermanent, Effect::DestroyAllArtifactsAndEnchantments] })
+    ),
+    card_flash!(
+        LittleBear, "Little Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(2),
+        oracle: "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
         spell: None
     ),
 ];

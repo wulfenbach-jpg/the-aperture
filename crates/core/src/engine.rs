@@ -2012,6 +2012,21 @@ impl Game {
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
+            // CR 115.1: "target creature you control" is every creature this
+            // player controls. `exclude` is the ability's own source, which the
+            // printed word "another" removes (Little Bear).
+            TargetSpec::CreatureYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.is_creature()
+                        && o.controller == _caster
+                        && o.id != exclude
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
             TargetSpec::Spell => self
                 .state
                 .stack
@@ -5312,6 +5327,90 @@ impl Game {
                 self.create_tokens(controller, CardId::BearToken, u32::from(n) as usize, events);
                 false
             }
+            // CR 111.2 + 608.2c: the token is created under the control of the
+            // player who controlled the artifact/enchantment, in APNAP order
+            // from the effect's controller. A seat with neither permanent gets
+            // nothing, and an eliminated seat is skipped.
+            Effect::BearTokenForEachPlayerWithPermanent => {
+                let seats = self.state.seat_count();
+                for offset in 0..seats {
+                    let p = ((controller as usize + offset) % seats) as PlayerId;
+                    if !self.state.is_live(p) {
+                        continue;
+                    }
+                    let controls = self.state.battlefield(p).into_iter().any(|object| {
+                        object.card.def().is_artifact() || object.card.def().is_enchantment()
+                    });
+                    if controls {
+                        self.create_tokens(p, CardId::BearToken, 1, events);
+                    }
+                }
+                false
+            }
+            // CR 701.8a + 704.3: every artifact and enchantment is destroyed at
+            // the same time. All zone changes are recorded first, then the
+            // dies-watchers are dispatched once for the whole batch, exactly as
+            // the state-based-action path does.
+            Effect::DestroyAllArtifactsAndEnchantments => {
+                let doomed: Vec<ObjectId> = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && (object.card.def().is_artifact()
+                                || object.card.def().is_enchantment())
+                    })
+                    .map(|object| object.id)
+                    .collect();
+                if !doomed.is_empty() {
+                    let watchers = death_watchers(self);
+                    let mut deaths = Vec::new();
+                    for id in &doomed {
+                        if let Some(record) = self.move_to_graveyard_inner(*id, events) {
+                            deaths.push(record);
+                        }
+                    }
+                    self.queue_watchers_for_deaths(&watchers, &deaths);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "{} artifact(s) and/or enchantment(s) were destroyed (CR 701.8a)",
+                            doomed.len()
+                        ),
+                    });
+                }
+                false
+            }
+            // CR 701.26a: untapping an untapped permanent is a no-op, so the
+            // same instruction works whether or not the target was tapped. The
+            // counter reads the target's own printed subtype.
+            Effect::UntapTargetAndCounterIfBear => {
+                for target in item.targets.clone() {
+                    let Target::Permanent(id) = target else {
+                        continue;
+                    };
+                    let Some(object) = self.state.objects.get_mut(&id) else {
+                        continue;
+                    };
+                    object.tapped = false;
+                    let name = object.card.name();
+                    if object.card.def().has_subtype("Bear") {
+                        let total = object
+                            .counters
+                            .add(crate::counters::CounterKind::PlusOnePlusOne, 1);
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "{name} is untapped and has {total} +1/+1 counter(s)"
+                            ),
+                        });
+                    } else {
+                        events.push(Event::StateBasedAction {
+                            description: format!("{name} is untapped (not a Bear)"),
+                        });
+                    }
+                }
+                false
+            }
             Effect::AddManaForRiteOfFlame => {
                 let copies = self
                     .state
@@ -6384,6 +6483,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::Player => "target player: CR 115.4",
         TargetSpec::Creature => "target creature: CR 115.1",
         TargetSpec::OpponentCreature => "target creature an opponent controls: CR 115.1",
+        TargetSpec::CreatureYouControl => "target creature you control: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
     }

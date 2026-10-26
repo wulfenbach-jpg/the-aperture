@@ -229,8 +229,18 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::PutPlusOneCounterOnSource
                 | Effect::CreateBeastToken
                 | Effect::CreateBearTokens(_)
-                | Effect::CreatePestToken => {
+                | Effect::CreatePestToken
+                | Effect::BearTokenForEachPlayerWithPermanent
+                | Effect::DestroyAllArtifactsAndEnchantments => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                // Little Bear's untap/counter instruction is a triggered
+                // ability effect, never a spell's.
+                Effect::UntapTargetAndCounterIfBear => {
+                    panic!(
+                        "{} uses an ability-only effect in its spell text",
+                        card.name
+                    )
                 }
                 Effect::DamageTargetCreatureForEachGoblin => {
                     assert_eq!(spec.target, TargetSpec::OpponentCreature, "{}", card.name);

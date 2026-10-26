@@ -261,12 +261,10 @@
         "D\u00fanedain Rangers",
         "Evercoat Ursine",
         "Exuberant Wolfbear",
-        "Fade from History",
         "Friendly Teddy",
         "Goreclaw, Terror of Qal Sisma",
         "Kamahl's Summons",
         "Lightning Greaves",
-        "Little Bear",
         "Lumra, Bellow of the Woods",
         "Owlbear Cub",
         "Rampaging Yao Guai",
@@ -287,9 +285,9 @@
         "Words of Wilding"
       ],
       "missing_interactions": [
-        "+1/+1 counters as rules objects",
-        "bear tribal triggered abilities",
-        "token creation"
+        "commander fight/counter trigger (Ayula itself)",
+        "equipment (Lightning Greaves, Swiftfoot Boots)",
+        "soulbond, hideaway, saddled mounts and Ring temptation"
       ]
     },
     {

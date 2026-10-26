@@ -84,6 +84,10 @@ pub enum TargetSpec {
     Creature,
     /// A creature controlled by an opponent of the effect's controller.
     OpponentCreature,
+    /// A creature controlled by the effect's controller ("target creature you
+    /// control"), excluding the ability's own source when the printed wording
+    /// says "another" (Little Bear).
+    CreatureYouControl,
     Spell,
     /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
     /// (Negate). A creature spell on the stack is not a legal target.
@@ -179,6 +183,18 @@ pub enum Effect {
     /// Create N 2/2 green Bear creature tokens (Ayula's Influence, Bearscape,
     /// Mother Bear).
     CreateBearTokens(u8),
+    /// "Each player who controls an artifact or enchantment creates a 2/2 green
+    /// Bear creature token" (Fade from History). The token's controller is the
+    /// seat that controlled the permanent, not the spell's controller.
+    BearTokenForEachPlayerWithPermanent,
+    /// "Then destroy all artifacts and enchantments" (Fade from History). One
+    /// simultaneous event (CR 704.3): every death is recorded before the
+    /// dies-watcher triggers are dispatched for the whole batch.
+    DestroyAllArtifactsAndEnchantments,
+    /// "Untap another target creature you control. If that creature is a Bear,
+    /// put a +1/+1 counter on it" (Little Bear). The counter is conditional on
+    /// the target's own printed subtype, never on the source's.
+    UntapTargetAndCounterIfBear,
 }
 
 impl Effect {
@@ -245,6 +261,16 @@ impl Effect {
             Effect::CreateBeastToken => "create a 4/4 green Beast token".to_string(),
             Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
             Effect::CreateBearTokens(n) => format!("create {n} 2/2 green Bear token(s)"),
+            Effect::BearTokenForEachPlayerWithPermanent => {
+                "each player who controls an artifact or enchantment creates a 2/2 green Bear token"
+                    .to_string()
+            }
+            Effect::DestroyAllArtifactsAndEnchantments => {
+                "destroy all artifacts and enchantments".to_string()
+            }
+            Effect::UntapTargetAndCounterIfBear => {
+                "untap the target creature; if it is a Bear, put a +1/+1 counter on it".to_string()
+            }
         }
     }
 }
@@ -458,6 +484,8 @@ pub enum CardId {
     AyulasInfluence,
     Bearscape,
     MotherBear,
+    FadeFromHistory,
+    LittleBear,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

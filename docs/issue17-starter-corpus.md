@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-129-card pool. Isamaru itself is supported, and the slice-4 package implemented
+131-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **117** are in the supported 129-card catalog and **342** are missing;
+* **119** are in the supported 131-card catalog and **340** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.
@@ -56,7 +56,16 @@ basic lands (coordinator evidence
 
 Slices 11–13 add the islandwalk bears `Pale Bears` and `River Bear`, Sol Ring,
 and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
-the defending player's board. Ayula currently has **36** missing names.
+the defending player's board. Slices 14–16 add the dynamic mana stones,
+Werebear, the card-costed Bear makers and, in slice 16, `Fade from History` and
+`Little Bear`. Ayula currently has **34** missing names.
+
+Slice 16 is the first time "each player who controls ..." creates the token
+(the token's controller is the permanent's controller, not the spell's), and
+the first simultaneous mass destruction (`Fade from History` destroys every
+artifact and enchantment in one event with one dies-watcher batch). `Little
+Bear` reads its counter condition off the *target's* printed subtype, so a
+non-Bear target is untapped and left uncountered.
 
 ### Slices 12–13: reusable artifact and landfall packages
 
@@ -297,7 +306,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 129 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 131 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
