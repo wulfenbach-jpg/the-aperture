@@ -405,7 +405,7 @@ Two sourced cards close part of the Ayula gap: `Pale Bears` ({2}{G} 2/2) and
 "Islandwalk (This creature can't be blocked as long as defending player controls
 an Island.)" from Scryfall (ice 256 and 9ed 266; one distinct printed text across
 1 and 4 printings; `fixtures/starter-corpus/slice11-sourced.json`, retrieved
-2026-10-26). The engine now models CR 702.14b: `CardDef::islandwalk` carries the
+2026-10-26). The engine now models CR 702.14c: `CardDef::islandwalk` carries the
 printed keyword, `tokens::keywords` serves it to `can_block`, which takes whether
 the *defending* player controls an Island; the greedy blocking plan never offers
 an illegal islandwalk block, and a forged block is refused with a message naming

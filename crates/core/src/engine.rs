@@ -803,6 +803,23 @@ impl Game {
             .collect()
     }
 
+    fn mana_sources(&self, p: PlayerId) -> Vec<(ObjectId, ManaColor, u8)> {
+        self.state
+            .objects
+            .values()
+            .filter(|o| o.zone == Zone::Battlefield && o.controller == p && !o.tapped)
+            .filter_map(|o| {
+                let def = o.card.def();
+                if let Some(color) = def.basic_mana {
+                    Some((o.id, color, 1))
+                } else {
+                    def.artifact_mana
+                        .map(|(color, amount)| (o.id, color, amount))
+                }
+            })
+            .collect()
+    }
+
     fn sources(&self, p: PlayerId) -> Sources {
         Sources {
             pool: self.state.player(p).mana,
@@ -1861,7 +1878,7 @@ impl Game {
                 format!("{} is already tapped", obj.card.name()),
             ));
         }
-        if obj.card.def().basic_mana.is_none() {
+        if obj.card.def().basic_mana.is_none() && obj.card.def().artifact_mana.is_none() {
             return Err(EngineError::NotAManaSource);
         }
         Ok(())
@@ -2376,16 +2393,25 @@ impl Game {
     }
 
     fn apply_mana_ability(&mut self, player: PlayerId, land: ObjectId, events: &mut Vec<Event>) {
-        let color = self.state.object(land).card.def().basic_mana;
-        if let (Some(color), Some(obj)) = (color, self.objects_mut(land)) {
+        let def = self.state.object(land).card.def();
+        let source = def
+            .basic_mana
+            .map(|color| (color, 1u8))
+            .or(def.artifact_mana);
+        let color = source
+            .map(|(color, _)| color)
+            .unwrap_or(ManaColor::Colorless);
+        if let (Some((_, amount)), Some(obj)) = (source, self.objects_mut(land)) {
             obj.tapped = true;
-            self.state.players[player as usize].mana.add(color, 1);
+            self.state.players[player as usize]
+                .mana
+                .add(color, u32::from(amount));
         }
         self.state.turn.passed = 0;
         events.push(Event::ManaTapped {
             player,
             land,
-            color: color.unwrap_or(ManaColor::Colorless),
+            color,
         });
         events.push(Event::Priority { player });
     }
@@ -5361,13 +5387,14 @@ impl Game {
         }
 
         // Mana abilities (CR 605.1a).
-        for (land, color) in self.mana_lands(player) {
+        for (land, color, amount) in self.mana_sources(player) {
             out.push(LegalAction {
                 action: Action::ActivateManaAbility { land },
                 label: format!(
-                    "Tap {} for {}",
+                    "Tap {} for {}x{}",
                     self.state.object(land).card.name(),
-                    color.symbol()
+                    color.symbol(),
+                    amount
                 ),
                 rules: vec!["605.1a"],
             });

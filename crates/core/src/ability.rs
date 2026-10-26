@@ -307,6 +307,32 @@ const VOLLEY_VETERAN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::DamageTargetCreatureForEachGoblin],
 })];
 
+const MIND_STONE: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{1}, {T}, Sacrifice this artifact: Draw a card.",
+    cost: AbilityCost {
+        tap: true,
+        sacrifice_source: true,
+        mana: Some("{1}"),
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::Draw(1)],
+    once_per_turn: false,
+})];
+
+const HEDRON_ARCHIVE: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{2}, {T}, Sacrifice this artifact: Draw two cards.",
+    cost: AbilityCost {
+        tap: true,
+        sacrifice_source: true,
+        mana: Some("{2}"),
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::Draw(2)],
+    once_per_turn: false,
+})];
+
 const TATYOVA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
     event: TriggerEvent::LandEnters,
@@ -435,6 +461,8 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::HedronCrab => HEDRON_CRAB,
         CardId::Owlbear => OWLBEAR,
         CardId::SoulWarden => SOUL_WARDEN,
+        CardId::MindStone => MIND_STONE,
+        CardId::HedronArchive => HEDRON_ARCHIVE,
         CardId::SoulsAttendant => SOULS_ATTENDANT,
         CardId::RazorclawBear => RAZORCLAW_BEAR,
         CardId::VolleyVeteran => VOLLEY_VETERAN,

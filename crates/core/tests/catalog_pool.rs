@@ -110,7 +110,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     // unsupported keyword cannot hide behind this branch.
                 } else {
                     assert!(
-                        !abilities.is_empty() || !statics.is_empty(),
+                        !abilities.is_empty()
+                            || !statics.is_empty()
+                            || card.artifact_mana.is_some(),
                         "{} prints text but has no implementation",
                         card.name
                     );
@@ -136,8 +138,14 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                         );
                     }
                 }
-                assert!(card.is_creature(), "{} has no rules text at all", card.name);
-                assert!(card.power.is_some() && card.toughness.is_some());
+                assert!(
+                    card.is_creature() || card.artifact_mana.is_some(),
+                    "{} has no rules text at all",
+                    card.name
+                );
+                if card.is_creature() {
+                    assert!(card.power.is_some() && card.toughness.is_some());
+                }
                 continue;
             }
         };

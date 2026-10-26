@@ -79,6 +79,7 @@ macro_rules! card {
             cost: $cost,
             kinds: $kinds,
             basic_mana: $basic,
+            artifact_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -88,6 +89,33 @@ macro_rules! card {
             islandwalk: false,
             power: $power,
             toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+macro_rules! card_artifact {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, type_line: $tl:literal,
+        oracle: $oracle:literal, mana: $mana:expr, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: &[Kind::Artifact],
+            basic_mana: None,
+            artifact_mana: $mana,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: None,
+            toughness: None,
             oracle: $oracle,
             spell: $spell,
         }
@@ -106,6 +134,7 @@ macro_rules! card_defender {
             cost: $cost,
             kinds: $kinds,
             basic_mana: $basic,
+            artifact_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -134,6 +163,7 @@ macro_rules! card_flash {
             cost: $cost,
             kinds: $kinds,
             basic_mana: $basic,
+            artifact_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -162,6 +192,7 @@ macro_rules! card_islandwalk {
             cost: $cost,
             kinds: $kinds,
             basic_mana: $basic,
+            artifact_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -189,6 +220,7 @@ macro_rules! card_trample {
             cost: $cost,
             kinds: $kinds,
             basic_mana: $basic,
+            artifact_mana: None,
             type_line: $tl,
             colors: &[],
             flying: false,
@@ -205,7 +237,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 116] = [
+pub static CARDS: [CardDef; 119] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -404,6 +436,20 @@ pub static CARDS: [CardDef; 116] = [
         type_line: "Sorcery", power: None, toughness: None,
         oracle: "Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.",
         spell: Some(SpellSpec { target: TargetSpec::Player, instant: false, effects: &[Effect::DamageTargetPlayerForEachGoblin] })
+    ),
+    card_artifact!(
+        SolRing, "Sol Ring", cost: Some("{1}"), type_line: "Artifact",
+        oracle: "{T}: Add {C}{C}.", mana: Some((ManaColor::Colorless, 2)), spell: None
+    ),
+    card_artifact!(
+        MindStone, "Mind Stone", cost: Some("{2}"), type_line: "Artifact",
+        oracle: "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
+        mana: Some((ManaColor::Colorless, 1)), spell: None
+    ),
+    card_artifact!(
+        HedronArchive, "Hedron Archive", cost: Some("{4}"), type_line: "Artifact",
+        oracle: "{T}: Add {C}{C}.\n{2}, {T}, Sacrifice this artifact: Draw two cards.",
+        mana: Some((ManaColor::Colorless, 2)), spell: None
     ),
     card!(
         BrightstoneRitual, "Brightstone Ritual", cost: Some("{R}"), kinds: INSTANT, basic: None,
@@ -875,6 +921,7 @@ pub static TOKENS: [CardDef; 2] = [
         cost: None,
         kinds: CREATURE,
         basic_mana: None,
+        artifact_mana: None,
         type_line: "Token Creature — Goblin",
         colors: &[ManaColor::Red],
         flying: false,
@@ -893,6 +940,7 @@ pub static TOKENS: [CardDef; 2] = [
         cost: None,
         kinds: CREATURE,
         basic_mana: None,
+        artifact_mana: None,
         type_line: "Token Creature — Drake",
         colors: &[ManaColor::Blue],
         flying: true,

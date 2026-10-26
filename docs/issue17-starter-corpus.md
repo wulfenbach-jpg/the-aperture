@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-116-card pool. Isamaru itself is supported, and the slice-4 package implemented
+119-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice9/corpus-audit.py` + `slice9/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **104** are in the supported 116-card catalog and **355** are missing;
+* **107** are in the supported 119-card catalog and **352** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.
@@ -55,8 +55,8 @@ basic lands (coordinator evidence
   still needs its unsupported cards and interactions.
 
 Slice 11 adds the two islandwalk bears from the Ayula list, `Pale Bears` and
-`River Bear`, and models CR 702.14b from the defending player's board. That
-leaves `ayula-bear-counters` with 44 of its names missing.
+`River Bear`, and models CR 702.14c from the defending player's board. That
+leaves `ayula-bear-counters` with 43 of its names missing.
 
 Slices 8–9 currently support eight sourced cards: Soul's Attendant, Razorclaw
 Bear, Volley Veteran, Dramatic Reversal, Goblin War Strike, Brightstone Ritual,
@@ -230,7 +230,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 116 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 119 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the

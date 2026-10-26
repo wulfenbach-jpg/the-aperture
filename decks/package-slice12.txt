@@ -1,0 +1,9 @@
+// package-slice12 — supported 40-card artifact package, NOT a desired 100-card starter.
+4 Sol Ring
+4 Mind Stone
+4 Hedron Archive
+4 Goblin Instigator
+4 Dragon Fodder
+4 Krenko's Command
+4 Shock
+12 Mountain

@@ -43,6 +43,7 @@ pub enum Kind {
     Creature,
     Instant,
     Sorcery,
+    Artifact,
 }
 
 impl Kind {
@@ -52,6 +53,7 @@ impl Kind {
             Kind::Creature => "Creature",
             Kind::Instant => "Instant",
             Kind::Sorcery => "Sorcery",
+            Kind::Artifact => "Artifact",
         }
     }
 }
@@ -240,6 +242,8 @@ pub struct CardDef {
     pub kinds: &'static [Kind],
     /// Set for basic lands: the single mana the land's mana ability produces.
     pub basic_mana: Option<ManaColor>,
+    /// CR 605.1a mana ability on a nonland artifact: (color, amount), tap cost.
+    pub artifact_mana: Option<(ManaColor, u8)>,
     pub type_line: &'static str,
     /// Printed colors. Tokens carry theirs here; catalog cards leave it empty
     /// because the engine only needs it for token characteristics in this slice.
@@ -406,6 +410,9 @@ pub enum CardId {
     VolleyVeteran,
     DramaticReversal,
     GoblinWarStrike,
+    SolRing,
+    MindStone,
+    HedronArchive,
     BrightstoneRitual,
     ManaGeyser,
     RiteOfFlame,
