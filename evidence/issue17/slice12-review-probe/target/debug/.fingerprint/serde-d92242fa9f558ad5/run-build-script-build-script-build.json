@@ -1,1 +1,0 @@
-{"rustc":3720210673988096810,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[6557439603276904804,"build_script_build",false,10187601815047122836]],"local":[{"RerunIfChanged":{"output":"debug\\build\\serde-d92242fa9f558ad5\\output","paths":["build.rs"]}}],"rustflags":["-C","link-arg=/Brepro"],"config":0,"compile_kind":0}
