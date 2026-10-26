@@ -66,8 +66,17 @@ cargo test -q -p aperture-core --test issue17_slice9
 cargo fmt --all --check
 cargo clippy -q --all-targets -- -D warnings
 cargo build --release -p aperture-cli
-  -> exit 0 (evidence/issue17/slice9/gates.log)
+  -> reported exit 0 by the writer; gates.log records the release build only.
 ```
+
+Receipt clarification after independent review: `slice9/repair-gates.log` is
+empty and is not evidence of tests, fmt or Clippy. The independent reviewer
+actually reran the six slice9 tests plus affected suites (results in
+`evidence/issue17/slice9-review-focused.log`), fmt, core Clippy
+(`slice9-review-clippy.log`) and the locked release CLI build, all successfully;
+see `slice9-review-1.json` for exact commands. Native verification also ran the
+final slice8 and slice9 suites (9 and 6 passing tests). No output is fabricated
+to fill the empty historical receipt.
 
 Compatibility: pre-existing slice8 replay still verifies unchanged
 (`ffbeaee0db38…`, 6087 events). Serialized mana fields keep numeric JSON values;

@@ -1,0 +1,91 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.51s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 6 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue15_effects.rs (target\debug\deps\issue15_effects-92bae7ef161b58cd.exe)
+
+running 4 tests
+test prevention_shield_absorbs_its_amount_and_stops_applying ... ok
+test mending_hands_refuses_a_spell_as_an_any_target ... ok
+test prevention_is_applied_before_the_multiplier ... ok
+test damage_multiplier_doubles_every_source_its_controller_controls ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue15_layers.rs (target\debug\deps\issue15_layers-b63fe2f0b0434c87.exe)
+
+running 4 tests
+test printed_wight_is_a_one_one_with_empty_graveyards ... ok
+test printed_wight_counts_only_opponents_creature_cards ... ok
+test until_end_of_turn_effects_end_in_cleanup ... ok
+test a_real_game_logs_the_new_effects_and_replays_to_the_same_digest ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\issue17_slice5.rs (target\debug\deps\issue17_slice5-94ee365a899689b8.exe)
+
+running 10 tests
+test sourced_slice5_cards_match_their_live_printings ... ok
+test stitchers_supplier_registers_both_printed_trigger_events ... ok
+test negate_never_offers_a_creature_spell_and_refuses_a_forged_one ... ok
+test preordain_scries_two_then_draws_one ... ok
+test the_mill_counter_and_ritual_package_is_reachable_from_real_decks ... ok
+test negate_counters_a_noncreature_spell ... ok
+test pyretic_ritual_and_seething_song_add_red_mana_to_the_pool ... ok
+test stitchers_supplier_mills_three_when_it_enters ... ok
+test stitchers_supplier_mills_three_again_when_it_dies ... ok
+test ruin_crab_mills_each_opponent_on_landfall_but_not_its_controller ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice9.rs (target\debug\deps\issue17_slice9-31af499928ef69c1.exe)
+
+running 6 tests
+test mana_pool_render_is_bounded_for_max_quantity_and_exact_for_small_pools ... ok
+test multicolor_pool_above_255_pays_generic_and_colored_exactly ... ok
+test rite_of_flame_zero_copies_and_all_graveyards_with_runtime_change ... ok
+test mana_geyser_counts_only_opponent_tapped_lands ... ok
+test mana_pool_adds_and_pays_above_255_without_truncation ... ok
+test brightstone_counts_all_goblins_including_opponents_and_above_255 ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\timing_mana.rs (target\debug\deps\timing_mana-e7fe47c4a09c074d.exe)
+
+running 12 tests
+test stale_submissions_are_rejected ... ok
+test land_cannot_be_played_outside_your_main_phase_or_turn ... ok
+test sorcery_requires_your_main_phase_with_an_empty_stack ... ok
+test land_can_be_played_once_in_your_own_main_phase ... ok
+test mana_ability_is_only_for_untapped_basic_lands ... ok
+test mana_pool_empties_when_the_step_or_phase_ends ... ok
+test spell_target_that_is_not_on_the_stack_is_rejected ... ok
+test cost_is_paid_on_cast_by_tapping_lands ... ok
+test land_cannot_be_played_with_a_nonempty_stack ... ok
+test casting_a_creature_puts_it_onto_the_battlefield_with_summoning_sickness ... ok
+test unaffordable_spell_is_rejected_and_state_is_identical ... ok
+test illegal_action_attempts_leave_the_state_unchanged ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

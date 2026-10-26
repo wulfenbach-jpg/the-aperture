@@ -42,10 +42,10 @@ complete, so all seven remain `planned`.
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice5/update_manifest.py` + `slice5-corpus-state.json`):
+`evidence/issue17/slice9/corpus-audit.py` + `slice9/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **99** are in the supported 114-card catalog and **360** are missing;
+* **102** are in the supported 114-card catalog and **357** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only implemented/playable starter.
@@ -69,7 +69,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    Command, Hordeling Outburst, Goblin Instigator, Beetleback Chief) and a 2/2
    blue Drake with functional flying for Talrand, Sky Summoner. Ayula and Zada
    still need their own token types; the exact Krenko starter is still planned
-   (49 missing) and Talrand's desired list has 51 missing cards;
+   (48 missing) and Talrand's desired list has 51 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
    independent of counters), **bounded implemented** landfall for Tatyova and
@@ -102,8 +102,8 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    first **targeted** player effect: `TargetSpec::Player` with "target player
    mills three cards" (Hedron Crab), together with "target player loses N life"
    and "each opponent loses N life" as life loss that is *not* damage (CR 118.2),
-   so damage prevention cannot stop it. Anything that *reads* the graveyard is
-   still unimplemented;
+   so damage prevention cannot stop it. Rite of Flame now counts its namesake
+   cards in all graveyards; tutors and reanimation remain unimplemented;
 10. stack interaction (Talrand): **bounded implemented package** — "counter
     target noncreature spell" as a real target restriction (Negate may not name a
     creature spell on the stack, CR 205.2a). "Counter target spell" was already
