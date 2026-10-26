@@ -129,6 +129,54 @@ fn candidates_are_only_offered_actions() {
     }
 }
 
+/// A card revealed from a hidden zone is public information, but the
+/// reconstruction re-deals hidden zones from the belief deck and only keeps
+/// their real counts. The search world therefore models no reveal: it must not
+/// copy a revealed id that the world never places (a dangling reference), and
+/// it must still answer with engine-offered actions while a reveal is live.
+#[test]
+fn a_live_reveal_neither_breaks_the_world_nor_leaks_a_hidden_card() {
+    let mut game = common::fixture(11)
+        .battlefield(P0, &[CardId::Forest, CardId::Mountain])
+        .hand(P0, &[CardId::GrizzlyBears])
+        .library(P0, &[CardId::Shock, CardId::Mountain, CardId::Forest])
+        .library(P1, &[CardId::Island; 3])
+        .hand(P1, &[CardId::Island, CardId::Island])
+        .mana(P0, red_pool())
+        .main(P0, aperture_core::state::Step::PrecombatMain)
+        .build();
+    let revealed = game.state.reveal_top(P0, 1);
+    assert_eq!(revealed.len(), 1, "the engine reveals exactly one card");
+    let view = game.view_for(P0, &[]);
+    assert_eq!(
+        view.revealed.len(),
+        1,
+        "a live reveal is public in the masked view"
+    );
+
+    let outcome = search(
+        &game,
+        &view,
+        &Knowledge { own_deck: None },
+        &small_config(),
+        &SearchCancellation::new(),
+    )
+    .expect("a live reveal must not make the search unavailable");
+    assert!(
+        !outcome.analysis.candidates.is_empty(),
+        "the search must still offer scored, engine-legal candidates"
+    );
+    for candidate in &outcome.analysis.candidates {
+        assert!(
+            view.legal
+                .iter()
+                .any(|legal| legal.action == candidate.action),
+            "candidate \"{}\" is not in the engine's offer",
+            candidate.label
+        );
+    }
+}
+
 /// The identity-leak pair test: two real worlds identical except the actual
 /// hidden contents of the opponent's hand must give identical reports, because
 /// the search model re-deals hidden zones from the disclosed belief deck. Any
