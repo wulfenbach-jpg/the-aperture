@@ -206,3 +206,164 @@ fn insufficient_generic_mana_refusal_preserves_state() {
     assert!(err.to_string().to_lowercase().contains("pay"), "{err}");
     assert_eq!(aperture_core::digest::digest(&game.state), before);
 }
+
+#[test]
+fn all_three_artifacts_cast_from_hand_and_activate_same_turn() {
+    for (name, cost, lands, mana) in [
+        ("Sol Ring", 1usize, 1usize, 2u32),
+        ("Mind Stone", 2, 2, 1),
+        ("Hedron Archive", 4, 4, 2),
+    ] {
+        let mut game = fixture(130 + cost as u64)
+            .hand(P0, &[card(name)])
+            .battlefield(P0, &[CardId::Mountain; 6])
+            .main(P0, Step::PrecombatMain)
+            .build();
+        let id = hand_card(&game, P0, card(name));
+        let offered = game.legal_actions();
+        assert!(
+            offered
+                .iter()
+                .any(|a| matches!(a.action, Action::CastSpell { card, .. } if card == id)),
+            "{name} must be castable from hand"
+        );
+        submit_ok(
+            &mut game,
+            P0,
+            Action::CastSpell {
+                card: id,
+                targets: Vec::new(),
+            },
+        );
+        resolve_all(&mut game);
+        let (permanent, is_creature, is_artifact) = {
+            let object = game
+                .state
+                .battlefield(P0)
+                .into_iter()
+                .find(|o| o.card == card(name))
+                .expect("artifact resolved onto battlefield");
+            (
+                object.id,
+                object.is_creature(),
+                object.card.def().is_artifact(),
+            )
+        };
+        assert!(!is_creature);
+        assert!(is_artifact);
+        let _ = (cost, lands);
+        submit_ok(
+            &mut game,
+            P0,
+            Action::ActivateManaAbility { land: permanent },
+        );
+        assert_eq!(game.state.player(P0).mana.get(ManaColor::Colorless), mana);
+        assert!(game.state.object(permanent).tapped);
+    }
+}
+
+#[test]
+fn artifact_cast_requires_sorcery_timing_and_negate_sees_noncreature() {
+    let mut game = fixture(140)
+        .hand(P0, &[card("Sol Ring")])
+        .battlefield(P0, &[CardId::Mountain])
+        .main(P0, Step::Upkeep)
+        .build();
+    let id = hand_card(&game, P0, card("Sol Ring"));
+    let err = submit_err(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: id,
+            targets: Vec::new(),
+        },
+    );
+    assert!(
+        err.to_string().to_lowercase().contains("timing")
+            || err.to_string().to_lowercase().contains("main"),
+        "{err}"
+    );
+
+    let mut game = fixture(141)
+        .hand(P0, &[card("Sol Ring")])
+        .battlefield(P0, &[CardId::Mountain])
+        .hand(P1, &[CardId::Negate])
+        .battlefield(P1, &[CardId::Island, CardId::Island])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let sol = hand_card(&game, P0, card("Sol Ring"));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: sol,
+            targets: Vec::new(),
+        },
+    );
+    let spell = game.state.stack.last().unwrap().object;
+    submit_ok(&mut game, P0, Action::Pass);
+    let negate = hand_card(&game, P1, CardId::Negate);
+    submit_ok(
+        &mut game,
+        P1,
+        Action::CastSpell {
+            card: negate,
+            targets: vec![Target::Spell(spell)],
+        },
+    );
+    resolve_all(&mut game);
+    assert_eq!(game.state.stack.len(), 0);
+    assert!(
+        game.state.players[P0 as usize]
+            .graveyard
+            .iter()
+            .any(|id| game.state.object(*id).card == card("Sol Ring")),
+        "artifact spell is countered as a noncreature spell"
+    );
+}
+
+#[test]
+fn tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability() {
+    let mut game = fixture(142)
+        .hand(P0, &[card("Mind Stone")])
+        .battlefield(P0, &[CardId::Mountain, CardId::Mountain])
+        .library(P0, &[CardId::Forest; 2])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let stone = hand_card(&game, P0, card("Mind Stone"));
+    submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: stone,
+            targets: Vec::new(),
+        },
+    );
+    resolve_all(&mut game);
+    let permanent = game
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == card("Mind Stone"))
+        .unwrap()
+        .id;
+    submit_ok(
+        &mut game,
+        P0,
+        Action::ActivateManaAbility { land: permanent },
+    );
+    assert_eq!(game.state.player(P0).mana.colorless, 1);
+    let before = aperture_core::digest::digest(&game.state);
+    let err = submit_err(
+        &mut game,
+        P0,
+        Action::ActivateAbility {
+            source: permanent,
+            ability: 0,
+            mode: 0,
+            targets: Vec::new(),
+        },
+    );
+    assert!(err.to_string().contains("tapped"), "{err}");
+    assert_eq!(aperture_core::digest::digest(&game.state), before);
+}

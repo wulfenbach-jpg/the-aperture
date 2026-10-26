@@ -274,6 +274,10 @@ impl CardDef {
         self.kinds.contains(&Kind::Creature)
     }
 
+    pub fn is_artifact(&self) -> bool {
+        self.kinds.contains(&Kind::Artifact)
+    }
+
     pub fn has_flying(&self) -> bool {
         self.flying
     }
@@ -346,7 +350,7 @@ impl CardDef {
     pub fn spell_spec(&self) -> Option<SpellSpec> {
         match self.spell {
             Some(spec) => Some(spec),
-            None if self.is_creature() => Some(SpellSpec {
+            None if self.is_creature() || self.is_artifact() => Some(SpellSpec {
                 target: TargetSpec::None,
                 instant: false,
                 effects: NO_EFFECTS,
@@ -358,7 +362,7 @@ impl CardDef {
     /// A creature spell becomes a permanent on resolution rather than going to
     /// the graveyard (CR 608.3).
     pub fn is_permanent_spell(&self) -> bool {
-        self.is_creature()
+        self.is_creature() || self.is_artifact()
     }
 }
 

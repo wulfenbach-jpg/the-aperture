@@ -1,6 +1,7 @@
-# Issue 17 slice 12 — artifact mana-rock package handoff
+# Issue 17 slice 12 — artifact mana-rock package handoff (cast repair)
 
-Three sourced artifacts are supported. No push. Full #17 unfinished.
+Three sourced artifacts are supported and castable from hand. No push; full #17
+unfinished.
 
 ## Implemented
 
@@ -21,7 +22,9 @@ stubbed.
 ## Engine behavior
 
 * `Kind::Artifact` is a real noncreature permanent kind; artifacts are not
-  creatures/lands.
+  creatures/lands. `CardDef::spell_spec`/`is_permanent_spell` now include
+  artifacts, so an artifact in hand is a real noncreature permanent spell that
+  resolves onto the battlefield.
 * `CardDef::artifact_mana` declares the CR 605 tap-mana ability. Legal
   activation is immediate: no stack entry and no priority transfer, the source
   actually taps, and a second activation is refused with unchanged state.
@@ -37,11 +40,17 @@ stubbed.
 
 ## Genuine RED
 
-Before cards/engine work, all six slice12 tests failed at catalog lookup
-(`Sol Ring must be supported`, etc.). After scaffolding card records the
-artifact mana/payment tests still failed until `artifact_mana`, the mana-source
-scan and the activated abilities existed. No retrospective TDD claim for older
-slices.
+The first slice12 RED was **absent-catalog**, not the mana mechanic: all initial
+tests failed at `catalog::by_name`. After scaffolding records, the mana/ability
+tests failed until `artifact_mana` and the activated abilities existed.
+
+A second, later RED at `fd18dfc` proved the real castability defect: with real
+`Action::CastSpell` from hand the engine replied “Sol Ring is not a spell”,
+because `spell_spec`/`is_permanent_spell` only admitted creatures. Fixed by
+including artifacts canonically; no card-specific shortcut. The new cast tests
+cover all three artifacts, sorcery-timing refusal, Negate countering an artifact
+as a noncreature spell, same-turn tap-then-no-untap refusal, and real
+resolution/activation.
 
 ## Verification
 
@@ -49,7 +58,7 @@ slices.
 cargo test -q -p aperture-core --test issue17_slice12 --test issue17_slice9 \
   --test issue17_tokens --test catalog_pool --test card_printings \
   --test issue13_commander_combat
-  -> 7, 6, 10, 5, 6, 43 passed
+  -> 9, 6, 10, 5, 6, 43 passed
 cargo fmt --all --check
 cargo clippy -q --all-targets -- -D warnings
 cargo build --release -p aperture-cli
@@ -68,9 +77,12 @@ starter; four seats, Krenko commander each, 40 life, seed 1201:
 
 * terminal, P3 wins, 1746 steps / 42 turns, digest `328dadbdbdc6…`
 * separate replay matches 7051 events; save replay matches
-* actual artifact activation count in this trace: **0**. Mind Stone/Hedron
-  Archive were drawn (and some discarded) but the simple heuristic never cast or
-  activated an artifact; focused tests prove activation. No inferred count.
+* actual artifact **cast** events in this trace: **0**; actual mana activations:
+  **0**. The package still contains lands/creatures and terminates, but the
+  unmodified heuristic never selects an artifact spell or
+  `ActivateManaAbility`; focused tests prove casting and activation. This is
+  disclosed as a heuristic limitation, not inferred support. Digest is unchanged
+  from the pre-fix run (`328dadbdbdc6…`) because the trace never touches artifacts.
 
 ## Corpus audit
 
