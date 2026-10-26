@@ -368,3 +368,32 @@ Known limits of this slice: sacrifice outlets, equipment/artifacts, counters as
 rules objects, tutors, reanimation, Deathtouch and every graveyard *reader* stay
 unimplemented, so no desired 100-card starter is certified. Details:
 `docs/issue17-starter-corpus.md`, `evidence/issue17/SLICE6-HUMAN-CHECKPOINT.md`.
+
+## 12. Issue 17 corpus slice 10 — the first certified starter list
+
+`jasmine-vanilla-stompy` is now **certified end to end**, not merely
+implemented. One of eight desired lists; the eight-list release gate stays open.
+
+New executable acceptance (`crates/cli/src/certify_cmd.rs`, `aperture-cli
+certify`): reads the list's own deck file through the manifest path, hashes the
+exact bytes, refuses to substitute a bundled practice deck, verifies every card
+in the list is supported, plays four-seat 40-life Commander-combat games with
+that snapshot in every seat, and requires a terminal outcome whose replay
+reproduces the same state digest. It also reports which cards were actually cast
+or played rather than inferring coverage from catalog membership.
+
+Recorded certificate `evidence/issue17/slice10/certification.json`: snapshot
+SHA-256 `4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491`,
+99 library cards + 1 commander, seeds 1/2/3 all terminal and replay-verified
+(2364/2802/1685 steps, winners P1/P2/P3), 54 of 61 unique names observed in play
+and the other 6 named explicitly. The manifest entry is `certified` with a
+machine-checked `certification` block, and two conformance suites fail if the
+record stops matching the real file (`crates/core/tests/
+issue17_slice10_certification.rs`, `crates/cli/tests/certify.rs`).
+
+Documented exclusions for this list: the legend rule (CR 704.5j) is unmodelled
+and unreachable here (one commander copy per seat, no copy effects); equipment,
+Auras, planeswalkers and nonbasic lands are absent; native table, trainer,
+playing strength and arbitrary Archidekt compatibility remain non-goals. The
+credential is a bounded commander-combat practice game under the built-in
+heuristic, not the Commander format and not a strength claim.

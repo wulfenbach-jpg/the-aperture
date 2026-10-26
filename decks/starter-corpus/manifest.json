@@ -74,10 +74,44 @@
       "id": "jasmine-vanilla-stompy",
       "commander": "Jasmine Boreal",
       "style": "green/white vanilla-creature stompy",
-      "status": "implemented",
+      "status": "certified",
       "deck_path": "decks/starter-corpus/jasmine-vanilla-stompy.txt",
       "missing_cards": [],
-      "missing_interactions": []
+      "missing_interactions": [],
+      "certification": {
+        "verdict": "certified",
+        "certified_on": "2026-10-26",
+        "snapshot_sha256": "4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491",
+        "library_cards": 99,
+        "total_cards": 100,
+        "commander_supported": true,
+        "seats": 4,
+        "seeds": [
+          1,
+          2,
+          3
+        ],
+        "games_terminal": 3,
+        "games_replay_verified": 3,
+        "unique_names_observed_in_play": 54,
+        "unique_names_total": 61,
+        "evidence": "evidence/issue17/slice10/certification.json",
+        "reproduce": "cargo run --release -p aperture-cli -- certify --starter jasmine-vanilla-stompy --seats 4 --seeds 1,2,3 --out evidence/issue17/slice10/certification.json",
+        "conformance_suites": [
+          "crates/core/tests/starter_corpus.rs",
+          "crates/core/tests/issue17_slice10_certification.rs",
+          "crates/cli/tests/certify.rs"
+        ],
+        "interaction_exclusions": [
+          "legend rule (CR 704.5j): unmodelled; unreachable in this list because every seat supplies exactly one copy of its commander and the list contains no copy effects",
+          "equipment, Auras, planeswalkers and nonbasic lands: none are in the list, so their rules are neither exercised nor claimed",
+          "native Commander table, trainer, measured playing strength and arbitrary Archidekt compatibility: out of scope for this certificate"
+        ],
+        "limitations": [
+          "bounded commander-combat practice profile (40 life, one supported commander per seat, 21 commander damage), not the full Commander format",
+          "the certified games use the built-in heuristic; the certificate proves the list plays to a terminal, replay-verified game, not that any policy plays it well"
+        ]
+      }
     },
     {
       "id": "talrand-draw-go",
@@ -226,7 +260,7 @@
         "Dragon-Scarred Bear",
         "Drover Grizzly",
         "Druid's Familiar",
-        "D\u00fanedain Rangers",
+        "Dúnedain Rangers",
         "Evercoat Ursine",
         "Exuberant Wolfbear",
         "Fade from History",

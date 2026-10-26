@@ -1,8 +1,9 @@
 # Issue 17 — supported starter corpus
 
-Status: **PARTIAL**. One starter package is implemented and exercised; the
-eight-list release gate in the public issue remains open. Only
-`jasmine-vanilla-stompy` is supported. Every other entry below is a **planned**
+Status: **PARTIAL**. One of the eight desired lists is now **certified end to
+end** from its exact snapshot; the eight-list release gate in the public issue
+remains open. Only `jasmine-vanilla-stompy` is certified. Every other entry
+below is a **planned**
 archetype with an exact sourced **desired** list under
 `decks/starter-corpus/planned/`, and **no** claimed card support, playability or
 certification.
@@ -18,7 +19,7 @@ engine-unsupported and non-playable. `deck_path` is not a support claim.
 | id | commander | style | status |
 | --- | --- | --- | --- |
 | `isamaru-white-aggro` | Isamaru, Hound of Konda | white aggressive one-drop | planned |
-| `jasmine-vanilla-stompy` | Jasmine Boreal | green/white vanilla-creature stompy | implemented |
+| `jasmine-vanilla-stompy` | Jasmine Boreal | green/white vanilla-creature stompy | certified |
 | `talrand-draw-go` | Talrand, Sky Summoner | blue draw-go spells-matter | planned |
 | `krenko-goblin-tokens` | Krenko, Mob Boss | red goblin token swarm | planned |
 | `ayula-bear-counters` | Ayula, Queen Among Bears | green bear tribal +1/+1 counters | planned |
@@ -27,7 +28,7 @@ engine-unsupported and non-playable. `deck_path` is not a support claim.
 | `zada-spells` | Zada, Hedron Grinder | red single-target spell copying | planned |
 
 All eight entries now have an exact desired 99-card library file. Only Jasmine's
-is supported and playable; the other seven are **planned metadata**, never
+is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
 114-card pool. Isamaru itself is supported, and the slice-4 package implemented
@@ -48,7 +49,7 @@ basic lands (coordinator evidence
 * **102** are in the supported 114-card catalog and **357** are missing;
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
-  metadata only; Jasmine is the only implemented/playable starter.
+  metadata only; Jasmine is the only certified/playable starter.
 * Structure per list is still 99 library cards + a separately named commander;
   the Swamp basic in Elas is now supported, but the rest of that desired list
   still needs its unsupported cards and interactions.
@@ -162,9 +163,68 @@ The analyzer reports format legality `legal`, one commander, 99 library cards,
 that refusal was deliberately not relaxed. Bounded command-zone and
 Commander-combat practice are still **not** the Commander format.
 
+## Certification of jasmine-vanilla-stompy (slice 10)
+
+`certified` is an executable claim, not a catalog count. The `certify` command
+reads the list's own deck file through the manifest path, hashes those exact
+bytes, refuses to substitute any bundled practice deck, verifies every card in
+the list is supported, plays real four-seat Commander-combat games with that
+snapshot in every seat, and requires every game to end with a terminal outcome
+whose recorded replay reproduces the same state digest:
+
+```
+cargo run --release -p aperture-cli -- certify \
+  --starter jasmine-vanilla-stompy --seats 4 --seeds 1,2,3 \
+  --out evidence/issue17/slice10/certification.json
+```
+
+Recorded certificate (`evidence/issue17/slice10/certification.json`, schema
+`aperture.corpus-certificate/1`):
+
+* verdict `certified`; snapshot SHA-256
+  `4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491` over the
+  deck file bytes actually parsed; 99 library cards + 1 separately supplied
+  commander = 100 cards; 58 unique nonland names + 41 basic lands.
+* three four-seat 40-life games, all `terminal`, all replay-verified:
+  seed 1 winner P1, 2364 steps/53 turns, digest `8e4feea3a9e1…`;
+  seed 2 winner P2, 2802 steps/69 turns, digest `4677eb42988a…`;
+  seed 3 winner P3, 1685 steps/40 turns, digest `520e8a0dd58d…`.
+* coverage by execution: 54 of 61 unique names were actually cast or played as
+  lands across those games. The 6 names those particular games never cast
+  (Knight Errant, Alpha Tyrranax, Enormous Baloth, Fog, Swords to Plowshares,
+  Mending Hands) are covered by engine conformance suites instead; the
+  certificate lists them rather than implying in-play evidence for them.
+* conformance: `crates/core/tests/starter_corpus.rs` proves all 47 sourced
+  vanilla creatures match their printings and cast/resolve;
+  `crates/core/tests/issue17_slice10_certification.rs` proves the exact snapshot
+  is 99 supported singleton cards with exactly one legendary card, casts all 11
+  remaining non-vanilla cards from that exact set, and fails if the manifest
+  certification record stops matching the real deck file;
+  `crates/cli/tests/certify.rs` runs the shipped binary, including the
+  no-substitution and edited-snapshot refusals.
+
+Documented interaction exclusions for this list (also machine-readable in the
+manifest `certification.interaction_exclusions`):
+
+* **Legend rule (CR 704.5j)** is not modelled. It is unreachable in this list —
+  each seat supplies exactly one copy of its commander and no copy effect exists
+  — so no certified game depends on it. Any list that could put two same-named
+  legends under one player stays uncertifiable until the SBA and its controller
+  choice exist.
+* Equipment, Auras, planeswalkers and nonbasic lands are absent from the list,
+  so none of their rules are exercised or claimed.
+* The native Commander table, trainer, measured playing strength and arbitrary
+  Archidekt compatibility remain explicit non-goals.
+
+Limits of the claim: the profile is bounded commander-combat practice (40 life,
+one supported commander per seat, 21 commander damage), not the Commander
+format, and the certified games use the built-in heuristic — the certificate
+proves the list plays to a terminal, replay-verified game, not that any policy
+plays it well.
+
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 88 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 114 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -182,9 +242,14 @@ Commander-combat practice are still **not** the Commander format.
    package (Tatyova, Benthic Druid + Jaddi Offshoot with defender). A 90-land pile or duplicated nonbasic
    singleton cards would not be a meaningful style and is not used to satisfy
    counts.
-4. **Certification.** `implemented` means an exact list exists, is analyzer
-   legal/supported and has played an exact four-seat bounded game. It does not
-   mean eight-list certification, independent review or merged CI.
+4. **Certification.** `certified` now means: the exact declared snapshot parses
+   as-is (no bundled replacement), every one of its 100 cards is supported,
+   every non-vanilla card is proven castable by a conformance test, and the
+   manifest's certificate record matches the real file bytes and the recorded
+   four-seat games. Exactly one of the eight lists meets that bar
+   (`jasmine-vanilla-stompy`); the seven planned lists do not, so the eight-list
+   release gate stays open. Certification also says nothing about merged CI,
+   release acceptance or playing strength.
 
 ## Exclusion policy
 

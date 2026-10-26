@@ -72,7 +72,9 @@ fn eight_targets_have_exact_desired_lists_and_honest_missing_cards() {
         let id = starter["id"].as_str().unwrap();
         let status = starter["status"].as_str().unwrap();
         assert!(matches!(status, "planned" | "implemented" | "certified"));
-        assert_ne!(status, "certified", "{id} is not certified");
+        if id != "jasmine-vanilla-stompy" {
+            assert_ne!(status, "certified", "{id} is not certified");
+        }
         let deck_path = starter["deck_path"]
             .as_str()
             .unwrap_or_else(|| panic!("{id} has no exact desired list"));
@@ -118,7 +120,14 @@ fn eight_targets_have_exact_desired_lists_and_honest_missing_cards() {
         );
 
         if id == "jasmine-vanilla-stompy" {
-            assert_eq!(status, "implemented");
+            // Slice 10: the one list whose every card is supported is certified
+            // by an exact-snapshot four-seat certificate, not by catalog count.
+            assert_eq!(status, "certified");
+            let certification = &starter["certification"];
+            assert_eq!(certification["verdict"], "certified");
+            assert_eq!(certification["total_cards"], 100);
+            assert_eq!(certification["seats"], 4);
+            assert!(declared.is_empty(), "a certified list has no missing cards");
             continue;
         }
         planned += 1;

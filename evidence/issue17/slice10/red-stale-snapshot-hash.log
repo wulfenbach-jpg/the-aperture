@@ -1,0 +1,23 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.50s
+     Running tests\issue17_slice10_certification.rs (target\debug\deps\issue17_slice10_certification-50c46b18b4f0ed37.exe)
+
+running 1 test
+test the_manifest_certification_record_matches_the_real_snapshot ... FAILED
+
+failures:
+
+---- the_manifest_certification_record_matches_the_real_snapshot stdout ----
+
+thread 'the_manifest_certification_record_matches_the_real_snapshot' (38772) panicked at crates\core\tests\issue17_slice10_certification.rs:285:5:
+assertion `left == right` failed: the recorded snapshot hash must be the exact deck file on disk
+  left: "0000000000000000000000000000000000000000000000000000000000000000"
+ right: "4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    the_manifest_certification_record_matches_the_real_snapshot
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice10_certification`

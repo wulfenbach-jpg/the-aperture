@@ -466,7 +466,14 @@ fn the_starter_manifest_names_eight_targets_and_claims_only_one() {
         assert!(starter["missing_cards"].is_array());
         assert!(starter["missing_interactions"].is_array());
         if starter["id"] == "jasmine-vanilla-stompy" {
-            assert_eq!(status, "implemented");
+            // Slice 10 certified the list: the exact snapshot, not just the
+            // catalog membership, is what the status now claims.
+            assert_eq!(status, "certified");
+            let certification = &starter["certification"];
+            assert_eq!(certification["verdict"], "certified");
+            assert_eq!(certification["library_cards"], 99);
+            assert_eq!(certification["seats"], 4);
+            assert!(certification["interaction_exclusions"].is_array());
             assert_eq!(starter["commander"], "Jasmine Boreal");
             assert_eq!(
                 starter["deck_path"],
@@ -475,7 +482,7 @@ fn the_starter_manifest_names_eight_targets_and_claims_only_one() {
             assert_eq!(starter["missing_cards"].as_array().unwrap().len(), 0);
             assert_eq!(starter["missing_interactions"].as_array().unwrap().len(), 0);
         } else {
-            assert_eq!(status, "planned", "only Jasmine is implemented now");
+            assert_eq!(status, "planned", "only Jasmine is certified now");
             let path = starter["deck_path"]
                 .as_str()
                 .expect("every planned target has an exact desired list");
