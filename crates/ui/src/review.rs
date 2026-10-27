@@ -320,6 +320,8 @@ impl MoveReview {
             Preference::None => "policy preference: none — nothing was scored for this decision point".to_string(),
         });
         let ranked = self.ranked();
+        let tie_at_top =
+            ranked.len() > 1 && ranked[1].mean.is_some() && ranked[1].mean == ranked[0].mean;
         if ranked.is_empty() {
             lines.push(format!(
                 "ordering: none — 0 of {} engine-offered candidate(s) reached a result, so no alternative is ranked above another",
@@ -337,7 +339,12 @@ impl MoveReview {
             );
         }
         for (index, candidate) in ranked.iter().enumerate() {
-            lines.push(format!("{}. {}", index + 1, candidate_line(candidate)));
+            let ties_top = candidate.chosen && tie_at_top;
+            lines.push(format!(
+                "{}. {}",
+                index + 1,
+                candidate_line(candidate, ties_top)
+            ));
         }
         let unscored: Vec<&CandidateRow> = self
             .candidates
@@ -350,7 +357,7 @@ impl MoveReview {
                     .to_string(),
             );
             for candidate in unscored {
-                lines.push(format!("— {}", candidate_line(candidate)));
+                lines.push(format!("— {}", candidate_line(candidate, false)));
             }
         }
         lines.push(NO_VERDICT_NOTE.to_string());
@@ -379,8 +386,10 @@ impl MoveReview {
 }
 
 /// One candidate row as the panel prints it: label, mean (or the absence of
-/// one), and every count the search kept.
-fn candidate_line(candidate: &CandidateRow) -> String {
+/// one), and every count the search kept. `ties_top` is set only when this row
+/// is the search's own choice *and* another ranked row carries the same mean;
+/// a unique maximum must never be described as an equal score.
+fn candidate_line(candidate: &CandidateRow, ties_top: bool) -> String {
     let samples = match candidate.scored_samples {
         1 => "1 scored sample".to_string(),
         n => format!("{n} scored samples"),
@@ -390,16 +399,17 @@ fn candidate_line(candidate: &CandidateRow) -> String {
     } else {
         format!("{} refused by the search world", candidate.refused_times)
     };
+    let chosen = if !candidate.chosen {
+        ""
+    } else if ties_top {
+        " · the search's own choice among equally scored offers"
+    } else {
+        " · the search's own choice"
+    };
     match candidate.mean {
         Some(mean) => format!(
-            "{} — mean {mean:+.2} over {samples} · {} without result · {refusing}{}",
-            candidate.label,
-            candidate.without_result,
-            if candidate.chosen {
-                " · the search's own choice among equally scored offers"
-            } else {
-                ""
-            }
+            "{} — mean {mean:+.2} over {samples} · {} without result · {refusing}{chosen}",
+            candidate.label, candidate.without_result,
         ),
         None => format!(
             "{} — no scored sample (mean: none) · {} without result · {refusing}",
@@ -518,6 +528,33 @@ mod tests {
         assert!(
             shown.contains("the search's own choice"),
             "a tie must say why that row leads: {shown}"
+        );
+    }
+
+    #[test]
+    fn a_unique_maximum_is_not_described_as_an_equal_score() {
+        // The chosen offer is the only top scorer here, so calling the offers
+        // "equally scored" would contradict the means printed on the same
+        // screen. Only an actual tie may carry the equality qualifier.
+        let review = review_with(
+            vec![
+                row("Pass priority", Some(-0.5), 2, 0),
+                chosen_row("Play Forest", Some(1.0), 2),
+            ],
+            Preference::Search("Play Forest".to_string()),
+        );
+        let joined = review.policy_section().lines.join("\n");
+        assert!(
+            joined.contains("1. Play Forest"),
+            "the uniquely best offer must lead the list: {joined}"
+        );
+        assert!(
+            joined.contains("the search's own choice"),
+            "the panel must still say which row the search picked: {joined}"
+        );
+        assert!(
+            !joined.contains("equally scored"),
+            "a unique maximum must not be described as an equal score: {joined}"
         );
     }
 
