@@ -57,7 +57,15 @@ fn test_config() -> SearchConfig {
 fn pool(colors: &[(ManaColor, u8)]) -> ManaPool {
     let mut pool = ManaPool::default();
     for (color, count) in colors {
-        pool.add(*color, *count);
+        // Keep the helper independent of the pool's count width: master holds
+        // `u8` per colour while the issue-17 corpus branch widens
+        // `ManaPool::add` to `u32`, so passing `*count` directly is what makes
+        // the merge-ref CI run fail E0308. Adding one unit per count uses an
+        // integer literal, which infers to either width and needs no
+        // (clippy-rejected) identity conversion.
+        for _ in 0..*count {
+            pool.add(*color, 1);
+        }
     }
     pool
 }
