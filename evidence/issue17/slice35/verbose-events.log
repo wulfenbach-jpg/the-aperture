@@ -1,0 +1,3566 @@
+P0 draws Grizzly Bears
+P0 draws Ursine Champion
+P0 draws Words of Wilding
+P0 draws Words of Wilding
+P0 draws Forest
+P0 draws Forest
+P0 draws Ursine Champion
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+Game start — P2 plays first
+— Turn 1: P2 —
+P2 keeps a hand of 7
+P3 keeps a hand of 7
+P0 keeps a hand of 7
+P1 keeps a hand of 7
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 2: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 3: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 4: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 5: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Grizzly Bears
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Grizzly Bears resolves (controlled by P2)
+Grizzly Bears enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 6: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Grizzly Bears
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Grizzly Bears resolves (controlled by P3)
+Grizzly Bears enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 7: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Little Bear
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 8: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 9: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Little Bear
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Little Bear resolves (controlled by P2)
+Little Bear enters the battlefield under P2
+P2's triggered ability from Little Bear goes on the stack: When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+state-based action: Grizzly Bears is untapped and has 1 +1/+1 counter(s)
+P2's ability from Little Bear resolves: When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P0 declares no blockers
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 37)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 10: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Runeclaw Bear
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Runeclaw Bear resolves (controlled by P3)
+Runeclaw Bear enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Grizzly Bears
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 damage to Grizzly Bears (#5)
+2 combat damage to Grizzly Bears
+2 damage to Grizzly Bears (#127)
+2 combat damage to Grizzly Bears
+Grizzly Bears is put into a graveyard
+Grizzly Bears is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 11: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Words of Wilding
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 casts Little Bear
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Little Bear resolves (controlled by P0)
+Little Bear enters the battlefield under P0
+P0's Little Bear trigger is removed: it requires a target and no legal target exists (CR 603.3d, another target creature you control: CR 115.1)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 12: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Runeclaw Bear
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Runeclaw Bear resolves (controlled by P1)
+Runeclaw Bear enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Little Bear (#16)
+2 combat damage to Little Bear
+3 damage to Grizzly Bears (#47)
+3 combat damage to Grizzly Bears
+Little Bear is put into a graveyard
+Grizzly Bears is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 13: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Little Bear
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Little Bear resolves (controlled by P2)
+Little Bear enters the battlefield under P2
+P2's triggered ability from Little Bear goes on the stack: When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+state-based action: Grizzly Bears is untapped and has 2 +1/+1 counter(s)
+P2's ability from Little Bear resolves: When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+4 combat damage to a player
+4 damage to P0
+P0 loses 4 life (now 33)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 30)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 14: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Ursine Champion
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ursine Champion resolves (controlled by P3)
+Ursine Champion enters the battlefield under P3
+P3 receives priority
+P3 casts Ursine Champion
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ursine Champion resolves (controlled by P3)
+Ursine Champion enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Runeclaw Bear
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 28)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 15: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 16: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 casts Ursine Champion
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Ursine Champion resolves (controlled by P1)
+Ursine Champion enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Runeclaw Bear
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Grizzly Bears (#6)
+2 combat damage to Grizzly Bears
+2 damage to Runeclaw Bear (#50)
+2 combat damage to Runeclaw Bear
+Grizzly Bears is put into a graveyard
+Runeclaw Bear is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 17: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Little Bear
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Little Bear resolves (controlled by P2)
+Little Bear enters the battlefield under P2
+P2's triggered ability from Little Bear goes on the stack: When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+state-based action: Grizzly Bears is untapped and has 3 +1/+1 counter(s)
+P2's ability from Little Bear resolves: When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+P2 receives priority
+P2 casts Ursine Champion
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Ursine Champion resolves (controlled by P2)
+Ursine Champion enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear, Little Bear
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+5 combat damage to a player
+5 damage to P0
+P0 loses 5 life (now 23)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 20)
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 17)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 18: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Runeclaw Bear, Ursine Champion, Ursine Champion
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 15)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 13)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 11)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 19: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 20: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 casts Ursine Champion
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Ursine Champion resolves (controlled by P1)
+Ursine Champion enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears, Ursine Champion
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 38)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 36)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 21: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P2's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear, Little Bear, Little Bear, Ursine Champion
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+5 combat damage to a player
+5 damage to P3
+P3 loses 5 life (now 31)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 28)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 25)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 22)
+5 combat damage to a player
+5 damage to P3
+P3 loses 5 life (now 17)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 22: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P3's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Runeclaw Bear, Ursine Champion, Ursine Champion
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 38)
+5 combat damage to a player
+5 damage to P2
+P2 loses 5 life (now 33)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 31)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 23: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 casts Ursine Champion
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Ursine Champion resolves (controlled by P0)
+Ursine Champion enters the battlefield under P0
+P0 receives priority
+P0 casts Ursine Champion
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Ursine Champion resolves (controlled by P0)
+Ursine Champion enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 15)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 24: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P1's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears, Grizzly Bears, Ursine Champion, Ursine Champion
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 13)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 11)
+5 combat damage to a player
+5 damage to P3
+P3 loses 5 life (now 6)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 4)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 25: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P2's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear, Little Bear, Little Bear, Ursine Champion
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+5 combat damage to a player
+5 damage to P3
+P3 loses 5 life (now -1)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now -4)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now -7)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now -10)
+5 combat damage to a player
+5 damage to P3
+P3 loses 5 life (now -15)
+state-based action: P3 loses: life total is -15 (CR 704.5a)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 26: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P0 draws Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P0 attacks with Grizzly Bears, Ursine Champion, Ursine Champion
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 29)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 27)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 25)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 27: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P1's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears, Grizzly Bears, Ursine Champion, Ursine Champion
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 9)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 7)
+5 combat damage to a player
+5 damage to P0
+P0 loses 5 life (now 2)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 0)
+state-based action: P0 loses: life total is 0 (CR 704.5a)
+state-based action: P0 leaves the game; all objects owned by P0 leave the game (CR 800.4a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 28: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P2's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear, Little Bear, Little Bear, Ursine Champion
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+5 combat damage to a player
+5 damage to P1
+P1 loses 5 life (now 35)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 32)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 29)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 26)
+5 combat damage to a player
+5 damage to P1
+P1 loses 5 life (now 21)
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 29: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P1's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears, Grizzly Bears, Ursine Champion, Ursine Champion
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 23)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 21)
+5 combat damage to a player
+5 damage to P2
+P2 loses 5 life (now 16)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 14)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 30: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P2's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear, Little Bear, Little Bear, Ursine Champion
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+5 combat damage to a player
+5 damage to P1
+P1 loses 5 life (now 16)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 13)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 10)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 7)
+5 combat damage to a player
+5 damage to P1
+P1 loses 5 life (now 2)
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 31: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P1's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears, Grizzly Bears, Ursine Champion, Ursine Champion
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 12)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 10)
+5 combat damage to a player
+5 damage to P2
+P2 loses 5 life (now 5)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 3)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 32: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 activates Ursine Champion: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+Ursine Champion starts a continuous effect in layer 7c: +3/+3 until end of turn (CR 613.4c power/toughness modifiers)
+Ursine Champion starts a continuous effect in layer 4: becomes a Bear Berserker until end of turn (CR 613.1d type-changing effects)
+P2's ability from Ursine Champion resolves: {5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Little Bear, Little Bear, Little Bear, Ursine Champion
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+5 combat damage to a player
+5 damage to P1
+P1 loses 5 life (now -3)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now -6)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now -9)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now -12)
+5 combat damage to a player
+5 damage to P1
+P1 loses 5 life (now -17)
+state-based action: P1 loses: life total is -17 (CR 704.5a)
+state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
+Game over — P2 wins: opponents' life totals reached 0 or less (CR 704.5a)
+selfplay seed=3535 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 1360 steps (32 turns)
+  digest 59f8bf201768 | replay verified | casts 21 attacks 21 blocks 3 counters 0

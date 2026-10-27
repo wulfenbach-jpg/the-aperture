@@ -61,6 +61,7 @@ const SLICE31_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE32_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice32-sourced.json");
 /// Slice 33: Beorn's Hospitality (HOB 120), fetched 2026-10-27.
 const SLICE33_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice33-sourced.json");
+const SLICE35_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice35-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
@@ -250,6 +251,39 @@ fn slice32_cards() -> Vec<Value> {
 fn slice33_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE33_SOURCED).expect("sourced slice33 JSON");
     value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice35_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE35_SOURCED).expect("sourced slice35 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+/// Slice 35 added Words of Wilding (ONS 305). Its printing is the authority for
+/// the cost, the type line and the whole one-ability oracle text.
+#[test]
+fn slice35_words_of_wilding_matches_its_recorded_printing() {
+    let cards = slice35_cards();
+    assert_eq!(cards.len(), 1, "slice 35 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Words of Wilding");
+    let def = catalog::by_name("Words of Wilding")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "ons");
+    assert_eq!(sourced_text(record, "collector_number"), "305");
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "fdb9565f-5b09-4127-b169-3146079dab84"
+    );
+    assert_eq!(
+        sourced_text(record, "oracle_id"),
+        "888582df-4fe2-4d05-9b62-10c90aaa76f2"
+    );
+    assert!(def.is_enchantment(), "printed type line");
+    assert!(!def.is_creature(), "a printed Enchantment");
 }
 
 /// Slice 33 added Beorn's Hospitality (HOB 120). Its printing is the authority
@@ -807,6 +841,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())
+        .chain(slice35_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

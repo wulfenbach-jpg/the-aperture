@@ -870,6 +870,25 @@ const BEORNS_HOSPITALITY: &[Ability] = &[
     }),
 ];
 
+/// Words of Wilding (ONS 305): "{1}: The next time you would draw a card this
+/// turn, create a 2/2 green Bear creature token instead."
+///
+/// The pool's first *draw* replacement (CR 614.1a). The activated ability prints
+/// no timing restriction and no once-per-turn limit, so its controller may arm
+/// several replacements in one turn; each one consumes exactly one of that
+/// seat's draws, and an unspent one ends in cleanup (CR 514.2). The armed
+/// replacement is not tied to this enchantment's existence, so a replacement
+/// that has already resolved still applies after the source is destroyed.
+const WORDS_OF_WILDING: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
+    cost: AbilityCost::mana("{1}"),
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::ReplaceNextDrawWithBearToken],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
 /// Beorn the Fierce (HOB 119): "Trample
 /// Other Bears you control get +2/+2.
 /// At the beginning of combat on your turn, put a trample counter on up to one
@@ -905,6 +924,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
+        CardId::WordsOfWilding => WORDS_OF_WILDING,
         CardId::StuffedBear => STUFFED_BEAR,
         CardId::UrsineChampion => URSINE_CHAMPION,
         CardId::StitchersSupplier => STITCHERS_SUPPLIER,

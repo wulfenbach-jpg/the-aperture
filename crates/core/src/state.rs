@@ -784,6 +784,14 @@ pub struct GameState {
     /// this turn, indexed by owner. Empty/skipped preserves old digests.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub nontoken_creature_deaths_this_turn: Vec<u32>,
+    /// Per-seat count of armed one-shot draw replacements (Words of Wilding,
+    /// CR 614.1a): "the next time you would draw a card this turn, create a 2/2
+    /// green Bear creature token instead". Indexed by the seat that would draw,
+    /// grown only when a replacement is armed and cleared in cleanup (CR 514.2),
+    /// so every state that never resolved one keeps its pre-slice-35 serialized
+    /// form and digest.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub draw_replacements: Vec<u32>,
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.
     pub activation_uses: BTreeMap<ObjectId, u8>,

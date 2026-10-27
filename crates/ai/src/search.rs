@@ -696,6 +696,9 @@ fn reconstruct(
         rng,
         objects,
         creature_died_this_turn: real_state.creature_died_this_turn,
+        // Forced initializer for the field slice 35 added to `GameState`; the
+        // search projection copies the same value so its state stays truthful.
+        draw_replacements: real_state.draw_replacements.clone(),
         nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
         commanders: real_state.commanders.clone(),
         profile: real_state.profile,

@@ -272,7 +272,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 149] = [
+pub static CARDS: [CardDef; 150] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1101,6 +1101,18 @@ pub static CARDS: [CardDef; 149] = [
         BeornsHospitality, "Beorn's Hospitality", cost: Some("{1}{G}"), kinds: ENCHANTMENT, basic: None,
         type_line: "Enchantment", power: None, toughness: None,
         oracle: "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+        spell: None
+    ),
+    // Issue 17 slice 35: Words of Wilding (ONS 305). The pool's first draw
+    // replacement: an activated ability arms a one-shot "instead create a 2/2
+    // green Bear token" that the next draw this controller would perform
+    // consumes (CR 614.1a), cleared in cleanup if unspent (CR 514.2). Printed
+    // text copied verbatim from the ONS 305 printing recorded in
+    // fixtures/starter-corpus/slice35-sourced.json.
+    card!(
+        WordsOfWilding, "Words of Wilding", cost: Some("{2}{G}"), kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
         spell: None
     ),
     card_flash!(

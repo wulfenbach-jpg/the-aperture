@@ -238,6 +238,14 @@ pub enum Effect {
     /// (CR 101.4, 608.2f); the tokens are created only after every live seat
     /// has answered, and each seat's count is fixed by its own reveal.
     EachPlayerMayRevealCreatureCardsForBears,
+    /// "{1}: The next time you would draw a card this turn, create a 2/2 green
+    /// Bear creature token instead" (Words of Wilding). CR 614.1a: a one-shot
+    /// replacement armed on the resolving ability's controller, held in
+    /// `GameState::draw_replacements` and consumed by the next draw that seat
+    /// would perform; cleanup clears an unspent one (CR 514.2). It is not bound
+    /// to the source's existence, so destroying the enchantment does not undo a
+    /// replacement that already resolved.
+    ReplaceNextDrawWithBearToken,
     /// Look at the top card without moving it. A creature/planeswalker card
     /// gets a take-or-bottom choice; any other card goes to the bottom without
     /// being revealed. Empty library is not a draw.
@@ -425,6 +433,10 @@ impl Effect {
                     .to_string()
             }
             Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
+            Effect::ReplaceNextDrawWithBearToken => {
+                "the next time that player would draw this turn, create a 2/2 green Bear token instead"
+                    .to_string()
+            }
             Effect::EachPlayerMayRevealCreatureCardsForBears => {
                 "each player may reveal any number of creature cards from their hand, then creates a 2/2 green Bear token for each card revealed this way"
                     .to_string()
@@ -744,6 +756,8 @@ pub enum CardId {
     KamahlsSummons,
     /// Issue 17 slice 33: Beorn's Hospitality (HOB 120).
     BeornsHospitality,
+    /// Issue 17 slice 35: Words of Wilding (ONS 305).
+    WordsOfWilding,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

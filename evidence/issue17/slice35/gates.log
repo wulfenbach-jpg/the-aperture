@@ -1,0 +1,69 @@
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice35.rs:120:
+     );
+     let library_before = game.state.player(P0).library.len();
+     let hand_before = game.state.player(P0).hand_size();
+[31m-    assert_eq!(bear_count(&game, P0), 0, "arming creates no token by itself");
+[0m[32m+    assert_eq!(
+[0m[32m+        bear_count(&game, P0),
+[0m[32m+        0,
+[0m[32m+        "arming creates no token by itself"
+[0m[32m+    );
+[0m 
+     assert!(
+[31m-        run_until(&mut game, &mut log, |g| g.state.turn.step != Step::Upkeep, 64),
+[0m[32m+        run_until(
+[0m[32m+            &mut game,
+[0m[32m+            &mut log,
+[0m[32m+            |g| g.state.turn.step != Step::Upkeep,
+[0m[32m+            64
+[0m[32m+        ),
+[0m         "the turn reaches the draw step"
+     );
+ 
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice35.rs:222:
+     let spell = hand_card(&game, P0, divination());
+     let events = cast(&mut game, P0, spell);
+ 
+[31m-    assert_eq!(bear_count(&game, P0), 2, "each armed replacement is one Bear");
+[0m     assert_eq!(
+[32m+        bear_count(&game, P0),
+[0m[32m+        2,
+[0m[32m+        "each armed replacement is one Bear"
+[0m[32m+    );
+[0m[32m+    assert_eq!(
+[0m         game.state.player(P0).hand_size(),
+         hand_before - 1,
+         "neither draw adds a card"
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice35.rs:305:
+ 
+     let mut log = Vec::new();
+     assert!(
+[31m-        run_until(&mut game, &mut log, |g| g.state.turn.step != Step::Upkeep, 64),
+[0m[32m+        run_until(
+[0m[32m+            &mut game,
+[0m[32m+            &mut log,
+[0m[32m+            |g| g.state.turn.step != Step::Upkeep,
+[0m[32m+            64
+[0m[32m+        ),
+[0m         "the turn reaches the draw step"
+     );
+     assert_eq!(
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice35.rs:329:
+     let source = battlefield_card(&game, P0, words());
+     set_priority(&mut game.state, Some(P0));
+     assert!(
+[31m-        !game
+[0m[31m-            .legal_actions()
+[0m[31m-            .iter()
+[0m[31m-            .any(|entry| matches!(entry.action, Action::ActivateAbility { source: s, .. } if s == source)),
+[0m[32m+        !game.legal_actions().iter().any(
+[0m[32m+            |entry| matches!(entry.action, Action::ActivateAbility { source: s, .. } if s == source)
+[0m[32m+        ),
+[0m         "no mana means no offer"
+     );
+ }
+fmt_exit=1
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.19s
+clippy_exit=0

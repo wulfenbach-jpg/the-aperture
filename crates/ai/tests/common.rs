@@ -48,6 +48,7 @@ pub fn fixture(seed: u64) -> Fixture {
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
             creature_died_this_turn: false,
+            draw_replacements: Vec::new(),
             nontoken_creature_deaths_this_turn: Vec::new(),
             commanders: Vec::new(),
             profile: Profile::Practice20,

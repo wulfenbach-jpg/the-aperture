@@ -549,8 +549,30 @@ Beorn's Hospitality (`{1}{G}` Enchantment) is sourced in `fixtures/starter-corpu
 
 Verification retained in `evidence/issue17/slice33/`: four-seat / 40-life package journey from `evidence/issue17/slice33-journey-driver` (`decks/package-slice33.txt`, seed 3333, terminal `Win{P3}`) whose driver re-asserts the characteristic-defining invariant after **every** accepted action (the 7a delta equals the current land count and effective power equals land count plus counters), with on-turn and off-turn sightings both non-zero, a separate CLI replay of the recorded replay, the mutation REDs in `run-mutations.py`, and the usual gates.
 
-Known limits, disclosed: the animation's characteristic-defining "you" is read from the permanent's **current controller**; the pool has no control-changing effect, so this cannot be distinguished from the resolving controller. `card_green!` records a colour for this one card only — the other printable cards still carry `colors: &[]`, which is a pre-existing modelling choice, not a claim that they are colourless. The landfall trigger's counter is the ordinary display-and-P/T +1/+1 counter the rest of the pool uses. This slice certifies no starter list: Ayula has 16 missing names and the eight-list gate remains 1 of 8.
+Known limits, disclosed: the animation's characteristic-defining "you" is read from the permanent's **current controller**; the pool has no control-changing effect, so this cannot be distinguished from the resolving controller. `card_green!` records a colour for this one card only — the other printable cards still carry `colors: &[]`, which is a pre-existing modelling choice, not a claim that they are colourless. The landfall trigger's counter is the ordinary display-and-P/T +1/+1 counter the rest of the pool uses. This slice certifies no starter list: Ayula has 15 missing names and the eight-list gate remains 1 of 8.
 
 ### Slice 33 review repair: "target creature you control" vs "another"
 
 Review 290 found that the landfall trigger reused `TargetSpec::CreatureYouControl`, which at that head removed the ability's own source. That exclusion exists only because Little Bear prints "untap **another** target creature you control"; Beorn's Hospitality prints no "another", and once animated it is a creature, so it is a legal target of its own trigger — and, as the card's only creature, the one the engine must choose. The spec was therefore split: `TargetSpec::CreatureYouControl` is the printed "target creature you control" and **includes the source**, and the new `TargetSpec::AnotherCreatureYouControl` is the only spec that removes it. Little Bear keeps the exclusion, Dancing from Dark to Dawn's cast trigger (also printed without "another") now gets the correct set, and the cardinality behaviours are covered by five regression tests: the animated source auto-chosen as its own target and countering itself (5/5 with four lands), the source offered beside another creature with the counter landing on it, the unanimated enchantment not legal (the counter still goes to the only creature), a lone unanimated watcher losing the trigger to CR 603.3d with nothing on the stack, and Little Bear refusing to target itself. Two mutations — reinstating the exclusion in `CreatureYouControl`, and pointing Little Bear back at the plain spec — each fail exactly their own tests, with both touched files restored byte-for-byte.
+
+### Slice 35 — Words of Wilding (ONS 305): the pool's first draw replacement
+
+`{2}{G}` Enchantment, printed verbatim in `fixtures/starter-corpus/slice35-sourced.json`
+(retrieved 2026-10-27T21:06:29.666092Z): **"{1}: The next time you would draw a card this turn,
+create a 2/2 green Bear creature token instead."** The generic surface is an armed, one-shot,
+per-seat draw replacement (CR 614.1a) held in `GameState::draw_replacements` — `Game::draw_with_resume`
+consumes it before the top card is looked at, so no card moves, no `Event::Draw` is emitted, and an
+empty library is not a loss (nothing was drawn). Cleanup clears an unspent replacement (CR 514.2),
+the ability prints no once-per-turn limit (several may be armed, each consuming exactly one draw),
+and the replacement is not tied to the source's existence. Six focused tests cover the draw step,
+one-of-two draws, two-of-two draws with an empty library, cleanup expiry, controller-only scope and
+the missing-cost refusal.
+
+Known limits, disclosed: the four-seat evidence journey (`decks/package-slice35.txt`, seed 3535,
+`Win{P2}`, 1360 steps, digest `59f8bf2017…`, separately replayed) **drew the card three times and
+never cast it** under the heuristic policy, so that game does not exercise the replacement — the
+focused tests do; the journey is a 40-card package, not a 100-card certificate. Adding the field to
+the serialized `GameState` required two forced initializer-only edits outside `crates/core`
+(`crates/ai/src/search.rs` copies the value, `crates/ai/tests/common.rs` starts empty); no AI-search
+behaviour, UI, import or model code changed. This slice certifies no starter list: Ayula has 15
+missing names and the eight-list gate remains 1 of 8.

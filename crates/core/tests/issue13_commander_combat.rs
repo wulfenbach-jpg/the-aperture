@@ -1382,7 +1382,7 @@ fn fog_is_a_sourced_catalog_card() {
     // 30's Drover Grizzly and slice 31's Beorn the Fierce, and to 148 with
     // slice 32's Kamahl's Summons, and to 149 with slice 33's Beorn's
     // Hospitality.
-    assert_eq!(aperture_core::catalog::pool_size(), 149);
+    assert_eq!(aperture_core::catalog::pool_size(), 150);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

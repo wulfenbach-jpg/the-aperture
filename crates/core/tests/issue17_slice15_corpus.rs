@@ -133,7 +133,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // one again. Slice 30 registers Drover Grizzly and slice 31 registers Beorn
     // the Fierce, so both numbers move together by one each time. Slice 32
     // registers Kamahl's Summons, which closes one more. Slice 33 registers
-    // Beorn's Hospitality, so both numbers move together by one again.
-    assert_eq!(missing.len(), 16, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 149, "the compiled pool");
+    // Beorn's Hospitality, so both numbers move together by one again. Slice 35
+    // registers Words of Wilding, which closes one more.
+    assert_eq!(missing.len(), 15, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 150, "the compiled pool");
 }

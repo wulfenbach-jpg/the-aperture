@@ -59,6 +59,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
             prevent_all_combat_damage_turn: None,
+            draw_replacements: Vec::new(),
             players: (0..seat_count as PlayerId)
                 .map(|id| new_player(id, &format!("P{id}")))
                 .collect(),

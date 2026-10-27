@@ -238,7 +238,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 // Little Bear's untap/counter instruction and Spectral Bears'
                 // untap restriction are triggered-ability effects, never a
                 // spell's.
-                Effect::UntapTargetAndCounterIfBear | Effect::SkipNextUntapStep => {
+                Effect::UntapTargetAndCounterIfBear
+                | Effect::SkipNextUntapStep
+                | Effect::ReplaceNextDrawWithBearToken => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name

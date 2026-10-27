@@ -274,6 +274,7 @@ impl Game {
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
             prevent_all_combat_damage_turn: None,
+            draw_replacements: Vec::new(),
             players,
             stack: Vec::new(),
             turn: Turn {
@@ -2025,6 +2026,29 @@ impl Game {
         self.draw_with_resume(p, DrawResume::Step, 0, events)
     }
 
+    /// CR 614.1a: arm one one-shot "the next time you would draw a card this
+    /// turn" replacement for `seat` (Words of Wilding).
+    fn arm_draw_replacement(&mut self, seat: PlayerId) {
+        let index = seat as usize;
+        if self.state.draw_replacements.len() <= index {
+            self.state.draw_replacements.resize(index + 1, 0);
+        }
+        self.state.draw_replacements[index] += 1;
+    }
+
+    /// Consume one armed replacement for `seat`. `true` means the draw event is
+    /// replaced (CR 614.1a), so no card may move and nothing else may happen for
+    /// that draw — not even drawing from an empty library.
+    fn take_draw_replacement(&mut self, seat: PlayerId) -> bool {
+        match self.state.draw_replacements.get_mut(seat as usize) {
+            Some(count) if *count > 0 => {
+                *count -= 1;
+                true
+            }
+            _ => false,
+        }
+    }
+
     /// Draw one card. If the top card is a commander, CR 903.9b suspends the
     /// draw before the move and records the exact resume context.
     fn draw_with_resume(
@@ -2034,6 +2058,14 @@ impl Game {
         remaining: u8,
         events: &mut Vec<Event>,
     ) -> bool {
+        // CR 614.1a: the replacement applies to the draw event itself, before the
+        // top card is looked at. It therefore also replaces a draw from an empty
+        // library, which is not a loss (nothing was drawn) and creates the token
+        // instead of a card.
+        if self.take_draw_replacement(p) {
+            self.create_tokens(p, CardId::BearToken, 1, events);
+            return false;
+        }
         let next = self.state.players[p as usize].library.first().copied();
         match next {
             Some(id) => {
@@ -5323,6 +5355,12 @@ impl Game {
         if expired_regeneration > 0 {
             changed = true;
         }
+        // CR 514.2: an unspent "the next time you would draw a card this turn"
+        // replacement ends with the turn.
+        if self.state.draw_replacements.iter().any(|count| *count > 0) {
+            changed = true;
+        }
+        self.state.draw_replacements.clear();
         self.release_idle_effect_cursors();
         if expired_effects > 0 || expired_shields > 0 {
             changed = true;
@@ -7013,6 +7051,12 @@ impl Game {
             }
             Effect::CreateBearTokens(n) => {
                 self.create_tokens(controller, CardId::BearToken, u32::from(n) as usize, events);
+                false
+            }
+            // CR 614.1a: arming is not itself a token; the replacement is
+            // consumed by the next draw this controller would perform this turn.
+            Effect::ReplaceNextDrawWithBearToken => {
+                self.arm_draw_replacement(controller);
                 false
             }
             // CR 111.2 + 608.2c: the token is created under the control of the
