@@ -426,6 +426,19 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+const VIVIENS_GRIZZLY: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.",
+    cost: AbilityCost {
+        mana: Some("{3}{G}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::LookTopTakeOrBottom],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
 const AYULA_COUNTERS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
     event: TriggerEvent::AnotherCreatureEnters,
@@ -682,6 +695,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::FriendlyTeddy => FRIENDLY_TEDDY,
         CardId::UlvenwaldBear => ULVENWALD_BEAR,
         CardId::CallerOfTheClaw => CALLER_OF_THE_CLAW,
+        CardId::ViviensGrizzly => VIVIENS_GRIZZLY,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,

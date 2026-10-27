@@ -214,6 +214,10 @@ pub enum Effect {
     /// source object is recorded in `GameState::skip_next_untap` and its
     /// controller's next untap step leaves it tapped exactly once.
     SkipNextUntapStep,
+    /// Look at the top card without moving it. A creature/planeswalker card
+    /// gets a take-or-bottom choice; any other card goes to the bottom without
+    /// being revealed. Empty library is not a draw.
+    LookTopTakeOrBottom,
 }
 
 impl Effect {
@@ -293,6 +297,10 @@ impl Effect {
             }
             Effect::FightTargets => {
                 "target Bear you control fights target creature you don't control".to_string()
+            }
+            Effect::LookTopTakeOrBottom => {
+                "look at the top card; take a creature/planeswalker or put it on the bottom"
+                    .to_string()
             }
             Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
             Effect::CreateBearTokensForEachDeathThisTurn => {
@@ -531,6 +539,7 @@ pub enum CardId {
     UlvenwaldBear,
     CallerOfTheClaw,
     AyulaQueenAmongBears,
+    ViviensGrizzly,
     AyulasInfluence,
     Bearscape,
     MotherBear,

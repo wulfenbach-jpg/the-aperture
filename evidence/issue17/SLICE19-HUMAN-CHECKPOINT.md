@@ -137,6 +137,10 @@ issue closure, no certified-downstream unlock.
 
 ## Deviations disclosed
 
+- Compatibility-only AI fixture/state touches: `crates/ai/src/search.rs:724` clones
+  `skip_next_untap` during reconstruction and `crates/ai/tests/common.rs:80`
+  initializes it to `Default::default()`; no policy change.
+
 - Production code was written before the new tests (scaffold-first, **not** strict
   TDD). The two mutations above are the honest compensating evidence.
 - `is_black` derives catalog color from the mana cost. That is the printed-color

@@ -1704,13 +1704,18 @@ impl Game {
                     "no triggered ability is waiting for a target choice (CR 603.3d)",
                 )),
             },
-            Action::AnswerTriggerChoice { .. } => match &state.pending {
+            Action::AnswerTriggerChoice { use_ability } => match &state.pending {
                 Some(Pending::TriggerChoice { player: p, .. })
                 | Some(Pending::TriggerMode { player: p, .. })
                     if *p == player =>
                 {
                     Ok(())
                 }
+                Some(Pending::TopCardChoice {
+                    player: p,
+                    can_take,
+                    ..
+                }) if *p == player && (!*use_ability || *can_take) => Ok(()),
                 _ => Err(EngineError::illegal(
                     "trigger choice",
                     "no optional triggered ability is waiting for its controller (CR 603.5)",
@@ -3406,6 +3411,42 @@ impl Game {
                 let mut trigger = trigger;
                 trigger.ability = mode;
                 self.stage_ayula_target(trigger, queued, mode, events);
+                self.state.turn.priority = None;
+            }
+            Some(Pending::TopCardChoice {
+                player: owner,
+                card,
+                can_take,
+            }) => {
+                let take = use_ability && can_take;
+                if take {
+                    let library = &mut self.state.players[owner as usize].library;
+                    if library.first() == Some(&card) {
+                        library.remove(0);
+                    }
+                    let card_id = self.state.object(card).card;
+                    if let Some(object) = self.state.objects.get_mut(&card) {
+                        object.zone = Zone::Hand;
+                    }
+                    self.state.players[owner as usize].hand.push(card);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{owner} reveals {} and puts it into their hand",
+                            card_id.name()
+                        ),
+                    });
+                } else {
+                    let library = &mut self.state.players[owner as usize].library;
+                    if library.first() == Some(&card) {
+                        library.remove(0);
+                        library.push(card);
+                    }
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{owner} puts the looked-at card on the bottom of their library"
+                        ),
+                    });
+                }
                 self.state.turn.priority = None;
             }
             Some(Pending::TriggerChoice { trigger, .. }) => {
@@ -5858,6 +5899,39 @@ impl Game {
                 }
                 false
             }
+            Effect::LookTopTakeOrBottom => {
+                let Some(top) = self.state.player(controller).library.first().copied() else {
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} looks at an empty library; no card can be taken and no draw occurs"
+                        ),
+                    });
+                    return false;
+                };
+                let eligible = self.state.try_object(top).is_some_and(|object| {
+                    object.zone == Zone::Library
+                        && (object.card.def().is_creature()
+                            || object.card.def().type_line.contains("Planeswalker"))
+                });
+                if !eligible {
+                    let player = &mut self.state.players[controller as usize];
+                    let card = player.library.remove(0);
+                    player.library.push(card);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} puts the looked-at card on the bottom of their library without revealing it"
+                        ),
+                    });
+                    return false;
+                }
+                self.state.pending = Some(Pending::TopCardChoice {
+                    player: controller,
+                    card: top,
+                    can_take: true,
+                });
+                self.state.turn.priority = None;
+                true
+            }
             Effect::FightTargets => {
                 let [Target::Permanent(first), Target::Permanent(second)] = item.targets.as_slice()
                 else {
@@ -6823,6 +6897,22 @@ impl Game {
                     rules: vec!["603.3d"],
                 })
                 .collect(),
+            Pending::TopCardChoice { can_take, .. } => {
+                let mut out = Vec::new();
+                if *can_take {
+                    out.push(LegalAction {
+                        action: Action::AnswerTriggerChoice { use_ability: true },
+                        label: "Reveal the looked-at card and put it into hand".to_string(),
+                        rules: vec!["701.20a", "701.20e"],
+                    });
+                }
+                out.push(LegalAction {
+                    action: Action::AnswerTriggerChoice { use_ability: false },
+                    label: "Put the looked-at card on the bottom of the library".to_string(),
+                    rules: vec!["701.20e"],
+                });
+                out
+            }
             Pending::TriggerMode { .. } => vec![
                 LegalAction {
                     action: Action::AnswerTriggerChoice { use_ability: true },

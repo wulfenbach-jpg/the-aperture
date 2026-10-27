@@ -250,7 +250,8 @@ pub fn run_until(
                 },
                 Pending::TriggerTarget { .. }
                 | Pending::TriggerChoice { .. }
-                | Pending::TriggerMode { .. } => game
+                | Pending::TriggerMode { .. }
+                | Pending::TopCardChoice { .. } => game
                     .legal_actions()
                     .into_iter()
                     .find(|legal| {

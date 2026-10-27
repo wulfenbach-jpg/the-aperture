@@ -576,6 +576,11 @@ impl Game {
             Some(crate::state::Pending::OrderCard { player, viewed, .. }) if *player == viewer => {
                 viewed.iter().map(|id| card_view(self, *id)).collect()
             }
+            Some(crate::state::Pending::TopCardChoice { player, card, .. })
+                if *player == viewer =>
+            {
+                vec![card_view(self, *card)]
+            }
             _ => Vec::new(),
         };
         let pending_for_viewer = self.state.pending.as_ref().filter(|pending| match pending {
@@ -731,7 +736,8 @@ impl Game {
                 crate::state::Pending::CommanderDraw { .. } => PendingKind::CommanderDraw,
                 crate::state::Pending::TriggerTarget { .. } => PendingKind::TriggerTarget,
                 crate::state::Pending::TriggerChoice { .. }
-                | crate::state::Pending::TriggerMode { .. } => PendingKind::TriggerChoice,
+                | crate::state::Pending::TriggerMode { .. }
+                | crate::state::Pending::TopCardChoice { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })

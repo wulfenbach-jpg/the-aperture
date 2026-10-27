@@ -123,6 +123,6 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // recorded gap matches the compiled pool) is unchanged.
     // Slice 19 registers Spectral Bears, so the recorded Ayula gap and the
     // compiled pool move together by one; the assertions' purpose is unchanged.
-    assert_eq!(missing.len(), 29, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 136, "the compiled pool");
+    assert_eq!(missing.len(), 28, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 137, "the compiled pool");
 }

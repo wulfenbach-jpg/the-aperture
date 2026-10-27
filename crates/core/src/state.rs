@@ -200,6 +200,13 @@ pub enum Pending {
         player: PlayerId,
         trigger: TriggerRef,
     },
+    /// Private look at the anchored top card. The card stays in the library
+    /// until answered; no temporary removed-object holding is created.
+    TopCardChoice {
+        player: PlayerId,
+        card: ObjectId,
+        can_take: bool,
+    },
 }
 
 /// One triggered ability waiting to be put on the stack (CR 603.2, 603.3).
@@ -312,7 +319,8 @@ impl Pending {
             Pending::CommanderDraw { player, .. } => *player,
             Pending::TriggerTarget { player, .. }
             | Pending::TriggerChoice { player, .. }
-            | Pending::TriggerMode { player, .. } => *player,
+            | Pending::TriggerMode { player, .. }
+            | Pending::TopCardChoice { player, .. } => *player,
         }
     }
 
@@ -407,6 +415,17 @@ impl Pending {
             ),
             Pending::TriggerMode { player, .. } => {
                 format!("P{player}: choose Ayula's counter or fight mode (CR 603.3c, 700.2b)")
+            }
+            Pending::TopCardChoice {
+                player, can_take, ..
+            } => {
+                if *can_take {
+                    format!(
+                        "P{player}: reveal the looked-at card and put it into hand, or put it on the bottom"
+                    )
+                } else {
+                    format!("P{player}: put the looked-at card on the bottom")
+                }
             }
         }
     }
@@ -919,6 +938,7 @@ impl GameState {
                 Pending::TriggerMode {
                     trigger, queued, ..
                 } => trigger_ref(trigger) || queued.iter().any(trigger_ref),
+                Pending::TopCardChoice { card, .. } => *card == id,
                 Pending::Mulligan { .. }
                 | Pending::BottomCards { .. }
                 | Pending::DeclareAttackers { .. }
@@ -1422,6 +1442,27 @@ impl GameState {
                 reason: "mulligan pending choice without mulligan state".to_string(),
             });
         }
+        if let Some(Pending::TopCardChoice {
+            player,
+            card,
+            can_take,
+        }) = &self.pending
+        {
+            let eligible = self.try_object(*card).is_some_and(|object| {
+                object.zone == Zone::Library
+                    && (object.card.def().is_creature()
+                        || object.card.def().type_line.contains("Planeswalker"))
+            });
+            if !self.is_live(*player)
+                || self.player(*player).library.first() != Some(card)
+                || *can_take != eligible
+            {
+                return Err(EngineError::InvalidState {
+                    reason: "top-card choice is not anchored to the eligible top of the player's library"
+                        .to_string(),
+                });
+            }
+        }
         if let Some(Pending::CommanderReturn {
             order,
             cursor,
@@ -1905,7 +1946,8 @@ impl GameState {
             let held = held_counts.get(key).copied().unwrap_or(0);
             let stacked = stack_counts.get(key).copied().unwrap_or(0);
             let ok = match object.zone {
-                Zone::Battlefield | Zone::Removed => listed == 0 && held == 0 && stacked == 0,
+                Zone::Battlefield => listed == 0 && held == 0 && stacked <= 1,
+                Zone::Removed => listed == 0 && held == 0 && stacked == 0,
                 Zone::Stack => listed == 0 && held == 0 && stacked == 1,
                 Zone::Library => listed + held == 1 && stacked == 0,
                 // A triggered ability keeps its source card in the zone it
@@ -2163,7 +2205,12 @@ impl GameState {
                     reason: format!("stack references missing object {}", item.object),
                 });
             };
-            if object.zone != Zone::Stack && !matches!(item.entry, StackEntry::Triggered { .. }) {
+            if object.zone != Zone::Stack
+                && !matches!(
+                    item.entry,
+                    StackEntry::Triggered { .. } | StackEntry::Activated { .. }
+                )
+            {
                 return Err(EngineError::InvalidState {
                     reason: format!(
                         "stack object {} is in the {} zone",

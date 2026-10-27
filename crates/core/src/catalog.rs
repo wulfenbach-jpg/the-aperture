@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 136] = [
+pub static CARDS: [CardDef; 137] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -855,6 +855,12 @@ pub static CARDS: [CardDef; 136] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        ViviensGrizzly, "Vivien's Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Spirit", power: Some(2), toughness: Some(3),
+        oracle: "{3}{G}: Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.",
+        spell: None
     ),
     card!(
         AyulaQueenAmongBears, "Ayula, Queen Among Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,

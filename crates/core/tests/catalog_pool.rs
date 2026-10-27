@@ -260,6 +260,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 // Target-player effects (slice 6) are exercised by the ability
                 // tests: none of them appears in printed spell text yet.
                 Effect::EachPlayerDraws(_)
+                | Effect::LookTopTakeOrBottom
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::CreateBearTokensForEachDeathThisTurn => {}

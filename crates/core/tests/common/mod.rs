@@ -268,7 +268,8 @@ pub fn auto_answer(game: &Game) -> Action {
             // for a "you may" trigger (the engine lists "use it" first).
             Pending::TriggerTarget { .. }
             | Pending::TriggerChoice { .. }
-            | Pending::TriggerMode { .. } => game
+            | Pending::TriggerMode { .. }
+            | Pending::TopCardChoice { .. } => game
                 .legal_actions()
                 .into_iter()
                 .find(|legal| {

@@ -1,0 +1,19 @@
+catalog pool entries: 137
+duplicate names: []
+
+per-list: total / missing
+  isamaru-white-aggro     99 cards  missing= 55  bogus_missing=[]
+  jasmine-vanilla-stompy  99 cards  missing=  0  bogus_missing=[]
+  talrand-draw-go         99 cards  missing= 51  bogus_missing=[]
+  krenko-goblin-tokens    99 cards  missing= 48  bogus_missing=[]
+  ayula-bear-counters     99 cards  missing= 28  bogus_missing=[]
+  elas-sacrifice          99 cards  missing= 52  bogus_missing=[]
+  tatyova-landfall        99 cards  missing= 52  bogus_missing=[]
+  zada-spells             99 cards  missing= 53  bogus_missing=[]
+
+union names            : 459
+union supported        : 125
+union missing          : 334
+manifest missing union : 334
+
+AUDIT OK: catalog 137, union 459 = 125 supported + 334 missing

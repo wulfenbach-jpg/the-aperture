@@ -256,7 +256,7 @@
         "Dragon-Scarred Bear",
         "Drover Grizzly",
         "Druid's Familiar",
-        "Dúnedain Rangers",
+        "D\u00fanedain Rangers",
         "Evercoat Ursine",
         "Exuberant Wolfbear",
         "Goreclaw, Terror of Qal Sisma",
@@ -276,7 +276,6 @@
         "Titania's Command",
         "Ursine Champion",
         "Ursine Monstrosity",
-        "Vivien's Grizzly",
         "Words of Wilding"
       ],
       "missing_interactions": [
