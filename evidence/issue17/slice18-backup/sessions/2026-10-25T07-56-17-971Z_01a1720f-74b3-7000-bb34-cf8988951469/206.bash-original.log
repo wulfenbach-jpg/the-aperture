@@ -1,0 +1,54 @@
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let id = ObjectId(game.state.next_object);
+    game.state.next_object += 1;
+    game.state.objects.insert(
+        id,
+        aperture_core::state::Object {
+            id,
+            card: card("Guttersnipe"),
+            owner: P0,
+            controller: P0,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+        },
+    );
+    game
+}
+
+#[test]
+fn sourced_cross_package_cards_match_their_printings() {
+    let swamp = card("Swamp").def();
+    assert_eq!(swamp.type_line, "Basic Land — Swamp");
+140:    pub fn battlefield(self, p: PlayerId, cards: &[CardId]) -> Self {
+141-        cards
+142-            .iter()
+143-            .fold(self, |f, c| f.add(p, Zone::Battlefield, *c))
+144-    }
+145-
+146-    /// Battlefield permanents that entered this turn (summoning sick).
+147:    pub fn battlefield_sick(self, p: PlayerId, cards: &[CardId]) -> Self {
+148-        let mut f = self;
+149-        for card in cards {
+150-            let before = f.state.next_object;
+151-            f = f.add(p, Zone::Battlefield, *card);
+152-            let id = ObjectId(before);
+153-            if let Some(obj) = f.state.objects.get_mut(&id) {
+154-                obj.summoning_sick = true;
+155-            }
+--
+225:pub fn battlefield_card(game: &Game, p: PlayerId, card: CardId) -> ObjectId {
+226-    game.state
+227-        .battlefield(p)
+228-        .into_iter()
+229-        .find(|o| o.card == card)
+230-        .map(|o| o.id)
+231-        .unwrap_or_else(|| panic!("{card:?} not on P{p}'s battlefield"))
+232-}
+233-

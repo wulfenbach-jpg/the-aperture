@@ -1,0 +1,81 @@
+=== date (UTC) ===
+Tue, Oct 27, 2026  8:07:44 AM
+=== git head ===
+632c5e7df413169f009119510cbb3cd9930443d5
+head_exit=0
+=== fmt ===
+fmt_exit=0
+=== clippy ===
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.86s
+clippy_exit=0
+=== release build ===
+    Finished `release` profile [optimized] target(s) in 0.77s
+release_exit=0
+=== slice23 focused ===
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+slice23_exit=0
+=== pinned/focused suites ===
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+printings_exit=0
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+catalog_exit=0
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s
+combat_exit=0
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+corpus_exit=0
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+abilities_exit=0
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+slice20_exit=0
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+slice21_exit=0
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+slice22_exit=0
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+projection_exit=0
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+timing_exit=0
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+m1_exit=0
+=== legacy replay digests via the release CLI ===
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice17/demo-replay.json
+replay seed 1616 — 4 seat(s), 1866 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 85fabffc9aa1 | matches recorded | events 4952
+slice17_replay_exit=0
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice18/demo-replay.json
+replay seed 1616 — 4 seat(s), 1961 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 09e6bb25c505 | matches recorded | events 5028
+slice18_replay_exit=0
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice19/demo-replay.json
+replay seed 1919 — 4 seat(s), 1773 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 5fd841b21c88 | matches recorded | events 4709
+slice19_replay_exit=0
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice20/demo-replay.json
+replay seed 1919 — 4 seat(s), 2064 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 72cd69fb1143 | matches recorded | events 5281
+slice20_replay_exit=0
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice21/demo-replay.json
+replay seed 1919 — 4 seat(s), 1906 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 0d20c7597183 | matches recorded | events 4909
+slice21_replay_exit=0
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice22/demo-replay.json
+replay seed 2222 — 4 seat(s), 1500 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 17f03348d81c | matches recorded | events 3891
+slice22_replay_exit=0
+=== slice23 journey replay ===
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice23/demo-replay.json
+replay seed 2323 — 4 seat(s), 1322 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest e2ccc113bceb | matches recorded | events 3495
+slice23_replay_exit=0
+=== corpus audit ===
+union missing          : 331
+manifest missing union : 331
+ayula missing          : 25
+certified lists        : ['jasmine-vanilla-stompy']
+
+AUDIT OK: catalog 140, union 459 = 128 supported + 331 missing, Ayula 25, 1 certified
+audit_exit=0
+=== workspace tests ===
+workspace_exit=0
+=== done ===
+GATES_EXIT=0

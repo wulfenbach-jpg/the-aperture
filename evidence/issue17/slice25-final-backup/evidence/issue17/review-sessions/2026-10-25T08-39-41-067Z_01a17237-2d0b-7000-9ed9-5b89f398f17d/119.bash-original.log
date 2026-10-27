@@ -1,0 +1,159 @@
+624:pub struct GameState {
+625-    pub seed: u64,
+626-    /// Who plays first. In a two-player game that player skips their first draw
+627-    /// step (CR 103.8a); in 3/4-seat free-for-all they draw (CR 103.8c, 800.7).
+628-    pub first_player: PlayerId,
+629-    pub rng: Pcg32,
+630-    pub objects: BTreeMap<ObjectId, Object>,
+631-    /// Stable per-physical-commander registry; empty for ordinary practice
+632-    /// games and exactly one entry per seat for command-zone practice.
+633-    pub commanders: Vec<Commander>,
+634-    /// Explicit named profile; the only source of starting life and of whether
+635-    /// a command zone exists.
+636-    pub profile: Profile,
+637-    /// Cumulative commander combat damage, canonical order by
+638-    /// `(commander, recipient)`. Empty outside `Profile::CommanderCombat40`.
+639-    pub commander_damage: Vec<CommanderDamageEntry>,
+640-    /// Commander identities whose owner has left the game. Historic damage by
+641-    /// these identities stays in `commander_damage` (CR 903.10a is over the
+642-    /// course of the game); this registry only keeps the ledger source-valid.
+643-    pub retired_commanders: Vec<CommanderId>,
+644-    /// Turn for which a full Fog-style combat-damage shield is active. Cleared
+645-    /// in cleanup (CR 514.2); serialized so save/replay preserve it exactly.
+646-    pub prevent_all_combat_damage_turn: Option<u32>,
+647-    /// Ordered seats. `players.len()` is the only seat-count source; seats are
+648-    /// never renumbered when a player leaves the game.
+649-    pub players: Vec<Player>,
+650-    pub stack: Vec<StackItem>,
+651-    pub turn: Turn,
+652-    pub pending: Option<Pending>,
+653-    /// Pre-game mulligan declaration/execution state (CR 103.5). `None` after
+654-    /// the opening procedure finishes.
+655-    pub mulligan: Option<MulliganRound>,
+656-    /// Object id of the stack item currently resolving (CR 608.2), if any.
+657-    pub resolving: Option<ObjectId>,
+658-    pub next_object: u32,
+659-    /// Triggered abilities that have triggered but are not on the stack yet
+660-    /// (CR 603.2, 603.3). Serialized so save/replay preserve the exact queue.
+661-    pub trigger_queue: Vec<TriggerRef>,
+662-    /// Next arrival serial for `trigger_queue`.
+663-    pub next_trigger_seq: u64,
+664-    /// Cards currently revealed from a hidden zone (CR 701.16a). Public
+665-    /// information for every viewer while the card stays in that hidden zone;
+666-    /// see `crate::view`. Serialized so save/replay keep the same visibility,
+667-    /// skipped when empty so a state with nothing revealed keeps the pre-#16
+668-    /// serialized form (and therefore its digest).
+669-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+670-    pub revealed: Vec<ObjectId>,
+671-    /// Per-turn "activate only once each turn" usage, keyed by source object.
+672-    /// Bit `n` records that ability index `n` was activated this turn.
+673-    pub activation_uses: BTreeMap<ObjectId, u8>,
+674-    /// Continuous effects with their layer, timestamp and duration (CR 613).
+675-    /// Serialized so a save or replay reproduces the exact layer state.
+676-    ///
+677-    /// Empty collections and zero counters are skipped so a state that uses no
+678-    /// effect still serializes byte-for-byte as it did before the effect
+679-    /// pipeline existed. The canonical digest is taken over this JSON, so
+680-    /// skipping the empty form is what keeps pre-existing saves and replays
+681-    /// verifiable instead of failing as digest mismatches.
+682-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+683-    pub effects: Vec<crate::layer::ContinuousEffect>,
+684-    /// One-shot prevention shields (CR 615), in creation order.
+685-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+686-    pub shields: Vec<crate::layer::DamageShield>,
+687-    /// Next rule-visible effect id.
+688-    #[serde(default, skip_serializing_if = "is_zero_u32")]
+689-    pub next_effect: u32,
+690-    /// Next rule-visible timestamp (CR 613.7 order, never wall-clock).
+691-    #[serde(default, skip_serializing_if = "is_zero_u64")]
+692-    pub next_timestamp: u64,
+693-    /// Incremented on every accepted state mutation.
+694-    pub revision: u64,
+695-    /// Serial of the current decision point; submissions must match it.
+696-    pub decision: u64,
+697-    pub outcome: Option<Outcome>,
+698-    pub rules_revision: String,
+699-}
+700-
+701-impl GameState {
+702-    pub fn player(&self, p: PlayerId) -> &Player {
+703-        self.players
+704-            .get(p as usize)
+155:    /// or library is put into the command zone instead. The resolving spell is
+168:    /// draw step from a resolving Draw(n) effect so continuation is exact.
+176:    /// CR 603.3d: a triggered ability that needs targets can be put on the
+268:    /// Mulliganers whose post-redraw London bottom choice is still pending.
+355:                "P{player}: commander {object} would be drawn; put it into the command zone instead? (CR 903.9b, {remaining} more draw(s) pending)"
+534:    pub targets: Vec<crate::action::Target>,
+590:    /// pending choice, or between steps).
+652:    pub pending: Option<Pending>,
+656:    /// Object id of the stack item currently resolving (CR 608.2), if any.
+657:    pub resolving: Option<ObjectId>,
+661:    pub trigger_queue: Vec<TriggerRef>,
+662:    /// Next arrival serial for `trigger_queue`.
+664:    /// Cards currently revealed from a hidden zone (CR 701.16a). Public
+667:    /// skipped when empty so a state with nothing revealed keeps the pre-#16
+670:    pub revealed: Vec<ObjectId>,
+674:    /// Continuous effects with their layer, timestamp and duration (CR 613).
+683:    pub effects: Vec<crate::layer::ContinuousEffect>,
+684:    /// One-shot prevention shields (CR 615), in creation order.
+686:    pub shields: Vec<crate::layer::DamageShield>,
+863:        if let Some(pending) = &self.pending {
+866:                    reason: "a pending choice cannot coexist with a priority holder (CR 608.2d)"
+876:            } = pending
+884:            let owner = pending.player();
+888:                        "pending choice belongs to eliminated/out-of-range seat P{owner}"
+897:            } = pending
+901:                        reason: "APNAP pending player is not the first remaining seat".to_string(),
+991:                let Some(resolving) = self.resolving else {
+993:                        reason: "APNAP queue is not bound to a resolving spell".to_string(),
+996:                let Some(source) = self.objects.get(&resolving) else {
+998:                        reason: format!("APNAP queue source object {resolving} is missing"),
+1002:                    spec.effects
+1011:                            top.object == resolving
+1019:                        provenance.source == resolving
+1020:                            && !self.stack.iter().any(|item| item.object == resolving)
+1024:                                    && spec.effects.get(provenance.cursor as usize - 1)
+1042:                            "APNAP queue source/cursor/provenance is not a resolving Crack the Earth effect"
+1162:            match &self.pending {
+1173:                            reason: format!("mulligan pending P{player} is not the next declarer"),
+1249:                                "bottom pending P{player} is not the next bottom choice"
+1280:                        reason: "mulligan state without a mulligan/bottom pending choice"
+1286:            self.pending,
+1290:                reason: "mulligan pending choice without mulligan state".to_string(),
+1297:        }) = &self.pending
+1380:        match &self.pending {
+1420:                if top.object != *source || top.cursor != *cursor || self.resolving != Some(*source)
+1431:                        .and_then(|spec| spec.effects.get(index as usize))
+1439:                    || top.targets.as_slice() != [crate::action::Target::Permanent(*object)]
+1483:                            || self.resolving.is_some()
+1499:                            || self.resolving != Some(*source)
+1523:                        let Some(Effect::Draw(n)) = spec.effects.get(index) else {
+1632:        // Cards looked at by a pending scry/surveil are drained from the
+1633:        // library list but remain Library-zone objects held by the pending
+1643:        }) = &self.pending
+1647:                    reason: "pending OrderCard index is outside its viewed cards".to_string(),
+1650:            let Some(resolving) = self.resolving else {
+1652:                    reason: "pending OrderCard has no resolving source".to_string(),
+1657:                    reason: "pending OrderCard has no stack source".to_string(),
+1660:            if top.object != resolving || top.controller != *player || top.cursor == 0 {
+1662:                    reason: "pending OrderCard source/controller/cursor is stale".to_string(),
+1667:                .get(&resolving)
+1671:                    reason: "pending OrderCard source is not a spell".to_string(),
+1675:            let expected_count = match spec.effects.get(executed) {
+1680:                        reason: "pending OrderCard mode does not match its resolving effect"
+1688:                        "pending OrderCard viewed count {} does not match supported {expected_count}-card ordering effect",
+1695:                    reason: "pending OrderCard to_top contains an unanswered/current card"
+1703:                        reason: format!("pending OrderCard repeats viewed object {id}"),
+1730:                                "pending OrderCard object {id} is not a valid library holding owned by P{player}"
+1741:                            "pending OrderCard to_top {id} is duplicate or not among viewed cards"
+2031:            &self.pending,
+2035:            }) if self.resolving == Some(provenance.source)
+2037:        if let Some(resolving) = self.resolving
+2039:            && !self.stack.iter().any(|item| item.object == resolving)
+2042:                reason: format!("resolving object {resolving} is not on the stack"),
+2076:        }) = &self.pending
+2081:                        "pending OrderCard index {index} is outside {} viewed card(s)",
+2089:                        reason: format!("pending OrderCard references missing object {id}"),
+2162:        if let Some(pending) = &self.pending {
+2163:            let owner = pending.player();

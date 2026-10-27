@@ -1,0 +1,27 @@
+2311:Pest Token enters the battlefield under P1
+2312:state-based action: P1 creates Pest Token token (#181)
+2574:Pest Token enters the battlefield under P3
+2575:state-based action: P3 creates Pest Token token (#185)
+2861:Pest Token enters the battlefield under P1
+2862:state-based action: P1 creates Pest Token token (#198)
+3025:Pest Token enters the battlefield under P2
+3026:state-based action: P2 creates Pest Token token (#201)
+3272:Beast Token enters the battlefield under P0
+3273:state-based action: P0 creates Beast Token token (#205)
+3497:P1 attacks with Professor of Zoomancy, Professor of Zoomancy, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Pest Token, Goblin Token
+3517:4 damage to Beast Token (#205)
+3518:4 combat damage to Beast Token
+3608:Beast Token is put into a graveyard
+3609:state-based action: token Beast Token is put into the graveyard and will cease to exist (CR 111.7)
+3612:state-based action: Beast Token token ceases to exist (CR 111.7)
+3705:P2 attacks with Professor of Zoomancy, Goblin Token, Pest Token
+3818:P3 attacks with Professor of Zoomancy, Goblin Instigator, Pest Token, Goblin Token, Goblin Token, Goblin Token
+4068:P1 attacks with Sazh's Chocobo, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Pest Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token
+4604:P1 attacks with Sazh's Chocobo, Rampaging Baloths, Goblin Instigator, Goblin Instigator, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Pest Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token
+4623:1 damage to Pest Token (#185)
+4624:1 combat damage to Pest Token
+4673:1 damage to Pest Token (#181)
+4674:1 combat damage to Pest Token
+4983:Pest Token is put into a graveyard
+4984:state-based action: token Pest Token is put into the graveyard and will cease to exist (CR 111.7)
+5010:state-based action: Pest Token token ceases to exist (CR 111.7)

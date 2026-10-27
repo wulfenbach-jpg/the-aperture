@@ -1,0 +1,22 @@
+   Compiling aperture-core v0.1.0 (C:\AI\r297a\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.31s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 13 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+printings_exit=0

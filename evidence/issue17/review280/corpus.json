@@ -1,0 +1,85 @@
+{
+  "catalog": 143,
+  "union": 454,
+  "supported": 126,
+  "missing": 328,
+  "certified_lists": 1,
+  "desired_lists": 8,
+  "lists": [
+    {
+      "id": "isamaru-white-aggro",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 3,
+      "missing_here": 55
+    },
+    {
+      "id": "jasmine-vanilla-stompy",
+      "status": "certified",
+      "library_cards": 99,
+      "nonland_names": 59,
+      "supported_here": 59,
+      "missing_here": 0
+    },
+    {
+      "id": "talrand-draw-go",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 7,
+      "missing_here": 51
+    },
+    {
+      "id": "krenko-goblin-tokens",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 10,
+      "missing_here": 48
+    },
+    {
+      "id": "ayula-bear-counters",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 36,
+      "missing_here": 22
+    },
+    {
+      "id": "elas-sacrifice",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 6,
+      "missing_here": 52
+    },
+    {
+      "id": "tatyova-landfall",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 6,
+      "missing_here": 52
+    },
+    {
+      "id": "zada-spells",
+      "status": "planned",
+      "library_cards": 99,
+      "nonland_names": 58,
+      "supported_here": 5,
+      "missing_here": 53
+    }
+  ],
+  "per_list_missing": [
+    55,
+    0,
+    51,
+    48,
+    22,
+    52,
+    52,
+    53
+  ],
+  "problems": []
+}

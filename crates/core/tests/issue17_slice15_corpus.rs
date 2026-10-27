@@ -134,7 +134,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // the Fierce, so both numbers move together by one each time. Slice 32
     // registers Kamahl's Summons, which closes one more. Slice 33 registers
     // Beorn's Hospitality, so both numbers move together by one again. Slice 35
-    // registers Words of Wilding, which closes one more.
-    assert_eq!(missing.len(), 15, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 150, "the compiled pool");
+    // registers Words of Wilding, which closes one more, and slice 37 registers
+    // Druid's Familiar, which closes one more again.
+    assert_eq!(missing.len(), 14, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 151, "the compiled pool");
 }

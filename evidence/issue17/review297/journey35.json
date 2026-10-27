@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Jasmine Boreal",
+      "seat": 0
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 1
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 2
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 13,
+    "ability_activations": 10,
+    "attacks": 21,
+    "blocks": 3,
+    "casts": 21,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 66,
+    "events": 3564,
+    "triggered_abilities": 3
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1360
+  },
+  "final_digest": "59f8bf20176824c406e53f4f963819d00971e1a2dfcc567c1d18bbb07975e9eb",
+  "first_player": 2,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 150,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1360,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-slice35",
+      "seat": 0,
+      "source": "decks/package-slice35.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -17,
+      "name": "package-slice35",
+      "seat": 1,
+      "source": "decks/package-slice35.txt"
+    },
+    {
+      "cards": 40,
+      "library": 23,
+      "life": 3,
+      "name": "package-slice35",
+      "seat": 2,
+      "source": "decks/package-slice35.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -15,
+      "name": "package-slice35",
+      "seat": 3,
+      "source": "decks/package-slice35.txt"
+    }
+  ],
+  "seed": 3535,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1360,
+  "truncated": null,
+  "turns": 32,
+  "winner": 2,
+  "winner_label": "P2"
+}

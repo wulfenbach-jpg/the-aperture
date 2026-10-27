@@ -1,0 +1,50 @@
+234-    /// Entered object captured by a non-target "it" trigger. Never a target and
+235-    /// never retargeted; dangling after a battlefield departure.
+236-    #[serde(default, skip_serializing_if = "Option::is_none")]
+237:    pub affected: Option<ObjectId>,
+238-}
+239-
+240-/// What one stack item is: a spell card, or an ability whose source never
+--
+592-    pub targets: Vec<crate::action::Target>,
+593-    /// Non-target object captured by the trigger's "it" wording.
+594-    #[serde(default, skip_serializing_if = "Option::is_none")]
+595:    pub affected: Option<ObjectId>,
+596-    /// Index of the next effect to apply during resolution (CR 608.2c).
+597-    pub cursor: u8,
+598-    /// Spell or ability. Ability entries resolve without moving their source
+--
+610-    /// Entered object captured by a non-target "it" trigger. Never a target and
+611-    /// never retargeted; dangling after a battlefield departure.
+612-    #[serde(default, skip_serializing_if = "Option::is_none")]
+613:    pub affected: Option<ObjectId>,
+614-}
+615-
+616-/// `skip_serializing_if` helper for the slice-22 mana-value fields: a zero
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
+})];
+
+const SURRAK_AND_GORECLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
+    event: TriggerEvent::AnotherCreatureEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::PutCounterAndHasteOnEntered],
+})];
+
+const SURRAK_STATIC: &[StaticAbility] = &[StaticAbility::OtherControlledCreaturesHaveTrample {
+    text: "Other creatures you control have trample.",
+}];
+                format!("put {n} +1/+1 counter(s) on the target creature")
+            }
+            Effect::FightTargets => {
+                "target Bear you control fights target creature you don't control".to_string()
+            }
+            Effect::RegenerateSource => "regenerate this creature".to_string(),
+            Effect::PutCounterAndHasteOnEntered => {
+                "put a +1/+1 counter on it and it gains haste".to_string()
+            }
+            Effect::LookTopTakeOrBottom => {
+                "look at the top card; take a creature/planeswalker or put it on the bottom"

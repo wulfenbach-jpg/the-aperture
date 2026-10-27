@@ -1,0 +1,33 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running tests\issue17_slice20.rs (target\debug\deps\issue17_slice20-46bbc65ed5d2db0f.exe)
+
+running 9 tests
+test vivien_grizzly_is_sourced_and_supported ... ok
+test insufficient_mana_never_offers_the_paid_ability ... ok
+test pending_rejects_wrong_seat_and_wrong_action_without_mutation ... ok
+test decline_puts_the_card_on_the_bottom_without_revealing_it ... ok
+test empty_library_look_is_not_a_draw_or_loss ... ok
+test ineligible_top_card_requires_private_bottom_acknowledgement ... ok
+test take_reveals_only_the_chosen_card_and_puts_it_into_hand ... ok
+test save_reload_mid_choice_finishes_identically ... ok
+test two_paid_activations_save_at_top_pending_and_both_resolve_once ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice20_privacy.rs (target\debug\deps\issue17_slice20_privacy-168f73ceea44e552.exe)
+
+running 1 test
+test opponents_cannot_distinguish_private_top_card_eligibility ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\projection.rs (target\debug\deps\projection-edb895b69cc5db9b.exe)
+
+running 4 tests
+test log_rendering_masks_the_opponents_draws ... ok
+test projection_carries_the_decision_identity_and_legal_actions ... ok
+test a_scry_owners_view_shows_the_looked_at_card_and_the_other_seat_does_not ... ok
+test libraries_and_the_opponent_hand_are_not_projected ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

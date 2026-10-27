@@ -1,0 +1,148 @@
+THE APERTURE supported pool — 134 cards (rules revision 2026-09-25)
+practice profile: 1v1, 20 life, 40-card decks, London mulligan. Explicit command-zone profiles: command-zone-practice-20 and bounded commander-combat-practice-40 (40 starting life, commander combat-damage ledger, CR 903.10a 21-damage loss, and Fog full combat prevention this turn; partial prevention/redirection NOT implemented). Commander format: NOT implemented.
+
+Island           —      Land                ({T}: Add {U}.)
+Mountain         —      Land                ({T}: Add {R}.)
+Forest           —      Land                ({T}: Add {G}.)
+Grizzly Bears    {1}{G} Creature       2/2  
+Runeclaw Bear    {1}{G} Creature       2/2  
+Centaur Courser  {2}{G} Creature       3/3  
+Craw Wurm        {4}{G}{G} Creature       6/4  
+Hill Giant       {3}{R} Creature       3/3  
+Giant Growth     {G}    Instant             Target creature gets +3/+3 until end of turn.
+Shock            {R}    Instant             Shock deals 2 damage to any target.
+Lightning Strike {1}{R} Instant             Lightning Strike deals 3 damage to any target.
+Counterspell     {U}{U} Instant             Counter target spell.
+Divination       {2}{U} Sorcery             Draw two cards.
+Opt              {U}    Instant             Scry 1. Draw a card.
+Consider         {U}    Instant             Surveil 1. Draw a card.
+Crack the Earth  {R}    Sorcery             Each player sacrifices a permanent of their choice.
+Plains           —      Land                ({T}: Add {W}.)
+Isamaru, Hound of Konda {W}    Creature       2/2  
+Unsummon         {U}    Instant             Return target creature to its owner's hand.
+Time Ebb         {2}{U} Sorcery             Put target creature on top of its owner's library.
+Swords to Plowshares {W}    Instant             Exile target creature. Its controller gains life equal to its power.
+Fog              {G}    Instant             Prevent all combat damage that would be dealt this turn.
+Prodigal Sorcerer {2}{U} Creature       1/1  {T}: Prodigal Sorcerer deals 1 damage to any target.
+Rootwalla        {2}{G} Creature       2/2  {1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+Brindle Boar     {2}{G} Creature       2/2  Sacrifice Brindle Boar: You gain 4 life.
+Elvish Visionary {1}{G} Creature       1/1  When Elvish Visionary enters the battlefield, draw a card.
+Festering Goblin {B}    Creature       1/1  When Festering Goblin dies, target creature gets -1/-1 until end of turn.
+Oculus           {1}{U} Creature       1/1  When Oculus dies, you may draw a card.
+Mending Hands    {W}    Instant             Prevent the next 4 damage that would be dealt to any target this turn.
+Angrath's Marauders {5}{R}{R} Creature       4/4  If a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.
+Wight of Precinct Six {1}{B} Creature       1/1  This creature gets +1/+1 for each creature card in your opponents' graveyards.
+Soul's Attendant {W}    Creature       1/1  Whenever another creature enters, you may gain 1 life.
+Razorclaw Bear   {2}{G}{G} Creature       3/3  Whenever this creature becomes blocked, it gets +2/+2 until end of turn.
+Volley Veteran   {3}{R} Creature       4/2  When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.
+Dramatic Reversal {1}{U} Instant             Untap all nonland permanents you control.
+Goblin War Strike {R}    Sorcery             Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.
+Sazh's Chocobo   {G}    Creature       0/1  Landfall — Whenever a land you control enters, put a +1/+1 counter on this creature.
+Rampaging Baloths {4}{G}{G} Creature       6/6  Trample
+Landfall — Whenever a land you control enters, create a 4/4 green Beast creature token.
+Professor of Zoomancy {3}{G} Creature       4/3  When this creature enters, create a 1/1 black and green Pest creature token with "When this token dies, you gain 1 life."
+Arcane Signet    {2}    Artifact            {T}: Add one mana of any color in your commander's color identity.
+Fellwar Stone    {2}    Artifact            {T}: Add one mana of any color that a land an opponent controls could produce.
+Friendly Teddy   {2}    Artifact Creature 2/2  When this creature dies, each player draws a card.
+Ulvenwald Bear   {2}{G} Creature       2/2  Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.
+Caller of the Claw {2}{G} Creature       2/2  Flash
+When this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.
+Commander's Sphere {3}    Artifact            {T}: Add one mana of any color in your commander's color identity.
+Sacrifice this artifact: Draw a card.
+Werebear         {1}{G} Creature       1/1  {T}: Add {G}.
+Threshold — This creature gets +3/+3 as long as there are seven or more cards in your graveyard.
+Sol Ring         {1}    Artifact            {T}: Add {C}{C}.
+Mind Stone       {2}    Artifact            {T}: Add {C}.
+{1}, {T}, Sacrifice this artifact: Draw a card.
+Hedron Archive   {4}    Artifact            {T}: Add {C}{C}.
+{2}, {T}, Sacrifice this artifact: Draw two cards.
+Brightstone Ritual {R}    Instant             Add {R} for each Goblin on the battlefield.
+Mana Geyser      {3}{R}{R} Sorcery             Add {R} for each tapped land your opponents control.
+Rite of Flame    {R}    Sorcery             Add {R}{R}, then add {R} for each card named Rite of Flame in each graveyard.
+Swamp            —      Land                ({T}: Add {B}.)
+Lightning Bolt   {R}    Instant             Lightning Bolt deals 3 damage to any target.
+Forest Bear      {1}{G} Creature       2/2  
+Striped Bears    {3}{G} Creature       2/2  When this creature enters, draw a card.
+Guttersnipe      {2}{R} Creature       2/2  Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent.
+Tatyova, Benthic Druid {3}{G}{U} Creature       3/3  Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+Jaddi Offshoot   {G}    Creature       0/3  Defender
+Landfall — Whenever a land you control enters, you gain 1 life.
+Talrand, Sky Summoner {2}{U}{U} Creature       2/2  Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+Krenko, Mob Boss {2}{R}{R} Creature       3/3  {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+Dragon Fodder    {1}{R} Sorcery             Create two 1/1 red Goblin creature tokens.
+Krenko's Command {1}{R} Sorcery             Create two 1/1 red Goblin creature tokens.
+Hordeling Outburst {1}{R}{R} Sorcery             Create three 1/1 red Goblin creature tokens.
+Goblin Instigator {1}{R} Creature       1/1  When this creature enters, create a 1/1 red Goblin creature token.
+Beetleback Chief {2}{R}{R} Creature       2/2  When this creature enters, create two 1/1 red Goblin creature tokens.
+Alaborn Trooper  {2}{W} Creature       2/3  
+Armored Warhorse {W}{W} Creature       2/3  
+Bastion Enforcer {2}{W} Creature       3/2  
+Blade of the Sixth Pride {1}{W} Creature       3/1  
+Devoted Hero     {W}    Creature       1/2  
+Eager Cadet      {W}    Creature       1/1  
+Elite Vanguard   {W}    Creature       2/1  
+Glory Seeker     {1}{W} Creature       2/2  
+Indomitable Ancients {2}{W}{W} Creature       2/10 
+Knight Errant    {1}{W} Creature       2/2  
+Looming Altisaur {3}{W} Creature       1/7  
+Loxodon Line Breaker {2}{W} Creature       3/2  
+Oreskos Swiftclaw {1}{W} Creature       3/1  
+Pearled Unicorn  {2}{W} Creature       2/2  
+Pillarfield Ox   {3}{W} Creature       2/4  
+Raptor Companion {1}{W} Creature       3/1  
+Savannah Lions   {W}    Creature       2/1  
+Siege Mastodon   {4}{W} Creature       3/5  
+Silent Artisan   {3}{W}{W} Creature       3/5  
+Silvercoat Lion  {1}{W} Creature       2/2  
+Staunch Shieldmate {W}    Creature       1/3  
+Valiant Guard    {W}    Creature       0/3  
+Yoked Ox         {W}    Creature       0/4  
+Alpha Tyrranax   {4}{G}{G} Creature       6/5  
+Alpine Grizzly   {2}{G} Creature       4/2  
+Axebane Beast    {3}{G} Creature       3/4  
+Balduvian Bears  {1}{G} Creature       2/2  
+Bear Cub         {1}{G} Creature       2/2  
+Blanchwood Treefolk {4}{G} Creature       4/5  
+Cylian Elf       {1}{G} Creature       2/2  
+Durkwood Boars   {4}{G} Creature       4/4  
+Enormous Baloth  {6}{G} Creature       7/7  
+Feral Krushok    {4}{G} Creature       5/4  
+Golden Bear      {3}{G} Creature       4/3  
+Hollowhenge Beast {3}{G}{G} Creature       5/5  
+Kalonian Tusker  {G}{G} Creature       3/3  
+Nessian Courser  {2}{G} Creature       3/3  
+Norwood Ranger   {G}    Creature       1/2  
+Swordwise Centaur {G}{G} Creature       3/2  
+Terrain Elemental {1}{G} Creature       3/2  
+Trained Armodon  {1}{G}{G} Creature       3/3  
+Trained Jackal   {G}    Creature       1/2  
+Vastwood Gorger  {5}{G} Creature       5/6  
+Willow Elf       {G}    Creature       1/1  
+Armored Wolf-Rider {3}{G}{W} Creature       4/6  
+Grizzled Leotau  {G}{W} Creature       1/5  
+Watchwolf        {G}{W} Creature       3/3  
+Jasmine Boreal   {3}{G}{W} Creature       4/5  
+Ordinary Bear    {3}{G} Creature       4/5  
+Ashcoat Bear     {1}{G} Creature       2/2  Flash (You may cast this spell any time you could cast an instant.)
+Owlbear          {3}{G}{G} Creature       4/4  Trample
+Keen Senses — When this creature enters, draw a card.
+Soul Warden      {W}    Creature       1/1  Whenever another creature enters, you gain 1 life.
+Stitcher's Supplier {B}    Creature       1/1  When this creature enters or dies, mill three cards. (Put the top three cards of your library into your graveyard.)
+Ruin Crab        {U}    Creature       0/3  Landfall — Whenever a land you control enters, each opponent mills three cards. (To mill a card, a player puts the top card of their library into their graveyard.)
+Negate           {1}{U} Instant             Counter target noncreature spell.
+Preordain        {U}    Sorcery             Scry 2, then draw a card. (To scry 2, look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)
+Pyretic Ritual   {1}{R} Instant             Add {R}{R}{R}.
+Seething Song    {2}{R} Instant             Add {R}{R}{R}{R}{R}.
+Blood Artist     {1}{B} Creature       0/1  Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.
+Zulaport Cutthroat {1}{B} Creature       1/1  Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.
+Hedron Crab      {U}    Creature       0/2  Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)
+Pale Bears       {2}{G} Creature       2/2  Islandwalk (This creature can't be blocked as long as defending player controls an Island.)
+River Bear       {3}{G} Creature       3/3  Islandwalk (This creature can't be blocked as long as defending player controls an Island.)
+Ayula's Influence {G}{G}{G} Enchantment         Discard a land card: Create a 2/2 green Bear creature token.
+Bearscape        {1}{G}{G} Enchantment         {1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.
+Mother Bear      {1}{G} Creature       2/2  {3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.
+Fade from History {2}{G}{G} Sorcery             Each player who controls an artifact or enchantment creates a 2/2 green Bear creature token. Then destroy all artifacts and enchantments.
+Little Bear      {2}{G} Creature       3/2  Flash
+When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+
+not implemented (refused at import): static abilities, replacement effects, tokens, counters in the rules layer, milling, tutoring, multi-face cards, any card outside this 28-card pool; partial prevention and redirection are not modelled. Activated and triggered abilities are modelled only for the cards whose typed abilities the engine implements.

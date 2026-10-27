@@ -1,0 +1,59 @@
+            .saturating_add(self.colorless)
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.total() == 0
+    }
+
+    /// Deterministic render, e.g. `{U}{U}`.
+    pub fn render(&self) -> String {
+        let mut s = String::new();
+        for (color, n) in [
+            (ManaColor::Colorless, self.colorless),
+            (ManaColor::White, self.white),
+            (ManaColor::Blue, self.blue),
+            (ManaColor::Black, self.black),
+            (ManaColor::Red, self.red),
+            (ManaColor::Green, self.green),
+        ] {
+            for _ in 0..n {
+                s.push_str(color.symbol());
+            }
+        }
+        if s.is_empty() {
+            "(empty)".to_string()
+        } else {
+            s
+        }
+    }
+}
+
+/// Mana available without tapping anything beyond what is listed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Sources {
+153:fn rite_of_flame_counts_base_and_all_graveyard_copies() {
+154-    let mut game = fixture(104)
+155-        .hand(P0, &[card("Rite of Flame")])
+156-        .battlefield(P0, &[CardId::Mountain])
+157-        .main(P0, Step::PrecombatMain)
+158-        .build();
+159-    // Two Rite of Flame cards already in graveyards before resolution.
+160-    let first = add_permanent(&mut game, P0, card("Rite of Flame"), false);
+161-    let second = add_permanent(&mut game, P1, card("Rite of Flame"), false);
+162-    game.state.players[P0 as usize]
+163-        .graveyard
+164-        .extend([first, second]);
+165-    for id in game.state.players[P0 as usize].graveyard.clone() {
+166-        game.state.objects.get_mut(&id).unwrap().zone = Zone::Graveyard;
+167-    }
+168-    let spell = hand_card(&game, P0, card("Rite of Flame"));
+169-    submit_ok(
+170-        &mut game,
+171-        P0,
+172-        Action::CastSpell {
+173-            card: spell,
+174-            targets: Vec::new(),
+175-        },
+176-    );
+177-    resolve_all(&mut game);
+178-    // 2 base + 1 for each of two graveyard copies = 4.

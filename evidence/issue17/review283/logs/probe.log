@@ -1,0 +1,20 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling rev283-probe v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\review283\probe)
+    Finished `release` profile [optimized] target(s) in 27.82s
+     Running `target\release\rev283-probe.exe`
+[PASS] own_turn_pt: power/toughness = (4, 2)
+[PASS] own_turn_subtype: bear=true human=false
+[PASS] no_effect_created: effects=0
+[PASS] opp_turn_pt: power/toughness = (2, 4)
+[PASS] opp_turn_subtype: bear=false human=true
+[PASS] two_druids_per_seat: P0's (2, 4) (expect 2/4), P1's (4, 2) (expect 4/2)
+[PASS] two_druids_subtype: P0 bear=false P1 bear=true
+[PASS] pump_on_opp_turn: 2/4 + 3/3 = (5, 7)
+[PASS] base_back_on_own_turn: after the pump expired: (4, 2)
+[PASS] lethal_on_own_turn: zone after Shock on the 4/2 form = Some(Graveyard)
+[PASS] survives_on_opp_turn: zone=Some(Battlefield) damage=Some(2)
+[PASS] bounce_and_replay: bounced=true recast power/toughness=(4, 2)
+[PASS] save_keeps_bear_form: loaded power/toughness = (4, 2)
+[PASS] save_reverts_next_turn: after loading and ending the turn: (2, 4)
+
+ALL PROBES PASSED

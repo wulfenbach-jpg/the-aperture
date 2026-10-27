@@ -1,0 +1,29 @@
+{
+  "head": "80fff7357c31ebaf54d4c0f3ca8907e91dbccce7",
+  "retrieved_at": "2026-10-27T10:42:10.826417+00:00",
+  "total": 10,
+  "states": {
+    "completed:success": 10
+  },
+  "all_keyed_to_head": true,
+  "required_checks": [
+    {
+      "context": "rust (ubuntu-latest)",
+      "app_id": 15368
+    },
+    {
+      "context": "rust (windows-latest)",
+      "app_id": 15368
+    },
+    {
+      "context": "rust (macos-latest)",
+      "app_id": 15368
+    },
+    {
+      "context": "board and roadmap",
+      "app_id": 15368
+    }
+  ],
+  "required_pass": true,
+  "green": true
+}

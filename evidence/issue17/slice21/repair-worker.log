@@ -1,0 +1,21 @@
+Working...
+**Repair committed: `412f63a`.** Product diff clean; no push/merge/closure.
+
+### Fixed
+1. **Formidable citations** — replaced wrong `702.102a` with **207.2c** (ability word) and **602.1b/602.5** (activation restriction) in engine, checkpoint, and result.
+2. **Journey accounting** — activation total now derived from actual `Event::AbilityActivated`; **25 activations = 25 precise shield-creation events**, 1 actual regeneration. Stale attack-trigger/untap header removed. Driver now explicitly discloses public battlefield/shield bookkeeping only for instrumentation, no hidden zones/opponent hands; submissions remain projected legal actions.
+3. **Threshold/exclusion coverage** — added exactly-7 no-offer → +1 counter to exactly 8 offer, threshold fall after activation still creates shield, zero-toughness death, and Crack the Earth sacrifice without regeneration.
+4. **Legacy behavior** — restored original ObjectId death order and original SBA wording when no regeneration occurs. Prior slice20 replay verified with release CLI: exit 0, digest **`72cd69fb1143` matched**.
+5. **Persisted gates** — command-owned exits recorded in `evidence/issue17/slice21/gates.log`.
+
+### Verification
+- `issue17_slice21`: **8 passed**
+- cleanup unit: **3 passed**
+- card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43, replay_digest 6
+- fmt, workspace clippy `-D warnings`, release CLI: all exit 0
+- Journal: 4 seats/40 life/seed 1919, terminal P3, 1906 decisions, 45 turns, Dragon-Scarred Bear cast 7, activated 25, shields 25, regeneration 1; replay matched and save round-tripped. Digest `0d20c759…6520`.
+
+### Disclosures
+- Formidable remains a bounded activation-time card check, not a generic keyword framework.
+- AI deltas are mechanical only: `crates/ai/src/search.rs:727`, `crates/ai/tests/common.rs:83`; no policy/search change.
+- No full workspace matrix rerun. Full #17 unfinished, 1 of 8 certified; Ayula 27 missing.

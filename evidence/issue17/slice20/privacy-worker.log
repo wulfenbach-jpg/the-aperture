@@ -1,0 +1,25 @@
+Working...
+**Privacy repair committed: `41d55ee` on base `78dea97`.** Previous candidate approval remains superseded pending native review.
+
+### Fix
+`crates/core/src/view.rs` now filters `Pending::TopCardChoice` to its owner exactly like `ApnapSacrifice`:
+- Opponents receive a neutral pending shape and identical masked digest for eligible vs ineligible hidden top cards.
+- Owner still receives correct `pending_viewed` identity, pending kind, and take/bottom options.
+- No engine/card/UI/AI/search/config changes.
+
+Native independent RED retained: `evidence/issue17/slice20/native-eligibility-privacy-red.log`. Probe preserved as permanent regression `crates/core/tests/issue17_slice20_privacy.rs`.
+
+### Command-owned results
+- privacy regression: **1 passed**
+- `issue17_slice20`: **9 passed**
+- `projection`: **4 passed**
+- `replay_digest`: **6 passed**
+- `cargo fmt --all --check`: exit 0
+- workspace clippy `-D warnings`: exit 0
+
+### Journey
+Current package rerun: digest **`72cd69fb1143763fcd8fe1387b9a625c896538bdd389f33958d8705d8c7cdd48` unchanged**, replay matched, 2064 decisions, 46 turns, take 5 / voluntary bottom 5 / mandatory bottom 16.
+
+Verified after commit: `git diff -- crates/core/src/view.rs crates/core/tests/issue17_slice20_privacy.rs` is empty and `git show HEAD:crates/core/src/view.rs` contains the owner-only filter.
+
+Evidence: `evidence/issue17/slice20/PRIVACY-REPAIR.md`. No push/merge/closure; histories, backups, and operational prompts untouched. Original contract remains unfinished, **1 of 8 certified**.

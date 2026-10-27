@@ -1,0 +1,178 @@
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "cdfc32e",
+  "commit": "slice21 local head in final receipt",
+  "card": {
+    "name": "Dragon-Scarred Bear",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Bear",
+    "power": "3",
+    "toughness": "2",
+    "oracle_id": "2f6f49a4-f2ea-4147-a6d3-69cf875c302e",
+    "scryfall_id": "689a6390-894a-4d31-87c2-f9cec3b187a7",
+    "printing": "dtk 183",
+    "retrieved_at": "2026-10-27T04:44:50.249896+00:00",
+    "source": "fixtures/starter-corpus/slice21-sourced.json"
+  },
+  "counts": {
+    "catalog": 138,
+    "union": 459,
+    "supported": 126,
+    "missing": 333,
+    "ayula_missing": 27
+  },
+  "red": "issue17_slice21 dragon_scarred_bear_is_sourced_and_supported failed before implementation",
+  "focused": {
+    "issue17_slice21": "8 passed",
+    "engine cleanup unit": "passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "replay_digest": "6 passed",
+    "fmt": "exit 0",
+    "clippy": "workspace -D warnings exit 0",
+    "release": "exit 0",
+    "legacy_slice20_replay": "exit 0, digest 72cd69fb1143 matched",
+    "gates_log": "evidence/issue17/slice21/gates.log"
+  },
+  "journey": {
+    "package": "decks/package-slice21.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 1919,
+    "commander": "Jasmine Boreal injected each seat (evidence only)",
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1906,
+    "turns": 45,
+    "snapshot_sha256": "f48f7a9011ac005858ce26b71e9313751694d0773797c815c5158480fb880003",
+    "digest": "0d20c7597183ecb764f7b858dd87ca9aa654e3a4ac6984bada01e9df27926520",
+    "replay_digest_matches": true,
+    "fresh_save_roundtrip": true,
+    "bear_casts": 7,
+    "activations": 25,
+    "shield_created_events": 25,
+    "regeneration_events": 1
+  },
+  "deviations": [
+    "Formidable uses 207.2c plus activation restriction 602.1b/602.5",
+    "AI changes are mechanical shield-field initialization only at search.rs:727 and tests/common.rs:83",
+    "Journey driver reads public battlefield/shield bookkeeping only; submits projected legal actions",
+    "No full workspace matrix rerun"
+  ],
+  "remaining": [
+    "7 of 8 lists uncertified",
+    "Ayula 27 missing, no 100-card certificate",
+    "No push/merge/closure"
+  ]
+}
+----
+            "i": "Feature-missing RED",
+            "timeout": 300
+          },
+          "partialArgs": "{\"command\": \"cat > crates/core/tests/issue17_slice21.rs <<'EOF'\\n//! Slice 21: Dragon-Scarred Bear regeneration.\\nmod common;\\nuse aperture_core::catalog;\\n#[test]\\nfn dragon_scarred_bear_is_sourced_and_supported() {\\n    let card = catalog::by_name(\\\"Dragon-Scarred Bear\\\")\\n        .expect(\\\"Dragon-Scarred Bear must be supported\\\")\\n        .def();\\n    assert_eq!(card.cost, Some(\\\"{2}{G}\\\"));\\n    assert_eq!(card.type_line, \\\"Creature \u2014 Bear\\\");\\n    assert_eq!(card.power, Some(3));\\n    assert_eq!(card.toughness, Some(2));\\n    assert_eq!(card.oracle, \\\"Formidable \u2014 {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.\\\");\\n}\\nEOF\\ncargo test -q -p aperture-core --test issue17_slice21 2>&1 | tail -6\", \"i\": \"Feature-missing RED\", \"timeout\": 300}",
+          "streamIndex": 0,
+          "intent": "Feature-missing RED"
+        }
+      ],
+      "api": "openai-completions",
+      "provider": "opencode-go",
+      "model": "deepseek-v4.1-flash",
+      "usage": {
+        "input": 1154,
+        "output": 624,
+        "cacheRead": 324608,
+        "cacheWrite": 0,
+        "totalTokens": 326386,
+        "reasoningTokens": 339,
+        "cost": {
+          "input": 0.00017309999999999998,
+          "output": 0.0003744,
+          "cacheRead": 0.000973824,
+          "cacheWrite": 0,
+          "total": 0.0015213240000000001
+        }
+      },
+      "stopReason": "toolUse",
+      "timestamp": 1793076446653,
+      "responseId": "1def96242af9dee552937ddca323c975",
+      "duration": 12178.807799999995,
+      "ttft": 8650.824200000003,
+      "credentialId": 2,
+      "completedAt": 1793076458859,
+      "contextSnapshot": {
+        "promptTokens": 325762,
+        "nonMessageTokens": 3505,
+        "compactionEpoch": 0
+      }
+    }
+  },
+  {
+    "type": "custom",
+    "customType": "tool_execution_start",
+    "data": {
+      "toolCallId": "call_00_vemt7gb3uf0aq2t5x8yzec8x",
+      "toolName": "bash",
+      "startedAt": "2026-10-27T04:47:38.862Z",
+      "args": {
+        "command": "cat > crates/core/tests/issue17_slice21.rs <<'EOF'\n//! Slice 21: Dragon-Scarred Bear regeneration.\nmod common;\nuse aperture_core::catalog;\n#[test]\nfn dragon_scarred_bear_is_sourced_and_supported() {\n \u2026"
+      },
+      "intent": "Feature-missing RED"
+    },
+    "id": "812e7331",
+    "parentId": "559db0e2",
+    "timestamp": "2026-10-27T04:47:38.862Z"
+  },
+  {
+    "type": "message",
+    "id": "4999ee8d",
+    "parentId": "812e7331",
+    "timestamp": "2026-10-27T04:47:40.454Z",
+    "message": {
+      "role": "toolResult",
+      "toolCallId": "call_00_vemt7gb3uf0aq2t5x8yzec8x",
+      "toolName": "bash",
+      "content": [
+        {
+          "type": "text",
+          "text": "failures:\n    dragon_scarred_bear_is_sourced_and_supported\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\nerror: test failed, to rerun pass `-p aperture-core --test issue17_slice21`\n\n\nWall time: 1.58 seconds"
+        }
+      ],
+      "details": {
+        "timeoutSeconds": 300,
+        "wallTimeMs": 1579.1285999999964
+      },
+      "isError": false,
+      "timestamp": 1793076460447
+    }
+  }
+]
+----
+evidence/issue17/slice21/repair-worker.log:5:1. **Formidable citations** — replaced wrong `702.102a` with **207.2c** (ability word) and **602.1b/602.5** (activation restriction) in engine, checkpoint, and result.
+evidence/issue17/slice21/repair-worker.log:6:2. **Journey accounting** — activation total now derived from actual `Event::AbilityActivated`; **25 activations = 25 precise shield-creation events**, 1 actual regeneration. Stale attack-trigger/untap header removed. Driver now explicitly discloses public battlefield/shield bookkeeping only for instrumentation, no hidden zones/opponent hands; submissions remain projected legal actions.
+evidence/issue17/slice21/repair-worker.log:8:4. **Legacy behavior** — restored original ObjectId death order and original SBA wording when no regeneration occurs. Prior slice20 replay verified with release CLI: exit 0, digest **`72cd69fb1143` matched**.
+evidence/issue17/slice21/repair-worker.log:16:- Journal: 4 seats/40 life/seed 1919, terminal P3, 1906 decisions, 45 turns, Dragon-Scarred Bear cast 7, activated 25, shields 25, regeneration 1; replay matched and save round-tripped. Digest `0d20c759…6520`.
+evidence/issue17/slice21/native-gates.log:4:    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+evidence/issue17/slice21/native-gates.log:5:     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+evidence/issue17/slice21/native-gates.log:19:     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+evidence/issue17/slice21/native-gates.log:30:     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+evidence/issue17/slice21/native-gates.log:79:     Running tests\issue17_slice15_corpus.rs (target\debug\deps\issue17_slice15_corpus-2520fcad538eaf2c.exe)
+evidence/issue17/slice21/native-gates.log:94:     Running tests\issue17_slice21.rs (target\debug\deps\issue17_slice21-2b5fe474e2edc982.exe)
+evidence/issue17/slice21/native-gates.log:112:     Running unittests src\lib.rs (target\debug\deps\aperture_core-dd9fe82bd1c89cdf.exe)
+evidence/issue17/slice21/native-gates.log:133:replay seed 1919 — 4 seat(s), 1906 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+evidence/issue17/slice21/native-gates.log:134:  replayed digest 0d20c7597183 | matches recorded | events 4909
+evidence/issue17/slice21/native-gates.log:138:replay seed 1919 — 4 seat(s), 2064 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+evidence/issue17/slice21/native-gates.log:139:  replayed digest 72cd69fb1143 | matches recorded | events 5281
+evidence/issue17/slice21/native-gates.log:147:  isamaru-white-aggro     99 cards  missing= 55  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:148:  jasmine-vanilla-stompy  99 cards  missing=  0  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:149:  talrand-draw-go         99 cards  missing= 51  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:150:  krenko-goblin-tokens    99 cards  missing= 48  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:151:  ayula-bear-counters     99 cards  missing= 27  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:152:  elas-sacrifice          99 cards  missing= 52  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:153:  tatyova-landfall        99 cards  missing= 52  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:154:  zada-spells             99 cards  missing= 53  bogus_missing=[]
+evidence/issue17/slice21/native-gates.log:156:union names            : 459
+evidence/issue17/slice21/native-gates.log:161:AUDIT OK: catalog 138, union 459 = 126 supported + 333 missing

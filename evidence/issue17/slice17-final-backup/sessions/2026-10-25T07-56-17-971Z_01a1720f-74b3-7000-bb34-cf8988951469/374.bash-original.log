@@ -1,0 +1,31 @@
+1867-                    reason: format!(
+1868-                        "object map key {} does not equal object.id {}",
+1869-                        key, object.id
+1870-                    ),
+1871-                });
+1872-            }
+1873-            let listed = list_counts.get(key).copied().unwrap_or(0);
+1874-            let held = held_counts.get(key).copied().unwrap_or(0);
+1875-            let stacked = stack_counts.get(key).copied().unwrap_or(0);
+1876-            let ok = match object.zone {
+1877-                Zone::Battlefield | Zone::Removed => listed == 0 && held == 0 && stacked == 0,
+1878-                Zone::Stack => listed == 0 && held == 0 && stacked == 1,
+1879-                Zone::Library => listed + held == 1 && stacked == 0,
+1880-                Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
+1881-                    listed == 1 && held == 0 && stacked == 0
+1882-                }
+1883-            };
+1884-            if !ok {
+1885-                return Err(EngineError::InvalidState {
+1886-                    reason: format!(
+1887:                        "object {key} in {} has {listed} zone-list and {stacked} stack container entr(ies); exactly one matching container is required",
+1888-                        object.zone.name()
+1889-                    ),
+1890-                });
+1891-            }
+1892-        }
+1893-        if self.objects.keys().any(|id| id.0 >= self.next_object) {
+1894-            return Err(EngineError::InvalidState {
+1895-                reason: format!(
+1896-                    "next_object {} does not exceed every allocated object id",
+1897-                    self.next_object

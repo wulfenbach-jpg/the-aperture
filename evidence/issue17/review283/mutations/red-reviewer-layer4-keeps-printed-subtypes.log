@@ -1,0 +1,33 @@
+# reviewer-layer4-keeps-printed-subtypes
+# command: cargo test -p aperture-core --test issue17_slice28 --locked
+# exit: 101
+# sha256 before 7439a45ca5324f84c520136645a1df42d9a610e0d961fde3bb0b22910b01542a
+# sha256 after restore 7439a45ca5324f84c520136645a1df42d9a610e0d961fde3bb0b22910b01542a
+# restored byte-for-byte: True
+
+
+running 5 tests
+test the_catalog_string_is_the_recorded_printing_and_both_layers_are_typed ... ok
+test a_non_bear_creature_still_gets_no_counter_so_the_check_is_discriminating ... ok
+test it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after ... FAILED
+test the_condition_is_its_controllers_turn_not_seat_zero ... ok
+test the_base_setting_sits_under_layer_7c_and_under_counters ... ok
+
+failures:
+
+---- it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after stdout ----
+
+thread 'it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after' (45224) panicked at crates\core\tests\issue17_slice28.rs:173:5:
+CR 205.3: it loses all other creature types, so it is no longer a Human
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after
+
+test result: FAILED. 4 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.66s
+     Running tests\issue17_slice28.rs (target\debug\deps\issue17_slice28-cfb9f7bf614b3534.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice28`

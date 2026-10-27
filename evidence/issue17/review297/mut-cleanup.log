@@ -1,0 +1,27 @@
+   Compiling aperture-core v0.1.0 (C:\AI\r297a\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.05s
+     Running tests\issue17_slice35.rs (target\debug\deps\issue17_slice35-19903905f8fc3a9a.exe)
+
+running 6 tests
+test the_ability_is_not_offered_without_its_cost ... ok
+test the_replacement_only_applies_to_its_controllers_draws ... ok
+test the_armed_replacement_turns_that_turns_draw_step_into_a_bear ... ok
+test one_armed_replacement_replaces_exactly_one_of_two_draws ... ok
+test two_armed_replacements_replace_both_draws_and_protect_an_empty_library ... ok
+test an_unspent_replacement_ends_with_the_turn ... FAILED
+
+failures:
+
+---- an_unspent_replacement_ends_with_the_turn stdout ----
+
+thread 'an_unspent_replacement_ends_with_the_turn' (43776) panicked at crates\core\tests\issue17_slice35.rs:293:5:
+P0 draws a card on its next turn instead of the expired replacement (0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    an_unspent_replacement_ends_with_the_turn
+
+test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice35`

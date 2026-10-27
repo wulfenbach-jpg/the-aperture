@@ -1,0 +1,34 @@
+{
+  "boost_events": 45,
+  "casts": {
+    "Alpine Grizzly": 3,
+    "Craw Wurm": 5,
+    "Goreclaw, Terror of Qal Sisma": 5,
+    "Grizzly Bears": 5,
+    "Ordinary Bear": 3
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice23.txt",
+  "digest": "e2ccc113bcebfcdbe60e7d0bf875bd88076e3b83961a9476978384aef30d130e",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "goreclaw_trigger_staged": 12,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3495,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "5f933f49cec503bcbebb8d35c4eb3609f13c84d6fe22dcefd82d2dd7c2e71fb7",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1322,
+  "trample_grant_events": 45,
+  "trample_grants_live_at_end": 8,
+  "turns": 32
+}

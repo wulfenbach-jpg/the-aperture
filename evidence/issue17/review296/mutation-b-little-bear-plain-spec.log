@@ -1,0 +1,42 @@
+mutation: mutation-b-little-bear-plain-spec
+file: crates\core\src\ability.rs
+sha256_before: dff6b60d249391be694cc236a4a4d3fb8ffa90d52261f2b727b673ab64a1a839
+restored_ok: True
+cargo_exit: 101
+failed_tests: ['little_bear_keeps_the_printed_another_exclusion']
+
+
+running 12 tests
+test beorns_hospitality_is_sourced_and_supported ... ok
+test little_bear_keeps_the_printed_another_exclusion ... FAILED
+test an_opponents_land_does_not_trigger_it ... ok
+test landfall_without_a_legal_target_is_removed_not_staged ... ok
+test the_animation_is_not_offered_without_its_mana_cost ... ok
+test an_unanimated_hospitality_is_not_its_own_landfall_target ... ok
+test landfall_targets_a_creature_you_control_and_puts_one_counter ... ok
+test an_animated_hospitality_is_its_own_landfall_target ... ok
+test landfall_offers_the_animated_source_alongside_another_creature ... ok
+test a_pump_applies_on_top_of_the_characteristic_defining_value ... ok
+test the_animation_adds_the_bear_type_and_reads_the_land_count_live ... ok
+test the_animation_outlives_cleanup_and_ends_with_the_permanent ... ok
+
+failures:
+
+---- little_bear_keeps_the_printed_another_exclusion stdout ----
+
+thread 'little_bear_keeps_the_printed_another_exclusion' (26328) panicked at crates\core\tests\issue17_slice33.rs:688:5:
+assertion `left == right` failed: the printing says "another", so the source is excluded
+  left: CreatureYouControl
+ right: AnotherCreatureYouControl
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    little_bear_keeps_the_printed_another_exclusion
+
+test result: FAILED. 11 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\r296cand\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.59s
+     Running tests\issue17_slice33.rs (target\debug\deps\issue17_slice33-c01c6e9d985be65a.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice33`

@@ -1,0 +1,28 @@
+Working...
+**Slice 24 committed: `c457e49`.** Product working tree clean; no push/merge/closure.
+
+### Implemented
+**Surrak and Goreclaw** `{4}{G}{G}` 6/5 Legendary Human Bear, exact MOM 337 source.
+- Printed trample plus typed static **other creatures you control have trample**, read by real combat damage assignment.
+- “Another nontoken creature you control enters” captures the entered object as a non-target `affected` identity; no target prompt.
+- Adds exactly one +1/+1 counter and grants `ContinuousKind::GrantsHaste` until cleanup.
+- Haste is honored by attack legality and tap-cost summoning-sickness checks.
+- Battlefield departure prunes queued/stack `affected` references, so a bounced/recast same ObjectId cannot inherit the old trigger buff.
+- Trigger/stack fields are serde-default/skipped; no new GameState field or AI policy change.
+
+### RED retained
+`issue17_slice24` failed `surrak_goreclaw_is_sourced_and_supported` before implementation.
+
+### Focused green
+- `issue17_slice24`: **6 passed** — registration, real offered cast, counter/haste on entered creature, older creature unaffected, cleanup expiry, static trample in real blocked combat, bounce/recast triggers once, midtrigger save/reload parity.
+- card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43, replay_digest 6.
+- fmt check, workspace clippy `-D warnings`, release CLI: exit 0. Receipts: `evidence/issue17/slice24/gates.log`.
+- Fresh audit: **141 catalog / 459 = 129 supported + 330 missing**, Ayula 24, snapshots/certificates unchanged.
+
+### Journey
+Evidence-only masked demonstrator, not product AI: exact 4 seats/40 life, seed 2323, `decks/package-slice24.txt`, Jasmine Boreal injected. Terminal P3, 1602 decisions, 37 turns, Surrak cast 6, 11 entry buff/haste events, 20 blocked trample combat events; replay matched and fresh save round-tripped. Digest `a41bbfd2…c631`; snapshot SHA256 `feb9033b…7455`.
+
+### Disclosed gaps
+- Token/opponent entry filtering is implemented but lacks a separate regression.
+- Source-left Surrak and a tap-cost haste activation are not directly tested; attack haste, cleanup expiry, bounce/recast, and midtrigger save are covered.
+- No full workspace matrix rerun. Full #17 remains unfinished, **1 of 8 certified**.

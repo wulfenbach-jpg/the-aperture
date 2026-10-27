@@ -1,0 +1,41 @@
+4499:    fn queue_another_creature_enters(&mut self, entering: ObjectId) {
+4500-        let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
+4501-            .state
+4502-            .objects
+4503-            .values()
+4504-            .filter(|object| object.zone == Zone::Battlefield && object.id != entering)
+4505-            .filter(|object| {
+4506-                ability::triggers_on(object.card, TriggerEvent::AnotherCreatureEnters)
+4507-                    .next()
+4508-                    .is_some()
+4509-            })
+4510-            .map(|object| (object.id, object.card, object.controller))
+4511-            .collect();
+4512-        for (source, source_card, source_controller) in watchers {
+4513-            self.queue_triggers(
+4514-                source,
+4515-                source_card,
+4516-                source_controller,
+4517-                TriggerEvent::AnotherCreatureEnters,
+4518-            );
+4519-        }
+4520-    }
+4521-
+4522-    fn begin_order(
+4523-        &mut self,
+4524-        player: PlayerId,
+4525-        count: u8,
+4526-        mode: OrderMode,
+4527-        events: &mut Vec<Event>,
+4528-    ) {
+4529-        let available = self.state.player(player).library.len();
+4530-        let take = (count as usize).min(available);
+4531-        if take == 0 {
+4532-            return;
+4533-        }
+4534-        let viewed: Vec<ObjectId> = self.state.players[player as usize]
+1190:        if is_creature {
+1191-            self.queue_another_creature_enters(new_id);
+1192-        }
+1193-    }
+1194-

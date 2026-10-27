@@ -1,0 +1,73 @@
+//! Private top-card eligibility must not change another seat's projection.
+mod common;
+use aperture_core::*;
+use common::*;
+fn waiting(top: CardId) -> Game {
+    let mut b = vec![CardId::ViviensGrizzly];
+    b.extend([CardId::Forest; 8]);
+    let mut g = fixture(2098)
+        .battlefield(P0, &b)
+        .library(P0, &[top, CardId::Forest])
+        .library(P1, &[CardId::Forest; 10])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let source = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == CardId::ViviensGrizzly)
+        .unwrap()
+        .id;
+    let a = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action,Action::ActivateAbility{source:s,..} if s==source))
+        .unwrap()
+        .action;
+    submit_ok(&mut g, P0, a);
+    for _ in 0..16 {
+        if matches!(g.state.pending, Some(Pending::TopCardChoice { .. })) {
+            return g;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    panic!("look pending not reached");
+}
+#[test]
+fn opponents_cannot_distinguish_private_top_card_eligibility() {
+    let eligible = waiting(CardId::GrizzlyBears);
+    let land = waiting(CardId::Forest);
+    assert_ne!(eligible.state, land.state);
+    let a = eligible.view_for(P1, &[]);
+    let b = land.view_for(P1, &[]);
+    assert_eq!(
+        a, b,
+        "private top-card eligibility must not change another seat's projection"
+    );
+}
+----
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.23s
+     Running tests\issue17_slice20_privacy_probe.rs (target\debug\deps\issue17_slice20_privacy_probe-c9c6eb2489b4a5d9.exe)
+
+running 1 test
+test opponents_cannot_distinguish_private_top_card_eligibility ... FAILED
+
+failures:
+
+---- opponents_cannot_distinguish_private_top_card_eligibility stdout ----
+
+thread 'opponents_cannot_distinguish_private_top_card_eligibility' (36748) panicked at crates\core\tests\issue17_slice20_privacy_probe.rs:24:5:
+assertion `left == right` failed: private top-card eligibility must not change another seat's projection
+  left: PlayerView { viewer: 1, viewer_name: "P1", seat_count: 2, opponents: [OpponentView { seat: 0, name: "P0", deck_name: "fixture-P0", eliminated: false, life: 20, hand_count: 0, library_count: 2, battlefield: [CardView { id: ObjectId(1), card: ViviensGrizzly, name: "Vivien's Grizzly", controller: 0, tapped: false, power: Some(2), toughness: Some(3), damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "{3}{G}: Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.", cost: Some("{2}{G}") }, CardView { id: ObjectId(2), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(3), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(4), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(5), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(6), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(7), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(8), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(9), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }], graveyard: [], exile: [], command_zone: [] }], own_hand: [], own_battlefield: [], own_graveyard: [], own_exile: [], own_command_zone: [], revealed: [], commanders: [], commander_damage: [], own_library_count: 10, own_life: 20, own_eliminated: false, own_mana: "(empty)", own_mana_pool: ManaPool { white: 0, blue: 0, black: 0, red: 0, green: 0, colorless: 0 }, own_lands_in_hand: 0, own_mulligans: 0, attackers: [], blockers: [], stack: [StackView { object: ObjectId(1), card: ViviensGrizzly, name: "Vivien's Grizzly", controller: 0, targets: [] }], turn_number: 1, active: 0, step: PrecombatMain, priority: None, pending: Some("P0: reveal the looked-at card and put it into hand, or put it on the bottom"), pending_owner: Some(0), pending_kind: Some(TriggerChoice), pending_index: None, pending_mode: None, pending_viewed: [], legal: [], log: [], outcome: None, digest: "073a5d7f4a86", rules_revision: "2026-09-25" }
+ right: PlayerView { viewer: 1, viewer_name: "P1", seat_count: 2, opponents: [OpponentView { seat: 0, name: "P0", deck_name: "fixture-P0", eliminated: false, life: 20, hand_count: 0, library_count: 2, battlefield: [CardView { id: ObjectId(1), card: ViviensGrizzly, name: "Vivien's Grizzly", controller: 0, tapped: false, power: Some(2), toughness: Some(3), damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "{3}{G}: Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.", cost: Some("{2}{G}") }, CardView { id: ObjectId(2), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(3), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(4), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(5), card: Forest, name: "Forest", controller: 0, tapped: true, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(6), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(7), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(8), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }, CardView { id: ObjectId(9), card: Forest, name: "Forest", controller: 0, tapped: false, power: None, toughness: None, damage: 0, summoning_sick: false, pump_power: 0, pump_toughness: 0, plus_one_counters: 0, counters: [], is_token: false, oracle: "({T}: Add {G}.)", cost: None }], graveyard: [], exile: [], command_zone: [] }], own_hand: [], own_battlefield: [], own_graveyard: [], own_exile: [], own_command_zone: [], revealed: [], commanders: [], commander_damage: [], own_library_count: 10, own_life: 20, own_eliminated: false, own_mana: "(empty)", own_mana_pool: ManaPool { white: 0, blue: 0, black: 0, red: 0, green: 0, colorless: 0 }, own_lands_in_hand: 0, own_mulligans: 0, attackers: [], blockers: [], stack: [StackView { object: ObjectId(1), card: ViviensGrizzly, name: "Vivien's Grizzly", controller: 0, targets: [] }], turn_number: 1, active: 0, step: PrecombatMain, priority: None, pending: Some("P0: put the looked-at card on the bottom"), pending_owner: Some(0), pending_kind: Some(TriggerChoice), pending_index: None, pending_mode: None, pending_viewed: [], legal: [], log: [], outcome: None, digest: "e159053379f1", rules_revision: "2026-09-25" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    opponents_cannot_distinguish_private_top_card_eligibility
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice20_privacy_probe`

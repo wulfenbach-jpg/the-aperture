@@ -1,0 +1,56 @@
+110:fn unsaddled_attack_does_not_grant_and_invalid_saddles_are_refused() {
+111-    let mut g = fixture(3002)
+112-        .battlefield(P0, &[card30("Drover Grizzly"), CardId::GrizzlyBears])
+113-        .library(P0, &[CardId::Forest; 8])
+114-        .library(P1, &[CardId::Forest; 8])
+115-        .main(P0, Step::PrecombatMain)
+116-        .build();
+117-    let mount = battlefield_card(&g, P0, card30("Drover Grizzly"));
+118-    let helper = battlefield_card(&g, P0, CardId::GrizzlyBears);
+119-    let mut log = Vec::new();
+120-    assert!(run_until(
+121-        &mut g,
+122-        &mut log,
+123-        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+124-        64
+125-    ));
+126-    submit_ok(
+127-        &mut g,
+128-        P0,
+129-        Action::DeclareAttackers {
+130-            attackers: vec![mount],
+131-            defender: Some(P1),
+132-        },
+133-    );
+134-    drain(&mut g);
+135-    assert!(
+136-        !g.state
+137-            .effects
+138-            .iter()
+139-            .any(|e| e.kind == ContinuousKind::GrantsTrample)
+140-    );
+141-    let before = g.state.clone();
+142-    let err = g
+143-        .submit_action(
+144-            P0,
+145-            Action::SaddleMount {
+146-                source: mount,
+147-                creatures: vec![mount],
+148-            },
+149-        )
+150-        .expect_err("self cannot be helper");
+151-    assert_eq!(g.state, before);
+152-    assert!(format!("{err:?}").contains("helpers"));
+153-    g.state.objects.get_mut(&helper).unwrap().tapped = true;
+154-    let err = g
+155-        .submit_action(
+156-            P0,
+157-            Action::SaddleMount {
+158-                source: mount,
+159-                creatures: vec![helper],
+160-            },
+161-        )
+162-        .expect_err("tapped helper");
+163-    assert_eq!(g.state, before);
+164-    assert!(format!("{err:?}").contains("helpers"));
+165-}

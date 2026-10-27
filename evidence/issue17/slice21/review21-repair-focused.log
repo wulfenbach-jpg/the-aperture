@@ -1,0 +1,15 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running tests\issue17_slice21.rs (target\debug\deps\issue17_slice21-2b5fe474e2edc982.exe)
+
+running 8 tests
+test formidable_exact_eight_includes_current_power_and_survives_threshold_fall ... ok
+test source_and_offered_cast_activation_and_formidable_refusal ... ok
+test regeneration_removes_a_blocked_attacker_from_combat_without_player_damage ... ok
+test lethal_hit_consumes_shield_taps_and_prevents_death ... ok
+test zero_toughness_and_sacrifice_are_not_regeneration ... ok
+test multiple_shields_are_consumed_one_per_destruction ... ok
+test exile_and_bounce_are_not_destruction_and_do_not_transfer_shields ... ok
+test save_reload_with_live_shield_has_parity ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

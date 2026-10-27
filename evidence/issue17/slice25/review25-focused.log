@@ -1,0 +1,14 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.22s
+     Running tests\issue17_slice25.rs (target\debug\deps\issue17_slice25-7f587d18a697ec4a.exe)
+
+running 7 tests
+test exuberant_wolfbear_is_sourced_and_supported ... ok
+test declining_leaves_human_unchanged ... ok
+test attack_trigger_sets_human_base_to_current_wolfbear_stats_after_counters ... ok
+test source_left_uses_effective_last_known_power_for_base_setting ... ok
+test native_source_departure_uses_real_post_trigger_pump_lki ... ok
+test native_current_source_after_trigger_and_target_pumps_layer_before_cleanup ... ok
+test native_human_target_offer_refuses_nonhuman_opponent_and_wrong_seat_unchanged ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

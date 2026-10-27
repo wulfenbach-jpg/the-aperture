@@ -1,0 +1,91 @@
+{
+ "head": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+ "total": 10,
+ "states": {
+  "completed:success": 10
+ },
+ "all_keyed_to_head": true,
+ "wrong_heads": [],
+ "checks": [
+  {
+   "name": "rust (macos-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "board and roadmap",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "windows package",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "rust (windows-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "rust (macos-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "rust (windows-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "windows package",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  },
+  {
+   "name": "board and roadmap",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "89247d66dd0de8a4923aa6bf3537326ac22d2509",
+   "app": 15368,
+   "required": null
+  }
+ ]
+}

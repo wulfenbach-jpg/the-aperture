@@ -1,0 +1,141 @@
+65:pub struct ManaPool {
+66-    pub white: u8,
+67-    pub blue: u8,
+68-    pub black: u8,
+69-    pub red: u8,
+70-    pub green: u8,
+71-    pub colorless: u8,
+72-}
+73-
+74-impl ManaPool {
+75-    pub fn get(&self, color: ManaColor) -> u8 {
+76-        match color {
+77-            ManaColor::White => self.white,
+78-            ManaColor::Blue => self.blue,
+79-            ManaColor::Black => self.black,
+80-            ManaColor::Red => self.red,
+81-            ManaColor::Green => self.green,
+82-            ManaColor::Colorless => self.colorless,
+83-        }
+84-    }
+85-
+86-    pub fn add(&mut self, color: ManaColor, amount: u8) {
+87-        let slot = match color {
+88-            ManaColor::White => &mut self.white,
+89-            ManaColor::Blue => &mut self.blue,
+90-            ManaColor::Black => &mut self.black,
+91-            ManaColor::Red => &mut self.red,
+92-            ManaColor::Green => &mut self.green,
+93-            ManaColor::Colorless => &mut self.colorless,
+94-        };
+95-        *slot = slot.saturating_add(amount);
+96-    }
+97-
+98-    pub fn take(&mut self, color: ManaColor, amount: u8) -> u8 {
+99-        let slot = match color {
+100-            ManaColor::White => &mut self.white,
+101-            ManaColor::Blue => &mut self.blue,
+102-            ManaColor::Black => &mut self.black,
+103-            ManaColor::Red => &mut self.red,
+104-            ManaColor::Green => &mut self.green,
+105-            ManaColor::Colorless => &mut self.colorless,
+106-        };
+107-        let taken = (*slot).min(amount);
+108-        *slot -= taken;
+109-        taken
+110-    }
+111-
+112-    pub fn total(&self) -> u8 {
+113-        self.white + self.blue + self.black + self.red + self.green + self.colorless
+114-    }
+115-
+116-    pub fn is_empty(&self) -> bool {
+117-        self.total() == 0
+118-    }
+119-
+120-    /// Deterministic render, e.g. `{U}{U}`.
+121-    pub fn render(&self) -> String {
+122-        let mut s = String::new();
+123-        for (color, n) in [
+124-            (ManaColor::Colorless, self.colorless),
+125-            (ManaColor::White, self.white),
+126-            (ManaColor::Blue, self.blue),
+127-            (ManaColor::Black, self.black),
+128-            (ManaColor::Red, self.red),
+129-            (ManaColor::Green, self.green),
+130-        ] {
+131-            for _ in 0..n {
+132-                s.push_str(color.symbol());
+133-            }
+134-        }
+135-        if s.is_empty() {
+107:    ManaAdded {
+108-        player: PlayerId,
+109-        color: ManaColor,
+110-        amount: u8,
+111-        pool_total: u8,
+112-    },
+113-    Scried {
+114-        player: PlayerId,
+115-        count: u8,
+866:    fn apply_payment(&mut self, p: PlayerId, payment: Payment, events: &mut Vec<Event>) {
+867-        self.tap_for(&payment.taps, events);
+868-        self.state.players[p as usize].mana = payment.remaining;
+869-    }
+870-
+871-    fn empty_mana_pools(&mut self, events: &mut Vec<Event>) {
+872-        for p in 0..self.state.seat_count() as PlayerId {
+873-            if !self.state.is_live(p) {
+874-                continue;
+875-            }
+876-            let amount = self.state.player(p).mana.total();
+877-            if amount > 0 {
+878-                self.state.players[p as usize].mana = ManaPool::default();
+879-                events.push(Event::ManaPoolEmptied { player: p, amount });
+880-            }
+881-        }
+882-    }
+883-
+884-    /// Remove an object from its containers without changing its zone identity.
+885-    /// Callers that move a commander then insert it back with `insert_object`,
+886-    /// which allocates a fresh ObjectId (CR 400.7).
+887-    fn detach_object(&mut self, id: ObjectId) -> Option<Object> {
+888-        let object = self.state.objects.remove(&id)?;
+889-        for player in &mut self.state.players {
+890-            player.library.retain(|c| *c != id);
+891-            player.hand.retain(|c| *c != id);
+892-            player.graveyard.retain(|c| *c != id);
+893-            player.exile.retain(|c| *c != id);
+894-            player.command_zone.retain(|c| *c != id);
+895-        }
+896-        // A represented card changing zone leaves the stack in the same move.
+897-        // A spell leaves the stack with its card. An ability does not: its
+898-        // source may change zones (or leave the game) while the ability is
+899-        // still on the stack (CR 603.3, 608.2).
+900-        self.state
+901-            .stack
+902-            .retain(|item| item.object != id || item.entry != StackEntry::Spell);
+903-        if self.state.resolving == Some(id) {
+904-            self.state.resolving = None;
+905-        }
+906-        self.state.turn.attackers.retain(|c| *c != id);
+907-        self.state.turn.blocked.retain(|c| *c != id);
+908-        self.state
+909-            .turn
+910-            .blockers
+911-            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+912-        Some(object)
+913-    }
+914-
+915-    /// Insert an object into `zone`, re-keying commander objects. The stable
+916-    /// commander registry then points at the new object; stale target ids do not
+917-    /// follow (CR 400.7, 903.3).
+918-    fn insert_object(&mut self, mut object: Object, zone: Zone) -> ObjectId {
+919-        let owner = object.owner;
+920-        let commander = object.commander;
+921-        let old_id = object.id;
+922-        let new_id = if commander.is_some() {
+923-            let id = ObjectId(self.state.next_object);
+924-            self.state.next_object += 1;
+925-            object.id = id;
+926-            id

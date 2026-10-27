@@ -1,0 +1,56 @@
+207-    /// owned that was put into their graveyard from the battlefield this turn.
+208-    CreateBearTokensForEachDeathThisTurn,
+209-    /// CR 701.14a: two target creatures deal damage equal to their power to
+210-    /// each other simultaneously. Both must still satisfy the printed
+211-    /// Bear/opponent relation at resolution or no damage is dealt.
+212:    FightTargets,
+213-    /// "It doesn't untap during your next untap step" (Spectral Bears). The
+214-    /// source object is recorded in `GameState::skip_next_untap` and its
+215-    /// controller's next untap step leaves it tapped exactly once.
+216-    SkipNextUntapStep,
+217-}
+--
+289-            }
+290-            Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
+291-            Effect::PutPlusOneCountersOnTarget(n) => {
+292-                format!("put {n} +1/+1 counter(s) on the target creature")
+293-            }
+294:            Effect::FightTargets => {
+295-                "target Bear you control fights target creature you don't control".to_string()
+296-            }
+297-            Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
+298-            Effect::CreateBearTokensForEachDeathThisTurn => {
+299-                "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
+1707:            Action::AnswerTriggerChoice { .. } => match &state.pending {
+1708-                Some(Pending::TriggerChoice { player: p, .. })
+1709-                | Some(Pending::TriggerMode { player: p, .. })
+1710-                    if *p == player =>
+--
+2577:            Action::AnswerTriggerChoice { use_ability } => {
+2578-                self.apply_trigger_choice(player, *use_ability, events)
+2579-            }
+2580-        }
+--
+                _ => Err(EngineError::illegal(
+                    "choose trigger target",
+                    "no triggered ability is waiting for a target choice (CR 603.3d)",
+                )),
+            },
+            Action::AnswerTriggerChoice { .. } => match &state.pending {
+                Some(Pending::TriggerChoice { player: p, .. })
+                | Some(Pending::TriggerMode { player: p, .. })
+                    if *p == player =>
+                {
+                    Ok(())
+                }
+                Some(Pending::TopCardChoice { player: p, can_take, .. })
+                    if *p == player && (!*use_ability || *can_take) =>
+                {
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "trigger choice",
+                    "no optional triggered ability is waiting for its controller (CR 603.5)",
+                )),
+242:pub static CARDS: [CardDef; 136] = [
+grep: /dev/null: The system cannot find the path specified. (os error 3)

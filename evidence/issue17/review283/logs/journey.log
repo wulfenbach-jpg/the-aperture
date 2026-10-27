@@ -1,0 +1,35 @@
+    Finished `release` profile [optimized] target(s) in 0.23s
+     Running `target\release\issue17-slice28-journey.exe`
+{
+  "bear_form_audit": "printed 4/2 on the controller's turn and 2/4 otherwise, asserted after every accepted action",
+  "bear_form_checked_off_turn": 1404,
+  "bear_form_checked_on_own_turn": 636,
+  "casts": {
+    "Centaur Courser": 10,
+    "Circle of the Moon Druid": 9,
+    "Craw Wurm": 8,
+    "Grizzly Bears": 8
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice28.txt",
+  "digest": "48bf3ae58ac38bfb49d193dcb29772ba96cd870c8fe75373727083d86abafaf3",
+  "driver": "evidence-only masked cast-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 5251,
+  "seats": 4,
+  "seed": 2828,
+  "snapshot_sha256": "5d787cb09c80ebd8dffd35a93d10dfc83a008fb714e5b6d23efc23fb6cf86c5b",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2065,
+  "turns": 50
+}
+run_exit=0

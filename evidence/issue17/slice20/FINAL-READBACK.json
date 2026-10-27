@@ -1,0 +1,29 @@
+{
+  "head": "cdfc32e1982758ce0ff5eb6d36f99769c39333ad",
+  "reviewed_code": "41d55ee87bbd1de200b40df92ea06d80aecf9516",
+  "ci_total": 10,
+  "ci_success": 10,
+  "all_keyed_to_head": true,
+  "required_pass": true,
+  "ci_attachment_id": 114,
+  "checkpoint_attachment_id": 112,
+  "review_attachment_id": 113,
+  "attachments_readback_verified": true,
+  "pr_state": "open",
+  "pr_draft": true,
+  "pr_mergeable": true,
+  "pr_mergeable_state": "behind",
+  "product_diff_empty": true,
+  "native_omp_cargo_processes": [],
+  "corpus": {
+    "catalog": 137,
+    "union": 459,
+    "supported": 125,
+    "missing": 334,
+    "certified": 1,
+    "desired": 8,
+    "ayula_missing": 28
+  },
+  "full_issue17_accepted": false,
+  "checked_at": "2026-10-27T04:24:22.391071+00:00"
+}

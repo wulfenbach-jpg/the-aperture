@@ -1,0 +1,21 @@
+Working...
+**Blocking identity repair committed: `f59d29b`.** Reviewed head `d9d2c94` remains **CHANGES_REQUESTED**; no approval claimed. No push/merge/closure.
+
+### Fix
+- Canonical `detach_object` now removes regeneration shields when the object **actually leaves the battlefield**. This ends applicability to that battlefield incarnation; it is not regeneration and does not consume a shield as a destruction replacement.
+- Real same-ObjectId sequence covered: paid ability → Unsummon → resolve ability → no shield → recast the **same card id** → lethal Shock → dies.
+- Exile, sacrifice, and zero-toughness controls now assert the shield is dropped on battlefield departure while the permanent still dies.
+- Native failed probe retained: `evidence/issue17/slice21-review-probe.log`; prior synthetic-new-object test was insufficient and was replaced.
+
+### Verification
+- `issue17_slice21`: **8 passed**, including actual bounce/recast same id.
+- cleanup unit: **3 passed**; card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43, replay_digest 6.
+- `fmt --check`, workspace clippy `-D warnings`, release CLI: all exit 0.
+- Command-owned exits: `evidence/issue17/slice21/identity-repair-gates.log`.
+- Prior slice20 replay: release CLI exit 0, digest **`72cd69fb1143` matched**.
+- Journey rerun: terminal P3, 1906 decisions, 45 turns; digest **`0d20c759…6520` unchanged**; 25 activations = 25 shield creations, 1 regeneration; replay and fresh save matched.
+
+### Evidence
+- `evidence/issue17/slice21/REVIEW21.md` preserved untracked as CHANGES_REQUESTED.
+- Checkpoint/result updated; product diff clean (`git diff -- crates` empty after commit).
+- Full #17 remains unfinished, **1 of 8 certified**.

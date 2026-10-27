@@ -1,0 +1,14 @@
+Working...
+**Assertions strengthened, test-only. Head `e383d9d`.**
+
+Changes in `crates/core/tests/issue17_slice17.rs`:
+- No-death control now finds the entered Ulvenwald on the battlefield and asserts **zero** counters.
+- Positive test places the opposing Runeclaw Bear **before** cast, asserts it appears in the actual `Pending::TriggerTarget` offer, answers with it, and requires the same object to exist with **exactly 2** counters. Removed the `is_none()` escape.
+- New token-only death test enables morbid (2 counters) while the nontoken death count remains **0**.
+
+Verification:
+- `cargo test -q -p aperture-core --test issue17_slice17` → **6 passed**
+- `cargo fmt --all` applied; `cargo fmt --all --check` → exit 0
+- `cargo clippy -q --workspace --all-targets -- -D warnings` → exit 0
+
+Evidence: `evidence/issue17/slice17/ASSERTION-STRENGTHENING.md`. No source changes, no full suite/build/journey rerun, no push.

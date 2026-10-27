@@ -1,0 +1,15 @@
+Working...
+**APPROVED_INCREMENT** at `f59d29be91b77a9f234d268d438f42039915213d` (base `d9d2c94`).
+
+The repair is correct: `detach_object` now drops shields only when an object actually leaves the battlefield, preventing transfer through Unsummon/recast without global id rekeying or a new serialized field. The corrected test recasts the **same card id** and verifies the old shield cannot protect it; exile, sacrifice, and zero-toughness cases also assert the shield is not applied.
+
+**Executed**
+
+- slice21: **8/8 passed**
+- cleanup-expiry unit: **1/1 passed**
+- Slice21 replay: 1906 actions / 4909 events / digest `0d20c7597183` matches
+- Legacy replay: 2064 actions / 5281 events / digest `72cd69fb1143` matches
+- `git diff --check`: exit 0
+- Native `identity-repair-gates.log`: focused, fmt, clippy, release all pass
+
+No blocking finding. No dedicated source-left test exists; the battlefield guard was code-inspected only. Full #17 remains **1/8 certified**, **333 missing**, Ayula **27**. Report: `evidence/issue17/slice21/REVIEW21-REPAIR.md`; prior failed review preserved. No code edits or commits.

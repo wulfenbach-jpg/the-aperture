@@ -1,0 +1,9 @@
+Working...
+**APPROVED_INCREMENT** — no product-source defect in the repaired delta. Written to `evidence/issue17/slice17/REVIEW17.md` (105 lines).
+
+- Exact HEAD: `bfaa7827b5ffe40f9de8926efeed718dac5f6715`; base `6f294cfc7c82fa00ea3344c738f6ea4f96e97dc8`.
+- Executed: focused suite `12 lib / 34 command-zone / 5 slice17 / 6 replay-digest / 2 ordering` — all pass.
+- Independent release-CLI probe: replayed bare `demo-replay.json` (4 seats, 1866 actions, terminal win P3, digest `85fabffc9aa1` matches) and `demo-save.json` (stored/recomputed digest matches; replay reproduces save).
+- Verified: Teddy source-left trigger and serialized `EachPlayer` resume with mid-suspension save/load and later-seat draw; death history reset only at `turn.number` advance and retained across repeated cleanup; Caller owner-vs-controller/token/mill/simultaneous-once semantics; serde-skip compatibility preserving old pinned replay digests; `BearToken` token repair; sourced fixtures/URLs and honest counts.
+- Disclosed limitations: Teddy simultaneous mass-destruction composition is inspected but not separately executed; Ulvenwald test assertions remain permissive and lack a token-only case (`NATIVE-TEST-GAP.md` already tracks this); no Caller-specific instant-timing cast test (shared Ashcoat flash path covers the mechanism). None proves a source defect.
+- No product edits, no push/merge/closure. #17 remains PARTIAL, 1/8 certified, eight-list gate open.

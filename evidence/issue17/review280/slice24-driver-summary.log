@@ -1,0 +1,12 @@
+  "replay_digest_matches": true,
+  "replay_events": 4127,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "feb9033b925198a0eae49b117c858b626e968a4e7691c8e70c7e93bffc4d7455",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1602,
+  "turns": 37
+}
+SLICE24_EXIT=0

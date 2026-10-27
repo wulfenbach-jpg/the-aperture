@@ -1,0 +1,12 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running tests\rules_conformance.rs (target\debug\deps\rules_conformance-668296280b7f54a5.exe)
+
+running 5 tests
+test conformance_manifest_pins_the_engine_rules_revision ... ok
+test cleanup_cases ... ok
+test timing_and_priority_cases ... ok
+test state_based_action_cases ... ok
+test multi_blocker_damage_cases ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

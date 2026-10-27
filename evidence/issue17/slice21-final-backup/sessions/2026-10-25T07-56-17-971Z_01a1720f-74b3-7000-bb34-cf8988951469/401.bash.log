@@ -1,0 +1,162 @@
+{'name': 'Dragon-Scarred Bear', 'id': '689a6390-894a-4d31-87c2-f9cec3b187a7', 'oracle_id': '2f6f49a4-f2ea-4147-a6d3-69cf875c302e', 'set': 'dtk', 'collector_number': '183', 'mana_cost': '{2}{G}', 'type_line': 'Creature — Bear', 'oracle_text': 'Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.', 'power': '3', 'toughness': '2', 'legalities': {'standard': 'not_legal', 'future': 'not_legal', 'historic': 'not_legal', 'timeless': 'not_legal', 'gladiator': 'not_legal', 'pioneer': 'legal', 'modern': 'legal', 'legacy': 'legal', 'pauper': 'legal', 'vintage': 'legal', 'penny': 'legal', 'commander': 'legal', 'oathbreaker': 'legal', 'standardbrawl': 'not_legal', 'brawl': 'not_legal', 'competitivebrawl': 'not_legal', 'alchemy': 'not_legal', 'paupercommander': 'legal', 'duel': 'legal', 'oldschool': 'not_legal', 'premodern': 'not_legal', 'predh': 'not_legal', 'tlr': 'legal'}, 'uri': 'https://api.scryfall.com/cards/689a6390-894a-4d31-87c2-f9cec3b187a7'}
+{
+  "retrieved_at": "2026-10-27T04:44:50.249896+00:00",
+  "url": "https://api.scryfall.com/cards/689a6390-894a-4d31-87c2-f9cec3b187a7",
+  "source": {
+    "object": "card",
+    "id": "689a6390-894a-4d31-87c2-f9cec3b187a7",
+    "oracle_id": "2f6f49a4-f2ea-4147-a6d3-69cf875c302e",
+    "multiverse_ids": [
+      394553
+    ],
+    "mtgo_id": 56308,
+    "mtgo_foil_id": 56309,
+    "tcgplayer_id": 96729,
+    "cardmarket_id": 273428,
+    "name": "Dragon-Scarred Bear",
+    "lang": "en",
+    "released_at": "2015-03-27",
+    "uri": "https://api.scryfall.com/cards/689a6390-894a-4d31-87c2-f9cec3b187a7",
+    "scryfall_uri": "https://scryfall.com/card/dtk/183/dragon-scarred-bear?utm_source=api",
+    "layout": "normal",
+    "highres_image": true,
+    "image_status": "highres_scan",
+    "image_updated_at": "2026-07-13T10:29:40Z",
+    "image_uris": {
+      "small": "https://cards.scryfall.io/small/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.jpg?1783938580",
+      "normal": "https://cards.scryfall.io/normal/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.jpg?1783938580",
+      "large": "https://cards.scryfall.io/large/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.jpg?1783938580",
+      "png": "https://cards.scryfall.io/png/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.png?1783938580",
+      "art_crop": "https://cards.scryfall.io/art_crop/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.jpg?1783938580",
+      "border_crop": "https://cards.scryfall.io/border_crop/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.jpg?1783938580",
+      "thumb": "https://cards.scryfall.io/thumb/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.webp?1783938580",
+      "grid": "https://cards.scryfall.io/grid/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.webp?1783938580",
+      "display": "https://cards.scryfall.io/display/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.webp?1783938580",
+      "art": "https://cards.scryfall.io/art/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.webp?1783938580",
+      "crop": "https://cards.scryfall.io/crop/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.webp?1783938580",
+      "jpeg": "https://cards.scryfall.io/normal/front/6/8/689a6390-894a-4d31-87c2-f9cec3b187a7.jpg?1783938580"
+    },
+    "mana_cost": "{2}{G}",
+    "cmc": 3.0,
+    "type_line": "Creature \u2014 Bear",
+    "oracle_text": "Formidable \u2014 {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+    "power": "3",
+    "toughness": "2",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Regenerate",
+      "Formidable"
+    ],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "not_legal",
+      "timeless": "not_legal",
+      "gladiator": "not_legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "not_legal",
+      "competitivebrawl": "not_legal",
+      "alchemy": "not_legal",
+      "paupercommander": "legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "legal"
+    },
+    "games": [
+      "paper",
+      "mtgo"
+    ],
+    "reserved": false,
+    "game_changer": false,
+    "foil": true,
+    "nonfoil": true,
+    "finishes": [
+      "nonfoil",
+      "foil"
+    ],
+    "oversized": false,
+    "promo": false,
+    "reprint": false,
+    "variation": false,
+    "set_id": "7e72625f-f320-4552-a719-d11e2f1853bd",
+    "set": "dtk",
+    "set_name": "Dragons of Tarkir",
+    "set_type": "expansion",
+    "set_uri": "https://api.scryfall.com/sets/7e72625f-f320-4552-a719-d11e2f1853bd",
+    "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adtk&unique=prints",
+    "scryfall_set_uri": "https://scryfall.com/sets/dtk?utm_source=api",
+    "rulings_uri": "https://api.scryfall.com/cards/689a6390-894a-4d31-87c2-f9cec3b187a7/rulings",
+    "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2f6f49a4-f2ea-4147-a6d3-69cf875c302e&unique=prints",
+    "collector_number": "183",
+    "digital": false,
+    "rarity": "common",
+    "watermark": "atarka",
+    "flavor_text": "Bears are a delicacy for the Atarka. The few that remain are the toughest of their species.",
+    "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+    "artist": "Lars Grant-West",
+    "artist_ids": [
+      "21ed6499-c4d3-4965-ab02-6c7228275bec"
+    ],
+    "illustration_id": "cc73b1d7-ac93-46e4-aa80-082613a0c490",
+    "border_color": "black",
+    "frame": "2015",
+    "full_art": false,
+    "textless": false,
+    "booster": true,
+    "story_spotlight": false,
+    "edhrec_rank": 12948,
+    "penny_rank": 15757,
+    "prices": {
+      "usd": "0.24",
+      "usd_foil": "1.44",
+      "usd_etched": null,
+      "eur": "0.06",
+      "eur_foil": "0.77",
+      "tix": "0.03"
+    },
+    "related_uris": {
+      "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=394553&printed=false",
+      "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDragon-Scarred%2BBear",
+      "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDragon-Scarred%2BBear",
+      "edhrec": "https://edhrec.com/route/?cc=Dragon-Scarred+Bear"
+    },
+    "purchase_uris": {
+      "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F96729%3Fpage%3D1",
+      "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=273428&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+      "cardhoarder": "https://www.cardhoarder.com/cards/56308?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    }
+  }
+}1132:120.6. Damage marked on a creature remains until the cleanup step, even if that permanent stops being a creature. If the total damage marked on a creature is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed as a state-based action (see rule 704). All damage marked on a permanent is removed when it regenerates (see rule 701.19, “Regenerate”) and during the cleanup step (see rule 514.2).
+1332:Example: Quicksilver Elemental says, in part, “{U}: This creature gains all activated abilities of target creature until end of turn.” If it gains an ability that says “{BB}: Regenerate Skithiryx,” activating that ability will regenerate Quicksilver Elemental, not the Skithiryx, the Blight Dragon it gained the ability from.
+1635:302.7. Damage dealt to a creature by a source with neither wither nor infect is marked on that creature (see rule 120.3). If the total damage marked on that creature is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed as a state-based action (see rule 704). All damage marked on a creature is removed when it regenerates (see rule 701.19, “Regenerate”) and during the cleanup step (see rule 514.2).
+2225:506.4. A permanent is removed from combat if it leaves the battlefield, if its controller or protector changes, if it phases out, if an effect specifically removes it from combat, if it’s a planeswalker that’s being attacked and stops being a planeswalker, if it’s a battle that’s being attacked and stops being a battle, or if it’s an attacking or blocking creature that regenerates (see rule 701.19), stops being a creature, or becomes a battle. A creature that’s removed from combat stops being an attacking, blocking, blocked, and/or unblocked creature. A planeswalker or battle that’s removed from combat stops being attacked.
+3088:614.8. Regeneration is a destruction-replacement effect. The word “instead” doesn’t appear on the card but is implicit in the definition of regeneration. “Regenerate [permanent]” means “The next time [permanent] would be destroyed this turn, instead remove all damage marked on it and its controller taps it. If it’s an attacking or blocking creature, remove it from combat.” Abilities that trigger from damage being dealt still trigger even if the permanent regenerates. See rule 701.19.
+3325:701.8. Destroy
+3327:701.8a To destroy a permanent, move it from the battlefield to its owner’s graveyard.
+3329:701.8b The only ways a permanent can be destroyed are as a result of an effect that uses the word “destroy” or as a result of the state-based actions that check for lethal damage (see rule 704.5g) or damage from a source with deathtouch (see rule 704.5h). If a permanent is put into its owner’s graveyard for any other reason, it hasn’t been “destroyed.”
+3331:701.8c A regeneration effect replaces a destruction event. See rule 701.19, “Regenerate.”
+3434:701.19. Regenerate
+3436:701.19a If the effect of a resolving spell or ability regenerates a permanent, it creates a replacement effect that protects the permanent the next time it would be destroyed this turn. In this case, “Regenerate [permanent]” means “The next time [permanent] would be destroyed this turn, instead remove all damage marked on it and its controller taps it. If it’s an attacking or blocking creature, remove it from combat.”
+3438:701.19b If the effect of a static ability regenerates a permanent, it replaces destruction with an alternate effect each time that permanent would be destroyed. In this case, “Regenerate [permanent]” means “Instead remove all damage marked on [permanent] and its controller taps it. If it’s an attacking or blocking creature, remove it from combat.”
+3440:701.19c Neither activating an ability that creates a regeneration shield nor casting a spell that creates a regeneration shield is the same as regenerating a permanent. Effects that say that a permanent can’t be regenerated don’t preclude such abilities from being activated or such spells from being cast; rather, they cause regeneration shields to not be applied.
+5523:704.5f If a creature has toughness 0 or less, it’s put into its owner’s graveyard. Regeneration can’t replace this event.
+5525:704.5g If a creature has toughness greater than 0, it has damage marked on it, and the total damage marked on it is greater than or equal to its toughness, that creature has been dealt lethal damage and is destroyed. Regeneration can replace this event.
+5527:704.5h If a creature has toughness greater than 0, and it’s been dealt damage by a source with deathtouch since the last time state-based actions were checked, that creature is destroyed. Regeneration can replace this event.
+7636:To move a permanent from the battlefield to its owner’s graveyard. See rule 701.8, “Destroy.”
+8720:Regenerate
+8721:To replace a permanent’s destruction with an alternate sequence of events. See rule 701.19, “Regenerate.”

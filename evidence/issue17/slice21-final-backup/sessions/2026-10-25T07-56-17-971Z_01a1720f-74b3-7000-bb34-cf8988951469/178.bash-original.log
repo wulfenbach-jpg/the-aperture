@@ -1,0 +1,61 @@
+5023:    fn sample_blocks(&self, player: PlayerId) -> Vec<BlockDecl> {
+5024-        let mut attackers: Vec<(ObjectId, i32)> = self
+5025-            .state
+5026-            .turn
+5027-            .attackers
+5028-            .iter()
+5029-            .filter_map(|id| self.state.try_object(*id).map(|o| (*id, o.power())))
+5030-            .collect();
+5031-        attackers.sort_by_key(|(id, power)| (std::cmp::Reverse(*power), id.0));
+5032-        let mut out = Vec::new();
+5033-        for blocker in self.legal_blockers(player) {
+5034-            let Some((attacker, _)) = attackers.first() else {
+5035-                break;
+5036-            };
+5037-            out.push(BlockDecl {
+5038-                blocker,
+5039-                attacker: *attacker,
+5040-            });
+5041-        }
+5042-        out
+5043-    }
+5044-}
+5045-
+5046-fn check_selection(
+5047-    cards: &[ObjectId],
+5048-    hand: &[ObjectId],
+5049-    count: usize,
+5050-    what: &'static str,
+5051-) -> Result<(), EngineError> {
+5052-    if cards.len() != count {
+5053-        return Err(EngineError::illegal(
+5054-            what,
+5055-            format!("expected {count} card(s), got {}", cards.len()),
+5056-        ));
+5057-    }
+5058-    let mut seen: Vec<ObjectId> = Vec::new();
+5059-    for card in cards {
+5060-        if seen.contains(card) {
+5061-            return Err(EngineError::illegal(what, "the same card was chosen twice"));
+5062-        }
+5063-        if !hand.contains(card) {
+5064-            return Err(EngineError::illegal(
+5065-                what,
+5066-                "every chosen card must be in that player's hand",
+5067-            ));
+5068-        }
+5069-        seen.push(*card);
+5070-    }
+5071-    Ok(())
+5072-}
+5073-
+5074-fn target_spec_rule(spec: TargetSpec) -> &'static str {
+5075-    match spec {
+5076-        TargetSpec::None => "CR 601.2c",
+5077-        TargetSpec::AnyTarget => "any target: CR 115.4",
+5078-        TargetSpec::Creature => "target creature: CR 115.1",
+5079-        TargetSpec::Spell => "target spell: CR 115.1",
+5080-    }
+5081-}
+5082-
+5083-/// Ability index of a non-spell stack entry.

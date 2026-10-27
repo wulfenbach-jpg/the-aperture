@@ -1,0 +1,23 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running tests\review24_probe.rs (target\debug\deps\review24_probe-a85cafe01c07eb04.exe)
+
+running 1 test
+bear id ObjectId(1) hand [ObjectId(1), ObjectId(2), ObjectId(3)] surrak ObjectId(21) priority Some(0)
+after cast bear zone Battlefield effects [(GrantsHaste, ObjectId(1))] hand [ObjectId(2), ObjectId(3)] priority Some(0) stack_empty true
+surrak zone Hand hand [ObjectId(3), ObjectId(21)] priority Some(0)
+unsummon_bear ObjectId(3)
+
+thread 'debug' (29380) panicked at crates\core\tests\review24_probe.rs:40:181:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test debug ... FAILED
+
+failures:
+
+failures:
+    debug
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test review24_probe`

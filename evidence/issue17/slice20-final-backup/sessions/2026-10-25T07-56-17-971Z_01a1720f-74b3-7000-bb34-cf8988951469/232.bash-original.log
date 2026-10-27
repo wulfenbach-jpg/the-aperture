@@ -1,0 +1,65 @@
+918:    fn insert_object(&mut self, mut object: Object, zone: Zone) -> ObjectId {
+919-        let owner = object.owner;
+920-        let commander = object.commander;
+921-        let old_id = object.id;
+922-        // CR 111.7: a token that leaves the battlefield ceases to exist. It is
+923-        // never a card, so it must not be re-keyed, inserted into a zone list or
+924-        // put on the stack; callers see the stale id and their zone move is a
+925-        // no-op. Nothing is inserted, so the token simply stops existing.
+926-        if object.card.is_token() && zone != Zone::Battlefield {
+927-            return old_id;
+928-        }
+929-        let new_id = if commander.is_some() {
+930-            let id = ObjectId(self.state.next_object);
+931-            self.state.next_object += 1;
+932-            object.id = id;
+933-            id
+934-        } else {
+935-            old_id
+936-        };
+937-        object.zone = zone;
+938-        // CR 122.2: counters cease to exist with the object that carried them,
+939-        // so a zone change can never deliver counters to the new object.
+940-        object.counters.clear();
+941-        if commander.is_some() {
+942-            // A zone change creates a new object (CR 400.7): no previous
+943-            // battlefield-only memory may follow the commander.
+944-            object.plus_one_counters = 0;
+945-            if matches!(
+946-                zone,
+947-                Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command
+948-            ) {
+949-                object.controller = object.owner;
+950-                object.tapped = false;
+951-                object.damage = 0;
+952-                object.summoning_sick = false;
+953-                object.pump_power = 0;
+954-                object.pump_toughness = 0;
+955-            }
+956-        }
+957-        if let Some(commander) = commander
+958-            && let Some(registry) = self
+959-                .state
+960-                .commanders
+961-                .iter_mut()
+962-                .find(|registry| registry.id == commander)
+963-        {
+964-            registry.object = new_id;
+965-            // CR 903.9a: arm the owner choice exactly for a move into
+966-            // graveyard/exile; leaving those zones clears it.
+967-            registry.return_eligible = matches!(zone, Zone::Graveyard | Zone::Exile);
+968-        }
+969-        match zone {
+970-            Zone::Library => self.state.players[owner as usize].library.push(new_id),
+971-            Zone::Hand => self.state.players[owner as usize].hand.push(new_id),
+972-            Zone::Graveyard => self.state.players[owner as usize].graveyard.push(new_id),
+973-            Zone::Exile => self.state.players[owner as usize].exile.push(new_id),
+974-            Zone::Command => self.state.players[owner as usize].command_zone.push(new_id),
+975-            Zone::Battlefield | Zone::Stack | Zone::Removed => {}
+976-        }
+977-        self.state.objects.insert(new_id, object);
+978-        new_id
+1126:    fn move_to_top_of_library(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+1155:    fn move_to_exile(&mut self, id: ObjectId, events: &mut Vec<Event>) -> Option<ObjectId> {
+1174:    fn move_to_hand(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+1211:    fn move_to_graveyard_inner(

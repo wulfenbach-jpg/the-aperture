@@ -1,0 +1,2 @@
+replay seed 1919 — 4 seat(s), 2064 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 72cd69fb1143 | matches recorded | events 5281

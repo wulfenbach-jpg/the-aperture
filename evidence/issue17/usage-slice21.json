@@ -1,0 +1,203 @@
+{
+  "generatedAt": 1793076224327,
+  "reports": [
+    {
+      "provider": "openai-codex",
+      "fetchedAt": 1793076117036,
+      "limits": [
+        {
+          "id": "openai-codex:primary",
+          "label": "5 hours",
+          "scope": {
+            "provider": "openai-codex",
+            "windowId": "5h",
+            "shared": true
+          },
+          "window": {
+            "id": "5h",
+            "label": "5 hours",
+            "durationMs": 18000000,
+            "resetsAt": 1793089130000
+          },
+          "amount": {
+            "used": 61,
+            "limit": 100,
+            "remaining": 39,
+            "usedFraction": 0.61,
+            "remainingFraction": 0.39,
+            "unit": "percent"
+          },
+          "status": "ok"
+        },
+        {
+          "id": "openai-codex:secondary",
+          "label": "7 days",
+          "scope": {
+            "provider": "openai-codex",
+            "windowId": "7d",
+            "shared": true
+          },
+          "window": {
+            "id": "7d",
+            "label": "7 days",
+            "durationMs": 604800000,
+            "resetsAt": 1793599734000
+          },
+          "amount": {
+            "used": 72,
+            "limit": 100,
+            "remaining": 28,
+            "usedFraction": 0.72,
+            "remainingFraction": 0.28,
+            "unit": "percent"
+          },
+          "status": "ok"
+        }
+      ],
+      "resetCredits": {
+        "availableCount": 1,
+        "credits": [
+          {
+            "grantedAt": "2026-10-07T23:01:21.484324Z",
+            "expiresAt": "2026-11-06T23:01:21.484324Z",
+            "status": "available"
+          }
+        ]
+      },
+      "metadata": {
+        "planType": "plus",
+        "allowed": true,
+        "limitReached": false,
+        "email": "al*",
+        "accountId": "c6*",
+        "meterStates": {
+          "chat": {
+            "allowed": true,
+            "limitReached": false
+          }
+        },
+        "orgId": "c6*",
+        "orgName": "pl*"
+      }
+    },
+    {
+      "provider": "opencode-go",
+      "fetchedAt": 1793076117267,
+      "limits": [
+        {
+          "id": "rolling-5h",
+          "label": "5 Hour limit",
+          "scope": {
+            "provider": "opencode-go",
+            "windowId": "5h",
+            "shared": true
+          },
+          "window": {
+            "id": "5h",
+            "label": "5 Hour",
+            "resetsAt": 1793081623000,
+            "durationMs": 18000000
+          },
+          "amount": {
+            "used": 20,
+            "usedFraction": 0.2,
+            "remainingFraction": 0.8,
+            "unit": "percent"
+          },
+          "status": "ok"
+        },
+        {
+          "id": "weekly",
+          "label": "Weekly limit",
+          "scope": {
+            "provider": "opencode-go",
+            "windowId": "7d",
+            "shared": true
+          },
+          "window": {
+            "id": "7d",
+            "label": "Weekly",
+            "resetsAt": 1793577600000,
+            "durationMs": 604800000
+          },
+          "amount": {
+            "used": 48,
+            "usedFraction": 0.48,
+            "remainingFraction": 0.52,
+            "unit": "percent"
+          },
+          "status": "ok"
+        },
+        {
+          "id": "monthly",
+          "label": "Monthly limit",
+          "scope": {
+            "provider": "opencode-go",
+            "windowId": "monthly",
+            "shared": true
+          },
+          "window": {
+            "id": "monthly",
+            "label": "Monthly",
+            "resetsAt": 1794509623000
+          },
+          "amount": {
+            "used": 50,
+            "usedFraction": 0.5,
+            "remainingFraction": 0.5,
+            "unit": "percent"
+          },
+          "status": "ok"
+        }
+      ],
+      "metadata": {
+        "planType": "OpenCode Go",
+        "endpoint": "https://opencode.ai/zen/go/v1/usage"
+      }
+    }
+  ],
+  "accountsWithoutUsage": [],
+  "disabledCredentials": [],
+  "capacity": {
+    "openai-codex": [
+      {
+        "window": "5h",
+        "durationMs": 18000000,
+        "meter": "chat",
+        "accounts": 1,
+        "usedAccounts": 0.61,
+        "remainingAccounts": 0.39
+      },
+      {
+        "window": "7d",
+        "durationMs": 604800000,
+        "meter": "chat",
+        "accounts": 1,
+        "usedAccounts": 0.72,
+        "remainingAccounts": 0.28
+      }
+    ],
+    "opencode-go": [
+      {
+        "window": "5h",
+        "durationMs": 18000000,
+        "accounts": 1,
+        "usedAccounts": 0.2,
+        "remainingAccounts": 0.8
+      },
+      {
+        "window": "7d",
+        "durationMs": 604800000,
+        "accounts": 1,
+        "usedAccounts": 0.48,
+        "remainingAccounts": 0.52
+      },
+      {
+        "window": "Monthly",
+        "accounts": 1,
+        "usedAccounts": 0.5,
+        "remainingAccounts": 0.5
+      }
+    ]
+  }
+}

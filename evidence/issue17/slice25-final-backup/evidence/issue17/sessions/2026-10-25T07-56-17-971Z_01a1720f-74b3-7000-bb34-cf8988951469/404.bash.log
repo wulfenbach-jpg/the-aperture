@@ -1,0 +1,7 @@
+dict_keys(['url', 'retrieved_at', 'sha256'])
+{
+ "url": "https://api.scryfall.com/cards/9c10934d-9016-43c4-a7ab-56cc7d8f671f",
+ "retrieved_at": "2026-10-27T08:44:35.433520+00:00",
+ "sha256": "6944d8c0a5002c4016331ada2355ebc5000880190839f8eb3901aed33e68b44b"
+}
+{"object":"card","id":"9c10934d-9016-43c4-a7ab-56cc7d8f671f","oracle_id":"95be5f72-1f81-4ec6-9bd9-f0b07bfc874b","multiverse_ids":[611094],"mtgo_id":109762,"arena_id":85121,"tcgplayer_id":490400,"cardmarket_id":703514,"name":"Surrak and Goreclaw","lang":"en","released_at":"2023-04-21","uri":"https://api.scryfall.com/cards/9c10934d-9016-43c4-a7ab-56cc7d8f671f","scryfall_uri":"https://scryfall.com/card/mom/337/surrak-and-goreclaw?utm_source=api","layout":"normal","highres_image":true,"image_status":"highres_scan","image_updated_at":"2026-07-13T04:28:19Z","image_uris":{"small":"https://cards.scryfall.io/small/front/9/c/9c10934d-9016-43c4-a7ab-56cc7d8f671f.jpg?1783916899","normal":"https://cards.scryfall.io/normal/front/9/c/9c10934d-9016-43c4-a7ab-56cc7d8f671f.jpg?1783916899","large":"https://cards.scryfall.io/large/front/9/c/9c10934d-9016-43c4-a7ab-56cc7d8f671f.jpg?1783916899","png":"https://cards.scryfall.io/png/front/9/c/9c10934d-9016-43c4-a7ab-56cc7d8f671f.png?1783916899","art_crop":"ht

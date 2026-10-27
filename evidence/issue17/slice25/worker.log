@@ -1,0 +1,27 @@
+Working...
+**Slice 25 committed: `823680d`.** Product diff clean; no push/merge/closure. Full #17 remains **1 of 8 certified**.
+
+### Implemented
+**Exuberant Wolfbear** `{3}{G}` 4/4 Wolf Bear, exact IKO 151 source.
+- Optional attack trigger targeting a **Human you control**.
+- Sets target base P/T in **Layer 7b** (`SetBasePowerToughness`) before counters/7c modifiers.
+- Captures source effective P/T at resolution; source departure stores one last-known snapshot across queued/stack/pending refs.
+- Target counters and temporary pumps apply after the setter; expiry/target departure use normal continuous-effect lifecycle.
+- Forged/opponent/non-Human targets are excluded by `HumanYouControl` and resolution revalidation.
+- New `source_pt_lki` fields are serde-default/skipped.
+
+### RED retained
+Feature-missing RED before implementation: `issue17_slice25` failed `exuberant_wolfbear_is_sourced_and_supported`.
+
+### Focused green
+- `issue17_slice25`: **4 passed** — offered cast/real attack trigger; optional accept with current 5/5 source and target counter applying after; decline leaving Human 2/1; real source-left Unsummon using LKI 5/5.
+- card_printings 8, catalog_pool 5, slice15 corpus 2, commander 43, replay_digest 6.
+- fmt, workspace clippy `-D warnings`, release CLI: exit 0; receipts `evidence/issue17/slice25/gates.log`.
+- Fresh audit: **142 catalog / 459 = 130 supported + 329 missing**, Ayula 23.
+
+### Journey
+Evidence-only masked demonstrator, not product AI: 4 seats/40 life, seed 2323, 40-card package, Jasmine Boreal injected. Terminal P3, 1760 decisions, 41 turns; Wolfbear cast 8, trigger staged 9, base-P/T set events 9; replay matched and save round-tripped. Digest `4d6ea58e…5d52`; snapshot SHA256 `1bd22943…1a0d`.
+
+### Disclosed gaps
+- No dedicated target-departure, cleanup-expiry, save-mid-optional-ability, or source-recast-overrides-LKI test.
+- No full workspace matrix rerun; exact-head CI owns it. No UI claim.

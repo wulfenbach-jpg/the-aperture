@@ -1,0 +1,114 @@
+200:pub struct CardDef {
+201-    pub id: CardId,
+202-    pub name: &'static str,
+203-    /// `None` for lands (which have no mana cost).
+204-    pub cost: Option<&'static str>,
+205-    pub kinds: &'static [Kind],
+206-    /// Set for basic lands: the single mana the land's mana ability produces.
+207-    pub basic_mana: Option<ManaColor>,
+208-    pub type_line: &'static str,
+209-    /// Printed colors. Tokens carry theirs here; catalog cards leave it empty
+210-    /// because the engine only needs it for token characteristics in this slice.
+211-    pub colors: &'static [ManaColor],
+212-    pub flying: bool,
+213-    pub defender: bool,
+214-    /// CR 702.8a: "You may cast this spell any time you could cast an instant."
+215-    /// Only printed Flash is modelled; nothing grants it to another card.
+216-    pub flash: bool,
+217-    /// CR 702.19b: excess combat damage may be assigned to the defending
+218-    /// player once every blocker has been assigned lethal damage.
+219-    pub trample: bool,
+220-    pub power: Option<i32>,
+221-    pub toughness: Option<i32>,
+222-    pub oracle: &'static str,
+223-    pub spell: Option<SpellSpec>,
+224-}
+225-
+226-impl CardDef {
+227-    pub fn is_land(&self) -> bool {
+228-        self.kinds.contains(&Kind::Land)
+229-    }
+230-
+235:    pub fn has_flying(&self) -> bool {
+239:    pub fn has_defender(&self) -> bool {
+247:    pub fn has_trample(&self) -> bool {
+//! Creature tokens (CR 111) and the keyword set the practice slice enforces.
+//!
+//! A token is not a card: it has no mana cost, never exists in a library or
+//! hand, is owned by the player who created it (CR 111.2), is controlled by that
+//! player (CR 111.3) and ceases to exist the instant it leaves the battlefield
+//! (CR 111.7) instead of moving to the graveyard/hand/library.
+//!
+//! Token characteristics are compiled in [`TOKEN_CARDS`], which is deliberately
+//! *not* part of [`crate::catalog::CARDS`]: the deck importer can name pool
+//! cards only, so a token can never be imported, put in a deck, or cast. The
+//! 28-card playable pool is unchanged.
+//!
+//! Keywords are typed and enforced at the two places the engine can observe
+//! them: attacking (CR 508.1) and blocking (CR 509.1b, 702.9b/c, 702.17b). The
+//! certified 28-card pool contains no keyword creatures, so today the only
+//! source of a keyword is a token; a card keyword lands by adding a `card` arm
+//! to [`keywords`], never by trusting card text at runtime.
+
+use crate::card::{CardDef, CardId, Kind};
+use crate::counters::Counters;
+use crate::ids::{ObjectId, PlayerId, Zone};
+use crate::state::{GameState, Object};
+
+/// A keyword the combat rules engine actually enforces.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Keyword {
+    /// CR 702.9: can't be blocked except by flying or reach; can block flying.
+    Flying,
+    /// CR 702.17: can block a creature with flying.
+    Reach,
+    /// CR 702.3: can't attack.
+    Defender,
+}
+
+impl Keyword {
+    pub fn name(self) -> &'static str {
+        match self {
+            Keyword::Flying => "flying",
+            Keyword::Reach => "reach",
+            Keyword::Defender => "defender",
+        }
+    }
+}
+
+/// CR 509.1b: a blocking creature must be able to block the attacker.
+/// Evasion is the only restriction this slice models.
+pub fn can_block(attacker: &[Keyword], blocker: &[Keyword]) -> bool {
+    if !attacker.contains(&Keyword::Flying) {
+        return true;
+    }
+    // CR 702.9b: flying can be blocked only by a creature with flying.
+    // CR 702.17b: reach lets a creature block as though it had flying.
+    blocker.contains(&Keyword::Flying) || blocker.contains(&Keyword::Reach)
+}
+
+/// The keyword list for a card. Pool cards have none; token cards carry theirs.
+pub fn keywords(card: CardId) -> &'static [Keyword] {
+    match card {
+        CardId::SpiritToken => &[Keyword::Flying],
+        _ => &[],
+    }
+}
+
+const CREATURE: &[Kind] = &[Kind::Creature];
+
+/// Compiled-in token characteristics. Never part of the importable pool.
+pub static TOKEN_CARDS: [CardDef; 2] = [
+    CardDef {
+        id: CardId::SoldierToken,
+        name: "Soldier",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        type_line: "Token Creature — Soldier",
+        power: Some(1),
+        toughness: Some(1),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {

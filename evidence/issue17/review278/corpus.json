@@ -1,0 +1,49 @@
+{
+  "catalog": 142,
+  "union": 459,
+  "supported": 130,
+  "missing": 329,
+  "lists": [
+    [
+      "isamaru-white-aggro",
+      55,
+      "planned"
+    ],
+    [
+      "jasmine-vanilla-stompy",
+      0,
+      "certified"
+    ],
+    [
+      "talrand-draw-go",
+      51,
+      "planned"
+    ],
+    [
+      "krenko-goblin-tokens",
+      48,
+      "planned"
+    ],
+    [
+      "ayula-bear-counters",
+      23,
+      "planned"
+    ],
+    [
+      "elas-sacrifice",
+      52,
+      "planned"
+    ],
+    [
+      "tatyova-landfall",
+      52,
+      "planned"
+    ],
+    [
+      "zada-spells",
+      53,
+      "planned"
+    ]
+  ],
+  "focused_tests": 42
+}

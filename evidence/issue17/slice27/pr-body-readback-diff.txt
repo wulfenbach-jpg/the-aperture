@@ -1,0 +1,3 @@
+# PR body readback: only a trailing newline differs (GitHub appends one)
+274a275
+> 

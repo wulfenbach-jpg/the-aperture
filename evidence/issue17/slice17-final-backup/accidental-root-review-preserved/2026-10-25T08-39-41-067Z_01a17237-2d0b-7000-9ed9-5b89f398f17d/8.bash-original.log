@@ -1,0 +1,531 @@
+diff --git a/crates/ai/src/search.rs b/crates/ai/src/search.rs
+index b93ab66..d9fcbf9 100644
+--- a/crates/ai/src/search.rs
++++ b/crates/ai/src/search.rs
+@@ -694,6 +694,8 @@ fn reconstruct(
+         first_player: real_state.first_player,
+         rng,
+         objects,
++        creature_died_this_turn: real_state.creature_died_this_turn,
++        nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
+         commanders: real_state.commanders.clone(),
+         profile: real_state.profile,
+         commander_damage: real_state.commander_damage.clone(),
+diff --git a/crates/ai/tests/common.rs b/crates/ai/tests/common.rs
+index 43b9505..e43a22a 100644
+--- a/crates/ai/tests/common.rs
++++ b/crates/ai/tests/common.rs
+@@ -47,6 +47,8 @@ pub fn fixture(seed: u64) -> Fixture {
+             first_player: P0,
+             rng: aperture_core::rng::Pcg32::new(seed),
+             objects: BTreeMap::new(),
++            creature_died_this_turn: false,
++            nontoken_creature_deaths_this_turn: Vec::new(),
+             commanders: Vec::new(),
+             profile: Profile::Practice20,
+             commander_damage: Vec::new(),
+diff --git a/crates/core/src/ability.rs b/crates/core/src/ability.rs
+index 4502b6c..31ef72b 100644
+--- a/crates/core/src/ability.rs
++++ b/crates/core/src/ability.rs
+@@ -385,6 +385,30 @@ const PEST_DIES: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+     effects: &[Effect::GainLife(1)],
+ })];
+ 
++const FRIENDLY_TEDDY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
++    text: "When this creature dies, each player draws a card.",
++    event: TriggerEvent::Dies,
++    optional: false,
++    target: TargetSpec::None,
++    effects: &[Effect::EachPlayerDraws(1)],
++})];
++
++const ULVENWALD_BEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
++    text: "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
++    event: TriggerEvent::EntersBattlefield,
++    optional: false,
++    target: TargetSpec::Creature,
++    effects: &[Effect::PutPlusOneCountersOnTarget(2)],
++})];
++
++const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
++    text: "When this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
++    event: TriggerEvent::EntersBattlefield,
++    optional: false,
++    target: TargetSpec::None,
++    effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
++})];
++
+ const COMMANDERS_SPHERE: &[Ability] = &[Ability::Activated(ActivatedAbility {
+     text: "Sacrifice this artifact: Draw a card.",
+     cost: AbilityCost::SACRIFICE_SELF,
+@@ -620,6 +644,9 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
+         CardId::RampagingBaloths => RAMPAGING_BALOTHS,
+         CardId::ProfessorOfZoomancy => PROFESSOR,
+         CardId::PestToken => PEST_DIES,
++        CardId::FriendlyTeddy => FRIENDLY_TEDDY,
++        CardId::UlvenwaldBear => ULVENWALD_BEAR,
++        CardId::CallerOfTheClaw => CALLER_OF_THE_CLAW,
+         CardId::CommandersSphere => COMMANDERS_SPHERE,
+         CardId::AyulasInfluence => AYULAS_INFLUENCE,
+         CardId::Bearscape => BEARSCAPE,
+diff --git a/crates/core/src/card.rs b/crates/core/src/card.rs
+index 63a43d0..2a58960 100644
+--- a/crates/core/src/card.rs
++++ b/crates/core/src/card.rs
+@@ -195,6 +195,13 @@ pub enum Effect {
+     /// put a +1/+1 counter on it" (Little Bear). The counter is conditional on
+     /// the target's own printed subtype, never on the source's.
+     UntapTargetAndCounterIfBear,
++    /// Each live player draws N cards in APNAP order from the active player.
++    EachPlayerDraws(u8),
++    /// Put N +1/+1 counters on the target creature.
++    PutPlusOneCountersOnTarget(u32),
++    /// Create one 2/2 green Bear token per nontoken creature its controller
++    /// owned that was put into their graveyard from the battlefield this turn.
++    CreateBearTokensForEachDeathThisTurn,
+ }
+ 
+ impl Effect {
+@@ -268,6 +275,13 @@ impl Effect {
+             Effect::DestroyAllArtifactsAndEnchantments => {
+                 "destroy all artifacts and enchantments".to_string()
+             }
++            Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
++            Effect::PutPlusOneCountersOnTarget(n) => {
++                format!("put {n} +1/+1 counter(s) on the target creature")
++            }
++            Effect::CreateBearTokensForEachDeathThisTurn => {
++                "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
++            }
+             Effect::UntapTargetAndCounterIfBear => {
+                 "untap the target creature; if it is a Bear, put a +1/+1 counter on it".to_string()
+             }
+@@ -481,6 +495,9 @@ pub enum CardId {
+     FellwarStone,
+     Werebear,
+     CommandersSphere,
++    FriendlyTeddy,
++    UlvenwaldBear,
++    CallerOfTheClaw,
+     AyulasInfluence,
+     Bearscape,
+     MotherBear,
+@@ -653,6 +670,7 @@ impl CardId {
+                 | CardId::DrakeToken
+                 | CardId::BeastToken
+                 | CardId::PestToken
++                | CardId::BearToken
+         )
+     }
+ }
+diff --git a/crates/core/src/catalog.rs b/crates/core/src/catalog.rs
+index c0607c3..6fb4f93 100644
+--- a/crates/core/src/catalog.rs
++++ b/crates/core/src/catalog.rs
+@@ -66,6 +66,7 @@ const LAND: &[Kind] = &[Kind::Land];
+ const CREATURE: &[Kind] = &[Kind::Creature];
+ const INSTANT: &[Kind] = &[Kind::Instant];
+ const SORCERY: &[Kind] = &[Kind::Sorcery];
++const ARTIFACT_CREATURE: &[Kind] = &[Kind::Artifact, Kind::Creature];
+ const ENCHANTMENT: &[Kind] = &[Kind::Enchantment];
+ 
+ macro_rules! card {
+@@ -238,7 +239,7 @@ macro_rules! card_trample {
+ }
+ 
+ /// Compiled-in pool; the order matches the catalog documentation.
+-pub static CARDS: [CardDef; 131] = [
++pub static CARDS: [CardDef; 134] = [
+     card!(
+         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
+         type_line: "Basic Land — Island", power: None, toughness: None,
+@@ -466,6 +467,23 @@ pub static CARDS: [CardDef; 131] = [
+         oracle: "{T}: Add one mana of any color that a land an opponent controls could produce.",
+         mana: None, spell: None
+     ),
++    card!(
++        FriendlyTeddy, "Friendly Teddy", cost: Some("{2}"), kinds: ARTIFACT_CREATURE, basic: None,
++        type_line: "Artifact Creature — Bear Toy", power: Some(2), toughness: Some(2),
++        oracle: "When this creature dies, each player draws a card.", spell: None
++    ),
++    card!(
++        UlvenwaldBear, "Ulvenwald Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
++        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
++        oracle: "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
++        spell: None
++    ),
++    card_flash!(
++        CallerOfTheClaw, "Caller of the Claw", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
++        type_line: "Creature — Elf", power: Some(2), toughness: Some(2),
++        oracle: "Flash\nWhen this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
++        spell: None
++    ),
+     card_artifact!(
+         CommandersSphere, "Commander's Sphere", cost: Some("{3}"), type_line: "Artifact",
+         oracle: "{T}: Add one mana of any color in your commander's color identity.\nSacrifice this artifact: Draw a card.",
+diff --git a/crates/core/src/engine.rs b/crates/core/src/engine.rs
+index 60042ce..9afd350 100644
+--- a/crates/core/src/engine.rs
++++ b/crates/core/src/engine.rs
+@@ -285,6 +285,8 @@ impl Game {
+             trigger_queue: Vec::new(),
+             next_trigger_seq: 0,
+             revealed: Vec::new(),
++            creature_died_this_turn: false,
++            nontoken_creature_deaths_this_turn: Vec::new(),
+             activation_uses: BTreeMap::new(),
+             effects: Vec::new(),
+             shields: Vec::new(),
+@@ -1107,6 +1109,19 @@ impl Game {
+                     }
+                 }
+             }
++            DrawResume::EachPlayer {
++                source,
++                cursor,
++                next,
++                cards_left,
++                per_seat,
++                done,
++                live_total,
++            } => {
++                self.each_player_draw(
++                    source, cursor, next, cards_left, per_seat, done, live_total, true, events,
++                );
++            }
+         }
+     }
+ 
+@@ -1220,6 +1235,13 @@ impl Game {
+     /// caller batches several simultaneous deaths and dispatches the watchers
+     /// once for the whole batch (CR 704.3, 603.6c): a watcher that dies in the
+     /// same batch must still see its fellow dying creatures.
++    fn tracks_death_history(&self) -> bool {
++        self.state
++            .objects
++            .values()
++            .any(|object| matches!(object.card, CardId::UlvenwaldBear | CardId::CallerOfTheClaw))
++    }
++
+     fn move_to_graveyard_inner(
+         &mut self,
+         id: ObjectId,
+@@ -1234,6 +1256,7 @@ impl Game {
+             .is_some_and(|object| object.card.is_token());
+         let mut object = self.detach_object(id)?;
+         let card = object.card;
++        let owner = object.owner;
+         object.tapped = false;
+         object.damage = 0;
+         object.summoning_sick = false;
+@@ -1255,6 +1278,16 @@ impl Game {
+         // battlefield "dies". The trigger keeps the card and its controller as
+         // last known information; `source` is the graveyard object.
+         if let Some((card, controller)) = dying {
++            if card.def().is_creature() && self.tracks_death_history() {
++                self.state.creature_died_this_turn = true;
++                if !card.is_token() {
++                    let seats = self.state.seat_count();
++                    self.state
++                        .nontoken_creature_deaths_this_turn
++                        .resize(seats, 0);
++                    self.state.nontoken_creature_deaths_this_turn[owner as usize] += 1;
++                }
++            }
+             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
+             // The dying permanent's own "this creature ... dies" trigger is
+             // order-independent, so it is queued here rather than in the batch.
+@@ -1292,6 +1325,62 @@ impl Game {
+         }
+     }
+ 
++    #[allow(clippy::too_many_arguments)]
++    fn each_player_draw(
++        &mut self,
++        source: ObjectId,
++        cursor: u8,
++        mut next: PlayerId,
++        mut cards_left: u8,
++        per_seat: u8,
++        mut done: u8,
++        live_total: u8,
++        mut completed_draw: bool,
++        events: &mut Vec<Event>,
++    ) -> bool {
++        loop {
++            if completed_draw {
++                cards_left -= 1;
++                completed_draw = false;
++                if cards_left == 0 {
++                    done += 1;
++                    if done >= live_total {
++                        return false;
++                    }
++                    let Some(following) = self.state.next_live_seat_after(next) else {
++                        return false;
++                    };
++                    next = following;
++                    cards_left = per_seat;
++                }
++            }
++            if !self.state.is_live(next) {
++                let Some(following) = self.state.next_live_seat_after(next) else {
++                    return false;
++                };
++                next = following;
++                continue;
++            }
++            if self.draw_with_resume(
++                next,
++                DrawResume::EachPlayer {
++                    source,
++                    cursor,
++                    next,
++                    cards_left,
++                    per_seat,
++                    done,
++                    live_total,
++                },
++                0,
++                events,
++            ) {
++                return true;
++            }
++            completed_draw = true;
++        }
++    }
++
+     fn draw(&mut self, p: PlayerId, events: &mut Vec<Event>) -> bool {
+         self.draw_with_resume(p, DrawResume::Step, 0, events)
+     }
+@@ -2989,6 +3078,12 @@ impl Game {
+         controller: PlayerId,
+         event: TriggerEvent,
+     ) {
++        if event == TriggerEvent::EntersBattlefield
++            && card == CardId::UlvenwaldBear
++            && !self.state.creature_died_this_turn
++        {
++            return;
++        }
+         for (index, _) in ability::triggers_on(card, event) {
+             let seq = self.state.next_trigger_seq;
+             self.state.next_trigger_seq += 1;
+@@ -3736,6 +3831,11 @@ impl Game {
+             };
+         if new_turn {
+             self.state.turn.number += 1;
++            // CR 514/500.5: history belongs to the turn. Cleanup is still that
++            // same turn even when it repeats after SBAs or priority, so reset
++            // only when the turn number actually advances.
++            self.state.creature_died_this_turn = false;
++            self.state.nontoken_creature_deaths_this_turn.clear();
+             // CR 800.4k: a departed player's turn does not begin; select the
+             // next actual live seat. Seats are never renumbered.
+             match self.state.next_live_seat_after(self.state.turn.active) {
+@@ -5422,6 +5522,52 @@ impl Game {
+                 self.add_red_mana(controller, amount, events);
+                 false
+             }
++            Effect::EachPlayerDraws(n) => {
++                let live_total = (0..self.state.seat_count())
++                    .filter(|p| self.state.is_live(*p as PlayerId))
++                    .count() as u8;
++                self.each_player_draw(
++                    item.object,
++                    item.cursor + 1,
++                    self.state.turn.active,
++                    n,
++                    n,
++                    0,
++                    live_total,
++                    false,
++                    events,
++                )
++            }
++            Effect::PutPlusOneCountersOnTarget(n) => {
++                for target in item.targets.clone() {
++                    if let Target::Permanent(id) = target
++                        && let Some(object) = self.state.objects.get_mut(&id)
++                        && object.zone == Zone::Battlefield
++                    {
++                        let name = object.card.name();
++                        let total = object
++                            .counters
++                            .add(crate::counters::CounterKind::PlusOnePlusOne, n);
++                        events.push(Event::StateBasedAction {
++                            description: format!(
++                                "{name} has {total} +1/+1 counter(s) after Ulvenwald Bear"
++                            ),
++                        });
++                    }
++                }
++                self.recompute_layers();
++                false
++            }
++            Effect::CreateBearTokensForEachDeathThisTurn => {
++                let count = self
++                    .state
++                    .nontoken_creature_deaths_this_turn
++                    .get(controller as usize)
++                    .copied()
++                    .unwrap_or(0) as usize;
++                self.create_tokens(controller, CardId::BearToken, count, events);
++                false
++            }
+             Effect::CounterTargetSpell => {
+                 let victim = item.targets.iter().find_map(|t| match t {
+                     Target::Spell(id) => Some(*id),
+@@ -6811,3 +6957,27 @@ impl Game {
+ pub const MAX_SANDBOX_COUNTERS: u32 = 99;
+ /// Upper bound for a sandbox life edit.
+ pub const MAX_SANDBOX_LIFE: i32 = 999;
++
++#[cfg(test)]
++mod slice17_cleanup_history_tests {
++    use super::*;
++
++    #[test]
++    fn repeated_cleanup_keeps_earlier_deaths_until_the_turn_number_advances() {
++        let decks = vec![
++            DeckList::parse_practice("A", "40 Forest\n").expect("deck A"),
++            DeckList::parse_practice("B", "40 Forest\n").expect("deck B"),
++        ];
++        let mut game = Game::new(19_017, &decks).expect("game");
++        game.state.creature_died_this_turn = true;
++        game.state.nontoken_creature_deaths_this_turn = vec![1, 0];
++        game.state.turn.step = Step::Cleanup;
++        game.state.turn.priority = Some(P0);
++        let mut events = Vec::new();
++        game.finish_cleanup(&mut events);
++        game.finish_cleanup(&mut events);
++        assert!(game.state.creature_died_this_turn);
++        assert_eq!(game.state.nontoken_creature_deaths_this_turn, vec![1, 0]);
++        assert_eq!(game.state.turn.number, 1, "cleanup is still the same turn");
++    }
++}
+diff --git a/crates/core/src/state.rs b/crates/core/src/state.rs
+index bd340fd..26deed2 100644
+--- a/crates/core/src/state.rs
++++ b/crates/core/src/state.rs
+@@ -235,7 +235,22 @@ pub struct ApnapSourceLeft {
+ #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+ pub enum DrawResume {
+     Step,
+-    Effect { source: ObjectId, cursor: u8 },
++    Effect {
++        source: ObjectId,
++        cursor: u8,
++    },
++    /// Serialized progress through "each player draws N": the next seat to
++    /// draw, cards it still owes, completed live seats, and the live-seat count
++    /// fixed when the instruction began. Old variants keep their encoding.
++    EachPlayer {
++        source: ObjectId,
++        cursor: u8,
++        next: PlayerId,
++        cards_left: u8,
++        per_seat: u8,
++        done: u8,
++        live_total: u8,
++    },
+ }
+ 
+ /// One exact CR 903.9a owner choice.
+@@ -668,6 +683,14 @@ pub struct GameState {
+     /// serialized form (and therefore its digest).
+     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+     pub revealed: Vec<ObjectId>,
++    /// Any creature died this turn. Only maintained while a morbid/count card is
++    /// present, so pre-slice-17 replays keep their digest.
++    #[serde(default, skip_serializing_if = "is_false")]
++    pub creature_died_this_turn: bool,
++    /// Nontoken creatures owned by each seat that moved battlefield→graveyard
++    /// this turn, indexed by owner. Empty/skipped preserves old digests.
++    #[serde(default, skip_serializing_if = "Vec::is_empty")]
++    pub nontoken_creature_deaths_this_turn: Vec<u32>,
+     /// Per-turn "activate only once each turn" usage, keyed by source object.
+     /// Bit `n` records that ability index `n` was activated this turn.
+     pub activation_uses: BTreeMap<ObjectId, u8>,
+@@ -1569,6 +1592,34 @@ impl GameState {
+                             });
+                         }
+                     }
++                    DrawResume::EachPlayer {
++                        source,
++                        cursor,
++                        next,
++                        cards_left,
++                        per_seat,
++                        done,
++                        live_total,
++                    } => {
++                        let Some(top) = self.stack.last() else {
++                            return Err(EngineError::InvalidState {
++                                reason: "each-player draw has no stack source".to_string(),
++                            });
++                        };
++                        if top.object != *source
++                            || top.cursor != *cursor
++                            || self.resolving != Some(*source)
++                            || *cursor == 0
++                            || *next != *player
++                            || *per_seat == 0
++                            || !(1..=*per_seat).contains(cards_left)
++                            || *done >= *live_total
++                        {
++                            return Err(EngineError::InvalidState {
++                                reason: "each-player draw resume progress is stale".to_string(),
++                            });
++                        }
++                    }
+                     DrawResume::Effect { source, cursor } => {
+                         let Some(top) = self.stack.last() else {
+                             return Err(EngineError::InvalidState {
+@@ -1829,8 +1880,11 @@ impl GameState {
+                 Zone::Battlefield | Zone::Removed => listed == 0 && held == 0 && stacked == 0,
+                 Zone::Stack => listed == 0 && held == 0 && stacked == 1,
+                 Zone::Library => listed + held == 1 && stacked == 0,
++                // A triggered ability keeps its source card in the zone it
++                // left while the ability is on the stack (CR 603.6c/d), so a
++                // graveyard/exile/command source may also have one stack entry.
+                 Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
+-                    listed == 1 && held == 0 && stacked == 0
++                    listed == 1 && held == 0 && stacked <= 1
+                 }
+             };
+             if !ok {
+@@ -2081,7 +2135,7 @@ impl GameState {
+                     reason: format!("stack references missing object {}", item.object),
+                 });
+             };
+-            if object.zone != Zone::Stack {
++            if object.zone != Zone::Stack && !matches!(item.entry, StackEntry::Triggered { .. }) {
+                 return Err(EngineError::InvalidState {
+                     reason: format!(
+                         "stack object {} is in the {} zone",
+@@ -2233,6 +2287,10 @@ impl GameState {
+ 
+ /// Serde helper: skip a zero `u32` so state written before the effect pipeline
+ /// keeps its original canonical JSON (and therefore its recorded digest).
++fn is_false(value: &bool) -> bool {
++    !*value
++}
++
+ fn is_zero_u32(value: &u32) -> bool {
+     *value == 0
+ }
+diff --git a/crates/core/tests/common/mod.rs b/crates/core/tests/common/mod.rs
+index 525d203..537b2b8 100644
+--- a/crates/core/tests/common/mod.rs
++++ b/crates/core/tests/common/mod.rs
+@@ -83,6 +83,8 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
+             trigger_queue: Vec::new(),
+             next_trigger_seq: 0,
+             revealed: Vec::new(),
++            creature_died_this_turn: false,
++            nontoken_creature_deaths_this_turn: Vec::new(),
+             activation_uses: BTreeMap::new(),
+             effects: Vec::new(),
+             shields: Vec::new(),

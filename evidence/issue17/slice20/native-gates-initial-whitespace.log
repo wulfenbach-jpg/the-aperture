@@ -1,0 +1,10 @@
+
+COMMAND: git rev-parse HEAD
+37f7cdb9983b9110e6b25b94845a5857c8903529
+
+COMMAND_EXIT=0
+
+COMMAND: git diff --check 7dc933a..HEAD
+evidence/issue17/slice20/native-focused.log:175: new blank line at EOF.
+
+COMMAND_EXIT=2
