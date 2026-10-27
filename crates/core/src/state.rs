@@ -1929,9 +1929,11 @@ impl GameState {
                 seen_top.push(*id);
             }
         }
-        let mut stack_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
+        let mut spell_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
         for item in &self.stack {
-            *stack_counts.entry(item.object).or_insert(0) += 1;
+            if item.entry == StackEntry::Spell {
+                *spell_counts.entry(item.object).or_insert(0) += 1;
+            }
         }
         for (key, object) in &self.objects {
             if *key != object.id {
@@ -1944,23 +1946,28 @@ impl GameState {
             }
             let listed = list_counts.get(key).copied().unwrap_or(0);
             let held = held_counts.get(key).copied().unwrap_or(0);
-            let stacked = stack_counts.get(key).copied().unwrap_or(0);
+            let spells = spell_counts.get(key).copied().unwrap_or(0);
+            // Ability stack entries are source references, not zone containers:
+            // any number of activated/triggered abilities may share one source.
+            // Only a spell object is itself a stack container, and it must be
+            // exactly one.
             let ok = match object.zone {
-                Zone::Battlefield => listed == 0 && held == 0 && stacked <= 1,
-                Zone::Removed => listed == 0 && held == 0 && stacked == 0,
-                Zone::Stack => listed == 0 && held == 0 && stacked == 1,
-                Zone::Library => listed + held == 1 && stacked == 0,
-                // A triggered ability keeps its source card in the zone it
-                // left while the ability is on the stack (CR 603.6c/d), so a
-                // graveyard/exile/command source may also have one stack entry.
+                Zone::Battlefield | Zone::Removed => {
+                    listed == 0
+                        && held == 0
+                        && spells == 0
+                        && (object.zone != Zone::Removed || spells == 0)
+                }
+                Zone::Stack => listed == 0 && held == 0 && spells == 1,
+                Zone::Library => listed + held == 1 && spells == 0,
                 Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Command => {
-                    listed == 1 && held == 0 && stacked <= 1
+                    listed == 1 && held == 0 && spells == 0
                 }
             };
             if !ok {
                 return Err(EngineError::InvalidState {
                     reason: format!(
-                        "object {key} in {} has {listed} zone-list and {stacked} stack container entr(ies); exactly one matching container is required",
+                        "object {key} in {} has {listed} zone-list and {spells} spell stack container entr(ies); exactly one matching container is required for a spell",
                         object.zone.name()
                     ),
                 });

@@ -10,9 +10,10 @@
   },
   "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
   "deck": "decks/package-slice20.txt",
-  "digest": "6d264b7ae09eb91360b0382c4c3c8c0ce5c44722a2255d802534a777f4fd8001",
+  "digest": "72cd69fb1143763fcd8fe1387b9a625c896538bdd389f33958d8705d8c7cdd48",
   "driver": "evidence-only masked attack/cast-preferring demonstrator; NOT product heuristic or strength evidence",
   "kind": "40-card package, not a desired starter",
+  "mandatory_bottom_acknowledgements": 16,
   "outcome": {
     "Win": {
       "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
@@ -27,7 +28,7 @@
   "snapshots_exact": true,
   "starting_life": 40,
   "status": "terminal",
-  "steps": 2048,
+  "steps": 2064,
   "take_choices": 5,
   "turns": 46
 }

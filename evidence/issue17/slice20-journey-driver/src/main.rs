@@ -41,6 +41,7 @@ fn main() {
     let mut activations = 0usize;
     let mut takes = 0usize;
     let mut bottoms = 0usize;
+    let mut mandatory_bottoms = 0usize;
     let mut take_toggle = false;
     while !game.state.is_over() && steps < 20000 {
         let player = game.decision_owner().expect("decision owner");
@@ -97,6 +98,11 @@ fn main() {
                     .map(|legal| legal.action.clone());
                 if wanted { takes += 1 } else { bottoms += 1 }
                 chosen
+            } else if offered.len() == 1
+                && matches!(offered[0].action, Action::AnswerTriggerChoice { use_ability: false })
+            {
+                mandatory_bottoms += 1;
+                Some(offered[0].action.clone())
             } else { None }
         } else { None };
         let activate = if top_choice.is_none() && view.pending_kind.is_none() && view.stack.is_empty() && view.active == player {
@@ -169,6 +175,7 @@ fn main() {
         "activations": activations,
         "take_choices": takes,
         "bottom_choices": bottoms,
+        "mandatory_bottom_acknowledgements": mandatory_bottoms,
         "outcome": game.state.outcome,
     });
     std::fs::write(
