@@ -38,7 +38,6 @@ fn main() {
     .unwrap();
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
-    let mut activations = 0usize;
     while !game.state.is_over() && steps < 20000 {
         let player = game.decision_owner().expect("decision owner");
         let view = game.view_for(player, &events);
@@ -93,7 +92,7 @@ fn main() {
             }).map(|legal| legal.action.clone())
         } else { None };
         let activate = if shock_own.is_none() && view.pending_kind.is_none() && view.stack.is_empty() && view.active == player {
-            view.legal.iter().find(|legal| matches!(&legal.action, Action::ActivateAbility { source, .. } if game.state.try_object(*source).is_some_and(|o| o.card == CardId::DragonScarredBear))).map(|legal| { activations += 1; legal.action.clone() })
+            view.legal.iter().find(|legal| matches!(&legal.action, Action::ActivateAbility { source, .. } if game.state.try_object(*source).is_some_and(|o| o.card == CardId::DragonScarredBear))).map(|legal| legal.action.clone())
         } else { None };
         let action = shock_own.or(activate).or(demo_action).unwrap_or_else(|| baseline.decide(&view).action);
         let revision = game.revision();
@@ -141,7 +140,12 @@ fn main() {
         casts.get("Dragon-Scarred Bear").copied().unwrap_or(0) > 0,
         "Dragon-Scarred Bear must actually be cast"
     );
+    let activations = events.iter().filter(|e| matches!(e, Event::AbilityActivated { card: CardId::DragonScarredBear, .. })).count();
+    let shield_created = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("gains a regeneration shield until cleanup"))).count();
+    let regenerations = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("is regenerated: destruction replaced"))).count();
     assert!(activations > 0, "the printed ability must be activated");
+    assert_eq!(shield_created, activations, "each resolved activation creates exactly one shield");
+    assert!(regenerations > 0, "at least one shield must actually replace destruction");
 
     std::fs::write(
         out.join("demo-replay.json"),
@@ -158,9 +162,9 @@ fn main() {
         "steps": steps, "turns": game.state.turn.number, "digest": game.digest(),
         "replay_events": replay_events.len(), "replay_digest_matches": true,
         "casts": casts,
-        "shield_created_events": events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("regeneration shield"))).count(),
-        "regeneration_events": events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("is regenerated"))).count(),
         "activations": activations,
+        "shield_created_events": shield_created,
+        "regeneration_events": regenerations,
         "outcome": game.state.outcome,
     });
     std::fs::write(

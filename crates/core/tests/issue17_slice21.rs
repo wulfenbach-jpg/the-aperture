@@ -360,3 +360,129 @@ fn regeneration_removes_a_blocked_attacker_from_combat_without_player_damage() {
         "blocked attacker did not hit the player"
     );
 }
+
+#[test]
+fn formidable_exact_eight_includes_current_power_and_survives_threshold_fall() {
+    let (mut g, bear) = shield_game(2109, &[CardId::GrizzlyBears, CardId::RuneclawBear], 10);
+    let grizzly = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    g.state
+        .objects
+        .get_mut(&grizzly)
+        .unwrap()
+        .counters
+        .add(aperture_core::counters::CounterKind::PlusOnePlusOne, 1);
+    assert!(
+        g.legal_actions()
+            .iter()
+            .any(|a| matches!(a.action, Action::ActivateAbility { source, .. } if source == bear))
+    );
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::ActivateAbility { source, .. } if source == bear))
+        .unwrap()
+        .action;
+    submit_ok(&mut g, P0, action);
+    g.state
+        .objects
+        .get_mut(&grizzly)
+        .unwrap()
+        .counters
+        .add(aperture_core::counters::CounterKind::PlusOnePlusOne, 0);
+    // Remove the +1/+1 counter after activation; the restriction was checked once.
+    g.state.objects.get_mut(&grizzly).unwrap().counters = Default::default();
+    drain(&mut g);
+    assert_eq!(
+        g.state.regeneration_shields.len(),
+        1,
+        "threshold fall after activation does not remove the shield"
+    );
+}
+
+#[test]
+fn zero_toughness_and_sacrifice_are_not_regeneration() {
+    let (mut g, bear) = shield_game(
+        2110,
+        &[
+            CardId::GrizzlyBears,
+            CardId::GrizzlyBears,
+            CardId::RuneclawBear,
+        ],
+        12,
+    );
+    activate_shield(&mut g, bear);
+    g.state
+        .objects
+        .get_mut(&bear)
+        .unwrap()
+        .counters
+        .add(aperture_core::counters::CounterKind::MinusOneMinusOne, 2);
+    for _ in 0..8 {
+        if g.state.object(bear).zone == Zone::Graveyard {
+            break;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert_eq!(
+        g.state.object(bear).zone,
+        Zone::Graveyard,
+        "zero toughness cannot be regenerated"
+    );
+    assert_eq!(
+        g.state.regeneration_shields.len(),
+        1,
+        "shield was not consumed"
+    );
+
+    let (mut g, bear) = shield_game(
+        2111,
+        &[
+            CardId::GrizzlyBears,
+            CardId::GrizzlyBears,
+            CardId::RuneclawBear,
+        ],
+        12,
+    );
+    activate_shield(&mut g, bear);
+    add(&mut g, CardId::Mountain);
+    add(&mut g, CardId::Forest);
+    let crack = add_hand(&mut g, CardId::CrackTheEarth);
+    cast(&mut g, crack, Vec::new());
+    for _ in 0..8 {
+        match &g.state.pending {
+            Some(Pending::ApnapSacrifice { player, .. }) => {
+                let p = *player;
+                let target = if p == P0 {
+                    bear
+                } else {
+                    g.state
+                        .battlefield(P1)
+                        .first()
+                        .map(|o| o.id)
+                        .unwrap_or(bear)
+                };
+                let action = g
+                    .legal_actions()
+                    .into_iter()
+                    .find(|a| matches!(a.action, Action::ChooseSacrifice { .. }))
+                    .map(|a| a.action);
+                if let Some(action) = action {
+                    submit_ok(&mut g, p, action);
+                }
+                let _ = target;
+            }
+            _ => break,
+        }
+    }
+    assert_eq!(
+        g.state.object(bear).zone,
+        Zone::Graveyard,
+        "sacrifice is not destruction"
+    );
+    assert_eq!(
+        g.state.regeneration_shields.len(),
+        1,
+        "shield was not consumed"
+    );
+}

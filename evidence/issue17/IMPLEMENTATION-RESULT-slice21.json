@@ -25,7 +25,7 @@
   },
   "red": "issue17_slice21 dragon_scarred_bear_is_sourced_and_supported failed before implementation",
   "focused": {
-    "issue17_slice21": "6 passed",
+    "issue17_slice21": "8 passed",
     "engine cleanup unit": "passed",
     "card_printings": "8 passed",
     "catalog_pool": "5 passed",
@@ -34,7 +34,9 @@
     "replay_digest": "6 passed",
     "fmt": "exit 0",
     "clippy": "workspace -D warnings exit 0",
-    "release": "exit 0"
+    "release": "exit 0",
+    "legacy_slice20_replay": "exit 0, digest 72cd69fb1143 matched",
+    "gates_log": "evidence/issue17/slice21/gates.log"
   },
   "journey": {
     "package": "decks/package-slice21.txt",
@@ -51,13 +53,14 @@
     "replay_digest_matches": true,
     "fresh_save_roundtrip": true,
     "bear_casts": 7,
-    "activations": 9,
+    "activations": 25,
     "shield_created_events": 25,
     "regeneration_events": 1
   },
   "deviations": [
-    "Formidable is a bounded activation-time card-specific check",
-    "AI changes are mechanical shield-field initialization only",
+    "Formidable uses 207.2c plus activation restriction 602.1b/602.5",
+    "AI changes are mechanical shield-field initialization only at search.rs:727 and tests/common.rs:83",
+    "Journey driver reads public battlefield/shield bookkeeping only; submits projected legal actions",
     "No full workspace matrix rerun"
   ],
   "remaining": [

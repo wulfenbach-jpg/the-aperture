@@ -2979,7 +2979,7 @@ impl Game {
                 return Err(EngineError::illegal(
                     "activate ability",
                     format!(
-                        "Formidable requires creatures you control to have total power 8 or greater (current {total}; CR 702.102a)"
+                        "Formidable requires creatures you control to have total power 8 or greater (current {total}; CR 207.2c; activation restriction 602.1b/602.5)"
                     ),
                 ));
             }
@@ -4747,27 +4747,15 @@ impl Game {
                 changed = true;
             }
 
-            let zero_toughness: Vec<ObjectId> = self
+            let dying: Vec<ObjectId> = self
                 .state
                 .objects
                 .values()
-                .filter(|o| o.zone == Zone::Battlefield && o.is_creature() && o.toughness() <= 0)
+                .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
+                .filter(|o| o.toughness() <= 0 || o.damage as i32 >= o.toughness())
                 .map(|o| o.id)
                 .collect();
-            let lethal: Vec<ObjectId> = self
-                .state
-                .objects
-                .values()
-                .filter(|o| {
-                    o.zone == Zone::Battlefield
-                        && o.is_creature()
-                        && o.toughness() > 0
-                        && o.damage as i32 >= o.toughness()
-                })
-                .map(|o| o.id)
-                .collect();
-            if !zero_toughness.is_empty() || !lethal.is_empty() {
-                let dying: Vec<ObjectId> = zero_toughness.into_iter().chain(lethal).collect();
+            if !dying.is_empty() {
                 // CR 704.3 + 603.6c: the whole batch is one event. Snapshot the
                 // watchers before anything leaves the battlefield and dispatch
                 // once for every death, so the result does not depend on which
@@ -4794,10 +4782,17 @@ impl Game {
                 }
                 self.queue_watchers_for_deaths(&watchers, &deaths);
                 events.push(Event::StateBasedAction {
-                    description: format!(
-                        "{} creature(s) had lethal damage or toughness 0; {} regenerated, {} were put into the graveyard (CR 704.5f, 704.5g)",
-                        dying.len(), regenerated, deaths.len()
-                    ),
+                    description: if regenerated == 0 {
+                        format!(
+                            "{} creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)",
+                            dying.len()
+                        )
+                    } else {
+                        format!(
+                            "{} creature(s) had lethal damage or toughness 0; {} regenerated, {} were put into the graveyard (CR 704.5f, 704.5g)",
+                            dying.len(), regenerated, deaths.len()
+                        )
+                    },
                 });
                 changed = true;
             }
