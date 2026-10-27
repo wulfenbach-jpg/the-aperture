@@ -26,9 +26,12 @@
 `surrak_goreclaw_is_sourced_and_supported` before registration.
 
 ## Focused green
-- issue17_slice24: 6 passed (real offered cast, trigger buff/haste on entered nontoken,
+- issue17_slice24: 10 passed (real offered cast, trigger buff/haste on entered nontoken,
   older creature unaffected and cleanup expiry, static trample in real blocked combat,
-  bounce/recast same id triggers once, midtrigger save/reload parity).
+  bounce/recast same id triggers once, midtrigger save/reload parity, hasty Werebear
+  actually offered as a mana source, mandatory non-target trigger retained after entered
+  departure with affected binding invalidated, real source-left Surrak continuation, and
+  token/opponent filtering).
 - card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43, replay_digest 6.
 - fmt check, workspace clippy -D warnings, release CLI all exit 0; exits in
   `evidence/issue17/slice24/gates.log`.
@@ -49,5 +52,6 @@ replay matched and fresh save round-tripped. Digest
 - Source-left Surrak trigger and a tap-cost haste activation are not directly tested;
   haste attack legality, cleanup expiry, bounce/recast and midtrigger save are covered.
 - No full workspace matrix rerun; exact-head CI owns it.
-- New `TriggerRef`/`StackItem.affected` fields are mechanically initialized in legacy test
-  literals; AI has no new GameState field or policy change.
+- New `TriggerRef`/`StackItem.affected` fields are serde-default/skipped and mechanically
+  initialized in legacy test literals; AI has no new GameState field or policy change.
+- Midtrigger save test uses a sandbox/direct fixture, not a reachable action-history save.

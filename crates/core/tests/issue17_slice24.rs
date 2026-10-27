@@ -1,6 +1,78 @@
 //! Slice 24: Surrak and Goreclaw static trample, nontoken entry counter/haste.
 mod common;
 use aperture_core::catalog;
+
+#[test]
+fn native_hasty_werebear_mana_ability_is_actually_offered() {
+    let mut board = land8();
+    board.push(card("Surrak and Goreclaw"));
+    let mut g = fixture(2490)
+        .hand(P0, &[card("Werebear")])
+        .battlefield(P0, &board)
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let werebear = hand_card(&g, P0, card("Werebear"));
+    cast(&mut g, werebear);
+    assert!(g.state.object(werebear).summoning_sick);
+    assert!(
+        g.state
+            .effects
+            .iter()
+            .any(|e| e.kind == ContinuousKind::GrantsHaste && e.target == werebear)
+    );
+    assert!(
+        g.legal_actions()
+            .iter()
+            .any(|a| matches!(a.action, Action::ActivateManaAbility { land } if land == werebear)),
+        "haste must reach the actual offered mana-source list, not only validation"
+    );
+}
+
+#[test]
+fn native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves() {
+    let mut board = land8();
+    board.extend([CardId::Island, card("Surrak and Goreclaw")]);
+    let mut g = fixture(2491)
+        .hand(P0, &[CardId::GrizzlyBears, CardId::Unsummon])
+        .battlefield(P0, &board)
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bear = hand_card(&g, P0, CardId::GrizzlyBears);
+    let a = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::CastSpell { card, .. } if card == bear))
+        .unwrap()
+        .action;
+    submit_ok(&mut g, P0, a);
+    submit_ok(&mut g, P0, Action::Pass);
+    submit_ok(&mut g, P1, Action::Pass);
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|s| s.card == card("Surrak and Goreclaw"))
+    );
+    let bounce = hand_card(&g, P0, CardId::Unsummon);
+    let a = g.legal_actions().into_iter().find(|a| matches!(&a.action, Action::CastSpell { card, targets } if *card == bounce && targets == &vec![Target::Permanent(bear)])).unwrap().action;
+    submit_ok(&mut g, P0, a);
+    submit_ok(&mut g, P0, Action::Pass);
+    submit_ok(&mut g, P1, Action::Pass);
+    assert_eq!(g.state.object(bear).zone, Zone::Hand);
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|s| s.card == card("Surrak and Goreclaw")),
+        "a mandatory non-target trigger resolves with no effect; departure cannot silently delete it"
+    );
+    drain(&mut g);
+}
+
 #[test]
 fn surrak_goreclaw_is_sourced_and_supported() {
     let def = catalog::by_name("Surrak and Goreclaw")
@@ -341,5 +413,103 @@ fn midtrigger_save_reload_finishes_identically() {
             .effects
             .iter()
             .any(|e| e.kind == ContinuousKind::GrantsHaste && e.target == grizzly)
+    );
+}
+
+#[test]
+fn source_left_trigger_still_buffs_the_original_entered_creature() {
+    let mut b = vec![CardId::Forest; 8];
+    b.push(CardId::Island);
+    b.push(card("Surrak and Goreclaw"));
+    let mut g = fixture(2406)
+        .hand(P0, &[CardId::GrizzlyBears, CardId::Unsummon])
+        .battlefield(P0, &b)
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let surrak = battlefield_card(&g, P0, card("Surrak and Goreclaw"));
+    let bear = hand_card(&g, P0, CardId::GrizzlyBears);
+    let a = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action,Action::CastSpell{card,..} if card==bear))
+        .unwrap()
+        .action;
+    submit_ok(&mut g, P0, a);
+    submit_ok(&mut g, P0, Action::Pass);
+    submit_ok(&mut g, P1, Action::Pass);
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|s| s.card == card("Surrak and Goreclaw"))
+    );
+    let unsummon = hand_card(&g, P0, CardId::Unsummon);
+    let a=g.legal_actions().into_iter().find(|a|matches!(&a.action,Action::CastSpell{card,targets} if *card==unsummon && targets==&vec![Target::Permanent(surrak)])).unwrap().action;
+    submit_ok(&mut g, P0, a);
+    submit_ok(&mut g, P0, Action::Pass);
+    submit_ok(&mut g, P1, Action::Pass);
+    assert_eq!(
+        g.state.object(surrak).zone,
+        Zone::Hand,
+        "source left the battlefield"
+    );
+    drain(&mut g);
+    assert_eq!(
+        g.state
+            .object(bear)
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        1
+    );
+    assert!(
+        g.state
+            .effects
+            .iter()
+            .any(|e| e.kind == ContinuousKind::GrantsHaste && e.target == bear)
+    );
+}
+
+#[test]
+fn token_and_opponent_entries_do_not_trigger_surrak() {
+    let mut b = vec![CardId::Mountain; 2];
+    b.push(card("Surrak and Goreclaw"));
+    let mut g = fixture(2407)
+        .hand(P0, &[card("Goblin Instigator")])
+        .battlefield(P0, &b)
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let goblin = hand_card(&g, P0, card("Goblin Instigator"));
+    cast(&mut g, goblin);
+    let goblin = battlefield_card(&g, P0, card("Goblin Instigator"));
+    assert_eq!(
+        g.state
+            .object(goblin)
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        1,
+        "nontoken own Goblin qualifies"
+    );
+    let token = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == CardId::GoblinToken)
+        .expect("token created");
+    assert_eq!(
+        token
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        0,
+        "token does not qualify"
+    );
+    assert!(
+        !g.state
+            .effects
+            .iter()
+            .any(|e| e.kind == ContinuousKind::GrantsHaste && e.target == token.id)
     );
 }

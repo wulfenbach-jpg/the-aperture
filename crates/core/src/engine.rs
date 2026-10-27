@@ -616,7 +616,7 @@ impl Game {
     }
 
     fn add_haste_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
-        let card = self.state.object(item.object).card;
+        let card = item.card;
         let timestamp = self.next_timestamp();
         let id = self.next_effect_id();
         self.state.effects.push(ContinuousEffect {
@@ -927,7 +927,7 @@ impl Game {
                 if let Some(color) = def.basic_mana {
                     Some((o.id, color, 1))
                 } else if let Some(color) = o.card.creature_mana() {
-                    (!o.summoning_sick).then_some((o.id, color, 1))
+                    (!o.summoning_sick || self.has_haste(o)).then_some((o.id, color, 1))
                 } else {
                     def.artifact_mana
                         .map(|(color, amount)| (o.id, color, amount))
@@ -1064,13 +1064,54 @@ impl Game {
             self.state
                 .regeneration_shields
                 .retain(|shield| shield.object != id);
-            // A captured "it" from a battlefield entry is one incarnation: if
-            // that object leaves before the trigger resolves, the pending
-            // entry no longer refers to the entered permanent.
-            self.state
-                .trigger_queue
-                .retain(|trigger| trigger.affected != Some(id));
-            self.state.stack.retain(|item| item.affected != Some(id));
+            // A captured "it" from a battlefield entry is one incarnation.
+            // The mandatory ability stays queued/on the stack, but its affected
+            // binding is invalidated so it resolves without touching a later
+            // incarnation of the same card.
+            for trigger in &mut self.state.trigger_queue {
+                if trigger.affected == Some(id) {
+                    trigger.affected = None;
+                }
+            }
+            for item in &mut self.state.stack {
+                if item.affected == Some(id) {
+                    item.affected = None;
+                }
+            }
+            if let Some(pending) = &mut self.state.pending {
+                match pending {
+                    Pending::TriggerTarget {
+                        trigger, queued, ..
+                    } => {
+                        if trigger.affected == Some(id) {
+                            trigger.affected = None;
+                        }
+                        for trigger in queued.iter_mut() {
+                            if trigger.affected == Some(id) {
+                                trigger.affected = None;
+                            }
+                        }
+                    }
+                    Pending::TriggerChoice { trigger, .. } => {
+                        if trigger.affected == Some(id) {
+                            trigger.affected = None;
+                        }
+                    }
+                    Pending::TriggerMode {
+                        trigger, queued, ..
+                    } => {
+                        if trigger.affected == Some(id) {
+                            trigger.affected = None;
+                        }
+                        for trigger in queued.iter_mut() {
+                            if trigger.affected == Some(id) {
+                                trigger.affected = None;
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
         }
         for player in &mut self.state.players {
             player.library.retain(|c| *c != id);
@@ -6227,7 +6268,7 @@ impl Game {
                     self.add_haste_grant(item, target, events);
                     events.push(Event::StateBasedAction {
                         description: format!(
-                            "{name} enters with a +1/+1 counter and gains haste until end of turn"
+                            "{name} gets a +1/+1 counter and gains haste until end of turn"
                         ),
                     });
                 }

@@ -2247,6 +2247,18 @@ impl GameState {
                 }
             }
         }
+        for trigger in &self.trigger_queue {
+            if let Some(affected) = trigger.affected
+                && !self.objects.contains_key(&affected)
+            {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "queued trigger {} references missing affected object {affected}",
+                        trigger.source
+                    ),
+                });
+            }
+        }
         for item in &self.stack {
             let Some(object) = self.objects.get(&item.object) else {
                 return Err(EngineError::InvalidState {

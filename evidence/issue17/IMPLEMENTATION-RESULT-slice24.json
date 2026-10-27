@@ -25,7 +25,7 @@
   },
   "red": "issue17_slice24 surrak_goreclaw_is_sourced_and_supported failed before implementation",
   "focused": {
-    "issue17_slice24": "6 passed",
+    "issue17_slice24": "10 passed",
     "card_printings": "8 passed",
     "catalog_pool": "5 passed",
     "issue17_slice15_corpus": "2 passed",
@@ -60,5 +60,16 @@
     "source-left Surrak and tap-cost haste activation not directly tested",
     "no full workspace matrix rerun"
   ],
-  "note": "trigger/stack affected fields are serde default; no new GameState field or AI policy change"
+  "note": "trigger/stack affected fields are serde default; no new GameState field or AI policy change",
+  "repair": {
+    "native_red": "evidence/issue17/slice24/native-behavior-red.log",
+    "fixed": [
+      "mana_sources honors has_haste so hasty Werebear is actually offered",
+      "affected binding invalidated (None) on battlefield departure while mandatory trigger remains queued/stacked/pending",
+      "add_haste_grant uses captured item.card",
+      "narrative wording says gets counter; trigger queue affected refs validated",
+      "source-left and token controls added"
+    ],
+    "gates": "evidence/issue17/slice24/repair-gates.log"
+  }
 }
