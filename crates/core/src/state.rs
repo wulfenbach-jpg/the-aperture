@@ -186,7 +186,7 @@ pub enum Pending {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         first: Option<crate::action::Target>,
     },
-    /// Ayula's printed "choose one" is chosen before targets (CR 601.2b).
+    /// Ayula's printed "choose one" is chosen before targets (CR 603.3c, 700.2b).
     /// Reuses the existing answer action: true selects counters, false selects
     /// fight. Only legal modes are offered.
     TriggerMode {
@@ -406,7 +406,7 @@ impl Pending {
                 trigger.card.name()
             ),
             Pending::TriggerMode { player, .. } => {
-                format!("P{player}: choose Ayula's counter or fight mode (CR 601.2b)")
+                format!("P{player}: choose Ayula's counter or fight mode (CR 603.3c, 700.2b)")
             }
         }
     }
@@ -898,15 +898,18 @@ impl GameState {
                     trigger,
                     legal,
                     queued,
+                    first,
                     ..
                 } => {
                     trigger_ref(trigger)
                         || legal.iter().any(target_ref)
                         || queued.iter().any(trigger_ref)
+                        || first.as_ref().is_some_and(target_ref)
                 }
-                Pending::TriggerChoice { trigger, .. } | Pending::TriggerMode { trigger, .. } => {
-                    trigger_ref(trigger)
-                }
+                Pending::TriggerChoice { trigger, .. } => trigger_ref(trigger),
+                Pending::TriggerMode {
+                    trigger, queued, ..
+                } => trigger_ref(trigger) || queued.iter().any(trigger_ref),
                 Pending::Mulligan { .. }
                 | Pending::BottomCards { .. }
                 | Pending::DeclareAttackers { .. }

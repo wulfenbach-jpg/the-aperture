@@ -2248,3 +2248,177 @@ fn ayula_omits_fight_mode_when_no_opposing_creature_exists() {
         "the counters mode remains available"
     );
 }
+
+#[test]
+fn ayula_fight_uses_prevention_in_both_directions_independently() {
+    let mut game = ayula_game();
+    for _ in 0..2 {
+        add_permanent(&mut game, P0, CardId::Forest);
+    }
+    let ayula = game.state.player(P0).command_zone[0];
+    cast_and_resolve(&mut game, P0, ayula);
+    let ayula = game
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == CardId::AyulaQueenAmongBears)
+        .expect("Ayula")
+        .id;
+    let opponent = add_permanent(&mut game, P1, CardId::GrizzlyBears);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_to_hand(&mut game, P0, CardId::GrizzlyBears);
+    let entering = hand_card_id(&game, P0, CardId::GrizzlyBears);
+    cast_and_resolve(&mut game, P0, entering);
+    game.submit_action(
+        P0,
+        aperture_core::Action::AnswerTriggerChoice { use_ability: false },
+    )
+    .expect("fight");
+    game.submit_action(
+        P0,
+        aperture_core::Action::ChooseTriggerTarget {
+            target: aperture_core::Target::Permanent(ayula),
+        },
+    )
+    .expect("first target");
+    assert_eq!(game.state.stack.last().map(|i| i.targets.len()), Some(2));
+    // Shield only Ayula: the Grizzly still takes Ayula's 2 damage, while
+    // Ayula's incoming 2 is prevented.
+    add_permanent(&mut game, P0, CardId::Plains);
+    add_to_hand(&mut game, P0, CardId::MendingHands);
+    let hands = hand_card_id(&game, P0, CardId::MendingHands);
+    game.submit_action(
+        P0,
+        aperture_core::Action::CastSpell {
+            card: hands,
+            targets: vec![aperture_core::Target::Permanent(ayula)],
+        },
+    )
+    .expect("cast Mending Hands");
+    game.submit_action(P0, aperture_core::Action::Pass)
+        .expect("pass");
+    game.submit_action(P1, aperture_core::Action::Pass)
+        .expect("resolve hands");
+    while !game.state.stack.is_empty() || game.state.pending.is_some() {
+        if matches!(
+            game.state.pending,
+            Some(aperture_core::Pending::CommanderReturn { .. })
+        ) {
+            game.submit_action(
+                P0,
+                aperture_core::Action::AnswerCommanderReturn {
+                    to_command_zone: true,
+                },
+            )
+            .expect("command zone");
+            continue;
+        }
+        assert!(
+            game.state.pending.is_none(),
+            "unexpected {:?}",
+            game.state.pending
+        );
+        let p = game.decision_owner().expect("priority");
+        game.submit_action(p, aperture_core::Action::Pass)
+            .expect("pass");
+    }
+    assert_eq!(
+        game.state.object(ayula).zone,
+        aperture_core::Zone::Battlefield
+    );
+    assert_eq!(
+        game.state.object(ayula).damage,
+        0,
+        "Ayula's damage was prevented"
+    );
+    assert_eq!(
+        game.state.object(opponent).zone,
+        aperture_core::Zone::Graveyard
+    );
+}
+
+#[test]
+fn ayula_trigger_still_resolves_after_its_source_leaves() {
+    let mut game = ayula_game();
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_permanent(&mut game, P0, CardId::Forest);
+    let ayula = game.state.player(P0).command_zone[0];
+    cast_and_resolve(&mut game, P0, ayula);
+    let ayula = game
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == CardId::AyulaQueenAmongBears)
+        .expect("Ayula")
+        .id;
+    let target = add_permanent(&mut game, P0, CardId::GrizzlyBears);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_to_hand(&mut game, P0, CardId::GrizzlyBears);
+    let entering = hand_card_id(&game, P0, CardId::GrizzlyBears);
+    cast_and_resolve(&mut game, P0, entering);
+    if matches!(
+        game.state.pending,
+        Some(aperture_core::Pending::TriggerMode { .. })
+    ) {
+        game.submit_action(
+            P0,
+            aperture_core::Action::AnswerTriggerChoice { use_ability: true },
+        )
+        .expect("counters mode");
+    }
+    game.submit_action(
+        P0,
+        aperture_core::Action::ChooseTriggerTarget {
+            target: aperture_core::Target::Permanent(target),
+        },
+    )
+    .expect("target");
+    add_permanent(&mut game, P0, CardId::Mountain);
+    add_to_hand(&mut game, P0, CardId::Shock);
+    let shock = hand_card_id(&game, P0, CardId::Shock);
+    game.submit_action(
+        P0,
+        aperture_core::Action::CastSpell {
+            card: shock,
+            targets: vec![aperture_core::Target::Permanent(ayula)],
+        },
+    )
+    .expect("kill Ayula in response");
+    game.submit_action(P0, aperture_core::Action::Pass)
+        .expect("pass");
+    game.submit_action(P1, aperture_core::Action::Pass)
+        .expect("resolve shock");
+    while game.state.pending.is_some() {
+        assert!(matches!(
+            game.state.pending,
+            Some(aperture_core::Pending::CommanderReturn { .. })
+        ));
+        game.submit_action(
+            P0,
+            aperture_core::Action::AnswerCommanderReturn {
+                to_command_zone: true,
+            },
+        )
+        .expect("command zone");
+    }
+    while game
+        .state
+        .stack
+        .last()
+        .is_some_and(|item| item.entry != aperture_core::StackEntry::Spell)
+    {
+        let p = game.decision_owner().expect("priority");
+        game.submit_action(p, aperture_core::Action::Pass)
+            .expect("pass");
+    }
+    assert_eq!(
+        game.state
+            .object(target)
+            .counters
+            .get(aperture_core::counters::CounterKind::PlusOnePlusOne),
+        2,
+        "the trigger still resolves after Ayula leaves"
+    );
+}

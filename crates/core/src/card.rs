@@ -206,7 +206,7 @@ pub enum Effect {
     /// Create one 2/2 green Bear token per nontoken creature its controller
     /// owned that was put into their graveyard from the battlefield this turn.
     CreateBearTokensForEachDeathThisTurn,
-    /// CR 701.12a: two target creatures deal damage equal to their power to
+    /// CR 701.14a: two target creatures deal damage equal to their power to
     /// each other simultaneously. Both must still satisfy the printed
     /// Bear/opponent relation at resolution or no damage is dealt.
     FightTargets,

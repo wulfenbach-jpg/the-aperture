@@ -3227,11 +3227,14 @@ impl Game {
         let counter_ok = !counters.is_empty();
         let fight_ok = !fight_targets.is_empty() && !opponents.is_empty();
         match (counter_ok, fight_ok) {
-            (false, false) => events.push(Event::TriggerRemoved {
-                controller: trigger.controller,
-                card: trigger.card,
-                reason: "neither mode has legal targets (CR 601.2b, 603.3d)".to_string(),
-            }),
+            (false, false) => {
+                events.push(Event::TriggerRemoved {
+                    controller: trigger.controller,
+                    card: trigger.card,
+                    reason: "neither mode has legal targets (CR 603.3c, 700.2b)".to_string(),
+                });
+                self.stage_triggers(queued, events);
+            }
             (true, false) => {
                 trigger.ability = 0;
                 self.stage_ayula_target(trigger, queued, 0, events);
@@ -3265,7 +3268,7 @@ impl Game {
         };
         let legal = self.legal_targets(trigger.controller, spec, trigger.source);
         match legal.len() {
-            0 => {}
+            0 => self.stage_triggers(queued, events),
             1 => {
                 if mode == 1 {
                     self.ask_ayula_second(trigger, legal[0], queued, events);
@@ -3376,42 +3379,42 @@ impl Game {
         use_ability: bool,
         events: &mut Vec<Event>,
     ) {
-        if let Some(Pending::TriggerMode {
-            trigger, queued, ..
-        }) = self.state.pending.take()
-        {
-            let mode = u8::from(!use_ability);
-            let mut trigger = trigger;
-            trigger.ability = mode;
-            self.stage_ayula_target(trigger, queued, mode, events);
-            self.state.turn.priority = None;
-            return;
-        }
-        let Some(Pending::TriggerChoice { trigger, .. }) = self.state.pending.take() else {
-            return;
-        };
-        if use_ability {
-            if let Some(top) = self.state.stack.last_mut()
-                && top.object == trigger.source
-                && matches!(top.entry, StackEntry::Triggered { .. })
-            {
-                top.trigger_answered = true;
+        match self.state.pending.take() {
+            Some(Pending::TriggerMode {
+                trigger, queued, ..
+            }) => {
+                let mode = u8::from(!use_ability);
+                let mut trigger = trigger;
+                trigger.ability = mode;
+                self.stage_ayula_target(trigger, queued, mode, events);
+                self.state.turn.priority = None;
             }
-            self.state.resolving = Some(trigger.source);
-        } else {
-            events.push(Event::TriggerDeclined {
-                controller: player,
-                card: trigger.card,
-            });
-            self.pop_ability(
-                trigger.source,
-                StackEntry::Triggered {
-                    ability: trigger.ability,
-                },
-            );
-            self.state.resolving = None;
+            Some(Pending::TriggerChoice { trigger, .. }) => {
+                if use_ability {
+                    if let Some(top) = self.state.stack.last_mut()
+                        && top.object == trigger.source
+                        && matches!(top.entry, StackEntry::Triggered { .. })
+                    {
+                        top.trigger_answered = true;
+                    }
+                    self.state.resolving = Some(trigger.source);
+                } else {
+                    events.push(Event::TriggerDeclined {
+                        controller: player,
+                        card: trigger.card,
+                    });
+                    self.pop_ability(
+                        trigger.source,
+                        StackEntry::Triggered {
+                            ability: trigger.ability,
+                        },
+                    );
+                    self.state.resolving = None;
+                }
+                self.state.turn.priority = None;
+            }
+            _ => {}
         }
-        self.state.turn.priority = None;
     }
 
     /// Remove exactly one ability stack entry, whatever happened to its source.
@@ -5755,7 +5758,7 @@ impl Game {
                 });
                 if !valid {
                     events.push(Event::StateBasedAction {
-                        description: "fight does not happen because a target no longer matches the printed relation (CR 701.12a)".to_string(),
+                        description: "fight does not happen because a target no longer matches the printed relation (CR 701.14b)".to_string(),
                     });
                     return false;
                 }
@@ -6709,13 +6712,13 @@ impl Game {
                 LegalAction {
                     action: Action::AnswerTriggerChoice { use_ability: true },
                     label: "Choose counters: put two +1/+1 counters on target Bear".to_string(),
-                    rules: vec!["601.2b"],
+                    rules: vec!["603.3c", "700.2b"],
                 },
                 LegalAction {
                     action: Action::AnswerTriggerChoice { use_ability: false },
                     label: "Choose fight: target Bear you control fights another creature"
                         .to_string(),
-                    rules: vec!["601.2b", "701.12a"],
+                    rules: vec!["603.3c", "700.2b", "701.14a"],
                 },
             ],
             Pending::TriggerChoice { trigger, .. } => vec![
@@ -7238,5 +7241,76 @@ mod slice17_cleanup_history_tests {
         assert!(game.state.creature_died_this_turn);
         assert_eq!(game.state.nontoken_creature_deaths_this_turn, vec![1, 0]);
         assert_eq!(game.state.turn.number, 1, "cleanup is still the same turn");
+    }
+
+    #[test]
+    fn ayula_removed_trigger_does_not_drop_the_rest_of_the_batch() {
+        let decks = vec![
+            DeckList::parse_practice("A", "40 Forest\n").expect("deck A"),
+            DeckList::parse_practice("B", "40 Forest\n").expect("deck B"),
+        ];
+        let mut game = Game::new(19_018, &decks).expect("game");
+        let mut add = |card: CardId, zone: Zone, controller: PlayerId| {
+            let id = ObjectId(game.state.next_object);
+            game.state.next_object += 1;
+            game.state.objects.insert(
+                id,
+                Object {
+                    id,
+                    card,
+                    owner: controller,
+                    controller,
+                    zone,
+                    commander: None,
+                    tapped: false,
+                    damage: 0,
+                    summoning_sick: false,
+                    pump_power: 0,
+                    pump_toughness: 0,
+                    plus_one_counters: 0,
+                    counters: crate::counters::Counters::default(),
+                },
+            );
+            id
+        };
+        let ayula = add(CardId::AyulaQueenAmongBears, Zone::Graveyard, P0);
+        let warden = add(CardId::SoulsAttendant, Zone::Battlefield, P0);
+        let mut events = Vec::new();
+        game.stage_triggers(
+            vec![
+                TriggerRef {
+                    source: ayula,
+                    card: CardId::AyulaQueenAmongBears,
+                    controller: P0,
+                    ability: 0,
+                    seq: 0,
+                },
+                TriggerRef {
+                    source: warden,
+                    card: CardId::SoulsAttendant,
+                    controller: P0,
+                    ability: 0,
+                    seq: 1,
+                },
+            ],
+            &mut events,
+        );
+        assert!(
+            events.iter().any(|event| matches!(
+                event,
+                Event::TriggerRemoved {
+                    card: CardId::AyulaQueenAmongBears,
+                    ..
+                }
+            )),
+            "Ayula has no Bear and must be removed"
+        );
+        assert!(
+            game.state
+                .stack
+                .iter()
+                .any(|item| item.card == CardId::SoulsAttendant),
+            "the second trigger must still be placed"
+        );
     }
 }

@@ -9,7 +9,7 @@
   ],
   "sources": "fixtures/starter-corpus/slice18-sourced.json; retrieved 2026-10-26T23:40:57.955217+00:00",
   "tests": {
-    "command_zone_setup": "39 passed",
+    "command_zone_setup": "41 passed",
     "issue17_slice17": "6 passed",
     "card_printings": "8 passed",
     "catalog_pool": "5 passed",
@@ -17,7 +17,10 @@
     "issue13_commander_combat": "43 passed",
     "clippy": "workspace -D warnings exit 0",
     "fmt": "exit 0",
-    "release": "aperture-cli built"
+    "release": "aperture-cli built",
+    "abilities": "13 passed",
+    "lib": "13 passed",
+    "rules_conformance": "5 passed"
   },
   "journey": {
     "seed": 1616,
@@ -52,5 +55,32 @@
     "Ayula 30 missing desired cards",
     "Eight lists gate open",
     "No full workspace suite rerun after slice18"
-  ]
+  ],
+  "repair": {
+    "parent": "9c3a594",
+    "commit": "branch head (final receipt)",
+    "fixed": [
+      "optional TriggerChoice regression",
+      "queued trigger drain",
+      "fight/mode citations",
+      "archived refs first/queued"
+    ],
+    "red": [
+      "abilities optional_trigger... failed at 9c3a594: 12 passed/1 failed (\"declining is a typed event\")",
+      "scratch-revert queued trigger test failed \"the second trigger must still be placed\""
+    ],
+    "added_coverage": [
+      "source-left resolution",
+      "fight prevention via Mending Hands",
+      "fight target departure",
+      "unavailable fight mode",
+      "token vs opponent trigger"
+    ],
+    "still_missing": [
+      "Ayula pending TriggerMode save/load/replay",
+      "two-target half-answered save/replay",
+      "forged archived-state refusal test",
+      "forged pending-action refusal test"
+    ]
+  }
 }
