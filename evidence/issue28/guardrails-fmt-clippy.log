@@ -1,0 +1,6 @@
+fmt exit=0
+    Checking aperture-ai v0.1.0 (C:\AI\mtg-slice\.worktrees\t_df6dd2e0\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\mtg-slice\.worktrees\t_df6dd2e0\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\mtg-slice\.worktrees\t_df6dd2e0\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.75s
+clippy exit=0

@@ -1,0 +1,37 @@
+### GREEN: guardrail suite on the committed source (both RED probes removed)
+   Compiling aperture-ai v0.1.0 (C:\AI\mtg-slice\.worktrees\t_df6dd2e0\crates\ai)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.20s
+     Running tests\review_honesty.rs (target\debug\deps\review_honesty-ec1636114db8ee48.exe)
+
+running 27 tests
+test a_fabricated_percentage_is_rejected_with_no_negation_excuse ... ok
+test a_positional_reason_topic_fails_against_the_engine_explanations ... ok
+test a_sentence_labelled_as_a_rule_must_cite_the_rule ... ok
+test a_strategy_record_may_not_be_quoted_as_a_rule ... ok
+test a_percentage_in_a_review_payload_fails ... ok
+test a_tie_claimed_as_a_unique_choice_fails ... ok
+test an_unregistered_reason_tag_fails ... ok
+test a_blunder_verdict_in_a_review_payload_fails ... ok
+test a_truncated_analysis_may_not_claim_reproducibility ... ok
+test a_sentence_without_evidence_fails ... ok
+test a_fabricated_line_step_fails ... ok
+test an_engine_rule_sentence_is_clean_and_traceable ... ok
+test an_unscored_row_prints_no_mean_and_a_scored_row_prints_its_count ... ok
+test probability_and_strength_vocabulary_is_rejected ... ok
+test ordinary_review_copy_passes ... ok
+test audit_review_and_payload_texts_agree_on_the_corpus ... ok
+test the_copy_scanner_actually_sees_string_literals ... ok
+test the_budget_line_is_a_pure_function_of_the_record ... ok
+test every_formatter_output_is_clean_and_carries_evidence ... ok
+test the_shipped_disclaimers_stay_allowed ... ok
+test the_reason_registry_matches_the_spec_table ... ok
+test the_two_sections_stay_separate_and_complete ... ok
+test verdict_labels_are_rejected_outside_a_negation ... ok
+test every_honest_payload_in_the_corpus_is_clean ... ok
+test payloads_round_trip_through_json_byte_identically ... ok
+test uncertainty_states_must_match_the_sample_counts ... ok
+test review_facing_copy_strings_are_honest ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+exit=0

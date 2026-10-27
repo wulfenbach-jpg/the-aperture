@@ -3,6 +3,7 @@
 
 mod decider;
 mod heuristic;
+pub mod review;
 mod search;
 mod selfplay;
 

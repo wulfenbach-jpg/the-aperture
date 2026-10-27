@@ -1,0 +1,66 @@
+{
+  "spec": "move-review/1.0",
+  "binding": {
+    "seat": 0,
+    "generation": 3,
+    "revision": 12,
+    "decision": 40,
+    "view_digest": "masked-projection:4f9c1e",
+    "rules_revision": "2026-09-25"
+  },
+  "budget": {
+    "seeds": 2,
+    "node_budget": 30000,
+    "max_rollout_nodes": 6000,
+    "max_millis": "unbounded",
+    "max_candidates": 6,
+    "decisions_used": 5387,
+    "stop": "node_budget",
+    "cancelled": false,
+    "reproducible": true,
+    "fidelity": "belief deck re-dealt at the observed counts; the search world is not the real game"
+  },
+  "candidates": [
+    {
+      "offer_index": 0,
+      "move_label": "Play Forest",
+      "offer_rules": ["117.1a"],
+      "score": 0.5,
+      "scored_samples": 2,
+      "without_result": 0,
+      "refused_times": 0,
+      "line": {
+        "steps": [{ "decision": 0, "seat": 0, "label": "Play Forest" }],
+        "truncated": false,
+        "seed_index": 0,
+        "outcome": 1,
+        "scope": "search_game"
+      },
+      "reasons": ["highest_practice_outcome", "equal_practice_outcome"],
+      "uncertainty": { "effectively_tied": { "with": [1] } },
+      "chosen": true
+    },
+    {
+      "offer_index": 1,
+      "move_label": "Pass priority",
+      "offer_rules": ["117.3d"],
+      "score": 0.5,
+      "scored_samples": 2,
+      "without_result": 0,
+      "refused_times": 0,
+      "line": null,
+      "reasons": ["equal_practice_outcome"],
+      "uncertainty": { "effectively_tied": { "with": [0] } },
+      "chosen": false
+    }
+  ],
+  "preference": { "tied": { "offer_indexes": [0, 1] } },
+  "refusal": null,
+  "notes": [
+    {
+      "kind": "uncertainty",
+      "body": "the recorded line continues with the engine's next accepted action",
+      "evidence": [{ "line_step": { "offer_index": 0, "decision": 9 } }]
+    }
+  ]
+}

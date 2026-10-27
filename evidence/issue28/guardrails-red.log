@@ -1,0 +1,49 @@
+### RED 1: an honest payload gains a fabricated percentage line ('72% chance this is best')
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running tests\review_honesty.rs (target\debug\deps\review_honesty-ec1636114db8ee48.exe)
+
+running 1 test
+test every_honest_payload_in_the_corpus_is_clean ... FAILED
+
+failures:
+
+---- every_honest_payload_in_the_corpus_is_clean stdout ----
+
+thread 'every_honest_payload_in_the_corpus_is_clean' (3260) panicked at crates\ai\tests\review_honesty.rs:57:5:
+an honest payload must produce zero violations, got: [PercentFigure { sentence: "72% chance this is best" }, ProbabilityClaim { sentence: "72% chance this is best" }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    every_honest_payload_in_the_corpus_is_clean
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-ai --test review_honesty`
+exit=101
+
+### RED 2: a review-facing source literal gains a verdict label
+   Compiling aperture-ai v0.1.0 (C:\AI\mtg-slice\.worktrees\t_df6dd2e0\crates\ai)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.89s
+     Running tests\review_honesty.rs (target\debug\deps\review_honesty-ec1636114db8ee48.exe)
+
+running 1 test
+test review_facing_copy_strings_are_honest ... FAILED
+
+failures:
+
+---- review_facing_copy_strings_are_honest stdout ----
+
+thread 'review_facing_copy_strings_are_honest' (33716) panicked at crates\ai\tests\review_honesty.rs:885:5:
+review copy violates the honesty boundary:
+C:/AI/mtg-slice/.worktrees/t_df6dd2e0/crates/ai/src/review.rs:369: verdict_label: verdict word "blunder" asserted in "forced blunder: the search had to pick something"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    review_facing_copy_strings_are_honest
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-ai --test review_honesty`
+exit=101
