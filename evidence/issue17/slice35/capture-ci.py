@@ -32,7 +32,10 @@ def main():
     if len(sys.argv) < 2:
         print("usage: capture-ci.py <sha> [out.json]", file=sys.stderr)
         sys.exit(2)
-    sha = sys.argv[1]
+    # Resolve an abbreviated sha to the commit id the check runs are keyed to,
+    # otherwise an abbreviated `head_sha` comparison can never match and a green
+    # head would be reported as ALL_KEYED=False.
+    sha = gh(["api", f"repos/{REPO}/commits/{sys.argv[1]}", "--jq", ".sha"]).strip()
     out_path = pathlib.Path(
         sys.argv[2] if len(sys.argv) > 2 else f"evidence/issue17/slice35/exact-head-ci-{sha[:7]}.json"
     )
