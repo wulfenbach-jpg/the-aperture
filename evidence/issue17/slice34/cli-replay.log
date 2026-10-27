@@ -1,0 +1,9 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 25.97s
+     Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice33/demo-replay.json`
+replay seed 3333 — 4 seat(s), 1117 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 3dfb14d4ce76 | matches recorded | events 2967
+CLI_EXIT=0
