@@ -1,0 +1,7 @@
+// package-slice23 — evidence-only 40-card cost-reduction/trample package, NOT a desired starter.
+4 Goreclaw, Terror of Qal Sisma
+4 Craw Wurm
+4 Alpine Grizzly
+4 Ordinary Bear
+4 Grizzly Bears
+20 Forest

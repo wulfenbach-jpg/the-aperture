@@ -265,6 +265,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue
+                | Effect::BoostAndTrampleEachCreatureYouControlWithPowerAtLeast { .. }
                 | Effect::CreateBearTokensForEachDeathThisTurn => {}
                 Effect::MillTargetPlayer(_)
                 | Effect::LoseLife(_)

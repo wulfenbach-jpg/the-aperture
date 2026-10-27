@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 139] = [
+pub static CARDS: [CardDef; 140] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1046,6 +1046,18 @@ pub static CARDS: [CardDef; 139] = [
         kinds: ENCHANTMENT, basic: None,
         type_line: "Enchantment", power: None, toughness: None,
         oracle: "Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.\nLandfall — Whenever a land you control enters, create a 2/2 green Bear creature token.",
+        spell: None
+    ),
+    // Issue 17 slice 23: Goreclaw, Terror of Qal Sisma. The pool's first
+    // cost-reduction static (creature spells with power 4 or greater cost {2}
+    // less) and its first layer 6 ability grant (trample until end of turn).
+    // Printed text copied verbatim from the CMM 293 printing recorded in
+    // fixtures/starter-corpus/slice23-sourced.json.
+    card!(
+        GoreclawTerrorOfQalSisma, "Goreclaw, Terror of Qal Sisma", cost: Some("{3}{G}"),
+        kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear", power: Some(4), toughness: Some(3),
+        oracle: "Creature spells you cast with power 4 or greater cost {2} less to cast.\nWhenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
         spell: None
     ),
 ];

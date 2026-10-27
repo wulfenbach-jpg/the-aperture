@@ -529,15 +529,19 @@ impl Game {
                 }
             }
         }
-        // Layer 7c one-shot effects in timestamp order (CR 613.7).
+        // Layer 7c one-shot effects in timestamp order (CR 613.7). Layer 6
+        // ability grants carry no power/toughness, so they are filtered out here
+        // and read directly by `has_trample`.
         let mut modifying: Vec<(u64, ObjectId, i32, i32)> = self
             .state
             .effects
             .iter()
             .filter(|effect| effect.layer == Layer::Modifying)
-            .map(|effect| {
-                let ContinuousKind::ModifyPowerToughness { power, toughness } = effect.kind;
-                (effect.timestamp, effect.target, power, toughness)
+            .filter_map(|effect| match effect.kind {
+                ContinuousKind::ModifyPowerToughness { power, toughness } => {
+                    Some((effect.timestamp, effect.target, power, toughness))
+                }
+                ContinuousKind::GrantsTrample => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -580,6 +584,44 @@ impl Game {
                 ShieldTarget::Player(_) | ShieldTarget::Any => true,
             })
             .collect();
+    }
+
+    /// CR 702.19a + 613.4d: trample printed on the card, or trample granted by
+    /// an active layer 6 continuous effect. Combat damage assignment reads this
+    /// instead of the printed flag, so a granted keyword is executed by the same
+    /// rule as a printed one.
+    fn has_trample(&self, object: &Object) -> bool {
+        object.card.def().has_trample()
+            || self.state.effects.iter().any(|effect| {
+                effect.kind == ContinuousKind::GrantsTrample && effect.target == object.id
+            })
+    }
+
+    /// Start a layer 6 continuous effect granting trample to `target`.
+    fn add_trample_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
+        let card = self.state.object(item.object).card;
+        let timestamp = self.next_timestamp();
+        let id = self.next_effect_id();
+        self.state.effects.push(ContinuousEffect {
+            id,
+            timestamp,
+            source: Some(item.object),
+            card,
+            controller: item.controller,
+            layer: Layer::Ability,
+            target,
+            kind: ContinuousKind::GrantsTrample,
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+        events.push(Event::ContinuousEffectStarted {
+            object: target,
+            card,
+            layer: Layer::Ability.label().to_string(),
+            text: format!(
+                "gains trample until end of turn ({})",
+                Layer::Ability.rules()
+            ),
+        });
     }
 
     /// Start a layer 7c continuous effect on `target` from `item`'s source.
@@ -876,6 +918,38 @@ impl Game {
         })
     }
 
+    /// CR 601.2f: static cost reductions from permanents the caster controls.
+    /// Only the *generic* part of a cost is ever reduced (CR 118.7a), so the
+    /// colored pips of a printed cost stay payable. A permanent contributes its
+    /// reduction only while it is on the battlefield under the caster's control.
+    fn cost_reduction(&self, caster: PlayerId, card: CardId) -> u8 {
+        let def = card.def();
+        if !def.is_creature() {
+            return 0;
+        }
+        // A card's power outside the battlefield is its printed power: no effect
+        // in this pool changes a card's characteristics in a hidden zone.
+        let power = def.power.unwrap_or(0);
+        let mut reduction: u8 = 0;
+        for object in self.state.objects.values() {
+            if object.zone != Zone::Battlefield || object.controller != caster {
+                continue;
+            }
+            for static_ability in ability::static_abilities(object.card) {
+                if let ability::StaticAbility::CreatureSpellsYouCastWithPowerCostLess {
+                    minimum_power,
+                    generic,
+                    ..
+                } = static_ability
+                    && power >= *minimum_power
+                {
+                    reduction = reduction.saturating_add(*generic);
+                }
+            }
+        }
+        reduction
+    }
+
     /// Total mana cost of casting `card` from its current zone. A command-zone
     /// cast adds {2} per previous command-zone cast (CR 903.8); generic-mana
     /// overflow is a typed refusal, never a silent wrap.
@@ -909,6 +983,12 @@ impl Game {
                     "commander tax makes the generic cost overflow",
                 )
             })?;
+        }
+        // CR 601.2f + 118.7a: a static reduction applies to the generic part of
+        // the total cost, never to the colored pips, and never below zero.
+        let reduction = self.cost_reduction(object.controller, object.card);
+        if reduction > 0 {
+            cost.generic = cost.generic.saturating_sub(reduction);
         }
         Ok(cost)
     }
@@ -6012,6 +6092,34 @@ impl Game {
                 }
                 false
             }
+            // CR 613.4c + 613.4d: one pump and one trample grant per qualifying
+            // creature, both until end of turn. Power is read at resolution, so a
+            // creature that already carries counters or pumps qualifies on its
+            // current power; a creature below the printed threshold gets nothing.
+            Effect::BoostAndTrampleEachCreatureYouControlWithPowerAtLeast {
+                minimum_power,
+                power,
+                toughness,
+            } => {
+                let qualifying: Vec<ObjectId> = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && object.is_creature()
+                            && object.power() >= minimum_power
+                    })
+                    .map(|object| object.id)
+                    .collect();
+                for id in qualifying {
+                    self.add_modifier_effect(item, id, power, toughness, events);
+                    self.add_trample_grant(item, id, events);
+                }
+                self.recompute_layers();
+                false
+            }
             Effect::SkipNextUntapStep => {
                 let card = item.card;
                 let on_battlefield = self
@@ -6401,7 +6509,7 @@ impl Game {
                 // every blocker before it may assign any to the player, so with
                 // trample the surplus after lethal assignment goes to the
                 // defending player instead of piling onto the last blocker.
-                let trample = atk.has_trample();
+                let trample = self.has_trample(atk);
                 let mut remaining = power;
                 for (i, blocker) in its_blockers.iter().enumerate() {
                     let lethal = match self.state.try_object(*blocker) {

@@ -719,6 +719,24 @@ const HEDRON_CRAB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::MillTargetPlayer(3)],
 })];
 
+/// Goreclaw, Terror of Qal Sisma: an attack trigger that boosts and grants
+/// trample to every creature its controller controls whose *current* power is 4
+/// or greater. The cost-reduction half is a static ability (see
+/// `GORECLAW_STATIC`), not a trigger.
+const GORECLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
+    event: TriggerEvent::Attacks,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[
+        Effect::BoostAndTrampleEachCreatureYouControlWithPowerAtLeast {
+            minimum_power: 4,
+            power: 1,
+            toughness: 1,
+        },
+    ],
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
@@ -745,6 +763,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::MotherBear => MOTHER_BEAR,
         CardId::LittleBear => LITTLE_BEAR,
         CardId::DancingFromDarkToDawn => DANCING_FROM_DARK_TO_DAWN,
+        CardId::GoreclawTerrorOfQalSisma => GORECLAW,
         CardId::MindStone => MIND_STONE,
         CardId::HedronArchive => HEDRON_ARCHIVE,
         CardId::SoulsAttendant => SOULS_ATTENDANT,
@@ -848,6 +867,16 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 601.2f + 118.7: "Creature spells you cast with power N or greater cost
+    /// {G} less to cast" (Goreclaw, Terror of Qal Sisma). It is a static ability
+    /// of a permanent, so it applies only while that permanent is on the
+    /// battlefield, and it reduces only the generic part of the cost — colored
+    /// pips are never reduced (CR 118.7a).
+    CreatureSpellsYouCastWithPowerCostLess {
+        minimum_power: i32,
+        generic: u8,
+        text: &'static str,
+    },
 }
 
 impl StaticAbility {
@@ -855,17 +884,21 @@ impl StaticAbility {
         match self {
             StaticAbility::PowerToughnessPerCount { text, .. } => text,
             StaticAbility::DamageFromControlledSources { text, .. }
-            | StaticAbility::ThresholdPowerToughness { text, .. } => text,
+            | StaticAbility::ThresholdPowerToughness { text, .. }
+            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { text, .. } => text,
         }
     }
 
     /// Layer this ability's continuous effect belongs to. A replacement effect
-    /// is layerless: it never applies in a layer, so `None`.
+    /// is layerless: it never applies in a layer, so `None`. Neither is a
+    /// cost-reduction ability: it modifies how a spell is cast (CR 601.2f) and
+    /// is not a continuous effect on any object.
     pub fn layer(self) -> Option<Layer> {
         match self {
             StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
             StaticAbility::DamageFromControlledSources { .. }
-            | StaticAbility::ThresholdPowerToughness { .. } => None,
+            | StaticAbility::ThresholdPowerToughness { .. }
+            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. } => None,
         }
     }
 
@@ -873,7 +906,8 @@ impl StaticAbility {
         match self {
             StaticAbility::PowerToughnessPerCount { count, .. } => Some(count),
             StaticAbility::DamageFromControlledSources { .. }
-            | StaticAbility::ThresholdPowerToughness { .. } => None,
+            | StaticAbility::ThresholdPowerToughness { .. }
+            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. } => None,
         }
     }
 }
@@ -902,12 +936,24 @@ const WEREBEAR: &[StaticAbility] = &[StaticAbility::ThresholdPowerToughness {
 
 const NO_STATICS: &[StaticAbility] = &[];
 
+/// Goreclaw, Terror of Qal Sisma's cost reduction. Printed power is what the
+/// spell has while it is a card in a hand, library or command zone; nothing in
+/// this pool changes a card's power outside the battlefield, so no continuous
+/// recalculation is needed (disclosed in docs/issue17-starter-corpus.md).
+const GORECLAW_STATIC: &[StaticAbility] =
+    &[StaticAbility::CreatureSpellsYouCastWithPowerCostLess {
+        minimum_power: 4,
+        generic: 2,
+        text: "Creature spells you cast with power 4 or greater cost {2} less to cast.",
+    }];
+
 /// Every static ability the rules layer knows for a card, in printed order.
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
         CardId::WightOfPrecinctSix => WIGHT,
         CardId::AngrathsMarauders => ANGRATH,
         CardId::Werebear => WEREBEAR,
+        CardId::GoreclawTerrorOfQalSisma => GORECLAW_STATIC,
         _ => NO_STATICS,
     }
 }

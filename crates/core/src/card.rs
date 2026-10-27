@@ -226,6 +226,16 @@ pub enum Effect {
     /// `StackItem::spell_mana_value`) so resolution reads the value the spell
     /// had when it was cast, never the board's current state.
     PutPlusOneCountersOnTargetForTriggerSpellManaValue,
+    /// "Each creature you control with power N or greater gets +P/+T and gains
+    /// trample until end of turn" (Goreclaw, Terror of Qal Sisma). Power is the
+    /// permanent's *current* power at resolution (CR 613.4c results included),
+    /// and the trample grant is a layer 6 continuous effect with the same
+    /// until-end-of-turn duration as the pump.
+    BoostAndTrampleEachCreatureYouControlWithPowerAtLeast {
+        minimum_power: i32,
+        power: i32,
+        toughness: i32,
+    },
 }
 
 impl Effect {
@@ -322,6 +332,14 @@ impl Effect {
                 "put X +1/+1 counters on the target creature, X = that spell's mana value"
                     .to_string()
             }
+            Effect::BoostAndTrampleEachCreatureYouControlWithPowerAtLeast {
+                minimum_power,
+                power,
+                toughness,
+            } => format!(
+                "each creature you control with power {minimum_power} or greater gets \
+                 {power:+}/{toughness:+} and gains trample until end of turn"
+            ),
         }
     }
 }
@@ -570,6 +588,7 @@ pub enum CardId {
     FadeFromHistory,
     LittleBear,
     DancingFromDarkToDawn,
+    GoreclawTerrorOfQalSisma,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

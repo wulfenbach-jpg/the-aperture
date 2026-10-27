@@ -1,0 +1,27 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T07:38:22.534329+00:00",
+ "cards": [
+  {
+   "name": "Goreclaw, Terror of Qal Sisma",
+   "oracle_id": "befb211f-37ca-4083-98d4-9ff1f28be3f2",
+   "scryfall_id": "ee47f23a-3ba9-4615-b170-c89d8ab99d78",
+   "set": "cmm",
+   "collector_number": "293",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Legendary Creature \u2014 Bear",
+   "power": "4",
+   "toughness": "3",
+   "oracle_text": "Creature spells you cast with power 4 or greater cost {2} less to cast.\nWhenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/ee47f23a-3ba9-4615-b170-c89d8ab99d78",
+   "retrieved_at": "2026-10-27T07:38:22.534329+00:00"
+  }
+ ]
+}

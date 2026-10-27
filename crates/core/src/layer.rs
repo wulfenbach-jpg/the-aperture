@@ -37,6 +37,11 @@ use crate::ids::{ObjectId, PlayerId};
 /// likewise not implemented; 7d belongs to the counters lane.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum Layer {
+    /// CR 613.4d: effects that grant or remove abilities. Slice 23 adds the
+    /// first one the pool needs — a until-end-of-turn trample grant (Goreclaw,
+    /// Terror of Qal Sisma). It is ordered before `Modifying`, so a pump granted
+    /// in the same resolution still applies after the ability grant.
+    Ability,
     /// CR 613.4c: effects that modify power and/or toughness without setting
     /// them, applied in timestamp order (CR 613.7).
     Modifying,
@@ -45,12 +50,14 @@ pub enum Layer {
 impl Layer {
     pub fn label(self) -> &'static str {
         match self {
+            Layer::Ability => "6",
             Layer::Modifying => "7c",
         }
     }
 
     pub fn rules(self) -> &'static str {
         match self {
+            Layer::Ability => "CR 613.4d ability-granting effects",
             Layer::Modifying => "CR 613.4c power/toughness modifiers",
         }
     }
@@ -71,6 +78,11 @@ pub enum ContinuousKind {
     /// CR 613.4c: add to power and toughness. Both values are stored so a
     /// -1/-1 effect is never confused with a +1/+1 counter.
     ModifyPowerToughness { power: i32, toughness: i32 },
+    /// CR 613.4d + 702.19a: the target permanent has trample for as long as this
+    /// effect applies. Combat damage assignment asks the engine, not the printed
+    /// card, so a granted trample is indistinguishable from printed trample at
+    /// the point the rule is executed.
+    GrantsTrample,
 }
 
 /// One continuous effect, carrying the timestamp that fixes its order inside
@@ -98,6 +110,9 @@ impl ContinuousEffect {
                 toughness,
                 self.layer.rules()
             ),
+            ContinuousKind::GrantsTrample => {
+                format!("trample until end of turn ({})", self.layer.rules())
+            }
         }
     }
 }

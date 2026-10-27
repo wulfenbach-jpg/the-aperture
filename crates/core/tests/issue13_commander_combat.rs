@@ -1374,8 +1374,9 @@ fn fog_is_a_sourced_catalog_card() {
     // History, Little Bear), to 134 with the slice-17 death-history trio, to
     // 135 with the slice-18 commander Ayula, Queen Among Bears, and to 136 with
     // the slice-19 attack-trigger bear Spectral Bears.
-    // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn.
-    assert_eq!(aperture_core::catalog::pool_size(), 139);
+    // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn,
+    // and to 140 with the slice-23 Bear lord Goreclaw, Terror of Qal Sisma.
+    assert_eq!(aperture_core::catalog::pool_size(), 140);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
