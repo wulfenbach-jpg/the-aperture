@@ -1,0 +1,64 @@
+{
+  "head": "f4a02a2a05bce7ea6b22a66c60568256327f7ef5",
+  "verified_at": "2026-10-27T03:54:26.541592+00:00",
+  "source_checks": {
+    "name": true,
+    "oracle_id": true,
+    "set": true,
+    "collector_number": true,
+    "layout": true,
+    "mana_cost": true,
+    "type_line": true,
+    "power": true,
+    "toughness": true,
+    "oracle_text": true,
+    "color_identity": true,
+    "keywords": true,
+    "printing_id": true,
+    "commander_legality": true
+  },
+  "printing_url": "https://api.scryfall.com/cards/37f2571b-6756-462c-9e71-3121fa458160",
+  "snapshot_sha256": "12e6d1e92cdfb56e159e7b96465db2d03a1f511337f2dbca31371521e554916f",
+  "desired_snapshot_diff": [
+    "decks/starter-corpus/manifest.json"
+  ],
+  "certified": 1,
+  "desired": 8,
+  "native_focused_tests": 125,
+  "native_focused_suites": 8,
+  "journey": {
+    "activations": 22,
+    "bottom_choices": 5,
+    "casts": {
+      "Centaur Courser": 3,
+      "Craw Wurm": 4,
+      "Grizzly Bears": 7,
+      "Runeclaw Bear": 10,
+      "Vivien's Grizzly": 6
+    },
+    "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+    "deck": "decks/package-slice20.txt",
+    "digest": "72cd69fb1143763fcd8fe1387b9a625c896538bdd389f33958d8705d8c7cdd48",
+    "driver": "evidence-only masked attack/cast-preferring demonstrator; NOT product heuristic or strength evidence",
+    "kind": "40-card package, not a desired starter",
+    "mandatory_bottom_acknowledgements": 16,
+    "outcome": {
+      "Win": {
+        "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+        "winner": 3
+      }
+    },
+    "replay_digest_matches": true,
+    "replay_events": 5281,
+    "seats": 4,
+    "seed": 1919,
+    "snapshot_sha256": "12e6d1e92cdfb56e159e7b96465db2d03a1f511337f2dbca31371521e554916f",
+    "snapshots_exact": true,
+    "starting_life": 40,
+    "status": "terminal",
+    "steps": 2064,
+    "take_choices": 5,
+    "turns": 46
+  },
+  "full_issue17_accepted": false
+}
