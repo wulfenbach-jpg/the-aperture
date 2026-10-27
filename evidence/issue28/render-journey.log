@@ -1,0 +1,57 @@
+# move-review end-to-end journey (real search, real frames)
+# head: 7cf4c0b898e48c6bd50413972ba659b80e5f48f5
+# utc:  2026-10-27T03:50:01Z
+# cmd:  cargo test -p aperture-ui --lib app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface -- --nocapture
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.73s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-499d0f9793ec0ce5.exe)
+
+running 1 test
+journey: reached the reviewing seat's decision (turn 3, step precombat main phase, 6 engine offers)
+journey: review applied after 18 frame(s) · refused=None · 6 candidate(s) · 4922 engine decisions · budget BudgetRecord { seeds: 2, node_budget: 30000, max_rollout_nodes: 6000, max_millis: 8000, max_candidates: 6, decisions_used: 4922, stop: WallClock, cancelled: false, reproducible: false, fidelity: "opponents: neutral belief deck (3 opponent(s)); no real hand or library order read; own future draws sampled from declared deck \"Temur Beats\" minus visible cards" }
+journey: policy section lines read back from the panel:
+  reviewed decision point: P0 · session generation 99 · engine revision 98 · decision 98 · rules 2026-09-25
+  masked view digest: be0024c23a10 (this review is bound to it — a different view is a different review)
+  payload: move-review/1.2 — a read-only presentation of the ranking layer's own data
+  [PROVENANCE] budget: 2 determinization seed(s) · 30000 engine decisions total · 6000 decisions per rollout · 8000 ms wall clock · at most 6 engine-offered candidates · used 4922 · stopped: wall clock · reproducible: no
+  [PROVENANCE] determinization fidelity (verbatim): opponents: neutral belief deck (3 opponent(s)); no real hand or library order read; own future draws sampled from declared deck "Temur Beats" minus visible cards
+  [PROVENANCE] bound to seat P0 · generation 99 · revision 98 · decision 98 · rules 2026-09-25 · masked view digest be0024c23a10
+  [PROVENANCE] this review is read-only: producing it submits no action, grants no priority and changes no engine state
+  [PROVENANCE] no depth or plies figure is reported: this analysis is a bounded rollout ensemble over determinizations, and only the rollout counts and the decision budget are measurements it actually made
+  [UNCERTAINTY] sample counts: 3 scored sample(s) over 6 engine-offered alternative(s), 1 rollout(s) without a result, 0 root refusal(s) by the search world
+  [UNCERTAINTY] 3 engine-offered alternative(s) reached no result and are not ranked: "Play Mountain", "Play Mountain", "Play Forest"
+  [UNCERTAINTY] the analysis stopped at the wall clock, so it is not reproducible and must not be recorded as evidence; the counts above are what the truncated run really did
+  [POLICY] no order is claimed: the leading offer has a single scored sample; the search's own choice is offer 2 ("Play Forest")
+  stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap, the round schedule or the wall clock it reaches first, so a partial sample is normal
+  ordering: no order is claimed — the leading offer has a single scored sample
+  • Play Forest [offer 2] — mean +1.00 · one scored sample — not ordered against other rows · the search's own choice
+      teaching note (heuristic from the search's reason tags — not a rule statement): one sample cannot establish an order; the analysis stopped at the wall clock, so this sample is incomplete
+      line: decision 0 · P0 · "Play Forest" → decision 1 · P0 · "Pass priority" → decision 2 · P1 · "Pass priority" → decision 3 · P2 · "Pass priority" → decision 4 · P3 · "Pass priority" → decision 5 · P0 · "Pass priority" → decision 6 · P1 · "Pass priority" → decision 7 · P2 · "Pass priority" → decision 8 · P3 · "Pass priority" → decision 9 · P0 · "Pass priority" → decision 10 · P1 · "Pass priority" → decision 11 · P2 · "Pass priority"
+      line: recorded as a prefix of 12 step(s) — the rollout continued past the recording cap, so this is not the whole game
+      line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+  • Pass priority [offer 0] — mean +1.00 · one scored sample — not ordered against other rows
+      teaching note (heuristic from the search's reason tags — not a rule statement): one sample cannot establish an order; the analysis stopped at the wall clock, so this sample is incomplete
+      line: decision 0 · P0 · "Pass priority" → decision 1 · P1 · "Pass priority" → decision 2 · P2 · "Pass priority" → decision 3 · P3 · "Pass priority" → decision 4 · P0 · "Pass priority" → decision 5 · P1 · "Pass priority" → decision 6 · P2 · "Pass priority" → decision 7 · P3 · "Pass priority" → decision 8 · P0 · "Pass priority" → decision 9 · P1 · "Pass priority" → decision 10 · P2 · "Pass priority" → decision 11 · P3 · "Pass priority"
+      line: recorded as a prefix of 12 step(s) — the rollout continued past the recording cap, so this is not the whole game
+      line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+  • Play Mountain [offer 1] — mean +1.00 · one scored sample — not ordered against other rows
+      teaching note (heuristic from the search's reason tags — not a rule statement): one sample cannot establish an order; the analysis stopped at the wall clock, so this sample is incomplete
+      line: decision 0 · P0 · "Play Mountain" → decision 1 · P0 · "Pass priority" → decision 2 · P1 · "Pass priority" → decision 3 · P2 · "Pass priority" → decision 4 · P3 · "Pass priority" → decision 5 · P0 · "Pass priority" → decision 6 · P1 · "Pass priority" → decision 7 · P2 · "Pass priority" → decision 8 · P3 · "Pass priority" → decision 9 · P0 · "Pass priority" → decision 10 · P1 · "Pass priority" → decision 11 · P2 · "Pass priority"
+      line: recorded as a prefix of 12 step(s) — the rollout continued past the recording cap, so this is not the whole game
+      line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+  unscored offers (no rollout reached a result; listed in engine offer order and not ranked):
+  — Play Mountain [offer 3] — no scored sample · 1 rollout(s) attempted · 1 without a result · 0 refused by the search world
+      teaching note (heuristic from the search's reason tags — not a rule statement): no scored sample: no rollout reached a result, so this alternative is not ranked; 1 rollout(s) ended without a result and are counted as neither a win nor a loss; the analysis stopped at the wall clock, so this sample is incomplete
+      line: none available — no rollout reached a result for this offer, so there was no line to record
+  — Play Mountain [offer 4] — no scored sample · 0 rollout(s) attempted · 0 without a result · 0 refused by the search world
+      teaching note (heuristic from the search's reason tags — not a rule statement): no scored sample: no rollout reached a result, so this alternative is not ranked; the analysis stopped at the wall clock, so this sample is incomplete
+      line: none available — no rollout reached a result for this offer, so there was no line to record
+  — Play Forest [offer 5] — no scored sample · 0 rollout(s) attempted · 0 without a result · 0 refused by the search world
+      teaching note (heuristic from the search's reason tags — not a rule statement): no scored sample: no rollout reached a result, so this alternative is not ranked; the analysis stopped at the wall clock, so this sample is incomplete
+      line: none available — no rollout reached a result for this offer, so there was no line to record
+  this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+journey: 5 of 40 policy lines were present in the rendered frame at 1280x720
+test app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 61 filtered out; finished in 9.67s
+
+journey_exit=0
