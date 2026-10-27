@@ -276,7 +276,7 @@ call and no I/O.
 
 ```rust
 pub struct RankedReview {
-    pub spec: &'static str,              // "move-review/1.0"
+    pub spec: &'static str,              // "move-review/1.1"
     pub binding: ReviewBinding,
     pub budget: BudgetRecord,
     /// Empty exactly when `refusal` is Some.
@@ -672,7 +672,7 @@ Acceptance gate for the whole feature (root card): AC-1…AC-17 green on the pub
 
 ## 9. Open questions
 
-These are unresolved at spec 1.0. They do not block the child tasks that build the contract
+These are unresolved at spec 1.1. They do not block the child tasks that build the contract
 above, but the root acceptance decision needs answers.
 
 - **Q1 — interactive latency vs reproducibility.** The panel keeps `max_millis = 8000`, so a slow
