@@ -763,8 +763,8 @@ const GORECLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
 /// Two effects resolve in printed order (CR 608.2c): the layer 7c pump, then the
 /// layer 4 subtype-line change. Layer order — not resolution order — is what
 /// decides the outcome, so the pump applies after the new type line as CR 613.1
-/// requires. `once_per_turn` is the printed CR 602.5b restriction and is
-/// enforced by `Game::activation_used`.
+/// requires. `once_per_turn` is the printed once-each-turn limit (the same
+/// restriction Rootwalla prints) and is enforced by `Game::activation_used`.
 const URSINE_CHAMPION: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
     cost: AbilityCost::mana("{5}{G}"),

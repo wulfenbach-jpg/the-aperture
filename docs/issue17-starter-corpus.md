@@ -64,14 +64,26 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **23** missing names.
+(slice 17). Ayula currently has **22** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
 the first simultaneous mass destruction (`Fade from History` destroys every
 artifact and enchantment in one event with one dies-watcher batch). `Little
-Bear` reads its counter condition off the *target's* printed subtype, so a
-non-Bear target is untapped and left uncountered.
+Bear` reads its counter condition off the *target's* effective subtype, so a
+non-Bear target is untapped and left uncountered — and since slice 26 an
+activated "becomes a Bear ..." type change counts as that subtype
+(`Layer::Type`, CR 613.1d).
+
+Slice 26 adds `Ursine Champion` (M19 304): `{5}{G}` for +3/+3 and "becomes a
+Bear Berserker until end of turn". The subtype change is the pool's first
+layer 4 (CR 613.1d) continuous effect: it replaces the printed subtype line for
+every rules question until cleanup (CR 514.2), so the Bear target filters, the
+Ayula fight revalidation and `Little Bear`'s counter branch all answer from the
+effective line through `Game::has_subtype`. The printed once-each-turn limit
+reuses the restriction `Rootwalla` already exercises. Not implemented: any other
+type-changing effect, layer 5, and control-changing effects (so the
+once-each-turn key is the object, not the player).
 
 ### Slices 12–13: reusable artifact and landfall packages
 
@@ -439,9 +451,11 @@ in `fixtures/starter-corpus/slice23-sourced.json`) adds the pool's first
 
 Known limits, disclosed rather than approximated: the cost reduction counts one
 reduction per permanent (correct for one Goreclaw, untested for two because the
-pool has no second copy); the pool still has no layer 4/5/7b (type, colour, base
-power/toughness) effects, so cards such as `Circle of the Moon Druid` and
-`Stuffed Bear` remain unsupported. Ayula has 25 missing names after this slice,
+pool has no second copy); at that slice the pool still had no layer 4/5/7b
+(type, colour, base power/toughness) effects, so cards such as `Circle of the
+Moon Druid` and `Stuffed Bear` remain unsupported. (Slice 26 later added the
+one layer 4 subtype-line change; layers 5, 7b colour changes and animation are
+still missing.) Ayula has 22 missing names after slice 26,
 the eight-list gate remains open at 1 of 8 certified, and no new list is
 certified by this slice.
 

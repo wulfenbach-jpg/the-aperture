@@ -1,26 +1,23 @@
-   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.65s
-     Running tests\issue17_slice26.rs (target\debug\deps\issue17_slice26-edb7bc6b426e4cf2.exe)
 
 running 6 tests
 test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... FAILED
 test the_activation_is_not_offered_without_the_printed_six_mana ... ok
 test a_bear_target_filter_sees_the_new_subtype ... ok
-test the_type_change_and_pump_both_end_with_the_turn ... ok
 test the_printed_once_each_turn_restriction_is_enforced ... FAILED
+test the_type_change_and_pump_both_end_with_the_turn ... ok
 test activation_pumps_the_source_and_makes_it_a_bear_for_a_real_bear_check ... ok
 
 failures:
 
 ---- the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed stdout ----
 
-thread 'the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed' (36392) panicked at crates\core\tests\issue17_slice26.rs:151:5:
+thread 'the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed' (47348) panicked at crates\core\tests\issue17_slice26.rs:150:5:
 the printed once-each-turn limit
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ---- the_printed_once_each_turn_restriction_is_enforced stdout ----
 
-thread 'the_printed_once_each_turn_restriction_is_enforced' (40528) panicked at crates\core\tests\issue17_slice26.rs:294:5:
+thread 'the_printed_once_each_turn_restriction_is_enforced' (30292) panicked at crates\core\tests\issue17_slice26.rs:296:5:
 CR 602.5b: the ability is not offered a second time this turn
 
 
@@ -30,4 +27,7 @@ failures:
 
 test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.01s
+     Running tests\issue17_slice26.rs (target\debug\deps\issue17_slice26-edb7bc6b426e4cf2.exe)
 error: test failed, to rerun pass `-p aperture-core --test issue17_slice26`

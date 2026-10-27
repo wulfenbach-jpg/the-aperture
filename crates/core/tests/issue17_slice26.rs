@@ -1,5 +1,6 @@
-//! Slice 26: Ursine Champion — the pool's first layer 4 type-changing effect and
-//! its first "Activate only once each turn" restriction.
+//! Slice 26: Ursine Champion — the pool's first layer 4 type-changing effect.
+//! (Its "Activate only once each turn" limit is the same restriction Rootwalla
+//! already prints and the engine already enforces; this card does not add it.)
 //!
 //! The printed ability is "{5}{G}: This creature gets +3/+3 and becomes a Bear
 //! Berserker until end of turn. Activate only once each turn." (M19 304,

@@ -1073,9 +1073,10 @@ pub static CARDS: [CardDef; 143] = [
         spell: None
     ),
     // Issue 17 slice 26: Ursine Champion. The pool's first layer 4 type-changing
-    // effect ("becomes a Bear Berserker until end of turn") and its first
-    // once-each-turn activation restriction. Printed text copied verbatim from
-    // the M19 304 printing recorded in fixtures/starter-corpus/slice26-sourced.json.
+    // effect ("becomes a Bear Berserker until end of turn"). Its once-each-turn
+    // limit is the already-supported restriction Rootwalla also prints, not a
+    // new rule. Printed text copied verbatim from the M19 304 printing recorded
+    // in fixtures/starter-corpus/slice26-sourced.json.
     card!(
         UrsineChampion, "Ursine Champion", cost: Some("{1}{G}"),
         kinds: CREATURE, basic: None,

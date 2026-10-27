@@ -5922,7 +5922,8 @@ impl Game {
             // continuous effect replaces the subtype line for as long as it
             // applies; cleanup removes it and the printed line returns
             // (CR 514.2). It is created only while the source is a permanent,
-            // because CR 611.2c requires a source to apply the effect to.
+            // because the effect applies to that object and a source that has
+            // left the battlefield cannot keep applying it.
             Effect::SetSourceCreatureSubtypes(line) => {
                 if self
                     .state
