@@ -584,7 +584,8 @@ impl Game {
             _ => Vec::new(),
         };
         let pending_for_viewer = self.state.pending.as_ref().filter(|pending| match pending {
-            crate::state::Pending::ApnapSacrifice { player, .. } => *player == viewer,
+            crate::state::Pending::ApnapSacrifice { player, .. }
+            | crate::state::Pending::TopCardChoice { player, .. } => *player == viewer,
             _ => true,
         });
         let rendered: Vec<String> = if log.len() > LOG_LINES {
