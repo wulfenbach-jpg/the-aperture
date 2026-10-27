@@ -424,6 +424,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 ability: 0,
                 seq: 0,
                 spell_mana_value: 0,
+                affected: None,
             });
         }),
         ("revealed", |state, id| state.revealed.push(id)),
@@ -436,6 +437,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 card: CardId::GoblinToken,
                 controller: P1,
                 targets: Vec::new(),
+                affected: None,
                 cursor: 0,
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
@@ -448,6 +450,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 card: CardId::GoblinToken,
                 controller: P0,
                 targets: vec![Target::Permanent(id)],
+                affected: None,
                 cursor: 0,
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
@@ -464,6 +467,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                     ability: 0,
                     seq: 0,
                     spell_mana_value: 0,
+                    affected: None,
                 },
             });
         }),

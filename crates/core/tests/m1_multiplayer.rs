@@ -299,6 +299,7 @@ fn active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_liv
         card: CardId::Shock,
         controller: 1,
         targets: vec![Target::Player(2)],
+        affected: None,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,

@@ -450,3 +450,6 @@ Three mutation REDs are retained in `evidence/issue17/slice23/`: disabling the
 reduction fails exactly the two cost tests, ignoring the printed power threshold
 fails exactly the qualifying-creature test, and dropping the grant lookup from
 `has_trample` fails exactly the trample combat test.
+
+## Slice 24: Surrak and Goreclaw
+Surrak and Goreclaw (`{4}{G}{G}`, 6/5 Legendary Human Bear) is sourced in `fixtures/starter-corpus/slice24-sourced.json` (Scryfall MOM 337, immutable 9c10934d, retrieved 2026-10-27T08:44:35Z). Printed trample; other creatures its controller controls have trample through a typed static scan. Its nontoken-own-creature entry trigger captures the entered object as a non-target identity, adds a +1/+1 counter, and grants haste until end of turn in the ability layer. Tokens, self-entry and opponents do not qualify. Losing the battlefield incarnation removes pending/stack affected references; haste expires at cleanup.

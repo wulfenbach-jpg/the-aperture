@@ -231,6 +231,10 @@ pub struct TriggerRef {
     /// skipped — serializes and hashes exactly as it did before slice 22.
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub spell_mana_value: u8,
+    /// Entered object captured by a non-target "it" trigger. Never a target and
+    /// never retargeted; dangling after a battlefield departure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affected: Option<ObjectId>,
 }
 
 /// What one stack item is: a spell card, or an ability whose source never
@@ -586,6 +590,9 @@ pub struct StackItem {
     pub card: CardId,
     pub controller: PlayerId,
     pub targets: Vec<crate::action::Target>,
+    /// Non-target object captured by the trigger's "it" wording.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affected: Option<ObjectId>,
     /// Index of the next effect to apply during resolution (CR 608.2c).
     pub cursor: u8,
     /// Spell or ability. Ability entries resolve without moving their source
@@ -903,7 +910,8 @@ impl GameState {
             }
             crate::action::Target::Player(_) => false,
         };
-        let trigger_ref = |trigger: &TriggerRef| trigger.source == id;
+        let trigger_ref =
+            |trigger: &TriggerRef| trigger.source == id || trigger.affected == Some(id);
         if self.resolving == Some(id)
             || self.trigger_queue.iter().any(trigger_ref)
             || self.revealed.contains(&id)
@@ -912,7 +920,11 @@ impl GameState {
             || self
                 .stack
                 .iter()
-                .any(|item| item.object == id || item.targets.iter().any(target_ref))
+                .any(|item| {
+                    item.object == id
+                        || item.affected == Some(id)
+                        || item.targets.iter().any(target_ref)
+                })
             || self.turn.attackers.contains(&id)
             || self.turn.blocked.contains(&id)
             || self
@@ -2241,6 +2253,16 @@ impl GameState {
                     reason: format!("stack references missing object {}", item.object),
                 });
             };
+            if let Some(affected) = item.affected
+                && !self.objects.contains_key(&affected)
+            {
+                return Err(EngineError::InvalidState {
+                    reason: format!(
+                        "stack item {} references missing affected object {affected}",
+                        item.object
+                    ),
+                });
+            }
             if object.zone != Zone::Stack
                 && !matches!(
                     item.entry,

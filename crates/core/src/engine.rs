@@ -541,7 +541,7 @@ impl Game {
                 ContinuousKind::ModifyPowerToughness { power, toughness } => {
                     Some((effect.timestamp, effect.target, power, toughness))
                 }
-                ContinuousKind::GrantsTrample => None,
+                ContinuousKind::GrantsTrample | ContinuousKind::GrantsHaste => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -595,6 +595,47 @@ impl Game {
             || self.state.effects.iter().any(|effect| {
                 effect.kind == ContinuousKind::GrantsTrample && effect.target == object.id
             })
+            || self.state.objects.values().any(|source| {
+                source.zone == Zone::Battlefield
+                    && source.id != object.id
+                    && source.controller == object.controller
+                    && crate::ability::static_abilities(source.card).iter().any(|ability| {
+                        matches!(
+                            ability,
+                            crate::ability::StaticAbility::OtherControlledCreaturesHaveTrample { .. }
+                        )
+                    })
+            })
+    }
+
+    fn has_haste(&self, object: &Object) -> bool {
+        self.state
+            .effects
+            .iter()
+            .any(|effect| effect.kind == ContinuousKind::GrantsHaste && effect.target == object.id)
+    }
+
+    fn add_haste_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
+        let card = self.state.object(item.object).card;
+        let timestamp = self.next_timestamp();
+        let id = self.next_effect_id();
+        self.state.effects.push(ContinuousEffect {
+            id,
+            timestamp,
+            source: Some(item.object),
+            card,
+            controller: item.controller,
+            layer: Layer::Ability,
+            target,
+            kind: ContinuousKind::GrantsHaste,
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+        events.push(Event::ContinuousEffectStarted {
+            object: target,
+            card,
+            layer: Layer::Ability.label().to_string(),
+            text: format!("gains haste until end of turn ({})", Layer::Ability.rules()),
+        });
     }
 
     /// Start a layer 6 continuous effect granting trample to `target`.
@@ -1023,6 +1064,13 @@ impl Game {
             self.state
                 .regeneration_shields
                 .retain(|shield| shield.object != id);
+            // A captured "it" from a battlefield entry is one incarnation: if
+            // that object leaves before the trigger resolves, the pending
+            // entry no longer refers to the entered permanent.
+            self.state
+                .trigger_queue
+                .retain(|trigger| trigger.affected != Some(id));
+            self.state.stack.retain(|item| item.affected != Some(id));
         }
         for player in &mut self.state.players {
             player.library.retain(|c| *c != id);
@@ -2166,7 +2214,7 @@ impl Game {
         {
             return Err(EngineError::NotAManaSource);
         }
-        if obj.card.creature_mana().is_some() && obj.summoning_sick {
+        if obj.card.creature_mana().is_some() && obj.summoning_sick && !self.has_haste(obj) {
             return Err(EngineError::BadTiming {
                 name: obj.card.name(),
                 reason: "a creature with a {T} mana ability is summoning sick (CR 302.6)"
@@ -2580,7 +2628,7 @@ impl Game {
                     && o.controller == player
                     && o.is_creature()
                     && !o.tapped
-                    && !o.summoning_sick
+                    && (!o.summoning_sick || self.has_haste(o))
                     // CR 702.3b: defender can't attack.
                     && !o.has_keyword(crate::tokens::Keyword::Defender)
             })
@@ -3016,7 +3064,11 @@ impl Game {
                 ),
             ));
         }
-        if activated.cost.tap && object.is_creature() && object.summoning_sick {
+        if activated.cost.tap
+            && object.is_creature()
+            && object.summoning_sick
+            && !self.has_haste(object)
+        {
             return Err(EngineError::BadTiming {
                 name: object.card.def().name,
                 reason: "a creature with a {T} activation cost cannot use it until it has been under its controller's control since their most recent turn began (CR 302.6)".to_string(),
@@ -3252,6 +3304,7 @@ impl Game {
             card,
             controller: player,
             targets: targets.to_vec(),
+            affected: None,
             cursor: 0,
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
@@ -3291,6 +3344,7 @@ impl Game {
                 ability: 0,
                 seq,
                 spell_mana_value: 0,
+                affected: None,
             });
             return;
         }
@@ -3304,6 +3358,7 @@ impl Game {
                 ability: index,
                 seq,
                 spell_mana_value: 0,
+                affected: None,
             });
         }
     }
@@ -3508,6 +3563,7 @@ impl Game {
             card: trigger.card,
             controller: trigger.controller,
             targets,
+            affected: trigger.affected,
             cursor: 0,
             entry: StackEntry::Triggered {
                 ability: trigger.ability,
@@ -3711,6 +3767,7 @@ impl Game {
             card: card_id,
             controller: player,
             targets: targets.to_vec(),
+            affected: None,
             cursor: 0,
             entry: StackEntry::Spell,
             trigger_answered: false,
@@ -5241,6 +5298,7 @@ impl Game {
                     ability: ability_index(item.entry),
                     seq: 0,
                     spell_mana_value: item.spell_mana_value,
+                    affected: item.affected,
                 },
             });
             self.state.resolving = Some(item.object);
@@ -6154,6 +6212,27 @@ impl Game {
                 }
                 false
             }
+            Effect::PutCounterAndHasteOnEntered => {
+                let Some(target) = item.affected else {
+                    return false;
+                };
+                if let Some(object) = self.state.objects.get_mut(&target)
+                    && object.zone == Zone::Battlefield
+                    && object.is_creature()
+                {
+                    object
+                        .counters
+                        .add(crate::counters::CounterKind::PlusOnePlusOne, 1);
+                    let name = object.card.name();
+                    self.add_haste_grant(item, target, events);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "{name} enters with a +1/+1 counter and gains haste until end of turn"
+                        ),
+                    });
+                }
+                false
+            }
             Effect::RegenerateSource => {
                 let source = item.object;
                 if self.state.try_object(source).is_some_and(|object| {
@@ -6361,6 +6440,28 @@ impl Game {
             .try_object(entering)
             .is_some_and(|o| o.zone == Zone::Battlefield && o.card.def().has_subtype("Bear"));
         for (source, source_card, source_controller) in watchers {
+            if source_card == CardId::SurrakAndGoreclaw {
+                let qualifies = self.state.try_object(entering).is_some_and(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == source_controller
+                        && object.is_creature()
+                        && !object.card.is_token()
+                });
+                if qualifies {
+                    let seq = self.state.next_trigger_seq;
+                    self.state.next_trigger_seq += 1;
+                    self.state.trigger_queue.push(TriggerRef {
+                        source,
+                        card: source_card,
+                        controller: source_controller,
+                        ability: 0,
+                        seq,
+                        spell_mana_value: 0,
+                        affected: Some(entering),
+                    });
+                }
+                continue;
+            }
             if source_card == CardId::AyulaQueenAmongBears {
                 let controlled = self
                     .state
@@ -7754,6 +7855,7 @@ mod slice17_cleanup_history_tests {
                     ability: 0,
                     seq: 0,
                     spell_mana_value: 0,
+                    affected: None,
                 },
                 TriggerRef {
                     source: warden,
@@ -7762,6 +7864,7 @@ mod slice17_cleanup_history_tests {
                     ability: 0,
                     seq: 1,
                     spell_mana_value: 0,
+                    affected: None,
                 },
             ],
             &mut events,

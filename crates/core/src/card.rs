@@ -236,6 +236,9 @@ pub enum Effect {
         power: i32,
         toughness: i32,
     },
+    /// Put a +1/+1 counter on and grant haste to the entered object captured
+    /// by the trigger (`it`, not a target).
+    PutCounterAndHasteOnEntered,
 }
 
 impl Effect {
@@ -317,6 +320,9 @@ impl Effect {
                 "target Bear you control fights target creature you don't control".to_string()
             }
             Effect::RegenerateSource => "regenerate this creature".to_string(),
+            Effect::PutCounterAndHasteOnEntered => {
+                "put a +1/+1 counter on it and it gains haste".to_string()
+            }
             Effect::LookTopTakeOrBottom => {
                 "look at the top card; take a creature/planeswalker or put it on the bottom"
                     .to_string()
@@ -582,6 +588,7 @@ pub enum CardId {
     AyulaQueenAmongBears,
     ViviensGrizzly,
     DragonScarredBear,
+    SurrakAndGoreclaw,
     AyulasInfluence,
     Bearscape,
     MotherBear,

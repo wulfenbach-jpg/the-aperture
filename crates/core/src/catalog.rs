@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 140] = [
+pub static CARDS: [CardDef; 141] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -855,6 +855,12 @@ pub static CARDS: [CardDef; 140] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        SurrakAndGoreclaw, "Surrak and Goreclaw", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Human Bear", power: Some(6), toughness: Some(5),
+        oracle: "Trample\nOther creatures you control have trample.\nWhenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
+        spell: None
     ),
     card!(
         DragonScarredBear, "Dragon-Scarred Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,

@@ -432,6 +432,18 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+const SURRAK_AND_GORECLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
+    event: TriggerEvent::AnotherCreatureEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::PutCounterAndHasteOnEntered],
+})];
+
+const SURRAK_STATIC: &[StaticAbility] = &[StaticAbility::OtherControlledCreaturesHaveTrample {
+    text: "Other creatures you control have trample.",
+}];
+
 const DRAGON_SCARRED_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
     cost: AbilityCost {
@@ -756,6 +768,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::CallerOfTheClaw => CALLER_OF_THE_CLAW,
         CardId::ViviensGrizzly => VIVIENS_GRIZZLY,
         CardId::DragonScarredBear => DRAGON_SCARRED_BEAR,
+        CardId::SurrakAndGoreclaw => SURRAK_AND_GORECLAW,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,
@@ -877,6 +890,9 @@ pub enum StaticAbility {
         generic: u8,
         text: &'static str,
     },
+    /// CR 613.4d + 702.19a: other creatures controlled by this source's
+    /// controller have trample while it is on the battlefield.
+    OtherControlledCreaturesHaveTrample { text: &'static str },
 }
 
 impl StaticAbility {
@@ -885,7 +901,8 @@ impl StaticAbility {
             StaticAbility::PowerToughnessPerCount { text, .. } => text,
             StaticAbility::DamageFromControlledSources { text, .. }
             | StaticAbility::ThresholdPowerToughness { text, .. }
-            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { text, .. } => text,
+            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { text, .. }
+            | StaticAbility::OtherControlledCreaturesHaveTrample { text } => text,
         }
     }
 
@@ -898,7 +915,8 @@ impl StaticAbility {
             StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
-            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. } => None,
+            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
+            | StaticAbility::OtherControlledCreaturesHaveTrample { .. } => None,
         }
     }
 
@@ -907,7 +925,8 @@ impl StaticAbility {
             StaticAbility::PowerToughnessPerCount { count, .. } => Some(count),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
-            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. } => None,
+            | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
+            | StaticAbility::OtherControlledCreaturesHaveTrample { .. } => None,
         }
     }
 }
@@ -951,6 +970,7 @@ const GORECLAW_STATIC: &[StaticAbility] =
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
         CardId::WightOfPrecinctSix => WIGHT,
+        CardId::SurrakAndGoreclaw => SURRAK_STATIC,
         CardId::AngrathsMarauders => ANGRATH,
         CardId::Werebear => WEREBEAR,
         CardId::GoreclawTerrorOfQalSisma => GORECLAW_STATIC,

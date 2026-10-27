@@ -83,6 +83,8 @@ pub enum ContinuousKind {
     /// card, so a granted trample is indistinguishable from printed trample at
     /// the point the rule is executed.
     GrantsTrample,
+    /// CR 613.4d + 702.10a: the object has haste until end of turn.
+    GrantsHaste,
 }
 
 /// One continuous effect, carrying the timestamp that fixes its order inside
@@ -112,6 +114,9 @@ impl ContinuousEffect {
             ),
             ContinuousKind::GrantsTrample => {
                 format!("trample until end of turn ({})", self.layer.rules())
+            }
+            ContinuousKind::GrantsHaste => {
+                format!("haste until end of turn ({})", self.layer.rules())
             }
         }
     }

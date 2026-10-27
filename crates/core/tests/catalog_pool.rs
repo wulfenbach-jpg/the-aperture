@@ -262,6 +262,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::EachPlayerDraws(_)
                 | Effect::LookTopTakeOrBottom
                 | Effect::RegenerateSource
+                | Effect::PutCounterAndHasteOnEntered
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue

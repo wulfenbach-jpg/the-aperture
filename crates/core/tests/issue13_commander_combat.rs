@@ -1376,7 +1376,7 @@ fn fog_is_a_sourced_catalog_card() {
     // the slice-19 attack-trigger bear Spectral Bears.
     // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn,
     // and to 140 with the slice-23 Bear lord Goreclaw, Terror of Qal Sisma.
-    assert_eq!(aperture_core::catalog::pool_size(), 140);
+    assert_eq!(aperture_core::catalog::pool_size(), 141);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
@@ -1395,6 +1395,7 @@ fn departing_controller_stack_card_is_exiled_without_a_phantom_entry() {
         card: CardId::Shock,
         controller: P0,
         targets: vec![Target::Player(P1)],
+        affected: None,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,
