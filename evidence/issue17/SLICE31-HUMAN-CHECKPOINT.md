@@ -40,8 +40,9 @@ At the beginning of combat on your turn, put a trample counter on up to one targ
   ignored, optional target made mandatory, subtype anthem disabled. Each fails exactly the named tests and
   `engine.rs` is restored **byte-for-byte** (`pre-`/`post-mutation-sha256.txt` both
   `8fe51710e795eea457fa9718b5b62596c630ca92dd8caae60684998c1b7030d2`).
-* Gates (committed logs carry their own exit codes): `fmt.log`, `clippy.log`, `workspace.log`,
-  `release-build.log` — see the checkpoint comment for the exact values of this run.
+* Gates (committed logs carry their own exit codes): `fmt.log` `FMT_EXIT=0`, `clippy.log`
+  `CLIPPY_EXIT=0`, `workspace.log` `WORKSPACE_EXIT=0` with **117 suites / 827 passed / 0 failed**,
+  `release-build.log` `RELEASE_EXIT=0`.
 * Four-seat / 40-life exact-snapshot journey from `evidence/issue17/slice31-journey-driver`
   (`decks/package-slice31.txt`, seed 3131, Jasmine Boreal injected for all four seats by the demonstrator):
   terminal **Win{P2}**, **1917 actions**, 46 turns, **4930 replay events**, digest
@@ -52,6 +53,13 @@ At the beginning of combat on your turn, put a trample counter on up to one targ
 * Independent corpus audit (`corpus-audit.py`, recomputed from `catalog.rs` + the eight desired decks and
   asserted equal to every manifest `missing_cards` entry): **147 catalog / 459 union = 135 supported +
   324 missing**, per-list `55/0/51/48/18/52/52/53`, **1 of 8 certified**.
+* Exact-head CI at `e53b987`: **10/10 check runs completed SUCCESS, every `head_sha` = e53b987**
+  (`exact-head-ci-e53b987.json`, capture exit 0 in `ci-capture.log`).
+* Independent review: **APPROVED_INCREMENT**, no functional defect and no reviewer edits
+  (`evidence/issue17/review287/REVIEW287.md`). Its non-blocking notes: the PR body had to be refreshed
+  (done — `pr-body-readback.md`), the slice-15/16 replay fixtures are stale at the previous head too
+  (pre-existing, verified identical at 073fd19), layer 7c additive statics only apply at recompute points
+  (already disclosed), and the Surrak gap should become a tracked follow-up.
 
 ## Disclosures
 
