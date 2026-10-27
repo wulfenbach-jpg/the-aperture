@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-136-card pool. Isamaru itself is supported, and the slice-4 package implemented
+137-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -43,15 +43,14 @@ complete, so all seven remain `planned`.
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
+`evidence/issue17/slice20/corpus-audit.py` + `slice20/corpus-audit.log`):
 
 * union of all referenced names: **459 unique names**;
-* **124** are in the supported 136-card catalog and **335** are missing. (Slice
-  18 registers `Ayula, Queen Among Bears` and slice 19 registers `Spectral
-  Bears`, so the previous 122/337 split moved by two; the union is unchanged
-  because both were already referenced names. The
+* **125** are in the supported 137-card catalog and **334** are missing. Slice
+  20 adds `Vivien's Grizzly` to the previously verified 124/335 split; the union
+  is unchanged because it was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
-  sum of nonbasic names.)
+  sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.
@@ -64,7 +63,7 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **29** missing names.
+(slice 17). Ayula currently has **28** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and

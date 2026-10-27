@@ -44,7 +44,7 @@ unchanged.
 ## Journey
 Evidence-only masked demonstrator, NOT product AI. `decks/package-slice20.txt`, exact
 4 seats / 40 life / seed 1919, Jasmine Boreal injected each command zone. Terminal
-`Win{P3}`, 2048 decisions, 46 turns, snapshot SHA256
+`Win{P3}`, **2064 decisions, 46 turns**, snapshot SHA256
 `12e6d1e92cdfb56e159e7b96465db2d03a1f511337f2dbca31371521e554916f`; Vivien cast 6,
 ability activated 22 times, take 5 / voluntary bottom 5 / mandatory ineligible bottom
 acknowledgements 16; 2064 decisions, 46 turns; replay digest matched, fresh save

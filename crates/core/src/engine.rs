@@ -5913,21 +5913,13 @@ impl Game {
                         && (object.card.def().is_creature()
                             || object.card.def().type_line.contains("Planeswalker"))
                 });
-                if !eligible {
-                    let player = &mut self.state.players[controller as usize];
-                    let card = player.library.remove(0);
-                    player.library.push(card);
-                    events.push(Event::StateBasedAction {
-                        description: format!(
-                            "P{controller} puts the looked-at card on the bottom of their library without revealing it"
-                        ),
-                    });
-                    return false;
-                }
+                // Looking happens even when the card cannot be taken. The
+                // owner must acknowledge the mandatory bottom, and only that
+                // owner's projection shows the looked-at identity.
                 self.state.pending = Some(Pending::TopCardChoice {
                     player: controller,
                     card: top,
-                    can_take: true,
+                    can_take: eligible,
                 });
                 self.state.turn.priority = None;
                 true
