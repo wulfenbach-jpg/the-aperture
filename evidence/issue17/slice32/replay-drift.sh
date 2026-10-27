@@ -2,6 +2,11 @@
 # Re-run every committed evidence-only journey driver after the slice-32 change
 # and print its live digest next to the digest recorded at HEAD, so the record
 # can state exactly which journeys moved.
+#
+# Caveat (raised by review 289): these runs use the WORKING TREE's driver
+# Cargo.lock files. slice22's lock is not committed and slice26-journey-driver
+# is untracked, so this script reproduces from this checkout, not from a clean
+# `git archive` of every slice.
 set -u
 cd "$(dirname "$0")/../../.." || exit 1
 for dir in evidence/issue17/slice*-journey-driver; do
