@@ -119,13 +119,16 @@ artifact, and only the first kind is a head measurement:
   UTC capture time and the command, plus the command's own exit status. The
   commits after `ab71129` are evidence-only (`git diff ab71129..HEAD -- crates/`
   is empty), so those logs describe exactly the Rust code the branch publishes.
-- **RED / mutation transcripts** — `tdd-red-review.log`, `tdd-red-session.log`,
-  `tdd-green-session.log`, `tdd-mutation-red-app.log`: captured in earlier
-  working trees while the slice was being built, and they carry **no head
-  header and no exit-status line**. They are kept because they are the only
-  record of the RED state each test was written against, not because they
-  describe `ab71129`. Their result lines must be read as what the tree at that
-  moment produced.
+- **Earlier working-tree transcripts (no head header, no exit-status line)** —
+  `tdd-red-review.log`, `tdd-red-session.log`, `tdd-green-session.log`,
+  `tdd-mutation-red-app.log`: captured while the slice was being built, in
+  working trees whose exact commit is not recorded inside the file.
+  `tdd-red-review.log` and `tdd-red-session.log` show their tests failing before
+  the implementation existed; `tdd-green-session.log` shows the session tests
+  passing at a later point in that same build-up; `tdd-mutation-red-app.log`
+  shows the review renderer and journey tests failing with the panel render
+  disabled. They are kept as the RED/GREEN sequence each test was written
+  against, not as head measurements.
   `tdd-red-review-repair.log` and `mutation-red-review-repair.log` do declare
   their own provenance in a header: the former against the pre-fix working tree
   at `330fc25` (the last commit before the F1 fix), the latter against
