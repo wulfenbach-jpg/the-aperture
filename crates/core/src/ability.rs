@@ -426,6 +426,19 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+const DRAGON_SCARRED_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+    cost: AbilityCost {
+        mana: Some("{1}{G}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::RegenerateSource],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
 const VIVIENS_GRIZZLY: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.",
     cost: AbilityCost {
@@ -696,6 +709,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::UlvenwaldBear => ULVENWALD_BEAR,
         CardId::CallerOfTheClaw => CALLER_OF_THE_CLAW,
         CardId::ViviensGrizzly => VIVIENS_GRIZZLY,
+        CardId::DragonScarredBear => DRAGON_SCARRED_BEAR,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,

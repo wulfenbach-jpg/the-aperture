@@ -80,6 +80,7 @@ pub fn fixture(seed: u64) -> Fixture {
             skip_next_untap: Default::default(),
             effects: Vec::new(),
             shields: Vec::new(),
+            regeneration_shields: Vec::new(),
             next_effect: 1,
             next_timestamp: 1,
             revision: 0,

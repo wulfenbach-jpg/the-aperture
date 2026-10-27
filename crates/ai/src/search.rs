@@ -724,6 +724,7 @@ fn reconstruct(
         skip_next_untap: real_state.skip_next_untap.clone(),
         effects: Vec::new(),
         shields: Vec::new(),
+        regeneration_shields: Vec::new(),
         next_effect: real_state.next_effect,
         next_timestamp: real_state.next_timestamp,
         revision: 0,

@@ -668,6 +668,11 @@ pub enum Outcome {
     },
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RegenerationShield {
+    pub object: ObjectId,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GameState {
     pub seed: u64,
@@ -749,6 +754,9 @@ pub struct GameState {
     /// One-shot prevention shields (CR 615), in creation order.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub shields: Vec<crate::layer::DamageShield>,
+    /// CR 701.19 regeneration shields, keyed to the object that created them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub regeneration_shields: Vec<RegenerationShield>,
     /// Next rule-visible effect id.
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     pub next_effect: u32,
@@ -895,6 +903,7 @@ impl GameState {
             || self.effects.iter().any(|effect| {
                 effect.source == Some(id) || effect.target == id
             })
+            || self.regeneration_shields.iter().any(|shield| shield.object == id)
             || self.shields.iter().any(|shield| {
                 shield.source == Some(id)
                     || matches!(shield.target, crate::layer::ShieldTarget::Permanent(object) if object == id)

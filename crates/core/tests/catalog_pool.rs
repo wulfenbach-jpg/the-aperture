@@ -261,6 +261,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 // tests: none of them appears in printed spell text yet.
                 Effect::EachPlayerDraws(_)
                 | Effect::LookTopTakeOrBottom
+                | Effect::RegenerateSource
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::CreateBearTokensForEachDeathThisTurn => {}

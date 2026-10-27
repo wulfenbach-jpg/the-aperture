@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (137 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (138 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -301,7 +301,7 @@ storage only), tokens beyond the typed 1/1 red Goblin package, target-player
 milling (self-mill and each-opponent mill are implemented), tutoring, libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
-card outside this branch candidate's 137-card pool.
+card outside this branch candidate's 138-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

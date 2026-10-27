@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 137] = [
+pub static CARDS: [CardDef; 138] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -855,6 +855,12 @@ pub static CARDS: [CardDef; 137] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        DragonScarredBear, "Dragon-Scarred Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(2),
+        oracle: "Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+        spell: None
     ),
     card!(
         ViviensGrizzly, "Vivien's Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,

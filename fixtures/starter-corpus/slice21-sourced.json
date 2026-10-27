@@ -1,0 +1,30 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T04:44:50.249896+00:00",
+ "cards": [
+  {
+   "name": "Dragon-Scarred Bear",
+   "oracle_id": "2f6f49a4-f2ea-4147-a6d3-69cf875c302e",
+   "scryfall_id": "689a6390-894a-4d31-87c2-f9cec3b187a7",
+   "set": "dtk",
+   "collector_number": "183",
+   "layout": "normal",
+   "mana_cost": "{2}{G}",
+   "type_line": "Creature — Bear",
+   "power": "3",
+   "toughness": "2",
+   "oracle_text": "Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Regenerate",
+    "Formidable"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/689a6390-894a-4d31-87c2-f9cec3b187a7",
+   "retrieved_at": "2026-10-27T04:44:50.249896+00:00"
+  }
+ ]
+}

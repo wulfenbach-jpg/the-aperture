@@ -291,6 +291,7 @@ impl Game {
             skip_next_untap: std::collections::BTreeSet::new(),
             effects: Vec::new(),
             shields: Vec::new(),
+            regeneration_shields: Vec::new(),
             // Allocator cursors start at zero so a state with no live effect has
             // exactly the canonical JSON it had before the effect pipeline
             // existed; recorded save/replay digests therefore stay verifiable.
@@ -1241,6 +1242,42 @@ impl Game {
             .objects
             .values()
             .any(|object| matches!(object.card, CardId::UlvenwaldBear | CardId::CallerOfTheClaw))
+    }
+
+    /// CR 614.8/701.19: apply one regeneration shield to a destruction event.
+    /// Returns true when destruction was replaced. Sacrifice/exile/bounce and
+    /// zero-toughness moves never call this helper.
+    fn try_regenerate(&mut self, id: ObjectId, events: &mut Vec<Event>) -> bool {
+        let Some(position) = self
+            .state
+            .regeneration_shields
+            .iter()
+            .position(|shield| shield.object == id)
+        else {
+            return false;
+        };
+        self.state.regeneration_shields.remove(position);
+        let Some(object) = self.state.objects.get_mut(&id) else {
+            return false;
+        };
+        if object.zone != Zone::Battlefield || !object.is_creature() {
+            return false;
+        }
+        object.damage = 0;
+        object.tapped = true;
+        self.state.turn.attackers.retain(|c| *c != id);
+        self.state.turn.blocked.retain(|c| *c != id);
+        self.state
+            .turn
+            .blockers
+            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+        let name = object.card.name();
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "{name} is regenerated: destruction replaced, damage removed, tapped, removed from combat (CR 701.19a)"
+            ),
+        });
+        true
     }
 
     fn move_to_graveyard_inner(
@@ -2928,6 +2965,25 @@ impl Game {
             self.plan_payment(player, &cost)?;
         }
         self.validate_card_costs(player, object.card, activated.cost, cost_cards)?;
+        if object.card == CardId::DragonScarredBear {
+            let total: i64 = self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield && o.controller == player && o.is_creature()
+                })
+                .map(|o| i64::from(o.power()))
+                .sum();
+            if total < 8 {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "Formidable requires creatures you control to have total power 8 or greater (current {total}; CR 702.102a)"
+                    ),
+                ));
+            }
+        }
         Ok(())
     }
 
@@ -4295,6 +4351,11 @@ impl Game {
             .retain(|effect| effect.duration != EffectDuration::UntilEndOfTurn);
         let expired_shields = self.state.shields.len();
         self.state.shields.clear();
+        let expired_regeneration = self.state.regeneration_shields.len();
+        self.state.regeneration_shields.clear();
+        if expired_regeneration > 0 {
+            changed = true;
+        }
         self.release_idle_effect_cursors();
         if expired_effects > 0 || expired_shields > 0 {
             changed = true;
@@ -4686,22 +4747,45 @@ impl Game {
                 changed = true;
             }
 
-            let dying: Vec<ObjectId> = self
+            let zero_toughness: Vec<ObjectId> = self
                 .state
                 .objects
                 .values()
-                .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
-                .filter(|o| o.toughness() <= 0 || o.damage as i32 >= o.toughness())
+                .filter(|o| o.zone == Zone::Battlefield && o.is_creature() && o.toughness() <= 0)
                 .map(|o| o.id)
                 .collect();
-            if !dying.is_empty() {
+            let lethal: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.is_creature()
+                        && o.toughness() > 0
+                        && o.damage as i32 >= o.toughness()
+                })
+                .map(|o| o.id)
+                .collect();
+            if !zero_toughness.is_empty() || !lethal.is_empty() {
+                let dying: Vec<ObjectId> = zero_toughness.into_iter().chain(lethal).collect();
                 // CR 704.3 + 603.6c: the whole batch is one event. Snapshot the
                 // watchers before anything leaves the battlefield and dispatch
                 // once for every death, so the result does not depend on which
                 // dying creature happens to be moved first.
                 let watchers = death_watchers(self);
                 let mut deaths: Vec<(ObjectId, ObjectId, CardId, PlayerId)> = Vec::new();
+                let mut regenerated = 0usize;
                 for id in &dying {
+                    let lethal_now = self.state.try_object(*id).is_some_and(|o| {
+                        o.zone == Zone::Battlefield
+                            && o.is_creature()
+                            && o.toughness() > 0
+                            && o.damage as i32 >= o.toughness()
+                    });
+                    if lethal_now && self.try_regenerate(*id, events) {
+                        regenerated += 1;
+                        continue;
+                    }
                     if let Some((dying_id, new_id, card, controller)) =
                         self.move_to_graveyard_inner(*id, events)
                     {
@@ -4711,8 +4795,8 @@ impl Game {
                 self.queue_watchers_for_deaths(&watchers, &deaths);
                 events.push(Event::StateBasedAction {
                     description: format!(
-                        "{} creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)",
-                        dying.len()
+                        "{} creature(s) had lethal damage or toughness 0; {} regenerated, {} were put into the graveyard (CR 704.5f, 704.5g)",
+                        dying.len(), regenerated, deaths.len()
                     ),
                 });
                 changed = true;
@@ -5774,6 +5858,9 @@ impl Game {
                     let watchers = death_watchers(self);
                     let mut deaths = Vec::new();
                     for id in &doomed {
+                        if self.try_regenerate(*id, events) {
+                            continue;
+                        }
                         if let Some(record) = self.move_to_graveyard_inner(*id, events) {
                             deaths.push(record);
                         }
@@ -5895,6 +5982,23 @@ impl Game {
                         reason: "the printed intervening-if condition is false at resolution \
                                  (CR 603.4)"
                             .to_string(),
+                    });
+                }
+                false
+            }
+            Effect::RegenerateSource => {
+                let source = item.object;
+                if self.state.try_object(source).is_some_and(|object| {
+                    object.zone == Zone::Battlefield && object.controller == controller
+                }) {
+                    self.state
+                        .regeneration_shields
+                        .push(crate::state::RegenerationShield { object: source });
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "{} gains a regeneration shield until cleanup (CR 701.19a)",
+                            item.card.name()
+                        ),
                     });
                 }
                 false
@@ -7509,5 +7613,40 @@ mod slice17_cleanup_history_tests {
                 .any(|item| item.card == CardId::SoulsAttendant),
             "the second trigger must still be placed"
         );
+    }
+
+    #[test]
+    fn cleanup_expires_regeneration_shields() {
+        let decks = vec![
+            DeckList::parse_practice("A", "40 Forest\n").expect("deck A"),
+            DeckList::parse_practice("B", "40 Forest\n").expect("deck B"),
+        ];
+        let mut game = Game::new(19_021, &decks).expect("game");
+        let id = ObjectId(game.state.next_object);
+        game.state.next_object += 1;
+        game.state.objects.insert(
+            id,
+            Object {
+                id,
+                card: CardId::DragonScarredBear,
+                owner: P0,
+                controller: P0,
+                zone: Zone::Battlefield,
+                commander: None,
+                tapped: false,
+                damage: 1,
+                summoning_sick: false,
+                pump_power: 0,
+                pump_toughness: 0,
+                plus_one_counters: 0,
+                counters: crate::counters::Counters::default(),
+            },
+        );
+        game.state
+            .regeneration_shields
+            .push(crate::state::RegenerationShield { object: id });
+        game.finish_cleanup(&mut Vec::new());
+        assert!(game.state.regeneration_shields.is_empty());
+        assert_eq!(game.state.object(id).damage, 0);
     }
 }

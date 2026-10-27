@@ -1374,7 +1374,7 @@ fn fog_is_a_sourced_catalog_card() {
     // History, Little Bear), to 134 with the slice-17 death-history trio, to
     // 135 with the slice-18 commander Ayula, Queen Among Bears, and to 136 with
     // the slice-19 attack-trigger bear Spectral Bears.
-    assert_eq!(aperture_core::catalog::pool_size(), 137);
+    assert_eq!(aperture_core::catalog::pool_size(), 138);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

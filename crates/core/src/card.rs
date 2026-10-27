@@ -218,6 +218,8 @@ pub enum Effect {
     /// gets a take-or-bottom choice; any other card goes to the bottom without
     /// being revealed. Empty library is not a draw.
     LookTopTakeOrBottom,
+    /// CR 701.19a: create a regeneration shield on the ability's source.
+    RegenerateSource,
 }
 
 impl Effect {
@@ -298,6 +300,7 @@ impl Effect {
             Effect::FightTargets => {
                 "target Bear you control fights target creature you don't control".to_string()
             }
+            Effect::RegenerateSource => "regenerate this creature".to_string(),
             Effect::LookTopTakeOrBottom => {
                 "look at the top card; take a creature/planeswalker or put it on the bottom"
                     .to_string()
@@ -540,6 +543,7 @@ pub enum CardId {
     CallerOfTheClaw,
     AyulaQueenAmongBears,
     ViviensGrizzly,
+    DragonScarredBear,
     AyulasInfluence,
     Bearscape,
     MotherBear,

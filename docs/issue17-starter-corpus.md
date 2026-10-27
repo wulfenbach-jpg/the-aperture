@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-137-card pool. Isamaru itself is supported, and the slice-4 package implemented
+138-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice20/corpus-audit.py` + `slice20/corpus-audit.log`):
 
 * union of all referenced names: **459 unique names**;
-* **125** are in the supported 137-card catalog and **334** are missing. Slice
+* **125** are in the supported 138-card catalog and **334** are missing. Slice
   20 adds `Vivien's Grizzly` to the previously verified 124/335 split; the union
   is unchanged because it was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
@@ -63,7 +63,7 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **28** missing names.
+(slice 17). Ayula currently has **27** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -383,3 +383,6 @@ Ayula is a supported commander (`{1}{G}`, 2/2 Legendary Bear) with sourced print
 
 ## Slice 20: Vivien's Grizzly
 Vivien's Grizzly (`{2}{G}`, 2/3 Bear Spirit) is sourced in `fixtures/starter-corpus/slice20-sourced.json` (Scryfall WAR 182, retrieved 2026-10-27T03:25:27Z). Its `{3}{G}` ability looks at the anchored top card: a creature/planeswalker card gets a private reveal-and-take or bottom choice; a nonqualifying card goes to the bottom without being revealed; an empty library is not a draw. Old replay digests are unchanged because no state field was added.
+
+## Slice 21: Dragon-Scarred Bear
+Dragon-Scarred Bear (`{2}{G}`, 3/2 Bear) is sourced in `fixtures/starter-corpus/slice21-sourced.json` (Scryfall DTK 183, retrieved 2026-10-27T04:44:50Z). Formidable `{1}{G}` creates a repeatable, non-tapping regeneration shield only when current total creature power is at least 8. Shields are object-anchored, expire at cleanup, and replace only destruction (lethal-damage SBA or a destroy effect): damage is removed, the creature taps and leaves combat. Exile, bounce and zero-toughness moves do not regenerate.
