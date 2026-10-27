@@ -510,14 +510,17 @@ pub struct Object {
     pub damage: u32,
     /// Summoning sickness (CR 302.6).
     pub summoning_sick: bool,
-    /// "Until end of turn" pump from `Effect::Pump` (CR 613.4c).
+    /// Layer 7b/7c delta from `recompute_layers` (CR 613.4b/c).
     ///
-    /// This single delta holds the layer 7a and 7c results for the object: the
-    /// engine recomputes it in layer order (7a characteristic-defining first,
-    /// then 7c modifiers in timestamp order) and both implemented kinds are
-    /// additive, so the aggregation is lossless. A future layer 7b
-    /// base-setting effect needs its own base fields; object characteristic
-    /// fields are owned by the counters lane, so this lane adds none.
+    /// This single delta holds every layer 7b and 7c result for the object
+    /// relative to its *printed* power/toughness: a layer 7b base setter stores
+    /// `base - printed` (Exuberant Wolfbear's until-end-of-turn setter and
+    /// Circle of the Moon Druid's printed during-your-turn 4/2), printed layer
+    /// 7c statics and until-end-of-turn modifiers store their additive amounts.
+    /// `Object::power`/`toughness` then add the layer 7d counters (CR 613.4d,
+    /// `Counters::power_delta`) on top, which is why 7d needs no delta here.
+    /// Setting layers are recomputed in layer order, and 7c addition is
+    /// commutative, so the single field is lossless.
     pub pump_power: i32,
     pub pump_toughness: i32,
     /// Legacy sandbox storage used by the native UI's editing tools only. The

@@ -476,7 +476,38 @@ impl Game {
             }
         }
         // CR 613.4b base P/T setters apply before counters and modifiers. A
-        // later setter in timestamp order replaces an earlier base.
+        // later setter in timestamp order replaces an earlier base. A *printed*
+        // static setter (Circle of the Moon Druid's Bear Form) has the timestamp
+        // of its permanent's arrival, which precedes every effect created
+        // later, so it is applied first and any one-shot setter below overrides
+        // it. It also depends on whose turn it is (CR 611.3a), which the engine
+        // answers against the active player rather than by storing an effect.
+        for (id, card) in &battlefield {
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
+            if self.state.turn.active != controller {
+                continue;
+            }
+            for static_ability in ability::static_abilities(*card) {
+                let ability::StaticAbility::SelfBasePowerToughnessDuringYourTurn {
+                    power,
+                    toughness,
+                    ..
+                } = static_ability
+                else {
+                    continue;
+                };
+                if let Some(object) = self.state.objects.get_mut(id)
+                    && object.zone == Zone::Battlefield
+                {
+                    object.pump_power = power - object.card.def().power.unwrap_or(0);
+                    object.pump_toughness = toughness - object.card.def().toughness.unwrap_or(0);
+                }
+            }
+        }
         let mut setting: Vec<(u64, ObjectId, i32, i32)> = self
             .state
             .effects
@@ -621,6 +652,21 @@ impl Game {
     /// (CR 613.7), so the last one wins.
     fn has_subtype(&self, object: &Object, subtype: &str) -> bool {
         let mut effective: Option<crate::layer::SubtypeLine> = None;
+        // CR 611.3a + 613.1d: a *printed* layer 4 line can be conditional on
+        // whose turn it is ("During your turn, this creature is a Bear ...").
+        // Its timestamp is the permanent's arrival, so it is answered first and
+        // any effect created afterwards in the same layer still wins below.
+        if object.zone == Zone::Battlefield && self.state.turn.active == object.controller {
+            for static_ability in crate::ability::static_abilities(object.card) {
+                if let crate::ability::StaticAbility::SelfBecomesSubtypeDuringYourTurn {
+                    line,
+                    ..
+                } = static_ability
+                {
+                    effective = Some(*line);
+                }
+            }
+        }
         for effect in self
             .state
             .effects
@@ -1642,6 +1688,19 @@ impl Game {
         self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
         if is_creature {
             self.queue_another_creature_enters(new_id);
+        }
+        // CR 613.1d/613.4b: a *printed* layer 4 line or 7b base setter starts
+        // applying the moment its permanent arrives (Circle of the Moon Druid's
+        // Bear Form during its controller's turn). Unlike an additive layer 7c
+        // printed static — which the engine recomputes at pump/untap points and
+        // which is disclosed pre-existing debt — a base-setting value cannot be
+        // reconstructed by adding to the printed numbers later, so it is applied
+        // here rather than waiting for an unrelated recomputation.
+        if crate::ability::static_abilities(card)
+            .iter()
+            .any(|ability| matches!(ability.layer(), Some(Layer::Type | Layer::Setting)))
+        {
+            self.recompute_layers();
         }
     }
 
@@ -4527,6 +4586,12 @@ impl Game {
             // CR 602.5b: "activate only once each turn" limits reset with the
             // new turn.
             self.state.activation_uses.clear();
+            // CR 611.3a + 613.1d/613.4b: a printed effect that applies "during
+            // your turn" starts or stops applying when the active player
+            // changes, so the layer recomputation has to run here — otherwise
+            // a permanent whose base power/toughness depends on whose turn it
+            // is would keep the previous turn's values.
+            self.recompute_layers();
             let (turn, active) = (self.state.turn.number, self.state.turn.active);
             events.push(Event::TurnBegin { turn, active });
         }

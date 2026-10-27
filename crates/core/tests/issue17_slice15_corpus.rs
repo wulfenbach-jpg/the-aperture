@@ -128,7 +128,7 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // (the three slice-15 cards stay supported and the recorded gap matches the
     // compiled pool) is unchanged. Slice 23 registers Goreclaw, Terror of Qal
     // Sisma, which closes one more name. Slice 26 registers Ursine Champion,
-    // which closes one more again.
-    assert_eq!(missing.len(), 22, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 143, "the compiled pool");
+    // which closes one more again. Slice 28 registers Circle of the Moon Druid.
+    assert_eq!(missing.len(), 21, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 144, "the compiled pool");
 }

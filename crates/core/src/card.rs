@@ -617,6 +617,8 @@ pub enum CardId {
     DancingFromDarkToDawn,
     GoreclawTerrorOfQalSisma,
     UrsineChampion,
+    /// Issue 17 slice 28: Circle of the Moon Druid (AFR 177).
+    CircleOfTheMoonDruid,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

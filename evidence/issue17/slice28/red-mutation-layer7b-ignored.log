@@ -1,0 +1,52 @@
+# mutation-layer7b-ignored: the base power/toughness half is never applied
+# file: crates\core\src\engine.rs
+# sha256 before mutation: 3cd1c4bf323063dd843b285039174385cef78d45d448835a0dfe17b7e28755f9
+# sha256 after restore:   3cd1c4bf323063dd843b285039174385cef78d45d448835a0dfe17b7e28755f9
+# restored byte-for-byte: True
+# command: cargo test -p aperture-core --test issue17_slice28 --locked
+# exit code: 101
+
+
+running 5 tests
+test the_catalog_string_is_the_recorded_printing_and_both_layers_are_typed ... ok
+test a_non_bear_creature_still_gets_no_counter_so_the_check_is_discriminating ... ok
+test it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after ... FAILED
+test the_condition_is_its_controllers_turn_not_seat_zero ... FAILED
+test the_base_setting_sits_under_layer_7c_and_under_counters ... FAILED
+
+failures:
+
+---- it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after stdout ----
+
+thread 'it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after' (33064) panicked at crates\core\tests\issue17_slice28.rs:151:5:
+assertion `left == right` failed: layer 7b base 4/2 on your turn
+  left: (2, 4)
+ right: (4, 2)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_condition_is_its_controllers_turn_not_seat_zero stdout ----
+
+thread 'the_condition_is_its_controllers_turn_not_seat_zero' (41832) panicked at crates\core\tests\issue17_slice28.rs:293:5:
+assertion `left == right` failed: P1's turn
+  left: (2, 4)
+ right: (4, 2)
+
+---- the_base_setting_sits_under_layer_7c_and_under_counters stdout ----
+
+thread 'the_base_setting_sits_under_layer_7c_and_under_counters' (15548) panicked at crates\core\tests\issue17_slice28.rs:222:5:
+assertion `left == right` failed: base 4/2 then +3/+3 in layer 7c
+  left: (5, 7)
+ right: (7, 5)
+
+
+failures:
+    it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after
+    the_base_setting_sits_under_layer_7c_and_under_counters
+    the_condition_is_its_controllers_turn_not_seat_zero
+
+test result: FAILED. 2 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.97s
+     Running tests\issue17_slice28.rs (target\debug\deps\issue17_slice28-cfb9f7bf614b3534.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice28`

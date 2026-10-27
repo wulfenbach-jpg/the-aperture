@@ -46,10 +46,11 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **131** are in the supported 143-card catalog and **328** are missing. Slice
-  25 adds `Exuberant Wolfbear` (129→130) and slice 26 adds `Ursine Champion`
-  (130→131) to the previously verified split. The union is unchanged because
-  both were already referenced names. The
+* **132** are in the supported 144-card catalog and **327** are missing. Slice
+  25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
+  (130→131) and slice 28 adds `Circle of the Moon Druid` (131→132) to the
+  previously verified split. The union is unchanged because every one of them
+  was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog
@@ -64,7 +65,8 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **22** missing names.
+(slice 17). Slice 28 adds `Circle of the Moon Druid`. Ayula currently has **21**
+missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -189,7 +191,10 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    at instant timing) and printed Trample (Owlbear assigns lethal damage to
    blockers first and tramples the surplus to the player); defender, token
    flying and printed islandwalk are also implemented in their named packages.
-   Haste and wider keyword semantics remain unimplemented;
+   Haste is implemented as a *granted* keyword (`Game::has_haste` /
+   `ContinuousKind::GrantsHaste`, Surrak and Goreclaw); cards that print haste
+   are not in the pool, so printed haste and wider keyword semantics remain
+   unimplemented;
 5. typed counters exist in the core (issue #16); slice 18 implements Ayula's
    printed counter/fight trigger as the bounded `TargetSpec::Bear` /
    `TargetSpec::BearYouControl` modes with a typed fight effect (CR 701.14a/b).
@@ -452,12 +457,13 @@ in `fixtures/starter-corpus/slice23-sourced.json`) adds the pool's first
 Known limits, disclosed rather than approximated: the cost reduction counts one
 reduction per permanent (correct for one Goreclaw, untested for two because the
 pool has no second copy); at that slice the pool still had no layer 4/5/7b
-(type, colour, base power/toughness) effects, so cards such as `Circle of the
-Moon Druid` and `Stuffed Bear` remain unsupported. (Slice 25 added the layer 7b
-base power/toughness setter and slice 26 the layer 4 subtype line, so layers 4,
-6, 7b and 7c now exist; layer 5 colour changes and the animation effects that
-turn a non-creature permanent into a creature are still missing.) Ayula has 22
-missing names after slice 26,
+(type, colour, base power/toughness) effects. (Slice 25 added the layer 7b base
+power/toughness setter, slice 26 the layer 4 subtype line and slice 28 the first
+*printed* layer 4 + 7b ability, so layers 4, 6, 7b and 7c now exist; layer 5
+colour changes and the animation effects that turn a non-creature permanent into
+a creature are still missing, which is why `Stuffed Bear` and `Beorn's
+Hospitality` remain unsupported.) Ayula had 22 missing names after slice 26 and
+21 after slice 28,
 the eight-list gate remains open at 1 of 8 certified, and no new list is
 certified by this slice.
 
@@ -471,3 +477,13 @@ Surrak and Goreclaw (`{4}{G}{G}`, 6/5 Legendary Human Bear) is sourced in `fixtu
 
 ## Slice 25: Exuberant Wolfbear
 Exuberant Wolfbear (`{3}{G}`, 4/4 Wolf Bear) is sourced in `fixtures/starter-corpus/slice25-sourced.json` (IKO 151, immutable 8c8ff0da, retrieved 2026-10-27T09:19:21Z). Its optional attack trigger targets a Human you control and sets that Human's base power/toughness to the Wolfbear's effective power/toughness captured at resolution. Base setting is layer 7b before counters and 7c modifiers; source LKI is captured on battlefield departure for source-left resolution. Target/source departure and cleanup follow normal continuous-effect rules.
+
+## Slice 28: Circle of the Moon Druid
+Circle of the Moon Druid (`{2}{G}`, 2/4 Creature — Human Elf Druid) is sourced in `fixtures/starter-corpus/slice28-sourced.json` (Scryfall AFR 177, immutable `700c9ed8-6bfe-4f1e-855a-5f31e0d2fc9b`, oracle `90569b99-8b63-4d2e-b7de-b578b8adbdcb`, retrieved 2026-10-27T12:07:11Z; both of its printings, AFR 177 and HBG 204, carry identical wording). Printed text: "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)"
+
+* It is the pool's first **printed** continuous ability conditioned on whose turn it is (CR 611.3a). One printed ability spans two layers: the subtype line is layer 4 (CR 613.1d, `StaticAbility::SelfBecomesSubtypeDuringYourTurn` + `SubtypeLine::Bear`) and base power/toughness is layer 7b (CR 613.4b, `StaticAbility::SelfBasePowerToughnessDuringYourTurn`).
+* Neither half creates a `ContinuousEffect`: the condition is answered when the characteristic is read, so nothing has to expire in cleanup and no effect object can be orphaned, bounced or re-used. `Game::has_subtype` consults the printed line before it applies any layer 4 effect, and `recompute_layers` applies the 7b base before the timestamp-ordered one-shot setters and the 7c modifiers, so the printed 4/2 is a *base* that pumps and counters sit on top of.
+* Because the ability starts applying the moment its source arrives, `enter_battlefield` recomputes characteristics when the entering card prints a layer 4 or 7b static. The additive printed layer 7c statics (`Wight of Precinct Six`) keep their existing recompute points; that staleness window — a Wight that enters mid-turn reads its printed 1/1 until the next pump or untap — is pre-existing debt, disclosed here rather than silently changed.
+* Consequences the engine now answers with the effective subtype: Little Bear's "if that creature is a Bear" counter branch, Ayula's `TargetSpec::Bear` / `TargetSpec::BearYouControl` offer lists, and Exuberant Wolfbear's "target Human you control", which correctly *loses* the Druid during its controller's turn because the Bear line replaces the printed subtypes.
+
+Verification retained in `evidence/issue17/slice28/`: three discriminating mutation REDs (turn condition ignored, layer 7b half ignored, layer 4 half ignored — each restored byte-for-byte, `run-mutations.py` proves it), a four-seat 40-life package journey from `evidence/issue17/slice28-journey-driver` (`decks/package-slice28.txt`, terminal `Win{P3}`, 2065 actions, 50 turns, digest `48bf3ae5…`, separate CLI replay matches) whose driver asserts the printed 4/2-or-2/4 invariant after *every* accepted action (636 on-turn and 1404 off-turn sightings), and the usual gates. This slice certifies no starter list: Ayula still has 21 missing names and the eight-list gate remains 1 of 8.

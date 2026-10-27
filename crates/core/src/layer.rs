@@ -90,6 +90,9 @@ impl Layer {
 pub enum SubtypeLine {
     /// Ursine Champion: "becomes a Bear Berserker until end of turn".
     BearBerserker,
+    /// Circle of the Moon Druid: "is a Bear ... (It loses all other creature
+    /// types.)" — a printed static line, not an activated one.
+    Bear,
 }
 
 impl SubtypeLine {
@@ -97,6 +100,7 @@ impl SubtypeLine {
     pub fn text(self) -> &'static str {
         match self {
             SubtypeLine::BearBerserker => "Bear Berserker",
+            SubtypeLine::Bear => "Bear",
         }
     }
 

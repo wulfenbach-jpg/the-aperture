@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 143] = [
+pub static CARDS: [CardDef; 144] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1082,6 +1082,20 @@ pub static CARDS: [CardDef; 143] = [
         kinds: CREATURE, basic: None,
         type_line: "Creature — Human Berserker", power: Some(2), toughness: Some(2),
         oracle: "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
+        spell: None
+    ),
+    // Issue 17 slice 28: Circle of the Moon Druid. The pool's first printed
+    // static ability that is conditioned on whose turn it is: during its
+    // controller's turn it is a Bear (layer 4, replacing the printed subtype
+    // line) with base power and toughness 4/2 (layer 7b), and neither half
+    // needs an effect object because the condition is answered at the moment
+    // the characteristics are read. Printed text copied verbatim from the
+    // AFR 177 printing recorded in fixtures/starter-corpus/slice28-sourced.json.
+    card!(
+        CircleOfTheMoonDruid, "Circle of the Moon Druid", cost: Some("{2}{G}"),
+        kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Elf Druid", power: Some(2), toughness: Some(4),
+        oracle: "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
         spell: None
     ),
 ];

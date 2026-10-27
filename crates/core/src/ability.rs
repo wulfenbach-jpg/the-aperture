@@ -924,6 +924,26 @@ pub enum StaticAbility {
     /// CR 613.4d + 702.19a: other creatures controlled by this source's
     /// controller have trample while it is on the battlefield.
     OtherControlledCreaturesHaveTrample { text: &'static str },
+    /// CR 613.1d + 611.3a: "During your turn, this creature is a Bear ... (It
+    /// loses all other creature types.)" — a *printed static* layer 4 effect
+    /// (Circle of the Moon Druid's Bear Form). Unlike a `SetCreatureSubtypes`
+    /// continuous effect it is not created by a resolution: it applies for as
+    /// long as its source is on the battlefield and its controller is the
+    /// active player, so it never carries a timestamp of its own (its
+    /// timestamp is when the permanent entered, which precedes any effect
+    /// created later and therefore loses to one in the same layer).
+    SelfBecomesSubtypeDuringYourTurn {
+        line: crate::layer::SubtypeLine,
+        text: &'static str,
+    },
+    /// CR 613.4b: "... with base power and toughness 4/2" — the layer 7b half
+    /// of the same printed ability. It applies under the same
+    /// during-your-turn condition as the subtype line above.
+    SelfBasePowerToughnessDuringYourTurn {
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
 }
 
 impl StaticAbility {
@@ -933,7 +953,9 @@ impl StaticAbility {
             StaticAbility::DamageFromControlledSources { text, .. }
             | StaticAbility::ThresholdPowerToughness { text, .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { text, .. }
-            | StaticAbility::OtherControlledCreaturesHaveTrample { text } => text,
+            | StaticAbility::OtherControlledCreaturesHaveTrample { text }
+            | StaticAbility::SelfBecomesSubtypeDuringYourTurn { text, .. }
+            | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. } => text,
         }
     }
 
@@ -944,6 +966,8 @@ impl StaticAbility {
     pub fn layer(self) -> Option<Layer> {
         match self {
             StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
+            StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. } => Some(Layer::Type),
+            StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. } => Some(Layer::Setting),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
@@ -957,7 +981,9 @@ impl StaticAbility {
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
-            | StaticAbility::OtherControlledCreaturesHaveTrample { .. } => None,
+            | StaticAbility::OtherControlledCreaturesHaveTrample { .. }
+            | StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. }
+            | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. } => None,
         }
     }
 }
@@ -997,6 +1023,24 @@ const GORECLAW_STATIC: &[StaticAbility] =
         text: "Creature spells you cast with power 4 or greater cost {2} less to cast.",
     }];
 
+/// Circle of the Moon Druid's Bear Form (AFR 177). One printed ability, two
+/// layers: the subtype line is layer 4 (CR 613.1d) and the base power/toughness
+/// is layer 7b (CR 613.4b). Both halves carry the same "during your turn"
+/// condition, which the engine evaluates against the active player at the
+/// moment it asks the question, so no effect object is created and nothing has
+/// to expire in cleanup: the ability simply stops applying at end of turn.
+const CIRCLE_OF_THE_MOON_DRUID: &[StaticAbility] = &[
+    StaticAbility::SelfBecomesSubtypeDuringYourTurn {
+        line: crate::layer::SubtypeLine::Bear,
+        text: "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
+    },
+    StaticAbility::SelfBasePowerToughnessDuringYourTurn {
+        power: 4,
+        toughness: 2,
+        text: "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
+    },
+];
+
 /// Every static ability the rules layer knows for a card, in printed order.
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
@@ -1005,6 +1049,7 @@ pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
         CardId::AngrathsMarauders => ANGRATH,
         CardId::Werebear => WEREBEAR,
         CardId::GoreclawTerrorOfQalSisma => GORECLAW_STATIC,
+        CardId::CircleOfTheMoonDruid => CIRCLE_OF_THE_MOON_DRUID,
         _ => NO_STATICS,
     }
 }

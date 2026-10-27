@@ -1,0 +1,6 @@
+fmt exit=0
+clippy exit=0
+release-build exit=0
+focused exit=0
+workspace exit=0
+overall exit=0
