@@ -265,7 +265,9 @@ pub fn auto_answer(game: &Game) -> Action {
             },
             // Declare the first offered target; accept the first offered option
             // for a "you may" trigger (the engine lists "use it" first).
-            Pending::TriggerTarget { .. } | Pending::TriggerChoice { .. } => game
+            Pending::TriggerTarget { .. }
+            | Pending::TriggerChoice { .. }
+            | Pending::TriggerMode { .. } => game
                 .legal_actions()
                 .into_iter()
                 .find(|legal| {

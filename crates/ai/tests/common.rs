@@ -247,7 +247,9 @@ pub fn run_until(
                 Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
                     to_command_zone: true,
                 },
-                Pending::TriggerTarget { .. } | Pending::TriggerChoice { .. } => game
+                Pending::TriggerTarget { .. }
+                | Pending::TriggerChoice { .. }
+                | Pending::TriggerMode { .. } => game
                     .legal_actions()
                     .into_iter()
                     .find(|legal| {

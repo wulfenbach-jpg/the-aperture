@@ -409,6 +409,24 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+const AYULA_COUNTERS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
+    event: TriggerEvent::AnotherCreatureEnters,
+    optional: false,
+    target: TargetSpec::Bear,
+    effects: &[Effect::PutPlusOneCountersOnTarget(2)],
+})];
+
+const AYULA_FIGHT: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
+    event: TriggerEvent::AnotherCreatureEnters,
+    optional: false,
+    target: TargetSpec::BearYouControl,
+    effects: &[Effect::FightTargets],
+})];
+
+const AYULA_QUEEN_AMONG_BEARS: &[Ability] = &[AYULA_COUNTERS[0], AYULA_FIGHT[0]];
+
 const COMMANDERS_SPHERE: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "Sacrifice this artifact: Draw a card.",
     cost: AbilityCost::SACRIFICE_SELF,
@@ -647,6 +665,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::FriendlyTeddy => FRIENDLY_TEDDY,
         CardId::UlvenwaldBear => ULVENWALD_BEAR,
         CardId::CallerOfTheClaw => CALLER_OF_THE_CLAW,
+        CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,
         CardId::Bearscape => BEARSCAPE,

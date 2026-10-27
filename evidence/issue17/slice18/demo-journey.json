@@ -1,0 +1,46 @@
+{
+  "activations": {},
+  "bear_tokens_created": 1,
+  "casts": {
+    "Ayula, Queen Among Bears": 3,
+    "Caller of the Claw": 7,
+    "Friendly Teddy": 10,
+    "Grizzly Bears": 6,
+    "Runeclaw Bear": 4,
+    "Shock": 11,
+    "Ulvenwald Bear": 7
+  },
+  "commanders": "Ayula, Queen Among Bears injected for all four seats by this demonstrator",
+  "counters_chosen": 5,
+  "deck": "decks/package-slice18.txt",
+  "destroyed": {
+    "Ayula, Queen Among Bears": 1,
+    "Caller of the Claw": 5,
+    "Friendly Teddy": 6,
+    "Grizzly Bears": 5,
+    "Runeclaw Bear": 4,
+    "Shock": 11,
+    "Ulvenwald Bear": 6
+  },
+  "digest": "09e6bb25c505c1c090759e379fc442626c9ac04bc5dffbbe6548b5f8dcc3ba24",
+  "driver": "evidence-only masked card-preferring demonstrator; NOT product heuristic/strength evidence",
+  "fight_chosen": 4,
+  "fight_damage_events": 95,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 5028,
+  "seats": 4,
+  "seed": 1616,
+  "snapshot_sha256": "40028e6e00c20fd3da34e0a283cdd973f95e92d1144db2810c62d6af544490ec",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1961,
+  "turns": 43
+}

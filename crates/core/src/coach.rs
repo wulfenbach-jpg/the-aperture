@@ -409,6 +409,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             }
             Pending::TriggerTarget { .. } => vec!["603.3d"],
             Pending::TriggerChoice { .. } => vec!["603.5"],
+            Pending::TriggerMode { .. } => vec!["601.2b"],
         };
         let text = if matches!(pending, Pending::ApnapSacrifice { .. })
             && pending.player() != viewer

@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 134] = [
+pub static CARDS: [CardDef; 135] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -855,6 +855,12 @@ pub static CARDS: [CardDef; 134] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        AyulaQueenAmongBears, "Ayula, Queen Among Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
+        spell: None
     ),
     // Issue 17 slice 4: sourced Ayula/Isamaru package. Ordinary Bear is the
     // last printed vanilla creature left in the eight desired lists; Ashcoat

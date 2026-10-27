@@ -92,6 +92,10 @@ pub enum TargetSpec {
     /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
     /// (Negate). A creature spell on the stack is not a legal target.
     NoncreatureSpell,
+    /// CR 115.1: a Bear on the battlefield, either controller.
+    Bear,
+    /// A Bear controlled by the effect's controller, including the source.
+    BearYouControl,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -202,6 +206,10 @@ pub enum Effect {
     /// Create one 2/2 green Bear token per nontoken creature its controller
     /// owned that was put into their graveyard from the battlefield this turn.
     CreateBearTokensForEachDeathThisTurn,
+    /// CR 701.12a: two target creatures deal damage equal to their power to
+    /// each other simultaneously. Both must still satisfy the printed
+    /// Bear/opponent relation at resolution or no damage is dealt.
+    FightTargets,
 }
 
 impl Effect {
@@ -278,6 +286,9 @@ impl Effect {
             Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
             Effect::PutPlusOneCountersOnTarget(n) => {
                 format!("put {n} +1/+1 counter(s) on the target creature")
+            }
+            Effect::FightTargets => {
+                "target Bear you control fights target creature you don't control".to_string()
             }
             Effect::CreateBearTokensForEachDeathThisTurn => {
                 "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
@@ -498,6 +509,7 @@ pub enum CardId {
     FriendlyTeddy,
     UlvenwaldBear,
     CallerOfTheClaw,
+    AyulaQueenAmongBears,
     AyulasInfluence,
     Bearscape,
     MotherBear,
@@ -597,6 +609,7 @@ pub enum CardId {
 pub const SUPPORTED_COMMANDERS: &[CardId] = &[
     CardId::IsamaruHoundOfKonda,
     CardId::JasmineBoreal,
+    CardId::AyulaQueenAmongBears,
     CardId::KrenkoMobBoss,
     CardId::TalrandSkySummoner,
     CardId::TatyovaBenthicDruid,

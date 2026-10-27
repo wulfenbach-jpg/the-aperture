@@ -1704,7 +1704,12 @@ impl Game {
                 )),
             },
             Action::AnswerTriggerChoice { .. } => match &state.pending {
-                Some(Pending::TriggerChoice { player: p, .. }) if *p == player => Ok(()),
+                Some(Pending::TriggerChoice { player: p, .. })
+                | Some(Pending::TriggerMode { player: p, .. })
+                    if *p == player =>
+                {
+                    Ok(())
+                }
                 _ => Err(EngineError::illegal(
                     "trigger choice",
                     "no optional triggered ability is waiting for its controller (CR 603.5)",
@@ -2090,6 +2095,29 @@ impl Game {
                 .objects
                 .values()
                 .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
+            TargetSpec::Bear => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.is_creature()
+                        && o.card.def().has_subtype("Bear")
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
+            TargetSpec::BearYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.is_creature()
+                        && o.controller == _caster
+                        && o.card.def().has_subtype("Bear")
+                })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
             TargetSpec::OpponentCreature => self
@@ -3084,6 +3112,18 @@ impl Game {
         {
             return;
         }
+        if card == CardId::AyulaQueenAmongBears && event == TriggerEvent::AnotherCreatureEnters {
+            let seq = self.state.next_trigger_seq;
+            self.state.next_trigger_seq += 1;
+            self.state.trigger_queue.push(TriggerRef {
+                source,
+                card,
+                controller,
+                ability: 0,
+                seq,
+            });
+            return;
+        }
         for (index, _) in ability::triggers_on(card, event) {
             let seq = self.state.next_trigger_seq;
             self.state.next_trigger_seq += 1;
@@ -3128,6 +3168,10 @@ impl Game {
     fn stage_triggers(&mut self, mut queue: Vec<TriggerRef>, events: &mut Vec<Event>) {
         while !queue.is_empty() {
             let trigger = queue.remove(0);
+            if trigger.card == CardId::AyulaQueenAmongBears {
+                self.stage_ayula_trigger(trigger, queue, events);
+                return;
+            }
             let spec = ability::abilities(trigger.card)
                 .get(trigger.ability as usize)
                 .and_then(Ability::triggered)
@@ -3154,12 +3198,124 @@ impl Game {
                         trigger,
                         legal,
                         queued: queue,
+                        first: None,
                     });
                     self.state.turn.priority = None;
                     return;
                 }
             }
         }
+    }
+
+    fn stage_ayula_trigger(
+        &mut self,
+        mut trigger: TriggerRef,
+        queued: Vec<TriggerRef>,
+        events: &mut Vec<Event>,
+    ) {
+        let counters = self.legal_targets(trigger.controller, TargetSpec::Bear, trigger.source);
+        let fight_targets = self.legal_targets(
+            trigger.controller,
+            TargetSpec::BearYouControl,
+            trigger.source,
+        );
+        let opponents = self.legal_targets(
+            trigger.controller,
+            TargetSpec::OpponentCreature,
+            trigger.source,
+        );
+        let counter_ok = !counters.is_empty();
+        let fight_ok = !fight_targets.is_empty() && !opponents.is_empty();
+        match (counter_ok, fight_ok) {
+            (false, false) => events.push(Event::TriggerRemoved {
+                controller: trigger.controller,
+                card: trigger.card,
+                reason: "neither mode has legal targets (CR 601.2b, 603.3d)".to_string(),
+            }),
+            (true, false) => {
+                trigger.ability = 0;
+                self.stage_ayula_target(trigger, queued, 0, events);
+            }
+            (false, true) => {
+                trigger.ability = 1;
+                self.stage_ayula_target(trigger, queued, 1, events);
+            }
+            (true, true) => {
+                self.state.pending = Some(Pending::TriggerMode {
+                    player: trigger.controller,
+                    trigger,
+                    queued,
+                });
+                self.state.turn.priority = None;
+            }
+        }
+    }
+
+    fn stage_ayula_target(
+        &mut self,
+        trigger: TriggerRef,
+        queued: Vec<TriggerRef>,
+        mode: u8,
+        events: &mut Vec<Event>,
+    ) {
+        let spec = if mode == 0 {
+            TargetSpec::Bear
+        } else {
+            TargetSpec::BearYouControl
+        };
+        let legal = self.legal_targets(trigger.controller, spec, trigger.source);
+        match legal.len() {
+            0 => {}
+            1 => {
+                if mode == 1 {
+                    self.ask_ayula_second(trigger, legal[0], queued, events);
+                } else {
+                    self.push_trigger(trigger, vec![legal[0]], events);
+                    self.stage_triggers(queued, events);
+                }
+            }
+            _ => {
+                self.state.pending = Some(Pending::TriggerTarget {
+                    player: trigger.controller,
+                    trigger,
+                    legal,
+                    queued,
+                    first: None,
+                });
+                self.state.turn.priority = None;
+            }
+        }
+    }
+
+    fn ask_ayula_second(
+        &mut self,
+        trigger: TriggerRef,
+        first: Target,
+        queued: Vec<TriggerRef>,
+        events: &mut Vec<Event>,
+    ) {
+        let legal = self.legal_targets(
+            trigger.controller,
+            TargetSpec::OpponentCreature,
+            trigger.source,
+        );
+        if legal.is_empty() {
+            self.stage_triggers(queued, events);
+            return;
+        }
+        if legal.len() == 1 {
+            self.push_trigger(trigger, vec![first, legal[0]], events);
+            self.stage_triggers(queued, events);
+            return;
+        }
+        self.state.pending = Some(Pending::TriggerTarget {
+            player: trigger.controller,
+            trigger,
+            legal,
+            queued,
+            first: Some(first),
+        });
+        self.state.turn.priority = None;
     }
 
     fn push_trigger(&mut self, trigger: TriggerRef, targets: Vec<Target>, events: &mut Vec<Event>) {
@@ -3189,11 +3345,26 @@ impl Game {
 
     fn apply_trigger_target(&mut self, _player: PlayerId, target: Target, events: &mut Vec<Event>) {
         let Some(Pending::TriggerTarget {
-            trigger, queued, ..
+            trigger,
+            queued,
+            first,
+            ..
         }) = self.state.pending.take()
         else {
             return;
         };
+        if trigger.card == CardId::AyulaQueenAmongBears {
+            if trigger.ability == 1 && first.is_none() {
+                self.ask_ayula_second(trigger, target, queued, events);
+            } else if let Some(first) = first {
+                self.push_trigger(trigger, vec![first, target], events);
+                self.stage_triggers(queued, events);
+            } else {
+                self.push_trigger(trigger, vec![target], events);
+                self.stage_triggers(queued, events);
+            }
+            return;
+        }
         self.push_trigger(trigger, vec![target], events);
         self.stage_triggers(queued, events);
     }
@@ -3205,6 +3376,17 @@ impl Game {
         use_ability: bool,
         events: &mut Vec<Event>,
     ) {
+        if let Some(Pending::TriggerMode {
+            trigger, queued, ..
+        }) = self.state.pending.take()
+        {
+            let mode = u8::from(!use_ability);
+            let mut trigger = trigger;
+            trigger.ability = mode;
+            self.stage_ayula_target(trigger, queued, mode, events);
+            self.state.turn.priority = None;
+            return;
+        }
         let Some(Pending::TriggerChoice { trigger, .. }) = self.state.pending.take() else {
             return;
         };
@@ -5550,12 +5732,61 @@ impl Game {
                             .add(crate::counters::CounterKind::PlusOnePlusOne, n);
                         events.push(Event::StateBasedAction {
                             description: format!(
-                                "{name} has {total} +1/+1 counter(s) after Ulvenwald Bear"
+                                "{name} has {total} +1/+1 counter(s) from a +1/+1 counter effect"
                             ),
                         });
                     }
                 }
                 self.recompute_layers();
+                false
+            }
+            Effect::FightTargets => {
+                let [Target::Permanent(first), Target::Permanent(second)] = item.targets.as_slice()
+                else {
+                    return false;
+                };
+                let valid = self.state.try_object(*first).is_some_and(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.is_creature()
+                        && o.controller == controller
+                        && o.card.def().has_subtype("Bear")
+                }) && self.state.try_object(*second).is_some_and(|o| {
+                    o.zone == Zone::Battlefield && o.is_creature() && o.controller != controller
+                });
+                if !valid {
+                    events.push(Event::StateBasedAction {
+                        description: "fight does not happen because a target no longer matches the printed relation (CR 701.12a)".to_string(),
+                    });
+                    return false;
+                }
+                let (first_power, second_power) = (
+                    self.state.object(*first).power().max(0) as u32,
+                    self.state.object(*second).power().max(0) as u32,
+                );
+                let dealt_to_second = self.deal_damage(
+                    Some(*first),
+                    DamageTarget::Permanent(*second),
+                    first_power,
+                    false,
+                    events,
+                );
+                events.push(Event::Damage {
+                    source: Some(*first),
+                    target: self.damage_target_label(DamageTarget::Permanent(*second)),
+                    amount: dealt_to_second,
+                });
+                let dealt_to_first = self.deal_damage(
+                    Some(*second),
+                    DamageTarget::Permanent(*first),
+                    second_power,
+                    false,
+                    events,
+                );
+                events.push(Event::Damage {
+                    source: Some(*second),
+                    target: self.damage_target_label(DamageTarget::Permanent(*first)),
+                    amount: dealt_to_first,
+                });
                 false
             }
             Effect::CreateBearTokensForEachDeathThisTurn => {
@@ -5669,7 +5900,20 @@ impl Game {
             })
             .map(|object| (object.id, object.card, object.controller))
             .collect();
+        let entering_bear = self
+            .state
+            .try_object(entering)
+            .is_some_and(|o| o.zone == Zone::Battlefield && o.card.def().has_subtype("Bear"));
         for (source, source_card, source_controller) in watchers {
+            if source_card == CardId::AyulaQueenAmongBears {
+                let controlled = self
+                    .state
+                    .try_object(entering)
+                    .is_some_and(|o| o.controller == source_controller);
+                if !entering_bear || !controlled {
+                    continue;
+                }
+            }
             self.queue_triggers(
                 source,
                 source_card,
@@ -6461,6 +6705,19 @@ impl Game {
                     rules: vec!["603.3d"],
                 })
                 .collect(),
+            Pending::TriggerMode { .. } => vec![
+                LegalAction {
+                    action: Action::AnswerTriggerChoice { use_ability: true },
+                    label: "Choose counters: put two +1/+1 counters on target Bear".to_string(),
+                    rules: vec!["601.2b"],
+                },
+                LegalAction {
+                    action: Action::AnswerTriggerChoice { use_ability: false },
+                    label: "Choose fight: target Bear you control fights another creature"
+                        .to_string(),
+                    rules: vec!["601.2b", "701.12a"],
+                },
+            ],
             Pending::TriggerChoice { trigger, .. } => vec![
                 LegalAction {
                     action: Action::AnswerTriggerChoice { use_ability: true },
@@ -6632,6 +6889,8 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::CreatureYouControl => "target creature you control: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
+        TargetSpec::Bear => "target Bear: CR 115.1",
+        TargetSpec::BearYouControl => "target Bear you control: CR 115.1",
     }
 }
 

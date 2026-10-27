@@ -182,6 +182,17 @@ pub enum Pending {
         trigger: TriggerRef,
         legal: Vec<crate::action::Target>,
         queued: Vec<TriggerRef>,
+        /// First chosen target for a two-target fight mode.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        first: Option<crate::action::Target>,
+    },
+    /// Ayula's printed "choose one" is chosen before targets (CR 601.2b).
+    /// Reuses the existing answer action: true selects counters, false selects
+    /// fight. Only legal modes are offered.
+    TriggerMode {
+        player: PlayerId,
+        trigger: TriggerRef,
+        queued: Vec<TriggerRef>,
     },
     /// CR 603.5: a "you may" trigger is put on the stack regardless of the
     /// controller's intention; the choice is made when it resolves.
@@ -299,9 +310,9 @@ impl Pending {
             Pending::CommanderReturn { order, cursor, .. } => order[*cursor].player,
             Pending::CommanderReplacement { player, .. } => *player,
             Pending::CommanderDraw { player, .. } => *player,
-            Pending::TriggerTarget { player, .. } | Pending::TriggerChoice { player, .. } => {
-                *player
-            }
+            Pending::TriggerTarget { player, .. }
+            | Pending::TriggerChoice { player, .. }
+            | Pending::TriggerMode { player, .. } => *player,
         }
     }
 
@@ -394,6 +405,9 @@ impl Pending {
                 "P{player}: choose whether to use {}'s optional triggered ability (CR 603.5)",
                 trigger.card.name()
             ),
+            Pending::TriggerMode { player, .. } => {
+                format!("P{player}: choose Ayula's counter or fight mode (CR 601.2b)")
+            }
         }
     }
 }
@@ -890,7 +904,9 @@ impl GameState {
                         || legal.iter().any(target_ref)
                         || queued.iter().any(trigger_ref)
                 }
-                Pending::TriggerChoice { trigger, .. } => trigger_ref(trigger),
+                Pending::TriggerChoice { trigger, .. } | Pending::TriggerMode { trigger, .. } => {
+                    trigger_ref(trigger)
+                }
                 Pending::Mulligan { .. }
                 | Pending::BottomCards { .. }
                 | Pending::DeclareAttackers { .. }

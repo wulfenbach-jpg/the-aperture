@@ -730,7 +730,8 @@ impl Game {
                 }
                 crate::state::Pending::CommanderDraw { .. } => PendingKind::CommanderDraw,
                 crate::state::Pending::TriggerTarget { .. } => PendingKind::TriggerTarget,
-                crate::state::Pending::TriggerChoice { .. } => PendingKind::TriggerChoice,
+                crate::state::Pending::TriggerChoice { .. }
+                | crate::state::Pending::TriggerMode { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })
