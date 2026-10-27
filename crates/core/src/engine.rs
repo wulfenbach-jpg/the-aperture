@@ -443,10 +443,11 @@ impl Game {
         }
     }
 
-    /// CR 613: recompute every battlefield object's power/toughness in layer
-    /// order. Only layer 7c exists in this starter set: printed count-based
-    /// statics (Wight of Precinct Six's "+1/+1 for each creature card in your
-    /// opponents' graveyards") and one-shot until-end-of-turn modifiers, the
+    /// CR 613: recompute every battlefield object's characteristics in layer
+    /// order — 4 type, 6 ability, 7b base power/toughness, 7c modifiers. The
+    /// power/toughness half covers printed count-based statics (Wight of
+    /// Precinct Six's "+1/+1 for each creature card in your opponents'
+    /// graveyards") and one-shot until-end-of-turn modifiers, the
     /// latter in timestamp order (CR 613.7). Silent by design: a layer
     /// recomputation is not itself a rules event, so the event trace only shows
     /// effects starting (`ContinuousEffectStarted`) and their consequences.

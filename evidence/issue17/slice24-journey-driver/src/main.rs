@@ -134,7 +134,7 @@ fn main() {
         }
     }
     assert!(casts.get("Surrak and Goreclaw").copied().unwrap_or(0) > 0, "Surrak must be cast");
-    let entry_buffs = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("enters with a +1/+1 counter and gains haste"))).count();
+    let entry_buffs = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("gets a +1/+1 counter and gains haste"))).count();
     let haste_grants = events.iter().filter(|e| matches!(e, Event::ContinuousEffectStarted { text, .. } if text.contains("haste"))).count();
     let blocked_damage = events.iter().filter(|e| matches!(e, Event::CombatDamage { attacker_card, blocker: Some(_), .. } if *attacker_card != CardId::SurrakAndGoreclaw)).count();
     assert!(entry_buffs > 0, "the nontoken entry trigger must resolve");

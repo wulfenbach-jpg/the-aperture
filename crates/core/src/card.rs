@@ -201,7 +201,8 @@ pub enum Effect {
     DestroyAllArtifactsAndEnchantments,
     /// "Untap another target creature you control. If that creature is a Bear,
     /// put a +1/+1 counter on it" (Little Bear). The counter is conditional on
-    /// the target's own printed subtype, never on the source's.
+    /// the target's own *effective* subtype — `Game::has_subtype`, so a layer 4
+    /// type change counts — never on the source's subtype.
     UntapTargetAndCounterIfBear,
     /// Each live player draws N cards in APNAP order from the active player.
     EachPlayerDraws(u8),

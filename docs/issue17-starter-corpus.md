@@ -453,9 +453,11 @@ Known limits, disclosed rather than approximated: the cost reduction counts one
 reduction per permanent (correct for one Goreclaw, untested for two because the
 pool has no second copy); at that slice the pool still had no layer 4/5/7b
 (type, colour, base power/toughness) effects, so cards such as `Circle of the
-Moon Druid` and `Stuffed Bear` remain unsupported. (Slice 26 later added the
-one layer 4 subtype-line change; layers 5, 7b colour changes and animation are
-still missing.) Ayula has 22 missing names after slice 26,
+Moon Druid` and `Stuffed Bear` remain unsupported. (Slice 25 added the layer 7b
+base power/toughness setter and slice 26 the layer 4 subtype line, so layers 4,
+6, 7b and 7c now exist; layer 5 colour changes and the animation effects that
+turn a non-creature permanent into a creature are still missing.) Ayula has 22
+missing names after slice 26,
 the eight-list gate remains open at 1 of 8 certified, and no new list is
 certified by this slice.
 
