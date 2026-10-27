@@ -1,0 +1,6 @@
+red-mutation-characteristic-defining-value-snapshotted.log: exit=101 observed=['a_pump_applies_on_top_of_the_characteristic_defining_value', 'the_animation_adds_the_bear_type_and_reads_the_land_count_live', 'the_animation_outlives_cleanup_and_ends_with_the_permanent'] ok=True
+red-mutation-added-bear-subtype-ignored.log: exit=101 observed=['the_animation_adds_the_bear_type_and_reads_the_land_count_live', 'the_animation_outlives_cleanup_and_ends_with_the_permanent'] ok=True
+red-mutation-animation-expires-at-cleanup.log: exit=101 observed=['the_animation_adds_the_bear_type_and_reads_the_land_count_live', 'the_animation_outlives_cleanup_and_ends_with_the_permanent'] ok=True
+red-mutation-landfall-watches-the-wrong-event.log: exit=101 observed=['beorns_hospitality_is_sourced_and_supported', 'landfall_targets_a_creature_you_control_and_puts_one_counter'] ok=True
+ALL MUTATIONS DISCRIMINATE AND EVERY FILE RESTORED BYTE-FOR-BYTE
+MUTATIONS_EXIT=0

@@ -1,0 +1,2 @@
+C:\AI\aperture-worktrees\issue-17\crates\core\src\ability.rs c17b9d78ef72456259e4335b46657f9007d3eedbe5daee70c6510b74d7b22624
+C:\AI\aperture-worktrees\issue-17\crates\core\src\engine.rs 14554dec9b5d7e4b1a6bb2ee68b04fea70948ff39b3971c79acf9d5f717438f1

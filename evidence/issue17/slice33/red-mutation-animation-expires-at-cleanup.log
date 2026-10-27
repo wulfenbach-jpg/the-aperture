@@ -1,0 +1,46 @@
+mutation: red-mutation-animation-expires-at-cleanup.log
+file: crates\core\src\engine.rs
+sha256_before: 14554dec9b5d7e4b1a6bb2ee68b04fea70948ff39b3971c79acf9d5f717438f1
+sha256_after_restore: 14554dec9b5d7e4b1a6bb2ee68b04fea70948ff39b3971c79acf9d5f717438f1
+cargo_exit: 101
+expected_failures: ['the_animation_outlives_cleanup_and_ends_with_the_permanent']
+observed_failures: ['the_animation_adds_the_bear_type_and_reads_the_land_count_live', 'the_animation_outlives_cleanup_and_ends_with_the_permanent']
+discriminating: True
+note: the expectation is that every named test fails; a mutation may
+also fail neighbouring tests that share the animated-permanent
+precondition, which is reported here rather than hidden.
+
+
+running 7 tests
+test beorns_hospitality_is_sourced_and_supported ... ok
+test the_animation_is_not_offered_without_its_mana_cost ... ok
+test an_opponents_land_does_not_trigger_it ... ok
+test landfall_targets_a_creature_you_control_and_puts_one_counter ... ok
+test a_pump_applies_on_top_of_the_characteristic_defining_value ... ok
+test the_animation_adds_the_bear_type_and_reads_the_land_count_live ... FAILED
+test the_animation_outlives_cleanup_and_ends_with_the_permanent ... FAILED
+
+failures:
+
+---- the_animation_adds_the_bear_type_and_reads_the_land_count_live stdout ----
+
+thread 'the_animation_adds_the_bear_type_and_reads_the_land_count_live' (46068) panicked at crates\core\tests\issue17_slice33.rs:246:5:
+"This effect doesn't end." is not an until-end-of-turn duration
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_animation_outlives_cleanup_and_ends_with_the_permanent stdout ----
+
+thread 'the_animation_outlives_cleanup_and_ends_with_the_permanent' (44892) panicked at crates\core\tests\issue17_slice33.rs:299:5:
+still an animated enchantment creature
+
+
+failures:
+    the_animation_adds_the_bear_type_and_reads_the_land_count_live
+    the_animation_outlives_cleanup_and_ends_with_the_permanent
+
+test result: FAILED. 5 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.20s
+     Running tests\issue17_slice33.rs (target\debug\deps\issue17_slice33-c01c6e9d985be65a.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice33`
