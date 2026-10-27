@@ -45,7 +45,9 @@ Printed text, verbatim:
 
 ## Exact-head CI
 
-* `01fdc3b` (implementation + tests + fixture + docs): capture recorded in `evidence/issue17/slice33/exact-head-ci-01fdc3b.json` / `ci-capture.log`; the tip capture after this evidence commit is `exact-head-ci-<tip>.json`. **Values are quoted from the committed JSON receipts, not from memory.**
+* Tip `e9ec8f50b0671bf48f01cf2f700fa02537e34ca0` (implementation, tests, fixture, docs **and** the slice evidence): **10/10 check runs completed SUCCESS, every `head_sha` = `e9ec8f50`**, capture exit 0 — `evidence/issue17/slice33/exact-head-ci-e9ec8f5.json`, log `ci-capture-tip.log`.
+* The code-only commit `01fdc3b` had no check runs of its own: pushing the evidence commit cancelled its in-flight runs (`cancel-in-progress`), which the receipt `exact-head-ci-01fdc3b.json` records as `cancelled` rather than as a pass.
+* The commit that adds this receipt line is documentation-only; it inherits the `e9ec8f5` runs and has no runs of its own.
 
 ## State after this slice
 
