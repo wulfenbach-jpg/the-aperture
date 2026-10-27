@@ -51,10 +51,20 @@ restriction, `sorcery_timing: false`.
   6. the ability is not offered when `{1}` is not payable.
 * `cargo test -p aperture-core --test card_printings --locked` — **13 passed / 0 failed**
   (12 before this slice plus the new sourced-printing test).
-* `cargo test --workspace --locked` — see `evidence/issue17/slice35/gates.log` (the log records
-  the runner's own exit codes; `fmt` in that first capture predates the `cargo fmt --all` run and
-  the final fmt/clippy receipts were re-taken clean).
-* `cargo clippy --workspace --all-targets --locked -- -D warnings` — exit 0.
+* `cargo fmt --all --check` — **exit 0**; `cargo clippy --workspace --all-targets --locked --
+  -D warnings` — **exit 0**; `cargo test --workspace --locked` — **120 suites / 853 passed /
+  0 failed**, **exit 0**. `evidence/issue17/slice35/gates.log` is the runner's own transcript with
+  `fmt_exit=0`, `clippy_exit=0`, `workspace_exit=0` (unpiped, so the per-suite result lines are in
+  the log; the earlier tail-piped capture is superseded).
+* **Two discriminating mutations**, each run from the committed bytes and restored byte-for-byte
+  (`sha256sum -c pre-mutation-sha256.txt` → `crates/core/src/engine.rs: OK`, `7a833ec2…9e944`, and
+  `post-mutation-sha256.txt` identical):
+  * `red-mutation-consumption-disabled.log` — disabling the replacement consumption in
+    `draw_with_resume` fails **3** tests (draw step, one-of-two draws, two-of-two draws),
+    `red_exit=101`;
+  * `red-mutation-cleanup-keeps-replacement.log` — removing the CR 514.2 cleanup clear fails
+    exactly `an_unspent_replacement_ends_with_the_turn`, `red_exit=101`.
+
 * Corpus audit (`evidence/issue17/slice35/corpus-audit.py`, log `corpus-audit.log`) —
   **150 catalog / 459 union = 138 supported + 321 missing**, per list
   `55/0/51/48/15/52/52/53`, Ayula **15**, **1 of 8 certified**, manifest `missing_cards` equal on
@@ -84,6 +94,15 @@ times and never cast it** (`verbose-events.log`), so this game does not itself e
 replacement — the six focused engine tests above are what discriminate it. The journey is real,
 four-seat, 40-life, exact-snapshot and separately replayed; it is not evidence of the card's
 behaviour, and it is a 40-card package, not a 100-card certificate.
+
+## Exact-head CI
+
+`ac3b422b066355c8f5e14e98dd78a9ff6fcb3e89` — **10/10 check runs completed SUCCESS, every
+`head_sha` = `ac3b422`** (`board and roadmap` ×2, `rust (ubuntu|windows|macos-latest)` ×2,
+`windows package` ×2). Receipt `evidence/issue17/slice35/exact-head-ci-ac3b422.json`, captured by
+`evidence/issue17/slice35/capture-ci.py`, which bounds **every** `gh` call with `timeout=120` and
+exits 124 on a timeout (the slice-30 wedge), exiting non-zero unless all ten are completed SUCCESS
+**and** keyed to the requested head.
 
 ## Scope and state
 

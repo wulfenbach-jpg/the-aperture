@@ -1,0 +1,44 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running tests\issue17_slice35.rs (target\debug\deps\issue17_slice35-19903905f8fc3a9a.exe)
+
+running 6 tests
+test the_ability_is_not_offered_without_its_cost ... ok
+test the_replacement_only_applies_to_its_controllers_draws ... ok
+test the_armed_replacement_turns_that_turns_draw_step_into_a_bear ... FAILED
+test one_armed_replacement_replaces_exactly_one_of_two_draws ... FAILED
+test two_armed_replacements_replace_both_draws_and_protect_an_empty_library ... FAILED
+test an_unspent_replacement_ends_with_the_turn ... ok
+
+failures:
+
+---- the_armed_replacement_turns_that_turns_draw_step_into_a_bear stdout ----
+
+thread 'the_armed_replacement_turns_that_turns_draw_step_into_a_bear' (27536) panicked at crates\core\tests\issue17_slice35.rs:139:5:
+assertion `left == right` failed: no card is drawn, so the library is unchanged
+  left: 2
+ right: 3
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- one_armed_replacement_replaces_exactly_one_of_two_draws stdout ----
+
+thread 'one_armed_replacement_replaces_exactly_one_of_two_draws' (36640) panicked at crates\core\tests\issue17_slice35.rs:189:5:
+assertion `left == right` failed: Divination leaves the hand and only the second draw adds a card
+  left: 2
+ right: 1
+
+---- two_armed_replacements_replace_both_draws_and_protect_an_empty_library stdout ----
+
+thread 'two_armed_replacements_replace_both_draws_and_protect_an_empty_library' (39104) panicked at crates\core\tests\issue17_slice35.rs:234:5:
+assertion `left == right` failed: each armed replacement is one Bear
+  left: 0
+ right: 2
+
+
+failures:
+    one_armed_replacement_replaces_exactly_one_of_two_draws
+    the_armed_replacement_turns_that_turns_draw_step_into_a_bear
+    two_armed_replacements_replace_both_draws_and_protect_an_empty_library
+
+test result: FAILED. 3 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice35`
