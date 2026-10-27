@@ -1,0 +1,47 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice25-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice25-journey-driver)
+warning: unused import: `aperture_core::layer::ContinuousKind`
+  --> src\main.rs:10:5
+   |
+10 | use aperture_core::layer::ContinuousKind;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `issue17-slice25-journey` (bin "issue17-slice25-journey") generated 1 warning (run `cargo fix --bin "issue17-slice25-journey" -p issue17-slice25-journey` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 22.34s
+     Running `target\release\issue17-slice25-journey.exe`
+{
+  "base_pt_set_events": 9,
+  "casts": {
+    "Centaur Courser": 7,
+    "Craw Wurm": 6,
+    "Elite Vanguard": 3,
+    "Exuberant Wolfbear": 8,
+    "Grizzly Bears": 3,
+    "Jasmine Boreal": 2
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice25.txt",
+  "digest": "4d6ea58ee735c74a89e142eca90656dbf22faeaf49c2de0fb33c0ec9952c5d52",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 4471,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "1bd229439656be174278cd958eb7083ec495c43be3eefa8a17d4ee6fff881a0d",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1760,
+  "turns": 41,
+  "wolfbear_trigger_staged": 9
+}

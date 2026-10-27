@@ -43,11 +43,11 @@ complete, so all seven remain `planned`.
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice24/native-corpus-audit.py` + `native-corpus-audit.json`):
+`evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **129** are in the supported 142-card catalog and **330** are missing. Slice
-  24 adds `Surrak and Goreclaw` to the previously verified 128/331 split. The union
+* **130** are in the supported 142-card catalog and **329** are missing. Slice
+  25 adds `Exuberant Wolfbear` to the previously verified 129/330 split. The union
   is unchanged because it was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.

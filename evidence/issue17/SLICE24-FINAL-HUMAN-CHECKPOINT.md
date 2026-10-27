@@ -1,0 +1,23 @@
+# Slice24 final reviewed checkpoint — continuation, not original #17 acceptance
+
+**Reviewed/published head:** `3b06249d8bfc3f58cfa454e30ed2be417e23639f`, SAME draft PR46 / branch aperture/issue-17. Implementation c457e49; native-proven repairs c2d9b35; native-authored docs/evidence3b06249. At publication local and remote matched; PR readback subsequently matched3b06249. No merge/master push/issue closure/certified-downstream unlock.
+
+**Independent review:** SAME exact original reviewer history `evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl`, verified new assignment appended. APPROVED_INCREMENT at3b06249. Report `slice24/REVIEW24-ORIGINAL-HISTORY.md`; reviewer ran10focusedtests, separate replay and same-ID bounce/recast probe. No blocking defect found. Earlier approved1–23 retained without re-audit.
+
+**Final exact-head CI:** 10/10 completed SUCCESS, every head_sha3b06249, captured2026-10-27T09:24:47Z in `slice24/exact-head-ci-3b06249.json` / summary. All four strict required contexts PASS with configured Actions app15368. No inherited-green claim. This checkpoint intentionally stays outside the branch tip to retain the CI-bound code head.
+
+## Usable new behavior
+Sourced **Surrak and Goreclaw**, MOM337 immutable9c10934d-9016-43c4-a7ab-56cc7d8f671f, oracle95be5f72-1f81-4ec6-9bd9-f0b07bfc874b, retrieved2026-10-27T08:44:35.433520+00:00; exact raw response/retrieval record and normalized printing fixture retained. Full printed trample, trample to other controlled creatures, and another-own-nontoken entry puts one +1/+1 counter on THAT entered permanent and grants haste until cleanup. Non-target captured incarnation binding; no target prompt. Haste affects actual attack and tap legality and offered creature mana sources. Trigger remains when recipient leaves, but binding invalidates; source-left uses captured card metadata.
+
+## Actual failure and repair evidence
+Native first cut c457e49 was NOT accepted: two real assertion REDs in `slice24/native-behavior-red.log` proved hasty Werebear absent from legal offers and recipient departure deleting an entire mandatory trigger. Both repaired, no assertion weakened. An earlier native probe used wrong enum field and failed compilation; `native-defects-red.log` is not behavioralRED and is not counted. First registration assertion predates implementation; later controls are GREEN strengthening, not blanket strictTDD.
+
+Native independently ran93focusedtests (10slice24,13abilities,12timing,8printings,5pool,43commander,2corpus), allpass. Writer gate receipts recordfmt/workspaceClippy-Dwarnings/lockedreleaseCLI exits0. Native rebuilt and reran exact4seat/40life40card package journey, seed2323, terminalWinP3,1602actions/37turns/4127events, digest a41bbfd2760034f791a3616bd5d6faa0fd79ad8e9cee300eb69cc38c5a1ec631; separate releaseCLI replay reproduces it, freshsave roundtrip. SixSurrakcasts,11counter+11hasteevents,20blockedtrample-damageevents. Snapshot `decks/package-slice24.txt` SHA256feb9033b925198a0eae49b117c858b626e968a4e7691c8e70c7e93bffc4d7455. Evidence-only masked offered-action demonstrator, NOT productAI/strength, JasmineBoreal in fourcommandzones; NOT a100cardstartercertificate.
+
+## Honest remaining scope
+Native audit independently recomputed EACH desiredlist and confirmed141catalog/459union=129supported+330missing, per-list55/0/51/48/24/52/52/53. Only1of8desired100cardstarterscertified, Ayula24short; desiredsnapshots/statuses unchanged. Full#17unfinished.
+
+Nonblocking limitations: midtrigger save is sandbox/directfixture, not reachable-history proof; ordinary nonmana tapactivation and opponententry are code-inspected not separately tested; pending-copy affected validation narrower than queue/stack; printed/granted keyword display gap retained. The older slice24 checkpoint's source-left-testing gap is superseded (source-left test now exists), but no commander-rekey-specific test is claimed. Its audit-log final line saysAyula25 stale while actual per-list/JSON/currentdocs24; use native-corpus-audit.json as audited count. No AI policychange (legacy TriggerRef/StackItem literal initializers only).
+
+## Continuing this run
+Slice25 SAME original writer started from approved3b06249 under standingcontinuousauthorization, new sourced ExuberantWolfbear/layer7b/LKI. Slice24 approval is preserved; slice25 needs its OWN focusedverification/practicalreview/exactheadCI. Originalhistories both retained/59files byte-backed-up before this run; finalbackup still owed afterworkerssettle. No newteam, globalroutingchange, bulkcandidateautoenable or successorunlock.
