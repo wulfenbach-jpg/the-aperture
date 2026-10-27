@@ -9,7 +9,7 @@
   ],
   "sources": "fixtures/starter-corpus/slice18-sourced.json; retrieved 2026-10-26T23:40:57.955217+00:00",
   "tests": {
-    "command_zone_setup": "41 passed",
+    "command_zone_setup": "44 passed",
     "issue17_slice17": "6 passed",
     "card_printings": "8 passed",
     "catalog_pool": "5 passed",
@@ -74,13 +74,15 @@
       "fight prevention via Mending Hands",
       "fight target departure",
       "unavailable fight mode",
-      "token vs opponent trigger"
+      "token vs opponent trigger",
+      "TriggerMode save/load and identical finish",
+      "fight first-target save/load and identical finish",
+      "wrong-seat refusal after reload",
+      "forged pending action/target refusals with state unchanged"
     ],
     "still_missing": [
-      "Ayula pending TriggerMode save/load/replay",
-      "two-target half-answered save/replay",
-      "forged archived-state refusal test",
-      "forged pending-action refusal test"
+      "forged archived-state refusal test (reference traversal is implemented)",
+      "full workspace suite was not rerun for this test-only follow-up"
     ]
   }
 }

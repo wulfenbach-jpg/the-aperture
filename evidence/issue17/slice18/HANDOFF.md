@@ -22,8 +22,9 @@
   Manifest and pinned assertions updated.
 
 ## Actual commands/results
-- `cargo test -q -p aperture-core --test command_zone_setup` -> 41 passed
-  (7 Ayula tests including source-left and prevention).
+- `cargo test -q -p aperture-core --test command_zone_setup` -> 44 passed
+  (10 Ayula tests including source-left, prevention, two save/reload paths and forged
+  pending refusals).
 - `cargo test -q -p aperture-core --test abilities` -> 13 passed.
 - `cargo test -q -p aperture-core --test rules_conformance` -> 5 passed.
 - `cargo test -q -p aperture-core --test issue17_slice17` -> 6 passed.
@@ -74,9 +75,13 @@
   mode-specific labels/legal offers, instead of adding a new action enum. This avoided
   unrelated UI action-surface changes but is less typed than ideal.
 - Production modal/fight code preceded the new tests; no retroactive TDD claim.
-- Still missing: Ayula pending-choice save/load+replay while suspended, two-target
-  half-answered save/replay, and forged pending-action refusal tests. Source-left,
-  prevention, target departure and unavailable-mode tests are now present.
+- Coverage follow-up (tests only): real `SessionSave` JSON + `Game::from_state` reload
+  while `Pending::TriggerMode` waits and while a fight has `TriggerTarget.first: Some`.
+  Each reloaded game finishes the same choice and matches the uninterrupted state/digest;
+  wrong-seat answer after reload is refused. Forged/invalid submissions while TriggerMode
+  and TriggerTarget wait are refused with state, decision serial and pending unchanged.
+  These tests capture the session through the sandbox path because their setup adds
+  permanents outside replay history; no save version change was needed.
 - No full workspace suite rerun after slice18; focused suites, workspace clippy and release
   only.
 - Ayula's desired 100-card list still has 30 unsupported names; no certificate or 100-card

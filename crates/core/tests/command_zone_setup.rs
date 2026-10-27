@@ -2422,3 +2422,248 @@ fn ayula_trigger_still_resolves_after_its_source_leaves() {
         "the trigger still resolves after Ayula leaves"
     );
 }
+
+fn ayula_pending_mode(seed: u64) -> Game {
+    let mut game = Game::new_command_zone(
+        seed,
+        &decks(),
+        &[
+            (P0, CardId::AyulaQueenAmongBears),
+            (P1, CardId::IsamaruHoundOfKonda),
+        ],
+    )
+    .expect("setup");
+    open_main(&mut game);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_permanent(&mut game, P0, CardId::Forest);
+    let ayula = game.state.player(P0).command_zone[0];
+    cast_and_resolve(&mut game, P0, ayula);
+    add_permanent(&mut game, P1, CardId::GrizzlyBears);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_permanent(&mut game, P0, CardId::Forest);
+    add_to_hand(&mut game, P0, CardId::GrizzlyBears);
+    let bear = hand_card_id(&game, P0, CardId::GrizzlyBears);
+    cast_and_resolve(&mut game, P0, bear);
+    assert!(matches!(
+        game.state.pending,
+        Some(aperture_core::Pending::TriggerMode { .. })
+    ));
+    game
+}
+
+fn session_replay(game: &Game) -> aperture_core::Replay {
+    aperture_core::Replay::new_command_zone(
+        game.state.seed,
+        game.state.first_player,
+        decks(),
+        vec![
+            aperture_core::CommanderSetup {
+                seat: P0,
+                card: CardId::AyulaQueenAmongBears,
+            },
+            aperture_core::CommanderSetup {
+                seat: P1,
+                card: CardId::IsamaruHoundOfKonda,
+            },
+        ],
+        aperture_core::AiSettings::default(),
+    )
+    .expect("replay")
+}
+
+fn reload(game: &Game) -> Game {
+    let save = aperture_core::SessionSave::capture(game, session_replay(game), Vec::new(), true);
+    let loaded = aperture_core::SessionSave::from_json(&save.to_json())
+        .expect("session save validates and reloads");
+    Game::from_state(loaded.game).expect("loaded game")
+}
+
+fn finish_all(game: &mut Game) {
+    while !game.state.stack.is_empty() || game.state.pending.is_some() {
+        if matches!(
+            game.state.pending,
+            Some(aperture_core::Pending::CommanderReturn { .. })
+        ) {
+            game.submit_action(
+                P0,
+                aperture_core::Action::AnswerCommanderReturn {
+                    to_command_zone: true,
+                },
+            )
+            .expect("command zone");
+            continue;
+        }
+        assert!(
+            game.state.pending.is_none(),
+            "unexpected {:?}",
+            game.state.pending
+        );
+        let p = game.decision_owner().expect("priority");
+        game.submit_action(p, aperture_core::Action::Pass)
+            .expect("pass");
+    }
+}
+
+#[test]
+fn ayula_trigger_mode_save_reload_finishes_identically_and_refuses_wrong_seat() {
+    let mut game = ayula_pending_mode(1821);
+    let mut loaded = reload(&game);
+    assert_eq!(loaded.digest(), game.digest());
+    let before = loaded.state.clone();
+    let err = loaded
+        .submit_action(
+            P1,
+            aperture_core::Action::AnswerTriggerChoice { use_ability: true },
+        )
+        .expect_err("wrong seat must be refused");
+    assert!(format!("{err:?}").contains("Decision"), "{err:?}");
+    assert_eq!(loaded.state, before);
+
+    for target_game in [&mut game, &mut loaded] {
+        target_game
+            .submit_action(
+                P0,
+                aperture_core::Action::AnswerTriggerChoice { use_ability: true },
+            )
+            .expect("choose counters");
+        let legal = match &target_game.state.pending {
+            Some(aperture_core::Pending::TriggerTarget { legal, .. }) => legal.clone(),
+            other => panic!("expected target: {other:?}"),
+        };
+        let target = legal
+            .iter()
+            .find_map(|target| match target {
+                aperture_core::Target::Permanent(id) => Some(*id),
+                _ => None,
+            })
+            .expect("permanent target");
+        target_game
+            .submit_action(
+                P0,
+                aperture_core::Action::ChooseTriggerTarget {
+                    target: aperture_core::Target::Permanent(target),
+                },
+            )
+            .expect("target");
+        finish_all(target_game);
+    }
+    assert_eq!(loaded.state, game.state);
+    assert_eq!(loaded.digest(), game.digest());
+}
+
+#[test]
+fn ayula_fight_first_target_save_reload_finishes_identically() {
+    let mut game = ayula_pending_mode(1822);
+    // Add a second opposing creature so the fight's second target is asked
+    // interactively instead of being auto-completed.
+    add_permanent(&mut game, P1, CardId::RuneclawBear);
+    game.submit_action(
+        P0,
+        aperture_core::Action::AnswerTriggerChoice { use_ability: false },
+    )
+    .expect("fight");
+    let legal = match &game.state.pending {
+        Some(aperture_core::Pending::TriggerTarget { legal, first, .. }) => {
+            assert!(first.is_none());
+            legal.clone()
+        }
+        other => panic!("expected first target: {other:?}"),
+    };
+    let first = legal
+        .iter()
+        .find_map(|target| match target {
+            aperture_core::Target::Permanent(id) => Some(*id),
+            _ => None,
+        })
+        .expect("first target");
+    game.submit_action(
+        P0,
+        aperture_core::Action::ChooseTriggerTarget {
+            target: aperture_core::Target::Permanent(first),
+        },
+    )
+    .expect("first target");
+    assert!(matches!(
+        game.state.pending,
+        Some(aperture_core::Pending::TriggerTarget { first: Some(_), .. })
+    ));
+    let mut loaded = reload(&game);
+    for target_game in [&mut game, &mut loaded] {
+        let legal = match &target_game.state.pending {
+            Some(aperture_core::Pending::TriggerTarget { legal, .. }) => legal.clone(),
+            other => panic!("expected second target: {other:?}"),
+        };
+        let second = legal
+            .iter()
+            .find_map(|target| match target {
+                aperture_core::Target::Permanent(id) => Some(*id),
+                _ => None,
+            })
+            .expect("second target");
+        target_game
+            .submit_action(
+                P0,
+                aperture_core::Action::ChooseTriggerTarget {
+                    target: aperture_core::Target::Permanent(second),
+                },
+            )
+            .expect("second target");
+        finish_all(target_game);
+    }
+    assert_eq!(loaded.state, game.state);
+    assert_eq!(loaded.digest(), game.digest());
+}
+
+#[test]
+fn ayula_pending_rejects_wrong_action_kind_and_unoffered_target_without_mutation() {
+    let mut game = ayula_pending_mode(1823);
+    let ayula = game
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .find(|o| o.card == CardId::AyulaQueenAmongBears)
+        .expect("Ayula")
+        .id;
+    let before = game.state.clone();
+    let decision = game.state.decision;
+    let err = game
+        .submit_action(
+            P0,
+            aperture_core::Action::ChooseTriggerTarget {
+                target: aperture_core::Target::Permanent(ayula),
+            },
+        )
+        .expect_err("target while mode is pending must be refused");
+    assert!(format!("{err:?}").contains("trigger target"), "{err:?}");
+    assert_eq!(game.state, before);
+    assert_eq!(game.state.decision, decision);
+
+    game.submit_action(
+        P0,
+        aperture_core::Action::AnswerTriggerChoice { use_ability: true },
+    )
+    .expect("choose counters");
+    let before = game.state.clone();
+    let decision = game.state.decision;
+    let err = game
+        .submit_action(
+            P0,
+            aperture_core::Action::AnswerTriggerChoice { use_ability: true },
+        )
+        .expect_err("mode answer while a target is pending must be refused");
+    assert!(format!("{err:?}").contains("trigger choice"), "{err:?}");
+    assert_eq!(game.state, before);
+    assert_eq!(game.state.decision, decision);
+
+    let err = game
+        .submit_action(
+            P0,
+            aperture_core::Action::ChooseTriggerTarget {
+                target: aperture_core::Target::Permanent(aperture_core::ObjectId(999_999)),
+            },
+        )
+        .expect_err("unoffered target must be refused");
+    assert!(format!("{err:?}").contains("offered"), "{err:?}");
+    assert_eq!(game.state, before);
+    assert_eq!(game.state.decision, decision);
+}
