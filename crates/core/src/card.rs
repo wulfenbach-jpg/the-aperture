@@ -477,23 +477,7 @@ impl CardDef {
     /// Phyrexian symbol adds its numeric half when it prints one and otherwise
     /// 1, and any other single symbol adds 1.
     pub fn mana_value(&self) -> u8 {
-        self.cost.map_or(0, |cost| {
-            cost.split('{')
-                .skip(1)
-                .filter_map(|rest| rest.split_once('}').map(|(symbol, _)| symbol))
-                .map(|symbol| {
-                    if let Ok(generic) = symbol.parse::<u8>() {
-                        generic
-                    } else if symbol.eq_ignore_ascii_case("X") {
-                        0
-                    } else if let Some((half, _)) = symbol.split_once('/') {
-                        half.parse::<u8>().unwrap_or(0)
-                    } else {
-                        1
-                    }
-                })
-                .sum()
-        })
+        self.cost.map_or(0, cost_mana_value)
     }
 
     /// Spell characteristics used for casting and resolution. A vanilla
@@ -764,4 +748,34 @@ impl std::fmt::Display for CardId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.name())
     }
+}
+
+/// CR 202.3: mana value of a printed mana cost string, without needing a
+/// `CardDef`. Exposed separately from `CardDef::mana_value` so the rule can be
+/// tested on symbol shapes the current pool does not print (hybrid, Phyrexian,
+/// snow), instead of adding fixture cards only a test would ever use.
+///
+/// Each symbol counts as:
+/// * a pure number — that number (`{3}` = 3);
+/// * `{X}` — 0, because an X outside the stack is 0 (and no X-cost spell in the
+///   pool is a creature, so no supported card reads this while X is chosen);
+/// * a hybrid/Phyrexian symbol with a numeric half — that number (`{2/W}` = 2);
+/// * any other hybrid or Phyrexian symbol — 1 (`{G/W}`, `{W/P}`);
+/// * any other single symbol — 1 (`{G}`, `{S}`, `{C}`).
+pub fn cost_mana_value(cost: &str) -> u8 {
+    cost.split('{')
+        .skip(1)
+        .filter_map(|rest| rest.split_once('}').map(|(symbol, _)| symbol))
+        .map(|symbol| {
+            if let Ok(generic) = symbol.parse::<u8>() {
+                generic
+            } else if symbol.eq_ignore_ascii_case("X") {
+                0
+            } else if let Some((half, _)) = symbol.split_once('/') {
+                half.parse::<u8>().unwrap_or(1)
+            } else {
+                1
+            }
+        })
+        .sum()
 }

@@ -387,3 +387,24 @@ fn mana_value_reads_the_printed_cost() {
     assert_eq!(card("Sol Ring").def().mana_value(), 1);
     assert_eq!(card("Forest").def().mana_value(), 0, "lands have no cost");
 }
+
+#[test]
+fn mana_value_counts_the_symbol_shapes_the_pool_does_not_print_yet() {
+    // CR 202.3 over symbol shapes no supported card prints: the rule is shared
+    // logic, so it must be right before the first hybrid Bear arrives. The
+    // independent slice-22 review found the first version returned 0 for a
+    // numeric-less hybrid, which would have under-counted the trigger.
+    use aperture_core::card::cost_mana_value;
+    assert_eq!(cost_mana_value("{G/W}"), 1, "hybrid without a numeric half");
+    assert_eq!(cost_mana_value("{W/P}"), 1, "Phyrexian without a number");
+    assert_eq!(cost_mana_value("{2/W}"), 2, "hybrid with a numeric half");
+    assert_eq!(cost_mana_value("{X}{G}"), 1, "X counts 0 outside the stack");
+    assert_eq!(cost_mana_value("{S}{S}{2}"), 4, "snow symbols count 1 each");
+    assert_eq!(cost_mana_value(""), 0, "an empty cost is 0");
+    // The pool-wide agreement the reviewer checked: every costed card's value
+    // equals the same sum over its parsed cost symbols.
+    for def in catalog::all() {
+        let expected: u8 = cost_mana_value(def.cost.unwrap_or(""));
+        assert_eq!(def.mana_value(), expected, "{} disagrees", def.name);
+    }
+}
