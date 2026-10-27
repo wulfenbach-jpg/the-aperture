@@ -1298,14 +1298,11 @@ mod tests {
     /// scans this file's string literals, and a bare banned phrase in a test
     /// would be a violation in its own right.
     const FORBIDDEN_FRAGMENTS: &[&str] = &[
-        "win prob",
-        "winrat",
-        "chance of",
-        "confiden",
-        "blund",
-        "mistak",
-        "best mo",
-        "inaccura",
+        "win prob", "winrat",
+        // Truncated before the word the guardrail matches: the shared honesty
+        // suite scans this file's literals, and `chance of` is itself a
+        // probability claim to that scan.
+        "chanc", "confiden", "blund", "mistak", "best mo", "inaccura",
     ];
 
     #[test]
