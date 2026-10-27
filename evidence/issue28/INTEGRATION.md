@@ -6,6 +6,82 @@ reviewed corpus) remains blocked on #17's certified starter lists (1 of 8) and i
 slice. Nothing here claims AI strength, playable Commander, supported cards, latency or a release
 percentage.
 
+## Current repair — round 1 (supersedes historical claims below)
+
+Repair code head: `f6b048a7bdb55b9329eac607496ab95e48e144c7`, based on the reviewed
+`5f9422e2f7b5a6bb68e4b270b22062d7c3f91245`. The original integration record below is
+retained as history, not current approval. `REVIEW-round1.md` rejected that head despite green CI.
+
+### Three requested corrections
+
+- `audit_preference` uses the canonical §4.5 `separable` predicate with each member's
+  sample count against the leading row. It no longer demands exact equality of means.
+  The existing sample-count, chosen-row, uncertainty-tag and higher-outsider checks remain.
+- The renderer emits each scored offer once, with its own facts, teaching notes and recorded
+  line. It uses an explicit emitted set instead of advancing past the last tie member.
+  Closed pairwise-complete groups may be displayed together; overlapping pairs are not
+  collapsed into a transitive group. A separate pairwise disclosure preserves every edge.
+- Preference and row copy say "among effectively tied offers"; unequal means get no invented
+  common mean in their group heading. §4.10 and the presentation wording now reflect §4.5.
+  The enum name `AmongEquals` and serialised schema remain unchanged. Search, its chosen
+  action and the ranking arithmetic are unchanged.
+
+### Evidence and test counts
+
+The reviewer's ZIP and report are preserved unchanged. `repair-reproduced-red.log` reruns
+its original Cargo probe: three behavioral failures, `probe_exit=101`. The same probe now
+passes all three (`repair-reviewer-probe-green.log`, `probe_exit=0`).
+
+`crates/ui/tests/review_composition.rs` adds four tests over actual `rank` output, then the
+real honesty audit and renderer: unequal lattice tie; interleaved single-sample row;
+nontransitive overlapping ties; exact-tie/separated/single-sample controls. Each asserts
+one row and one recorded line per candidate and all applicable teaching notes. The overlap
+case pins 0↔1 and 1↔2, and explicitly excludes 0↔2.
+
+`repair-composition-red.log` records the pre-repair behavioral audit failures. Its control
+also exposed an overstrict test-helper assumption (not every separated row has a reason
+note); that helper was corrected to count only rows with reasons. This fixture correction
+is not claimed as a product defect. `repair-composition-green.log`: 4 passed, exit 0.
+
+Fresh `git ls-tree` / `git show` counts of `#[test]` in tracked Rust files under `crates/`:
+
+| comparison | base | repaired head | delta |
+|---|---:|---:|---:|
+| Original integration base `48e3334` | 586 | 640 | +54 |
+| Reviewed head `5f9422e` | 636 | 640 | +4 |
+
+All four new declarations live in `crates/ui/tests/review_composition.rs`; existing ranking
+17 (16 executed, 1 ignored), honesty 27, renderer 15 and session 8 are retained, not new.
+Focused existing ranking/honesty controls and the UI review filter also passed locally.
+
+### Repair gate receipt
+
+`evidence/issue28/gates-f6b048a.log` is the real output of `run-gates.sh` at the code head:
+
+| command | own exit |
+|---|---:|
+| `cargo fmt --all -- --check` | 0 |
+| `cargo clippy --workspace --all-targets --locked -- -D warnings` | 0 |
+| `cargo test --all-targets --locked` | 0 |
+| `cargo build --release --locked` | 0 |
+
+Parsed from the test-result lines: **638 passed, 0 failed, 2 ignored**, 86 test binaries.
+The final publication adds only this record and the gate log; `git diff f6b048a HEAD -- crates`
+must remain empty. The exact final publication SHA and its freshly completed CI checks are
+recorded on task t_cf764bc5's review handoff (avoiding an endless evidence-only commit/CI loop).
+An independent repaired-head review is still required; this is not approval.
+
+### Remaining gates
+
+`full_issue28_accepted=false`. Criterion 4 remains blocked on #17's reviewed starter corpus.
+Real-game tie/single-sample journeys and interactive latency remain unverified. The new tests
+prove the canonical pipeline for controlled synthetic analyses, not those real-game journeys.
+The renderer still derives ordering from per-row uncertainty rather than rendering the
+Preference enum directly; the composition tests now exercise its canonical rank output through
+the audit and renderer together. No merge, un-draft, issue closure or master push is authorized.
+
+## Historical integration record
+
 ## Where the work went
 
 - Checkout: `C:/AI/aperture-worktrees/issue-28`, branch `aperture/issue-28`.
