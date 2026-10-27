@@ -1,0 +1,63 @@
+{
+  "verified_code_head": "412f63a9ee20b4b74ded1f0ace315851793fc699",
+  "focused_suites": [
+    8,
+    5,
+    43,
+    2,
+    1,
+    8,
+    1
+  ],
+  "focused_passed": 68,
+  "gate_exit_codes": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+  ],
+  "source_printing": "689a6390-894a-4d31-87c2-f9cec3b187a7",
+  "source_oracle": "2f6f49a4-f2ea-4147-a6d3-69cf875c302e",
+  "source_retrieved_at": "2026-10-27T04:44:50.249896+00:00",
+  "snapshot_sha256": "f48f7a9011ac005858ce26b71e9313751694d0773797c815c5158480fb880003",
+  "native_rebuilt_and_reran_driver": true,
+  "generated_artifacts_unchanged": true,
+  "journey": {
+    "activations": 25,
+    "casts": {
+      "Centaur Courser": 9,
+      "Craw Wurm": 7,
+      "Dragon-Scarred Bear": 7,
+      "Grizzly Bears": 4
+    },
+    "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+    "deck": "decks/package-slice21.txt",
+    "digest": "0d20c7597183ecb764f7b858dd87ca9aa654e3a4ac6984bada01e9df27926520",
+    "driver": "evidence-only masked attack/cast-preferring demonstrator; NOT product heuristic or strength evidence",
+    "kind": "40-card package, not a desired starter",
+    "outcome": {
+      "Win": {
+        "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+        "winner": 3
+      }
+    },
+    "regeneration_events": 1,
+    "replay_digest_matches": true,
+    "replay_events": 4909,
+    "seats": 4,
+    "seed": 1919,
+    "shield_created_events": 25,
+    "snapshot_sha256": "f48f7a9011ac005858ce26b71e9313751694d0773797c815c5158480fb880003",
+    "snapshots_exact": true,
+    "starting_life": 40,
+    "status": "terminal",
+    "steps": 1906,
+    "turns": 45
+  },
+  "source_text": "Formidable \u2014 {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+  "full_issue17_accepted": false
+}
