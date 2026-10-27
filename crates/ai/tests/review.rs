@@ -57,7 +57,11 @@ fn test_config() -> SearchConfig {
 fn pool(colors: &[(ManaColor, u8)]) -> ManaPool {
     let mut pool = ManaPool::default();
     for (color, count) in colors {
-        pool.add(*color, *count);
+        // Keep the helper independent of the pool's count width: master holds
+        // `u8` per colour, while the corpus branch widens `ManaPool::add` to
+        // `u32`. A plain `*count` argument is what makes the merge ref fail to
+        // compile in the `pull_request` CI run; `into()` converts implicitly.
+        pool.add(*color, (*count).into());
     }
     pool
 }
