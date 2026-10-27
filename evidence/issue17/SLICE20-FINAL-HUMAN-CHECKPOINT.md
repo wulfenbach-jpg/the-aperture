@@ -2,8 +2,9 @@
 
 Supersedes SLICE20-HUMAN-CHECKPOINT.md's provisional records; historical failures retained.
 Same card `t_67778feb`, branch `aperture/issue-17`, existing **draft PR46**.
-Base `7dc933a`; independently approved head
-`f4a02a2a05bce7ea6b22a66c60568256327f7ef5`. Final evidence-only head and its own
+Base `7dc933a`; package reviewed at `f4a02a2a05bce7ea6b22a66c60568256327f7ef5`,
+then privacy repair independently approved at
+`41d55ee87bbd1de200b40df92ea06d80aecf9516`. Final evidence-only head and its own
 exact-head CI are recorded in the attached compact CI capture and card handoff,
 not inherited from an older commit. No merge/master push/closure/successor unlock.
 
@@ -58,6 +59,26 @@ not blanket strict-TDD compliance.
   Reviewer ran focused tests, release replay, saved-game replay, snapshot hash/fmt/diff.
   No repeated historical/full workspace matrix locally; final exact-headCI remains owed
   until attached final capture is green.
+
+## Post-review privacy correction — earlier approval superseded
+After the first review, native proved a real hidden-information leak at78dea97:
+although card identities were masked, the opponent's pending description revealed
+whether the looked-at card was eligible (creature/planeswalker vsland). Unequal hidden
+library fixtures produced different opposing fullPlayerViews and masked digests.
+Actual RED101 retained at `slice20/native-eligibility-privacy-red.log`.
+
+Repair `41d55ee` makes TopCardChoice pending details owner-only, alongside the existing
+APNAP private-choice filter. Permanent `issue17_slice20_privacy.rs` compares entire
+opposing projections/digests, not just empty identity fields. Native reran9slice20+1
+privacy test GREEN; writer additionally projection4/replay6/fmt/Clippy and reran the
+journey with unchanged72cd69fb digest. Product change is only3view lines; no engine,
+card, UI, AI-policy or save-shape change. Actual committed hunk and clean product diff
+verified before review. SAME original reviewer re-adjudicated exact repaired delta:
+`slice20/REVIEW20-PRIVACY.md`, APPROVED_INCREMENT at41d55ee,14focused tests
+(privacy1/slice20nine/projection4), unchanged release replay and fmt/diff pass.
+This supersedes the earlier review's missed leak.
+Do not treat f4a02a2/78dea97 alone as final acceptance. This checkpoint's older125test
+receipt remains historical; the privacy repair has its own10focused-test receipt.
 
 ## Original gate still open
 Native audit **137catalog;459union=125supported+334missing**. Per-list gaps

@@ -1,11 +1,11 @@
 {
-  "verified_at": "2026-10-27T04:00:07.455790+00:00",
-  "backup_files": 52,
+  "verified_at": "2026-10-27T04:11:22.355140+00:00",
+  "backup_files": 54,
   "files": [
     {
       "path": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
-      "sha256": "d4d67d50368cafd8507cd4889bc87d21b7f33e832efaaebe322a0496893486bf",
-      "bytes": 8896653
+      "sha256": "ddcdeee803d51e5d8f02cff96fa9aea30e59d094ac7d14c4d177dc1196e8ded2",
+      "bytes": 8934892
     },
     {
       "path": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\1.bash-original.log",
@@ -193,14 +193,19 @@
       "bytes": 5233
     },
     {
+      "path": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\400.bash.log",
+      "sha256": "df049a041bf3a78f2dde58bb530ba304613022cd7b8a57b0fe42b05aad64eda5",
+      "bytes": 10513
+    },
+    {
       "path": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\48.bash.log",
       "sha256": "e8cd206d81119efd35fd6bf25fcafd9d23ddd4b2d2b7ff8c441f41ad702306d3",
       "bytes": 989
     },
     {
       "path": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
-      "sha256": "092cc2afa86e773041bf31e9f1092a2bc41bf577611329da40434ffee33babd1",
-      "bytes": 4394350
+      "sha256": "9f4f754bca27325f49219d0c8fd050e772281ba813688e533ccff988d7fac1fb",
+      "bytes": 4436796
     },
     {
       "path": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\105.bash-original.log",
@@ -246,6 +251,11 @@
       "path": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\154.bash.log",
       "sha256": "f63942ff4add7d4c27fa34ec59ba9edaaf452e62cff766008b3edcb38c11e6e4",
       "bytes": 4485
+    },
+    {
+      "path": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\157.bash.log",
+      "sha256": "8e2023b1cf848d10622e1ed74b905309b99f128e9031df78aebf8b7d4465be4b",
+      "bytes": 10265
     },
     {
       "path": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\42.bash.log",
