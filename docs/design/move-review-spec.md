@@ -6,7 +6,7 @@ implementation disagree, this note wins and the implementation is the defect.
 
 | Field | Value |
 | --- | --- |
-| Spec version | 1.0 |
+| Spec version | 1.1 |
 | Rules revision honoured | Comprehensive Rules effective **2026-09-25** (the pin already carried by `search.rs` and `PlayerView::rules_revision`) |
 | Applies to | `crates/ai` (ranking layer + honesty guardrails), `crates/ui` (review presentation), `evidence/issue28` (validation) |
 | Does not apply to | engine legality, catalog corpus, import, bundled decks, the optional local decision model |
@@ -54,6 +54,7 @@ this file in its own commit and say so in the handoff.
 | D-8 | Uncertainty is a combinatorial lattice statement over sample counts, not a statistical model fit (§4.5). |
 | D-9 | Rule text and policy preference are produced by different constructors into different sections with different source labels; `ExplanationKind::Strategy` records never enter the rules section. |
 | D-10 | The review is read-only: it submits no action, grants no priority, mutates no engine state. |
+| D-11 | The search has **no depth metric** (rollout ensemble, not fixed-depth search), so no depth or plies figure is reported. Per-candidate cost is the rollout breakdown; global cost is `decisions_used`. |
 
 ---
 
@@ -304,12 +305,27 @@ pub struct RankedCandidate {
     pub scored_samples: usize,
     pub without_result: usize,   // rollouts that reached no result
     pub refused_times: usize,    // search world refused this root action
+    pub rollouts_attempted: usize, // scored + without_result + refused_times
     pub line: Option<CandidateLine>,
     pub reasons: Vec<ReasonTag>,
     pub uncertainty: Uncertainty,
     pub chosen: bool,            // the search's own selection; not a verdict
 }
 ```
+
+**Depth and per-candidate cost.** This search has **no depth metric**: it is a rollout ensemble over
+determinizations, not a fixed-depth tree search, and every candidate is evaluated by the same
+round-robin schedule with the same per-rollout cap. Therefore:
+
+- `depth` is **not** a field of the payload and MUST NOT be reported as a number, in text or in
+  JSON. Writing "depth 4" or "evaluated 4 plies" would be a fabricated measurement.
+- The per-candidate cost that genuinely exists is `rollouts_attempted` (derived, not stored
+  independently) with its breakdown `scored_samples` / `without_result` / `refused_times`, and the
+  line length `line.steps.len()` when a line exists.
+- The global cost is `BudgetRecord.decisions_used` out of `BudgetRecord.node_budget`; that is the
+  only "work done" figure the panel prints.
+- If a future search gains a real depth or selective-depth control, it MUST arrive with a spec
+  amendment naming the field, its unit and its meaning before any UI reports it.
 
 `RankedReview` and every nested type implement `Serialize` + `Deserialize` + `PartialEq`, so
 the corpus harness (t_baa0eff8) can round-trip fixtures and the determinism test can compare
@@ -625,8 +641,9 @@ them on the exact published head. A criterion without a passing, committed check
 | AC-14 | **Staleness discard.** A review bound to a superseded generation/revision/decision/seat/digest is discarded with a stated reason and its worker cancelled. | presentation |
 | AC-15 | **Lines are engine-submitted only.** Every `LineStep` corresponds to an action the engine accepted in that rollout; a candidate with no scored sample has no line; missing lines are disclosed. | ranking + presentation |
 | AC-16 | **Corpus validation.** The reviewed corpus run reports per case: ranked alternatives, uncertainty displayed, reason tags, and a false-certainty count of **zero**; determinism rerun matches; provenance (commit + tree + budget) recorded. | validation |
+| AC-17 | **No invented measurements.** No `depth`, plies-evaluated or nodes-per-option figure appears anywhere; per-candidate cost is the real rollout breakdown and global cost is `decisions_used`. | ranking + presentation |
 
-Acceptance gate for the whole feature (root card): AC-1…AC-16 green on the published head, plus
+Acceptance gate for the whole feature (root card): AC-1…AC-17 green on the published head, plus
 `full_issue28_accepted` only after the corpus exists (see open question Q7).
 
 ---
