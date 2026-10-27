@@ -462,12 +462,14 @@ pool has no second copy); at that slice the pool still had no layer 4/5/7b
 power/toughness setter, slice 26 the layer 4 subtype line, slice 28 the first
 *printed* layer 4 + 7b ability and slice 29 the layer 5 colour set plus the
 additive layer 4 animation that turns a non-creature permanent into a creature,
-so layers 4, 5, 6, 7b and 7c now exist. Still missing: layer 7a
-characteristic-defining power/toughness, which is why `Beorn's Hospitality`
-remains unsupported, and layer 7d, which belongs to the counters lane.) Ayula
+so layers 4, 5, 6, 7b and 7c now exist. Slice 33 added layer 7a
+characteristic-defining power/toughness for `Beorn's Hospitality`, so layers 4,
+5, 6, 7a, 7b and 7c all exist; layer 7d is applied outside the layer pass by
+`Object::power`/`toughness`, which add +1/+1 counters after every layer.) Ayula
 had 22 missing names after slice 26, 21 after slice 28, 20 after slice 29,
-19 after slice 30, 18 after slice 31 and 17 after slice 32; the eight-list gate
-remains open at 1 of 8 certified, and no new list is certified by this slice.
+19 after slice 30, 18 after slice 31, 17 after slice 32 and 16 after slice 33;
+the eight-list gate remains open at 1 of 8 certified, and no new list is
+certified by this slice.
 
 Three mutation REDs are retained in `evidence/issue17/slice23/`: disabling the
 reduction fails exactly the two cost tests, ignoring the printed power threshold
@@ -531,6 +533,20 @@ Kamahl's Summons (`{3}{G}` Sorcery) is sourced in `fixtures/starter-corpus/slice
 * **Privacy**: the pending reveal is projected only to the seat that owes it (like the APNAP sacrifice queue), because the offer text names that seat's hand; the answers themselves are public and logged as `Event::CardsRevealed`.
 * **Surrak and Goreclaw's own printed Trample** is now modelled (see the paragraph above): the same `card_trample!` slot every other trampling card uses, so combat assignment needs no special case.
 
+
 Verification retained in `evidence/issue17/slice32/`: four discriminating mutation REDs (revealed count ignored, tokens created before the last answer, Surrak's row losing its trample slot, and a mandatory target trigger made declinable — every touched file restored byte-for-byte, proven by `run-mutations.py` and the pre/post sha256 files), the four-seat 40-life package journey `decks/package-slice32.txt` (seed 3232, `evidence/issue17/slice32-journey-driver`) whose report records the reveal answers in APNAP order per resolution, the Bear tokens they created and Surrak's combat damage, plus the refreshed slice-24 journey and the drift log above. Also committed in this slice: the previously untracked `evidence/issue17/slice31/exact-head-ci-e56b138.json` receipt the slice-31 review asked for, and the mandatory-target-decline regression test.
 
 Known limits, disclosed: the reveal offers are the two extremes described above; the tokens are the existing 2/2 green `BearToken`; `crates/ai` and `crates/ui` received only the mechanical plumbing the new `PendingKind` requires (one heuristic arm that takes the dominant "reveal everything" offer, one label arm, two test-helper arms, one `crates/core/src/coach.rs` privacy/rules wording change) — no search, model or import behaviour changed. The `DeclineTriggerTarget` guard predates this slice; correction (3) is coverage, and the mutation set discriminates the refusal half only. This slice certifies no starter list: Ayula has 17 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 33: Beorn's Hospitality — the first layer 7a characteristic-defining ability
+Beorn's Hospitality (`{1}{G}` Enchantment) is sourced in `fixtures/starter-corpus/slice33-sourced.json` (Scryfall **HOB 120**, immutable `153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9`, oracle `d9ed7252-11d1-432b-9101-ac08cd28826d`, retrieved **2026-10-27T18:21:29Z**; every printing was checked and carries one identical text; the raw provider response and the printings list are retained in `evidence/issue17/slice33/sources/`). Printed text: "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control. / {5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)"
+
+* **Layer 7a now exists.** `Layer::CharacteristicDefining` (CR 613.4a) and `ContinuousKind::PowerToughnessEqualToLands` are the pool's first characteristic-defining power/toughness. The value is **recomputed from the board on every layer pass**, never captured when the ability resolved, so a land that enters afterwards raises the power and toughness with no second activation (CR 604.3). It is applied *before* layer 7b setters and 7c modifiers, and counters are still added afterwards by `Object::power`/`toughness`, which is where 7d lives.
+* **A duration that does not end.** `EffectDuration::WhileSourceOnBattlefield` was previously only used by static abilities; the animation uses it for an activated ability because the printing says "(This effect doesn't end.)" (CR 611.2b). Cleanup therefore leaves it alone — the journey observes the animated permanent on *both* the controller's and the opponents' turns — and it ends with the object it applies to (CR 400.7), through the existing departure pruning.
+* **Additive, not replacing**: the layer 4 half reuses `ContinuousKind::AddCreatureSubtypes`, so the permanent is an Enchantment *and* a Bear creature; `Game::is_creature` and the Bear target spec both answer for it.
+* **The first targeted landfall watcher.** `TargetSpec::CreatureYouControl` + the existing `Effect::PutPlusOneCountersOnTarget(1)`: the trigger asks only for the watcher's controller's own creatures and is not put on the stack when none exist (CR 603.3d).
+* **Printed colour recorded.** `card_green!` is a new catalog macro: the pool records `colors` only where a supported rule can observe colour, and an animated creature's colour is observable.
+
+Verification retained in `evidence/issue17/slice33/`: four-seat / 40-life package journey from `evidence/issue17/slice33-journey-driver` (`decks/package-slice33.txt`, seed 3333, terminal `Win{P3}`) whose driver re-asserts the characteristic-defining invariant after **every** accepted action (the 7a delta equals the current land count and effective power equals land count plus counters), with on-turn and off-turn sightings both non-zero, a separate CLI replay of the recorded replay, the mutation REDs in `run-mutations.py`, and the usual gates.
+
+Known limits, disclosed: the animation's characteristic-defining "you" is read from the permanent's **current controller**; the pool has no control-changing effect, so this cannot be distinguished from the resolving controller. `card_green!` records a colour for this one card only — the other printable cards still carry `colors: &[]`, which is a pre-existing modelling choice, not a claim that they are colourless. The landfall trigger's counter is the ordinary display-and-P/T +1/+1 counter the rest of the pool uses. This slice certifies no starter list: Ayula has 16 missing names and the eight-list gate remains 1 of 8.

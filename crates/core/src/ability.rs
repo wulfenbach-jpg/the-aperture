@@ -834,6 +834,42 @@ const STUFFED_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
     sorcery_timing: false,
 })];
 
+/// Beorn's Hospitality (HOB 120): "Landfall — Whenever a land you control
+/// enters, put a +1/+1 counter on target creature you control.
+/// {5}{G}{G}: This enchantment becomes a Bear creature in addition to its other
+/// types and gains "This creature's power and toughness are each equal to the
+/// number of lands you control." (This effect doesn't end.)"
+///
+/// Two printed abilities. The landfall trigger is the pool's first *targeted*
+/// landfall watcher ("target creature you control"), so it asks its controller
+/// for a target on the same path as every other targeted trigger. The activated
+/// ability is the pool's first layer 7a effect: it adds the creature card type
+/// and the Bear subtype without removing Enchantment (CR 613.1d) and grants a
+/// characteristic-defining power/toughness (CR 613.4a) that is re-read from the
+/// board, and the printed "(This effect doesn't end.)" means the effects are
+/// not swept up by cleanup — they end with the object they apply to.
+const BEORNS_HOSPITALITY: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.",
+        event: TriggerEvent::LandEnters,
+        optional: false,
+        target: TargetSpec::CreatureYouControl,
+        effects: &[Effect::PutPlusOneCountersOnTarget(1)],
+    }),
+    Ability::Activated(ActivatedAbility {
+        text: "{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+        cost: AbilityCost::mana("{5}{G}{G}"),
+        target: TargetSpec::None,
+        modes: SINGLE_MODE,
+        effects: &[
+            Effect::AddSourceCreatureTypeWhileOnBattlefield(crate::layer::SubtypeLine::Bear),
+            Effect::SetSourcePowerToughnessEqualToLands,
+        ],
+        once_per_turn: false,
+        sorcery_timing: false,
+    }),
+];
+
 /// Beorn the Fierce (HOB 119): "Trample
 /// Other Bears you control get +2/+2.
 /// At the beginning of combat on your turn, put a trample counter on up to one
@@ -868,6 +904,7 @@ const BEORN_THE_FIERCE: &[Ability] = &[Ability::Triggered(TriggeredAbility {
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
+        CardId::BeornsHospitality => BEORNS_HOSPITALITY,
         CardId::StuffedBear => STUFFED_BEAR,
         CardId::UrsineChampion => URSINE_CHAMPION,
         CardId::StitchersSupplier => STITCHERS_SUPPLIER,

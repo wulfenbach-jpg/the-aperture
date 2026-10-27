@@ -1,0 +1,29 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T18:21:29.939111+00:00",
+ "cards": [
+  {
+   "name": "Beorn's Hospitality",
+   "oracle_id": "d9ed7252-11d1-432b-9101-ac08cd28826d",
+   "scryfall_id": "153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9",
+   "set": "hob",
+   "collector_number": "120",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Enchantment",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Landfall \u2014 Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9",
+   "retrieved_at": "2026-10-27T18:21:29.939111+00:00"
+  }
+ ]
+}

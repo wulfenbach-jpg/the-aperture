@@ -272,6 +272,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::DrawIfControlsBears { .. }
                 | Effect::SetSourceCreatureSubtypes(_)
                 | Effect::AddSourceCreatureType(_)
+                | Effect::AddSourceCreatureTypeWhileOnBattlefield(_)
+                | Effect::SetSourcePowerToughnessEqualToLands
                 | Effect::SetSourceColor(_)
                 | Effect::SetSourceBasePowerToughness(_, _)
                 | Effect::FightTargets

@@ -59,6 +59,8 @@ const SLICE23_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE31_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice31-sourced.json");
 /// Slice 32: Kamahl's Summons (ONS 269) and Surrak and Goreclaw (MOM 337), fetched 2026-10-27.
 const SLICE32_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice32-sourced.json");
+/// Slice 33: Beorn's Hospitality (HOB 120), fetched 2026-10-27.
+const SLICE33_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice33-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
@@ -243,6 +245,62 @@ fn slice31_cards() -> Vec<Value> {
 fn slice32_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE32_SOURCED).expect("sourced slice32 JSON");
     value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice33_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE33_SOURCED).expect("sourced slice33 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+/// Slice 33 added Beorn's Hospitality (HOB 120). Its printing is the authority
+/// for the cost, the type line, the whole two-ability oracle text and the
+/// colour; the retrieved stamp and printing URL are recorded so the text can be
+/// re-checked against the provider instead of against this file.
+#[test]
+fn slice33_beorns_hospitality_matches_its_recorded_printing() {
+    let cards = slice33_cards();
+    assert_eq!(cards.len(), 1, "slice 33 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Beorn's Hospitality");
+    let def = catalog::by_name("Beorn's Hospitality")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "hob");
+    assert_eq!(sourced_text(record, "collector_number"), "120");
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9"
+    );
+    assert_eq!(def.power, None, "an enchantment prints no power");
+    assert_eq!(def.toughness, None, "an enchantment prints no toughness");
+    assert_eq!(
+        def.colors,
+        &[aperture_core::ManaColor::Green],
+        "the printing's colour identity is green"
+    );
+    assert!(def.kinds.contains(&aperture_core::Kind::Enchantment));
+    assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+    assert!(sourced_text(record, "printing_url").starts_with("https://api.scryfall.com/cards/"));
+    assert!(!sourced_text(record, "retrieved_at").is_empty());
+    // The two printed sentences are what the typed abilities say.
+    let abilities =
+        aperture_core::ability::abilities(catalog::by_name("Beorn's Hospitality").unwrap());
+    assert_eq!(abilities.len(), 2);
+    assert!(
+        abilities[0]
+            .text()
+            .starts_with("Landfall — Whenever a land you control enters"),
+        "the trigger text is the printing's first sentence"
+    );
+    assert!(
+        abilities[1]
+            .text()
+            .starts_with("{5}{G}{G}: This enchantment becomes a Bear creature in addition"),
+        "the activated text is the printing's second sentence"
+    );
 }
 
 /// Only the card slice 32 newly adds to the pool. Surrak and Goreclaw is in the
@@ -748,6 +806,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice30_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
+        .chain(slice33_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

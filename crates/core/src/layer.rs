@@ -6,15 +6,21 @@
 //!   subtype replacement and Stuffed Bear's creature-type addition), layer 5
 //!   colour-changing effects (`Color`, CR 613.1e, Stuffed Bear's green
 //!   animation), layer 6 ability grants (`Ability`, CR 613.4d, Goreclaw),
+//!   layer 7a characteristic-defining power/toughness
+//!   (`CharacteristicDefining`, CR 613.4a, Beorn's Hospitality's animated
+//!   "power and toughness are each equal to the number of lands you control"),
 //!   layer 7b base power/toughness setting (`Setting`, CR 613.4b, Exuberant
 //!   Wolfbear, Circle of the Moon Druid and Stuffed Bear) and layer 7c
 //!   power/toughness modifiers (`Modifying`, CR 613.4c, including printed
-//!   count-based statics such as Wight of Precinct Six). Layer 7a
-//!   (characteristic-defining power/toughness) and 7d (+1/+1 counters) are not
-//!   implemented because no supported card needs them; they are refused at
-//!   import rather than approximated. Layer 7d is deliberately *not* applied
-//!   here: counters remain display-only until the counters lane makes them
-//!   characteristic-changing, so this lane never claims 7d coverage.
+//!   count-based statics such as Wight of Precinct Six). Layer 7d (+1/+1
+//!   counters) is not implemented *here*: counters are applied by
+//!   `Object::power`/`toughness` after every layer, so this lane never claims
+//!   7d coverage.
+//! * CR 613.4a: a characteristic-defining ability is *re-evaluated* every time
+//!   characteristics are computed, so it reads the board as it is now rather
+//!   than capturing a value at resolution. Beorn's Hospitality is the pool's
+//!   first: its animated P/T follows the number of lands its controller
+//!   controls, per CR 604.3.
 //! * CR 614 replacement effects use "instead". Every effect applies at most
 //!   once to a single event (CR 614.5).
 //! * CR 615 prevention effects are one-shot shields with a finite amount or an
@@ -34,16 +40,17 @@ use crate::ids::{ObjectId, PlayerId};
 /// CR 613.4 layer/sublayer of a continuous effect. Ordered: an effect in an
 /// earlier layer is applied before an effect in a later one.
 ///
-/// Five layers are implemented, each arrived at by a card that prints it:
+/// Six layers are implemented, each arrived at by a card that prints it:
 /// `Type` (4, Ursine Champion and Stuffed Bear), `Color` (5, Stuffed Bear),
-/// `Ability` (6, Goreclaw), `Setting` (7b, Exuberant Wolfbear, Circle of the
-/// Moon Druid and Stuffed Bear) and `Modifying` (7c, the printed count-based
-/// statics and pumps). Layer 7a (characteristic-defining power/toughness) was
-/// dropped with issue 15's review: its only candidate card, Wight of Precinct
-/// Six, prints an additive "+1/+1 for each ..." static (layer 7c), not a
-/// characteristic-defining ability, so keeping a 7a code path would have meant
-/// shipping untested production code for no card. Layer 7d (+1/+1 counters)
-/// is likewise not implemented here; 7d belongs to the counters lane.
+/// `Ability` (6, Goreclaw), `CharacteristicDefining` (7a, Beorn's
+/// Hospitality), `Setting` (7b, Exuberant Wolfbear, Circle of the Moon Druid
+/// and Stuffed Bear) and `Modifying` (7c, the printed count-based statics and
+/// pumps). Layer 7a was dropped with issue 15's review because its only
+/// candidate then, Wight of Precinct Six, prints an additive "+1/+1 for each
+/// ..." static (layer 7c), not a characteristic-defining ability; it is back
+/// in slice 33 for a card that really prints one. Layer 7d (+1/+1 counters) is
+/// not applied here: counters are added by `Object::power`/`toughness` after
+/// every layer, because 7d belongs to the counters lane.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum Layer {
     /// CR 613.1d: type-changing effects. Slice 26 adds the first one the pool
@@ -62,6 +69,13 @@ pub enum Layer {
     /// Terror of Qal Sisma). It is ordered before `Modifying`, so a pump granted
     /// in the same resolution still applies after the ability grant.
     Ability,
+    /// CR 613.4a: characteristic-defining power/toughness. Slice 33 adds the
+    /// first one the pool needs — Beorn's Hospitality's animation grants the
+    /// enchantment a CDA whose value is "the number of lands you control"
+    /// (CR 604.3). The value is recomputed with the board on every
+    /// characteristic pass, never captured at resolution, and it is applied
+    /// before `Setting` (7b) and `Modifying` (7c).
+    CharacteristicDefining,
     /// CR 613.4b: effects that set base power/toughness, before modifiers.
     Setting,
     /// CR 613.4c: effects that modify power and/or toughness without setting
@@ -75,6 +89,7 @@ impl Layer {
             Layer::Type => "4",
             Layer::Color => "5",
             Layer::Ability => "6",
+            Layer::CharacteristicDefining => "7a",
             Layer::Setting => "7b",
             Layer::Modifying => "7c",
         }
@@ -85,6 +100,7 @@ impl Layer {
             Layer::Type => "CR 613.1d type-changing effects",
             Layer::Color => "CR 613.1e colour-changing effects",
             Layer::Ability => "CR 613.4d ability-granting effects",
+            Layer::CharacteristicDefining => "CR 613.4a characteristic-defining power/toughness",
             Layer::Setting => "CR 613.4b base power/toughness setting",
             Layer::Modifying => "CR 613.4c power/toughness modifiers",
         }
@@ -159,6 +175,13 @@ pub enum ContinuousKind {
     /// effect applies (Stuffed Bear's "green"). It is a *set*, not an addition,
     /// so the object is exactly this colour and no other.
     SetColor(ManaColor),
+    /// CR 613.4a: the object's power and toughness are each equal to the number
+    /// of lands its controller controls (Beorn's Hospitality's animated "power
+    /// and toughness are each equal to the number of lands you control"). A
+    /// characteristic-defining value, so it is *recomputed* from the board on
+    /// every layer pass rather than captured when the effect started, and it is
+    /// applied before layer 7b and 7c.
+    PowerToughnessEqualToLands,
 }
 
 /// One continuous effect, carrying the timestamp that fixes its order inside
@@ -212,6 +235,10 @@ impl ContinuousEffect {
             ContinuousKind::SetColor(color) => format!(
                 "becomes {} until end of turn ({})",
                 color.name(),
+                self.layer.rules()
+            ),
+            ContinuousKind::PowerToughnessEqualToLands => format!(
+                "power and toughness are each equal to the number of lands you control ({})",
                 self.layer.rules()
             ),
         }

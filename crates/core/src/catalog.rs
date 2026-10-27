@@ -238,8 +238,41 @@ macro_rules! card_trample {
     };
 }
 
+/// A green printable card whose colour a supported rule can observe. The pool
+/// records `colors` only where colour is reachable by an implemented rule, so
+/// the plain macros leave it empty; Beorn's Hospitality becomes a creature, so
+/// its colour is one of its characteristics from that moment on and is recorded
+/// here (CR 202.2a).
+macro_rules! card_green {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[ManaColor::Green],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 148] = [
+pub static CARDS: [CardDef; 149] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1063,6 +1096,12 @@ pub static CARDS: [CardDef; 148] = [
         type_line: "Sorcery", power: None, toughness: None,
         oracle: "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way.",
         spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::EachPlayerMayRevealCreatureCardsForBears] })
+    ),
+    card_green!(
+        BeornsHospitality, "Beorn's Hospitality", cost: Some("{1}{G}"), kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+        spell: None
     ),
     card_flash!(
         LittleBear, "Little Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,

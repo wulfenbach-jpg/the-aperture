@@ -304,9 +304,10 @@ milling (self-mill and each-opponent mill are implemented), tutoring, libraries 
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
 layers 5 colour changes beyond the printed Stuffed Bear animation, layer 6
 ability grants beyond printed and granted trample/haste, layer 7a
-characteristic-defining power/toughness, layer 7d (counters stay
+characteristic-defining power/toughness beyond Beorn's Hospitality's land count,
+layer 7d (counters stay
 display-only), Arcane/splice interactions, and any card outside this branch
-candidate's 146-card pool.
+candidate's 149-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

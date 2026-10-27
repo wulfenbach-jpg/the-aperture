@@ -61,6 +61,17 @@ pub struct Game {
     pub state: GameState,
 }
 
+/// One continuous effect a resolving ability starts on its own source: the
+/// layer it belongs to, what it does, its printed wording for the event log and
+/// how long it lasts. Grouped into a struct so the helper takes one value
+/// instead of six positional arguments.
+struct SourceContinuous {
+    layer: Layer,
+    kind: ContinuousKind,
+    text: String,
+    duration: EffectDuration,
+}
+
 fn blank_object(id: ObjectId, card: CardId, owner: PlayerId) -> Object {
     Object {
         id,
@@ -443,6 +454,22 @@ impl Game {
         }
     }
 
+    /// CR 613.4a: the number of lands `player` controls right now. A
+    /// characteristic-defining value is read from the board on every
+    /// characteristic pass (CR 604.3), never captured when the effect started,
+    /// so a land that enters after the animation still raises the value.
+    fn lands_controlled_by(&self, player: PlayerId) -> i32 {
+        self.state
+            .objects
+            .values()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.card.def().is_land()
+            })
+            .count() as i32
+    }
+
     /// CR 613: recompute every battlefield object's characteristics in layer
     /// order — 4 type, 6 ability, 7b base power/toughness, 7c modifiers. The
     /// power/toughness half covers printed count-based statics (Wight of
@@ -506,6 +533,34 @@ impl Game {
                     object.pump_power = power - object.card.def().power.unwrap_or(0);
                     object.pump_toughness = toughness - object.card.def().toughness.unwrap_or(0);
                 }
+            }
+        }
+        // CR 613.4a: characteristic-defining power/toughness, applied before any
+        // 7b setter and every 7c modifier. The value is read from the board on
+        // this pass, not captured when the effect started, so a land that enters
+        // later changes it (Beorn's Hospitality). Counters still sit on top of
+        // it through `Object::power`/`toughness` (layer 7d).
+        let characteristic: Vec<ObjectId> = self
+            .state
+            .effects
+            .iter()
+            .filter(|effect| effect.layer == Layer::CharacteristicDefining)
+            .filter(|effect| effect.kind == ContinuousKind::PowerToughnessEqualToLands)
+            .map(|effect| effect.target)
+            .collect();
+        for target in characteristic {
+            let Some(controller) = self
+                .state
+                .try_object(target)
+                .filter(|object| object.zone == Zone::Battlefield)
+                .map(|object| object.controller)
+            else {
+                continue;
+            };
+            let value = self.lands_controlled_by(controller);
+            if let Some(object) = self.state.objects.get_mut(&target) {
+                object.pump_power = value - object.card.def().power.unwrap_or(0);
+                object.pump_toughness = value - object.card.def().toughness.unwrap_or(0);
             }
         }
         let mut setting: Vec<(u64, ObjectId, i32, i32)> = self
@@ -644,6 +699,7 @@ impl Game {
                 | ContinuousKind::SetCreatureSubtypes(_)
                 | ContinuousKind::AddCreatureSubtypes(_)
                 | ContinuousKind::SetColor(_)
+                | ContinuousKind::PowerToughnessEqualToLands
                 | ContinuousKind::Saddled => None,
             })
             .collect();
@@ -821,19 +877,18 @@ impl Game {
             .any(|effect| effect.kind == ContinuousKind::GrantsHaste && effect.target == object.id)
     }
 
-    /// Start one until-end-of-turn continuous effect on the ability's own
-    /// source, for a printed ability that animates its own permanent (Stuffed
-    /// Bear's three layered effects). The source must still be a battlefield
-    /// permanent. The result is an ordinary `ContinuousEffect`, so cleanup
-    /// expiry (CR 514.2) and departure pruning (CR 400.7) come from the
-    /// existing pipeline instead of a bespoke lifetime.
+    /// Start one continuous effect on the ability's own source, for a printed
+    /// ability that animates its own permanent (Stuffed Bear's three layered
+    /// until-end-of-turn effects, Beorn's Hospitality's two that do not end).
+    /// The source must still be a battlefield permanent. The result is an
+    /// ordinary `ContinuousEffect`, so cleanup expiry (CR 514.2) and departure
+    /// pruning (CR 400.7) come from the existing pipeline instead of a bespoke
+    /// lifetime, and the printed duration travels with the effect.
     fn start_source_continuous(
         &mut self,
         item: &StackItem,
         controller: PlayerId,
-        layer: Layer,
-        kind: ContinuousKind,
-        text: String,
+        effect: SourceContinuous,
         events: &mut Vec<Event>,
     ) {
         let card = match self.state.try_object(item.object) {
@@ -848,16 +903,16 @@ impl Game {
             source: Some(item.object),
             card,
             controller,
-            layer,
+            layer: effect.layer,
             target: item.object,
-            kind,
-            duration: EffectDuration::UntilEndOfTurn,
+            kind: effect.kind,
+            duration: effect.duration,
         });
         events.push(Event::ContinuousEffectStarted {
             object: item.object,
             card,
-            layer: layer.label().to_string(),
-            text,
+            layer: effect.layer.label().to_string(),
+            text: effect.text,
         });
         self.recompute_layers();
     }
@@ -6624,13 +6679,58 @@ impl Game {
                 self.start_source_continuous(
                     item,
                     controller,
-                    Layer::Type,
-                    ContinuousKind::AddCreatureSubtypes(line),
-                    format!(
-                        "becomes a creature with type {} until end of turn ({})",
-                        line.text(),
-                        Layer::Type.rules()
-                    ),
+                    SourceContinuous {
+                        layer: Layer::Type,
+                        kind: ContinuousKind::AddCreatureSubtypes(line),
+                        text: format!(
+                            "becomes a creature with type {} until end of turn ({})",
+                            line.text(),
+                            Layer::Type.rules()
+                        ),
+                        duration: EffectDuration::UntilEndOfTurn,
+                    },
+                    events,
+                );
+                false
+            }
+            // CR 613.1d + 611.2b: Beorn's Hospitality's animation. The printed
+            // text says the effect doesn't end, so it is not until end of turn:
+            // it lasts as long as the permanent it applies to stays the same
+            // object on the battlefield.
+            Effect::AddSourceCreatureTypeWhileOnBattlefield(line) => {
+                self.start_source_continuous(
+                    item,
+                    controller,
+                    SourceContinuous {
+                        layer: Layer::Type,
+                        kind: ContinuousKind::AddCreatureSubtypes(line),
+                        text: format!(
+                            "becomes a creature with type {} (this effect doesn't end) ({})",
+                            line.text(),
+                            Layer::Type.rules()
+                        ),
+                        duration: EffectDuration::WhileSourceOnBattlefield,
+                    },
+                    events,
+                );
+                false
+            }
+            // CR 613.4a: the characteristic-defining half of the same printed
+            // ability. No value is captured here — the layer pass reads the land
+            // count every time characteristics are computed.
+            Effect::SetSourcePowerToughnessEqualToLands => {
+                self.start_source_continuous(
+                    item,
+                    controller,
+                    SourceContinuous {
+                        layer: Layer::CharacteristicDefining,
+                        kind: ContinuousKind::PowerToughnessEqualToLands,
+                        text: format!(
+                            "power and toughness are each equal to the number of lands you control ({})",
+                            Layer::CharacteristicDefining.rules()
+                        ),
+                        duration: EffectDuration::WhileSourceOnBattlefield,
+                    },
                     events,
                 );
                 false
@@ -6639,13 +6739,16 @@ impl Game {
                 self.start_source_continuous(
                     item,
                     controller,
-                    Layer::Color,
-                    ContinuousKind::SetColor(color),
-                    format!(
-                        "becomes {} until end of turn ({})",
-                        color.name(),
-                        Layer::Color.rules()
-                    ),
+                    SourceContinuous {
+                        layer: Layer::Color,
+                        kind: ContinuousKind::SetColor(color),
+                        text: format!(
+                            "becomes {} until end of turn ({})",
+                            color.name(),
+                            Layer::Color.rules()
+                        ),
+                        duration: EffectDuration::UntilEndOfTurn,
+                    },
                     events,
                 );
                 false
@@ -6654,12 +6757,15 @@ impl Game {
                 self.start_source_continuous(
                     item,
                     controller,
-                    Layer::Setting,
-                    ContinuousKind::SetBasePowerToughness { power, toughness },
-                    format!(
-                        "base power/toughness {power}/{toughness} ({})",
-                        Layer::Setting.rules()
-                    ),
+                    SourceContinuous {
+                        layer: Layer::Setting,
+                        kind: ContinuousKind::SetBasePowerToughness { power, toughness },
+                        text: format!(
+                            "base power/toughness {power}/{toughness} ({})",
+                            Layer::Setting.rules()
+                        ),
+                        duration: EffectDuration::UntilEndOfTurn,
+                    },
                     events,
                 );
                 false

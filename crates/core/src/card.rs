@@ -277,6 +277,19 @@ pub enum Effect {
     /// end of turn (Stuffed Bear's 4/4). It is a *base*, so pumps and counters
     /// sit on top of it in later layers.
     SetSourceBasePowerToughness(i32, i32),
+    /// CR 613.1d: the ability's own source *gains* the creature card type and
+    /// this subtype line for as long as that source remains the same object on
+    /// the battlefield (Beorn's Hospitality: "This enchantment becomes a Bear
+    /// creature in addition to its other types" — the printed text says the
+    /// effect doesn't end, CR 611.2b). Same layer and same `has_subtype` /
+    /// `is_creature` answers as `AddSourceCreatureType`, but no cleanup expiry.
+    AddSourceCreatureTypeWhileOnBattlefield(SubtypeLine),
+    /// CR 613.4a: the ability's own source gains the characteristic-defining
+    /// ability "This creature's power and toughness are each equal to the
+    /// number of lands you control" for as long as it remains on the
+    /// battlefield. The value is read from the board on every layer pass, so
+    /// lands that enter later raise it without the ability resolving again.
+    SetSourcePowerToughnessEqualToLands,
     /// CR 702.171a: creatures the source's controller controls currently gain trample.
     GrantTrampleToControlledCreatures,
     /// CR 702.171a: mark the source Mount saddled until end of turn.
@@ -439,6 +452,14 @@ impl Effect {
             }
             Effect::SetSourceBasePowerToughness(power, toughness) => {
                 format!("this permanent's base power/toughness becomes {power}/{toughness}")
+            }
+            Effect::AddSourceCreatureTypeWhileOnBattlefield(line) => format!(
+                "this permanent becomes a creature with type {} (this effect doesn't end)",
+                line.text()
+            ),
+            Effect::SetSourcePowerToughnessEqualToLands => {
+                "this creature's power and toughness are each equal to the number of lands you control"
+                    .to_string()
             }
         }
     }
@@ -714,6 +735,8 @@ pub enum CardId {
     BeornTheFierce,
     /// Issue 17 slice 32: Kamahl's Summons (ONS 269).
     KamahlsSummons,
+    /// Issue 17 slice 33: Beorn's Hospitality (HOB 120).
+    BeornsHospitality,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

@@ -1380,8 +1380,9 @@ fn fog_is_a_sourced_catalog_card() {
     // and slice 26's Ursine Champion, to 144 with slice 28's Circle of the
     // Moon Druid, to 145 with slice 29's Stuffed Bear, and to 147 with slice
     // 30's Drover Grizzly and slice 31's Beorn the Fierce, and to 148 with
-    // slice 32's Kamahl's Summons.
-    assert_eq!(aperture_core::catalog::pool_size(), 148);
+    // slice 32's Kamahl's Summons, and to 149 with slice 33's Beorn's
+    // Hospitality.
+    assert_eq!(aperture_core::catalog::pool_size(), 149);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
