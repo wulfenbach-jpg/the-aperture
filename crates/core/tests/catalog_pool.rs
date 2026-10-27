@@ -264,6 +264,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::RegenerateSource
                 | Effect::PutCounterAndHasteOnEntered
                 | Effect::SetBasePowerToughnessFromSource
+                | Effect::GrantTrampleToControlledCreatures
+                | Effect::SaddleSource
                 | Effect::SetSourceCreatureSubtypes(_)
                 | Effect::AddSourceCreatureType(_)
                 | Effect::SetSourceColor(_)

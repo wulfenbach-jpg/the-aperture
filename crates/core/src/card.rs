@@ -265,6 +265,10 @@ pub enum Effect {
     /// end of turn (Stuffed Bear's 4/4). It is a *base*, so pumps and counters
     /// sit on top of it in later layers.
     SetSourceBasePowerToughness(i32, i32),
+    /// CR 702.171a: creatures the source's controller controls currently gain trample.
+    GrantTrampleToControlledCreatures,
+    /// CR 702.171a: mark the source Mount saddled until end of turn.
+    SaddleSource,
 }
 
 impl Effect {
@@ -346,6 +350,10 @@ impl Effect {
                 "target Bear you control fights target creature you don't control".to_string()
             }
             Effect::RegenerateSource => "regenerate this creature".to_string(),
+            Effect::GrantTrampleToControlledCreatures => {
+                "creatures you control gain trample until end of turn".to_string()
+            }
+            Effect::SaddleSource => "this Mount becomes saddled".to_string(),
             Effect::SetBasePowerToughnessFromSource => {
                 "set target Human's base P/T to this creature's P/T".to_string()
             }
@@ -645,6 +653,7 @@ pub enum CardId {
     DragonScarredBear,
     SurrakAndGoreclaw,
     ExuberantWolfbear,
+    DroverGrizzly,
     AyulasInfluence,
     Bearscape,
     MotherBear,

@@ -1,0 +1,8 @@
+// package-slice30 — evidence-only 40-card saddle package, NOT a desired starter.
+4 Drover Grizzly
+4 Grizzly Bears
+4 Elite Vanguard
+4 Centaur Courser
+4 Craw Wurm
+16 Forest
+4 Plains

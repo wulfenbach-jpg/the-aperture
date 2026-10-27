@@ -601,7 +601,8 @@ impl Game {
                 | ContinuousKind::SetBasePowerToughness { .. }
                 | ContinuousKind::SetCreatureSubtypes(_)
                 | ContinuousKind::AddCreatureSubtypes(_)
-                | ContinuousKind::SetColor(_) => None,
+                | ContinuousKind::SetColor(_)
+                | ContinuousKind::Saddled => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -757,6 +758,13 @@ impl Game {
             })
     }
 
+    fn has_saddled(&self, id: ObjectId) -> bool {
+        self.state
+            .effects
+            .iter()
+            .any(|effect| effect.kind == ContinuousKind::Saddled && effect.target == id)
+    }
+
     fn has_haste(&self, object: &Object) -> bool {
         self.state
             .effects
@@ -830,7 +838,7 @@ impl Game {
 
     /// Start a layer 6 continuous effect granting trample to `target`.
     fn add_trample_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
-        let card = self.state.object(item.object).card;
+        let card = item.card;
         let timestamp = self.next_timestamp();
         let id = self.next_effect_id();
         self.state.effects.push(ContinuousEffect {
@@ -1305,6 +1313,7 @@ impl Game {
                     }
                 }
             }
+            self.state.effects.retain(|effect| effect.target != id);
             self.state
                 .regeneration_shields
                 .retain(|shield| shield.object != id);
@@ -2147,6 +2156,9 @@ impl Game {
             Action::ActivateManaAbility { land } => self.validate_mana_ability(player, *land),
             Action::ActivateColorManaAbility { source, color } => {
                 self.validate_color_mana_ability(player, *source, *color)
+            }
+            Action::SaddleMount { source, creatures } => {
+                self.validate_saddle_mount(player, *source, creatures)
             }
             Action::ActivateAbility {
                 source,
@@ -2997,9 +3009,10 @@ impl Game {
     /// defending seat's current board. Called when an attack trigger would fire
     /// and again when it resolves, so a clause that stops being true removes the
     /// ability instead of applying it.
-    fn trigger_condition_holds(&self, card: CardId, defender: PlayerId) -> bool {
+    fn trigger_condition_holds(&self, card: CardId, defender: PlayerId, source: ObjectId) -> bool {
         match ability::trigger_condition(card) {
             ability::TriggerCondition::Always => true,
+            ability::TriggerCondition::SourceIsSaddled => self.has_saddled(source),
             ability::TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent => {
                 !self.state.objects.values().any(|object| {
                     object.zone == Zone::Battlefield
@@ -3049,6 +3062,9 @@ impl Game {
             }
             Action::AnswerCommanderDraw { to_command_zone } => {
                 self.apply_commander_draw(player, *to_command_zone, events)
+            }
+            Action::SaddleMount { source, creatures } => {
+                self.apply_saddle_mount(player, *source, creatures, events)
             }
             Action::ActivateAbility {
                 source,
@@ -3303,6 +3319,140 @@ impl Game {
     // --------------------------------------------------- activated abilities
 
     /// CR 602.2/602.5: validate one activation against the typed ability record.
+    fn saddle_ability_index(&self, card: CardId) -> Option<(u8, u8)> {
+        crate::ability::abilities(card)
+            .iter()
+            .enumerate()
+            .find_map(|(index, ability)| {
+                ability
+                    .activated()
+                    .and_then(|activated| activated.cost.saddle_power)
+                    .map(|power| (index as u8, power))
+            })
+    }
+
+    fn validate_saddle_mount(
+        &self,
+        player: PlayerId,
+        source: ObjectId,
+        creatures: &[ObjectId],
+    ) -> Result<(), EngineError> {
+        let object = self
+            .state
+            .try_object(source)
+            .ok_or(EngineError::UnknownObject)?;
+        if object.zone != Zone::Battlefield || object.controller != player || !object.is_creature()
+        {
+            return Err(EngineError::illegal(
+                "saddle",
+                "only a Mount you control on the battlefield can be saddled (CR 702.171a)",
+            ));
+        }
+        let Some((_, threshold)) = self.saddle_ability_index(object.card) else {
+            return Err(EngineError::illegal(
+                "saddle",
+                "that permanent has no saddle ability",
+            ));
+        };
+        if !self.is_sorcery_timing(player) {
+            return Err(EngineError::BadTiming {
+                name: object.card.def().name,
+                reason: "saddle can be activated only as a sorcery (CR 702.171a)".to_string(),
+            });
+        }
+        if creatures.is_empty() {
+            return Err(EngineError::illegal(
+                "saddle",
+                "at least one other creature must be tapped",
+            ));
+        }
+        let mut total = 0i64;
+        let mut seen = Vec::new();
+        for id in creatures {
+            if seen.contains(id) {
+                return Err(EngineError::illegal(
+                    "saddle",
+                    "a helper creature was named twice",
+                ));
+            }
+            seen.push(*id);
+            let Some(helper) = self.state.try_object(*id) else {
+                return Err(EngineError::UnknownObject);
+            };
+            if *id == source
+                || helper.zone != Zone::Battlefield
+                || !helper.is_creature()
+                || helper.controller != player
+                || helper.tapped
+            {
+                return Err(EngineError::illegal(
+                    "saddle",
+                    "helpers must be other untapped creatures you control",
+                ));
+            }
+            total += i64::from(helper.power());
+        }
+        if total < i64::from(threshold) {
+            return Err(EngineError::illegal(
+                "saddle",
+                format!("helpers have total power {total}, below Saddle {threshold}"),
+            ));
+        }
+        Ok(())
+    }
+
+    fn apply_saddle_mount(
+        &mut self,
+        player: PlayerId,
+        source: ObjectId,
+        creatures: &[ObjectId],
+        events: &mut Vec<Event>,
+    ) {
+        let Some((index, _)) = self
+            .state
+            .try_object(source)
+            .and_then(|object| self.saddle_ability_index(object.card))
+        else {
+            return;
+        };
+        for id in creatures {
+            if let Some(object) = self.state.objects.get_mut(id) {
+                object.tapped = true;
+            }
+        }
+        let mount_card = self.state.object(source).card;
+        events.push(Event::AbilityActivated {
+            player,
+            source,
+            card: mount_card,
+            text: "Saddle 1".to_string(),
+            targets: Vec::new(),
+        });
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{player} saddles {} by tapping {} helper(s) (CR 702.171a)",
+                self.describe_object(source),
+                creatures.len()
+            ),
+        });
+        let card = self.state.object(source).card;
+        self.state.stack.push(StackItem {
+            object: source,
+            card,
+            controller: player,
+            targets: Vec::new(),
+            affected: None,
+            source_pt_lki: None,
+            cursor: 0,
+            entry: StackEntry::Activated { ability: index },
+            trigger_answered: false,
+            spell_mana_value: 0,
+        });
+        self.state.turn.passed = 0;
+        self.state.turn.priority = Some(player);
+        events.push(Event::Priority { player });
+    }
+
     fn validate_activate_ability(
         &self,
         player: PlayerId,
@@ -3337,6 +3487,12 @@ impl Game {
                 ),
             ));
         };
+        if activated.cost.saddle_power.is_some() {
+            return Err(EngineError::illegal(
+                "activate ability",
+                "this is a saddle ability; choose its tapped helpers through SaddleMount (CR 702.171a)".to_string(),
+            ));
+        }
         // CR 602.2: an ability is activated from the zone its cost can pay for.
         // The pool's only graveyard ability exiles its own card as the cost, so
         // that is the only reason a non-battlefield object is ever offered.
@@ -4231,7 +4387,7 @@ impl Game {
                 {
                     continue;
                 }
-                if !self.trigger_condition_holds(card, defender) {
+                if !self.trigger_condition_holds(card, defender, *id) {
                     events.push(Event::TriggerRemoved {
                         controller,
                         card,
@@ -6637,7 +6793,7 @@ impl Game {
                     .state
                     .turn
                     .defender
-                    .map(|defender| self.trigger_condition_holds(card, defender))
+                    .map(|defender| self.trigger_condition_holds(card, defender, item.object))
                     .unwrap_or(true);
                 if on_battlefield && condition_met {
                     self.state.skip_next_untap.insert(item.object);
@@ -6655,6 +6811,47 @@ impl Game {
                                  (CR 603.4)"
                             .to_string(),
                     });
+                }
+                false
+            }
+            Effect::SaddleSource => {
+                if self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|object| object.zone == Zone::Battlefield)
+                {
+                    let timestamp = self.next_timestamp();
+                    let id = self.next_effect_id();
+                    self.state.effects.push(ContinuousEffect {
+                        id,
+                        timestamp,
+                        source: Some(item.object),
+                        card: item.card,
+                        controller,
+                        layer: Layer::Ability,
+                        target: item.object,
+                        kind: ContinuousKind::Saddled,
+                        duration: EffectDuration::UntilEndOfTurn,
+                    });
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "{} becomes saddled until end of turn",
+                            item.card.name()
+                        ),
+                    });
+                }
+                false
+            }
+            Effect::GrantTrampleToControlledCreatures => {
+                let creatures: Vec<ObjectId> = self
+                    .state
+                    .battlefield(controller)
+                    .into_iter()
+                    .filter(|o| o.is_creature())
+                    .map(|o| o.id)
+                    .collect();
+                for target in creatures {
+                    self.add_trample_grant(item, target, events);
                 }
                 false
             }
@@ -7375,6 +7572,7 @@ impl Game {
         // combination of named cost cards is its own option.
         for object in self.state.battlefield(player) {
             self.push_activation_actions(player, object.id, object.card, &mut out);
+            self.push_saddle_actions(player, object.id, object.card, &mut out);
         }
         // CR 602.2: an ability whose cost exiles its own card is activated from
         // the graveyard, so it is offered from that zone and offered nowhere
@@ -7407,6 +7605,60 @@ impl Game {
     /// Every legal way to activate one permanent's (or graveyard card's)
     /// abilities: one entry per printed ability, target and legal set of named
     /// cost cards. Nothing is offered that `validate` would refuse.
+    fn push_saddle_actions(
+        &self,
+        player: PlayerId,
+        source: ObjectId,
+        card: CardId,
+        out: &mut Vec<LegalAction>,
+    ) {
+        let Some((_, threshold)) = self.saddle_ability_index(card) else {
+            return;
+        };
+        let helpers: Vec<ObjectId> = self
+            .state
+            .battlefield(player)
+            .into_iter()
+            .filter(|object| object.id != source && object.is_creature() && !object.tapped)
+            .map(|object| object.id)
+            .collect();
+        if helpers.is_empty() || helpers.len() > 10 {
+            return;
+        }
+        for mask in 1u16..(1u16 << helpers.len()) {
+            let chosen: Vec<ObjectId> = helpers
+                .iter()
+                .enumerate()
+                .filter(|(index, _)| mask & (1 << index) != 0)
+                .map(|(_, id)| *id)
+                .collect();
+            let total: i64 = chosen
+                .iter()
+                .filter_map(|id| self.state.try_object(*id))
+                .map(|object| i64::from(object.power()))
+                .sum();
+            if total < i64::from(threshold) {
+                continue;
+            }
+            let action = Action::SaddleMount {
+                source,
+                creatures: chosen.clone(),
+            };
+            if self.validate(player, &action).is_err() {
+                continue;
+            }
+            out.push(LegalAction {
+                action,
+                label: format!(
+                    "Saddle {} by tapping {} creature(s)",
+                    card.def().name,
+                    chosen.len()
+                ),
+                rules: vec!["702.171a"],
+            });
+        }
+    }
+
     fn push_activation_actions(
         &self,
         player: PlayerId,

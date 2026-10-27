@@ -111,6 +111,10 @@ pub struct AbilityCost {
     /// graveyard and the source card itself is exiled to pay the cost, so the
     /// source is already in exile when the ability is put on the stack.
     pub exile_source_from_graveyard: bool,
+    /// Saddle N: tap any number of other untapped creatures you control with
+    /// total effective power N or greater. 0 means not a saddle cost.
+    #[allow(dead_code)]
+    pub saddle_power: Option<u8>,
 }
 
 impl AbilityCost {
@@ -122,6 +126,7 @@ impl AbilityCost {
         discard_land: false,
         exile_graveyard_cards: 0,
         exile_source_from_graveyard: false,
+        saddle_power: None,
     };
     pub const TAP: AbilityCost = AbilityCost {
         tap: true,
@@ -151,6 +156,7 @@ impl AbilityCost {
             && self.mana.is_none()
             && self.card_cost_count() == 0
             && !self.exile_source_from_graveyard
+            && self.saddle_power.is_none()
     }
 
     /// Printed cost text, e.g. `"{T}"`, `"{1}{G}"`, `"Sacrifice this permanent"`.
@@ -431,6 +437,28 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     target: TargetSpec::None,
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
+
+const DROVER_GRIZZLY: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.",
+        event: TriggerEvent::Attacks,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::GrantTrampleToControlledCreatures],
+    }),
+    Ability::Activated(ActivatedAbility {
+        text: "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+        cost: AbilityCost {
+            saddle_power: Some(1),
+            ..AbilityCost::NONE
+        },
+        target: TargetSpec::None,
+        modes: SINGLE_MODE,
+        effects: &[Effect::SaddleSource],
+        once_per_turn: false,
+        sorcery_timing: true,
+    }),
+];
 
 const EXUBERANT_WOLFBEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
@@ -825,6 +853,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::DragonScarredBear => DRAGON_SCARRED_BEAR,
         CardId::SurrakAndGoreclaw => SURRAK_AND_GORECLAW,
         CardId::ExuberantWolfbear => EXUBERANT_WOLFBEAR,
+        CardId::DroverGrizzly => DROVER_GRIZZLY,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,
@@ -896,6 +925,8 @@ pub fn can_become_creature(card: CardId) -> bool {
 /// without a second consumer would be speculative structure.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TriggerCondition {
+    /// Source permanent is currently saddled (CR 702.171a).
+    SourceIsSaddled,
     /// No printed clause: the trigger fires whenever its event happens.
     Always,
     /// "if defending player controls no black nontoken permanents". Black is
@@ -908,6 +939,7 @@ pub enum TriggerCondition {
 pub fn trigger_condition(card: CardId) -> TriggerCondition {
     match card {
         CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
+        CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
         _ => TriggerCondition::Always,
     }
 }

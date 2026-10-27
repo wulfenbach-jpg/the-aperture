@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (145 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (146 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -306,7 +306,7 @@ layers 5 colour changes beyond the printed Stuffed Bear animation, layer 6
 ability grants beyond printed and granted trample/haste, layer 7a
 characteristic-defining power/toughness, layer 7d (counters stay
 display-only), Arcane/splice interactions, and any card outside this branch
-candidate's 145-card pool.
+candidate's 146-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

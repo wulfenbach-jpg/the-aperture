@@ -143,6 +143,8 @@ pub enum ContinuousKind {
     GrantsHaste,
     /// CR 613.4b: set base power/toughness to the captured values.
     SetBasePowerToughness { power: i32, toughness: i32 },
+    /// CR 702.171: this Mount is saddled until end of turn.
+    Saddled,
     /// CR 613.1d: the creature's subtype line becomes this one, replacing the
     /// printed subtypes for as long as the effect applies. Type-changing
     /// effects apply before every power/toughness layer, so a pump in the same
@@ -190,6 +192,7 @@ impl ContinuousEffect {
             ContinuousKind::GrantsHaste => {
                 format!("haste until end of turn ({})", self.layer.rules())
             }
+            ContinuousKind::Saddled => "saddled until end of turn".to_string(),
             ContinuousKind::SetBasePowerToughness { power, toughness } => {
                 format!(
                     "base power/toughness {power}/{toughness} until end of turn ({})",

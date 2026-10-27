@@ -131,6 +131,6 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // which closes one more again. Slice 28 registers Circle of the Moon Druid
     // and slice 29 registers Stuffed Bear, so both numbers move together by
     // one again.
-    assert_eq!(missing.len(), 20, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 145, "the compiled pool");
+    assert_eq!(missing.len(), 19, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 146, "the compiled pool");
 }

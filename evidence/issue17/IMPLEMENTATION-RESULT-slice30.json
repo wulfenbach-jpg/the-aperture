@@ -1,0 +1,48 @@
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "de3ba07",
+  "commit": "slice30 local head in final receipt",
+  "card": "Drover Grizzly",
+  "counts": {
+    "catalog": 146,
+    "union": 459,
+    "supported": 134,
+    "missing": 325,
+    "ayula_missing": 19
+  },
+  "focused": {
+    "issue17_slice30": "4 passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "replay_digest": "6 passed",
+    "fmt": "0",
+    "clippy": "0",
+    "release": "0",
+    "gates": "evidence/issue17/slice30/gates.log"
+  },
+  "journey": {
+    "package": "decks/package-slice30.txt",
+    "seats": 4,
+    "life": 40,
+    "seed": 2323,
+    "status": "terminal",
+    "winner": 1,
+    "steps": 2653,
+    "turns": 55,
+    "digest": "b711d966f9bd2e60187d4eafc5be852eea01b5f141fcc253813b1c38c8a85677",
+    "snapshot_sha256": "69497ca2f6c8ac51c44726e78652bde1ad1903ee677af8d00b7cc0d324369471",
+    "replay_matches": true,
+    "save_roundtrip": true,
+    "saddle_activations": 116,
+    "trample_grants": 22
+  },
+  "gaps": [
+    "no cleanup/departure/same-ID saddle test",
+    "no explicit multi-helper test",
+    "no full workspace matrix"
+  ]
+}

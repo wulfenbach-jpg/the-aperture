@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **133** are in the supported 145-card catalog and **326** are missing. Slice
+* **133** are in the supported 146-card catalog and **326** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132) and slice 29
   adds `Stuffed Bear` (132→133) to the previously verified split. The union is unchanged because every one of them
@@ -66,7 +66,7 @@ the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
 (slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
-`Stuffed Bear`. Ayula currently has **20** missing names.
+`Stuffed Bear`. Ayula currently has **19** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -500,3 +500,6 @@ Stuffed Bear (`{2}` Artifact; Scryfall **MID 259**, immutable `4cd40276-016b-475
 * Known limits, disclosed: the animation adds only the Bear subtype line the pool prints (a future "becomes a <type> in addition" card adds a `SubtypeLine` variant); the colour set is a single colour, not a set of colours; the engine has no way for a *second* permanent to animate another player's artifact, so only self-animation exists.
 
 Verification retained in `evidence/issue17/slice29/`: four discriminating mutation REDs (layer 4 addition ignored, layer 5 ignored, layer 7b ignored, entry sickness dropped — each restored byte-for-byte, `run-mutations.py` proves it), a four-seat 40-life package journey from `evidence/issue17/slice29-journey-driver` (`decks/package-slice29.txt`, terminal `Win{P3}`, 1912 actions, 44 turns, digest `ac16e510…`, separate CLI replay matches) whose driver asserts the animated-or-plain invariant after *every* accepted action (1301 animated and 3741 plain sightings across 119 activations), and the usual gates. This slice certifies no starter list: Ayula still has 20 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 30: Drover Grizzly and reusable saddle
+Drover Grizzly (`{2}{G}`, 4/2 Bear Mount) is sourced in `fixtures/starter-corpus/slice30-sourced.json` (OTJ 161, immutable 560062cd, retrieved 2026-10-27T14:40:04Z). Saddle 1 is a reusable typed cost/action: at sorcery timing, tap any bounded subset of other untapped creatures you control with total effective power at least 1; helpers need not be untapped since turn start. Saddle is a designation effect until cleanup and ends on battlefield departure. An attack while saddled grants trample to creatures controlled then, through the existing layer-6 grants; unsaddled attacks do not trigger.

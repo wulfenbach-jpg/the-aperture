@@ -1,0 +1,29 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T14:40:04.729296+00:00",
+ "cards": [
+  {
+   "name": "Drover Grizzly",
+   "oracle_id": "290fe09e-04ab-48d1-a60e-db47ea8c4d00",
+   "scryfall_id": "560062cd-34f8-4d30-9e25-099b03961724",
+   "set": "otj",
+   "collector_number": "161",
+   "layout": "normal",
+   "mana_cost": "{2}{G}",
+   "type_line": "Creature — Bear Mount",
+   "power": "4",
+   "toughness": "2",
+   "oracle_text": "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Saddle"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/560062cd-34f8-4d30-9e25-099b03961724",
+   "retrieved_at": "2026-10-27T14:40:04.729296+00:00"
+  }
+ ]
+}

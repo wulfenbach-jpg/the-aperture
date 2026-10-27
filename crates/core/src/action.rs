@@ -100,6 +100,11 @@ pub enum Action {
     /// caller can never supply a cost the card does not have. Abilities with
     /// no card cost are still activated through [`Action::ActivateAbility`],
     /// which keeps every pre-existing replay and test literal valid.
+    /// CR 702.171: pay a Mount's saddle cost by tapping named other creatures.
+    SaddleMount {
+        source: ObjectId,
+        creatures: Vec<ObjectId>,
+    },
     ActivateCostedAbility {
         source: ObjectId,
         ability: u8,
@@ -141,6 +146,7 @@ impl Action {
             Action::AnswerCommanderDraw { .. } => "commander draw replacement choice",
             Action::ActivateAbility { .. } => "activate ability",
             Action::ActivateCostedAbility { .. } => "activate ability",
+            Action::SaddleMount { .. } => "saddle mount",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
         }
