@@ -6,7 +6,7 @@ implementation disagree, this note wins and the implementation is the defect.
 
 | Field | Value |
 | --- | --- |
-| Spec version | 1.1 |
+| Spec version | 1.2 |
 | Rules revision honoured | Comprehensive Rules effective **2026-09-25** (the pin already carried by `search.rs` and `PlayerView::rules_revision`) |
 | Applies to | `crates/ai` (ranking layer + honesty guardrails), `crates/ui` (review presentation), `evidence/issue28` (validation) |
 | Does not apply to | engine legality, catalog corpus, import, bundled decks, the optional local decision model |
@@ -276,7 +276,7 @@ call and no I/O.
 
 ```rust
 pub struct RankedReview {
-    pub spec: &'static str,              // "move-review/1.1"
+    pub spec: &'static str,              // "move-review/1.2"
     pub binding: ReviewBinding,
     pub budget: BudgetRecord,
     /// Empty exactly when `refusal` is Some.
@@ -484,6 +484,27 @@ The UI maps `TextKind` to a section and a badge; the mapping is total and one-to
 (`Rule → rules section`, everything else → policy section). The ranking layer never decides
 presentation, and the UI never re-classifies a text kind.
 
+### 4.9 Implementation resolutions (informative — added in 1.2, task t_f4baa891)
+
+Task t_f4baa891 built this contract in `crates/ai/src/review.rs`. Three places needed a decision
+the note left open, or stated something that cannot compile. None of them changes a decision
+(D-1…D-11) or a criterion (AC-1…AC-17); each is recorded here per §10.
+
+1. **`preference` is `Option<Preference>`.** AC-9 requires `preference: None` for a refused
+   decision point, which the §4.1 sketch's bare `Preference` cannot express. `None` means exactly
+   "no ordering is claimed": a refusal, or no scored sample at all. A scored but single-sampled
+   head yields `Preference::NoOrder { chosen }`, because one sample establishes no order (§4.5).
+   `Preference` is derived from the row the ranking places first, so the preference line can
+   never contradict the order above it.
+2. **Static strings are `Cow<'static, str>`.** §4.1 also requires `Deserialize`, and a
+   `&'static str` cannot be produced from JSON. `spec`, `offer_rules` and rule numbers are `Cow`,
+   so the payload round-trips while still borrowing where the value already is static. The
+   serialised shape is unchanged: a JSON string.
+3. **`BudgetRecord::rendered` excludes `fidelity`.** §3.4 asks for a line that is a pure function
+   of the record, while §5.2 requires the panel to print the search's fidelity line **verbatim**
+   on its own line. `rendered` therefore renders every other field, appends
+   "cancellation observed" when `cancelled` is set, and leaves `fidelity` to the §5.2 line.
+
 ---
 
 ## 5. Presentation contract
@@ -672,7 +693,7 @@ Acceptance gate for the whole feature (root card): AC-1…AC-17 green on the pub
 
 ## 9. Open questions
 
-These are unresolved at spec 1.1. They do not block the child tasks that build the contract
+These are unresolved at spec 1.2. They do not block the child tasks that build the contract
 above, but the root acceptance decision needs answers.
 
 - **Q1 — interactive latency vs reproducibility.** The panel keeps `max_millis = 8000`, so a slow

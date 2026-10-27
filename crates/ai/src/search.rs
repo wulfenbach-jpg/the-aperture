@@ -45,20 +45,105 @@ use aperture_core::rng::Pcg32;
 use aperture_core::state::{GameState, Object, Player, Turn};
 use aperture_core::view::{CardView, OpponentView, PendingKind, PlayerView};
 use aperture_core::{Action, CardId, DeckList, Event, Game, ManaColor, ObjectId, PlayerId, Zone};
+use serde::{Deserialize, Serialize};
 
 use crate::heuristic::HeuristicPolicy;
 use crate::{Decision, DecisionSource, Policy};
+
+/// How many engine-accepted actions one rollout records as its line. The
+/// recording is a prefix: a longer rollout sets `truncated`.
+///
+/// Bounded trace recording exists only to support move review
+/// (`docs/design/move-review-spec.md` §4.4, decision D-6). It never changes
+/// search behaviour: no extra engine call, no re-ordering, no re-decision.
+pub const MAX_LINE_PLIES: usize = 12;
+
+/// One engine-accepted action inside a recorded rollout.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RecordedStep {
+    /// Decision ordinal inside that rollout, root first.
+    pub decision: usize,
+    /// The seat the engine asked.
+    pub seat: PlayerId,
+    /// The engine's own label for the action it accepted.
+    pub label: String,
+}
+
+/// A rollout's bounded line recording. Present only for a rollout that reached
+/// an engine result; a capped, refused or truncated rollout records nothing.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct RecordedLine {
+    pub steps: Vec<RecordedStep>,
+    /// The rollout went past [`MAX_LINE_PLIES`]; `steps` is a prefix.
+    pub truncated: bool,
+    /// Determinization seed index that produced this line.
+    pub seed_index: u64,
+    /// The recorded rollout's outcome value: win `+1`, draw `0`, loss `−1`.
+    pub outcome: i8,
+}
+
+/// Why an analysis stopped (§3.3). Recorded instead of one boolean, in the
+/// loop's own check order: cancellation, wall clock, node budget.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum StopReason {
+    /// Every determinization round ran for every candidate.
+    DeterminizationsExhausted,
+    /// The node budget was reached.
+    NodeBudget,
+    /// The wall clock was reached.
+    WallClock,
+    /// A [`SearchCancellation`] was observed.
+    Cancelled,
+    /// The decision point was refused before any rollout ran.
+    NotStarted,
+}
+
+impl StopReason {
+    /// Lowercase label used in the rendered budget line (§3.4).
+    pub fn label(self) -> &'static str {
+        match self {
+            StopReason::DeterminizationsExhausted => "determinizations exhausted",
+            StopReason::NodeBudget => "node budget",
+            StopReason::WallClock => "wall clock",
+            StopReason::Cancelled => "cancellation",
+            StopReason::NotStarted => "not started",
+        }
+    }
+}
 
 /// The result of one rollout.
 #[derive(Debug, Clone, PartialEq)]
 enum Rollout {
     /// Reached an engine result. `value`: viewer win +1 / loss −1 / draw 0;
     /// `was_result` is false only for outcomes this rollout did not earn.
-    Scored { value: f32, was_result: bool },
-    /// Ended without a result (cap/truncation/failure).
-    Neutral { times: u32 },
+    /// `steps`/`truncated` are this rollout's bounded recording; an unearned
+    /// result carries none.
+    Scored {
+        value: f32,
+        was_result: bool,
+        steps: Vec<RecordedStep>,
+        truncated: bool,
+    },
+    /// Ended without a result (cap/truncation/failure), with the typed cause.
+    Neutral { times: u32, cause: NeutralCause },
     /// The deterministic search world refused the root action.
     RootRefused { detail: String },
+}
+
+/// Why one rollout ended without a result. Counted identically (neither a win
+/// nor a loss), but the stop reason needs the cause to stay honest.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum NeutralCause {
+    /// The per-rollout decision cap was reached.
+    RolloutCap,
+    /// The analysis' wall clock was reached mid-rollout.
+    WallClock,
+    /// A [`SearchCancellation`] was observed mid-rollout.
+    Cancelled,
+    /// The search world offered no decision point to continue from.
+    NoDecision,
+    /// The search world refused an action this module submitted.
+    EngineRejected,
 }
 
 /// Fixed seed salt so a given seed index always rebuilds the same world:
@@ -175,6 +260,11 @@ pub struct CandidateScore {
     pub rollouts_without_result: usize,
     /// How often the search world refused this root action as illegal.
     pub refused_times: usize,
+    /// The bounded recording of the first rollout (in scheduling order) that
+    /// produced this candidate's best value so far. `None` while no rollout of
+    /// this candidate reached a result — never a line from a capped or refused
+    /// rollout, and never a line invented after the fact.
+    pub line: Option<RecordedLine>,
 }
 
 /// A progressive snapshot: valid at any time, including after cancellation.
@@ -187,6 +277,16 @@ pub struct SearchAnalysis {
     pub cancelled: bool,
     /// Determinization fidelity disclosure.
     pub fidelity: String,
+    /// Why the analysis stopped. Never collapsed into a boolean (§3.3).
+    pub stop: StopReason,
+    /// Whether this analysis is reproducible: a node/round stop that was not
+    /// cancelled. A wall-clock or cancellation stop is *not* reproducible and
+    /// must never enter recorded evidence.
+    pub reproducible: bool,
+    /// Index into `candidates` of the action the search itself selected, or
+    /// `None` when no candidate reached a result and the legal fallback
+    /// decided instead.
+    pub chosen: Option<usize>,
 }
 
 /// The durable outcome of one full search decision.
@@ -238,6 +338,7 @@ pub fn search(
                 scored_samples: 0,
                 rollouts_without_result: 0,
                 refused_times: 0,
+                line: None,
             },
         ));
     }
@@ -252,17 +353,31 @@ pub fn search(
     let own_draws = own_remaining_draws(knowledge, view);
     let started = Instant::now();
     let mut decisions_used = 0usize;
+    // Stop reason, recorded in the loop's own check order (§3.3):
+    // cancellation, then the wall clock, then the node budget.
+    let mut stop: Option<StopReason> = None;
+    // Best outcome value seen so far per candidate, so a candidate's line is
+    // the recording of the first rollout that produced its best value.
+    let mut best_values: Vec<Option<f32>> = vec![None; candidates.len()];
 
     // 3. Rollout rounds: each candidate gets one rollout per determinization
     //    seed before any candidate gets a second, so a mid-run snapshot — and
     //    a cancellation — stays fair across candidates.
     'rounds: for round in 0..config.seeds {
         let seed = determinization_seed(round as u64);
-        for (_, score) in candidates.iter_mut() {
-            if cancel.is_cancelled()
-                || started.elapsed() >= Duration::from_millis(config.max_millis)
-                || decisions_used >= config.node_budget
+        for (index, (_, score)) in candidates.iter_mut().enumerate() {
+            if cancel.is_cancelled() {
+                stop = Some(StopReason::Cancelled);
+                break 'rounds;
+            }
+            if config.max_millis != u64::MAX
+                && started.elapsed() >= Duration::from_millis(config.max_millis)
             {
+                stop = Some(StopReason::WallClock);
+                break 'rounds;
+            }
+            if decisions_used >= config.node_budget {
+                stop = Some(StopReason::NodeBudget);
                 break 'rounds;
             }
             let state = reconstruct(real, view, seed, &ledger, &filler, &own_draws)?;
@@ -283,17 +398,52 @@ pub fn search(
                 },
                 &mut decisions_used,
             ) {
-                Rollout::Scored { value, was_result } => {
+                Rollout::Scored {
+                    value,
+                    was_result,
+                    steps,
+                    truncated,
+                } => {
                     if was_result {
                         let previous = score.mean.unwrap_or(0.0) * score.scored_samples as f32;
                         score.scored_samples += 1;
                         score.mean = Some((previous + value) / score.scored_samples as f32);
+                        // D-6: keep the recording of the first rollout in
+                        // scheduling order that scored this candidate's best
+                        // value so far. Strictly greater replaces; equal does
+                        // not — so the retained line is deterministic.
+                        let better = match best_values[index] {
+                            None => true,
+                            Some(best) => value > best,
+                        };
+                        if better {
+                            best_values[index] = Some(value);
+                            score.line = Some(RecordedLine {
+                                steps,
+                                truncated,
+                                seed_index: round as u64,
+                                outcome: value as i8,
+                            });
+                        }
                     } else {
                         score.rollouts_without_result += 1;
                     }
                 }
-                Rollout::Neutral { times } => {
+                Rollout::Neutral { times, cause } => {
                     score.rollouts_without_result += times as usize;
+                    // A wall-clock or cancellation truncation inside a rollout
+                    // is the same stop as seeing it at the top of the loop.
+                    match cause {
+                        NeutralCause::WallClock if config.max_millis != u64::MAX => {
+                            stop = Some(StopReason::WallClock);
+                            break 'rounds;
+                        }
+                        NeutralCause::Cancelled => {
+                            stop = Some(StopReason::Cancelled);
+                            break 'rounds;
+                        }
+                        _ => {}
+                    }
                 }
                 Rollout::RootRefused { .. } => {
                     score.refused_times += 1;
@@ -307,14 +457,28 @@ pub fn search(
         .map(|(_, score)| score)
         .collect::<Vec<_>>();
 
+    let cancelled = cancel.is_cancelled();
+    let stop = stop.unwrap_or(StopReason::DeterminizationsExhausted);
+    // Reproducible iff the budget bounds (rounds or nodes) ended it and nothing
+    // cancelled it. A wall-clock or cancellation stop is never reproducible.
+    let reproducible = !cancelled
+        && matches!(
+            stop,
+            StopReason::DeterminizationsExhausted | StopReason::NodeBudget
+        );
+    let chosen = best_index(&scores);
+
     // 4. Best scored candidate, or the deterministic legal fallback.
     let mut analysis = SearchAnalysis {
         candidates: scores.clone(),
         decisions_used,
-        cancelled: cancel.is_cancelled(),
+        cancelled,
         fidelity: fidelity_line(knowledge, view),
+        stop,
+        reproducible,
+        chosen,
     };
-    let decision = match best_candidate(&scores).map(|c| c.action.clone()) {
+    let decision = match chosen.map(|index| scores[index].action.clone()) {
         Some(action) => Decision {
             action,
             source: DecisionSource::Search,
@@ -359,15 +523,21 @@ fn pending_kind_name(kind: PendingKind) -> String {
     }
 }
 
-/// Deterministic best: highest mean, then most scored samples, then earliest
-/// offer order (stable max over the offer-ordered vec).
-fn best_candidate(scores: &[CandidateScore]) -> Option<&CandidateScore> {
-    scores.iter().filter(|c| c.mean.is_some()).max_by(|a, b| {
-        a.mean
-            .partial_cmp(&b.mean)
-            .unwrap_or(std::cmp::Ordering::Equal)
-            .then_with(|| a.scored_samples.cmp(&b.scored_samples))
-    })
+/// Deterministic best: highest mean, then most scored samples, then the last
+/// offer-ordered maximum (`max_by`'s own rule, preserved verbatim so the review
+/// layer never contradicts the search's selection).
+fn best_index(scores: &[CandidateScore]) -> Option<usize> {
+    scores
+        .iter()
+        .enumerate()
+        .filter(|(_, c)| c.mean.is_some())
+        .max_by(|(_, a), (_, b)| {
+            a.mean
+                .partial_cmp(&b.mean)
+                .unwrap_or(std::cmp::Ordering::Equal)
+                .then_with(|| a.scored_samples.cmp(&b.scored_samples))
+        })
+        .map(|(index, _)| index)
 }
 
 fn fidelity_line(knowledge: &Knowledge, view: &PlayerView) -> String {
@@ -756,15 +926,29 @@ fn run_rollout(world: &mut Game, ctx: &RolloutContext<'_>, decisions_used: &mut 
     let mut events: Vec<Event> = Vec::new();
     let mut nodes = 0usize;
     let mut first = true;
+    // Bounded line recording (§4.4, D-6): the engine's own labels for the
+    // actions it accepts, root first, at most MAX_LINE_PLIES of them.
+    let mut steps: Vec<RecordedStep> = Vec::new();
+    let mut truncated = false;
 
     while !world.state.is_over() {
-        if cancel.is_cancelled()
-            || (max_millis != u64::MAX && started.elapsed() >= Duration::from_millis(max_millis))
-        {
-            return Rollout::Neutral { times: 1 };
+        if cancel.is_cancelled() {
+            return Rollout::Neutral {
+                times: 1,
+                cause: NeutralCause::Cancelled,
+            };
+        }
+        if max_millis != u64::MAX && started.elapsed() >= Duration::from_millis(max_millis) {
+            return Rollout::Neutral {
+                times: 1,
+                cause: NeutralCause::WallClock,
+            };
         }
         if nodes >= max_rollout_nodes {
-            return Rollout::Neutral { times: 1 };
+            return Rollout::Neutral {
+                times: 1,
+                cause: NeutralCause::RolloutCap,
+            };
         }
         let Some(owner) = world.decision_owner() else {
             return if first {
@@ -772,32 +956,53 @@ fn run_rollout(world: &mut Game, ctx: &RolloutContext<'_>, decisions_used: &mut 
                     detail: "the search world has no decision point".to_string(),
                 }
             } else {
-                Rollout::Neutral { times: 1 }
+                Rollout::Neutral {
+                    times: 1,
+                    cause: NeutralCause::NoDecision,
+                }
             };
         };
         let view = world.view_for(owner, &events);
-        let offered: Option<Action> = if first {
-            // Policies select only offered actions, so the root must be in
-            // the search world's own engine-generated offer to be attempted.
+        // Policies select only offered actions, so the root must be in the
+        // search world's own engine-generated offer to be attempted. The
+        // label recorded for a step is always the engine's label for the offer
+        // entry the submitted action came from — never a synthesised one.
+        let offered = if first {
             view.legal
                 .iter()
                 .find(|legal| legal.action == *root)
-                .map(|legal| legal.action.clone())
+                .map(|legal| (legal.action.clone(), legal.label.clone()))
         } else {
-            Some(HeuristicPolicy::new().decide(&view).action)
+            let decided = HeuristicPolicy::new().decide(&view).action;
+            view.legal
+                .iter()
+                .find(|legal| legal.action == decided)
+                .map(|legal| (legal.action.clone(), legal.label.clone()))
         };
-        let Some(action) = offered else {
+        let Some((action, label)) = offered else {
             return if first {
                 Rollout::RootRefused {
                     detail: "root action was not in the search world's offer".to_string(),
                 }
             } else {
-                Rollout::Neutral { times: 1 }
+                Rollout::Neutral {
+                    times: 1,
+                    cause: NeutralCause::EngineRejected,
+                }
             };
         };
         match world.submit_action(owner, action) {
             Ok(new_events) => {
                 events.extend(new_events);
+                if steps.len() < MAX_LINE_PLIES {
+                    steps.push(RecordedStep {
+                        decision: nodes,
+                        seat: owner,
+                        label,
+                    });
+                } else {
+                    truncated = true;
+                }
                 nodes += 1;
                 *decisions_used += 1;
                 first = false;
@@ -810,7 +1015,10 @@ fn run_rollout(world: &mut Game, ctx: &RolloutContext<'_>, decisions_used: &mut 
             Err(_) => {
                 // A rollout-internal heuristic disagreement: end without a
                 // result rather than fabricating an outcome.
-                return Rollout::Neutral { times: 1 };
+                return Rollout::Neutral {
+                    times: 1,
+                    cause: NeutralCause::EngineRejected,
+                };
             }
         }
     }
@@ -819,11 +1027,18 @@ fn run_rollout(world: &mut Game, ctx: &RolloutContext<'_>, decisions_used: &mut 
         Some(aperture_core::state::Outcome::Win { winner, .. }) => Rollout::Scored {
             value: if *winner == viewer { 1.0 } else { -1.0 },
             was_result: true,
+            steps,
+            truncated,
         },
         Some(aperture_core::state::Outcome::Draw { .. }) => Rollout::Scored {
             value: 0.0,
             was_result: true,
+            steps,
+            truncated,
         },
-        None => Rollout::Neutral { times: 1 },
+        None => Rollout::Neutral {
+            times: 1,
+            cause: NeutralCause::EngineRejected,
+        },
     }
 }
