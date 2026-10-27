@@ -127,3 +127,27 @@ Druid's Familiar, Lightning Greaves, Stuffed Bear are the smallest remaining
 semantics) and then genuine certification of one whole desired 100-card list. Do not
 re-audit approved increments. Current-lane target only; preserve the other agent's
 build-cache cleanup; no retired-worktree builds or global config edits.
+
+## Review outcome and final head
+
+TRUE original-history adjudication (`evidence/issue17/review-sessions/…f17d.jsonl`,
+the exact saved reviewer resumed at the correct path):
+
+- `2785c2c` → **CHANGES_REQUESTED**, code fine, three stale record statements in
+  `docs/issue17-starter-corpus.md` (122/337, "Ayula's printed counter/tribal text is
+  not implemented", Ayula listed among unsupported commanders) and the reviewer's own
+  audit fixing the union arithmetic at 459/123/336.
+- Corrections applied by the integration owner as a docs-only commit `60e0bd9`
+  (authored prose, no product code).
+- `60e0bd9` → **APPROVED_INCREMENT**, re-read from the file rather than the summary,
+  delta `2785c2c..60e0bd9` verified to be docs+evidence only, prior focused receipts
+  revalidated, no further blocking issue.
+
+Final head of record `318f96e` (review report commit); code head remains `af0feea`
+with `79d976d` the repair. Exact-head CI is collected on the final pushed head after
+this record and is reported in the card handoff, never inherited from `2785c2c` —
+whose runs were cancelled by the superseding pushes.
+
+Full original #17 remains unfinished: 1 of 8 desired starters certified, 336 missing
+union names, Ayula's own list still 30 missing. No merge, no master push, no issue
+closure, no certified-downstream unlock.

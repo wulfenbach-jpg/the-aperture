@@ -1,0 +1,10 @@
+Working...
+**RE-ADJUDICATION at `60e0bd9e7a706e92bc6d8f5e2e7534ed27a97bbf`: APPROVED_INCREMENT.**
+
+Re-read the current file: `docs/issue17-starter-corpus.md` now correctly carries **459 union / 123 supported / 336 missing**, describes Ayula’s implemented bounded counter/fight trigger, lists only **Elas and Zada** as unsupported target commanders, and says Ayula needs no token type. Grep leaves only the historical explanatory reference to the old 122/337 split, not a current claim. My independent audit reconfirms 135 catalog / 459 union / 123 supported / 336 missing and per-list `55/0/51/48/30/52/52/53`; the 454/118 checkpoint value is correctly recorded as the basics-filtered artefact.
+
+The delta `2785c2c..60e0bd9` is docs plus evidence only; no product source changed. Prior focused receipts remain valid: abilities 13/13, command_zone_setup 44/44, lib 13/13, rules_conformance 5/5, slice17 6/6; demo replay/save digest `09e6bb25c505…` and package snapshot hash match.
+
+No further blocking issue. Full original #17 remains unfinished: **1/8 certified**, 336 missing union names; the journey is an evidence-only 40-card package with Ayula injected for all four seats, not a 100-card certificate. No merge, closure, or downstream unlock.
+
+Amended report committed as `318f96e`; not pushed.
