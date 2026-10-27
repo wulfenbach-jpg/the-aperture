@@ -1,0 +1,38 @@
+# cargo test -p aperture-ui --lib app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface -- --exact --nocapture
+# worktree: C:/AI/aperture-worktrees/issue-28
+# head at capture: ab71129273fbfbbff883e2a92332d187fad0bf3c
+# branch: aperture/issue-28  base master: f3e8bb1
+# captured: 2026-10-27T01:34:23Z
+# command: cargo test -p aperture-ui --lib app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface -- --exact --nocapture
+# --- output (real exit status printed at the end; no pipe on the command) ---
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
+
+running 1 test
+journey: reached the reviewing seat's decision (turn 3, step precombat main phase, 6 engine offers)
+journey: review applied after 20 frame(s) · refused=None · 6 candidate(s) · 5298 engine decisions · budget ReviewBudget { seeds: 2, node_budget: 30000, max_rollout_nodes: 6000, max_millis: 8000, max_candidates: 6 }
+journey: policy section lines read back from the panel:
+  reviewed decision point: P0 · engine revision 98 · decision 98
+  budget: 2 determinization seed(s) · 30000 engine decisions total · 6000 decisions per rollout · 8000 ms wall clock · at most 6 engine-offered candidates
+  used: 5298 of 30000 engine decision(s)
+  stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap or the wall clock it reaches first, so a partial sample is normal
+  fidelity: opponents: neutral belief deck (3 opponent(s)); no real hand or library order read; own future draws sampled from declared deck "Temur Beats" minus visible cards
+  lines: the search exposes no principal variation — it returns root candidate scores only, not a played-out line — so no candidate line is shown here rather than synthesising one
+  policy preference (a preference from scored practice outcomes — not a rule, and not a claim of strength): "Play Forest"
+  ordering: highest mean practice outcome first
+  score: mean practice outcome = win +1 / loss -1 / draw 0 over scored determinizations; a capped or failed rollout is counted as "without result", never as a win or a loss
+  uncertainty: sample counts differ between rows and more samples do not make a row better; these samples are small and small samples are not evidence of strength
+  1. Play Forest — mean +1.00 over 1 scored sample · 0 without result · 0 refused by the search world · the search's own choice among equally scored offers
+  2. Pass priority — mean +1.00 over 1 scored sample · 0 without result · 0 refused by the search world
+  3. Play Mountain — mean +1.00 over 1 scored sample · 0 without result · 0 refused by the search world
+  unscored offers (no rollout reached a result; listed in engine offer order and not ranked against each other):
+  — Play Mountain — no scored sample (mean: none) · 1 without result · 0 refused by the search world
+  — Play Mountain — no scored sample (mean: none) · 0 without result · 0 refused by the search world
+  — Play Forest — no scored sample (mean: none) · 0 without result · 0 refused by the search world
+  this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+journey: 6 of 18 policy lines were present in the rendered frame at 1280x720
+test app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 55 filtered out; finished in 9.48s
+
+# exit status: 0

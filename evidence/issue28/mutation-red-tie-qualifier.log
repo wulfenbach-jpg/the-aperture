@@ -1,0 +1,45 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+warning: unused variable: `tied`
+   --> crates\ui\src\review.rs:537:43
+    |
+537 | fn row_facts(candidate: &RankedCandidate, tied: bool) -> String {
+    |                                           ^^^^ help: if this is intentional, prefix it with an underscore: `_tied`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-ui` (lib test) generated 1 warning (run `cargo fix --lib -p aperture-ui --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.74s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
+
+running 1 test
+test review::tests::tied_rows_render_as_one_group_that_is_not_ordered_inside ... FAILED
+
+failures:
+
+---- review::tests::tied_rows_render_as_one_group_that_is_not_ordered_inside stdout ----
+
+thread 'review::tests::tied_rows_render_as_one_group_that_is_not_ordered_inside' (34176) panicked at crates\ui\src\review.rs:963:9:
+only a real tie may carry the equal-score qualifier: reviewed decision point: P0 · session generation 4 · engine revision 9 · decision 12 · rules 2026-09-25
+masked view digest: digest-of-the-masked-view (this review is bound to it — a different view is a different review)
+payload: move-review/1.2 — a read-only presentation of the ranking layer's own data
+[PROVENANCE] budget: 2 determinization seed(s) · 900 engine decisions total · 150 decisions per rollout · 400 ms wall clock · at most 4 engine-offered candidates · used 480 · stopped: determinizations exhausted · reproducible: yes
+[PROVENANCE] determinization fidelity (verbatim): opponents: neutral belief deck (1 opponent(s)); no real hand or library order read
+stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap, the round schedule or the wall clock it reaches first, so a partial sample is normal
+ordering: no order is claimed at the top — the leading offers are not separable at this sample count, so they are shown as one group
+effectively tied at +1.00 (2 scored samples each) — not ordered inside this group:
+• Play Forest [offer 0] — mean +1.00 over 2 scored samples · the search's own choice
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+1.00)
+    line: none available — the search recorded no line for this offer, and this panel does not synthesise one
+• Pass priority [offer 1] — mean +1.00 over 2 scored samples
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+1.00)
+    line: none available — the search recorded no line for this offer, and this panel does not synthesise one
+this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    review::tests::tied_rows_render_as_one_group_that_is_not_ordered_inside
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 61 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-ui --lib`

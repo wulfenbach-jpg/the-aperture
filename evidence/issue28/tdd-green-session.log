@@ -1,0 +1,12 @@
+
+running 7 tests
+test session::tests::a_move_review_for_another_seat_is_discarded ... ok
+test session::tests::a_stale_move_review_does_not_replace_the_current_panel ... ok
+test session::tests::a_table_change_drops_the_review_and_stops_the_worker ... ok
+test session::tests::a_move_review_refusal_is_typed_and_ranks_nothing ... ok
+test session::tests::an_accepted_action_invalidates_an_in_flight_load ... ok
+test session::tests::a_move_review_ranks_only_engine_offered_actions ... ok
+test session::tests::a_move_review_never_submits_or_changes_the_table ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 0.09s
+

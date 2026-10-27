@@ -1,0 +1,79 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.47s
+     Running tests\review_composition.rs (target\debug\deps\review_composition-081ce74f500bfed5.exe)
+
+running 4 tests
+test interleaved_single_sample_survives_canonical_pipeline ... FAILED
+test overlapping_ties_preserve_pairwise_facts_without_transitive_grouping ... FAILED
+test canonical_unequal_tie_passes_audit_without_claiming_equal_scores ... FAILED
+test canonical_exact_tie_separated_and_single_sample_controls_pass ... FAILED
+
+failures:
+
+---- interleaved_single_sample_survives_canonical_pipeline stdout ----
+
+thread 'interleaved_single_sample_survives_canonical_pipeline' (29764) panicked at crates\ui\tests\review_composition.rs:46:5:
+canonical payload rejected: [
+    UntraceableClaim {
+        sentence: "a tie is claimed at +1.00 but offer index 2 is in the group with score Some(0.75)",
+    },
+]
+
+---- overlapping_ties_preserve_pairwise_facts_without_transitive_grouping stdout ----
+
+thread 'overlapping_ties_preserve_pairwise_facts_without_transitive_grouping' (2424) panicked at crates\ui\tests\review_composition.rs:46:5:
+canonical payload rejected: [
+    UntraceableClaim {
+        sentence: "a tie is claimed at +1.00 but offer index 1 is in the group with score Some(0.67)",
+    },
+]
+
+---- canonical_unequal_tie_passes_audit_without_claiming_equal_scores stdout ----
+
+thread 'canonical_unequal_tie_passes_audit_without_claiming_equal_scores' (44704) panicked at crates\ui\tests\review_composition.rs:46:5:
+canonical payload rejected: [
+    UntraceableClaim {
+        sentence: "a tie is claimed at +1.00 but offer index 1 is in the group with score Some(0.75)",
+    },
+]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- canonical_exact_tie_separated_and_single_sample_controls_pass stdout ----
+
+thread 'canonical_exact_tie_separated_and_single_sample_controls_pass' (32300) panicked at crates\ui\tests\review_composition.rs:54:5:
+assertion `left == right` failed: reviewed decision point: P0 · session generation 1 · engine revision 0 · decision 0 · rules 2026-09-25
+masked view digest: 623e3c21445e (this review is bound to it — a different view is a different review)
+payload: move-review/1.2 — a read-only presentation of the ranking layer's own data
+[PROVENANCE] budget: 4 determinization seed(s) · 12000 engine decisions total · 2000 decisions per rollout · unbounded wall clock · at most 4 engine-offered candidates · used 400 · stopped: determinizations exhausted · reproducible: yes
+[PROVENANCE] determinization fidelity (verbatim): test fidelity: neutral belief deck
+[PROVENANCE] bound to seat P0 · generation 1 · revision 0 · decision 0 · rules 2026-09-25 · masked view digest 623e3c21445e
+[PROVENANCE] this review is read-only: producing it submits no action, grants no priority and changes no engine state
+[PROVENANCE] no depth or plies figure is reported: this analysis is a bounded rollout ensemble over determinizations, and only the rollout counts and the decision budget are measurements it actually made
+[UNCERTAINTY] sample counts: 4 scored sample(s) over 2 engine-offered alternative(s), 0 rollout(s) without a result, 0 root refusal(s) by the search world
+[POLICY] the search's own choice is offer 0 ("Pass priority"), reported as a practice outcome and not as a probability of anything
+stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap, the round schedule or the wall clock it reaches first, so a partial sample is normal
+ordering: highest mean practice outcome first; a group that is not separable at this sample count is shown as one group and is not ordered inside it
+score: mean practice outcome = win +1 / loss −1 / draw 0 over scored determinizations; a rollout that was capped or ended without a result is counted as "without result", never as a win or a loss
+1. Pass priority [offer 0] — mean +1.00 over 2 scored samples · the search's own choice
+    teaching note (heuristic from the search's reason tags — not a rule statement): highest mean practice outcome of the offered alternatives (+1.00 over 2 scored sample(s))
+    line: decision 0 · P0 · "Pass priority"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+2. Play Forest [offer 1] — mean +0.50 over 2 scored samples
+    line: decision 0 · P0 · "Play Forest"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+  left: 1
+ right: 2
+
+
+failures:
+    canonical_exact_tie_separated_and_single_sample_controls_pass
+    canonical_unequal_tie_passes_audit_without_claiming_equal_scores
+    interleaved_single_sample_survives_canonical_pipeline
+    overlapping_ties_preserve_pairwise_facts_without_transitive_grouping
+
+test result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-ui --test review_composition`
+
+test_exit=101

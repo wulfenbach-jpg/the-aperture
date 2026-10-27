@@ -1,0 +1,40 @@
+not implemented
+
+---- review::tests::the_panel_discloses_its_boundary_budget_and_missing_lines stdout ----
+
+thread 'review::tests::the_panel_discloses_its_boundary_budget_and_missing_lines' (16860) panicked at crates\ui\src\review.rs:186:9:
+not implemented
+
+---- review::tests::rules_and_policy_are_separate_labelled_sections stdout ----
+
+thread 'review::tests::rules_and_policy_are_separate_labelled_sections' (36060) panicked at crates\ui\src\review.rs:207:5:
+not implemented
+
+---- review::tests::a_ranked_analysis_orders_by_mean_with_sample_counts stdout ----
+
+thread 'review::tests::a_ranked_analysis_orders_by_mean_with_sample_counts' (29108) panicked at crates\ui\src\review.rs:181:9:
+not implemented
+
+---- review::tests::no_line_claims_certainty_or_strength stdout ----
+
+thread 'review::tests::no_line_claims_certainty_or_strength' (23756) panicked at crates\ui\src\review.rs:161:9:
+not implemented
+
+---- review::tests::a_completed_search_report_keeps_only_offered_labels_and_counts stdout ----
+
+thread 'review::tests::a_completed_search_report_keeps_only_offered_labels_and_counts' (30196) panicked at crates\ui\src\review.rs:174:9:
+not implemented
+
+
+failures:
+    review::tests::a_completed_search_report_keeps_only_offered_labels_and_counts
+    review::tests::a_ranked_analysis_orders_by_mean_with_sample_counts
+    review::tests::a_refusal_is_typed_and_ranks_nothing
+    review::tests::a_zero_sample_analysis_makes_no_ordering_claim
+    review::tests::no_line_claims_certainty_or_strength
+    review::tests::rules_and_policy_are_separate_labelled_sections
+    review::tests::the_panel_discloses_its_boundary_budget_and_missing_lines
+
+test result: FAILED. 1 passed; 7 failed; 0 ignored; 0 measured; 36 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-ui --lib`
