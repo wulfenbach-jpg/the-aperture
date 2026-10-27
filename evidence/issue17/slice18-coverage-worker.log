@@ -1,0 +1,21 @@
+Working...
+**Coverage tests committed: `af0feea`.** Test-only; no product source or save-version change.
+
+### Added
+- `Pending::TriggerMode` save via real `SessionSave` JSON → `Game::from_state` reload; wrong-seat answer refused; both runs choose counters, finish, and match exact state/digest.
+- Fight `Pending::TriggerTarget { first: Some(..) }` save/reload with second target still unanswered; both runs answer, resolve, and match exact state/digest.
+- Forged pending submissions while `TriggerMode` waits: `ChooseTriggerTarget` refused, state/decision/pending unchanged.
+- While `TriggerTarget` waits: `AnswerTriggerChoice` refused; unoffered permanent target refused; state/decision/pending unchanged.
+
+The save tests use sandbox capture because their setup inserts permanents outside replay history; the real session validator/loader path is still exercised. No persistence version bump needed.
+
+### Verification
+- `command_zone_setup`: **44 passed**
+- `abilities`: **13 passed**
+- `rules_conformance`: **5 passed**
+- `issue17_slice17`: **6 passed**
+- `cargo fmt --all --check`: exit 0
+
+Handoff and machine result updated: `evidence/issue17/slice18/HANDOFF.md`, `evidence/issue17/IMPLEMENTATION-RESULT-slice18.json`.
+
+No push, merge, or closure. Remaining open: dedicated forged *archived-state* refusal test (reference traversal itself is implemented), eight-list gate, Ayula 30 missing cards, no 100-card certificate.
