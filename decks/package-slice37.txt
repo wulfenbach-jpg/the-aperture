@@ -1,0 +1,14 @@
+// package-slice37 — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises Druid's Familiar (AVR 175) beside unpaired creatures it can pair
+// with: Grizzly Bears / Forest Bear / Ordinary Bear / Runeclaw Bear / Bear Cub
+// (vanilla bodies), Centaur Courser, Rootwalla and Giant Growth.
+4 Druid's Familiar
+4 Grizzly Bears
+4 Forest Bear
+4 Ordinary Bear
+4 Runeclaw Bear
+4 Bear Cub
+4 Centaur Courser
+3 Rootwalla
+3 Giant Growth
+6 Forest

@@ -596,3 +596,42 @@ the serialized `GameState` required two forced initializer-only edits outside `c
 (`crates/ai/src/search.rs` copies the value, `crates/ai/tests/common.rs` starts empty); no AI-search
 behaviour, UI, import or model code changed. This slice certifies no starter list: Ayula has 15
 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 37: Druid's Familiar — the first soulbond pair
+
+`Druid's Familiar` (`{3}{G}`, 2/2 Creature — Bear) is sourced from Scryfall **AVR 175**
+(immutable printing id `1d8c794a-7964-41f0-bc9c-27af7cf87aaa`, oracle id
+`6a5b1cd4-e597-4122-8fc7-4dce241d7c01`, retrieved 2026-10-27T23:16:27Z; printings `avr 175` and
+`plst AVR-175` carry one identical text). Printed text:
+
+> Soulbond (You may pair this creature with another unpaired creature when either enters. They
+> remain paired for as long as you control both of them.)
+> As long as this creature is paired with another creature, each of those creatures gets +2/+2.
+
+**What is modelled.** Pairing is *state of two permanents*, not a continuous effect: each permanent
+stores the creature it is paired with (`Object::paired_with`, `#[serde(default,
+skip_serializing_if)]` so every earlier save, replay and digest is unchanged), and every reader goes
+through `Game::paired_with`, which re-validates that both objects are still on the battlefield,
+still controlled by the same player, and still point at each other. The printed "when either
+enters" is two triggered abilities — this creature's own entry (CR 603.6a) and another creature
+entering — and both offer the same choice: `TargetSpec::UnpairedAnotherCreatureYouControl`, the
+printed set of *another* unpaired creature the controller controls with the source excluded.
+Declining that choice is the printed "you may" (CR 702.94a), and the choice surface always offers
+it. Resolving it pairs both permanents and reports a rules event; the +2/+2 is a layer 7c additive
+static that applies to **both** members of the pair, re-read on every layer pass, so two paired
+copies of the card each grant their own bonus. The pair ends at the single battlefield-exit point
+(`Game::detach_object`), which clears the partner's back-reference: "for as long as you control both
+of them".
+
+**Verification.** `crates/core/tests/issue17_slice37.rs` (6 tests): the sourced text and both
+triggers; entering alone pairs with nothing and stays 2/2; entering beside one unpaired creature
+offers the pairing and both become 4/4; declining leaves both unpaired; a later creature entering
+pairs with the already-present familiar; and killing the partner ends the pair, returning the
+familiar to 2/2. `card_printings` also asserts the catalog row against the recorded printing.
+
+Known limits, disclosed: soulbond's pairing is a choice made as the trigger resolves, not a target,
+so pairing is offered through a dedicated choice spec rather than the targeting system; nothing in
+the pool has shroud or hexproof, so no interaction between the two is observable today. No
+control-changing effect exists in the pool, so the "as long as you control both" half is enforced at
+the exit point and by the validating query rather than by a control-change test. This slice
+certifies no starter list: Ayula has 14 missing names and the eight-list gate remains 1 of 8.

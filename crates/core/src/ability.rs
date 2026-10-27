@@ -935,14 +935,14 @@ const BEORN_THE_FIERCE: &[Ability] = &[Ability::Triggered(TriggeredAbility {
 /// when one of them leaves the battlefield.
 const DRUIDS_FAMILIAR: &[Ability] = &[
     Ability::Triggered(TriggeredAbility {
-        text: "You may pair this creature with another unpaired creature when it enters.",
+        text: "You may pair this creature with another unpaired creature when either enters.",
         event: TriggerEvent::EntersBattlefield,
         optional: false,
         target: TargetSpec::UnpairedAnotherCreatureYouControl,
         effects: &[Effect::PairSourceWithChosenCreature],
     }),
     Ability::Triggered(TriggeredAbility {
-        text: "You may pair this creature with another unpaired creature when that creature enters.",
+        text: "You may pair this creature with another unpaired creature when either enters.",
         event: TriggerEvent::AnotherCreatureEnters,
         optional: false,
         target: TargetSpec::UnpairedAnotherCreatureYouControl,
