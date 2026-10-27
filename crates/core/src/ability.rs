@@ -685,14 +685,14 @@ const MOTHER_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
 })];
 
 /// Little Bear: one enters-the-battlefield trigger whose target is restricted
-/// to the controller's own creatures. The printed word "another" is enforced by
-/// passing the trigger's source as `legal_targets`' excluded object, so the
-/// Bear can never target itself.
+/// to the controller's own creatures *other than the Bear itself*. The printed
+/// word "another" is `TargetSpec::AnotherCreatureYouControl`, which excludes the
+/// trigger's own source; plain "target creature you control" would include it.
 const LITTLE_BEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
     event: TriggerEvent::EntersBattlefield,
     optional: false,
-    target: TargetSpec::CreatureYouControl,
+    target: TargetSpec::AnotherCreatureYouControl,
     effects: &[Effect::UntapTargetAndCounterIfBear],
 })];
 

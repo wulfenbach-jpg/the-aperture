@@ -2857,9 +2857,22 @@ impl Game {
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
             // CR 115.1: "target creature you control" is every creature this
-            // player controls. `exclude` is the ability's own source, which the
-            // printed word "another" removes (Little Bear).
+            // player controls — the ability's own source included, if it is a
+            // creature when targets are chosen (Beorn's Hospitality can put
+            // its own landfall counter on itself once animated). The printed
+            // word "another" is the separate spec below.
             TargetSpec::CreatureYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield && self.is_creature(o) && o.controller == _caster
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
+            // CR 115.1: "another target creature you control" — the same set
+            // minus the ability's own source (Little Bear).
+            TargetSpec::AnotherCreatureYouControl => self
                 .state
                 .objects
                 .values()
@@ -8748,6 +8761,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::Creature => "target creature: CR 115.1",
         TargetSpec::OpponentCreature => "target creature an opponent controls: CR 115.1",
         TargetSpec::CreatureYouControl => "target creature you control: CR 115.1",
+        TargetSpec::AnotherCreatureYouControl => "another target creature you control: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
         TargetSpec::HumanYouControl => "target Human you control: CR 115.1",

@@ -214,6 +214,22 @@ fn the_animation_adds_the_bear_type_and_reads_the_land_count_live() {
     let land = hand_card(&game, P0, CardId::Forest);
     let mut log = submit_ok(&mut game, P0, Action::PlayLand { card: land });
     log.extend(drain(&mut game));
+    // Playing that land also fires the card's own landfall trigger, whose
+    // printed "target creature you control" now includes the animated source
+    // (CR 115.1); with the source as the controller's only creature it is the
+    // auto-chosen target, so the value is the land count plus one counter.
+    assert_eq!(
+        game.state
+            .object(id)
+            .counters
+            .get(CounterKind::PlusOnePlusOne),
+        1,
+        "the landfall trigger counters the animated source"
+    );
+    assert_eq!(stats(&game, id), (5, 5), "four lands plus that one counter");
+    // Strip the counter to read the characteristic-defining value alone: it is
+    // re-read from the board, not snapshotted at resolution (CR 604.3).
+    object_mut(&mut game.state, id).counters = Counters::default();
     assert_eq!(stats(&game, id), (4, 4), "CR 604.3: re-read from the board");
 
     let mut layers: Vec<Layer> = game
@@ -272,11 +288,15 @@ fn a_pump_applies_on_top_of_the_characteristic_defining_value() {
     object.counters = Counters::default();
     object.pump_power = 0;
     object.pump_toughness = 0;
-    // A fresh characteristic pass restores exactly the land count.
+    // A fresh characteristic pass restores exactly the land count — plus the
+    // one +1/+1 counter the card's own landfall trigger now places on the
+    // animated source, which is a legal "target creature you control".
     let land = hand_card(&game, P0, CardId::Forest);
     submit_ok(&mut game, P0, Action::PlayLand { card: land });
     let _ = drain(&mut game);
-    assert_eq!(stats(&game, id), (4, 4));
+    assert_eq!(stats(&game, id), (5, 5), "4 lands + 1 landfall counter");
+    object_mut(&mut game.state, id).counters = Counters::default();
+    assert_eq!(stats(&game, id), (4, 4), "the land count alone");
 }
 
 #[test]
@@ -449,4 +469,270 @@ fn the_animation_is_not_offered_without_its_mana_cost() {
         "{{5}}{{G}}{{G}} is not payable, so the ability is not offered"
     );
     assert!(!game.is_creature(game.state.object(id)));
+}
+
+// ---------------------------------------------------------------------------
+// Review 290's blocking item: the printed target is "target creature you
+// control", with no "another", so once the animation has resolved the
+// enchantment is a legal target of its own landfall trigger. The "another"
+// narrowing belongs to Little Bear alone.
+// ---------------------------------------------------------------------------
+
+/// `{2}{G}` is Little Bear's cost.
+fn little_bear_mana() -> ManaPool {
+    ManaPool {
+        colorless: 2,
+        green: 1,
+        ..ManaPool::default()
+    }
+}
+
+#[test]
+fn an_animated_hospitality_is_its_own_landfall_target() {
+    let mut game = hospitality_game(3308);
+    let id = battlefield_card(&game, P0, hospitality());
+    animate(&mut game, P0, id);
+    assert_eq!(stats(&game, id), (3, 3), "three lands, layer 7a only");
+
+    // The printed set really contains the ability's own source while that
+    // source is a creature (CR 115.1) — this is the spec review 290 found
+    // narrowed to "another".
+    assert!(
+        game.legal_targets(P0, TargetSpec::CreatureYouControl, id)
+            .contains(&Target::Permanent(id)),
+        "\"target creature you control\" includes the animated source"
+    );
+
+    let land = hand_card(&game, P0, CardId::Forest);
+    let mut log = submit_ok(&mut game, P0, Action::PlayLand { card: land });
+    assert!(
+        game.state.pending.is_none(),
+        "the source is the controller's only creature, so the mandatory target is auto-chosen"
+    );
+    log.extend(drain(&mut game));
+
+    assert_eq!(
+        game.state
+            .object(id)
+            .counters
+            .get(CounterKind::PlusOnePlusOne),
+        1,
+        "the landfall counter goes on the card itself"
+    );
+    assert_eq!(
+        stats(&game, id),
+        (5, 5),
+        "four lands from layer 7a plus one +1/+1 counter"
+    );
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::TriggerStaged { card, .. } if *card == hospitality()
+        )),
+        "the trigger was staged, not removed"
+    );
+}
+
+#[test]
+fn landfall_offers_the_animated_source_alongside_another_creature() {
+    let mut game = fixture(3309)
+        .battlefield(
+            P0,
+            &[
+                hospitality(),
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::GrizzlyBears,
+            ],
+        )
+        .hand(P0, &[CardId::Forest])
+        .mana(P0, seven_mana())
+        .library(P0, &[CardId::Forest; 12])
+        .library(P1, &[CardId::Forest; 12])
+        .life(P0, 40)
+        .life(P1, 40)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let id = battlefield_card(&game, P0, hospitality());
+    let bear = battlefield_card(&game, P0, CardId::GrizzlyBears);
+    animate(&mut game, P0, id);
+
+    let land = hand_card(&game, P0, CardId::Forest);
+    let mut log = submit_ok(&mut game, P0, Action::PlayLand { card: land });
+    let Some(Pending::TriggerTarget { player, legal, .. }) = game.state.pending.clone() else {
+        panic!("two legal targets mean the controller is asked");
+    };
+    assert_eq!(player, P0);
+    assert!(
+        legal.contains(&Target::Permanent(id)),
+        "the animated enchantment is offered as its own target"
+    );
+    assert!(legal.contains(&Target::Permanent(bear)));
+    assert_eq!(legal.len(), 2, "exactly the creatures P0 controls");
+
+    // And the card really can take that counter, on its own characteristic
+    // defining value.
+    log.extend(submit_ok(
+        &mut game,
+        P0,
+        Action::ChooseTriggerTarget {
+            target: Target::Permanent(id),
+        },
+    ));
+    log.extend(drain(&mut game));
+    assert_eq!(
+        game.state
+            .object(id)
+            .counters
+            .get(CounterKind::PlusOnePlusOne),
+        1
+    );
+    assert_eq!(stats(&game, id), (5, 5), "4 lands plus the counter");
+    assert_eq!(
+        stats(&game, bear),
+        (2, 2),
+        "the other creature is untouched"
+    );
+}
+
+#[test]
+fn an_unanimated_hospitality_is_not_its_own_landfall_target() {
+    let mut game = fixture(3310)
+        .battlefield(P0, &[hospitality(), CardId::GrizzlyBears])
+        .hand(P0, &[CardId::Forest])
+        .library(P0, &[CardId::Forest; 12])
+        .library(P1, &[CardId::Forest; 12])
+        .life(P0, 40)
+        .life(P1, 40)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let id = battlefield_card(&game, P0, hospitality());
+    let bear = battlefield_card(&game, P0, CardId::GrizzlyBears);
+    assert!(
+        !game.is_creature(game.state.object(id)),
+        "the printed type line is Enchantment (CR 303)"
+    );
+    assert!(
+        !game
+            .legal_targets(P0, TargetSpec::CreatureYouControl, id)
+            .contains(&Target::Permanent(id)),
+        "a noncreature permanent is not a creature target"
+    );
+
+    let land = hand_card(&game, P0, CardId::Forest);
+    let mut log = submit_ok(&mut game, P0, Action::PlayLand { card: land });
+    assert!(
+        game.state.pending.is_none(),
+        "the Bears are the only legal target, so it is auto-chosen"
+    );
+    log.extend(drain(&mut game));
+    assert_eq!(
+        game.state
+            .object(bear)
+            .counters
+            .get(CounterKind::PlusOnePlusOne),
+        1,
+        "the counter goes to the only creature the card can target"
+    );
+    assert_eq!(
+        game.state
+            .object(id)
+            .counters
+            .get(CounterKind::PlusOnePlusOne),
+        0,
+        "the unanimated enchantment is not a creature, so it is not a target"
+    );
+}
+
+#[test]
+fn landfall_without_a_legal_target_is_removed_not_staged() {
+    let mut game = fixture(3311)
+        .battlefield(P0, &[hospitality()])
+        .hand(P0, &[CardId::Forest])
+        .library(P0, &[CardId::Forest; 12])
+        .library(P1, &[CardId::Forest; 12])
+        .life(P0, 40)
+        .life(P1, 40)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let id = battlefield_card(&game, P0, hospitality());
+    let land = hand_card(&game, P0, CardId::Forest);
+    let mut log = submit_ok(&mut game, P0, Action::PlayLand { card: land });
+    log.extend(drain(&mut game));
+
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::TriggerRemoved { reason, .. } if reason.contains("CR 603.3d")
+        )),
+        "a lone unanimated Hospitality has no legal target"
+    );
+    assert!(
+        !log.iter().any(|event| matches!(
+            event,
+            Event::TriggerStaged { card, .. } if *card == hospitality()
+        )),
+        "nothing reached the stack"
+    );
+    assert_eq!(game.state.object(id).zone, Zone::Battlefield);
+    assert!(game.state.stack.is_empty() && game.state.pending.is_none());
+}
+
+#[test]
+fn little_bear_keeps_the_printed_another_exclusion() {
+    let abilities = ability::abilities(CardId::LittleBear);
+    let Ability::Triggered(trigger) = abilities[0] else {
+        panic!("Little Bear's ability is a trigger");
+    };
+    assert_eq!(
+        trigger.target,
+        TargetSpec::AnotherCreatureYouControl,
+        "the printing says \"another\", so the source is excluded"
+    );
+
+    // Behaviour, not just the tag: as the only creature the Bear has no legal
+    // target for its own trigger.
+    let mut game = fixture(3312)
+        .hand(P0, &[CardId::LittleBear])
+        .mana(P0, little_bear_mana())
+        .library(P0, &[CardId::Forest; 12])
+        .library(P1, &[CardId::Forest; 12])
+        .life(P0, 40)
+        .life(P1, 40)
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let spell = hand_card(&game, P0, CardId::LittleBear);
+    let mut log = submit_ok(
+        &mut game,
+        P0,
+        Action::CastSpell {
+            card: spell,
+            targets: Vec::new(),
+        },
+    );
+    log.extend(drain(&mut game));
+    let bears: Vec<ObjectId> = game
+        .state
+        .objects
+        .values()
+        .filter(|object| object.card == CardId::LittleBear && object.zone == Zone::Battlefield)
+        .map(|object| object.id)
+        .collect();
+    assert_eq!(bears.len(), 1, "the Bear entered");
+    assert_eq!(
+        game.state
+            .object(bears[0])
+            .counters
+            .get(CounterKind::PlusOnePlusOne),
+        0,
+        "it cannot untap or counter itself"
+    );
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::TriggerRemoved { reason, .. } if reason.contains("CR 603.3d")
+        )),
+        "no legal \"another\" target"
+    );
 }

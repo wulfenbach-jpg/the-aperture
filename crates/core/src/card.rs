@@ -86,10 +86,17 @@ pub enum TargetSpec {
     Creature,
     /// A creature controlled by an opponent of the effect's controller.
     OpponentCreature,
-    /// A creature controlled by the effect's controller ("target creature you
-    /// control"), excluding the ability's own source when the printed wording
-    /// says "another" (Little Bear).
+    /// CR 115.1: "target creature you control" — every creature the ability's
+    /// controller controls, **including the ability's own source** when that
+    /// source is a creature at the time targets are chosen. The printed word
+    /// "another" is a different spec (`AnotherCreatureYouControl`), because it
+    /// removes exactly that object.
     CreatureYouControl,
+    /// CR 115.1: "another target creature you control" — the same set minus the
+    /// ability's own source (Little Bear's enters trigger). Only a card that
+    /// prints "another" may use this spec; using it for plain "target creature
+    /// you control" would silently narrow the card's own text.
+    AnotherCreatureYouControl,
     Spell,
     /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
     /// (Negate). A creature spell on the stack is not a legal target.
