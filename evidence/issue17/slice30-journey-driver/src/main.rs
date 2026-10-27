@@ -1,18 +1,15 @@
 //! Evidence-only demonstration driver for slice 30, NOT a product AI and NOT a
 //! strength claim. It chooses only from masked legal actions projected for the
 //! seat that has priority: no deck substitution, no state injection, no
-//! hidden-information access. Its only preference is "cast Surrak first, then
-//! the biggest creature spell, then play lands", which is what makes the journey
-//! exercise the printed cost reduction (a four-drop Bear lord, then six-drop
-//! creatures paid with reduced generic mana) and the attack trigger that grants
-//! trample and +1/+1 to everything with power 4 or greater.
+//! hidden-information access. It prefers offered single-helper saddle activations,
+//! Drover Grizzly casts and nonempty attacks to exercise saddle and the printed
+//! attack trigger granting trample. It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
-use aperture_core::layer::ContinuousKind;
 use aperture_core::state::Step;
 use aperture_core::view::PendingKind;
 use aperture_core::{
     Action, AiSettings, CardId, CommanderSetup, DeckList, Event, Game, Replay, ReplayStep,
-    SessionSave, Target,
+    SessionSave,
 };
 use std::collections::BTreeMap;
 
@@ -46,67 +43,69 @@ fn main() {
         let view = game.view_for(player, &events);
         let saddle_action = if view.pending_kind.is_none() && view.stack.is_empty() {
             view.legal.iter().find(|a| matches!(&a.action, Action::SaddleMount { creatures, .. } if creatures.len() == 1)).map(|a| a.action.clone())
-        } else { None };
-        let wolf_action = match view.pending_kind {
-            Some(PendingKind::TriggerChoice) => view.legal.iter().find(|a| matches!(a.action, Action::AnswerTriggerChoice { use_ability: true })).map(|a| a.action.clone()),
-            Some(PendingKind::TriggerTarget) => view.legal.iter().find(|a| match &a.action { Action::ChooseTriggerTarget { target: Target::Permanent(id) } => game.state.try_object(*id).is_some_and(|o| o.card.def().has_subtype("Human")), _ => false }).map(|a| a.action.clone()),
-            _ => None,
-        };
-        let demo_action = saddle_action.or(wolf_action).or_else(|| if view.pending_kind == Some(PendingKind::DeclareAttackers) {
-            // "Attack Pn with all eligible creatures" is the projected legal
-            // action list's own entry; the driver never invents attackers.
-            view.legal
-                .iter()
-                .find(|legal| match &legal.action {
-                    Action::DeclareAttackers { attackers, .. } => !attackers.is_empty(),
-                    _ => false,
-                })
-                .map(|legal| legal.action.clone())
-        } else if view.pending_kind.is_none()
-            && view.stack.is_empty()
-            && view.active == player
-            && matches!(view.step, Step::PrecombatMain | Step::PostcombatMain)
-        {
-            view.legal
-                .iter()
-                .find(|legal| matches!(legal.action, Action::PlayLand { .. }))
-                .or_else(|| {
-                    view.legal.iter().find(|legal| match &legal.action {
-                        Action::CastSpell { card, .. } => view
-                            .own_hand
-                            .iter()
-                            .any(|c| c.id == *card && c.card == CardId::DroverGrizzly),
-                        _ => false,
-                    })
-                })
-                .or_else(|| {
-                    view.legal.iter().find(|legal| match &legal.action {
-                        Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                            c.id == *card && c.card == CardId::EliteVanguard
-                        }),
-                        _ => false,
-                    })
-                })
-                .or_else(|| {
-                    view.legal.iter().find(|legal| match &legal.action {
-                        Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                            c.id == *card && c.card.def().is_creature() && c.card.def().power >= Some(4)
-                        }),
-                        _ => false,
-                    })
-                })
-                .or_else(|| {
-                    view.legal.iter().find(|legal| match &legal.action {
-                        Action::CastSpell { card, .. } => view
-                            .own_hand
-                            .iter()
-                            .any(|c| c.id == *card && c.card.def().is_creature()),
-                        _ => false,
-                    })
-                })
-                .map(|legal| legal.action.clone())
         } else {
             None
+        };
+        let demo_action = saddle_action.or_else(|| {
+            if view.pending_kind == Some(PendingKind::DeclareAttackers) {
+                // "Attack Pn with all eligible creatures" is the projected legal
+                // action list's own entry; the driver never invents attackers.
+                view.legal
+                    .iter()
+                    .find(|legal| match &legal.action {
+                        Action::DeclareAttackers { attackers, .. } => !attackers.is_empty(),
+                        _ => false,
+                    })
+                    .map(|legal| legal.action.clone())
+            } else if view.pending_kind.is_none()
+                && view.stack.is_empty()
+                && view.active == player
+                && matches!(view.step, Step::PrecombatMain | Step::PostcombatMain)
+            {
+                view.legal
+                    .iter()
+                    .find(|legal| matches!(legal.action, Action::PlayLand { .. }))
+                    .or_else(|| {
+                        view.legal.iter().find(|legal| match &legal.action {
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::DroverGrizzly),
+                            _ => false,
+                        })
+                    })
+                    .or_else(|| {
+                        view.legal.iter().find(|legal| match &legal.action {
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::EliteVanguard),
+                            _ => false,
+                        })
+                    })
+                    .or_else(|| {
+                        view.legal.iter().find(|legal| match &legal.action {
+                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
+                                c.id == *card
+                                    && c.card.def().is_creature()
+                                    && c.card.def().power >= Some(4)
+                            }),
+                            _ => false,
+                        })
+                    })
+                    .or_else(|| {
+                        view.legal.iter().find(|legal| match &legal.action {
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card.def().is_creature()),
+                            _ => false,
+                        })
+                    })
+                    .map(|legal| legal.action.clone())
+            } else {
+                None
+            }
         });
         let action = demo_action.unwrap_or_else(|| baseline.decide(&view).action);
         let revision = game.revision();
@@ -126,9 +125,7 @@ fn main() {
     assert!(game.state.is_over(), "capped, not terminal");
     assert_eq!(replay.seats, seats, "exact deck snapshots");
     assert!(
-        !events
-            .iter()
-            .any(|e| matches!(e, Event::Truncated { .. })),
+        !events.iter().any(|e| matches!(e, Event::Truncated { .. })),
         "no rejected actions"
     );
     replay.outcome = game.state.outcome.clone();
@@ -138,17 +135,41 @@ fn main() {
     let save = SessionSave::capture(&game, replay.clone(), Vec::new(), false);
     let save_text = save.to_json();
     let loaded = SessionSave::from_json(&save_text).expect("fresh save reloads");
-    assert_eq!(loaded.game, game.state, "fresh save preserves the exact state");
+    assert_eq!(
+        loaded.game, game.state,
+        "fresh save preserves the exact state"
+    );
     let out = root.join("evidence/issue17/slice30");
     std::fs::create_dir_all(&out).unwrap();
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 
     let mut casts = BTreeMap::<String, usize>::new();
-    for event in &events { if let Event::Cast { card, .. } = event { *casts.entry(card.name().to_string()).or_default() += 1; } }
-    assert!(casts.get("Drover Grizzly").copied().unwrap_or(0) > 0, "Drover must be cast");
-    let saddles = events.iter().filter(|e| matches!(e, Event::AbilityActivated { card: CardId::DroverGrizzly, .. })).count();
+    for event in &events {
+        if let Event::Cast { card, .. } = event {
+            *casts.entry(card.name().to_string()).or_default() += 1;
+        }
+    }
+    assert!(
+        casts.get("Drover Grizzly").copied().unwrap_or(0) > 0,
+        "Drover must be cast"
+    );
+    let saddles = events
+        .iter()
+        .filter(|e| {
+            matches!(
+                e,
+                Event::AbilityActivated {
+                    card: CardId::DroverGrizzly,
+                    ..
+                }
+            )
+        })
+        .count();
     let trample_grants = events.iter().filter(|e| matches!(e, Event::ContinuousEffectStarted { text, .. } if text.contains("trample until end of turn"))).count();
-    assert!(saddles > 0, "saddle must actually be activated through an offered action");
+    assert!(
+        saddles > 0,
+        "saddle must actually be activated through an offered action"
+    );
     assert!(trample_grants > 0, "a saddled attack must grant trample");
     std::fs::write(
         out.join("demo-replay.json"),

@@ -16,8 +16,7 @@ fixtures recorded. Typed reusable `SaddleMount` action:
 - attack trigger condition is typed `SourceIsSaddled`; it fires only when actually saddled;
 - resolution grants trample until end of turn to each creature controlled then via the
   existing layer-6 grant, source-left safe through captured card identity.
-- No card-name conditional interpreter; no new GameState field. New stack fields are
-  serde-default/skipped.
+- No card-name conditional interpreter; no new GameState or StackItem field was added.
 
 ## RED
 `cargo test -p aperture-core --test issue17_slice30` failed
@@ -40,15 +39,15 @@ trample-grant events; replay matched and fresh save round-tripped. Digest
 `69497ca2f6c8ac51c44726e78652bde1ad1903ee677af8d00b7cc0d324369471`.
 
 ## Repair after native delta inspection
-- Native RED/defect: new saddle/grant rules used printed-only `Object::is_creature`, so an
+- Native inspection finding: new saddle/grant rules used printed-only `Object::is_creature`, so an
   animated Stuffed Bear was excluded. All new sites now use `Game::is_creature`; added
   animated-helper + trample-recipient coverage and an actual two-helper offered activation
   with distinct labels.
-- Native RED/defect: saddle stack item had no source-incarnation binding. It now carries
+- Native inspection finding: saddle stack item had no source-incarnation binding. It now carries
   `affected: Some(source)` through the existing invalidation path; source-left resolves with
   no effect and no transfer. Added cleanup and source-left controls.
 - Broad departure effect pruning was narrowed to the saddle designation only.
-- Commands: `evidence/issue17/slice30/repair-gates.log`; issue17_slice30 6 passed, slice29 6,
+- Commands: `evidence/issue17/slice30/repair-gates.log`; issue17_slice30 6 passed, slice29 9,
   replay 6, printings 8, catalog 5, slice15 2, commander 43; fmt/clippy/release exit 0.
 
 ## Gaps
@@ -58,3 +57,6 @@ trample-grant events; replay matched and fresh save round-tripped. Digest
 - No same-ID legal reentry control beyond source-left no-effect (normal Drover cannot be
   recast before its old sorcery-speed saddle resolves without another deployment card).
 - No full workspace matrix rerun; exact-head CI owns it.
+
+## Native verification after repair
+Native run-native.sh: all exit codes0; focused61tests; fmt/workspace Clippy/releaseCLI; journey2653actions/6968events/b711d966 + separate replay; fresh audit146/459=134+325/Ayula19. Source-incarnation regression is a source-left GREEN control, not a demonstrated pre-fix same-ID RED. Repair tests were added after the code edits (GREEN-strengthening), so no strict TDD claim for that repair. Final driver removes dead Wolfbear branch/public-state read and stale Surrak commentary; rerun unchanged digest.

@@ -1,0 +1,36 @@
+   Compiling issue17-slice30-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice30-journey-driver)
+    Finished `release` profile [optimized] target(s) in 2.04s
+     Running `evidence\issue17\slice30-journey-driver\target\release\issue17-slice30-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 10,
+    "Craw Wurm": 7,
+    "Drover Grizzly": 9,
+    "Elite Vanguard": 5,
+    "Grizzly Bears": 7,
+    "Jasmine Boreal": 4
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice30.txt",
+  "digest": "b711d966f9bd2e60187d4eafc5be852eea01b5f141fcc253813b1c38c8a85677",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 1
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 6968,
+  "saddle_activations": 116,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "69497ca2f6c8ac51c44726e78652bde1ad1903ee677af8d00b7cc0d324369471",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2653,
+  "trample_grant_events": 22,
+  "turns": 55
+}
