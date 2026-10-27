@@ -1,0 +1,24 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.06s
+     Running tests\review21_probe.rs (target\debug\deps\review21_probe-1af5981cace97cf4.exe)
+
+running 1 test
+test bounced_recast_bear_must_not_reuse_old_shield ... FAILED
+
+failures:
+
+---- bounced_recast_bear_must_not_reuse_old_shield stdout ----
+
+thread 'bounced_recast_bear_must_not_reuse_old_shield' (47272) panicked at crates\core\tests\review21_probe.rs:95:5:
+assertion `left == right` failed: old shield must not transfer through bounce/recast
+  left: Battlefield
+ right: Graveyard
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    bounced_recast_bear_must_not_reuse_old_shield
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test review21_probe`
