@@ -1,0 +1,57 @@
+=== fmt ===
+fmt_exit=0
+=== clippy ===
+clippy_exit=0
+=== focused ===
+test two_armed_replacements_replace_both_draws_and_protect_an_empty_library ... ok
+test an_unspent_replacement_ends_with_the_turn ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+=== printings ===
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+=== workspace ===
+test native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human ... ok
+test the_profile_line_states_the_scope ... ok
+test the_ai_steps_only_for_its_own_seat ... ok
+test native_startup_still_accepts_a_valid_mainboard_prefixed_file ... ok
+test sandbox_tools_change_the_state_and_void_certified_play ... ok
+test a_branch_point_restores_the_earlier_position_and_labels_the_boundary ... ok
+test save_and_load_round_trip_preserves_pending_choices_rng_and_ai_mode ... ok
+test sandbox_modified_save_roundtrip_preserves_the_uncertified_flag ... ok
+test four_seat_load_resizes_the_native_import_controls ... ok
+test bounded_forty_life_four_seat_save_load_round_trips ... ok
+test background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state ... ok
+test default_four_seat_bounded_libraries_actually_cast_isamaru ... ok
+test a_stale_import_result_is_discarded_and_the_seat_is_not_left_busy ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.53s
+
+   Doc-tests aperture_ai
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests aperture_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests aperture_import
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests aperture_ui
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

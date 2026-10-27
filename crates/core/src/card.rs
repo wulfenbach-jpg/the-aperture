@@ -434,7 +434,7 @@ impl Effect {
             }
             Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
             Effect::ReplaceNextDrawWithBearToken => {
-                "the next time that player would draw this turn, create a 2/2 green Bear token instead"
+                "the next time you would draw this turn, create a 2/2 green Bear token instead"
                     .to_string()
             }
             Effect::EachPlayerMayRevealCreatureCardsForBears => {

@@ -549,7 +549,7 @@ Beorn's Hospitality (`{1}{G}` Enchantment) is sourced in `fixtures/starter-corpu
 
 Verification retained in `evidence/issue17/slice33/`: four-seat / 40-life package journey from `evidence/issue17/slice33-journey-driver` (`decks/package-slice33.txt`, seed 3333, terminal `Win{P3}`) whose driver re-asserts the characteristic-defining invariant after **every** accepted action (the 7a delta equals the current land count and effective power equals land count plus counters), with on-turn and off-turn sightings both non-zero, a separate CLI replay of the recorded replay, the mutation REDs in `run-mutations.py`, and the usual gates.
 
-Known limits, disclosed: the animation's characteristic-defining "you" is read from the permanent's **current controller**; the pool has no control-changing effect, so this cannot be distinguished from the resolving controller. `card_green!` records a colour for this one card only — the other printable cards still carry `colors: &[]`, which is a pre-existing modelling choice, not a claim that they are colourless. The landfall trigger's counter is the ordinary display-and-P/T +1/+1 counter the rest of the pool uses. This slice certifies no starter list: Ayula has 15 missing names and the eight-list gate remains 1 of 8.
+Known limits, disclosed: the animation's characteristic-defining "you" is read from the permanent's **current controller**; the pool has no control-changing effect, so this cannot be distinguished from the resolving controller. `card_green!` records a colour for this one card only — the other printable cards still carry `colors: &[]`, which is a pre-existing modelling choice, not a claim that they are colourless. The landfall trigger's counter is the ordinary display-and-P/T +1/+1 counter the rest of the pool uses. This slice certifies no starter list: Ayula had 16 missing names when this slice landed (each slice section states its own-time count) and the eight-list gate remains 1 of 8.
 
 ### Slice 33 review repair: "target creature you control" vs "another"
 
@@ -568,10 +568,30 @@ and the replacement is not tied to the source's existence. Six focused tests cov
 one-of-two draws, two-of-two draws with an empty library, cleanup expiry, controller-only scope and
 the missing-cost refusal.
 
-Known limits, disclosed: the four-seat evidence journey (`decks/package-slice35.txt`, seed 3535,
-`Win{P2}`, 1360 steps, digest `59f8bf2017…`, separately replayed) **drew the card three times and
-never cast it** under the heuristic policy, so that game does not exercise the replacement — the
-focused tests do; the journey is a 40-card package, not a 100-card certificate. Adding the field to
+Verification retained in `evidence/issue17/slice35/`: the focused suite, the mutation REDs, the
+heuristic selfplay journey (`decks/package-slice35.txt`, seed 3535, `Win{P2}`, 1360 steps, digest
+`59f8bf2017…`, separately replayed), **and** the review-297 evidence repair —
+`evidence/issue17/slice35-journey-driver`, a four-seat / 40-life game from the same exact deck
+snapshot (seed 3535, terminal `Win{P3}`, 2048 steps, 41 turns, 5347 replay events, digest
+`1c13d8fdcdce…`, byte-identical on re-run, separately replayed by the release CLI) in which the card
+is **cast four times and its `{1}` ability activated 124 times**. 25 draw steps consume an armed
+replacement, and each one is asserted from the engine's own events: no `Event::Draw` for that seat,
+no `DrewFromEmpty`, library and hand sizes unchanged across the action, exactly one
+`Event::PermanentEntered` for a 2/2 green Bear creature token under that seat's control that really
+answers `Game::is_creature`/`has_color(Green)`/2-2, the armed count down by exactly one, and no loss.
+The driver also exercises the *unspent* half in a real game (94 spare arms end at cleanup, 5 remain
+when the game ends, so `124 = 25 + 94 + 5` — every arm is either consumed by a draw or ends with the
+turn, CR 514.2). Every substituted action comes from the masked view of the seat that has priority;
+nothing is injected, and no deck, seat or life total is changed.
+
+Known limits, disclosed: the **heuristic** selfplay journey (`59f8bf2017…`) drew the card three times
+and never cast it, so that particular game does not exercise the replacement — the focused tests and
+the dedicated driver above do, and that is why the driver exists. The driver is an evidence-only
+masked demonstrator, not a product decider or a strength claim. Commander-draw ordering: the armed
+replacement is consumed before the CR 903.9b commander-draw suspension, so it pre-empts the reveal
+with no CR 616.1 choice surface; both are replacement effects on the same draw, the engine has no
+such choice surface, and it is unreachable with the current pool (nothing puts a commander into a
+library), so this is a disclosed simplification rather than modelled behaviour. Adding the field to
 the serialized `GameState` required two forced initializer-only edits outside `crates/core`
 (`crates/ai/src/search.rs` copies the value, `crates/ai/tests/common.rs` starts empty); no AI-search
 behaviour, UI, import or model code changed. This slice certifies no starter list: Ayula has 15

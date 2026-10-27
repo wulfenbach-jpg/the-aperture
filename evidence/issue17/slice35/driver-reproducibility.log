@@ -1,0 +1,14 @@
+# Driver reproducibility: two independent runs of the committed driver from this checkout
+# (run 1 written first, hashes recorded, run 2 must regenerate byte-identically)
+75b0f497e8e6560b17b3b4b6ce423d878bee0e0e677a2df53454c7d820a90aa2 *evidence/issue17/slice35/driver-journey.json
+81d055468c596ac76bd0a7904108c16617065303f26bf430c7d0592af2a8db21 *evidence/issue17/slice35/driver-replay.json
+35f7ec9e52cac73a17d56a5b1dc0f0e00fbf5d750a797cb5b3cfa6d819fb5123 *evidence/issue17/slice35/driver-save.json
+a9a60fb02182869cf7ff28ac4d38025caf2dd472d882d8c81ab6b2b8374548a9 *evidence/issue17/slice35/driver-run.log
+
+second_run_exit=0
+
+evidence/issue17/slice35/driver-journey.json: OK
+evidence/issue17/slice35/driver-replay.json: OK
+evidence/issue17/slice35/driver-save.json: OK
+evidence/issue17/slice35/driver-run.log: OK
+sha256sum_check_exit=0
