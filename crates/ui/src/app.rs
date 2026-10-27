@@ -1712,7 +1712,13 @@ impl ApertureApp {
             .auto_shrink([false, true])
             .show(ui, |ui| {
                 for line in &section.lines {
-                    ui.label(RichText::new(line).small().monospace().color(color));
+                    // Wrap instead of clipping: a review line is a sentence, and
+                    // §5.6 requires it to stay legible at the enforced minimum
+                    // window size and at 70–200% text scale.
+                    ui.add(
+                        egui::Label::new(RichText::new(line).small().monospace().color(color))
+                            .wrap(),
+                    );
                 }
             });
     }
@@ -1722,12 +1728,16 @@ impl ApertureApp {
     /// read-only: it carries no action, submits nothing, grants no priority and
     /// unlocks no sandbox or undo control.
     fn move_review_panel(&mut self, ui: &mut egui::Ui, human: PlayerId, view: &PlayerView) {
-        // Rules come from the engine trace path, live, and are always current.
-        let rules =
-            crate::review::rules_section(&coach::explain(&self.session.game, human, &view.legal));
+        // Rules come from the engine trace path, live, and are always current —
+        // rule availability does not depend on the analysis (§5.1).
+        let explanations = coach::explain(&self.session.game, human, &view.legal);
         let busy = self.session.review_busy;
-        let stale = self.session.review_fresh();
+        let stale = self.session.review_fresh(view);
         let report = self.session.review.clone();
+        let rules = match &report {
+            Some(report) => report.sections(&explanations).rules,
+            None => crate::review::rules_section(&explanations),
+        };
 
         if busy {
             theme::heading(ui, crate::review::POLICY_TITLE);
@@ -1746,13 +1756,15 @@ impl ApertureApp {
                     ui.label(
                         RichText::new(format!(
                             "[{code}] that review was computed for engine decision {} of revision {} (seat P{}); the table has moved on, so none of its ranking is shown",
-                            report.decision_serial, report.revision, report.seat
+                            report.decision(),
+                            report.revision(),
+                            report.seat()
                         ))
                         .color(theme::warn(ui)),
                     );
                 }
                 (None, Some(report)) => {
-                    Self::review_block(ui, &report.policy_section(), theme::text_color(ui));
+                    Self::review_block(ui, report.policy_section(), theme::text_color(ui));
                 }
                 (_, None) => {
                     theme::heading(ui, crate::review::POLICY_TITLE);
@@ -3003,50 +3015,120 @@ mod viewport_tests {
 
     // ------------------------------------------------------- move review (#28)
 
-    /// A synthetic but structurally real review, used only by the layout tests:
-    /// the renderer must show exactly what a finished search report contains.
-    /// Its labels are taken from the live engine offer when one exists.
-    fn canned_review(app: &ApertureApp, mean: Option<f32>) -> crate::review::MoveReview {
+    /// A synthetic but structurally real review payload, used only by the layout
+    /// tests: the renderer must show exactly what a finished analysis contains.
+    /// Its labels are taken from the live engine offer when one exists, and its
+    /// line is a recorded-style sequence of engine-accepted actions — the panel
+    /// only ever renders what the payload carries.
+    fn canned_payload(app: &ApertureApp, mean: Option<f32>) -> aperture_ai::review::RankedReview {
+        use aperture_ai::review::{
+            BudgetRecord, CandidateLine, LineScope, LineStep, Preference, RankedCandidate,
+            RankedReview, ReviewBinding, ReviewText, TextKind, Uncertainty, review_config,
+        };
         let seat = app.session.human_seat();
-        let offers: Vec<String> = app
-            .session
-            .view(seat)
-            .legal
-            .iter()
-            .map(|legal| legal.label.clone())
-            .collect();
+        let view = app.session.view(seat);
+        let offers: Vec<String> = view.legal.iter().map(|legal| legal.label.clone()).collect();
         let first = offers.first().cloned().unwrap_or("Pass".to_string());
         let second = offers.get(1).cloned().unwrap_or("Pass".to_string());
-        crate::review::MoveReview {
-            seat,
-            generation: app.session.generation,
-            revision: app.session.game.revision(),
-            decision_serial: app.session.game.decision(),
-            budget: crate::review::REVIEW_BUDGET,
+        let config = review_config();
+        let binding = ReviewBinding::for_view(
+            &view,
+            app.session.generation,
+            app.session.game.revision(),
+            app.session.game.decision(),
+        );
+        let budget = BudgetRecord {
+            seeds: config.seeds,
+            node_budget: config.node_budget,
+            max_rollout_nodes: config.max_rollout_nodes,
+            max_millis: config.max_millis,
+            max_candidates: config.max_candidates,
             decisions_used: 1_234,
-            fidelity: "opponents: neutral belief deck (1 opponent(s)); no real hand or library order read; own future draws sampled from declared deck".to_string(),
+            stop: aperture_ai::StopReason::DeterminizationsExhausted,
             cancelled: false,
-            candidates: vec![
-                crate::review::CandidateRow {
-                    label: first.clone(),
-                    mean,
-                    scored_samples: 2,
-                    without_result: 0,
-                    refused_times: 0,
-                    chosen: true,
+            reproducible: true,
+            fidelity: "opponents: neutral belief deck (1 opponent(s)); no real hand or library order read; own future draws sampled from declared deck".to_string(),
+        };
+        let line = |label: &str, seed_index: u64| CandidateLine {
+            steps: vec![
+                LineStep {
+                    decision: 0,
+                    seat,
+                    label: label.to_string(),
                 },
-                crate::review::CandidateRow {
-                    label: second,
-                    mean: mean.map(|value| -value),
-                    scored_samples: 2,
-                    without_result: 1,
-                    refused_times: 0,
-                    chosen: false,
+                LineStep {
+                    decision: 1,
+                    seat: (seat + 1) % 4,
+                    label: "pass priority".to_string(),
                 },
             ],
-            preference: crate::review::Preference::Search(first),
+            truncated: false,
+            seed_index,
+            outcome: 1,
+            scope: LineScope::SearchGame,
+        };
+        let candidate = |offer_index: usize,
+                         label: String,
+                         chosen: bool,
+                         score: Option<f32>,
+                         line: Option<CandidateLine>|
+         -> RankedCandidate {
+            RankedCandidate {
+                offer_index,
+                move_label: label,
+                offer_rules: Vec::new(),
+                score,
+                scored_samples: 2,
+                without_result: 0,
+                refused_times: 0,
+                rollouts_attempted: 2,
+                line,
+                reasons: if chosen {
+                    vec![aperture_ai::review::ReasonTag::HighestPracticeOutcome]
+                } else {
+                    Vec::new()
+                },
+                uncertainty: Uncertainty::Ordered,
+                chosen,
+            }
+        };
+        let mut notes = vec![
+            ReviewText {
+                kind: TextKind::Provenance,
+                body: budget.rendered(),
+                evidence: vec![aperture_ai::review::EvidenceRef::Budget {
+                    field: "decisions_used".into(),
+                }],
+            },
+            ReviewText {
+                kind: TextKind::Provenance,
+                body: format!("determinization fidelity (verbatim): {}", budget.fidelity),
+                evidence: vec![aperture_ai::review::EvidenceRef::Budget {
+                    field: "fidelity".into(),
+                }],
+            },
+        ];
+        notes.push(ReviewText {
+            kind: TextKind::Policy,
+            body: format!("the search's own choice is offer 0 (\"{first}\")"),
+            evidence: vec![aperture_ai::review::EvidenceRef::EngineOffer { index: 0 }],
+        });
+        RankedReview {
+            spec: "move-review/1.2".into(),
+            binding,
+            budget,
+            candidates: vec![
+                candidate(0, first, true, mean, Some(line("engine offer", 0))),
+                candidate(1, second, false, mean.map(|value| -value), None),
+            ],
+            preference: mean.map(|_| Preference::Unique { offer_index: 0 }),
             refusal: None,
+            notes,
         }
+    }
+
+    fn canned_review(app: &ApertureApp, mean: Option<f32>) -> crate::review::MoveReview {
+        crate::review::MoveReview::from_ranked(canned_payload(app, mean))
     }
 
     /// The review panel must be reachable, fully inside a clip rect and inside
@@ -3061,7 +3143,7 @@ mod viewport_tests {
         app.session.review = Some(canned_review(&app, Some(0.5)));
         for needle in [
             "MOVE REVIEW — ranked practice outcomes",
-            "source: aperture_ai::search over engine-offered actions",
+            "source: aperture_ai::review over engine-offered actions",
             "ordering: highest mean practice outcome first",
             "policy preference",
             "RULES FOR THESE OFFERED ACTIONS",
@@ -3078,8 +3160,9 @@ mod viewport_tests {
         let row = review
             .policy_section()
             .lines
-            .into_iter()
+            .iter()
             .find(|line| line.contains("mean +0.50"))
+            .cloned()
             .expect("a scored candidate row");
         assert!(
             scroll_until_visible(&mut app, &row, 1024.0, 640.0),
@@ -3098,12 +3181,16 @@ mod viewport_tests {
         let seat = app.session.human_seat();
         let reason =
             "non-priority decision (pending kind mulligan); search not enabled there".to_string();
-        app.session.review = Some(crate::review::MoveReview::refused(
-            seat,
-            app.session.generation,
-            app.session.game.revision(),
-            app.session.game.decision(),
-            crate::review::REVIEW_BUDGET,
+        let view = app.session.view(seat);
+        app.session.review = Some(crate::review::refused(
+            &view,
+            &aperture_ai::review::review_config(),
+            aperture_ai::review::ReviewBinding::for_view(
+                &view,
+                app.session.generation,
+                app.session.game.revision(),
+                app.session.game.decision(),
+            ),
             reason.clone(),
         ));
         assert!(
@@ -3111,9 +3198,11 @@ mod viewport_tests {
             "a refusal must say plainly that nothing is ranked"
         );
 
-        let mut stale = canned_review(&app, Some(0.5));
-        stale.decision_serial = stale.decision_serial.wrapping_add(9);
-        app.session.review = Some(stale);
+        let mut payload = canned_payload(&app, Some(0.5));
+        // Same seat/revision/decision, superseded decision serial: the binding
+        // must reject it and the panel must say so instead of showing a ranking.
+        payload.binding.decision = payload.binding.decision.wrapping_add(9);
+        app.session.review = Some(crate::review::MoveReview::from_ranked(payload));
         assert!(
             scroll_until_visible(
                 &mut app,
@@ -3243,15 +3332,15 @@ mod viewport_tests {
             .expect("the journey must produce a review panel");
         println!(
             "journey: review applied after {frames} frame(s) · refused={:?} · {} candidate(s) · {} engine decisions · budget {:?}",
-            review.refusal,
-            review.candidates.len(),
-            review.decisions_used,
-            review.budget
+            review.refusal(),
+            review.ranked().candidates.len(),
+            review.ranked().budget.decisions_used,
+            review.ranked().budget
         );
         assert!(
-            review.refusal.is_none(),
+            review.refusal().is_none(),
             "the priority decision must not be refused: {:?}",
-            review.refusal
+            review.refusal()
         );
         let offers: Vec<String> = app
             .session
@@ -3260,10 +3349,41 @@ mod viewport_tests {
             .iter()
             .map(|legal| legal.label.clone())
             .collect();
-        for candidate in &review.candidates {
+        for candidate in &review.ranked().candidates {
             assert!(
-                offers.contains(&candidate.label),
+                offers.contains(&candidate.move_label),
                 "the panel ranked an action the engine never offered: {candidate:?}"
+            );
+        }
+        // A recorded line, when the search recorded one, must reach the panel
+        // step by step and be scoped to the search world (AC-15).
+        let recorded: Vec<String> = review
+            .policy_section()
+            .lines
+            .iter()
+            .filter(|line| line.trim_start().starts_with("line: decision"))
+            .cloned()
+            .collect();
+        for candidate in &review.ranked().candidates {
+            match &candidate.line {
+                Some(line) if !line.steps.is_empty() => {
+                    assert!(
+                        recorded.iter().any(|shown| {
+                            line.steps
+                                .iter()
+                                .all(|step| shown.contains(step.label.as_str()))
+                        }),
+                        "the journey must render this candidate's recorded line: {recorded:?}"
+                    );
+                }
+                _ => {}
+            }
+        }
+        if !recorded.is_empty() {
+            let shown = review.policy_section().lines.join("\n");
+            assert!(
+                shown.contains("search world only"),
+                "a rendered line must state that it belongs to the search world: {shown}"
             );
         }
         // Read the panel back out of the interface, through a real scroll.
@@ -3271,7 +3391,14 @@ mod viewport_tests {
             scroll_until_visible(&mut app, "ordering:", 1280.0, 720.0),
             "the ranking is not readable in the rendered frame"
         );
-        let shown = app.session.review.as_ref().unwrap().policy_section().lines;
+        let shown = app
+            .session
+            .review
+            .as_ref()
+            .unwrap()
+            .policy_section()
+            .lines
+            .clone();
         let visible: Vec<String> = run_frame(&mut app, 1280.0, 720.0, 0);
         let shown_rows = shown
             .iter()
