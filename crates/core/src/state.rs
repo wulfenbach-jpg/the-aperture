@@ -550,6 +550,17 @@ pub struct Object {
     /// digest of an unchanged game does not move.
     #[serde(default, skip_serializing_if = "Counters::is_empty")]
     pub counters: Counters,
+    /// CR 702.94a: the permanent this one is paired with (soulbond).
+    ///
+    /// Pairing is a state of the permanent, not a continuous effect: it is
+    /// created when the printed "you may pair" trigger resolves, and it ends
+    /// when the controller stops controlling both creatures. It is cleared at
+    /// the single battlefield-exit point (`Game::detach_object`) and never
+    /// trusted on its own: every reader goes through `Game::paired_with`, which
+    /// re-validates the back-reference, both zones and the shared controller.
+    /// Both attributes keep every pre-slice save and replay digest stable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub paired_with: Option<ObjectId>,
 }
 
 impl Object {

@@ -29,6 +29,7 @@ fn add_artifact(game: &mut Game, p: PlayerId, id: CardId) -> ObjectId {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     oid
@@ -227,6 +228,7 @@ fn werebear_obeys_sickness_and_threshold_both_ways_with_layers() {
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Default::default(),
+                paired_with: None,
             },
         );
         game.state.players[P0 as usize].graveyard.push(id);
@@ -259,6 +261,7 @@ fn werebear_obeys_sickness_and_threshold_both_ways_with_layers() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     game.state.players[P0 as usize].graveyard.push(seventh);
@@ -328,6 +331,7 @@ fn commanders_sphere_casts_chooses_color_and_sacrifices_while_tapped_for_draw() 
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Default::default(),
+                paired_with: None,
             },
         );
     }
@@ -350,6 +354,7 @@ fn commanders_sphere_casts_chooses_color_and_sacrifices_while_tapped_for_draw() 
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Default::default(),
+                paired_with: None,
             },
         );
         game.state.players[P0 as usize].hand.push(id);
@@ -474,6 +479,7 @@ fn signets_cast_from_hand_and_identity_survives_commander_leaving_command_zone()
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Default::default(),
+                paired_with: None,
             },
         );
     }
@@ -496,6 +502,7 @@ fn signets_cast_from_hand_and_identity_survives_commander_leaving_command_zone()
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Default::default(),
+                paired_with: None,
             },
         );
         game.state.players[P0 as usize].hand.push(id);

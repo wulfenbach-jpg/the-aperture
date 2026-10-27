@@ -919,9 +919,41 @@ const BEORN_THE_FIERCE: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     ],
 })];
 
+/// Druid's Familiar (AVR 175): "Soulbond (You may pair this creature with
+/// another unpaired creature when either enters. They remain paired for as long
+/// as you control both of them.) / As long as this creature is paired with
+/// another creature, each of those creatures gets +2/+2."
+///
+/// Two triggered abilities implement the printed soulbond reminder: one for this
+/// creature's own entry (CR 603.6a) and one for another creature entering. Both
+/// name the same set — another unpaired creature its controller controls — and
+/// both resolve into the same pairing effect. The "you may" half is the target
+/// choice itself: the pairing choice spec is the second spec the engine treats
+/// as declinable (`trigger_target_is_optional`), so declining the choice is how
+/// the controller chooses not to pair (CR 702.94a). The pairing is a state of
+/// the two permanents, not a continuous effect: it is created once and ends
+/// when one of them leaves the battlefield.
+const DRUIDS_FAMILIAR: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "You may pair this creature with another unpaired creature when it enters.",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::UnpairedAnotherCreatureYouControl,
+        effects: &[Effect::PairSourceWithChosenCreature],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "You may pair this creature with another unpaired creature when that creature enters.",
+        event: TriggerEvent::AnotherCreatureEnters,
+        optional: false,
+        target: TargetSpec::UnpairedAnotherCreatureYouControl,
+        effects: &[Effect::PairSourceWithChosenCreature],
+    }),
+];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
         CardId::WordsOfWilding => WORDS_OF_WILDING,
@@ -1117,6 +1149,17 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 702.94a + 613.4c: "As long as this creature is paired with another
+    /// creature, each of those creatures gets +P/+T" (Druid's Familiar). A
+    /// layer 7c additive static that applies to *both* members of the pair, read
+    /// through the validating `Game::paired_with`, so a pairing that ended
+    /// (a member left the battlefield, CR 400.7) pumps nothing. Two paired
+    /// copies of the card each grant their own bonus, exactly as printed.
+    PairedEachGet {
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
 }
 
 impl StaticAbility {
@@ -1129,7 +1172,8 @@ impl StaticAbility {
             | StaticAbility::OtherControlledCreaturesHaveTrample { text }
             | StaticAbility::SelfBecomesSubtypeDuringYourTurn { text, .. }
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. }
-            | StaticAbility::OtherBearsYouControlGet { text, .. } => text,
+            | StaticAbility::OtherBearsYouControlGet { text, .. }
+            | StaticAbility::PairedEachGet { text, .. } => text,
         }
     }
 
@@ -1143,6 +1187,7 @@ impl StaticAbility {
             StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. } => Some(Layer::Type),
             StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. } => Some(Layer::Setting),
             StaticAbility::OtherBearsYouControlGet { .. } => Some(Layer::Modifying),
+            StaticAbility::PairedEachGet { .. } => Some(Layer::Modifying),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
@@ -1159,7 +1204,8 @@ impl StaticAbility {
             | StaticAbility::OtherControlledCreaturesHaveTrample { .. }
             | StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. }
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. }
-            | StaticAbility::OtherBearsYouControlGet { .. } => None,
+            | StaticAbility::OtherBearsYouControlGet { .. }
+            | StaticAbility::PairedEachGet { .. } => None,
         }
     }
 }
@@ -1227,9 +1273,21 @@ const BEORN_STATIC: &[StaticAbility] = &[StaticAbility::OtherBearsYouControlGet 
     text: "Other Bears you control get +2/+2.",
 }];
 
+/// Druid's Familiar (AVR 175): "As long as this creature is paired with another
+/// creature, each of those creatures gets +2/+2." The pair itself is engine
+/// state (`Object::paired_with`), so this static only declares the bonus the
+/// pair produces; the engine applies it to both members through
+/// `Game::paired_with`, which re-validates that the pairing still exists.
+const DRUIDS_FAMILIAR_STATIC: &[StaticAbility] = &[StaticAbility::PairedEachGet {
+    power: 2,
+    toughness: 2,
+    text: "As long as this creature is paired with another creature, each of those creatures gets +2/+2.",
+}];
+
 /// Every static ability the rules layer knows for a card, in printed order.
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
+        CardId::DruidSFamiliar => DRUIDS_FAMILIAR_STATIC,
         CardId::BeornTheFierce => BEORN_STATIC,
         CardId::WightOfPrecinctSix => WIGHT,
         CardId::SurrakAndGoreclaw => SURRAK_STATIC,

@@ -288,6 +288,7 @@ fn the_printed_once_each_turn_restriction_is_enforced() {
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Default::default(),
+                paired_with: None,
             },
         );
     }

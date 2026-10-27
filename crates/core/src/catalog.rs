@@ -272,7 +272,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 150] = [
+pub static CARDS: [CardDef; 151] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1113,6 +1113,19 @@ pub static CARDS: [CardDef; 150] = [
         WordsOfWilding, "Words of Wilding", cost: Some("{2}{G}"), kinds: ENCHANTMENT, basic: None,
         type_line: "Enchantment", power: None, toughness: None,
         oracle: "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
+        spell: None
+    ),
+    // Issue 17 slice 37: Druid's Familiar (AVR 175). The pool's first Soulbond
+    // card (CR 702.94a): a "you may pair" trigger when either this creature or
+    // another creature enters, and a layer 7c static that gives both members of
+    // the pair +2/+2 for as long as one player controls both. Printed text
+    // copied verbatim from the AVR 175 printing recorded in
+    // fixtures/starter-corpus/slice37-sourced.json (both printings carry one
+    // identical text).
+    card!(
+        DruidSFamiliar, "Druid's Familiar", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Soulbond (You may pair this creature with another unpaired creature when either enters. They remain paired for as long as you control both of them.)\nAs long as this creature is paired with another creature, each of those creatures gets +2/+2.",
         spell: None
     ),
     card_flash!(

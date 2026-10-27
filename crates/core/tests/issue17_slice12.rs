@@ -37,6 +37,7 @@ fn add_artifact(game: &mut Game, controller: PlayerId, id: CardId) -> ObjectId {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     oid

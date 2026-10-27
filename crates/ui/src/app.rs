@@ -4424,6 +4424,7 @@ Deck
                         // A synthetic board-filling permanent starts with no
                         // typed counters; this fixture only needs board bulk.
                         counters: aperture_core::counters::Counters::new(),
+                        paired_with: None,
                     },
                 );
             }

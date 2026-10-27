@@ -36,6 +36,7 @@ fn add_permanent(game: &mut Game, controller: PlayerId, id: CardId, tapped: bool
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     oid

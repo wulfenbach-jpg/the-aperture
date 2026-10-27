@@ -87,6 +87,7 @@ fn blank_object(id: ObjectId, card: CardId, owner: PlayerId) -> Object {
         pump_toughness: 0,
         plus_one_counters: 0,
         counters: crate::counters::Counters::default(),
+        paired_with: None,
     }
 }
 
@@ -676,6 +677,34 @@ impl Game {
                 .map(|object| object.id)
                 .collect();
             for recipient in recipients {
+                if let Some(object) = self.state.objects.get_mut(&recipient) {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
+            }
+        }
+        // Printed layer 7c pair static: "As long as this creature is paired with
+        // another creature, each of those creatures gets +2/+2" (Druid's
+        // Familiar, CR 702.94a). Like every other 7c modifier it is additive, and
+        // the pairing is re-validated per source, so a pair that ended pumps
+        // nothing even if a stale back-reference survived. Two paired copies of
+        // the card each grant their own bonus.
+        for (id, card) in &battlefield {
+            let bonus = ability::static_abilities(*card)
+                .iter()
+                .find_map(|ability| match ability {
+                    ability::StaticAbility::PairedEachGet {
+                        power, toughness, ..
+                    } => Some((*power, *toughness)),
+                    _ => None,
+                });
+            let Some((power, toughness)) = bonus else {
+                continue;
+            };
+            let Some(partner) = self.paired_with(*id) else {
+                continue;
+            };
+            for recipient in [*id, partner] {
                 if let Some(object) = self.state.objects.get_mut(&recipient) {
                     object.pump_power += power;
                     object.pump_toughness += toughness;
@@ -1402,6 +1431,21 @@ impl Game {
             .get(&id)
             .filter(|object| object.zone == Zone::Battlefield)
             .map(|object| (object.power(), object.toughness()));
+        // CR 702.94a: a pair lasts only "for as long as you control both of
+        // them". Every zone change goes through this one detach point, so the
+        // partner's back-reference is cleared here rather than at each caller.
+        let leaving_pair = self
+            .state
+            .objects
+            .get(&id)
+            .filter(|object| object.zone == Zone::Battlefield)
+            .and_then(|object| object.paired_with);
+        if let Some(partner) = leaving_pair
+            && let Some(other) = self.state.objects.get_mut(&partner)
+            && other.paired_with == Some(id)
+        {
+            other.paired_with = None;
+        }
         let object = self.state.objects.remove(&id)?;
         // A regeneration shield belongs to one battlefield permanent, not to
         // the card identity that survives a zone change. Leaving the
@@ -2797,6 +2841,68 @@ impl Game {
         }
     }
 
+    /// CR 702.94a: the creature `id` is paired with, if that pairing is still
+    /// real. A pair lasts only "for as long as you control both of them", so the
+    /// stored back-reference is never trusted by itself: both objects must still
+    /// be on the battlefield, still controlled by the same player, and still
+    /// point at each other. Every reader (pair eligibility, the +2/+2 static,
+    /// the staging guard) goes through this one validated query.
+    pub fn paired_with(&self, id: ObjectId) -> Option<ObjectId> {
+        let object = self.state.try_object(id)?;
+        if object.zone != Zone::Battlefield {
+            return None;
+        }
+        let partner = object.paired_with?;
+        let other = self.state.try_object(partner)?;
+        if partner == id {
+            return None;
+        }
+        if other.zone != Zone::Battlefield
+            || other.controller != object.controller
+            || other.paired_with != Some(id)
+        {
+            return None;
+        }
+        Some(partner)
+    }
+
+    /// CR 702.94a: pair two permanents. Both sides must be unpaired battlefield
+    /// creatures controlled by the trigger's controller; anything else is a
+    /// stale request and pairs nothing.
+    fn pair_permanents(&mut self, source: ObjectId, partner: ObjectId, events: &mut Vec<Event>) {
+        if source == partner {
+            return;
+        }
+        let Some((controller, source_card)) = self
+            .state
+            .try_object(source)
+            .filter(|object| object.zone == Zone::Battlefield)
+            .map(|object| (object.controller, object.card))
+        else {
+            return;
+        };
+        let eligible = self.state.try_object(partner).is_some_and(|object| {
+            object.zone == Zone::Battlefield
+                && object.controller == controller
+                && self.is_creature(object)
+        });
+        if !eligible || self.paired_with(source).is_some() || self.paired_with(partner).is_some() {
+            return;
+        }
+        let partner_card = self.state.object(partner).card;
+        if let Some(object) = self.state.objects.get_mut(&source) {
+            object.paired_with = Some(partner);
+        }
+        if let Some(object) = self.state.objects.get_mut(&partner) {
+            object.paired_with = Some(source);
+        }
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{controller} pairs {source_card} ({source}) with {partner_card} ({partner}) (soulbond, CR 702.94a)"
+            ),
+        });
+    }
+
     pub fn legal_targets(
         &self,
         _caster: PlayerId,
@@ -2853,6 +2959,26 @@ impl Game {
                 .values()
                 .filter(|o| {
                     o.zone == Zone::Battlefield && self.is_creature(o) && o.controller == _caster
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
+            // CR 702.94a: soulbond's pairing choice. "Another unpaired creature
+            // you control" is the printed set minus the ability's own source
+            // (soulbond pairs with *another* creature) and minus any creature
+            // that is already in a pair, because a pairing needs both sides
+            // unpaired. It is not a target in the rules; the engine asks for the
+            // pairing choice on the trigger's own choice surface, which also
+            // offers declining the "you may".
+            TargetSpec::UnpairedAnotherCreatureYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && self.is_creature(o)
+                        && o.controller == _caster
+                        && o.id != exclude
+                        && self.paired_with(o.id).is_none()
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -4174,12 +4300,28 @@ impl Game {
                 .and_then(Ability::triggered)
                 .map(|triggered| triggered.target)
                 .unwrap_or(TargetSpec::None);
+            // CR 702.94a: soulbond's trigger reads "if this creature is
+            // unpaired", so a source that is already in a pair has nothing to
+            // pair with and the trigger does nothing.
+            if trigger.card == CardId::DruidSFamiliar && self.paired_with(trigger.source).is_some()
+            {
+                events.push(Event::TriggerRemoved {
+                    controller: trigger.controller,
+                    card: trigger.card,
+                    reason: "its source is already paired (CR 702.94a)".to_string(),
+                });
+                continue;
+            }
             if spec == TargetSpec::None {
                 self.push_trigger(trigger, Vec::new(), events);
                 continue;
             }
             let legal = self.legal_targets(trigger.controller, spec, trigger.source);
-            let optional = spec == TargetSpec::UpToOneCreatureYouControl;
+            let optional = matches!(
+                spec,
+                TargetSpec::UpToOneCreatureYouControl
+                    | TargetSpec::UnpairedAnotherCreatureYouControl
+            );
             if optional {
                 // CR 115.6: "up to one" is a real choice even when legal
                 // targets exist — the controller may decline it — so the
@@ -7059,6 +7201,19 @@ impl Game {
                 self.arm_draw_replacement(controller);
                 false
             }
+            // CR 702.94a: "You may pair this creature with another unpaired
+            // creature when either enters." The chosen creature is the pairing
+            // partner; if either side stopped being an unpaired creature the
+            // pairing simply does not happen (nothing is created, nothing is
+            // destroyed).
+            Effect::PairSourceWithChosenCreature => {
+                for target in item.targets.clone() {
+                    if let Target::Permanent(partner) = target {
+                        self.pair_permanents(item.object, partner, events);
+                    }
+                }
+                false
+            }
             // CR 111.2 + 608.2c: the token is created under the control of the
             // player who controlled the artifact/enchantment, in APNAP order
             // from the effect's controller. A seat with neither permanent gets
@@ -8812,18 +8967,23 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::UpToOneCreatureYouControl => "up to one target creature you control: CR 115.6",
         TargetSpec::Bear => "target Bear: CR 115.1",
         TargetSpec::BearYouControl => "target Bear you control: CR 115.1",
+        TargetSpec::UnpairedAnotherCreatureYouControl => {
+            "another unpaired creature you control to pair with: CR 702.94a"
+        }
     }
 }
 
-/// CR 115.6: whether a triggered ability may be put on the stack with no
-/// target. Only a printed "up to one" target qualifies; every other spec is
-/// mandatory, so declining one is never a legal action.
+/// CR 115.6 + CR 702.94a: whether a triggered ability's choice may be declined.
+/// A printed "up to one target" is the first case; soulbond's "you may pair"
+/// is the second, because declining the pairing choice is how its controller
+/// chooses not to pair.
 fn trigger_target_is_optional(card: CardId, ability: u8) -> bool {
     matches!(
         ability::abilities(card)
             .get(ability as usize)
             .map(Ability::target_spec),
         Some(TargetSpec::UpToOneCreatureYouControl)
+            | Some(TargetSpec::UnpairedAnotherCreatureYouControl)
     )
 }
 
@@ -9199,6 +9359,7 @@ mod slice17_cleanup_history_tests {
                     pump_toughness: 0,
                     plus_one_counters: 0,
                     counters: crate::counters::Counters::default(),
+                    paired_with: None,
                 },
             );
             id
@@ -9275,6 +9436,7 @@ mod slice17_cleanup_history_tests {
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: crate::counters::Counters::default(),
+                paired_with: None,
             },
         );
         game.state

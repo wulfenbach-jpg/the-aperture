@@ -49,6 +49,7 @@ fn add_permanent(game: &mut Game, controller: PlayerId, card: CardId) -> ObjectI
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     id

@@ -251,6 +251,7 @@ fn krenko_counts_goblins_including_tokens_and_needs_untapped_untaunted_source() 
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     let err = game
@@ -386,6 +387,7 @@ fn add_goblin_permanent(game: &mut Game, controller: PlayerId, card: CardId) -> 
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     id

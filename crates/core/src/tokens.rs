@@ -199,6 +199,7 @@ impl GameState {
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Counters::default(),
+                paired_with: None,
             },
         );
         id

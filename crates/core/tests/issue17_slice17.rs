@@ -44,6 +44,7 @@ fn add_perm(g: &mut Game, p: PlayerId, c: CardId) -> ObjectId {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     id
@@ -80,6 +81,7 @@ fn kill(g: &mut Game, target: ObjectId) {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     g.state.players[P0 as usize].hand.push(sid);

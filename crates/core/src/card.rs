@@ -112,6 +112,12 @@ pub enum TargetSpec {
     /// target when its controller declines, so the choice surface must offer a
     /// decline even when legal targets exist (Beorn the Fierce).
     UpToOneCreatureYouControl,
+    /// CR 702.94a: soulbond's pairing choice — "another unpaired creature you
+    /// control". The set is every creature this player controls except the
+    /// ability's own source (soulbond pairs with *another* creature) and except
+    /// any creature that is already in a pair, because pairing needs an
+    /// unpaired creature on both sides.
+    UnpairedAnotherCreatureYouControl,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -246,6 +252,13 @@ pub enum Effect {
     /// to the source's existence, so destroying the enchantment does not undo a
     /// replacement that already resolved.
     ReplaceNextDrawWithBearToken,
+    /// CR 702.94a: pair the ability's own source with the chosen unpaired
+    /// creature it names, the resolution half of soulbond's "you may pair this
+    /// creature with another unpaired creature when either enters the
+    /// battlefield". Pairing is a state of both permanents, not a continuous
+    /// effect, and it lasts only while one player controls both (Druid's
+    /// Familiar).
+    PairSourceWithChosenCreature,
     /// Look at the top card without moving it. A creature/planeswalker card
     /// gets a take-or-bottom choice; any other card goes to the bottom without
     /// being revealed. Empty library is not a draw.
@@ -436,6 +449,9 @@ impl Effect {
             Effect::ReplaceNextDrawWithBearToken => {
                 "the next time you would draw this turn, create a 2/2 green Bear token instead"
                     .to_string()
+            }
+            Effect::PairSourceWithChosenCreature => {
+                "pair this creature with another unpaired creature you control".to_string()
             }
             Effect::EachPlayerMayRevealCreatureCardsForBears => {
                 "each player may reveal any number of creature cards from their hand, then creates a 2/2 green Bear token for each card revealed this way"
@@ -758,6 +774,8 @@ pub enum CardId {
     BeornsHospitality,
     /// Issue 17 slice 35: Words of Wilding (ONS 305).
     WordsOfWilding,
+    /// Issue 17 slice 37: Druid's Familiar (AVR 175).
+    DruidSFamiliar,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

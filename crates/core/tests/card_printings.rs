@@ -62,6 +62,8 @@ const SLICE32_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 /// Slice 33: Beorn's Hospitality (HOB 120), fetched 2026-10-27.
 const SLICE33_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice33-sourced.json");
 const SLICE35_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice35-sourced.json");
+/// Slice 37: Druid's Familiar (AVR 175), fetched 2026-10-27.
+const SLICE37_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice37-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
@@ -256,6 +258,37 @@ fn slice33_cards() -> Vec<Value> {
 fn slice35_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE35_SOURCED).expect("sourced slice35 JSON");
     value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice37_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE37_SOURCED).expect("sourced slice37 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+/// Slice 37 added Druid's Familiar (AVR 175). Its printing is the authority for
+/// the cost, the type line, the power/toughness and the whole two-ability oracle
+/// text, so a hand-authored string can never drift from the card.
+#[test]
+fn slice37_druids_familiar_matches_its_recorded_printing() {
+    let cards = slice37_cards();
+    assert_eq!(cards.len(), 1, "slice 37 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Druid's Familiar");
+    let def = catalog::by_name("Druid's Familiar")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "avr");
+    assert_eq!(sourced_text(record, "collector_number"), "175");
+    assert_eq!(record["power"].as_str(), Some("2"));
+    assert_eq!(record["toughness"].as_str(), Some("2"));
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "1d8c794a-7964-41f0-bc9c-27af7cf87aaa",
+        "the immutable printing id, not the oracle id"
+    );
 }
 
 /// Slice 35 added Words of Wilding (ONS 305). Its printing is the authority for
@@ -842,6 +875,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice32_new_cards())
         .chain(slice33_cards())
         .chain(slice35_cards())
+        .chain(slice37_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

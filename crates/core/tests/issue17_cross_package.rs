@@ -36,6 +36,7 @@ fn guttersnipe_game(seed: u64) -> Game {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     game
@@ -205,6 +206,7 @@ fn living_guttersnipe_damage_is_doubled_and_opponent_angrath_does_not_apply() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     let before: Vec<i32> = game.state.players.iter().map(|p| p.life).collect();
@@ -293,6 +295,7 @@ fn guttersnipe_source_left_damage_uses_the_controllers_damage_multiplier() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     let island = game.state.next_object;
@@ -313,6 +316,7 @@ fn guttersnipe_source_left_damage_uses_the_controllers_damage_multiplier() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: Default::default(),
+            paired_with: None,
         },
     );
     let unsummon = game.state.players[P0 as usize].library.pop().unwrap();

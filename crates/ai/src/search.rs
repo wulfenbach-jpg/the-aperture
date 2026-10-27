@@ -563,6 +563,9 @@ fn reconstruct(
         // A fabricated belief object is unknown by construction: no counter
         // information is invented for it (CR 122 counters are real state).
         counters: Counters::new(),
+        // A fabricated belief object is likewise never paired (CR 702.94a
+        // pairing is real state, and no hidden-information guess invents one).
+        paired_with: None,
     };
 
     let mut players = Vec::with_capacity(real_state.players.len());

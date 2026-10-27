@@ -240,7 +240,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 // spell's.
                 Effect::UntapTargetAndCounterIfBear
                 | Effect::SkipNextUntapStep
-                | Effect::ReplaceNextDrawWithBearToken => {
+                | Effect::ReplaceNextDrawWithBearToken
+                | Effect::PairSourceWithChosenCreature => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name
