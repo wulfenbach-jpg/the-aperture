@@ -46,6 +46,7 @@ const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
 const SLICE6_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice6-sourced.json");
 const SLICE11_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice11-sourced.json");
+const SLICE19_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice19-sourced.json");
 
 fn starter_new_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
@@ -158,6 +159,11 @@ fn slice17_cards() -> Vec<Value> {
 
 fn slice18_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE18_SOURCED).expect("sourced slice18 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice19_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE19_SOURCED).expect("sourced slice19 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -538,6 +544,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice16_cards())
         .chain(slice17_cards())
         .chain(slice18_cards())
+        .chain(slice19_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

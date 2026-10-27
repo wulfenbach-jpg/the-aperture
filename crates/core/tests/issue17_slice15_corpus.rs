@@ -121,6 +121,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Updated by slice 17 when the three death-history cards left the gap;
     // the assertion's purpose (the three slice-15 cards stay supported and the
     // recorded gap matches the compiled pool) is unchanged.
-    assert_eq!(missing.len(), 30, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 135, "the compiled pool");
+    // Slice 19 registers Spectral Bears, so the recorded Ayula gap and the
+    // compiled pool move together by one; the assertions' purpose is unchanged.
+    assert_eq!(missing.len(), 29, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 136, "the compiled pool");
 }

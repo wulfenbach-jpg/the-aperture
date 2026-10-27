@@ -1,0 +1,62 @@
+3874:    fn finish_cleanup(&mut self, events: &mut Vec<Event>) {
+3875-        let mut changed = false;
+3876-        if self.state.prevent_all_combat_damage_turn.take().is_some() {
+3877-            changed = true;
+3878-        }
+3879-        // CR 514.2: until-end-of-turn effects and every prevention shield end.
+3880-        let expired_effects = self
+3881-            .state
+3882-            .effects
+3883-            .iter()
+3884-            .filter(|effect| effect.duration == EffectDuration::UntilEndOfTurn)
+3885-            .count();
+3886-        self.state
+3887-            .effects
+3888-            .retain(|effect| effect.duration != EffectDuration::UntilEndOfTurn);
+3889-        let expired_shields = self.state.shields.len();
+3890-        self.state.shields.clear();
+3891-        self.release_idle_effect_cursors();
+3892-        if expired_effects > 0 || expired_shields > 0 {
+3893-            changed = true;
+3894-        }
+3895-        for obj in self.state.objects.values_mut() {
+3896-            if obj.zone == Zone::Battlefield {
+3897-                if obj.damage > 0 {
+3898-                    changed = true;
+3899-                }
+3900-                obj.damage = 0;
+3901-            }
+3902-        }
+3903-        // The layer recomputation clears the expired 7c modifiers and re-applies
+3904-        // any characteristic-defining ability that outlives the turn.
+3905-        self.recompute_layers();
+3906-        if changed {
+3907-            events.push(Event::StateBasedAction {
+3908-                description:
+3909-                    "cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)"
+3910-                        .to_string(),
+3911-            });
+3912-        }
+3913-    }
+3914-
+3915-    /// Apply CR 800.4a immediately: the player leaves the game, every object
+3916-    /// they own leaves with them into the internal `Zone::Removed`, their
+3917-    /// objects leave the stack, and combat references are pruned. The current
+3918-    /// turn is NOT ended (CR 800.4j); seats are never renumbered.
+3919-    fn leave_game(&mut self, p: PlayerId, events: &mut Vec<Event>) {
+3920-        let apnap_source = match &self.state.pending {
+3921-            Some(Pending::ApnapSacrifice { .. }) => self.state.resolving.and_then(|id| {
+3922-                let object = self.state.objects.get(&id)?;
+3923-                let cursor = self
+3924-                    .state
+3925-                    .stack
+3926-                    .iter()
+3927-                    .find(|item| item.object == id)
+3928-                    .map(|item| item.cursor)
+3929-                    .unwrap_or(1);
+3930-                Some((id, object.card, cursor, object.controller, object.owner))
+3931-            }),
+3932-            _ => None,
+3933-        };
+3934-        self.state.players[p as usize].lost = true;
+3763:            self.state.activation_uses.clear();

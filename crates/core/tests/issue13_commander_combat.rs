@@ -1371,8 +1371,10 @@ fn fog_is_a_sourced_catalog_card() {
     // Fog's own sourced semantics are unchanged.
     // ... and to 129 with the slice-15 Bear-token package (Ayula's Influence,
     // Bearscape, Mother Bear), to 131 with the slice-16 pair (Fade from
-    // History, Little Bear), and to 134 with the slice-17 death-history trio.
-    assert_eq!(aperture_core::catalog::pool_size(), 135);
+    // History, Little Bear), to 134 with the slice-17 death-history trio, to
+    // 135 with the slice-18 commander Ayula, Queen Among Bears, and to 136 with
+    // the slice-19 attack-trigger bear Spectral Bears.
+    assert_eq!(aperture_core::catalog::pool_size(), 136);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

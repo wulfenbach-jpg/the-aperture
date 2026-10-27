@@ -234,9 +234,10 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::DestroyAllArtifactsAndEnchantments => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }
-                // Little Bear's untap/counter instruction is a triggered
-                // ability effect, never a spell's.
-                Effect::UntapTargetAndCounterIfBear => {
+                // Little Bear's untap/counter instruction and Spectral Bears'
+                // untap restriction are triggered-ability effects, never a
+                // spell's.
+                Effect::UntapTargetAndCounterIfBear | Effect::SkipNextUntapStep => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name

@@ -19,6 +19,31 @@ fn bears(game: &Game) -> ObjectId {
     battlefield_card(game, P0, CardId::SpectralBears)
 }
 
+/// Put a permanent directly onto `player`'s battlefield. Only used by the one
+/// control that stages a board change mid-resolution (see its comment).
+fn add_permanent(game: &mut Game, player: PlayerId, card: CardId) {
+    let id = ObjectId(game.state.next_object);
+    game.state.next_object += 1;
+    game.state.objects.insert(
+        id,
+        aperture_core::state::Object {
+            id,
+            card,
+            owner: player,
+            controller: player,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Default::default(),
+        },
+    );
+}
+
 /// Drive the game with the only legal "no choice" answers until `done` holds.
 /// Blockers are declined and discards take the first legal cards, so the test
 /// never supplies a hidden or engine-chosen decision of its own.
@@ -57,7 +82,9 @@ fn run_until(game: &mut Game, log: &mut Vec<Event>, mut done: impl FnMut(&Game) 
                 log.extend(submit_ok(game, player, Action::Discard { cards }));
             }
             _ => {
-                let player = game.decision_owner().expect("a decision owner while not done");
+                let player = game
+                    .decision_owner()
+                    .expect("a decision owner while not done");
                 log.extend(submit_ok(game, player, Action::Pass));
             }
         }
@@ -232,6 +259,60 @@ fn a_black_token_does_not_stop_the_trigger() {
     assert!(
         game.state.object(attacker).tapped,
         "a black token must not satisfy the nontoken condition"
+    );
+}
+
+#[test]
+fn the_printed_condition_is_rechecked_when_the_trigger_resolves() {
+    // CR 603.4: the intervening-if is read again at resolution. This control
+    // puts a black nontoken permanent onto the defending board *between* the
+    // trigger being put on the stack and it resolving, which is exactly the
+    // resolution-time branch. (Ordinary play cannot do this yet: the pool has no
+    // effect that adds a black permanent at instant speed. The test therefore
+    // stages the board change itself instead of pretending a legal line exists.)
+    let mut game = fixture(1905)
+        .battlefield(P0, &[CardId::SpectralBears])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::DeclareAttackers)
+        .build();
+    game.state.pending = Some(Pending::DeclareAttackers { player: P0 });
+    let attacker = bears(&game);
+
+    let mut log = submit_ok(
+        &mut game,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![attacker],
+            defender: Some(P1),
+        },
+    );
+    assert_eq!(
+        game.state.stack.len(),
+        1,
+        "the attack trigger is on the stack"
+    );
+
+    // The clause is true now, so the trigger was allowed onto the stack...
+    assert!(game.state.skip_next_untap.is_empty());
+    // ...and then the defending board changes before it resolves.
+    add_permanent(&mut game, P1, CardId::BloodArtist);
+
+    run_until(&mut game, &mut log, |game| {
+        game.state.stack.is_empty() && game.state.pending.is_none()
+    });
+
+    assert!(
+        log.iter().any(|event| matches!(
+            event,
+            Event::TriggerRemoved { card, reason, .. }
+                if *card == CardId::SpectralBears && reason.contains("at resolution")
+        )),
+        "a clause that becomes false must remove the ability at resolution, got {log:#?}"
+    );
+    assert!(
+        game.state.skip_next_untap.is_empty(),
+        "no untap restriction may be recorded when the clause is false at resolution"
     );
 }
 
