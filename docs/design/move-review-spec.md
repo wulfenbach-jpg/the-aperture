@@ -519,7 +519,8 @@ following points were decided during that reconciliation and are recorded per §
 2. **`Preference` is audited in all three shapes**, because §4.9.1 makes the third one reachable:
    `Unique` requires the named row to carry at least `MIN_ORDERING_SAMPLES` scored samples and no
    other row to match or beat it; `AmongEquals` requires every named member to be
-   `EffectivelyTied` and level with the top, with `chosen` inside the group and marked `chosen`
+   `EffectivelyTied` and lattice-inseparable from the leading row under §4.5 (not necessarily
+   equal in mean), with `chosen` inside the group and marked `chosen`
    on its row; `NoOrder` claims no order, so only the recorded selection is checkable.
    `NoOrder { chosen: None }` is legitimate and names no row.
 3. **The payload's enums serialise `snake_case`** (`#[serde(rename_all = "snake_case")]` on
@@ -536,6 +537,13 @@ following points were decided during that reconciliation and are recorded per §
 6. **The corpus fixture `honest_single_offer.json` records `NoOrder { chosen }`**, as §4.9.1
    requires for a single-sampled head. The guards draft wrote `Unique` for it, which the 1.2
    payload contradicts.
+
+7. **Round-1 integration correction (task t_cf764bc5, spec 1.2 erratum).** The §4.5
+   relation is pairwise and not transitive. `AmongEquals` is the leading row plus its
+   inseparable peers, not a claim of equal means or of all-pairs inseparability. Audit uses
+   the ranking lattice predicate. Presentation discloses every pair, emits each candidate
+   exactly once, and groups only closed pairwise-complete sets; interleaved single-sample
+   rows remain visible. Copy says "effectively tied", not "equally scored", for lattice ties.
 
 Presentation note (not a contract change): `crates/ui/src/review.rs` takes each row's ordering
 claim from `Uncertainty` — the payload's own per-row statement in §4.3 — and prints row numbers
@@ -586,11 +594,11 @@ Required phrasings and their forbidden opposites:
 | required | forbidden |
 | --- | --- |
 | "the search's own choice" (on a unique maximum) | "best move", "correct move" |
-| "the search's own choice among equally scored offers" (only on a real tie) | the same phrase on a unique maximum |
+| "the search's own choice among effectively tied offers" (only on a real tie) | the same phrase on a unique maximum |
 | "labels no alternative as an error" (standing note) | "blunder", "mistake", "inaccuracy" |
 | "mean practice outcome" | "win probability", "chance", "winrate" |
 
-Regression to preserve: on a **unique** maximum the panel MUST NOT say "among equally scored
+Regression to preserve: on a **unique** maximum the panel MUST NOT say "among effectively tied
 offers". That defect was found and fixed on the #28 branch; the unique-maximum test is
 retained under this spec.
 
@@ -690,7 +698,7 @@ them on the exact published head. A criterion without a passing, committed check
 | AC-5 | **Byte-reproducible ranking.** Same view + same node-bounded budget + `max_millis = u64::MAX` ⇒ byte-identical serialised payload, asserted by running the search and ranking twice and comparing bytes, and once more out-of-process in the evidence harness. | ranking |
 | AC-6 | **Determinism is not claimed for truncated analyses.** A wall-clock or cancelled stop sets `reproducible: false`, is labelled in the panel, and is refused by the evidence harness. | ranking + presentation |
 | AC-7 | **Uncertainty is explicit.** Ties at the lattice resolution produce `EffectivelyTied` for both rows and a grouped display; one-sample rows are `SingleSample`; unscored rows are unranked. | ranking + presentation |
-| AC-8 | **Unique maximum is not called a tie.** Retained regression: the "among equally scored offers" phrase appears only on a real tie. | presentation |
+| AC-8 | **Unique maximum is not called a tie.** Retained regression: the "among effectively tied offers" phrase appears only on a real tie. | presentation |
 | AC-9 | **Refusal ranks nothing.** A typed `SearchUnavailable` yields `preference: None`, zero candidates, reason verbatim, and no empty table. | ranking + presentation |
 | AC-10 | **Zero samples rank nothing.** No ordering, no placeholder mean, explicit count of attempts. | ranking + presentation |
 | AC-11 | **Rules and policy are structurally separate.** Distinct constructors, badges, titles and source labels; `ExplanationKind::Strategy` never reaches the rules section; asserted on rendered output, not on intent. | presentation + guardrails |

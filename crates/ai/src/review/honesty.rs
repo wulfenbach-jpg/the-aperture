@@ -1220,17 +1220,25 @@ fn audit_preference(review: &RankedReview) -> Vec<HonestyViolation> {
                     ),
                 });
             }
-            // Members that are not level with the top, or that are not marked
-            // tied, break the claim in the same way a higher outside row does.
+            // §4.5 defines a pairwise lattice relation, not exact score equality
+            // or a transitive equivalence class. Compare members with the leading
+            // row, using the same sample-count predicate as canonical ranking.
+            let anchor = review.candidates.first();
             for index in offer_indices {
                 let Some(row) = review.candidate(*index) else {
                     continue;
                 };
-                if row.score != Some(top) {
+                let tied_to_anchor = anchor.is_some_and(|leading| {
+                    leading.scored_samples >= MIN_ORDERING_SAMPLES
+                        && row.scored_samples >= MIN_ORDERING_SAMPLES
+                        && leading.score.zip(row.score).is_some_and(|(a, b)| {
+                            !super::separable(a, leading.scored_samples, b, row.scored_samples)
+                        })
+                });
+                if !tied_to_anchor {
                     violations.push(HonestyViolation::UntraceableClaim {
                         sentence: format!(
-                            "a tie is claimed at {top:+.2} but offer index {index} is in the group with score {:?}",
-                            row.score
+                            "offer index {index} is not lattice-inseparable from the leading row"
                         ),
                     });
                 }

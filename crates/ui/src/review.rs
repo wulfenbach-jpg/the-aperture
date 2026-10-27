@@ -376,41 +376,64 @@ fn policy_lines(ranked: &RankedReview) -> Vec<String> {
             scored.first().map(|row| &row.uncertainty),
             Some(Uncertainty::Ordered)
         );
-    let mut index = 0usize;
-    let mut position = 0usize;
-    while index < scored.len() {
-        let row = scored[index];
-        match &row.uncertainty {
-            Uncertainty::EffectivelyTied { with } => {
-                let members: Vec<&RankedCandidate> = scored
-                    .iter()
-                    .copied()
-                    .filter(|other| {
-                        other.offer_index == row.offer_index || with.contains(&other.offer_index)
-                    })
-                    .collect();
-                let last = members
-                    .iter()
-                    .filter_map(|member| {
-                        scored
-                            .iter()
-                            .position(|other| other.offer_index == member.offer_index)
-                    })
-                    .max()
-                    .unwrap_or(index);
-                index = last + 1;
-                lines.push(tie_heading(&members));
-                for member in &members {
-                    push_candidate(&mut lines, member, None, &ranked.budget);
+    // Lattice inseparability is pairwise, not transitive. Disclose its edges
+    // without turning a chain of overlapping pairs into an invented tie group.
+    let mut pairs = Vec::new();
+    for row in &scored {
+        if let Uncertainty::EffectivelyTied { with } = &row.uncertainty {
+            for other in with {
+                if row.offer_index < *other {
+                    pairs.push(format!("offer {} ↔ offer {other}", row.offer_index));
                 }
             }
-            _ => {
-                position += 1;
-                let number = if numbered { Some(position) } else { None };
-                push_candidate(&mut lines, row, number, &ranked.budget);
-                index += 1;
+        }
+    }
+    if !pairs.is_empty() {
+        lines.push(format!(
+            "pairwise effective ties: {} — inseparability is not transitive",
+            pairs.join("; ")
+        ));
+    }
+    let mut emitted = Vec::new();
+    let mut position = 0usize;
+    for row in &scored {
+        if emitted.contains(&row.offer_index) {
+            continue;
+        }
+        if let Uncertainty::EffectivelyTied { with } = &row.uncertainty {
+            let members: Vec<&RankedCandidate> = scored
+                .iter()
+                .copied()
+                .filter(|other| {
+                    other.offer_index == row.offer_index || with.contains(&other.offer_index)
+                })
+                .collect();
+            // Only a closed, pairwise-complete group can be displayed together.
+            let closed_group = members.iter().all(|member| {
+                matches!(&member.uncertainty, Uncertainty::EffectivelyTied { with }
+                    if with.len() + 1 == members.len()
+                    && members.iter().filter(|other| other.offer_index != member.offer_index)
+                        .all(|other| with.contains(&other.offer_index)))
+            });
+            if closed_group {
+                lines.push(tie_heading(&members));
+                for member in members {
+                    if !emitted.contains(&member.offer_index) {
+                        push_candidate(&mut lines, member, None, &ranked.budget);
+                        emitted.push(member.offer_index);
+                    }
+                }
+                continue;
             }
         }
+        position += 1;
+        let number = if numbered && matches!(row.uncertainty, Uncertainty::Ordered) {
+            Some(position)
+        } else {
+            None
+        };
+        push_candidate(&mut lines, row, number, &ranked.budget);
+        emitted.push(row.offer_index);
     }
 
     if !unscored.is_empty() {
@@ -465,7 +488,7 @@ fn push_ordering_claim(
     };
     match &first.uncertainty {
         Uncertainty::EffectivelyTied { .. } => lines.push(
-            "ordering: no order is claimed at the top — the leading offers are not separable at this sample count, so they are shown as one group"
+            "ordering: no order is claimed at the top — the leading offer is not separable from its listed peers at this sample count; only pairwise-complete closed groups are displayed together"
                 .to_string(),
         ),
         Uncertainty::SingleSample => lines.push(
@@ -491,6 +514,9 @@ fn tie_heading(members: &[&RankedCandidate]) -> String {
         .first()
         .and_then(|member| member.score)
         .unwrap_or_default();
+    if members.iter().any(|member| member.score != Some(mean)) {
+        return "effectively tied at this sample count (different means) — not ordered inside this group:".to_string();
+    }
     let samples: Vec<usize> = members.iter().map(|member| member.scored_samples).collect();
     if samples.windows(2).all(|pair| pair[0] == pair[1]) {
         format!(
@@ -550,7 +576,7 @@ fn row_facts(candidate: &RankedCandidate, tied: bool) -> String {
     };
     if candidate.chosen {
         facts.push_str(if tied {
-            " · the search's own choice among equally scored offers"
+            " · the search's own choice among effectively tied offers"
         } else {
             " · the search's own choice"
         });
@@ -965,8 +991,8 @@ mod tests {
             assert!(shown.contains(label), "{label} missing: {shown}");
         }
         assert!(
-            shown.contains("the search's own choice among equally scored offers"),
-            "only a real tie may carry the equal-score qualifier: {shown}"
+            shown.contains("the search's own choice among effectively tied offers"),
+            "only a real tie may carry the effective-tie qualifier: {shown}"
         );
         assert_eq!(
             shown.matches("mean +1.00 over 2 scored samples").count(),
@@ -1019,7 +1045,7 @@ mod tests {
             "a row that is not ordered must not carry a ranking number: {shown}"
         );
         assert!(
-            !shown.contains("the search's own choice among equally scored"),
+            !shown.contains("the search's own choice among effectively tied"),
             "a single sample is not a tie: {shown}"
         );
     }
@@ -1512,9 +1538,10 @@ payload: move-review/1.2 — a read-only presentation of the ranking layer's own
 [PROVENANCE] budget: 2 determinization seed(s) · 900 engine decisions total · 150 decisions per rollout · 400 ms wall clock · at most 4 engine-offered candidates · used 480 · stopped: determinizations exhausted · reproducible: yes
 [PROVENANCE] determinization fidelity (verbatim): opponents: neutral belief deck (1 opponent(s)); no real hand or library order read
 stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap, the round schedule or the wall clock it reaches first, so a partial sample is normal
-ordering: no order is claimed at the top — the leading offers are not separable at this sample count, so they are shown as one group
+ordering: no order is claimed at the top — the leading offer is not separable from its listed peers at this sample count; only pairwise-complete closed groups are displayed together
+pairwise effective ties: offer 0 ↔ offer 1 — inseparability is not transitive
 effectively tied at +1.00 (2 scored samples each) — not ordered inside this group:
-• Play Forest [offer 0] — mean +1.00 over 2 scored samples · the search's own choice among equally scored offers
+• Play Forest [offer 0] — mean +1.00 over 2 scored samples · the search's own choice among effectively tied offers
     teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+1.00)
     line: decision 0 · P0 · "Play Forest" → decision 1 · P1 · "Pass priority"
     line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world

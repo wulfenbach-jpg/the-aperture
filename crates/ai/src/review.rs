@@ -1031,10 +1031,9 @@ fn notes_of(
                 chosen,
                 offer_indices,
             } => format!(
-                "the search's own choice among equally scored offers is offer {chosen}{}; \
-                 {} offers are level at this sample count and are not ordered",
+                "the search's own choice among effectively tied offers is offer {chosen}{}; the leading offer is not separable from its {} listed peers at this sample count",
                 label_suffix(candidates, *chosen),
-                offer_indices.len()
+                offer_indices.len().saturating_sub(1)
             ),
             Preference::NoOrder { chosen } => match chosen {
                 Some(index) => format!(
