@@ -7,12 +7,20 @@ inserted at a known anchor. Everything else is left byte-identical.
 """
 import pathlib
 import subprocess
+import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-HEAD = subprocess.run(
-    ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
-).stdout.strip()
+# The head token the body quotes is the commit the section was written for; an
+# explicit argument lets the script be re-run later and still reproduce the
+# recorded body byte-for-byte.
+HEAD = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True
+    ).stdout.strip()
+)
 BEFORE = (HERE / "pr-body-before.md").read_text(encoding="utf-8")
 
 OLD_STATE = """- Catalog **144 real cards**.
@@ -43,7 +51,7 @@ SLICE29 = """### Latest increment: slice 29 — Stuffed Bear (first animation of
 
 The rules layer now asks `Game::is_creature` everywhere instead of reading the printed card type: an animated artifact can be targeted as a creature, attack, block, deal and receive damage, and die as a *creature* death (the death record captures the creature answer at the moment it leaves, so dies-watchers drain correctly). `Game::has_color` is the layered colour query with the printed colour as its baseline, and `CardDef::is_color`/`is_black` are its printed predicates. A permanent that prints an animation records CR 302.6 summoning sickness when it *arrives*, so an artifact animated on the turn it entered cannot attack, while one animated on a later turn can.
 
-Verified: 9 focused slice-29 tests plus {focused} focused tests across 22 suites, workspace **{suites} suites / {passed} passed / 0 failed**, fmt / `clippy -D warnings` / locked release build clean, four discriminating mutation REDs (layer 4 addition ignored, layer 5 ignored, layer 7b ignored, entry sickness dropped) each with `engine.rs` restored byte-for-byte, and a real four-seat 40-life package journey (`decks/package-slice29.txt`, terminal `Win{P3}`, {steps} actions, {turns} turns, digest `{digest}`, separate CLI replay matches) whose driver asserts the animated-or-plain invariant after every accepted action ({animated} animated and {plain} plain sightings, {activations} activations). This slice certifies no starter list: Ayula still has **20** missing names and the eight-list gate remains **1 of 8**.
+Verified: 9 focused slice-29 tests plus __FOCUSED__ focused tests across 22 suites, workspace **__SUITES__ suites / __PASSED__ passed / 0 failed**, fmt / `clippy -D warnings` / locked release build clean, four discriminating mutation REDs (layer 4 addition ignored, layer 5 ignored, layer 7b ignored, entry sickness dropped) each with `engine.rs` restored byte-for-byte, and a real four-seat 40-life package journey (`decks/package-slice29.txt`, terminal `Win{P3}`, __STEPS__ actions, __TURNS__ turns, digest `__DIGEST__`, separate CLI replay matches) whose driver asserts the animated-or-plain invariant after every accepted action (__ANIMATED__ animated and __PLAIN__ plain sightings, __ACTIVATIONS__ activations). This slice certifies no starter list: Ayula still has **20** missing names and the eight-list gate remains **1 of 8**.
 """
 
 
@@ -52,17 +60,19 @@ def main() -> int:
     text = BEFORE.replace(OLD_STATE, NEW_STATE)
     anchor = "### Latest increment: slice 28"
     assert text.count(anchor) == 1, "the slice-28 anchor is not unique"
-    body = SLICE29.format(
-        focused=197,
-        suites=115,
-        passed=812,
-        steps=1912,
-        turns=44,
-        digest="ac16e510ca4691a69981beafcb577f3aa8f01bd6973710f86b89275899030024",
-        animated=1301,
-        plain=3741,
-        activations=119,
-    )
+    body = SLICE29
+    for name, value in {
+        "FOCUSED": "197",
+        "SUITES": "115",
+        "PASSED": "812",
+        "STEPS": "1912",
+        "TURNS": "44",
+        "DIGEST": "ac16e510ca4691a69981beafcb577f3aa8f01bd6973710f86b89275899030024",
+        "ANIMATED": "1301",
+        "PLAIN": "3741",
+        "ACTIVATIONS": "119",
+    }.items():
+        body = body.replace("__" + name + "__", value)
     text = text.replace(anchor, body + "\n" + anchor)
     (HERE / "pr-body-after.md").write_text(text, encoding="utf-8")
     print(f"wrote pr-body-after.md ({len(text)} bytes) for head {HEAD}")
