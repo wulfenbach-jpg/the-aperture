@@ -2,6 +2,8 @@
 
 `full_issue28_accepted=false` · card `t_bdd6bba7` · branch `aperture/issue-28` ·
 base master `f3e8bb1` · draft PR: **_PR URL is recorded on the Kanban card_**.
+Code head for every measurement below: **`ab71129`** (repair 1, after the
+independent review BLOCK at `330fc25`; see `REPAIR_1.md`).
 
 ## Usable now
 
@@ -37,10 +39,26 @@ point from a real `aperture_ai::search` run on a background worker:
 
 ## Gates (this head)
 
-`cargo fmt --all --check` clean · `cargo clippy --all-targets -- -D warnings`
-clean · `cargo test -p aperture-ui --lib` 55/55 · `cargo test --all-targets`
-and `cargo build --release` results in `evidence/issue28/full-tests.log` and
-`evidence/issue28/release-build.log`.
+All run at `ab71129`, each log carrying its own real exit status and the head
+sha it was taken at (`git diff ab71129..HEAD -- crates/` is empty):
+
+* `cargo fmt --all -- --check` — exit 0 (`fmt-check.log`)
+* `cargo clippy --all-targets -- -D warnings` — exit 0 (`clippy.log`)
+* `cargo test -p aperture-ui --lib` — **56 passed, 0 failed** (`ui-lib-tests.log`)
+* `cargo test -p aperture-ui --lib review::` — **10 passed, 0 failed**
+  (`tdd-green-review.log`)
+* the recorded journey — pass, 6 of 18 policy lines rendered at 1280×720
+  (`journey.log`)
+* `cargo test --all-targets` — **83 suites ok, 585 passed, 0 failed**, exit 0
+  (`full-tests.log`)
+* `cargo build --release` — exit 0 (`release-build.log`)
+
+Repair 1 (same branch, same draft PR): the chosen-row "equally scored"
+qualifier now appears only on a real tie (`tie_at_top`), with
+`review::tests::a_unique_maximum_is_not_described_as_an_equal_score` RED at the
+pre-fix code (`tdd-red-review-repair.log`, exit 101) and GREEN after; the stale
+`journey.log` / `tdd-green-review.log` were regenerated at this head rather than
+relabelled.
 
 ## Budget used
 

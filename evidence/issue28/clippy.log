@@ -1,2 +1,10 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.75s
-CLIPPY_EXIT=0
+# cargo clippy --all-targets -- -D warnings
+# worktree: C:/AI/aperture-worktrees/issue-28
+# head at capture: ab71129273fbfbbff883e2a92332d187fad0bf3c
+# branch: aperture/issue-28  base master: f3e8bb1
+# captured: 2026-10-27T01:33:57Z
+# command: cargo clippy --all-targets -- -D warnings
+# --- output (real exit status printed at the end; no pipe on the command) ---
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.50s
+# exit status: 0

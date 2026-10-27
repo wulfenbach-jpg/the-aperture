@@ -4,6 +4,12 @@ Bounded slice 1 of #28 (`strategy-coach`, M4). **Draft on purpose.**
 `full_issue28_accepted=false` — this does not claim #28 acceptance, engine
 strength, stronger play, or a v1 milestone.
 
+Repair 1 landed on this branch after an independent review of `330fc25` returned
+BLOCK: the chosen-row "equally scored" qualifier is now printed only on a real
+tie (a unique maximum says only "the search's own choice"), and the gate logs —
+including `journey.log` and `tdd-green-review.log` — were regenerated at code
+head `ab71129` instead of being relabelled. Details in `evidence/issue28/REPAIR_1.md`.
+
 ## What this adds
 
 A read-only **MOVE REVIEW** surface in the native table (`Move review (V)`
@@ -71,15 +77,22 @@ in `evidence/issue28/MOVE_REVIEW.md`.
   mutation run (panel render disabled → all three renderer/journey tests fail,
   so they are not vacuous).
 * `journey.log` — the end-to-end journey at 1280×720 (turn 3 precombat main,
-  6 engine offers, 5 387 engine decisions, ranked rows + honest "no scored
-  sample" rows read back from the rendered panel).
-* `ui-lib-tests.log`, `clippy.log`, `full-tests.log`, `release-build.log`.
+  6 engine offers, 5 298 engine decisions, ranked rows + honest "no scored
+  sample" rows read back from the rendered panel; the decision count moves with
+  the wall-clock stop, the shape does not).
+* `tdd-red-review-repair.log` — the repair's RED (exit 101) for the
+  unique-maximum wording test.
+* `REPAIR_1.md` — each review finding, its fix, and how to re-check it.
+* `ui-lib-tests.log`, `clippy.log`, `fmt-check.log`, `full-tests.log`,
+  `release-build.log`.
 
-## Gates at this head
+## Gates at code head `ab71129`
 
-`cargo fmt --all --check` clean · `cargo clippy --all-targets -- -D warnings`
-clean · `cargo test -p aperture-ui --lib` 55/55 · `cargo test --all-targets`
-green · `cargo build --release` green.
+`cargo fmt --all -- --check` exit 0 · `cargo clippy --all-targets -- -D warnings`
+exit 0 · `cargo test -p aperture-ui --lib` 56/56 · `cargo test --all-targets`
+83 suites ok, 585 passed, 0 failed · `cargo build --release` exit 0. Each log
+records its own exit status and the head it was taken at; the commits after
+`ab71129` are evidence-only (`git diff ab71129..HEAD -- crates/` is empty).
 
 ## Scope
 

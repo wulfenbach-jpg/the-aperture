@@ -7,6 +7,10 @@ Card `t_bdd6bba7` · worktree `C:/AI/aperture-worktrees/issue-28` · branch
 This is a **bounded increment**. It does **not** claim #28 acceptance, engine
 strength, stronger play, or a v1 milestone. `full_issue28_accepted=false`.
 
+Repaired after the independent review of `330fc25` returned BLOCK (findings B1
+and F1; see §"Repair 1" at the end and `REPAIR_1.md`). The code head these
+measurements were taken at is **`ab71129`**.
+
 ## What is usable now
 
 * A **MOVE REVIEW** panel in the native app, opened with the `Move review (V)`
@@ -19,6 +23,9 @@ strength, stronger play, or a v1 milestone. `full_issue28_accepted=false`.
   (`win +1 / loss −1 / draw 0` over scored determinizations), the number of
   scored samples, the rollouts that produced **no result**, and how often the
   search world refused the root action.
+* The row the search picked is marked as its own choice. It is called an
+  *equally scored* choice only when another ranked row really ties the top mean;
+  on a unique maximum the marker says only `the search's own choice`.
 * The panel discloses its own compute budget, the engine decisions it actually
   used, the stopping rule, and the search's verbatim determinization-fidelity
   line (`opponents: neutral belief deck (N opponent(s)); no real hand or library
@@ -102,20 +109,27 @@ panel states its stopping rule and reports the counts it actually obtained.
 
 ## Tests actually run (result lines)
 
-All commands run at the published head, in `C:/AI/aperture-worktrees/issue-28`.
+Every command below was run at code head **`ab71129`** in
+`C:/AI/aperture-worktrees/issue-28`, with its real exit status captured inside
+the log (no pipe on the command). The commits after `ab71129` are evidence-only:
+`git diff ab71129..HEAD -- crates/` is empty, so these logs describe exactly the
+Rust code the branch publishes. Each log's header records the head sha, branch,
+UTC capture time and the command it ran.
 
 | command | result | log |
 | --- | --- | --- |
 | `cargo test -p aperture-ui --lib review::` (RED, stubs) | 1 passed, 7 failed — `not implemented` | `tdd-red-review.log` |
-| `cargo test -p aperture-ui --lib review::` (GREEN) | 8 passed, 0 failed | `tdd-green-review.log` |
+| `cargo test -p aperture-ui --lib review::` (RED, repair-1 F1 test against the pre-fix code) | 1 failed — `a unique maximum must not be described as an equal score`, exit 101 | `tdd-red-review-repair.log` |
+| `cargo test -p aperture-ui --lib review::` (GREEN) | 10 passed, 0 failed | `tdd-green-review.log` |
 | `cargo test -p aperture-ui --lib session::tests` (RED, stubs) | 1 passed, 6 failed | `tdd-red-session.log` |
 | `cargo test -p aperture-ui --lib session::tests` (GREEN) | 7 passed, 0 failed | `tdd-green-session.log` |
 | `cargo test -p aperture-ui --lib` (mutation: panel render disabled) | 0 passed, 3 failed — every review renderer/journey test fails without the panel | `tdd-mutation-red-app.log` |
-| `cargo test -p aperture-ui --lib` | 55 passed, 0 failed | `ui-lib-tests.log` |
-| `cargo fmt --all --check` | clean | — |
-| `cargo clippy --all-targets -- -D warnings` | clean (exit 0) | `clippy.log` |
-| `cargo test --all-targets` | see `full-tests.log` | `full-tests.log` |
-| `cargo build --release` | see `release-build.log` | `release-build.log` |
+| `cargo test -p aperture-ui --lib review::` (mutation: chosen-row qualifier forced on, `ties_top` dropped) | 9 passed, 1 failed — only `a_unique_maximum_is_not_described_as_an_equal_score` catches it | `mutation-red-review-repair.log` |
+| `cargo test -p aperture-ui --lib` | 56 passed, 0 failed | `ui-lib-tests.log` |
+| `cargo fmt --all -- --check` | clean, exit 0 | `fmt-check.log` |
+| `cargo clippy --all-targets -- -D warnings` | clean, exit 0 | `clippy.log` |
+| `cargo test --all-targets` | 83 suites `test result: ok`, 585 passed, 0 failed, exit 0 | `full-tests.log` |
+| `cargo build --release` | `Finished release profile [optimized]`, exit 0 | `release-build.log` |
 
 Behaviour-to-test map:
 
@@ -130,6 +144,7 @@ Behaviour-to-test map:
 | read-only review semantics | `session::tests::a_move_review_never_submits_or_changes_the_table`, `app::viewport_tests::the_v_shortcut_opens_the_move_review_without_acting` |
 | no certainty words anywhere in the panel | `review::tests::no_line_claims_certainty_or_strength` |
 | displayed order never contradicts the stated preference on a tie | `review::tests::an_equal_score_is_displayed_in_the_searchs_own_order` |
+| a unique maximum is not described as an equal score | `review::tests::a_unique_maximum_is_not_described_as_an_equal_score` |
 | end-to-end journey | `app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface` |
 
 ## The recorded journey
@@ -150,11 +165,11 @@ Recorded output:
 
 ```
 journey: reached the reviewing seat's decision (turn 3, step precombat main phase, 6 engine offers)
-journey: review applied after 20 frame(s) · refused=None · 6 candidate(s) · 5387 engine decisions · budget ReviewBudget { seeds: 2, node_budget: 30000, max_rollout_nodes: 6000, max_millis: 8000, max_candidates: 6 }
+journey: review applied after 20 frame(s) · refused=None · 6 candidate(s) · 5298 engine decisions · budget ReviewBudget { seeds: 2, node_budget: 30000, max_rollout_nodes: 6000, max_millis: 8000, max_candidates: 6 }
 journey: policy section lines read back from the panel:
   reviewed decision point: P0 · engine revision 98 · decision 98
   budget: 2 determinization seed(s) · 30000 engine decisions total · 6000 decisions per rollout · 8000 ms wall clock · at most 6 engine-offered candidates
-  used: 5387 of 30000 engine decision(s)
+  used: 5298 of 30000 engine decision(s)
   stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap or the wall clock it reaches first, so a partial sample is normal
   fidelity: opponents: neutral belief deck (3 opponent(s)); no real hand or library order read; own future draws sampled from declared deck "Temur Beats" minus visible cards
   lines: the search exposes no principal variation — it returns root candidate scores only, not a played-out line — so no candidate line is shown here rather than synthesising one
@@ -170,12 +185,19 @@ journey: policy section lines read back from the panel:
   — Play Mountain — no scored sample (mean: none) · 0 without result · 0 refused by the search world
   — Play Forest — no scored sample (mean: none) · 0 without result · 0 refused by the search world
   this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
-journey: 5 of 16 policy lines were present in the rendered frame at 1280x720
+journey: 6 of 18 policy lines were present in the rendered frame at 1280x720
 ```
 
 Three alternatives tie at `+1.00` on a single sample each, three more produced no
 result at all — and the panel says exactly that. This is the honest shape of the
 result under this budget; it is why no verdict is printed.
+
+This block is the verbatim body of `journey.log` (captured at code head
+`ab71129`, exit 0). The decision count varies between runs because `max_millis`
+is a wall-clock stop: the review at `330fc25` observed 4 780, this capture
+reports 5 298, and the lane's original run reported 5 387 — same deterministic
+shape (turn 3, 6 offers, 3 scored rows, 3 unscored), different timing. Read the
+line from the log, not from memory.
 
 **At least one refusal case** was reached and is recorded in the tests: at the
 opening the engine's decision is a pending mulligan, so the search answers
@@ -213,3 +235,41 @@ Not touched: `crates/core/**`, `crates/ai/**`, `crates/import/**`,
 `full_issue28_accepted=false`. Criterion 4 remains blocked on **#17's certified
 starter lists** (the reviewed interaction/strategy corpus does not exist yet);
 the card should park as a dependency wait on that corpus, not decompose.
+
+## Repair 1 — after the independent review BLOCK at `330fc25`
+
+The independent review (`REVIEW_28_independent.md`, card attachment 104) passed
+every behavioural finding and blocked on two items. Both are fixed at code head
+`ab71129`; nothing else was re-litigated and no assertion was weakened.
+
+**B1 (blocking) — committed evidence did not correspond to the reviewed head.**
+`journey.log` and `tdd-green-review.log` had been produced before the final
+panel text and before the tenth `review::` test, yet this file labelled every
+log a run "at the published head". Fixed by regenerating both at `ab71129` with
+their real exit statuses inside the log, regenerating the other gate logs at the
+same head, and replacing this file's blanket claim with the head each log was
+taken at. Checkable invariants now:
+
+* `tdd-green-review.log` → `test result: ok. 10 passed` and names
+  `a_unique_maximum_is_not_described_as_an_equal_score`.
+* `journey.log` quotes text that exists in the head source, e.g.
+  `grep -F "it labels no alternative as an error" crates/ui/src/review.rs` hits
+  and `grep -F "it names no alternative as the one to play" crates/ui/src/` does
+  not.
+* `git diff ab71129..HEAD -- crates/` is empty, so the logs describe the
+  published code.
+
+**F1 (must fix) — false equality on the chosen row.**
+`candidate_line` appended "among equally scored offers" whenever the search's
+pick led the list, so `+1.00` and `−0.50` on one screen were described as an
+equal score. The qualifier is now emitted only when another ranked row actually
+ties the top mean (`tie_at_top` in `policy_section`); otherwise the row says only
+`the search's own choice`. Test:
+`review::tests::a_unique_maximum_is_not_described_as_an_equal_score` — RED at the
+pre-fix code (exit 101, `tdd-red-review-repair.log`, whose panic quotes the
+contradictory panel line), GREEN after the fix. The tie path stays covered by
+`review::tests::an_equal_score_is_displayed_in_the_searchs_own_order`.
+
+Unchanged by the repair: the exported behaviour, the pinned budget, staleness
+discard, read-only semantics, and the criterion-4 dependency on #17's certified
+starter lists. `full_issue28_accepted=false`.

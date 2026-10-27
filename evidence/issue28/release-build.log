@@ -1,2 +1,10 @@
-    Finished `release` profile [optimized] target(s) in 0.63s
-RELEASE_EXIT=0
+# cargo build --release
+# worktree: C:/AI/aperture-worktrees/issue-28
+# head at capture: ab71129273fbfbbff883e2a92332d187fad0bf3c
+# branch: aperture/issue-28  base master: f3e8bb1
+# captured: 2026-10-27T01:43:06Z
+# command: cargo build --release
+# --- output (real exit status printed at the end; no pipe on the command) ---
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+    Finished `release` profile [optimized] target(s) in 21.11s
+# exit status: 0

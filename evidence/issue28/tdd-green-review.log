@@ -1,13 +1,26 @@
+# cargo test -p aperture-ui --lib review:: -- --nocapture (GREEN at repaired code head)
+# worktree: C:/AI/aperture-worktrees/issue-28
+# head at capture: ab71129273fbfbbff883e2a92332d187fad0bf3c
+# branch: aperture/issue-28  base master: f3e8bb1
+# captured: 2026-10-27T01:34:05Z
+# command: cargo test -p aperture-ui --lib review:: -- --nocapture
+# --- output (real exit status printed at the end; no pipe on the command) ---
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.08s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
 
-running 8 tests
+running 10 tests
+test review::tests::the_budget_converts_to_the_search_config_it_describes ... ok
+test review::tests::a_refusal_is_typed_and_ranks_nothing ... ok
+test review::tests::a_unique_maximum_is_not_described_as_an_equal_score ... ok
+test review::tests::an_equal_score_is_displayed_in_the_searchs_own_order ... ok
+test review::tests::rules_and_policy_are_separate_labelled_sections ... ok
+test review::tests::a_zero_sample_analysis_makes_no_ordering_claim ... ok
+test review::tests::the_panel_discloses_its_boundary_budget_and_missing_lines ... ok
 test review::tests::a_completed_search_report_keeps_only_offered_labels_and_counts ... ok
 test review::tests::a_ranked_analysis_orders_by_mean_with_sample_counts ... ok
-test review::tests::a_zero_sample_analysis_makes_no_ordering_claim ... ok
 test review::tests::no_line_claims_certainty_or_strength ... ok
-test review::tests::the_budget_converts_to_the_search_config_it_describes ... ok
-test review::tests::the_panel_discloses_its_boundary_budget_and_missing_lines ... ok
-test review::tests::a_refusal_is_typed_and_ranks_nothing ... ok
-test review::tests::rules_and_policy_are_separate_labelled_sections ... ok
 
-test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 36 filtered out; finished in 0.00s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 46 filtered out; finished in 0.00s
 
+# exit status: 0

@@ -1,0 +1,55 @@
+# Mutation check for repair-1 F1 — the equality qualifier forced on for every chosen row
+# worktree: C:/AI/aperture-worktrees/issue-28  head: ab71129273fbfbbff883e2a92332d187fad0bf3c (ab71129) + one-line working-tree mutation
+# mutation: `let ties_top = candidate.chosen;` (drops the tie_at_top condition)
+# command: cargo test -p aperture-ui --lib review::tests:: -- --nocapture
+# --- output ---
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+warning: unused variable: `tie_at_top`
+   --> crates\ui\src\review.rs:323:13
+    |
+323 |         let tie_at_top =
+    |             ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_tie_at_top`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-ui` (lib test) generated 1 warning (run `cargo fix --lib -p aperture-ui --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 22.68s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
+
+running 10 tests
+test review::tests::a_refusal_is_typed_and_ranks_nothing ... ok
+test review::tests::a_zero_sample_analysis_makes_no_ordering_claim ... ok
+test review::tests::an_equal_score_is_displayed_in_the_searchs_own_order ... ok
+test review::tests::a_ranked_analysis_orders_by_mean_with_sample_counts ... ok
+test review::tests::rules_and_policy_are_separate_labelled_sections ... ok
+test review::tests::the_budget_converts_to_the_search_config_it_describes ... ok
+
+thread 'review::tests::a_unique_maximum_is_not_described_as_an_equal_score' (21056) panicked at crates\ui\src\review.rstest review::tests::a_completed_search_report_keeps_only_offered_labels_and_counts ... :ok555
+:test review::tests::the_panel_discloses_its_boundary_budget_and_missing_lines ... 9ok:
+
+a unique maximum must not be described as an equal score: reviewed decision point: P0 · engine revision 9 · decision 12
+budget: 2 determinization seed(s) · 900 engine decisions total · 150 decisions per rollout · 400 ms wall clock · at most 4 engine-offered candidates
+used: 480 of 900 engine decision(s)
+stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap or the wall clock it reaches first, so a partial sample is normal
+fidelity: opponents: neutral belief deck (1 opponent(s)); no real hand or library order read
+lines: the search exposes no principal variation — it returns root candidate scores only, not a played-out line — so no candidate line is shown here rather than synthesising one
+policy preference (a preference from scored practice outcomes — not a rule, and not a claim of strength): "Play Forest"
+ordering: highest mean practice outcome first
+score: mean practice outcome = win +1 / loss -1 / draw 0 over scored determinizations; a capped or failed rollout is counted as "without result", never as a win or a loss
+uncertainty: sample counts differ between rows and more samples do not make a row better; these samples are small and small samples are not evidence of strength
+1. Play Forest — mean +1.00 over 2 scored samples · 0 without result · 0 refused by the search world · the search's own choice among equally scored offers
+2. Pass priority — mean -0.50 over 2 scored samples · 0 without result · 0 refused by the search world
+this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an errortest review::tests::no_line_claims_certainty_or_strength ... 
+oknote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+test review::tests::a_unique_maximum_is_not_described_as_an_equal_score ... FAILED
+
+failures:
+
+failures:
+    review::tests::a_unique_maximum_is_not_described_as_an_equal_score
+
+test result: FAILED. 9 passed; 1 failed; 0 ignored; 0 measured; 46 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p aperture-ui --lib`
+# exit status: 101
