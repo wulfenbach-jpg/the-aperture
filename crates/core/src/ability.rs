@@ -113,7 +113,6 @@ pub struct AbilityCost {
     pub exile_source_from_graveyard: bool,
     /// Saddle N: tap any number of other untapped creatures you control with
     /// total effective power N or greater. 0 means not a saddle cost.
-    #[allow(dead_code)]
     pub saddle_power: Option<u8>,
 }
 

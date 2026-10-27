@@ -11,5 +11,9 @@ printings/catalog/pins/replay green; fmt/clippy/release exit 0. Journey terminal
 2653 decisions, 55 turns, Drover cast 9, saddle activations 116, trample grants 22,
 digest `b711d966…5677`, replay and save parity.
 
-Open: cleanup/departure/same-ID saddle controls, explicit multi-helper test, full CI. No
-100-card certificate.
+Repair: all new saddle/grant rules use live `Game::is_creature` (animated Stuffed Bear helper
+and recipient tested); saddle stack `affected` binding is invalidated on source departure;
+cleanup/source-left controls and actual multi-helper offers added. Bounded offered subsets
+cap at 10 eligible helpers; above the cap no offers are generated while direct validation
+remains general. This is a disclosed limitation, not full-card conformance. No same-ID legal
+reentry control beyond no-effect source-left. No full CI locally; exact-head CI owns it.

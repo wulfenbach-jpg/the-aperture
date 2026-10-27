@@ -3341,7 +3341,9 @@ impl Game {
             .state
             .try_object(source)
             .ok_or(EngineError::UnknownObject)?;
-        if object.zone != Zone::Battlefield || object.controller != player || !object.is_creature()
+        if object.zone != Zone::Battlefield
+            || object.controller != player
+            || !self.is_creature(object)
         {
             return Err(EngineError::illegal(
                 "saddle",
@@ -3381,7 +3383,7 @@ impl Game {
             };
             if *id == source
                 || helper.zone != Zone::Battlefield
-                || !helper.is_creature()
+                || !self.is_creature(helper)
                 || helper.controller != player
                 || helper.tapped
             {
@@ -3441,7 +3443,7 @@ impl Game {
             card,
             controller: player,
             targets: Vec::new(),
-            affected: None,
+            affected: Some(source),
             source_pt_lki: None,
             cursor: 0,
             entry: StackEntry::Activated { ability: index },
@@ -6815,10 +6817,11 @@ impl Game {
                 false
             }
             Effect::SaddleSource => {
-                if self
-                    .state
-                    .try_object(item.object)
-                    .is_some_and(|object| object.zone == Zone::Battlefield)
+                if item.affected == Some(item.object)
+                    && self
+                        .state
+                        .try_object(item.object)
+                        .is_some_and(|object| object.zone == Zone::Battlefield)
                 {
                     let timestamp = self.next_timestamp();
                     let id = self.next_effect_id();
@@ -6847,7 +6850,7 @@ impl Game {
                     .state
                     .battlefield(controller)
                     .into_iter()
-                    .filter(|o| o.is_creature())
+                    .filter(|o| self.is_creature(o))
                     .map(|o| o.id)
                     .collect();
                 for target in creatures {
@@ -7619,7 +7622,7 @@ impl Game {
             .state
             .battlefield(player)
             .into_iter()
-            .filter(|object| object.id != source && object.is_creature() && !object.tapped)
+            .filter(|object| object.id != source && self.is_creature(object) && !object.tapped)
             .map(|object| object.id)
             .collect();
         if helpers.is_empty() || helpers.len() > 10 {
@@ -7650,9 +7653,14 @@ impl Game {
             out.push(LegalAction {
                 action,
                 label: format!(
-                    "Saddle {} by tapping {} creature(s)",
+                    "Saddle {} by tapping {}",
                     card.def().name,
-                    chosen.len()
+                    chosen
+                        .iter()
+                        .filter_map(|id| self.state.try_object(*id))
+                        .map(|object| format!("{} #{}", object.card.def().name, object.id.0))
+                        .collect::<Vec<_>>()
+                        .join(", ")
                 ),
                 rules: vec!["702.171a"],
             });

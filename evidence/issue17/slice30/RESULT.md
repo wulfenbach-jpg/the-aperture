@@ -39,8 +39,22 @@ trample-grant events; replay matched and fresh save round-tripped. Digest
 `b711d966f9bd2e60187d4eafc5be852eea01b5f141fcc253813b1c38c8a85677`, snapshot SHA256
 `69497ca2f6c8ac51c44726e78652bde1ad1903ee677af8d00b7cc0d324369471`.
 
+## Repair after native delta inspection
+- Native RED/defect: new saddle/grant rules used printed-only `Object::is_creature`, so an
+  animated Stuffed Bear was excluded. All new sites now use `Game::is_creature`; added
+  animated-helper + trample-recipient coverage and an actual two-helper offered activation
+  with distinct labels.
+- Native RED/defect: saddle stack item had no source-incarnation binding. It now carries
+  `affected: Some(source)` through the existing invalidation path; source-left resolves with
+  no effect and no transfer. Added cleanup and source-left controls.
+- Broad departure effect pruning was narrowed to the saddle designation only.
+- Commands: `evidence/issue17/slice30/repair-gates.log`; issue17_slice30 6 passed, slice29 6,
+  replay 6, printings 8, catalog 5, slice15 2, commander 43; fmt/clippy/release exit 0.
+
 ## Gaps
-- No dedicated cleanup-expiry, battlefield-departure, or same-ID bounce/recast saddle test.
-- No test for explicitly multi-helper saddle beyond the offered minimal one-helper set;
-  validation supports it and offers enumerate subsets.
+- Offer enumeration is bounded to ≤10 eligible helpers and currently returns no saddle offers
+  above that cap while direct validation remains general. This is explicitly a bounded-offer
+  limitation, not whole-card conformance; full-list certification remains a gap.
+- No same-ID legal reentry control beyond source-left no-effect (normal Drover cannot be
+  recast before its old sorcery-speed saddle resolves without another deployment card).
 - No full workspace matrix rerun; exact-head CI owns it.

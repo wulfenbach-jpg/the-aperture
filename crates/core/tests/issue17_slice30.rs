@@ -77,16 +77,28 @@ fn saddle_uses_other_untapped_creatures_and_grants_trample_on_attack() {
         .filter(|a| matches!(&a.action,Action::SaddleMount{source,..} if *source==mount))
         .collect();
     assert!(!offers.is_empty(), "saddle must be offered");
+    let labels: Vec<String> = offers.iter().map(|a| a.label.clone()).collect();
+    let mut unique = labels.clone();
+    unique.sort();
+    unique.dedup();
+    assert_eq!(
+        labels.len(),
+        unique.len(),
+        "equal subsets need distinct labels: {labels:?}"
+    );
     let action = offers
         .into_iter()
         .find(|a| match &a.action {
-            Action::SaddleMount { creatures, .. } => creatures == &vec![helper],
+            Action::SaddleMount { creatures, .. } => {
+                creatures.len() == 2 && creatures.contains(&helper) && creatures.contains(&human)
+            }
             _ => false,
         })
-        .expect("minimal helper offer")
+        .expect("multi-helper offer")
         .action;
     submit_ok(&mut g, P0, action);
-    assert!(g.state.object(helper).tapped, "helper tapped as cost");
+    assert!(g.state.object(helper).tapped, "first helper tapped as cost");
+    assert!(g.state.object(human).tapped, "second helper tapped as cost");
     drain(&mut g);
     assert!(
         g.state
@@ -265,6 +277,153 @@ fn saddle_refusals_and_save_reload_preserve_state() {
     assert!(
         loaded
             .state
+            .effects
+            .iter()
+            .any(|e| e.kind == ContinuousKind::Saddled && e.target == mount)
+    );
+}
+
+#[test]
+fn animated_stuffed_bear_is_a_helper_and_trample_recipient() {
+    let mut g = fixture(3004)
+        .battlefield(
+            P0,
+            &[
+                card30("Drover Grizzly"),
+                CardId::StuffedBear,
+                CardId::Forest,
+                CardId::Forest,
+            ],
+        )
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let mount = battlefield_card(&g, P0, card30("Drover Grizzly"));
+    let bear = battlefield_card(&g, P0, CardId::StuffedBear);
+    assert!(!g.state.object(bear).is_creature());
+    let anim = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::ActivateAbility { source, .. } if source == bear))
+        .expect("animation offered")
+        .action;
+    submit_ok(&mut g, P0, anim);
+    drain(&mut g);
+    assert!(g.legal_actions().iter().any(|a| matches!(&a.action, Action::SaddleMount { creatures, .. } if creatures == &vec![bear])), "animated Bear is an eligible helper");
+    submit_ok(
+        &mut g,
+        P0,
+        Action::SaddleMount {
+            source: mount,
+            creatures: vec![bear],
+        },
+    );
+    drain(&mut g);
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut g,
+        &mut log,
+        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+        64
+    ));
+    submit_ok(
+        &mut g,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![mount],
+            defender: Some(P1),
+        },
+    );
+    assert!(run_until(
+        &mut g,
+        &mut log,
+        |g| g.state.stack.is_empty(),
+        64
+    ));
+    assert!(
+        g.state
+            .effects
+            .iter()
+            .any(|e| e.kind == ContinuousKind::GrantsTrample && e.target == bear),
+        "animated Bear receives trample"
+    );
+}
+
+#[test]
+fn saddle_cleanup_and_source_left_activation_do_not_persist() {
+    // Cleanup expiry.
+    let mut g = fixture(3005)
+        .battlefield(P0, &[card30("Drover Grizzly"), CardId::GrizzlyBears])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let mount = battlefield_card(&g, P0, card30("Drover Grizzly"));
+    let helper = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::SaddleMount {
+            source: mount,
+            creatures: vec![helper],
+        },
+    );
+    drain(&mut g);
+    let turn = g.state.turn.number;
+    for _ in 0..1000 {
+        if g.state.turn.number != turn {
+            break;
+        }
+        if g.state.pending.is_some() {
+            let a = auto_answer(&g);
+            let p = g.decision_owner().unwrap();
+            submit_ok(&mut g, p, a);
+            continue;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert!(
+        !g.state
+            .effects
+            .iter()
+            .any(|e| e.kind == ContinuousKind::Saddled),
+        "cleanup ends saddled"
+    );
+
+    // Source leaves while saddle is on the stack: resolves without marking a new incarnation.
+    let mut g = fixture(3006)
+        .hand(P0, &[CardId::Unsummon])
+        .battlefield(
+            P0,
+            &[
+                card30("Drover Grizzly"),
+                CardId::GrizzlyBears,
+                CardId::Island,
+            ],
+        )
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let mount = battlefield_card(&g, P0, card30("Drover Grizzly"));
+    let helper = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::SaddleMount {
+            source: mount,
+            creatures: vec![helper],
+        },
+    );
+    let unsummon = hand_card(&g, P0, CardId::Unsummon);
+    let a = g.legal_actions().into_iter().find(|a| matches!(&a.action, Action::CastSpell { card, targets } if *card==unsummon && targets==&vec![Target::Permanent(mount)])).expect("Unsummon offered").action;
+    submit_ok(&mut g, P0, a);
+    drain(&mut g);
+    assert_eq!(g.state.object(mount).zone, Zone::Hand);
+    assert!(
+        !g.state
             .effects
             .iter()
             .any(|e| e.kind == ContinuousKind::Saddled && e.target == mount)

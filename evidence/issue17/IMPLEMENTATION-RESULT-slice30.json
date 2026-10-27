@@ -13,7 +13,7 @@
     "ayula_missing": 19
   },
   "focused": {
-    "issue17_slice30": "4 passed",
+    "issue17_slice30": "6 passed",
     "card_printings": "8 passed",
     "catalog_pool": "5 passed",
     "issue17_slice15_corpus": "2 passed",
@@ -22,7 +22,8 @@
     "fmt": "0",
     "clippy": "0",
     "release": "0",
-    "gates": "evidence/issue17/slice30/gates.log"
+    "gates": "evidence/issue17/slice30/gates.log",
+    "repair_gates": "evidence/issue17/slice30/repair-gates.log"
   },
   "journey": {
     "package": "decks/package-slice30.txt",
@@ -44,5 +45,16 @@
     "no cleanup/departure/same-ID saddle test",
     "no explicit multi-helper test",
     "no full workspace matrix"
-  ]
+  ],
+  "repair": {
+    "layered_creature": "Game::is_creature at all new saddle/grant sites",
+    "source_binding": "Saddle stack affected Some(source), invalidated on departure",
+    "tests": [
+      "animated Stuffed Bear helper + trample recipient",
+      "two-helper offered activation with distinct labels",
+      "cleanup expiry",
+      "source-left no effect/panic"
+    ],
+    "limitation": "offer enumeration capped at 10 helpers; direct validation general"
+  }
 }
