@@ -190,9 +190,21 @@ Two runner facts worth recording, because both produced failed logs before this 
 
 ## Exact-head CI
 
-Recorded in the summary below and in the card comment: the pushed head is `b77603b`'s successor
-`<evidence head>`, whose only difference from `b77603b` is this file and the gate log. CI at the
-code head is the run that certifies the code; no green was inherited from `48e3334`.
+`4e5b4ec` (the code head `b77603b` plus this record, the gate log and the gate script — no product
+file changes): **10 checks, all `pass`, polled to completion**. Both workflow runs for the SHA are
+green, the `pull_request` run (40470407282) and the `push` run (40470402354):
+
+| check | run | result |
+|---|---|---|
+| board and roadmap | 40470407282 / 40470402354 | pass |
+| rust (ubuntu-latest) | 40470407282 / 40470402354 | pass (5m28s / 7m0s) |
+| rust (macos-latest) | 40470407282 / 40470402354 | pass (6m38s / 8m57s) |
+| rust (windows-latest) | 40470407282 / 40470402354 | pass (9m17s / 8m8s) |
+| windows package | 40470407282 / 40470402354 | pass (7m46s / 7m6s) |
+
+Nothing was inherited: every check was created at 07:58Z against `4e5b4ec` and ran to completion.
+The `windows package` job runs the repository packager on this head, so the packaged-binary lane is
+covered by the same run.
 
 ## Open items
 
