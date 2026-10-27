@@ -109,12 +109,28 @@ panel states its stopping rule and reports the counts it actually obtained.
 
 ## Tests actually run (result lines)
 
-Every command below was run at code head **`ab71129`** in
-`C:/AI/aperture-worktrees/issue-28`, with its real exit status captured inside
-the log (no pipe on the command). The commits after `ab71129` are evidence-only:
-`git diff ab71129..HEAD -- crates/` is empty, so these logs describe exactly the
-Rust code the branch publishes. Each log's header records the head sha, branch,
-UTC capture time and the command it ran.
+Every log in this table was produced by the command it names, in
+`C:/AI/aperture-worktrees/issue-28`. The table contains two different kinds of
+artifact, and only the first kind is a head measurement:
+
+- **Head runs** — `journey.log`, `tdd-green-review.log`, `ui-lib-tests.log`,
+  `fmt-check.log`, `clippy.log`, `full-tests.log`, `release-build.log`: each was
+  run at code head **`ab71129`** and carries a header with the head sha, branch,
+  UTC capture time and the command, plus the command's own exit status. The
+  commits after `ab71129` are evidence-only (`git diff ab71129..HEAD -- crates/`
+  is empty), so those logs describe exactly the Rust code the branch publishes.
+- **RED / mutation transcripts** — `tdd-red-review.log`, `tdd-red-session.log`,
+  `tdd-green-session.log`, `tdd-mutation-red-app.log`: captured in earlier
+  working trees while the slice was being built, and they carry **no head
+  header and no exit-status line**. They are kept because they are the only
+  record of the RED state each test was written against, not because they
+  describe `ab71129`. Their result lines must be read as what the tree at that
+  moment produced.
+  `tdd-red-review-repair.log` and `mutation-red-review-repair.log` do declare
+  their own provenance in a header: the former against the pre-fix working tree
+  at `330fc25` (the last commit before the F1 fix), the latter against
+  `ab71129` with the equality qualifier deliberately forced on for every chosen
+  row, ending in its own `exit status: 101`.
 
 | command | result | log |
 | --- | --- | --- |
