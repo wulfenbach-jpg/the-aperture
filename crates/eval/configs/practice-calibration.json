@@ -1,0 +1,16 @@
+{
+  "run_id": "practice-calibration-paired-seeds-v1",
+  "decks": [
+    { "name": "Temur Beats", "path": "decks/temur-beats.txt" },
+    { "name": "Izzet Control", "path": "decks/izzet-control.txt" }
+  ],
+  "seeds": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
+  "rotations": 2,
+  "max_steps": 4000,
+  "max_millis": 0,
+  "search_seeds": 1,
+  "search_node_budget": 1200,
+  "search_max_rollout_nodes": 200,
+  "search_max_millis": 0,
+  "search_max_candidates": 8
+}

@@ -1,0 +1,145 @@
+{
+  "note": "Raw per-game latencies, deliberately NOT in report.json so the scored report stays byte-reproducible; wall_ms excludes replay verification.",
+  "rows": [
+    {
+      "seed": 101,
+      "rotation": 0,
+      "wall_ms": 1803,
+      "verify_ms": 1,
+      "search_ms": 1675
+    },
+    {
+      "seed": 101,
+      "rotation": 1,
+      "wall_ms": 2496,
+      "verify_ms": 0,
+      "search_ms": 2383
+    },
+    {
+      "seed": 102,
+      "rotation": 0,
+      "wall_ms": 4007,
+      "verify_ms": 1,
+      "search_ms": 3831
+    },
+    {
+      "seed": 102,
+      "rotation": 1,
+      "wall_ms": 7045,
+      "verify_ms": 1,
+      "search_ms": 6840
+    },
+    {
+      "seed": 103,
+      "rotation": 0,
+      "wall_ms": 8017,
+      "verify_ms": 2,
+      "search_ms": 7695
+    },
+    {
+      "seed": 103,
+      "rotation": 1,
+      "wall_ms": 3196,
+      "verify_ms": 1,
+      "search_ms": 3083
+    },
+    {
+      "seed": 104,
+      "rotation": 0,
+      "wall_ms": 10809,
+      "verify_ms": 2,
+      "search_ms": 10406
+    },
+    {
+      "seed": 104,
+      "rotation": 1,
+      "wall_ms": 2068,
+      "verify_ms": 0,
+      "search_ms": 1960
+    },
+    {
+      "seed": 105,
+      "rotation": 0,
+      "wall_ms": 6173,
+      "verify_ms": 2,
+      "search_ms": 5849
+    },
+    {
+      "seed": 105,
+      "rotation": 1,
+      "wall_ms": 1778,
+      "verify_ms": 0,
+      "search_ms": 1693
+    },
+    {
+      "seed": 106,
+      "rotation": 0,
+      "wall_ms": 4260,
+      "verify_ms": 1,
+      "search_ms": 4065
+    },
+    {
+      "seed": 106,
+      "rotation": 1,
+      "wall_ms": 2022,
+      "verify_ms": 0,
+      "search_ms": 1914
+    },
+    {
+      "seed": 107,
+      "rotation": 0,
+      "wall_ms": 7040,
+      "verify_ms": 1,
+      "search_ms": 6780
+    },
+    {
+      "seed": 107,
+      "rotation": 1,
+      "wall_ms": 3352,
+      "verify_ms": 1,
+      "search_ms": 3214
+    },
+    {
+      "seed": 108,
+      "rotation": 0,
+      "wall_ms": 2506,
+      "verify_ms": 1,
+      "search_ms": 2336
+    },
+    {
+      "seed": 108,
+      "rotation": 1,
+      "wall_ms": 1815,
+      "verify_ms": 0,
+      "search_ms": 1723
+    },
+    {
+      "seed": 109,
+      "rotation": 0,
+      "wall_ms": 2881,
+      "verify_ms": 1,
+      "search_ms": 2706
+    },
+    {
+      "seed": 109,
+      "rotation": 1,
+      "wall_ms": 2045,
+      "verify_ms": 0,
+      "search_ms": 1942
+    },
+    {
+      "seed": 110,
+      "rotation": 0,
+      "wall_ms": 6698,
+      "verify_ms": 2,
+      "search_ms": 6422
+    },
+    {
+      "seed": 110,
+      "rotation": 1,
+      "wall_ms": 4077,
+      "verify_ms": 0,
+      "search_ms": 3957
+    }
+  ]
+}

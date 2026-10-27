@@ -1,0 +1,28 @@
+PRACTICE CALIBRATION ONLY: fixtures are declared practice decks, not the eight certified #17 starters. This report proves the driver/replay/report pipeline and must not be reported as 1000 certified games; issue #26 full acceptance still requires the certified corpus run with hardware/budgets pinned.
+run_id: practice-calibration-paired-seeds-v1
+source config file sha256: 3b8a289eeba4ed851de942d5fa4d1a716304b1947c13451f3e1e4e98eb85dd14 (raw input bytes)
+canonical config sha256: d701869c00aac8596c1baa822acd334e963f0b62946262a96b0f3cfd966bf47d (serde_json re-serialization)
+[
+  [
+    "decks/temur-beats.txt",
+    "70aa7895ccaf9f9cae439830545e09dad4f5070465f7e1d77495cc032e00a766"
+  ],
+  [
+    "decks/izzet-control.txt",
+    "51dccd5cefc4ff8cc56ebd4102ca6a8f0bbb89190626575d48a74fe15698d883"
+  ]
+]
+2026-09-25
+hardware: 12 logical cpus, cpu AMD Ryzen 5 3600 6-Core Processor, os windows, rustc rustc 1.97.1 (8bab26f4f 2026-07-14), profile release
+driver commit: d44d09d8ab49dd0733fc5bdff846391631e79b7c
+driver tree: 9e8580ae587cd57ae1eb8e75f265e2f1f5948bab (yes)
+clean tracked tree: yes
+instrumentation: raw per-game wall/verify/search timings are in timings.json next to this summary; report.json carries no timing bytes and is byte-reproducible from the pinned commit
+invocation: aperture-eval run crates/eval/configs/practice-calibration.json reports/eval/practice-calibration-paired-seeds-v1 (cwd = repository root)
+
+games: 20 recorded / 20 declared | terminal 20 (search wins 0, losses 20, draws 0), terminal unverified 0, capped 0, failed 0, policy rejected 0, replay mismatches 0
+paired design (2+ rotations, seat swap): true
+paired diff vs fair odds: mean -0.5000, CI95 [-0.5000, -0.5000]
+pinned t table, df=9; paired units n=10; scored terminal instances=20; no excluded seeds
+practice calibration: search did not exceed parity within disclosed uncertainty (10 calibration units); no strength claim
+policy note: The baseline heuristic was not altered for this run; search-budget only differences are pinned in the versioned config.

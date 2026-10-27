@@ -277,6 +277,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "aperture-eval"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "aperture-ai",
+ "aperture-core",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "aperture-import"
 version = "0.1.0"
 dependencies = [
