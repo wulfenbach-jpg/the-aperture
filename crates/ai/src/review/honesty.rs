@@ -608,7 +608,8 @@ impl EvidenceRef {
 /// `Cow<'static, str>`, so the comparison is by string content rather than by
 /// borrowed type.
 fn explanation_cites(explanation: &Explanation, number: &str) -> bool {
-    explanation.rules.iter().any(|cited| *cited == number)
+    let rules: &[&str] = &explanation.rules;
+    rules.contains(&number)
 }
 
 /// Resolve one evidence reference against the payload and (optionally) the engine sources.
