@@ -46,10 +46,10 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **133** are in the supported 146-card catalog and **326** are missing. Slice
+* **134** are in the supported 146-card catalog and **325** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
-  (130→131), slice 28 adds `Circle of the Moon Druid` (131→132) and slice 29
-  adds `Stuffed Bear` (132→133) to the previously verified split. The union is unchanged because every one of them
+  (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
+  adds `Stuffed Bear` (132→133) and slice 30 adds `Drover Grizzly` (133→134) to the previously verified split. The union is unchanged because every one of them
   was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
