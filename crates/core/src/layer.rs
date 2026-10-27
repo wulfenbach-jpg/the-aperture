@@ -37,6 +37,12 @@ use crate::ids::{ObjectId, PlayerId};
 /// likewise not implemented; 7d belongs to the counters lane.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum Layer {
+    /// CR 613.1d: type-changing effects. Slice 26 adds the first one the pool
+    /// needs — "becomes a Bear Berserker until end of turn" (Ursine Champion).
+    /// A layer 4 effect replaces the creature's subtype line for as long as it
+    /// applies, so every subtype query must read `Game::has_subtype` rather
+    /// than the printed type line.
+    Type,
     /// CR 613.4d: effects that grant or remove abilities. Slice 23 adds the
     /// first one the pool needs — a until-end-of-turn trample grant (Goreclaw,
     /// Terror of Qal Sisma). It is ordered before `Modifying`, so a pump granted
@@ -52,6 +58,7 @@ pub enum Layer {
 impl Layer {
     pub fn label(self) -> &'static str {
         match self {
+            Layer::Type => "4",
             Layer::Ability => "6",
             Layer::Setting => "7b",
             Layer::Modifying => "7c",
@@ -60,10 +67,35 @@ impl Layer {
 
     pub fn rules(self) -> &'static str {
         match self {
+            Layer::Type => "CR 613.1d type-changing effects",
             Layer::Ability => "CR 613.4d ability-granting effects",
             Layer::Setting => "CR 613.4b base power/toughness setting",
             Layer::Modifying => "CR 613.4c power/toughness modifiers",
         }
+    }
+}
+
+/// The creature subtype line a layer 4 effect installs. Only the lines the pool
+/// actually prints are represented; a new "becomes a <type>" card adds a
+/// variant here, never a free-form string, so the effect stays typed and
+/// replay-serializable.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SubtypeLine {
+    /// Ursine Champion: "becomes a Bear Berserker until end of turn".
+    BearBerserker,
+}
+
+impl SubtypeLine {
+    /// Printed subtype line, exactly as the card writes it.
+    pub fn text(self) -> &'static str {
+        match self {
+            SubtypeLine::BearBerserker => "Bear Berserker",
+        }
+    }
+
+    /// Whether the effective subtype line carries `subtype` (CR 205.3).
+    pub fn has(self, subtype: &str) -> bool {
+        self.text().split_whitespace().any(|part| part == subtype)
     }
 }
 
@@ -91,6 +123,11 @@ pub enum ContinuousKind {
     GrantsHaste,
     /// CR 613.4b: set base power/toughness to the captured values.
     SetBasePowerToughness { power: i32, toughness: i32 },
+    /// CR 613.1d: the creature's subtype line becomes this one, replacing the
+    /// printed subtypes for as long as the effect applies. Type-changing
+    /// effects apply before every power/toughness layer, so a pump in the same
+    /// resolution is unaffected by the new line.
+    SetCreatureSubtypes(SubtypeLine),
 }
 
 /// One continuous effect, carrying the timestamp that fixes its order inside
@@ -130,6 +167,11 @@ impl ContinuousEffect {
                     self.layer.rules()
                 )
             }
+            ContinuousKind::SetCreatureSubtypes(line) => format!(
+                "creature type becomes {} until end of turn ({})",
+                line.text(),
+                self.layer.rules()
+            ),
         }
     }
 }

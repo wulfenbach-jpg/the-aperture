@@ -1375,8 +1375,10 @@ fn fog_is_a_sourced_catalog_card() {
     // 135 with the slice-18 commander Ayula, Queen Among Bears, and to 136 with
     // the slice-19 attack-trigger bear Spectral Bears.
     // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn,
-    // and to 140 with the slice-23 Bear lord Goreclaw, Terror of Qal Sisma.
-    assert_eq!(aperture_core::catalog::pool_size(), 142);
+    // and to 140 with the slice-23 Bear lord Goreclaw, Terror of Qal Sisma, and
+    // to 143 with slice 24's Surrak and Goreclaw, slice 25's Exuberant Wolfbear
+    // and slice 26's Ursine Champion.
+    assert_eq!(aperture_core::catalog::pool_size(), 143);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

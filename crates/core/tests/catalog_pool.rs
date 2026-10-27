@@ -264,6 +264,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::RegenerateSource
                 | Effect::PutCounterAndHasteOnEntered
                 | Effect::SetBasePowerToughnessFromSource
+                | Effect::SetSourceCreatureSubtypes(_)
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue

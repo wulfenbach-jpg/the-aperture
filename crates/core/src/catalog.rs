@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 142] = [
+pub static CARDS: [CardDef; 143] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1070,6 +1070,17 @@ pub static CARDS: [CardDef; 142] = [
         kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Bear", power: Some(4), toughness: Some(3),
         oracle: "Creature spells you cast with power 4 or greater cost {2} less to cast.\nWhenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
+        spell: None
+    ),
+    // Issue 17 slice 26: Ursine Champion. The pool's first layer 4 type-changing
+    // effect ("becomes a Bear Berserker until end of turn") and its first
+    // once-each-turn activation restriction. Printed text copied verbatim from
+    // the M19 304 printing recorded in fixtures/starter-corpus/slice26-sourced.json.
+    card!(
+        UrsineChampion, "Ursine Champion", cost: Some("{1}{G}"),
+        kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Berserker", power: Some(2), toughness: Some(2),
+        oracle: "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
         spell: None
     ),
 ];

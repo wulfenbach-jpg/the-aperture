@@ -1,0 +1,30 @@
+{
+  "casts": {
+    "Centaur Courser": 5,
+    "Grizzly Bears": 4,
+    "Ursine Champion": 9
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice26.txt",
+  "digest": "86bbd60bcec7b2162507628ee0e7377acb3ef2b1237ffaf85b66e59d6995de19",
+  "driver": "evidence-only masked activation/cast-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "layer4_type_change_events": 14,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "pump_events": 14,
+  "replay_digest_matches": true,
+  "replay_events": 3613,
+  "seats": 4,
+  "seed": 2626,
+  "snapshot_sha256": "45e9e3a93e0f599843a73a1ed84772fc69b3e80254acecd9c503d4213f59ad07",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1366,
+  "turns": 34
+}

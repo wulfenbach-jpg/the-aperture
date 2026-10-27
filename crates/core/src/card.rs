@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::layer::SubtypeLine;
+
 const NO_EFFECTS: &[Effect] = &[];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -244,6 +246,11 @@ pub enum Effect {
     /// Set the target Human's base P/T to the ability source's effective P/T
     /// captured at resolution (or its LKI if the source departed).
     SetBasePowerToughnessFromSource,
+    /// CR 613.1d: the ability's own source becomes this subtype line until end
+    /// of turn, replacing its printed subtypes (Ursine Champion). A layer 4
+    /// continuous effect, so `Game::has_subtype` answers for it everywhere the
+    /// printed type line used to be read directly.
+    SetSourceCreatureSubtypes(SubtypeLine),
 }
 
 impl Effect {
@@ -354,6 +361,9 @@ impl Effect {
                 "each creature you control with power {minimum_power} or greater gets \
                  {power:+}/{toughness:+} and gains trample until end of turn"
             ),
+            Effect::SetSourceCreatureSubtypes(line) => {
+                format!("this creature becomes a {} until end of turn", line.text())
+            }
         }
     }
 }
@@ -605,6 +615,7 @@ pub enum CardId {
     LittleBear,
     DancingFromDarkToDawn,
     GoreclawTerrorOfQalSisma,
+    UrsineChampion,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

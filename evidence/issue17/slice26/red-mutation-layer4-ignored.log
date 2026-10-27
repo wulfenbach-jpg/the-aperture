@@ -1,0 +1,35 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.64s
+     Running tests\issue17_slice26.rs (target\debug\deps\issue17_slice26-edb7bc6b426e4cf2.exe)
+
+running 6 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_activation_is_not_offered_without_the_printed_six_mana ... ok
+test the_type_change_and_pump_both_end_with_the_turn ... ok
+test a_bear_target_filter_sees_the_new_subtype ... FAILED
+test the_printed_once_each_turn_restriction_is_enforced ... ok
+test activation_pumps_the_source_and_makes_it_a_bear_for_a_real_bear_check ... FAILED
+
+failures:
+
+---- a_bear_target_filter_sees_the_new_subtype stdout ----
+
+thread 'a_bear_target_filter_sees_the_new_subtype' (10208) panicked at crates\core\tests\issue17_slice26.rs:378:5:
+after the layer 4 change the same object is a legal Bear target
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- activation_pumps_the_source_and_makes_it_a_bear_for_a_real_bear_check stdout ----
+
+thread 'activation_pumps_the_source_and_makes_it_a_bear_for_a_real_bear_check' (42936) panicked at crates\core\tests\issue17_slice26.rs:188:5:
+assertion `left == right` failed: the layer 4 subtype change makes it a Bear for Little Bear
+  left: 0
+ right: 1
+
+
+failures:
+    a_bear_target_filter_sees_the_new_subtype
+    activation_pumps_the_source_and_makes_it_a_bear_for_a_real_bear_check
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice26`

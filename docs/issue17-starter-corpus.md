@@ -46,9 +46,10 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **130** are in the supported 142-card catalog and **329** are missing. Slice
-  25 adds `Exuberant Wolfbear` to the previously verified 129/330 split. The union
-  is unchanged because it was already a referenced name. The
+* **131** are in the supported 143-card catalog and **328** are missing. Slice
+  25 adds `Exuberant Wolfbear` (129→130) and slice 26 adds `Ursine Champion`
+  (130→131) to the previously verified split. The union is unchanged because
+  both were already referenced names. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog

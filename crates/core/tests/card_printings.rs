@@ -45,6 +45,8 @@ const SLICE20_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE21_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice21-sourced.json");
 const SLICE24_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice24-sourced.json");
 const SLICE25_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice25-sourced.json");
+/// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
+const SLICE26_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice26-sourced.json");
 const SLICE22_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice22-sourced.json");
 /// Slice 23: Goreclaw, Terror of Qal Sisma (CMM 293), fetched 2026-10-27.
 const SLICE23_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice23-sourced.json");
@@ -201,6 +203,11 @@ fn slice24_cards() -> Vec<Value> {
 
 fn slice25_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE25_SOURCED).expect("sourced slice25 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice26_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE26_SOURCED).expect("sourced slice26 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -588,6 +595,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice23_cards())
         .chain(slice24_cards())
         .chain(slice25_cards())
+        .chain(slice26_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

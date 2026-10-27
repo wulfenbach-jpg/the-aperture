@@ -566,7 +566,8 @@ impl Game {
                 }
                 ContinuousKind::GrantsTrample
                 | ContinuousKind::GrantsHaste
-                | ContinuousKind::SetBasePowerToughness { .. } => None,
+                | ContinuousKind::SetBasePowerToughness { .. }
+                | ContinuousKind::SetCreatureSubtypes(_) => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -609,6 +610,30 @@ impl Game {
                 ShieldTarget::Player(_) | ShieldTarget::Any => true,
             })
             .collect();
+    }
+
+    /// CR 613.1d + CR 205.3: the object's *effective* subtype. A layer 4
+    /// type-changing effect replaces the printed subtype line for as long as it
+    /// applies (Ursine Champion's "becomes a Bear Berserker"), so every subtype
+    /// question in the rules layer asks this instead of reading the printed type
+    /// line directly. Successive layer 4 effects apply in timestamp order
+    /// (CR 613.7), so the last one wins.
+    fn has_subtype(&self, object: &Object, subtype: &str) -> bool {
+        let mut effective: Option<crate::layer::SubtypeLine> = None;
+        for effect in self
+            .state
+            .effects
+            .iter()
+            .filter(|effect| effect.layer == Layer::Type && effect.target == object.id)
+        {
+            if let ContinuousKind::SetCreatureSubtypes(line) = effect.kind {
+                effective = Some(line);
+            }
+        }
+        match effective {
+            Some(line) => line.has(subtype),
+            None => object.card.def().has_subtype(subtype),
+        }
     }
 
     /// CR 702.19a + 613.4d: trample printed on the card, or trample granted by
@@ -2404,7 +2429,7 @@ impl Game {
                     o.zone == Zone::Battlefield
                         && o.is_creature()
                         && o.controller == _caster
-                        && o.card.def().has_subtype("Human")
+                        && self.has_subtype(o, "Human")
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -2413,9 +2438,7 @@ impl Game {
                 .objects
                 .values()
                 .filter(|o| {
-                    o.zone == Zone::Battlefield
-                        && o.is_creature()
-                        && o.card.def().has_subtype("Bear")
+                    o.zone == Zone::Battlefield && o.is_creature() && self.has_subtype(o, "Bear")
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -2427,7 +2450,7 @@ impl Game {
                     o.zone == Zone::Battlefield
                         && o.is_creature()
                         && o.controller == _caster
-                        && o.card.def().has_subtype("Bear")
+                        && self.has_subtype(o, "Bear")
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -5895,6 +5918,44 @@ impl Game {
                 self.recompute_layers();
                 false
             }
+            // CR 613.1d: "becomes a Bear Berserker until end of turn". A layer 4
+            // continuous effect replaces the subtype line for as long as it
+            // applies; cleanup removes it and the printed line returns
+            // (CR 514.2). It is created only while the source is a permanent,
+            // because CR 611.2c requires a source to apply the effect to.
+            Effect::SetSourceCreatureSubtypes(line) => {
+                if self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|object| object.zone == Zone::Battlefield)
+                {
+                    let timestamp = self.next_timestamp();
+                    let id = self.next_effect_id();
+                    self.state.effects.push(ContinuousEffect {
+                        id,
+                        timestamp,
+                        source: Some(item.object),
+                        card: item.card,
+                        controller,
+                        layer: Layer::Type,
+                        target: item.object,
+                        kind: ContinuousKind::SetCreatureSubtypes(line),
+                        duration: EffectDuration::UntilEndOfTurn,
+                    });
+                    events.push(Event::ContinuousEffectStarted {
+                        object: item.object,
+                        card: item.card,
+                        layer: Layer::Type.label().to_string(),
+                        text: format!(
+                            "becomes a {} until end of turn ({})",
+                            line.text(),
+                            Layer::Type.rules()
+                        ),
+                    });
+                }
+                self.recompute_layers();
+                false
+            }
             Effect::CreateGoblinTokens(count) => {
                 self.create_goblin_tokens(controller, usize::from(count), events);
                 false
@@ -6186,18 +6247,23 @@ impl Game {
             }
             // CR 701.26a: untapping an untapped permanent is a no-op, so the
             // same instruction works whether or not the target was tapped. The
-            // counter reads the target's own printed subtype.
+            // counter reads the target's own effective subtype: a layer 4
+            // type-changing effect ("becomes a Bear ...") counts (CR 613.1d).
             Effect::UntapTargetAndCounterIfBear => {
                 for target in item.targets.clone() {
                     let Target::Permanent(id) = target else {
                         continue;
                     };
+                    let Some(probe) = self.state.try_object(id) else {
+                        continue;
+                    };
+                    let is_bear = self.has_subtype(probe, "Bear");
                     let Some(object) = self.state.objects.get_mut(&id) else {
                         continue;
                     };
                     object.tapped = false;
                     let name = object.card.name();
-                    if object.card.def().has_subtype("Bear") {
+                    if is_bear {
                         let total = object
                             .counters
                             .add(crate::counters::CounterKind::PlusOnePlusOne, 1);
@@ -6358,7 +6424,7 @@ impl Game {
                     object.zone == Zone::Battlefield
                         && object.is_creature()
                         && object.controller == controller
-                        && object.card.def().has_subtype("Human")
+                        && self.has_subtype(object, "Human")
                 });
                 let source_ok = self
                     .state
@@ -6465,7 +6531,7 @@ impl Game {
                     o.zone == Zone::Battlefield
                         && o.is_creature()
                         && o.controller == controller
-                        && o.card.def().has_subtype("Bear")
+                        && self.has_subtype(o, "Bear")
                 }) && self.state.try_object(*second).is_some_and(|o| {
                     o.zone == Zone::Battlefield && o.is_creature() && o.controller != controller
                 });
@@ -6619,7 +6685,7 @@ impl Game {
         let entering_bear = self
             .state
             .try_object(entering)
-            .is_some_and(|o| o.zone == Zone::Battlefield && o.card.def().has_subtype("Bear"));
+            .is_some_and(|o| o.zone == Zone::Battlefield && self.has_subtype(o, "Bear"));
         for (source, source_card, source_controller) in watchers {
             if source_card == CardId::SurrakAndGoreclaw {
                 let qualifies = self.state.try_object(entering).is_some_and(|object| {

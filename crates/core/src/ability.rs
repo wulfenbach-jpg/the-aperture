@@ -757,9 +757,31 @@ const GORECLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     ],
 })];
 
+/// Ursine Champion (M19 304): "{5}{G}: This creature gets +3/+3 and becomes a
+/// Bear Berserker until end of turn. Activate only once each turn."
+///
+/// Two effects resolve in printed order (CR 608.2c): the layer 7c pump, then the
+/// layer 4 subtype-line change. Layer order — not resolution order — is what
+/// decides the outcome, so the pump applies after the new type line as CR 613.1
+/// requires. `once_per_turn` is the printed CR 602.5b restriction and is
+/// enforced by `Game::activation_used`.
+const URSINE_CHAMPION: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
+    cost: AbilityCost::mana("{5}{G}"),
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[
+        Effect::PumpSource(3, 3),
+        Effect::SetSourceCreatureSubtypes(crate::layer::SubtypeLine::BearBerserker),
+    ],
+    once_per_turn: true,
+    sorcery_timing: false,
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::UrsineChampion => URSINE_CHAMPION,
         CardId::StitchersSupplier => STITCHERS_SUPPLIER,
         CardId::RuinCrab => RUIN_CRAB,
         CardId::BloodArtist => BLOOD_ARTIST,
