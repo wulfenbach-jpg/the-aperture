@@ -151,3 +151,12 @@ whose runs were cancelled by the superseding pushes.
 Full original #17 remains unfinished: 1 of 8 desired starters certified, 336 missing
 union names, Ayula's own list still 30 missing. No merge, no master push, no issue
 closure, no certified-downstream unlock.
+
+## Exact-head CI
+
+`a494b78bb0e94b47d856f253c58907f8486e371f` — **10/10 check runs completed SUCCESS**, all
+keyed to that SHA (rust ubuntu/macos/windows ×2, windows package ×2, board and roadmap
+×2). Raw API capture: `evidence/issue17/slice18/exact-head-ci.json`. The earlier
+`2785c2c` runs were **cancelled** by the superseding pushes, not failed, and are not
+counted as green. This record commit makes the final evidence head; its own CI is
+reported in the card handoff.
