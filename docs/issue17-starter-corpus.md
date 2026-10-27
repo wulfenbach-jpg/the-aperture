@@ -43,14 +43,12 @@ complete, so all seven remain `planned`.
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice20/corpus-audit.py` + `slice20/corpus-audit.log`):
+`evidence/issue17/slice24/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **128** are in the supported 140-card catalog and **331** are missing. Slice
-  20 adds `Vivien's Grizzly` to the previously verified 124/335 split, slice 22
-  adds `Dancing from Dark to Dawn` to the previous 126/333 split, and slice 23
-  adds `Goreclaw, Terror of Qal Sisma` to the previous 127/332 split; the union
-  is unchanged because all three were already referenced names. The
+* **129** are in the supported 141-card catalog and **330** are missing. Slice
+  24 adds `Surrak and Goreclaw` to the previously verified 128/331 split. The union
+  is unchanged because it was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog
@@ -65,7 +63,7 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **26** missing names.
+(slice 17). Ayula currently has **24** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and

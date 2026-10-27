@@ -1,0 +1,24 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s
+     Running tests\issue17_slice24.rs (target\debug\deps\issue17_slice24-315e8ddde41a5133.exe)
+
+running 2 tests
+
+thread 'native_hasty_werebear_mana_ability_is_actually_offered' (17160) panicked at crates\core\tests\issue17_slice24.rs:20:5:
+haste must reach the actual offered mana-source list, not only validation
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves' (1248) panicked at crates\core\tests\issue17_slice24.rs:47:5:
+a mandatory non-target trigger resolves with no effect; departure cannot silently delete it
+test native_hasty_werebear_mana_ability_is_actually_offered ... FAILED
+test native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves ... FAILED
+
+failures:
+
+failures:
+    native_hasty_werebear_mana_ability_is_actually_offered
+    native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice24`

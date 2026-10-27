@@ -1,0 +1,67 @@
+{
+  "head": "c2d9b3591ac6a241ce3264381b089d4f6a12241a",
+  "catalog": 141,
+  "union": 459,
+  "supported": 129,
+  "missing": 330,
+  "certified": 1,
+  "desired": 8,
+  "lists": [
+    {
+      "id": "isamaru-white-aggro",
+      "cards_with_commander": 100,
+      "missing": 55,
+      "status": "planned",
+      "snapshot_sha256": "2516fdf863b92ad6c24ea99cdab224ca2c92104ddf40b75682369e197a4dd6f7"
+    },
+    {
+      "id": "jasmine-vanilla-stompy",
+      "cards_with_commander": 100,
+      "missing": 0,
+      "status": "certified",
+      "snapshot_sha256": "4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491"
+    },
+    {
+      "id": "talrand-draw-go",
+      "cards_with_commander": 100,
+      "missing": 51,
+      "status": "planned",
+      "snapshot_sha256": "d25c3bd4ddbf7db4dc66860817c3f6bbf7de43419c30efe02d817cf5f170bfa0"
+    },
+    {
+      "id": "krenko-goblin-tokens",
+      "cards_with_commander": 100,
+      "missing": 48,
+      "status": "planned",
+      "snapshot_sha256": "06e4e962a81a454d174ce1a54ba89a76e7761bd33a019425e200998867559fae"
+    },
+    {
+      "id": "ayula-bear-counters",
+      "cards_with_commander": 100,
+      "missing": 24,
+      "status": "planned",
+      "snapshot_sha256": "242254b8b1686f58f2035f3e2f7cb0db8f98afe6f577d981c4d03e0a65022911"
+    },
+    {
+      "id": "elas-sacrifice",
+      "cards_with_commander": 100,
+      "missing": 52,
+      "status": "planned",
+      "snapshot_sha256": "f07c0c84fc2c0d8e78e97f3bd0d3fcb4abdab4325422a73db133fade0d908964"
+    },
+    {
+      "id": "tatyova-landfall",
+      "cards_with_commander": 100,
+      "missing": 52,
+      "status": "planned",
+      "snapshot_sha256": "f4fdc5425b2637d8cbbfc9b7ebf2e7486c83fcafea2c07b1c739930c6e0c4493"
+    },
+    {
+      "id": "zada-spells",
+      "cards_with_commander": 100,
+      "missing": 53,
+      "status": "planned",
+      "snapshot_sha256": "e26b4b2968fc21c7f552bed9efe02355ffb9acaaee176f3b1f29c12ea2a7620c"
+    }
+  ]
+}
