@@ -228,10 +228,9 @@ fn exile_and_bounce_are_not_destruction_and_do_not_transfer_shields() {
         Zone::Exile,
         "exile is not replaced"
     );
-    assert_eq!(
-        g.state.regeneration_shields.len(),
-        1,
-        "shield stays keyed to the old object"
+    assert!(
+        g.state.regeneration_shields.is_empty(),
+        "leaving the battlefield ends the old shield"
     );
 
     let (mut g, bear) = shield_game(
@@ -248,15 +247,26 @@ fn exile_and_bounce_are_not_destruction_and_do_not_transfer_shields() {
     let unsummon = add_hand(&mut g, CardId::Unsummon);
     cast(&mut g, unsummon, vec![Target::Permanent(bear)]);
     assert_eq!(g.state.object(bear).zone, Zone::Hand);
-    // A fresh object (as after a zone change) is not protected by the old
-    // shield keyed to the previous object id.
-    let new_bear = add(&mut g, CardId::DragonScarredBear);
-    assert_ne!(new_bear, bear);
-    shock(&mut g, new_bear);
+    // Recasting the SAME noncommander card preserves its ObjectId; the old
+    // battlefield incarnation's shield must nevertheless be gone.
+    let offered = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::CastSpell { card, .. } if card == bear))
+        .expect("the bounced card is offered for recast")
+        .action;
+    submit_ok(&mut g, P0, offered);
+    drain(&mut g);
+    assert_eq!(g.state.object(bear).zone, Zone::Battlefield);
+    assert!(
+        g.state.regeneration_shields.is_empty(),
+        "battlefield departure ends the old shield"
+    );
+    shock(&mut g, bear);
     assert_eq!(
-        g.state.object(new_bear).zone,
+        g.state.object(bear).zone,
         Zone::Graveyard,
-        "shield cannot transfer to a new object"
+        "old shield cannot protect the recast permanent"
     );
 }
 
@@ -429,10 +439,9 @@ fn zero_toughness_and_sacrifice_are_not_regeneration() {
         Zone::Graveyard,
         "zero toughness cannot be regenerated"
     );
-    assert_eq!(
-        g.state.regeneration_shields.len(),
-        1,
-        "shield was not consumed"
+    assert!(
+        g.state.regeneration_shields.is_empty(),
+        "battlefield departure ends the shield; it was not applied as regeneration"
     );
 
     let (mut g, bear) = shield_game(
@@ -480,9 +489,8 @@ fn zero_toughness_and_sacrifice_are_not_regeneration() {
         Zone::Graveyard,
         "sacrifice is not destruction"
     );
-    assert_eq!(
-        g.state.regeneration_shields.len(),
-        1,
-        "shield was not consumed"
+    assert!(
+        g.state.regeneration_shields.is_empty(),
+        "battlefield departure ends the shield; it was not applied as regeneration"
     );
 }

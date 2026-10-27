@@ -67,5 +67,14 @@
     "7 of 8 lists uncertified",
     "Ayula 27 missing, no 100-card certificate",
     "No push/merge/closure"
-  ]
+  ],
+  "identity_repair": {
+    "reviewed_head": "d9d2c94",
+    "verdict": "CHANGES_REQUESTED",
+    "red_log": "evidence/issue17/slice21-review-probe.log",
+    "fix": "detach_object drops regeneration shields on actual battlefield departure; ordinary bounce/recast same ObjectId regression",
+    "tests": "issue17_slice21 8 passed",
+    "legacy_slice20_replay": "exit 0 digest 72cd69fb1143",
+    "gates": "evidence/issue17/slice21/identity-repair-gates.log"
+  }
 }

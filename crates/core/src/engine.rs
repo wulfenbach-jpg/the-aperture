@@ -936,6 +936,14 @@ impl Game {
     /// which allocates a fresh ObjectId (CR 400.7).
     fn detach_object(&mut self, id: ObjectId) -> Option<Object> {
         let object = self.state.objects.remove(&id)?;
+        // A regeneration shield belongs to one battlefield permanent, not to
+        // the card identity that survives a zone change. Leaving the
+        // battlefield ends it; this is not regeneration or shield consumption.
+        if object.zone == Zone::Battlefield {
+            self.state
+                .regeneration_shields
+                .retain(|shield| shield.object != id);
+        }
         for player in &mut self.state.players {
             player.library.retain(|c| *c != id);
             player.hand.retain(|c| *c != id);

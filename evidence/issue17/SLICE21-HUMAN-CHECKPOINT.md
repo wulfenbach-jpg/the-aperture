@@ -25,7 +25,7 @@ change. Lethal damage SBA and the existing mass-destroy path share the replaceme
 `dragon_scarred_bear_is_sourced_and_supported` before implementation.
 
 ## Focused green
-- issue17_slice21: 8 passed (offered cast/activation + Formidable refusal; lethal consumes
+- issue17_slice21: 8 passed (identity bounce/recast same id included) (offered cast/activation + Formidable refusal; lethal consumes
   shield, taps/clears, second hit dies; multiple shields; exile/bounce/new object; blocked
   combat regeneration removes attacker without player damage; save/reload live shields and
   identical final state; exact threshold 7→8 with counter and threshold fall after
@@ -33,9 +33,9 @@ change. Lethal damage SBA and the existing mass-destroy path share the replaceme
 - Unit: cleanup-expiry test in engine.
 - card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43, replay_digest 6.
 - fmt check exit 0; workspace clippy `-D warnings` exit 0; release CLI exit 0.
-  Command-owned exits are persisted in `evidence/issue17/slice21/gates.log`.
-- Legacy slice20 replay: `target/release/aperture-cli replay --file
-  evidence/issue17/slice20/demo-replay.json` exit 0, digest
+  Command-owned exits are persisted in `evidence/issue17/slice21/gates.log` and
+  `identity-repair-gates.log`.
+- Legacy slice20 replay after identity repair: release CLI exit 0, digest
   `72cd69fb1143` matched (`evidence/issue17/slice21/legacy-slice20-replay.log`).
 - Fresh audit: 138 catalog / 459 union = 126 supported + 333 missing; Ayula 27; snapshots
   unchanged.
