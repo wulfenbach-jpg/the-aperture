@@ -1,0 +1,34 @@
+mutation: red-mutation-tokens-created-before-the-last-answer.log
+file: crates\core\src\engine.rs
+sha256_before: 5cf6df44ab13a9f828cfd0d63a2e0d73bbe930e0db6b2bc7967255207a7e27c5
+sha256_after_restore: 5cf6df44ab13a9f828cfd0d63a2e0d73bbe930e0db6b2bc7967255207a7e27c5
+cargo_exit: 101
+expected_failures: ['every_seat_reveals_in_apnap_order_and_creates_that_many_bears']
+observed_failures: ['every_seat_reveals_in_apnap_order_and_creates_that_many_bears']
+discriminating: True
+
+
+running 4 tests
+test kamahls_summons_is_sourced_and_supported ... ok
+test surrak_and_goreclaw_prints_its_own_trample ... ok
+test a_mandatory_target_trigger_never_offers_or_accepts_declining ... ok
+test every_seat_reveals_in_apnap_order_and_creates_that_many_bears ... FAILED
+
+failures:
+
+---- every_seat_reveals_in_apnap_order_and_creates_that_many_bears stdout ----
+
+thread 'every_seat_reveals_in_apnap_order_and_creates_that_many_bears' (48016) panicked at crates\core\tests\issue17_slice32.rs:171:5:
+no token is created while seats still owe an answer
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    every_seat_reveals_in_apnap_order_and_creates_that_many_bears
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.93s
+     Running tests\issue17_slice32.rs (target\debug\deps\issue17_slice32-5e41b7807f5c4e3e.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice32`

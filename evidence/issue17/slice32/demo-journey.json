@@ -1,0 +1,48 @@
+{
+  "bear_tokens_created": 23,
+  "casts": {
+    "Centaur Courser": 8,
+    "Grizzly Bears": 7,
+    "Kamahl's Summons": 3,
+    "Runeclaw Bear": 3,
+    "Surrak and Goreclaw": 4
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice32.txt",
+  "digest": "f6e65209dba9a24c84b05c3990e39691d5bd5cccc767efd41a5cb686d0fdbff4",
+  "driver": "evidence-only masked cast/reveal/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3660,
+  "reveal_answers": 12,
+  "reveal_seats": [
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3,
+    0,
+    1,
+    2,
+    3,
+    0
+  ],
+  "revealed_cards_total": 23,
+  "seats": 4,
+  "seed": 3232,
+  "snapshot_sha256": "5e2a53302c563390e8b03ee0b2f5193fd09f6ec1317d75bae2ea538d04540488",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1362,
+  "surrak_combat_damage_events": 10,
+  "turns": 32
+}

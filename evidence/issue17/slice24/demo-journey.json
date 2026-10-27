@@ -9,7 +9,7 @@
   },
   "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
   "deck": "decks/package-slice24.txt",
-  "digest": "a41bbfd2760034f791a3616bd5d6faa0fd79ad8e9cee300eb69cc38c5a1ec631",
+  "digest": "697a846d6cd74fc0c13bb8f2c09d5da6d5fb0561ee6ba2a01e990c87a7e6ee91",
   "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
   "entry_buff_events": 11,
   "haste_grant_events": 11,
@@ -21,7 +21,7 @@
     }
   },
   "replay_digest_matches": true,
-  "replay_events": 4127,
+  "replay_events": 4130,
   "seats": 4,
   "seed": 2323,
   "snapshot_sha256": "feb9033b925198a0eae49b117c858b626e968a4e7691c8e70c7e93bffc4d7455",
