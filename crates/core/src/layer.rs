@@ -1,18 +1,20 @@
 //! Typed continuous, replacement and prevention effects.
 //!
 //! * CR 613 orders continuous effects into layers and sublayers. This starter
-//!   set implements four of them, each because a supported card prints it:
-//!   layer 4 type-changing effects (`Type`, CR 613.1d, Ursine Champion),
-//!   layer 6 ability grants (`Ability`, CR 613.4d, Goreclaw), layer 7b base
-//!   power/toughness setting (`Setting`, CR 613.4b, Exuberant Wolfbear) and
-//!   layer 7c power/toughness modifiers (`Modifying`, CR 613.4c, including
-//!   printed count-based statics such as Wight of Precinct Six). Layer 5
-//!   (colour change), 7a (characteristic-defining power/toughness) and 7d
-//!   (+1/+1 counters) are not implemented because no supported card needs
-//!   them; they are refused at import rather than approximated. Layer 7d is
-//!   deliberately *not* applied here: counters remain display-only until the
-//!   counters lane makes them characteristic-changing, so this lane never
-//!   claims 7d coverage.
+//!   set implements five of them, each because a supported card prints it:
+//!   layer 4 type-changing effects (`Type`, CR 613.1d, Ursine Champion's
+//!   subtype replacement and Stuffed Bear's creature-type addition), layer 5
+//!   colour-changing effects (`Color`, CR 613.1e, Stuffed Bear's green
+//!   animation), layer 6 ability grants (`Ability`, CR 613.4d, Goreclaw),
+//!   layer 7b base power/toughness setting (`Setting`, CR 613.4b, Exuberant
+//!   Wolfbear, Circle of the Moon Druid and Stuffed Bear) and layer 7c
+//!   power/toughness modifiers (`Modifying`, CR 613.4c, including printed
+//!   count-based statics such as Wight of Precinct Six). Layer 7a
+//!   (characteristic-defining power/toughness) and 7d (+1/+1 counters) are not
+//!   implemented because no supported card needs them; they are refused at
+//!   import rather than approximated. Layer 7d is deliberately *not* applied
+//!   here: counters remain display-only until the counters lane makes them
+//!   characteristic-changing, so this lane never claims 7d coverage.
 //! * CR 614 replacement effects use "instead". Every effect applies at most
 //!   once to a single event (CR 614.5).
 //! * CR 615 prevention effects are one-shot shields with a finite amount or an
@@ -26,22 +28,22 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::card::CardId;
+use crate::card::{CardId, ManaColor};
 use crate::ids::{ObjectId, PlayerId};
 
 /// CR 613.4 layer/sublayer of a continuous effect. Ordered: an effect in an
 /// earlier layer is applied before an effect in a later one.
 ///
-/// Four layers are implemented, each arrived at by a card that prints it:
-/// `Type` (4, Ursine Champion), `Ability` (6, Goreclaw), `Setting` (7b,
-/// Exuberant Wolfbear) and `Modifying` (7c, the printed count-based statics and
-/// pumps). Layer 7a (characteristic-defining power/toughness) was dropped
-/// with issue 15's review: its only candidate card, Wight of Precinct Six,
-/// prints an additive "+1/+1 for each ..." static (layer 7c), not a
+/// Five layers are implemented, each arrived at by a card that prints it:
+/// `Type` (4, Ursine Champion and Stuffed Bear), `Color` (5, Stuffed Bear),
+/// `Ability` (6, Goreclaw), `Setting` (7b, Exuberant Wolfbear, Circle of the
+/// Moon Druid and Stuffed Bear) and `Modifying` (7c, the printed count-based
+/// statics and pumps). Layer 7a (characteristic-defining power/toughness) was
+/// dropped with issue 15's review: its only candidate card, Wight of Precinct
+/// Six, prints an additive "+1/+1 for each ..." static (layer 7c), not a
 /// characteristic-defining ability, so keeping a 7a code path would have meant
-/// shipping untested production code for no card. Layers 5 (colour change) and
-/// 7d (+1/+1 counters) are likewise not implemented; 7d belongs to the
-/// counters lane.
+/// shipping untested production code for no card. Layer 7d (+1/+1 counters)
+/// is likewise not implemented here; 7d belongs to the counters lane.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum Layer {
     /// CR 613.1d: type-changing effects. Slice 26 adds the first one the pool
@@ -50,6 +52,11 @@ pub enum Layer {
     /// applies, so every subtype query must read `Game::has_subtype` rather
     /// than the printed type line.
     Type,
+    /// CR 613.1e: colour-changing effects. Slice 29 adds the first one the pool
+    /// needs — Stuffed Bear's animation makes the artifact green. A layer 5
+    /// effect *sets* the object's colour, so every colour question must read
+    /// `Game::has_color` rather than the printed colour.
+    Color,
     /// CR 613.4d: effects that grant or remove abilities. Slice 23 adds the
     /// first one the pool needs — a until-end-of-turn trample grant (Goreclaw,
     /// Terror of Qal Sisma). It is ordered before `Modifying`, so a pump granted
@@ -66,6 +73,7 @@ impl Layer {
     pub fn label(self) -> &'static str {
         match self {
             Layer::Type => "4",
+            Layer::Color => "5",
             Layer::Ability => "6",
             Layer::Setting => "7b",
             Layer::Modifying => "7c",
@@ -75,6 +83,7 @@ impl Layer {
     pub fn rules(self) -> &'static str {
         match self {
             Layer::Type => "CR 613.1d type-changing effects",
+            Layer::Color => "CR 613.1e colour-changing effects",
             Layer::Ability => "CR 613.4d ability-granting effects",
             Layer::Setting => "CR 613.4b base power/toughness setting",
             Layer::Modifying => "CR 613.4c power/toughness modifiers",
@@ -139,6 +148,15 @@ pub enum ContinuousKind {
     /// effects apply before every power/toughness layer, so a pump in the same
     /// resolution is unaffected by the new line.
     SetCreatureSubtypes(SubtypeLine),
+    /// CR 613.1d: the object *gains* the creature card type and this subtype
+    /// line in addition to its printed types (Stuffed Bear's "becomes a 4/4
+    /// green Bear artifact creature"). It stays an artifact, so it is an
+    /// artifact creature; nothing about its printed card changes.
+    AddCreatureSubtypes(SubtypeLine),
+    /// CR 613.1e: the object's colour becomes this one for as long as the
+    /// effect applies (Stuffed Bear's "green"). It is a *set*, not an addition,
+    /// so the object is exactly this colour and no other.
+    SetColor(ManaColor),
 }
 
 /// One continuous effect, carrying the timestamp that fixes its order inside
@@ -181,6 +199,16 @@ impl ContinuousEffect {
             ContinuousKind::SetCreatureSubtypes(line) => format!(
                 "creature type becomes {} until end of turn ({})",
                 line.text(),
+                self.layer.rules()
+            ),
+            ContinuousKind::AddCreatureSubtypes(line) => format!(
+                "becomes a creature with type {} until end of turn ({})",
+                line.text(),
+                self.layer.rules()
+            ),
+            ContinuousKind::SetColor(color) => format!(
+                "becomes {} until end of turn ({})",
+                color.name(),
                 self.layer.rules()
             ),
         }

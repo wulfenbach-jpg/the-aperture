@@ -193,9 +193,10 @@ fn card_view(game: &Game, id: ObjectId) -> CardView {
         name: def.name,
         controller: obj.controller,
         tapped: obj.tapped,
-        // Characteristics, not printed values: counters and pumps included.
-        power: obj.is_creature().then(|| obj.power()),
-        toughness: obj.is_creature().then(|| obj.toughness()),
+        // Characteristics, not printed values: counters, pumps and an
+        // animation that adds the creature type (Stuffed Bear) included.
+        power: game.is_creature(obj).then(|| obj.power()),
+        toughness: game.is_creature(obj).then(|| obj.toughness()),
         damage: obj.damage,
         summoning_sick: obj.summoning_sick,
         pump_power: obj.pump_power,

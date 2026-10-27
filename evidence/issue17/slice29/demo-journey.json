@@ -1,0 +1,31 @@
+{
+  "animated_sightings": 1301,
+  "animation_audit": "animated: creature + green + artifact + 4/4; plain: noncreature + colourless, asserted after every accepted action",
+  "animations_activated": 119,
+  "casts": {
+    "Grizzly Bears": 1,
+    "Stuffed Bear": 4
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice29.txt",
+  "digest": "ac16e510ca4691a69981beafcb577f3aa8f01bd6973710f86b89275899030024",
+  "driver": "evidence-only masked activation/cast-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "plain_artifact_sightings": 3741,
+  "replay_digest_matches": true,
+  "replay_events": 5311,
+  "seats": 4,
+  "seed": 2929,
+  "snapshot_sha256": "80419bf48fd6d29a2dc33cb3d117e859adc300d42cc403588322e28fd6d1d539",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1912,
+  "turns": 44
+}

@@ -252,6 +252,19 @@ pub enum Effect {
     /// continuous effect, so `Game::has_subtype` answers for it everywhere the
     /// printed type line used to be read directly.
     SetSourceCreatureSubtypes(SubtypeLine),
+    /// CR 613.1d: the ability's own source *gains* the creature card type and
+    /// this subtype line until end of turn, in addition to its printed types
+    /// (Stuffed Bear: "becomes a 4/4 green Bear artifact creature"). The
+    /// artifact type is untouched, and `Game::is_creature` answers for the
+    /// animation everywhere the printed card type used to be read directly.
+    AddSourceCreatureType(SubtypeLine),
+    /// CR 613.1e: the ability's own source becomes this colour until end of
+    /// turn (Stuffed Bear's "green"). A set, not an addition.
+    SetSourceColor(ManaColor),
+    /// CR 613.4b: set the ability's own source's base power and toughness until
+    /// end of turn (Stuffed Bear's 4/4). It is a *base*, so pumps and counters
+    /// sit on top of it in later layers.
+    SetSourceBasePowerToughness(i32, i32),
 }
 
 impl Effect {
@@ -365,6 +378,16 @@ impl Effect {
             Effect::SetSourceCreatureSubtypes(line) => {
                 format!("this creature becomes a {} until end of turn", line.text())
             }
+            Effect::AddSourceCreatureType(line) => format!(
+                "this permanent becomes a creature with type {} until end of turn",
+                line.text()
+            ),
+            Effect::SetSourceColor(color) => {
+                format!("this permanent becomes {} until end of turn", color.name())
+            }
+            Effect::SetSourceBasePowerToughness(power, toughness) => {
+                format!("this permanent's base power/toughness becomes {power}/{toughness}")
+            }
         }
     }
 }
@@ -452,20 +475,33 @@ impl CardDef {
         self.islandwalk
     }
 
-    /// CR 202.2: the card is black. Tokens carry their colors in
+    /// CR 202.2: the card's *printed* colour. Tokens carry their colors in
     /// [`CardDef::colors`]; for catalog cards the printed color is derived from
-    /// the mana cost, which is what CR 202.2a makes authoritative. Nothing in
-    /// the pool sets, adds or changes a permanent's color, so this predicate is
-    /// the entire color model Spectral Bears reads.
-    pub fn is_black(&self) -> bool {
-        if self.colors.contains(&ManaColor::Black) {
+    /// the mana cost, which is what CR 202.2a makes authoritative. A layer 5
+    /// effect can replace a permanent's colour (Stuffed Bear's green
+    /// animation), so the rules layer asks `Game::has_color` instead of reading
+    /// this directly; this predicate is the printed baseline that query starts
+    /// from.
+    pub fn is_color(&self, color: ManaColor) -> bool {
+        if self.colors.contains(&color) {
             return true;
         }
-        self.cost.is_some_and(|cost| {
-            crate::mana::parse_cost(cost)
-                .pips
-                .contains(&ManaColor::Black)
-        })
+        if color == ManaColor::Colorless {
+            // CR 202.2: an object is colourless when nothing gives it a colour —
+            // an artifact or land with an empty printed colour and no coloured
+            // mana symbol. Tokens carry `colors`, catalog cards print a cost.
+            return self.colors.is_empty()
+                && self
+                    .cost
+                    .is_none_or(|cost| crate::mana::parse_cost(cost).pips.is_empty());
+        }
+        self.cost
+            .is_some_and(|cost| crate::mana::parse_cost(cost).pips.contains(&color))
+    }
+
+    /// CR 202.2b: the card is printed black.
+    pub fn is_black(&self) -> bool {
+        self.is_color(ManaColor::Black)
     }
 
     /// CR 117.1a: an instant, or a card that prints Flash, may be cast while
@@ -619,6 +655,8 @@ pub enum CardId {
     UrsineChampion,
     /// Issue 17 slice 28: Circle of the Moon Druid (AFR 177).
     CircleOfTheMoonDruid,
+    /// Issue 17 slice 29: Stuffed Bear (MID 259).
+    StuffedBear,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

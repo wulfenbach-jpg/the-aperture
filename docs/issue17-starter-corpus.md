@@ -46,10 +46,10 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **132** are in the supported 144-card catalog and **327** are missing. Slice
+* **133** are in the supported 145-card catalog and **326** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
-  (130→131) and slice 28 adds `Circle of the Moon Druid` (131→132) to the
-  previously verified split. The union is unchanged because every one of them
+  (130→131), slice 28 adds `Circle of the Moon Druid` (131→132) and slice 29
+  adds `Stuffed Bear` (132→133) to the previously verified split. The union is unchanged because every one of them
   was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -65,8 +65,8 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Slice 28 adds `Circle of the Moon Druid`. Ayula currently has **21**
-missing names.
+(slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
+`Stuffed Bear`. Ayula currently has **20** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -84,7 +84,7 @@ every rules question until cleanup (CR 514.2), so the Bear target filters, the
 Ayula fight revalidation and `Little Bear`'s counter branch all answer from the
 effective line through `Game::has_subtype`. The printed once-each-turn limit
 reuses the restriction `Rootwalla` already exercises. Not implemented: any other
-type-changing effect, layer 5, and control-changing effects (so the
+type-changing effect and control-changing effects (so the
 once-each-turn key is the object, not the player).
 
 ### Slices 12–13: reusable artifact and landfall packages
@@ -458,12 +458,13 @@ Known limits, disclosed rather than approximated: the cost reduction counts one
 reduction per permanent (correct for one Goreclaw, untested for two because the
 pool has no second copy); at that slice the pool still had no layer 4/5/7b
 (type, colour, base power/toughness) effects. (Slice 25 added the layer 7b base
-power/toughness setter, slice 26 the layer 4 subtype line and slice 28 the first
-*printed* layer 4 + 7b ability, so layers 4, 6, 7b and 7c now exist; layer 5
-colour changes and the animation effects that turn a non-creature permanent into
-a creature are still missing, which is why `Stuffed Bear` and `Beorn's
-Hospitality` remain unsupported.) Ayula had 22 missing names after slice 26 and
-21 after slice 28,
+power/toughness setter, slice 26 the layer 4 subtype line, slice 28 the first
+*printed* layer 4 + 7b ability and slice 29 the layer 5 colour set plus the
+additive layer 4 animation that turns a non-creature permanent into a creature,
+so layers 4, 5, 6, 7b and 7c now exist. Still missing: layer 7a
+characteristic-defining power/toughness, which is why `Beorn's Hospitality`
+remains unsupported, and layer 7d, which belongs to the counters lane.) Ayula
+had 22 missing names after slice 26, 21 after slice 28 and 20 after slice 29;
 the eight-list gate remains open at 1 of 8 certified, and no new list is
 certified by this slice.
 
@@ -488,3 +489,14 @@ Circle of the Moon Druid (`{2}{G}`, 2/4 Creature — Human Elf Druid) is sourced
 * Consequences the engine now answers with the effective subtype: Little Bear's "if that creature is a Bear" counter branch, Ayula's `TargetSpec::Bear` / `TargetSpec::BearYouControl` offer lists, and Exuberant Wolfbear's "target Human you control", which correctly *loses* the Druid during its controller's turn because the Bear line replaces the printed subtypes.
 
 Verification retained in `evidence/issue17/slice28/`: three discriminating mutation REDs (turn condition ignored, layer 7b half ignored, layer 4 half ignored — each restored byte-for-byte, `run-mutations.py` proves it), a four-seat 40-life package journey from `evidence/issue17/slice28-journey-driver` (`decks/package-slice28.txt`, terminal `Win{P3}`, 2065 actions, 50 turns, digest `48bf3ae5…`, separate CLI replay matches) whose driver asserts the printed 4/2-or-2/4 invariant after *every* accepted action (636 on-turn and 1404 off-turn sightings), and the usual gates. This slice certifies no starter list: Ayula still has 21 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 29: Stuffed Bear
+Stuffed Bear (`{2}` Artifact; Scryfall **MID 259**, immutable `4cd40276-016b-475f-906f-74d31dceaf70`, oracle `1402c116-194e-49ca-a8c1-09ca659c220c`, retrieved 2026-10-27T13:14:48Z; MID 259 and DBL 259 print identical wording) is sourced in `fixtures/starter-corpus/slice29-sourced.json`. Printed text: "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn."
+
+* It is the pool's first permanent that is **not a creature until an ability animates it**, and one printed ability spans three layers: **layer 4** (CR 613.1d) adds the creature card type and the Bear subtype *in addition to* the printed Artifact type (`ContinuousKind::AddCreatureSubtypes`), **layer 5** (CR 613.1e) sets the colour to green (`ContinuousKind::SetColor`, the pool's first layer 5 effect) and **layer 7b** (CR 613.4b) sets base power/toughness 4/4 (`SetBasePowerToughness`). All three are ordinary until-end-of-turn `ContinuousEffect`s, so cleanup ends them (CR 514.2) and departure prunes them (CR 400.7) through the existing pipeline; nothing bespoke expires.
+* The rules layer now asks `Game::is_creature` instead of reading the printed card type. That single layered query is what makes the animation real: the animated artifact is offered as a creature target, can attack and block, deals and receives combat damage, is hit by creature-only removal, and its death is recorded as a *creature* death — `move_to_graveyard_inner` captures the creature answer at the moment the permanent leaves, so dies-watchers (Zulaport Cutthroat's drain is the test) fire for an animated artifact.
+* `Game::has_color` is the layered colour query and `CardDef::is_color` its printed baseline; the Spectral Bears intervening-if now asks it rather than `is_black`. Known limit, disclosed: green is the only colour any supported effect sets, and no rule in the pool discriminates a *green* permanent from a colourless one, so layer 5's observable effect today is the query itself (and the animated permanent's colour identity in tests), not a rules outcome.
+* CR 302.6: a permanent that prints an ability which can animate itself records summoning sickness when it *arrives* (`ability::can_become_creature`), even though it is not a creature yet, and the untap step clears it for every permanent. An artifact animated on the turn it entered therefore cannot attack; one animated on a later turn can, which is the only turn its until-end-of-turn animation could ever attack.
+* Known limits, disclosed: the animation adds only the Bear subtype line the pool prints (a future "becomes a <type> in addition" card adds a `SubtypeLine` variant); the colour set is a single colour, not a set of colours; the engine has no way for a *second* permanent to animate another player's artifact, so only self-animation exists.
+
+Verification retained in `evidence/issue17/slice29/`: four discriminating mutation REDs (layer 4 addition ignored, layer 5 ignored, layer 7b ignored, entry sickness dropped — each restored byte-for-byte, `run-mutations.py` proves it), a four-seat 40-life package journey from `evidence/issue17/slice29-journey-driver` (`decks/package-slice29.txt`, terminal `Win{P3}`, 1912 actions, 44 turns, digest `ac16e510…`, separate CLI replay matches) whose driver asserts the animated-or-plain invariant after *every* accepted action (1301 animated and 3741 plain sightings across 119 activations), and the usual gates. This slice certifies no starter list: Ayula still has 20 missing names and the eight-list gate remains 1 of 8.

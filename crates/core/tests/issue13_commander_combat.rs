@@ -1377,9 +1377,9 @@ fn fog_is_a_sourced_catalog_card() {
     // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn,
     // and to 140 with the slice-23 Bear lord Goreclaw, Terror of Qal Sisma, and
     // to 143 with slice 24's Surrak and Goreclaw, slice 25's Exuberant Wolfbear
-    // and slice 26's Ursine Champion, and to 144 with slice 28's Circle of the
-    // Moon Druid.
-    assert_eq!(aperture_core::catalog::pool_size(), 144);
+    // and slice 26's Ursine Champion, to 144 with slice 28's Circle of the
+    // Moon Druid, and to 145 with slice 29's Stuffed Bear.
+    assert_eq!(aperture_core::catalog::pool_size(), 145);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

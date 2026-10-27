@@ -1,0 +1,56 @@
+# mutation-layer5-ignored: the layer 5 colour set is never effective
+# file: crates\core\src\engine.rs
+# sha256 before mutation: 0ceff5a4660ac023bb2dcb456298576e03ae61b7034da833ae416dea2e4340a3
+# sha256 after restore:   0ceff5a4660ac023bb2dcb456298576e03ae61b7034da833ae416dea2e4340a3
+# restored byte-for-byte: True
+# command: cargo test -p aperture-core --test issue17_slice29 --locked
+# exit code: 101
+
+
+running 9 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_ability_offer_requires_two_mana_and_the_card_is_not_a_creature_spell ... ok
+test an_animated_bear_dies_as_a_creature ... ok
+test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... FAILED
+test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... FAILED
+test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... FAILED
+test the_animation_expires_at_cleanup_and_the_artifact_reverts ... ok
+test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... ok
+test a_save_and_reload_preserves_the_animation_and_its_layers ... FAILED
+
+failures:
+
+---- the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it stdout ----
+
+thread 'the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it' (40004) panicked at crates\core\tests\issue17_slice29.rs:471:5:
+layer 5 set green
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- it_is_a_plain_artifact_until_the_printed_ability_animates_it stdout ----
+
+thread 'it_is_a_plain_artifact_until_the_printed_ability_animates_it' (23600) panicked at crates\core\tests\issue17_slice29.rs:210:5:
+layer 5 sets green
+
+---- a_second_activation_restacks_the_same_layers_without_stacking_the_stats stdout ----
+
+thread 'a_second_activation_restacks_the_same_layers_without_stacking_the_stats' (21368) panicked at crates\core\tests\issue17_slice29.rs:426:5:
+assertion failed: game.has_color(id, ManaColor::Green)
+
+---- a_save_and_reload_preserves_the_animation_and_its_layers stdout ----
+
+thread 'a_save_and_reload_preserves_the_animation_and_its_layers' (364) panicked at crates\core\tests\issue17_slice29.rs:450:5:
+assertion failed: reloaded.has_color(id, ManaColor::Green)
+
+
+failures:
+    a_save_and_reload_preserves_the_animation_and_its_layers
+    a_second_activation_restacks_the_same_layers_without_stacking_the_stats
+    it_is_a_plain_artifact_until_the_printed_ability_animates_it
+    the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it
+
+test result: FAILED. 5 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.00s
+     Running tests\issue17_slice29.rs (target\debug\deps\issue17_slice29-5a9819d21baab889.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice29`

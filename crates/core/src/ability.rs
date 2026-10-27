@@ -778,9 +778,34 @@ const URSINE_CHAMPION: &[Ability] = &[Ability::Activated(ActivatedAbility {
     sorcery_timing: false,
 })];
 
+/// Stuffed Bear (MID 259): "{2}: This artifact becomes a 4/4 green Bear artifact
+/// creature until end of turn."
+///
+/// One printed ability, three layers, all until end of turn: layer 4 adds the
+/// creature card type and the Bear subtype in addition to the printed Artifact
+/// type (CR 613.1d), layer 5 makes it green (CR 613.1e) and layer 7b sets base
+/// power/toughness 4/4 (CR 613.4b). Resolution order is irrelevant because the
+/// layers decide the outcome (CR 613.1); the effects are listed in the order
+/// the printed sentence reads. The object stays an artifact, so it is an
+/// artifact creature, and it never stops being the same card.
+const STUFFED_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
+    cost: AbilityCost::mana("{2}"),
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[
+        Effect::AddSourceCreatureType(crate::layer::SubtypeLine::Bear),
+        Effect::SetSourceColor(crate::card::ManaColor::Green),
+        Effect::SetSourceBasePowerToughness(4, 4),
+    ],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::StuffedBear => STUFFED_BEAR,
         CardId::UrsineChampion => URSINE_CHAMPION,
         CardId::StitchersSupplier => STITCHERS_SUPPLIER,
         CardId::RuinCrab => RUIN_CRAB,
@@ -844,6 +869,20 @@ pub fn triggers_on(
             Ability::Triggered(t) if t.event == event => Some((index as u8, t)),
             _ => None,
         })
+}
+
+/// Whether the card prints an ability that can turn the permanent itself into a
+/// creature. CR 302.6 asks whether a creature has been under its controller's
+/// control since their most recent turn began, so a permanent that enters as a
+/// noncreature but can animate itself has to record the same restriction when
+/// it arrives; `Game::enter_battlefield` asks this instead of the printed card
+/// type alone.
+pub fn can_become_creature(card: CardId) -> bool {
+    abilities(card)
+        .iter()
+        .filter_map(Ability::activated)
+        .flat_map(|activated| activated.effects.iter())
+        .any(|effect| matches!(effect, Effect::AddSourceCreatureType(_)))
 }
 
 /// CR 603.4: an intervening-if clause. It is held per card rather than in the

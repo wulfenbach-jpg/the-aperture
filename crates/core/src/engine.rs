@@ -599,7 +599,9 @@ impl Game {
                 ContinuousKind::GrantsTrample
                 | ContinuousKind::GrantsHaste
                 | ContinuousKind::SetBasePowerToughness { .. }
-                | ContinuousKind::SetCreatureSubtypes(_) => None,
+                | ContinuousKind::SetCreatureSubtypes(_)
+                | ContinuousKind::AddCreatureSubtypes(_)
+                | ContinuousKind::SetColor(_) => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -652,6 +654,10 @@ impl Game {
     /// (CR 613.7), so the last one wins.
     fn has_subtype(&self, object: &Object, subtype: &str) -> bool {
         let mut effective: Option<crate::layer::SubtypeLine> = None;
+        // CR 613.1d: an *additive* layer 4 effect (Stuffed Bear's animation)
+        // adds its subtype line to the printed one instead of replacing it, so
+        // it is tracked separately from the replacement line above.
+        let mut added = false;
         // CR 611.3a + 613.1d: a *printed* layer 4 line can be conditional on
         // whose turn it is ("During your turn, this creature is a Bear ...").
         // Its timestamp is the permanent's arrival, so it is answered first and
@@ -673,13 +679,59 @@ impl Game {
             .iter()
             .filter(|effect| effect.layer == Layer::Type && effect.target == object.id)
         {
-            if let ContinuousKind::SetCreatureSubtypes(line) = effect.kind {
-                effective = Some(line);
+            match effect.kind {
+                ContinuousKind::SetCreatureSubtypes(line) => effective = Some(line),
+                ContinuousKind::AddCreatureSubtypes(line) if line.has(subtype) => added = true,
+                _ => {}
             }
+        }
+        if added {
+            return true;
         }
         match effective {
             Some(line) => line.has(subtype),
             None => object.card.def().has_subtype(subtype),
+        }
+    }
+
+    /// CR 613.1d + CR 110.1: whether the object is a creature *right now*. A
+    /// printed creature card is one; a noncreature permanent is one while a
+    /// layer 4 effect has added the creature card type to it (Stuffed Bear's
+    /// animation). Every rules question about "is this a creature" asks this
+    /// instead of reading the printed card type, so an animated artifact can
+    /// attack, block, be targeted, deal and receive damage and die like any
+    /// other creature, and reverts the moment the effect ends.
+    pub fn is_creature(&self, object: &Object) -> bool {
+        object.card.def().is_creature()
+            || self.state.effects.iter().any(|effect| {
+                effect.layer == Layer::Type
+                    && effect.target == object.id
+                    && matches!(effect.kind, ContinuousKind::AddCreatureSubtypes(_))
+            })
+    }
+
+    /// CR 613.1e + CR 202.2: the object's *effective* colour. A layer 5 effect
+    /// sets it (Stuffed Bear's animation makes the artifact green); with no
+    /// such effect the printed colour answers. `ManaColor::Colorless` is true
+    /// only when nothing changed the colour and the card prints no colour.
+    pub fn has_color(&self, id: ObjectId, color: crate::card::ManaColor) -> bool {
+        let mut set: Option<crate::card::ManaColor> = None;
+        for effect in self
+            .state
+            .effects
+            .iter()
+            .filter(|effect| effect.layer == Layer::Color && effect.target == id)
+        {
+            if let ContinuousKind::SetColor(chosen) = effect.kind {
+                set = Some(chosen);
+            }
+        }
+        match set {
+            Some(chosen) => chosen == color,
+            None => self
+                .state
+                .try_object(id)
+                .is_some_and(|object| object.card.def().is_color(color)),
         }
     }
 
@@ -710,6 +762,47 @@ impl Game {
             .effects
             .iter()
             .any(|effect| effect.kind == ContinuousKind::GrantsHaste && effect.target == object.id)
+    }
+
+    /// Start one until-end-of-turn continuous effect on the ability's own
+    /// source, for a printed ability that animates its own permanent (Stuffed
+    /// Bear's three layered effects). The source must still be a battlefield
+    /// permanent. The result is an ordinary `ContinuousEffect`, so cleanup
+    /// expiry (CR 514.2) and departure pruning (CR 400.7) come from the
+    /// existing pipeline instead of a bespoke lifetime.
+    fn start_source_continuous(
+        &mut self,
+        item: &StackItem,
+        controller: PlayerId,
+        layer: Layer,
+        kind: ContinuousKind,
+        text: String,
+        events: &mut Vec<Event>,
+    ) {
+        let card = match self.state.try_object(item.object) {
+            Some(object) if object.zone == Zone::Battlefield => object.card,
+            _ => return,
+        };
+        let timestamp = self.next_timestamp();
+        let id = self.next_effect_id();
+        self.state.effects.push(ContinuousEffect {
+            id,
+            timestamp,
+            source: Some(item.object),
+            card,
+            controller,
+            layer,
+            target: item.object,
+            kind,
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+        events.push(Event::ContinuousEffectStarted {
+            object: item.object,
+            card,
+            layer: layer.label().to_string(),
+            text,
+        });
+        self.recompute_layers();
     }
 
     fn add_haste_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
@@ -1554,8 +1647,10 @@ impl Game {
     }
 
     fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
-        if let Some((dying, new_id, card, controller)) = self.move_to_graveyard_inner(id, events) {
-            let death = (dying, new_id, card, controller);
+        if let Some((dying, new_id, card, controller, was_creature)) =
+            self.move_to_graveyard_inner(id, events)
+        {
+            let death = (dying, new_id, card, controller, was_creature);
             self.queue_watchers_for_deaths(&death_watchers(self), &[death]);
         }
     }
@@ -1585,12 +1680,19 @@ impl Game {
             return false;
         };
         self.state.regeneration_shields.remove(position);
+        // A shield only regenerates a creature (CR 701.19a); an animated
+        // artifact counts, so ask the layered query before taking the mutable
+        // borrow.
+        if !self
+            .state
+            .try_object(id)
+            .is_some_and(|object| object.zone == Zone::Battlefield && self.is_creature(object))
+        {
+            return false;
+        }
         let Some(object) = self.state.objects.get_mut(&id) else {
             return false;
         };
-        if object.zone != Zone::Battlefield || !object.is_creature() {
-            return false;
-        }
         object.damage = 0;
         object.tapped = true;
         self.state.turn.attackers.retain(|c| *c != id);
@@ -1612,9 +1714,14 @@ impl Game {
         &mut self,
         id: ObjectId,
         events: &mut Vec<Event>,
-    ) -> Option<(ObjectId, ObjectId, CardId, PlayerId)> {
+    ) -> Option<(ObjectId, ObjectId, CardId, PlayerId, bool)> {
+        // CR 700.4 + 613.1d: a permanent that dies while a layer 4 effect makes
+        // it a creature *is* a creature dying, so the record keeps that answer
+        // from the moment it leaves rather than the printed card type (an
+        // animated Stuffed Bear is a creature when it is put into a graveyard).
         let dying = self.state.try_object(id).and_then(|object| {
-            (object.zone == Zone::Battlefield).then_some((object.card, object.controller))
+            (object.zone == Zone::Battlefield)
+                .then(|| (object.card, object.controller, self.is_creature(object)))
         });
         let token = self
             .state
@@ -1643,8 +1750,8 @@ impl Game {
         // CR 700.4 + 603.6c: a permanent put into a graveyard from the
         // battlefield "dies". The trigger keeps the card and its controller as
         // last known information; `source` is the graveyard object.
-        if let Some((card, controller)) = dying {
-            if card.def().is_creature() && self.tracks_death_history() {
+        if let Some((card, controller, was_creature)) = dying {
+            if was_creature && self.tracks_death_history() {
                 self.state.creature_died_this_turn = true;
                 if !card.is_token() {
                     let seats = self.state.seat_count();
@@ -1657,8 +1764,8 @@ impl Game {
             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
             // The dying permanent's own "this creature ... dies" trigger is
             // order-independent, so it is queued here rather than in the batch.
-            self.queue_self_death(new_id, card, controller);
-            return Some((id, new_id, card, controller));
+            self.queue_self_death(new_id, card, controller, was_creature);
+            return Some((id, new_id, card, controller, was_creature));
         }
         None
     }
@@ -1673,8 +1780,12 @@ impl Game {
         object.tapped = false;
         object.damage = 0;
         // CR 302.6: summoning sickness applies until the controller's next
-        // untap step.
-        object.summoning_sick = is_creature;
+        // untap step. A noncreature permanent that prints an ability which can
+        // make it a creature (Stuffed Bear) records the same restriction when it
+        // arrives, because the restriction asks whether the *permanent* has been
+        // under its controller's control since their turn began, not whether it
+        // was a creature at the time.
+        object.summoning_sick = is_creature || crate::ability::can_become_creature(card);
         object.pump_power = 0;
         object.pump_toughness = 0;
         let new_id = self.insert_object(object, Zone::Battlefield);
@@ -1874,10 +1985,16 @@ impl Game {
     /// prints "this creature or another creature dies"; Zulaport Cutthroat
     /// restricts that to creatures its controller controls, which includes
     /// itself. Independent of batch order, so it is queued at the move.
-    fn queue_self_death(&mut self, dying: ObjectId, card: CardId, controller: PlayerId) {
+    fn queue_self_death(
+        &mut self,
+        dying: ObjectId,
+        card: CardId,
+        controller: PlayerId,
+        was_creature: bool,
+    ) {
         // CR 700.4: only a creature dying is a "creature dies" event; a milled
         // creature card or a sacrificed artifact never triggers these.
-        if !card.def().is_creature() {
+        if !was_creature {
             return;
         }
         self.queue_triggers(dying, card, controller, TriggerEvent::CreatureDies);
@@ -1900,12 +2017,12 @@ impl Game {
     fn queue_watchers_for_deaths(
         &mut self,
         watchers: &[(ObjectId, CardId, PlayerId)],
-        deaths: &[(ObjectId, ObjectId, CardId, PlayerId)],
+        deaths: &[(ObjectId, ObjectId, CardId, PlayerId, bool)],
     ) {
         let deaths: Vec<(ObjectId, CardId, PlayerId)> = deaths
             .iter()
-            .filter(|(_, _, card, _)| card.def().is_creature())
-            .map(|(dying, _, card, controller)| (*dying, *card, *controller))
+            .filter(|(_, _, _, _, was_creature)| *was_creature)
+            .map(|(dying, _, card, controller, _)| (*dying, *card, *controller))
             .collect();
         if deaths.is_empty() {
             return;
@@ -2463,7 +2580,7 @@ impl Game {
                     self.state
                         .objects
                         .values()
-                        .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
+                        .filter(|o| o.zone == Zone::Battlefield && self.is_creature(o))
                         .map(|o| Target::Permanent(o.id)),
                 );
                 out
@@ -2478,7 +2595,7 @@ impl Game {
                 .state
                 .objects
                 .values()
-                .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
+                .filter(|o| o.zone == Zone::Battlefield && self.is_creature(o))
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
             TargetSpec::HumanYouControl => self
@@ -2487,7 +2604,7 @@ impl Game {
                 .values()
                 .filter(|o| {
                     o.zone == Zone::Battlefield
-                        && o.is_creature()
+                        && self.is_creature(o)
                         && o.controller == _caster
                         && self.has_subtype(o, "Human")
                 })
@@ -2498,7 +2615,9 @@ impl Game {
                 .objects
                 .values()
                 .filter(|o| {
-                    o.zone == Zone::Battlefield && o.is_creature() && self.has_subtype(o, "Bear")
+                    o.zone == Zone::Battlefield
+                        && self.is_creature(o)
+                        && self.has_subtype(o, "Bear")
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -2508,7 +2627,7 @@ impl Game {
                 .values()
                 .filter(|o| {
                     o.zone == Zone::Battlefield
-                        && o.is_creature()
+                        && self.is_creature(o)
                         && o.controller == _caster
                         && self.has_subtype(o, "Bear")
                 })
@@ -2519,7 +2638,7 @@ impl Game {
                 .objects
                 .values()
                 .filter(|o| {
-                    o.zone == Zone::Battlefield && o.is_creature() && o.controller != _caster
+                    o.zone == Zone::Battlefield && self.is_creature(o) && o.controller != _caster
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -2532,7 +2651,7 @@ impl Game {
                 .values()
                 .filter(|o| {
                     o.zone == Zone::Battlefield
-                        && o.is_creature()
+                        && self.is_creature(o)
                         && o.controller == _caster
                         && o.id != exclude
                 })
@@ -2841,7 +2960,7 @@ impl Game {
             .filter(|o| {
                 o.zone == Zone::Battlefield
                     && o.controller == player
-                    && o.is_creature()
+                    && self.is_creature(o)
                     && !o.tapped
                     && (!o.summoning_sick || self.has_haste(o))
                     // CR 702.3b: defender can't attack.
@@ -2858,7 +2977,7 @@ impl Game {
             .filter(|o| {
                 o.zone == Zone::Battlefield
                     && o.controller == player
-                    && o.is_creature()
+                    && self.is_creature(o)
                     && !o.tapped
             })
             .map(|o| o.id)
@@ -2886,7 +3005,12 @@ impl Game {
                     object.zone == Zone::Battlefield
                         && object.controller == defender
                         && !object.card.is_token()
-                        && object.card.def().is_black()
+                        // CR 613.1e: the clause reads the permanent's colour,
+                        // so a layer 5 effect counts (Stuffed Bear's animation
+                        // can only make it green, which is not black, but the
+                        // question must be asked of the layered colour and not
+                        // of the printed cost).
+                        && self.has_color(object.id, crate::card::ManaColor::Black)
                 })
             }
         }
@@ -3280,7 +3404,7 @@ impl Game {
             ));
         }
         if activated.cost.tap
-            && object.is_creature()
+            && self.is_creature(object)
             && object.summoning_sick
             && !self.has_haste(object)
         {
@@ -3326,7 +3450,7 @@ impl Game {
                 .objects
                 .values()
                 .filter(|o| {
-                    o.zone == Zone::Battlefield && o.controller == player && o.is_creature()
+                    o.zone == Zone::Battlefield && o.controller == player && self.is_creature(o)
                 })
                 .map(|o| i64::from(o.power()))
                 .sum();
@@ -4706,9 +4830,11 @@ impl Game {
                 continue;
             }
             obj.tapped = false;
-            if obj.is_creature() {
-                obj.summoning_sick = false;
-            }
+            // CR 302.6: the restriction ends for the permanent, whether or not
+            // it is currently a creature (Stuffed Bear can be animated on a
+            // later turn and attack; an artifact animated on the turn it
+            // arrived stays sick until this step).
+            obj.summoning_sick = false;
         }
         self.state.skip_next_untap = kept;
         for id in skipped {
@@ -5151,7 +5277,7 @@ impl Game {
                 .state
                 .objects
                 .values()
-                .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
+                .filter(|o| o.zone == Zone::Battlefield && self.is_creature(o))
                 .filter(|o| o.toughness() <= 0 || o.damage as i32 >= o.toughness())
                 .map(|o| o.id)
                 .collect();
@@ -5161,12 +5287,12 @@ impl Game {
                 // once for every death, so the result does not depend on which
                 // dying creature happens to be moved first.
                 let watchers = death_watchers(self);
-                let mut deaths: Vec<(ObjectId, ObjectId, CardId, PlayerId)> = Vec::new();
+                let mut deaths: Vec<(ObjectId, ObjectId, CardId, PlayerId, bool)> = Vec::new();
                 let mut regenerated = 0usize;
                 for id in &dying {
                     let lethal_now = self.state.try_object(*id).is_some_and(|o| {
                         o.zone == Zone::Battlefield
-                            && o.is_creature()
+                            && self.is_creature(o)
                             && o.toughness() > 0
                             && o.damage as i32 >= o.toughness()
                     });
@@ -5174,10 +5300,10 @@ impl Game {
                         regenerated += 1;
                         continue;
                     }
-                    if let Some((dying_id, new_id, card, controller)) =
+                    if let Some((dying_id, new_id, card, controller, was_creature)) =
                         self.move_to_graveyard_inner(*id, events)
                     {
-                        deaths.push((dying_id, new_id, card, controller));
+                        deaths.push((dying_id, new_id, card, controller, was_creature));
                     }
                 }
                 self.queue_watchers_for_deaths(&watchers, &deaths);
@@ -5390,7 +5516,7 @@ impl Game {
                 Target::Permanent(id) => self
                     .state
                     .try_object(*id)
-                    .is_some_and(|o| o.zone == Zone::Battlefield && o.is_creature()),
+                    .is_some_and(|o| o.zone == Zone::Battlefield && self.is_creature(o)),
                 Target::Spell(id) => self
                     .state
                     .stack
@@ -6023,6 +6149,55 @@ impl Game {
                 self.recompute_layers();
                 false
             }
+            // CR 613.1d/613.1e/613.4b: Stuffed Bear's animation. One printed
+            // ability creates three until-end-of-turn continuous effects, one
+            // per layer, all targeting its own source. Layer order — not
+            // resolution order — decides the result, and cleanup ends all three
+            // (CR 514.2), so the artifact reverts exactly when the turn does.
+            Effect::AddSourceCreatureType(line) => {
+                self.start_source_continuous(
+                    item,
+                    controller,
+                    Layer::Type,
+                    ContinuousKind::AddCreatureSubtypes(line),
+                    format!(
+                        "becomes a creature with type {} until end of turn ({})",
+                        line.text(),
+                        Layer::Type.rules()
+                    ),
+                    events,
+                );
+                false
+            }
+            Effect::SetSourceColor(color) => {
+                self.start_source_continuous(
+                    item,
+                    controller,
+                    Layer::Color,
+                    ContinuousKind::SetColor(color),
+                    format!(
+                        "becomes {} until end of turn ({})",
+                        color.name(),
+                        Layer::Color.rules()
+                    ),
+                    events,
+                );
+                false
+            }
+            Effect::SetSourceBasePowerToughness(power, toughness) => {
+                self.start_source_continuous(
+                    item,
+                    controller,
+                    Layer::Setting,
+                    ContinuousKind::SetBasePowerToughness { power, toughness },
+                    format!(
+                        "base power/toughness {power}/{toughness} ({})",
+                        Layer::Setting.rules()
+                    ),
+                    events,
+                );
+                false
+            }
             Effect::CreateGoblinTokens(count) => {
                 self.create_goblin_tokens(controller, usize::from(count), events);
                 false
@@ -6437,7 +6612,7 @@ impl Game {
                     .filter(|object| {
                         object.zone == Zone::Battlefield
                             && object.controller == controller
-                            && object.is_creature()
+                            && self.is_creature(object)
                             && object.power() >= minimum_power
                     })
                     .map(|object| object.id)
@@ -6489,14 +6664,13 @@ impl Game {
                 };
                 let target_ok = self.state.try_object(*target).is_some_and(|object| {
                     object.zone == Zone::Battlefield
-                        && object.is_creature()
+                        && self.is_creature(object)
                         && object.controller == controller
                         && self.has_subtype(object, "Human")
                 });
-                let source_ok = self
-                    .state
-                    .try_object(item.object)
-                    .is_some_and(|object| object.zone == Zone::Battlefield && object.is_creature());
+                let source_ok = self.state.try_object(item.object).is_some_and(|object| {
+                    object.zone == Zone::Battlefield && self.is_creature(object)
+                });
                 if !target_ok || (!source_ok && item.source_pt_lki.is_none()) {
                     return false;
                 }
@@ -6530,9 +6704,12 @@ impl Game {
                 let Some(target) = item.affected else {
                     return false;
                 };
-                if let Some(object) = self.state.objects.get_mut(&target)
+                let entered_is_creature = self.state.try_object(target).is_some_and(|object| {
+                    object.zone == Zone::Battlefield && self.is_creature(object)
+                });
+                if entered_is_creature
+                    && let Some(object) = self.state.objects.get_mut(&target)
                     && object.zone == Zone::Battlefield
-                    && object.is_creature()
                 {
                     object
                         .counters
@@ -6596,11 +6773,11 @@ impl Game {
                 };
                 let valid = self.state.try_object(*first).is_some_and(|o| {
                     o.zone == Zone::Battlefield
-                        && o.is_creature()
+                        && self.is_creature(o)
                         && o.controller == controller
                         && self.has_subtype(o, "Bear")
                 }) && self.state.try_object(*second).is_some_and(|o| {
-                    o.zone == Zone::Battlefield && o.is_creature() && o.controller != controller
+                    o.zone == Zone::Battlefield && self.is_creature(o) && o.controller != controller
                 });
                 if !valid {
                     events.push(Event::StateBasedAction {
@@ -6758,7 +6935,7 @@ impl Game {
                 let qualifies = self.state.try_object(entering).is_some_and(|object| {
                     object.zone == Zone::Battlefield
                         && object.controller == source_controller
-                        && object.is_creature()
+                        && self.is_creature(object)
                         && !object.card.is_token()
                 });
                 if qualifies {
@@ -6847,10 +7024,13 @@ impl Game {
 
     /// CR 506.4: a permanent that leaves the battlefield is removed from combat.
     fn prune_combat(&mut self) {
-        let alive = |state: &GameState, id: ObjectId| {
-            state
+        // A permanent that left the battlefield (or stopped being a creature,
+        // CR 506.4) is removed from combat; an animated artifact is a creature
+        // here for exactly as long as its layer 4 effect applies.
+        let alive = |game: &Game, id: ObjectId| {
+            game.state
                 .try_object(id)
-                .is_some_and(|o| o.zone == Zone::Battlefield && o.is_creature())
+                .is_some_and(|o| o.zone == Zone::Battlefield && game.is_creature(o))
         };
         let attackers: Vec<ObjectId> = self
             .state
@@ -6858,7 +7038,7 @@ impl Game {
             .attackers
             .iter()
             .copied()
-            .filter(|id| alive(&self.state, *id))
+            .filter(|id| alive(self, *id))
             .collect();
         let blocked: Vec<ObjectId> = self
             .state
@@ -6874,9 +7054,7 @@ impl Game {
             .blockers
             .iter()
             .copied()
-            .filter(|(blocker, attacker)| {
-                alive(&self.state, *blocker) && attackers.contains(attacker)
-            })
+            .filter(|(blocker, attacker)| alive(self, *blocker) && attackers.contains(attacker))
             .collect();
         self.state.turn.attackers = attackers;
         self.state.turn.blocked = blocked;

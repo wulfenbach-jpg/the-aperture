@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 144] = [
+pub static CARDS: [CardDef; 145] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1097,6 +1097,18 @@ pub static CARDS: [CardDef; 144] = [
         type_line: "Creature — Human Elf Druid", power: Some(2), toughness: Some(4),
         oracle: "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
         spell: None
+    ),
+    // Issue 17 slice 29: Stuffed Bear. The pool's first permanent that is not a
+    // creature until an ability animates it: an artifact whose printed text
+    // turns it into a 4/4 green Bear artifact creature until end of turn
+    // (layer 4 creature type addition, layer 5 colour set, layer 7b base P/T).
+    // Printed text copied verbatim from the MID 259 printing recorded in
+    // fixtures/starter-corpus/slice29-sourced.json.
+    card_artifact!(
+        StuffedBear, "Stuffed Bear", cost: Some("{2}"),
+        type_line: "Artifact",
+        oracle: "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
+        mana: None, spell: None
     ),
 ];
 

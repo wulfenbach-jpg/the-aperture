@@ -473,7 +473,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
         .values()
         .filter(|o| {
             o.zone == crate::ids::Zone::Battlefield
-                && o.is_creature()
+                && game.is_creature(o)
                 && (o.toughness() <= 0 || o.damage as i32 >= o.toughness())
         })
         .map(|o| {

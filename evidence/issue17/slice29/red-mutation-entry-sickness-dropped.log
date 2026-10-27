@@ -1,0 +1,38 @@
+# mutation-entry-sickness-dropped: the animation-capable permanent no longer records summoning sickness on arrival
+# file: crates\core\src\engine.rs
+# sha256 before mutation: 0ceff5a4660ac023bb2dcb456298576e03ae61b7034da833ae416dea2e4340a3
+# sha256 after restore:   0ceff5a4660ac023bb2dcb456298576e03ae61b7034da833ae416dea2e4340a3
+# restored byte-for-byte: True
+# command: cargo test -p aperture-core --test issue17_slice29 --locked
+# exit code: 101
+
+
+running 9 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_ability_offer_requires_two_mana_and_the_card_is_not_a_creature_spell ... ok
+test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... ok
+test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... ok
+test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... FAILED
+test an_animated_bear_dies_as_a_creature ... ok
+test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... ok
+test the_animation_expires_at_cleanup_and_the_artifact_reverts ... ok
+test a_save_and_reload_preserves_the_animation_and_its_layers ... ok
+
+failures:
+
+---- it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn stdout ----
+
+thread 'it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn' (15864) panicked at crates\core\tests\issue17_slice29.rs:333:5:
+CR 302.6 records the restriction on arrival even though it is not a creature
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn
+
+test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.12s
+     Running tests\issue17_slice29.rs (target\debug\deps\issue17_slice29-5a9819d21baab889.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice29`

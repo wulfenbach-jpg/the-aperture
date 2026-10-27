@@ -539,6 +539,10 @@ pub struct Object {
 }
 
 impl Object {
+    /// The *printed* card type (CR 205.2a). A layer 4 effect can add the
+    /// creature card type to a noncreature permanent (Stuffed Bear's
+    /// animation), so every rules question reads `Game::is_creature` instead;
+    /// this predicate is the printed baseline that query starts from.
     pub fn is_creature(&self) -> bool {
         self.card.def().is_creature()
     }
@@ -551,8 +555,8 @@ impl Object {
         self.card.def().has_defender()
     }
 
-    /// CR 702.19a: a static ability of the printed card; nothing in this pool
-    /// grants or removes trample.
+    /// CR 702.19a: trample printed on the card. A layer 6 effect can also grant
+    /// it (Goreclaw, Surrak and Goreclaw), so combat asks `Game::has_trample`.
     pub fn has_trample(&self) -> bool {
         self.card.def().has_trample()
     }

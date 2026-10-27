@@ -1,0 +1,68 @@
+# mutation-layer4-addition-ignored: the additive layer 4 type change never makes the artifact a creature
+# file: crates\core\src\engine.rs
+# sha256 before mutation: 0ceff5a4660ac023bb2dcb456298576e03ae61b7034da833ae416dea2e4340a3
+# sha256 after restore:   0ceff5a4660ac023bb2dcb456298576e03ae61b7034da833ae416dea2e4340a3
+# restored byte-for-byte: True
+# command: cargo test -p aperture-core --test issue17_slice29 --locked
+# exit code: 101
+
+
+running 9 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_ability_offer_requires_two_mana_and_the_card_is_not_a_creature_spell ... ok
+test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... ok
+test an_animated_bear_dies_as_a_creature ... FAILED
+test the_animation_expires_at_cleanup_and_the_artifact_reverts ... FAILED
+test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... FAILED
+test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... FAILED
+test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... FAILED
+test a_save_and_reload_preserves_the_animation_and_its_layers ... FAILED
+
+failures:
+
+---- an_animated_bear_dies_as_a_creature stdout ----
+
+thread 'an_animated_bear_dies_as_a_creature' (33996) panicked at crates\core\tests\issue17_slice29.rs:285:5:
+assertion failed: is_creature(&game, id)
+
+---- the_animation_expires_at_cleanup_and_the_artifact_reverts stdout ----
+
+thread 'the_animation_expires_at_cleanup_and_the_artifact_reverts' (7396) panicked at crates\core\tests\issue17_slice29.rs:248:5:
+assertion failed: is_creature(&game, id)
+
+---- it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn stdout ----
+
+thread 'it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn' (43324) panicked at crates\core\tests\issue17_slice29.rs:338:5:
+assertion failed: is_creature(&game, id)
+
+---- a_second_activation_restacks_the_same_layers_without_stacking_the_stats stdout ----
+
+thread 'a_second_activation_restacks_the_same_layers_without_stacking_the_stats' (11440) panicked at crates\core\tests\issue17_slice29.rs:424:5:
+assertion failed: is_creature(&game, id)
+
+---- it_is_a_plain_artifact_until_the_printed_ability_animates_it stdout ----
+
+thread 'it_is_a_plain_artifact_until_the_printed_ability_animates_it' (42612) panicked at crates\core\tests\issue17_slice29.rs:204:5:
+it is an artifact creature now
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_save_and_reload_preserves_the_animation_and_its_layers stdout ----
+
+thread 'a_save_and_reload_preserves_the_animation_and_its_layers' (4212) panicked at crates\core\tests\issue17_slice29.rs:445:5:
+the reloaded artifact is still animated
+
+
+failures:
+    a_save_and_reload_preserves_the_animation_and_its_layers
+    a_second_activation_restacks_the_same_layers_without_stacking_the_stats
+    an_animated_bear_dies_as_a_creature
+    it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn
+    it_is_a_plain_artifact_until_the_printed_ability_animates_it
+    the_animation_expires_at_cleanup_and_the_artifact_reverts
+
+test result: FAILED. 3 passed; 6 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.04s
+     Running tests\issue17_slice29.rs (target\debug\deps\issue17_slice29-5a9819d21baab889.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice29`

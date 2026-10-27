@@ -50,6 +50,8 @@ const SLICE26_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE22_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice22-sourced.json");
 /// Slice 28: Circle of the Moon Druid (AFR 177), fetched 2026-10-27.
 const SLICE28_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice28-sourced.json");
+/// Slice 29: Stuffed Bear (MID 259), fetched 2026-10-27.
+const SLICE29_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice29-sourced.json");
 /// Slice 23: Goreclaw, Terror of Qal Sisma (CMM 293), fetched 2026-10-27.
 const SLICE23_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice23-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
@@ -215,6 +217,11 @@ fn slice26_cards() -> Vec<Value> {
 
 fn slice28_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE28_SOURCED).expect("sourced slice28 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice29_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE29_SOURCED).expect("sourced slice29 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -604,6 +611,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice25_cards())
         .chain(slice26_cards())
         .chain(slice28_cards())
+        .chain(slice29_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

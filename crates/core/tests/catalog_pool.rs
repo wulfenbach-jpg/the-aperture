@@ -265,6 +265,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::PutCounterAndHasteOnEntered
                 | Effect::SetBasePowerToughnessFromSource
                 | Effect::SetSourceCreatureSubtypes(_)
+                | Effect::AddSourceCreatureType(_)
+                | Effect::SetSourceColor(_)
+                | Effect::SetSourceBasePowerToughness(_, _)
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue
