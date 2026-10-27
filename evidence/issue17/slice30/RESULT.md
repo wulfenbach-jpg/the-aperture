@@ -46,7 +46,7 @@ trample-grant events; replay matched and fresh save round-tripped. Digest
 - Native inspection finding: saddle stack item had no source-incarnation binding. It now carries
   `affected: Some(source)` through the existing invalidation path; source-left resolves with
   no effect and no transfer. Added cleanup and source-left controls.
-- Broad departure effect pruning was narrowed to the saddle designation only.
+- The claim that departure pruning was narrowed to the saddle designation was WRONG (review30 item 2): `detach_object` still removes every effect targeting the departed object. That is correct for these until-end-of-turn effects and no behavioral defect was demonstrated; the record is corrected here.
 - Commands: `evidence/issue17/slice30/repair-gates.log`; issue17_slice30 6 passed, slice29 9,
   replay 6, printings 8, catalog 5, slice15 2, commander 43; fmt/clippy/release exit 0.
 
