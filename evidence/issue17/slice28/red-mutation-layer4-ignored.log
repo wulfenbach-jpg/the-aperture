@@ -1,7 +1,7 @@
 # mutation-layer4-ignored: the layer 4 subtype line is never effective
 # file: crates\core\src\engine.rs
-# sha256 before mutation: 3cd1c4bf323063dd843b285039174385cef78d45d448835a0dfe17b7e28755f9
-# sha256 after restore:   3cd1c4bf323063dd843b285039174385cef78d45d448835a0dfe17b7e28755f9
+# sha256 before mutation: 7439a45ca5324f84c520136645a1df42d9a610e0d961fde3bb0b22910b01542a
+# sha256 after restore:   7439a45ca5324f84c520136645a1df42d9a610e0d961fde3bb0b22910b01542a
 # restored byte-for-byte: True
 # command: cargo test -p aperture-core --test issue17_slice28 --locked
 # exit code: 101
@@ -18,18 +18,18 @@ failures:
 
 ---- it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after stdout ----
 
-thread 'it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after' (39344) panicked at crates\core\tests\issue17_slice28.rs:156:5:
+thread 'it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after' (41152) panicked at crates\core\tests\issue17_slice28.rs:165:5:
 the layer 4 line makes it a Bear for the engine's Bear filter
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ---- the_condition_is_its_controllers_turn_not_seat_zero stdout ----
 
-thread 'the_condition_is_its_controllers_turn_not_seat_zero' (34604) panicked at crates\core\tests\issue17_slice28.rs:294:5:
+thread 'the_condition_is_its_controllers_turn_not_seat_zero' (27044) panicked at crates\core\tests\issue17_slice28.rs:301:5:
 a Bear for P1
 
 ---- the_base_setting_sits_under_layer_7c_and_under_counters stdout ----
 
-thread 'the_base_setting_sits_under_layer_7c_and_under_counters' (41996) panicked at crates\core\tests\issue17_slice28.rs:261:5:
+thread 'the_base_setting_sits_under_layer_7c_and_under_counters' (19160) panicked at crates\core\tests\issue17_slice28.rs:268:5:
 assertion `left == right` failed: the engine's own Bear check grants Little Bear's counter
   left: 0
  right: 1
@@ -46,20 +46,20 @@ test result: FAILED. 2 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; 
 warning: unused variable: `line`
    --> crates\core\src\engine.rs:662:21
     |
-662 |                     line, ..
+662 |                     line,
     |                     ^^^^ help: try ignoring the field: `line: _`
     |
     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
 
 warning: useless assignment of variable of type `std::option::Option<SubtypeLine>` to itself
-   --> crates\core\src\engine.rs:665:21
+   --> crates\core\src\engine.rs:666:21
     |
-665 |                     effective = effective;
+666 |                     effective = effective;
     |                     ^^^^^^^^^^^^^^^^^^^^^
     |
     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
 
 warning: `aperture-core` (lib) generated 2 warnings (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.00s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.98s
      Running tests\issue17_slice28.rs (target\debug\deps\issue17_slice28-cfb9f7bf614b3534.exe)
 error: test failed, to rerun pass `-p aperture-core --test issue17_slice28`
