@@ -210,6 +210,10 @@ pub enum Effect {
     /// each other simultaneously. Both must still satisfy the printed
     /// Bear/opponent relation at resolution or no damage is dealt.
     FightTargets,
+    /// "It doesn't untap during your next untap step" (Spectral Bears). The
+    /// source object is recorded in `GameState::skip_next_untap` and its
+    /// controller's next untap step leaves it tapped exactly once.
+    SkipNextUntapStep,
 }
 
 impl Effect {
@@ -290,6 +294,7 @@ impl Effect {
             Effect::FightTargets => {
                 "target Bear you control fights target creature you don't control".to_string()
             }
+            Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
             Effect::CreateBearTokensForEachDeathThisTurn => {
                 "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
             }
@@ -381,6 +386,22 @@ impl CardDef {
     /// player controls an Island."
     pub fn has_islandwalk(&self) -> bool {
         self.islandwalk
+    }
+
+    /// CR 202.2: the card is black. Tokens carry their colors in
+    /// [`CardDef::colors`]; for catalog cards the printed color is derived from
+    /// the mana cost, which is what CR 202.2a makes authoritative. Nothing in
+    /// the pool sets, adds or changes a permanent's color, so this predicate is
+    /// the entire color model Spectral Bears reads.
+    pub fn is_black(&self) -> bool {
+        if self.colors.contains(&ManaColor::Black) {
+            return true;
+        }
+        self.cost.is_some_and(|cost| {
+            crate::mana::parse_cost(cost)
+                .pips
+                .contains(&ManaColor::Black)
+        })
     }
 
     /// CR 117.1a: an instant, or a card that prints Flash, may be cast while
@@ -594,6 +615,7 @@ pub enum CardId {
     HedronCrab,
     PaleBears,
     RiverBear,
+    SpectralBears,
     /// 1/1 vanilla Soldier token (CR 111). Never importable.
     SoldierToken,
     /// 1/1 flying Spirit token (CR 111, 702.9).

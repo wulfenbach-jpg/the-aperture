@@ -288,6 +288,7 @@ impl Game {
             creature_died_this_turn: false,
             nontoken_creature_deaths_this_turn: Vec::new(),
             activation_uses: BTreeMap::new(),
+            skip_next_untap: std::collections::BTreeSet::new(),
             effects: Vec::new(),
             shields: Vec::new(),
             // Allocator cursors start at zero so a state with no live effect has
@@ -2480,6 +2481,24 @@ impl Game {
         })
     }
 
+    /// CR 603.4: evaluate `card`'s printed intervening-if clause against the
+    /// defending seat's current board. Called when an attack trigger would fire
+    /// and again when it resolves, so a clause that stops being true removes the
+    /// ability instead of applying it.
+    fn trigger_condition_holds(&self, card: CardId, defender: PlayerId) -> bool {
+        match ability::trigger_condition(card) {
+            ability::TriggerCondition::Always => true,
+            ability::TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent => {
+                !self.state.objects.values().any(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == defender
+                        && !object.card.is_token()
+                        && object.card.def().is_black()
+                })
+            }
+        }
+    }
+
     // --------------------------------------------------------------- mutation
 
     fn apply(&mut self, player: PlayerId, action: &Action, events: &mut Vec<Event>) {
@@ -3581,6 +3600,36 @@ impl Game {
             player,
             attackers: attackers.to_vec(),
         });
+        // CR 508.1 + 603.2: "whenever this creature attacks" triggers fire as
+        // attackers are declared. The printed intervening-if (CR 603.4) is
+        // evaluated here, before the trigger is queued, so a false clause never
+        // reaches the stack; resolution re-checks it against the same defender.
+        if let Some(defender) = defender {
+            for id in attackers {
+                let Some(object) = self.state.try_object(*id) else {
+                    continue;
+                };
+                let (card, controller) = (object.card, object.controller);
+                if ability::triggers_on(card, TriggerEvent::Attacks)
+                    .next()
+                    .is_none()
+                {
+                    continue;
+                }
+                if !self.trigger_condition_holds(card, defender) {
+                    events.push(Event::TriggerRemoved {
+                        controller,
+                        card,
+                        reason: "the printed intervening-if condition is false as \
+                                 attackers are declared (CR 603.4)"
+                            .to_string(),
+                    });
+                    continue;
+                }
+                self.queue_triggers(*id, card, controller, TriggerEvent::Attacks);
+            }
+            self.put_triggers(events);
+        }
         // CR 508.2: the active player gets priority in the declare attackers step.
         self.grant_priority(player, events);
     }
@@ -4055,7 +4104,7 @@ impl Game {
         events.push(Event::StepBegin { step: next });
         let active = self.state.turn.active;
         match next {
-            Step::Untap => self.perform_untap(active),
+            Step::Untap => self.perform_untap(active, events),
             Step::Upkeep => self.grant_priority(active, events),
             Step::Draw => {
                 // CR 103.8a: in a two-player game the player who plays first
@@ -4132,14 +4181,46 @@ impl Game {
         }
     }
 
-    fn perform_untap(&mut self, active: PlayerId) {
+    fn perform_untap(&mut self, active: PlayerId, events: &mut Vec<Event>) {
+        // CR 502.3: an effect can keep a permanent tapped through its
+        // controller's untap step. The marker is one-shot: this step consumes
+        // it, so the permanent untaps normally a turn later. Markers belonging
+        // to another seat stay queued, and markers for objects that already left
+        // the battlefield are dropped instead of being carried forever.
+        let pending = std::mem::take(&mut self.state.skip_next_untap);
+        let mut kept = std::collections::BTreeSet::new();
+        let mut skipped = Vec::new();
         for obj in self.state.objects.values_mut() {
-            if obj.zone == Zone::Battlefield && obj.controller == active {
-                obj.tapped = false;
-                if obj.is_creature() {
-                    obj.summoning_sick = false;
-                }
+            if obj.zone != Zone::Battlefield {
+                continue;
             }
+            if obj.controller != active {
+                if pending.contains(&obj.id) {
+                    kept.insert(obj.id);
+                }
+                continue;
+            }
+            if pending.contains(&obj.id) {
+                // CR 502.3 + 302.6: it stays tapped, but it is not summoning
+                // sick — it has been under its controller's control since the
+                // turn began, so only its tapped state is preserved.
+                obj.summoning_sick = false;
+                skipped.push(obj.id);
+                continue;
+            }
+            obj.tapped = false;
+            if obj.is_creature() {
+                obj.summoning_sick = false;
+            }
+        }
+        self.state.skip_next_untap = kept;
+        for id in skipped {
+            let name = self.state.object(id).name().to_string();
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "{name} doesn't untap during this untap step (CR 502.3, Spectral Bears)"
+                ),
+            });
         }
         // CR 502.4: no player receives priority during the untap step.
     }
@@ -5741,6 +5822,40 @@ impl Game {
                     }
                 }
                 self.recompute_layers();
+                false
+            }
+            Effect::SkipNextUntapStep => {
+                let card = item.card;
+                let on_battlefield = self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|object| object.zone == Zone::Battlefield);
+                // CR 603.4: the intervening-if is re-read at resolution. If the
+                // defending seat has gained a black nontoken permanent since
+                // attackers were declared, the ability does nothing.
+                let condition_met = self
+                    .state
+                    .turn
+                    .defender
+                    .map(|defender| self.trigger_condition_holds(card, defender))
+                    .unwrap_or(true);
+                if on_battlefield && condition_met {
+                    self.state.skip_next_untap.insert(item.object);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "{} doesn't untap during its controller's next untap step (CR 502.3)",
+                            card.name()
+                        ),
+                    });
+                } else if !condition_met {
+                    events.push(Event::TriggerRemoved {
+                        controller,
+                        card,
+                        reason: "the printed intervening-if condition is false at resolution \
+                                 (CR 603.4)"
+                            .to_string(),
+                    });
+                }
                 false
             }
             Effect::FightTargets => {

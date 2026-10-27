@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
 
@@ -708,6 +708,15 @@ pub struct GameState {
     /// Per-turn "activate only once each turn" usage, keyed by source object.
     /// Bit `n` records that ability index `n` was activated this turn.
     pub activation_uses: BTreeMap<ObjectId, u8>,
+    /// Battlefield objects that "don't untap during your next untap step"
+    /// (CR 502.3, Spectral Bears). The entry is consumed by that permanent's
+    /// controller's next untap step, which leaves it tapped exactly once;
+    /// entries for objects that left the battlefield are dropped.
+    ///
+    /// Skipped when empty so every state that never used the effect keeps the
+    /// pre-slice-19 serialized form and therefore its digest.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub skip_next_untap: BTreeSet<ObjectId>,
     /// Continuous effects with their layer, timestamp and duration (CR 613).
     /// Serialized so a save or replay reproduces the exact layer state.
     ///

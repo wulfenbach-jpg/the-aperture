@@ -77,6 +77,7 @@ pub fn fixture(seed: u64) -> Fixture {
             next_trigger_seq: 0,
             revealed: Vec::new(),
             activation_uses: BTreeMap::new(),
+            skip_next_untap: Default::default(),
             effects: Vec::new(),
             shields: Vec::new(),
             next_effect: 1,

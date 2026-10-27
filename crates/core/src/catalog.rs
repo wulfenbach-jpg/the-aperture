@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 135] = [
+pub static CARDS: [CardDef; 136] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -968,6 +968,16 @@ pub static CARDS: [CardDef; 135] = [
         RiverBear, "River Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear", power: Some(3), toughness: Some(3),
         oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+        spell: None
+    ),
+    // Issue 17 slice 19: the pool's first attack trigger. Spectral Bears prints
+    // an intervening-if ("if defending player controls no black nontoken
+    // permanents") whose payoff is "it doesn't untap during your next untap
+    // step". No keyword, layer, targeting or cost change is involved.
+    card!(
+        SpectralBears, "Spectral Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Spirit", power: Some(3), toughness: Some(3),
+        oracle: "Whenever this creature attacks, if defending player controls no black nontoken permanents, it doesn't untap during your next untap step.",
         spell: None
     ),
     // Issue 17 slice 15: sourced Bear-token package. Each card prints one

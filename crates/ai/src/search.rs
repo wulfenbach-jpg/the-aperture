@@ -721,6 +721,7 @@ fn reconstruct(
         trigger_queue: Vec::new(),
         next_trigger_seq: 0,
         activation_uses: real_state.activation_uses.clone(),
+        skip_next_untap: real_state.skip_next_untap.clone(),
         effects: Vec::new(),
         shields: Vec::new(),
         next_effect: real_state.next_effect,

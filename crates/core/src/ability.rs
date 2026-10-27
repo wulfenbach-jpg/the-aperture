@@ -55,6 +55,10 @@ pub enum TriggerEvent {
     /// Same wording but strictly "another creature you control dies": the
     /// dying creature must not be the watcher itself (Elas il-Kor).
     AnotherCreatureYouControlDies,
+    /// CR 508.1 + 603.6a: this creature was declared as an attacker in the
+    /// declare attackers step. The triggering object is the attacker itself and
+    /// the step's defending seat is the one an intervening-if can read.
+    Attacks,
 }
 
 impl TriggerEvent {
@@ -71,6 +75,7 @@ impl TriggerEvent {
                 "this creature or another creature you control dies"
             }
             TriggerEvent::AnotherCreatureYouControlDies => "another creature you control dies",
+            TriggerEvent::Attacks => "this creature attacks",
         }
     }
 }
@@ -287,6 +292,18 @@ const BRINDLE_BOAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
     effects: &[Effect::GainLife(4)],
     once_per_turn: false,
     sorcery_timing: false,
+})];
+
+/// Issue 17 slice 19: the pool's first attack trigger. The printed
+/// intervening-if is not part of the literal — it is the card's
+/// `trigger_condition`, which the declare attackers step evaluates before the
+/// trigger is queued and which resolution re-checks (CR 603.4).
+const SPECTRAL_BEARS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever this creature attacks, if defending player controls no black nontoken permanents, it doesn't untap during your next untap step.",
+    event: TriggerEvent::Attacks,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::SkipNextUntapStep],
 })];
 
 const ELVISH_VISIONARY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
@@ -686,6 +703,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
+        CardId::SpectralBears => SPECTRAL_BEARS,
         CardId::BrindleBoar => BRINDLE_BOAR,
         CardId::ElvishVisionary => ELVISH_VISIONARY,
         CardId::FesteringGoblin => FESTERING_GOBLIN,
@@ -706,6 +724,33 @@ pub fn triggers_on(
             Ability::Triggered(t) if t.event == event => Some((index as u8, t)),
             _ => None,
         })
+}
+
+/// CR 603.4: an intervening-if clause. It is held per card rather than in the
+/// `TriggeredAbility` literal so that every pre-slice-19 trigger keeps its
+/// exact literal, and it is evaluated twice by the rules — once when the
+/// trigger would fire and once when it resolves.
+///
+/// Only the single clause the pool prints is modelled. A general condition
+/// expression (`TriggerCondition::All(Vec<..>)`, comparisons, counters) is
+/// deliberately not introduced until a second card needs it; adding one here
+/// without a second consumer would be speculative structure.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TriggerCondition {
+    /// No printed clause: the trigger fires whenever its event happens.
+    Always,
+    /// "if defending player controls no black nontoken permanents". Black is
+    /// read from printed color (CR 202.2a, `CardDef::is_black`), and a token is
+    /// excluded by CR 111.6 even though it can have a color.
+    DefendingPlayerControlsNoBlackNontokenPermanent,
+}
+
+/// The intervening-if clause of `card`'s trigger, if it prints one.
+pub fn trigger_condition(card: CardId) -> TriggerCondition {
+    match card {
+        CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
+        _ => TriggerCondition::Always,
+    }
 }
 
 // ------------------------------------------------------- static abilities
