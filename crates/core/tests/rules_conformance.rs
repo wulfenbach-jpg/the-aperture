@@ -924,6 +924,7 @@ fn pending_name(pending: Option<&Pending>) -> &'static str {
         Some(Pending::Discard { count: 2, .. }) => "Discard(2)",
         Some(Pending::Discard { .. }) => "Discard",
         Some(Pending::ApnapSacrifice { .. }) => "ApnapSacrifice",
+        Some(Pending::ApnapReveal { .. }) => "ApnapReveal",
         Some(Pending::CommanderReturn { .. }) => "CommanderReturn",
         Some(Pending::CommanderReplacement { .. }) => "CommanderReplacement",
         Some(Pending::CommanderDraw { .. }) => "CommanderDraw",

@@ -129,6 +129,13 @@ pub enum Action {
     AnswerTriggerChoice {
         use_ability: bool,
     },
+    /// CR 701.9a + 101.4: answer Kamahl's Summons' "each player may reveal any
+    /// number of creature cards from their hand". The named cards must all be
+    /// in the choosing seat's hand and be creature cards; they stay in hand.
+    /// An empty list is the legal "reveal nothing" answer.
+    RevealCreatureCards {
+        cards: Vec<ObjectId>,
+    },
 }
 
 impl Action {
@@ -155,6 +162,7 @@ impl Action {
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::DeclineTriggerTarget => "decline trigger target",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
+            Action::RevealCreatureCards { .. } => "reveal creature cards",
         }
     }
 }

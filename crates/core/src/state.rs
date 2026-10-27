@@ -207,6 +207,16 @@ pub enum Pending {
         card: ObjectId,
         can_take: bool,
     },
+    /// Kamahl's Summons: every live seat, in APNAP order from the active player
+    /// (CR 101.4, 608.2f), may reveal any number of creature cards from its own
+    /// hand (CR 701.9a). `revealed` collects each public answer; the Bear tokens
+    /// are created only after the last seat answers, so no seat's count depends
+    /// on the order the table answered in.
+    ApnapReveal {
+        player: PlayerId,
+        order: Vec<PlayerId>,
+        revealed: BTreeMap<PlayerId, Vec<ObjectId>>,
+    },
 }
 
 /// One triggered ability waiting to be put on the stack (CR 603.2, 603.3).
@@ -328,6 +338,7 @@ impl Pending {
             | Pending::OrderCard { player, .. }
             | Pending::Discard { player, .. }
             | Pending::ApnapSacrifice { player, .. } => *player,
+            Pending::ApnapReveal { player, .. } => *player,
             Pending::CommanderReturn { order, cursor, .. } => order[*cursor].player,
             Pending::CommanderReplacement { player, .. } => *player,
             Pending::CommanderDraw { player, .. } => *player,
@@ -383,6 +394,9 @@ impl Pending {
             Pending::ApnapSacrifice { player, .. } => {
                 format!("P{player}: choose a permanent to sacrifice (CR 101.4, 701.21a)")
             }
+            Pending::ApnapReveal { player, .. } => format!(
+                "P{player}: reveal any number of creature cards from hand (CR 101.4, 701.9a)"
+            ),
             Pending::CommanderReturn { order, cursor, .. } => {
                 let current = &order[*cursor];
                 format!(
@@ -970,6 +984,9 @@ impl GameState {
                     choices.values().any(|choice| *choice == Some(id))
                         || source_left.is_some_and(|provenance| provenance.source == id)
                 }
+                Pending::ApnapReveal { revealed, .. } => {
+                    revealed.values().any(|cards| cards.contains(&id))
+                }
                 Pending::CommanderReturn { order, .. } => {
                     order.iter().any(|entry| entry.object == id)
                 }
@@ -1247,6 +1264,99 @@ impl GameState {
                     return Err(EngineError::InvalidState {
                         reason:
                             "APNAP queue source/cursor/provenance is not a resolving Crack the Earth effect"
+                                .to_string(),
+                    });
+                }
+            }
+            if let Pending::ApnapReveal {
+                player,
+                order,
+                revealed,
+            } = pending
+            {
+                if order.is_empty() || order[0] != *player {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP reveal pending player is not the first remaining seat"
+                            .to_string(),
+                    });
+                }
+                let anchor = self.turn.active;
+                let mut full: Vec<PlayerId> = Vec::new();
+                for offset in 0..n {
+                    let seat = ((anchor as usize + offset) % n) as PlayerId;
+                    if self.is_live(seat) {
+                        full.push(seat);
+                    }
+                }
+                let mut keys: Vec<PlayerId> = revealed.keys().copied().collect();
+                keys.sort_unstable();
+                let mut answered: Vec<PlayerId> =
+                    full.iter().copied().take(revealed.len()).collect();
+                answered.sort_unstable();
+                if keys != answered {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "APNAP reveal answers are not a prefix of active-anchored turn order"
+                                .to_string(),
+                    });
+                }
+                let expected: Vec<PlayerId> = full.iter().copied().skip(revealed.len()).collect();
+                if *order != expected {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP reveal order is not the remaining active-anchored suffix"
+                            .to_string(),
+                    });
+                }
+                for (seat, cards) in revealed {
+                    let hand = &self.player(*seat).hand;
+                    let mut seen: Vec<ObjectId> = Vec::new();
+                    for id in cards {
+                        if seen.contains(id) {
+                            return Err(EngineError::InvalidState {
+                                reason: format!("P{seat} revealed {id} twice"),
+                            });
+                        }
+                        seen.push(*id);
+                        if !hand.contains(id) {
+                            return Err(EngineError::InvalidState {
+                                reason: format!("P{seat} revealed {id}, which is not in hand"),
+                            });
+                        }
+                        let Some(object) = self.objects.get(id) else {
+                            return Err(EngineError::InvalidState {
+                                reason: format!("revealed object {id} is missing"),
+                            });
+                        };
+                        if !object.card.def().is_creature() || object.zone != Zone::Hand {
+                            return Err(EngineError::InvalidState {
+                                reason: format!("revealed {id} is not a creature card in hand"),
+                            });
+                        }
+                    }
+                }
+                let Some(resolving) = self.resolving else {
+                    return Err(EngineError::InvalidState {
+                        reason: "APNAP reveal queue is not bound to a resolving spell".to_string(),
+                    });
+                };
+                let Some(source) = self.objects.get(&resolving) else {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("APNAP reveal source object {resolving} is missing"),
+                    });
+                };
+                let reveal_index = source.card.def().spell_spec().and_then(|spec| {
+                    spec.effects.iter().position(|effect| {
+                        *effect == Effect::EachPlayerMayRevealCreatureCardsForBears
+                    })
+                });
+                let source_ok = self.stack.last().is_some_and(|top| {
+                    top.object == resolving
+                        && reveal_index.is_some_and(|index| top.cursor as usize == index + 1)
+                });
+                if !source_ok {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "APNAP reveal queue source/cursor is not a resolving Kamahl's Summons"
                                 .to_string(),
                     });
                 }

@@ -1,0 +1,49 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T17:00:12.753801+00:00",
+ "cards": [
+  {
+   "name": "Kamahl's Summons",
+   "oracle_id": "8b6ef0a2-cd90-44c8-8f11-e1983f2b1dfd",
+   "scryfall_id": "0edc37c6-b6a8-424f-95dd-928d03c28542",
+   "set": "ons",
+   "collector_number": "269",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/0edc37c6-b6a8-424f-95dd-928d03c28542",
+   "retrieved_at": "2026-10-27T17:00:12.753801+00:00"
+  },
+  {
+   "name": "Surrak and Goreclaw",
+   "oracle_id": "95be5f72-1f81-4ec6-9bd9-f0b07bfc874b",
+   "scryfall_id": "9c10934d-9016-43c4-a7ab-56cc7d8f671f",
+   "set": "mom",
+   "collector_number": "337",
+   "layout": "normal",
+   "mana_cost": "{4}{G}{G}",
+   "type_line": "Legendary Creature — Human Bear",
+   "power": "6",
+   "toughness": "5",
+   "oracle_text": "Trample\nOther creatures you control have trample.\nWhenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Trample"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/9c10934d-9016-43c4-a7ab-56cc7d8f671f",
+   "retrieved_at": "2026-10-27T17:00:12.882296+00:00"
+  }
+ ]
+}

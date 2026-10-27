@@ -136,6 +136,14 @@ pub enum Event {
         player: PlayerId,
         permanent: Option<ObjectId>,
     },
+    /// CR 701.9a: a seat answered a "reveal any number of cards from your hand"
+    /// instruction. The revealed cards stay in their owner's hand; the count is
+    /// what the effect uses.
+    CardsRevealed {
+        player: PlayerId,
+        cards: Vec<ObjectId>,
+        count: u8,
+    },
     AttackersDeclared {
         player: PlayerId,
         attackers: Vec<ObjectId>,

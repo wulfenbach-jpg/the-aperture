@@ -224,6 +224,13 @@ pub enum Effect {
     /// source object is recorded in `GameState::skip_next_untap` and its
     /// controller's next untap step leaves it tapped exactly once.
     SkipNextUntapStep,
+    /// "Each player may reveal any number of creature cards from their hand.
+    /// Then each player creates a 2/2 green Bear creature token for each card
+    /// they revealed this way" (Kamahl's Summons). The choice is a per-seat
+    /// arbitrary hand subset answered in APNAP order from the active player
+    /// (CR 101.4, 608.2f); the tokens are created only after every live seat
+    /// has answered, and each seat's count is fixed by its own reveal.
+    EachPlayerMayRevealCreatureCardsForBears,
     /// Look at the top card without moving it. A creature/planeswalker card
     /// gets a take-or-bottom choice; any other card goes to the bottom without
     /// being revealed. Empty library is not a draw.
@@ -398,6 +405,10 @@ impl Effect {
                     .to_string()
             }
             Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
+            Effect::EachPlayerMayRevealCreatureCardsForBears => {
+                "each player may reveal any number of creature cards from their hand, then creates a 2/2 green Bear token for each card revealed this way"
+                    .to_string()
+            }
             Effect::CreateBearTokensForEachDeathThisTurn => {
                 "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
             }
@@ -701,6 +712,8 @@ pub enum CardId {
     StuffedBear,
     /// Issue 17 slice 31: Beorn the Fierce (HOB 119).
     BeornTheFierce,
+    /// Issue 17 slice 32: Kamahl's Summons (ONS 269).
+    KamahlsSummons,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

@@ -2417,6 +2417,42 @@ impl Game {
                     "no simultaneous sacrifice choice is pending (CR 101.4)",
                 )),
             },
+            // CR 701.9a + 101.4: the seat whose reveal is pending names any subset
+            // of the creature cards in its own hand. An empty list is legal (the
+            // instruction is "may reveal any number", so zero is a real answer).
+            Action::RevealCreatureCards { cards } => match &state.pending {
+                Some(Pending::ApnapReveal { player: p, .. }) if *p == player => {
+                    let hand = &state.player(player).hand;
+                    let mut seen: Vec<ObjectId> = Vec::new();
+                    for id in cards {
+                        if seen.contains(id) {
+                            return Err(EngineError::illegal(
+                                "reveal creature cards",
+                                "a card can only be revealed once",
+                            ));
+                        }
+                        seen.push(*id);
+                        if !hand.contains(id) {
+                            return Err(EngineError::illegal(
+                                "reveal creature cards",
+                                "only cards in the choosing seat's own hand can be revealed (CR 701.9a)",
+                            ));
+                        }
+                        let object = state.try_object(*id).ok_or(EngineError::UnknownObject)?;
+                        if !object.card.def().is_creature() {
+                            return Err(EngineError::illegal(
+                                "reveal creature cards",
+                                "only creature cards can be revealed this way",
+                            ));
+                        }
+                    }
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "reveal creature cards",
+                    "no \"reveal any number of creature cards\" choice is pending (CR 101.4)",
+                )),
+            },
             Action::AnswerCommanderDraw { .. } => match &state.pending {
                 Some(Pending::CommanderDraw {
                     player: owner,
@@ -3165,6 +3201,7 @@ impl Game {
             Action::ChooseSacrifice { permanent } => {
                 self.apply_apnap_sacrifice(player, *permanent, events)
             }
+            Action::RevealCreatureCards { cards } => self.apply_apnap_reveal(player, cards, events),
             Action::AnswerCommanderReturn { to_command_zone } => {
                 self.apply_commander_return(player, *to_command_zone, events)
             }
@@ -6059,6 +6096,92 @@ impl Game {
         order
     }
 
+    /// Kamahl's Summons: every live seat answers in APNAP order from the active
+    /// player (CR 101.4, 608.2f). Nothing is applied per answer; the batch runs
+    /// once the last seat has revealed.
+    fn begin_apnap_reveal(&mut self) {
+        let anchor = self.state.turn.active;
+        let eligible: Vec<PlayerId> = self.state.live_seats().collect();
+        if eligible.is_empty() {
+            return;
+        }
+        let order = self.apnap_order_from(anchor, &eligible);
+        if let Some(player) = order.first().copied() {
+            self.state.pending = Some(Pending::ApnapReveal {
+                player,
+                order,
+                revealed: BTreeMap::new(),
+            });
+        }
+    }
+
+    /// Record one seat's reveal and advance the queue, or apply the batch.
+    fn apply_apnap_reveal(
+        &mut self,
+        player: PlayerId,
+        cards: &[ObjectId],
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::ApnapReveal {
+            mut order,
+            mut revealed,
+            ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        events.push(Event::CardsRevealed {
+            player,
+            cards: cards.to_vec(),
+            count: u8::try_from(cards.len()).unwrap_or(u8::MAX),
+        });
+        if order.first() == Some(&player) {
+            order.remove(0);
+        }
+        revealed.insert(player, cards.to_vec());
+        match order.first().copied() {
+            Some(next) => {
+                self.state.pending = Some(Pending::ApnapReveal {
+                    player: next,
+                    order,
+                    revealed,
+                });
+            }
+            None => self.apply_apnap_reveal_batch(&revealed, events),
+        }
+    }
+
+    /// CR 608.2f: after every seat has answered, each seat creates one 2/2 green
+    /// Bear token per card it revealed, in APNAP order from the active player.
+    /// The cards themselves never leave their owner's hand (CR 701.9a reveals,
+    /// it does not move).
+    fn apply_apnap_reveal_batch(
+        &mut self,
+        revealed: &BTreeMap<PlayerId, Vec<ObjectId>>,
+        events: &mut Vec<Event>,
+    ) {
+        let anchor = self.state.turn.active;
+        let eligible: Vec<PlayerId> = revealed.keys().copied().collect();
+        for seat in self.apnap_order_from(anchor, &eligible) {
+            let Some(cards) = revealed.get(&seat) else {
+                continue;
+            };
+            if cards.is_empty() || !self.state.is_live(seat) {
+                continue;
+            }
+            let count = cards.len();
+            self.create_tokens(seat, CardId::BearToken, count, events);
+        }
+        if self.state.resolving.is_some_and(|resolving| {
+            self.state
+                .objects
+                .get(&resolving)
+                .is_none_or(|object| object.zone == Zone::Removed)
+        }) {
+            self.state.resolving = None;
+        }
+    }
+
     fn begin_apnap_sacrifice(&mut self, _events: &mut Vec<Event>) {
         let anchor = self.state.turn.active;
         let eligible: Vec<PlayerId> = self.state.live_seats().collect();
@@ -6352,6 +6475,13 @@ impl Game {
             }
             Effect::EachPlayerSacrifice => {
                 self.begin_apnap_sacrifice(events);
+                self.state.pending.is_some()
+            }
+            // CR 101.4 + 701.9a: "Each player may reveal any number of creature
+            // cards from their hand" is a per-seat choice made in APNAP order;
+            // the tokens wait for every answer (608.2f).
+            Effect::EachPlayerMayRevealCreatureCardsForBears => {
+                self.begin_apnap_reveal();
                 self.state.pending.is_some()
             }
             Effect::ReturnToHand => {
@@ -8190,6 +8320,39 @@ impl Game {
                         })
                         .collect()
                 }
+            }
+            Pending::ApnapReveal { player, .. } => {
+                let creatures: Vec<ObjectId> = self
+                    .state
+                    .player(*player)
+                    .hand
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state
+                            .try_object(*id)
+                            .is_some_and(|object| object.card.def().is_creature())
+                    })
+                    .collect();
+                let mut offers = vec![LegalAction {
+                    action: Action::RevealCreatureCards { cards: Vec::new() },
+                    label: "Reveal no creature cards".to_string(),
+                    rules: vec!["101.4", "701.9a"],
+                }];
+                if !creatures.is_empty() {
+                    offers.push(LegalAction {
+                        action: Action::RevealCreatureCards {
+                            cards: creatures.clone(),
+                        },
+                        label: format!(
+                            "Reveal {} creature card(s) for {} 2/2 green Bear token(s)",
+                            creatures.len(),
+                            creatures.len()
+                        ),
+                        rules: vec!["101.4", "701.9a"],
+                    });
+                }
+                offers
             }
             Pending::CommanderDraw { object, .. } => vec![
                 LegalAction {

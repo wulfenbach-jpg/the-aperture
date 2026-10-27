@@ -57,6 +57,8 @@ const SLICE29_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE23_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice23-sourced.json");
 /// Slice 31: Beorn the Fierce (HOB 119), fetched 2026-10-27.
 const SLICE31_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice31-sourced.json");
+/// Slice 32: Kamahl's Summons (ONS 269) and Surrak and Goreclaw (MOM 337), fetched 2026-10-27.
+const SLICE32_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice32-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
@@ -236,6 +238,21 @@ fn slice30_cards() -> Vec<Value> {
 fn slice31_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE31_SOURCED).expect("sourced slice31 JSON");
     value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice32_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE32_SOURCED).expect("sourced slice32 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+/// Only the card slice 32 newly adds to the pool. Surrak and Goreclaw is in the
+/// slice-32 fixture to record the printed keyword that repaired it, but its
+/// catalog row already existed and is counted by the slice-24 fixture.
+fn slice32_new_cards() -> Vec<Value> {
+    slice32_cards()
+        .into_iter()
+        .filter(|card| sourced_text(card, "name") == "Kamahl's Summons")
+        .collect()
 }
 
 fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
@@ -648,6 +665,56 @@ fn every_slice31_card_matches_its_recorded_printing_and_trample() {
 }
 
 #[test]
+fn every_slice32_card_matches_its_recorded_printing() {
+    let cards = slice32_cards();
+    assert_eq!(cards.len(), 2, "slice 32 records two cards");
+    let kamahl = cards
+        .iter()
+        .find(|card| sourced_text(card, "name") == "Kamahl's Summons")
+        .expect("Kamahl's Summons record");
+    let def = catalog::by_name("Kamahl's Summons")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(kamahl, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(kamahl, "type_line"), "type");
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(kamahl, "mana_cost")),
+        "mana cost"
+    );
+    assert_eq!(sourced_text(kamahl, "set"), "ons");
+    assert_eq!(sourced_text(kamahl, "collector_number"), "269");
+    assert_eq!(def.power, None, "a sorcery has no power");
+    assert_eq!(sourced_text(kamahl, "legalities_commander"), "legal");
+    assert!(sourced_text(kamahl, "printing_url").starts_with("https://api.scryfall.com/cards/"));
+    assert!(!sourced_text(kamahl, "retrieved_at").is_empty());
+}
+
+/// Slice 32 repaired an included card's own printed keyword: Surrak and
+/// Goreclaw prints Trample, so the pool row must model it (it previously did
+/// not, and its static grants trample only to *other* creatures).
+#[test]
+fn surrak_and_goreclaw_models_the_trample_its_printing_records() {
+    let cards = slice32_cards();
+    let surrak = cards
+        .iter()
+        .find(|card| sourced_text(card, "name") == "Surrak and Goreclaw")
+        .expect("Surrak and Goreclaw record");
+    assert_eq!(sourced_text(surrak, "set"), "mom");
+    assert_eq!(sourced_text(surrak, "collector_number"), "337");
+    assert_eq!(
+        card_keywords(surrak),
+        vec!["Trample".to_string()],
+        "the printing's keyword list"
+    );
+    let def = catalog::by_name("Surrak and Goreclaw")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(surrak, "oracle_text"));
+    assert!(def.has_trample(), "the printed keyword is modelled");
+}
+
+#[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
     let starter: Vec<Value> = starter_new_cards()
         .into_iter()
@@ -680,6 +747,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice29_cards())
         .chain(slice30_cards())
         .chain(slice31_cards())
+        .chain(slice32_new_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 147] = [
+pub static CARDS: [CardDef; 148] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -868,7 +868,12 @@ pub static CARDS: [CardDef; 147] = [
         oracle: "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
         spell: None
     ),
-    card!(
+    // Issue 17 slice 32: Surrak and Goreclaw prints Trample itself. Until this
+    // slice its row was a plain `card!` (trample false) and only its static
+    // granted trample to other creatures, so the card's own printed keyword was
+    // unmodelled. CR 702.19b: lethal damage is assigned to the blocker and the
+    // remainder tramples over to the defending player.
+    card_trample!(
         SurrakAndGoreclaw, "Surrak and Goreclaw", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human Bear", power: Some(6), toughness: Some(5),
         oracle: "Trample\nOther creatures you control have trample.\nWhenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
@@ -1046,6 +1051,18 @@ pub static CARDS: [CardDef; 147] = [
         type_line: "Sorcery", power: None, toughness: None,
         oracle: "Each player who controls an artifact or enchantment creates a 2/2 green Bear creature token. Then destroy all artifacts and enchantments.",
         spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::BearTokenForEachPlayerWithPermanent, Effect::DestroyAllArtifactsAndEnchantments] })
+    ),
+    // Issue 17 slice 32: Kamahl's Summons (ONS 269). The pool's first "each
+    // player may reveal any number of creature cards from their hand" spell:
+    // the choice is a per-seat arbitrary hand subset, answered in APNAP order,
+    // and the Bear tokens are created only after every live seat has answered.
+    // Printed text copied verbatim from the ONS 269 printing recorded in
+    // fixtures/starter-corpus/slice32-sourced.json.
+    card!(
+        KamahlsSummons, "Kamahl's Summons", cost: Some("{3}{G}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::EachPlayerMayRevealCreatureCardsForBears] })
     ),
     card_flash!(
         LittleBear, "Little Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,

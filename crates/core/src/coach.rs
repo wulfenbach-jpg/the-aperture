@@ -403,6 +403,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             },
             Pending::Discard { .. } => vec!["514.1"],
             Pending::ApnapSacrifice { .. } => vec!["101.4", "701.21a"],
+            Pending::ApnapReveal { .. } => vec!["101.4", "701.9a"],
             Pending::CommanderReturn { .. } => vec!["903.9a"],
             Pending::CommanderReplacement { .. } | Pending::CommanderDraw { .. } => {
                 vec!["903.9b"]
@@ -412,18 +413,22 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             Pending::TriggerMode { .. } => vec!["603.3c", "700.2b"],
             Pending::TopCardChoice { .. } => vec!["701.20e"],
         };
-        let text = if matches!(pending, Pending::ApnapSacrifice { .. })
-            && pending.player() != viewer
-        {
+        let text = if pending.player() != viewer
+            && matches!(
+                pending,
+                Pending::ApnapSacrifice { .. } | Pending::ApnapReveal { .. }
+            ) {
             format!(
-                "P{} has a simultaneous sacrifice choice pending; details are private to that seat.",
+                "P{} has a pending choice; details are private to that seat.",
                 pending.player()
             )
         } else {
             pending.describe()
         };
         let apnap_note = match pending {
-            Pending::ApnapSacrifice { .. } | Pending::CommanderReturn { .. } => {
+            Pending::ApnapSacrifice { .. }
+            | Pending::ApnapReveal { .. }
+            | Pending::CommanderReturn { .. } => {
                 " These choices are made in APNAP order: seats answer one at a time in turn order, starting with the active player (CR 101.4)."
             }
             _ => "",

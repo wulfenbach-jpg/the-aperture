@@ -45,6 +45,7 @@ pub enum PendingKind {
     OrderCard { index: usize, mode: OrderMode },
     Discard { count: u8 },
     ApnapSacrifice,
+    ApnapReveal,
     CommanderReturn,
     CommanderReplacement,
     CommanderDraw,
@@ -369,6 +370,29 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
                 format!("P{player} discards a card")
             }
         }
+        Event::CardsRevealed {
+            player,
+            cards,
+            count,
+        } => {
+            if cards.is_empty() {
+                format!("P{player} reveals no creature cards")
+            } else {
+                let names: Vec<&'static str> = cards
+                    .iter()
+                    .map(|id| {
+                        game.state
+                            .try_object(*id)
+                            .map(|object| object.card.name())
+                            .unwrap_or("a card")
+                    })
+                    .collect();
+                format!(
+                    "P{player} reveals {count} creature card(s) from hand: {}",
+                    names.join(", ")
+                )
+            }
+        }
         Event::SacrificeChosen { player, permanent } => match permanent {
             Some(id) => format!(
                 "P{player} chooses {} to sacrifice",
@@ -586,6 +610,7 @@ impl Game {
         };
         let pending_for_viewer = self.state.pending.as_ref().filter(|pending| match pending {
             crate::state::Pending::ApnapSacrifice { player, .. }
+            | crate::state::Pending::ApnapReveal { player, .. }
             | crate::state::Pending::TopCardChoice { player, .. } => *player == viewer,
             _ => true,
         });
@@ -731,6 +756,7 @@ impl Game {
                     PendingKind::Discard { count: *count }
                 }
                 crate::state::Pending::ApnapSacrifice { .. } => PendingKind::ApnapSacrifice,
+                crate::state::Pending::ApnapReveal { .. } => PendingKind::ApnapReveal,
                 crate::state::Pending::CommanderReturn { .. } => PendingKind::CommanderReturn,
                 crate::state::Pending::CommanderReplacement { .. } => {
                     PendingKind::CommanderReplacement

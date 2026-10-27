@@ -255,6 +255,15 @@ pub fn auto_answer(game: &Game) -> Action {
                 .find(|legal| matches!(legal.action, Action::ChooseSacrifice { .. }))
                 .map(|legal| legal.action)
                 .expect("an APNAP sacrifice option is offered"),
+            Pending::ApnapReveal { .. } => game
+                .legal_actions()
+                .into_iter()
+                // The offers are deterministic: "reveal nothing" first, then
+                // "reveal every creature card in hand". Take the larger one so a
+                // harness game actually exercises the token creation.
+                .rfind(|legal| matches!(legal.action, Action::RevealCreatureCards { .. }))
+                .map(|legal| legal.action)
+                .expect("an APNAP reveal option is offered"),
             Pending::OrderCard { .. } => Action::OrderCard { to_top: true },
             Pending::CommanderReturn { .. } => Action::AnswerCommanderReturn {
                 to_command_zone: true,

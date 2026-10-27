@@ -193,9 +193,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    blockers first and tramples the surplus to the player); defender, token
    flying and printed islandwalk are also implemented in their named packages.
    Haste is implemented as a *granted* keyword (`Game::has_haste` /
-   `ContinuousKind::GrantsHaste`, Surrak and Goreclaw); cards that print haste
-   are not in the pool, so printed haste and wider keyword semantics remain
-   unimplemented;
+   `ContinuousKind::GrantsHaste`, Surrak and Goreclaw); no supported card
+   *prints* haste yet, so printed haste remains unimplemented even though the
+   engine already answers the granted case;
 5. typed counters exist in the core (issue #16); slice 18 implements Ayula's
    printed counter/fight trigger as the bounded `TargetSpec::Bear` /
    `TargetSpec::BearYouControl` modes with a typed fight effect (CR 701.14a/b).
@@ -466,8 +466,8 @@ so layers 4, 5, 6, 7b and 7c now exist. Still missing: layer 7a
 characteristic-defining power/toughness, which is why `Beorn's Hospitality`
 remains unsupported, and layer 7d, which belongs to the counters lane.) Ayula
 had 22 missing names after slice 26, 21 after slice 28, 20 after slice 29,
-19 after slice 30 and 18 after slice 31; the eight-list gate remains open at
-1 of 8 certified, and no new list is certified by this slice.
+19 after slice 30, 18 after slice 31 and 17 after slice 32; the eight-list gate
+remains open at 1 of 8 certified, and no new list is certified by this slice.
 
 Three mutation REDs are retained in `evidence/issue17/slice23/`: disabling the
 reduction fails exactly the two cost tests, ignoring the printed power threshold
@@ -520,4 +520,17 @@ Known limits, disclosed: the anthem's recipient set is recomputed only at the en
 
 Verification retained in `evidence/issue17/slice31/`: four discriminating mutation REDs (trample-counter read dropped, Bear-count gate ignored, optional target made mandatory, subtype anthem disabled — engine restored byte-for-byte, proven by `run-mutations.py` and the pre/post sha256 files), a four-seat 40-life package journey from `evidence/issue17/slice31-journey-driver` (`decks/package-slice31.txt`, separate CLI replay matches) whose driver accepts the printed target on every offer and asserts that the trigger, the counter and the Bear addition really happened, and the usual gates. This slice certifies no starter list: Ayula still has 18 missing names and the eight-list gate remains 1 of 8.
 
-Separately disclosed, not fixed here: `Surrak and Goreclaw` (slice 24) prints **Trample** on itself, but its catalog row is a `card!` (trample `false`) and its static grants trample only to *other* creatures, so Surrak itself does not currently trample. Repairing that changes the behavior of an already-approved card and the digests of the journeys that used it, so it is recorded here as a known conformance gap for a later, separately reviewed increment rather than silently changed.
+Separately disclosed in slice 31, **repaired in slice 32**: `Surrak and Goreclaw` (slice 24) prints **Trample** on itself, but its catalog row was a `card!` (trample `false`) and its static grants trample only to *other* creatures, so Surrak itself did not trample. Slice 32 moves that row to `card_trample!` and records the printing's keyword list in `fixtures/starter-corpus/slice32-sourced.json`; `crates/core/tests/issue17_slice32.rs` proves both the flag and a real trample damage assignment, and `crates/core/tests/card_printings.rs` ties the row to the MOM 337 printing. The behaviour change moves exactly one previously recorded journey digest (slice 24: `a41bbfd2…`/4127 events → `697a846d…`/4130 events, same 1602 steps and same decisions); every other committed journey digest is unchanged, proven by `evidence/issue17/slice32/replay-drift.sh` and its log.
+
+## Slice 32: Kamahl's Summons and the Surrak printed-trample repair
+Kamahl's Summons (`{3}{G}` Sorcery) is sourced in `fixtures/starter-corpus/slice32-sourced.json` (Scryfall **ONS 269**, immutable `0edc37c6-b6a8-424f-95dd-928d03c28542`, oracle `8b6ef0a2-cd90-44c8-8f11-e1983f2b1dfd`, retrieved 2026-10-27). Printed text: "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way."
+
+* **"Each player may reveal any number of creature cards from their hand"** is the pool's first *per-seat arbitrary hand subset*. `Pending::ApnapReveal` holds the queue (`order` = every live seat in APNAP order from the active player, CR 101.4/608.2f) and the public answers; `Action::RevealCreatureCards` names any subset of that seat's own creature cards. An empty list is a real answer because the instruction is "may reveal any number". Revealing never moves a card: the cards stay in hand (CR 701.9a), so the only thing a reveal buys is tokens.
+* **Validation is typed, not trusted**: a card the seat does not hold, a non-creature card, or the same card twice is refused with `EngineError::Illegal` and leaves the pending choice untouched; the action is also refused when no reveal is pending.
+* **Nothing is applied per answer.** Every seat's count is fixed by its own reveal and the Bears are created together, in APNAP order, only after the last seat answers (`apply_apnap_reveal_batch`), so no seat's result depends on the order the table answered in. The offering surface enumerates two deterministic extremes ("reveal no creature cards" and "reveal every creature card in hand"); the action itself accepts any subset, which is a bounded-offer limitation of the CLI/UI, not of the rules.
+* **Privacy**: the pending reveal is projected only to the seat that owes it (like the APNAP sacrifice queue), because the offer text names that seat's hand; the answers themselves are public and logged as `Event::CardsRevealed`.
+* **Surrak and Goreclaw's own printed Trample** is now modelled (see the paragraph above): the same `card_trample!` slot every other trampling card uses, so combat assignment needs no special case.
+
+Verification retained in `evidence/issue17/slice32/`: four discriminating mutation REDs (revealed count ignored, tokens created before the last answer, Surrak's row losing its trample slot, and a mandatory target trigger made declinable — every touched file restored byte-for-byte, proven by `run-mutations.py` and the pre/post sha256 files), the four-seat 40-life package journey `decks/package-slice32.txt` (seed 3232, `evidence/issue17/slice32-journey-driver`) whose report records the reveal answers in APNAP order per resolution, the Bear tokens they created and Surrak's combat damage, plus the refreshed slice-24 journey and the drift log above. Also committed in this slice: the previously untracked `evidence/issue17/slice31/exact-head-ci-e56b138.json` receipt the slice-31 review asked for, and the mandatory-target-decline regression test.
+
+Known limits, disclosed: the reveal offers are the two extremes described above; the tokens are the existing 2/2 green `BearToken`; `crates/ai` and `crates/ui` received only the mechanical plumbing the new `PendingKind` requires (one heuristic arm that takes the dominant "reveal everything" offer, one label arm, two test-helper arms) — no search, model or import behaviour changed. This slice certifies no starter list: Ayula has 17 missing names and the eight-list gate remains 1 of 8.

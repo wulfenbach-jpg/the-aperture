@@ -1047,6 +1047,24 @@ impl ApertureApp {
                     }
                 }
             }
+            aperture_core::view::PendingKind::ApnapReveal => {
+                ui.label("Reveal any number of creature cards from your hand:");
+                let choices: Vec<(Action, String)> = view
+                    .legal
+                    .iter()
+                    .filter_map(|legal| match &legal.action {
+                        Action::RevealCreatureCards { .. } => {
+                            Some((legal.action.clone(), legal.label.clone()))
+                        }
+                        _ => None,
+                    })
+                    .collect();
+                for (action, label) in choices {
+                    if ui.button(label).clicked() {
+                        let _ = self.session.submit_human(action);
+                    }
+                }
+            }
             aperture_core::view::PendingKind::Discard { count }
             | aperture_core::view::PendingKind::BottomCards { count } => {
                 let is_discard = matches!(kind, aperture_core::view::PendingKind::Discard { .. });

@@ -231,6 +231,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::CreateBearTokens(_)
                 | Effect::CreatePestToken
                 | Effect::BearTokenForEachPlayerWithPermanent
+                | Effect::EachPlayerMayRevealCreatureCardsForBears
                 | Effect::DestroyAllArtifactsAndEnchantments => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
                 }

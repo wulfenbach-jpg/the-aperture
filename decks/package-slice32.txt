@@ -1,0 +1,8 @@
+// package-slice32 — evidence-only 40-card APNAP-reveal package, NOT a desired starter.
+4 Kamahl's Summons
+4 Surrak and Goreclaw
+4 Grizzly Bears
+4 Runeclaw Bear
+4 Elite Vanguard
+4 Centaur Courser
+16 Forest

@@ -106,6 +106,14 @@ impl HeuristicPolicy {
                 .first()
                 .map(|legal| legal.action.clone())
                 .unwrap_or(Action::Pass),
+            // CR 701.9a: revealing creature cards is free — the cards stay in
+            // hand — so the offered "reveal every creature card" (the last, and
+            // largest, offer) strictly dominates "reveal nothing".
+            Some(PendingKind::ApnapReveal) => view
+                .legal
+                .last()
+                .map(|legal| legal.action.clone())
+                .unwrap_or(Action::Pass),
             None => self.priority_action(view),
         }
     }
