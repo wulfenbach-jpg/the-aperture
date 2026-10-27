@@ -100,6 +100,11 @@ pub enum TargetSpec {
     BearYouControl,
     /// A Human controlled by the effect's controller.
     HumanYouControl,
+    /// CR 115.6 + 601.2c: "up to one target creature you control" — zero or one
+    /// legal creature. A trigger with this spec is put on the stack with no
+    /// target when its controller declines, so the choice surface must offer a
+    /// decline even when legal targets exist (Beorn the Fierce).
+    UpToOneCreatureYouControl,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -269,6 +274,24 @@ pub enum Effect {
     GrantTrampleToControlledCreatures,
     /// CR 702.171a: mark the source Mount saddled until end of turn.
     SaddleSource,
+    /// CR 122.1b: put one trample counter on the target creature. A keyword
+    /// counter is a counter, not a continuous effect: it stays on the permanent
+    /// after cleanup and grants trample for as long as it is there (Beorn the
+    /// Fierce).
+    PutTrampleCounterOnTarget,
+    /// CR 613.1d: the target permanent *gains* this creature subtype line in
+    /// addition to its other types until end of turn (Beorn the Fierce's "it
+    /// becomes a Bear in addition to its other types"). A continuous effect on
+    /// the target, so `Game::has_subtype` answers for it everywhere.
+    AddTargetCreatureType(SubtypeLine),
+    /// "Then if you control N or more Bears, draw M cards" (Beorn the Fierce).
+    /// The Bear count is the *effective* subtype of the permanents the effect's
+    /// controller controls at resolution, so a Bear made a moment earlier in
+    /// the same resolution counts (CR 608.2c).
+    DrawIfControlsBears {
+        minimum: u8,
+        cards: u8,
+    },
 }
 
 impl Effect {
@@ -354,6 +377,16 @@ impl Effect {
                 "creatures you control gain trample until end of turn".to_string()
             }
             Effect::SaddleSource => "this Mount becomes saddled".to_string(),
+            Effect::PutTrampleCounterOnTarget => {
+                "put a trample counter on the target creature".to_string()
+            }
+            Effect::AddTargetCreatureType(line) => format!(
+                "the target becomes a creature with type {} in addition to its other types until end of turn",
+                line.text()
+            ),
+            Effect::DrawIfControlsBears { minimum, cards } => {
+                format!("if you control {minimum} or more Bears, draw {cards} cards")
+            }
             Effect::SetBasePowerToughnessFromSource => {
                 "set target Human's base P/T to this creature's P/T".to_string()
             }
@@ -666,6 +699,8 @@ pub enum CardId {
     CircleOfTheMoonDruid,
     /// Issue 17 slice 29: Stuffed Bear (MID 259).
     StuffedBear,
+    /// Issue 17 slice 31: Beorn the Fierce (HOB 119).
+    BeornTheFierce,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

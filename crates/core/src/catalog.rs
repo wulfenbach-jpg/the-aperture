@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 146] = [
+pub static CARDS: [CardDef; 147] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1115,6 +1115,18 @@ pub static CARDS: [CardDef; 146] = [
         type_line: "Artifact",
         oracle: "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
         mana: None, spell: None
+    ),
+    // Issue 17 slice 31: Beorn the Fierce. The pool's first printed anthem that
+    // keys off a subtype ("Other Bears you control get +2/+2"), its first
+    // keyword counter (trample, CR 122.1b) and its first "at the beginning of
+    // combat on your turn" trigger with an "up to one" target. Printed text
+    // copied verbatim from the HOB 119 printing recorded in
+    // fixtures/starter-corpus/slice31-sourced.json.
+    card_trample!(
+        BeornTheFierce, "Beorn the Fierce", cost: Some("{3}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear Shapeshifter Warrior", power: Some(6), toughness: Some(6),
+        oracle: "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+        spell: None
     ),
 ];
 

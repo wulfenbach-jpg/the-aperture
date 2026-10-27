@@ -584,6 +584,48 @@ impl Game {
                 }
             }
         }
+        // Printed layer 7c subtype anthems: "Other Bears you control get
+        // +2/+2" (Beorn the Fierce). The recipient set is computed from the
+        // *effective* subtype before any pump is applied, so a creature made a
+        // Bear by a layer 4 effect counts (CR 613.1d) and the source never
+        // pumps itself. Additive, like every other layer 7c modifier.
+        for (id, card) in &battlefield {
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
+            let bonus = ability::static_abilities(*card)
+                .iter()
+                .find_map(|static_ability| match static_ability {
+                    ability::StaticAbility::OtherBearsYouControlGet {
+                        power, toughness, ..
+                    } => Some((*power, *toughness)),
+                    _ => None,
+                });
+            let Some((power, toughness)) = bonus else {
+                continue;
+            };
+            let recipients: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && object.id != *id
+                        && self.is_creature(object)
+                        && self.has_subtype(object, "Bear")
+                })
+                .map(|object| object.id)
+                .collect();
+            for recipient in recipients {
+                if let Some(object) = self.state.objects.get_mut(&recipient) {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
+            }
+        }
         // Layer 7c one-shot effects in timestamp order (CR 613.7). Layer 6
         // ability grants carry no power/toughness, so they are filtered out here
         // and read directly by `has_trample`.
@@ -742,6 +784,13 @@ impl Game {
     /// rule as a printed one.
     fn has_trample(&self, object: &Object) -> bool {
         object.card.def().has_trample()
+            // CR 122.1b: a trample counter grants trample for as long as it is
+            // on the permanent, so it is a keyword source like a printed or
+            // granted ability (Beorn the Fierce).
+            || object
+                .counters
+                .get(crate::counters::CounterKind::Trample)
+                > 0
             || self.state.effects.iter().any(|effect| {
                 effect.kind == ContinuousKind::GrantsTrample && effect.target == object.id
             })
@@ -859,6 +908,43 @@ impl Game {
             text: format!(
                 "gains trample until end of turn ({})",
                 Layer::Ability.rules()
+            ),
+        });
+    }
+
+    /// CR 613.1d: start a layer 4 effect that *adds* a creature subtype line to
+    /// `target` until end of turn (Beorn the Fierce's "it becomes a Bear in
+    /// addition to its other types"). Additive, so the printed subtypes stay;
+    /// `Game::has_subtype` answers for it everywhere and cleanup ends it.
+    fn add_subtype_addition_effect(
+        &mut self,
+        item: &StackItem,
+        target: ObjectId,
+        line: crate::layer::SubtypeLine,
+        events: &mut Vec<Event>,
+    ) {
+        let card = item.card;
+        let timestamp = self.next_timestamp();
+        let id = self.next_effect_id();
+        self.state.effects.push(ContinuousEffect {
+            id,
+            timestamp,
+            source: Some(item.object),
+            card,
+            controller: item.controller,
+            layer: Layer::Type,
+            target,
+            kind: ContinuousKind::AddCreatureSubtypes(line),
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+        events.push(Event::ContinuousEffectStarted {
+            object: target,
+            card,
+            layer: Layer::Type.label().to_string(),
+            text: format!(
+                "becomes {} in addition to its other types until end of turn ({})",
+                line.text(),
+                Layer::Type.rules()
             ),
         });
     }
@@ -2211,6 +2297,19 @@ impl Game {
                     "no triggered ability is waiting for a target choice (CR 603.3d)",
                 )),
             },
+            // CR 115.6: declining is legal only for a printed "up to one"
+            // target and only while that trigger is waiting for its choice.
+            Action::DeclineTriggerTarget => match &state.pending {
+                Some(Pending::TriggerTarget {
+                    player: p, trigger, ..
+                }) if *p == player && trigger_target_is_optional(trigger.card, trigger.ability) => {
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "decline trigger target",
+                    "no triggered ability with an optional target is waiting for its controller (CR 115.6)",
+                )),
+            },
             Action::AnswerTriggerChoice { use_ability } => match &state.pending {
                 Some(Pending::TriggerChoice { player: p, .. })
                 | Some(Pending::TriggerMode { player: p, .. })
@@ -2619,6 +2718,18 @@ impl Game {
                         && self.is_creature(o)
                         && o.controller == _caster
                         && self.has_subtype(o, "Human")
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
+            // CR 115.6: "up to one" offers the same legal set as "target
+            // creature you control"; the difference is on the choice surface,
+            // which also offers declining (Beorn the Fierce).
+            TargetSpec::UpToOneCreatureYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield && self.is_creature(o) && o.controller == _caster
                 })
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
@@ -3102,6 +3213,7 @@ impl Game {
             Action::ChooseTriggerTarget { target } => {
                 self.apply_trigger_target(player, *target, events)
             }
+            Action::DeclineTriggerTarget => self.apply_trigger_target_none(player, events),
             Action::AnswerTriggerChoice { use_ability } => {
                 self.apply_trigger_choice(player, *use_ability, events)
             }
@@ -3816,6 +3928,28 @@ impl Game {
 
     // --------------------------------------------------- triggered abilities
 
+    /// CR 507.1: queue every "at the beginning of combat on your turn" trigger
+    /// of the active player's battlefield permanents. The step exists once per
+    /// turn, so each such permanent triggers exactly once per turn.
+    fn queue_beginning_of_combat_triggers(&mut self, active: PlayerId, _events: &mut Vec<Event>) {
+        let sources: Vec<(ObjectId, CardId, PlayerId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == active
+                    && crate::ability::triggers_on(object.card, TriggerEvent::BeginningOfCombat)
+                        .next()
+                        .is_some()
+            })
+            .map(|object| (object.id, object.card, object.controller))
+            .collect();
+        for (id, card, controller) in sources {
+            self.queue_triggers(id, card, controller, TriggerEvent::BeginningOfCombat);
+        }
+    }
+
     /// Record every triggered ability of `card` that fires for `event` on the
     /// object `source`. The trigger is only queued here; it reaches the stack
     /// when a player would receive priority (CR 603.2, 603.3).
@@ -3908,6 +4042,25 @@ impl Game {
                 continue;
             }
             let legal = self.legal_targets(trigger.controller, spec, trigger.source);
+            let optional = spec == TargetSpec::UpToOneCreatureYouControl;
+            if optional {
+                // CR 115.6: "up to one" is a real choice even when legal
+                // targets exist — the controller may decline it — so the
+                // engine always asks instead of choosing for them.
+                if legal.is_empty() {
+                    self.push_trigger(trigger, Vec::new(), events);
+                    continue;
+                }
+                self.state.pending = Some(Pending::TriggerTarget {
+                    player: trigger.controller,
+                    trigger,
+                    legal,
+                    queued: queue,
+                    first: None,
+                });
+                self.state.turn.priority = None;
+                return;
+            }
             match legal.len() {
                 0 => events.push(Event::TriggerRemoved {
                     controller: trigger.controller,
@@ -4098,6 +4251,20 @@ impl Game {
             return;
         }
         self.push_trigger(trigger, vec![target], events);
+        self.stage_triggers(queued, events);
+    }
+
+    /// CR 115.6: the controller of a triggered ability whose printed target is
+    /// "up to one" may put it on the stack with no target. The ability still
+    /// resolves; only the per-target instructions do nothing.
+    fn apply_trigger_target_none(&mut self, _player: PlayerId, events: &mut Vec<Event>) {
+        let Some(Pending::TriggerTarget {
+            trigger, queued, ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        self.push_trigger(trigger, Vec::new(), events);
         self.stage_triggers(queued, events);
     }
 
@@ -4912,7 +5079,18 @@ impl Game {
                     }
                 }
             }
-            Step::PrecombatMain | Step::PostcombatMain | Step::BeginCombat | Step::EndStep => {
+            Step::BeginCombat => {
+                // CR 507.1 + 603.6a: "at the beginning of combat on your turn"
+                // triggers fire as the step begins, before any player receives
+                // priority. Only the active player's permanents can trigger,
+                // and the step happens once per turn, so they fire once.
+                self.queue_beginning_of_combat_triggers(active, events);
+                self.put_triggers(events);
+                if self.state.pending.is_none() && !self.state.is_over() {
+                    self.grant_priority(active, events);
+                }
+            }
+            Step::PrecombatMain | Step::PostcombatMain | Step::EndStep => {
                 self.grant_priority(active, events);
             }
             Step::DeclareAttackers => {
@@ -6858,6 +7036,84 @@ impl Game {
                 }
                 false
             }
+            // CR 122.1b: a trample counter is a counter, not a continuous
+            // effect. It stays on the permanent after cleanup, so the keyword
+            // persists until something removes the counter.
+            Effect::PutTrampleCounterOnTarget => {
+                for target in item.targets.clone() {
+                    if let Target::Permanent(id) = target
+                        && let Some(object) = self.state.objects.get_mut(&id)
+                        && object.zone == Zone::Battlefield
+                    {
+                        let name = object.card.name();
+                        let total = object
+                            .counters
+                            .add(crate::counters::CounterKind::Trample, 1);
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "{name} has {total} trample counter(s) and therefore trample (CR 122.1b)"
+                            ),
+                        });
+                    }
+                }
+                false
+            }
+            // CR 613.1d: "It becomes a Bear in addition to its other types."
+            // No duration is printed, so the continuous effect lasts until end
+            // of turn (CR 611.2a) and cleanup removes it.
+            Effect::AddTargetCreatureType(line) => {
+                for target in item.targets.clone() {
+                    if let Target::Permanent(id) = target
+                        && self
+                            .state
+                            .try_object(id)
+                            .is_some_and(|object| object.zone == Zone::Battlefield)
+                    {
+                        self.add_subtype_addition_effect(item, id, line, events);
+                    }
+                }
+                false
+            }
+            // "Then if you control N or more Bears, draw M cards." The count is
+            // taken now, after the earlier instructions of the same resolution
+            // have applied (CR 608.2c), and it reads the *effective* subtype, so
+            // the creature this ability just turned into a Bear counts.
+            Effect::DrawIfControlsBears { minimum, cards } => {
+                let bears = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && self.is_creature(object)
+                            && self.has_subtype(object, "Bear")
+                    })
+                    .count();
+                if bears < minimum as usize {
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} controls {bears} Bear(s), fewer than {minimum}: no cards are drawn (CR 608.2c)"
+                        ),
+                    });
+                    return false;
+                }
+                for index in 0..cards {
+                    let remaining = cards - index - 1;
+                    if self.draw_with_resume(
+                        controller,
+                        DrawResume::Effect {
+                            source: item.object,
+                            cursor: item.cursor + 1,
+                        },
+                        remaining,
+                        events,
+                    ) {
+                        return true;
+                    }
+                }
+                false
+            }
             Effect::SetBasePowerToughnessFromSource => {
                 let [Target::Permanent(target)] = item.targets.as_slice() else {
                     return false;
@@ -8007,14 +8263,24 @@ impl Game {
                     },
                 ]
             }
-            Pending::TriggerTarget { legal, .. } => legal
-                .iter()
-                .map(|target| LegalAction {
-                    action: Action::ChooseTriggerTarget { target: *target },
-                    label: format!("Target {}", self.describe_target(*target)),
-                    rules: vec!["603.3d"],
-                })
-                .collect(),
+            Pending::TriggerTarget { legal, trigger, .. } => {
+                let mut out: Vec<LegalAction> = legal
+                    .iter()
+                    .map(|target| LegalAction {
+                        action: Action::ChooseTriggerTarget { target: *target },
+                        label: format!("Target {}", self.describe_target(*target)),
+                        rules: vec!["603.3d"],
+                    })
+                    .collect();
+                if trigger_target_is_optional(trigger.card, trigger.ability) {
+                    out.push(LegalAction {
+                        action: Action::DeclineTriggerTarget,
+                        label: "Choose no target for this trigger".to_string(),
+                        rules: vec!["115.6"],
+                    });
+                }
+                out
+            }
             Pending::TopCardChoice { can_take, .. } => {
                 let mut out = Vec::new();
                 if *can_take {
@@ -8216,9 +8482,22 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
         TargetSpec::HumanYouControl => "target Human you control: CR 115.1",
+        TargetSpec::UpToOneCreatureYouControl => "up to one target creature you control: CR 115.6",
         TargetSpec::Bear => "target Bear: CR 115.1",
         TargetSpec::BearYouControl => "target Bear you control: CR 115.1",
     }
+}
+
+/// CR 115.6: whether a triggered ability may be put on the stack with no
+/// target. Only a printed "up to one" target qualifies; every other spec is
+/// mandatory, so declining one is never a legal action.
+fn trigger_target_is_optional(card: CardId, ability: u8) -> bool {
+    matches!(
+        ability::abilities(card)
+            .get(ability as usize)
+            .map(Ability::target_spec),
+        Some(TargetSpec::UpToOneCreatureYouControl)
+    )
 }
 
 /// Ability index of a non-spell stack entry.

@@ -55,6 +55,8 @@ const SLICE28_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE29_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice29-sourced.json");
 /// Slice 23: Goreclaw, Terror of Qal Sisma (CMM 293), fetched 2026-10-27.
 const SLICE23_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice23-sourced.json");
+/// Slice 31: Beorn the Fierce (HOB 119), fetched 2026-10-27.
+const SLICE31_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice31-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
@@ -228,6 +230,11 @@ fn slice29_cards() -> Vec<Value> {
 
 fn slice30_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE30_SOURCED).expect("sourced slice30 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice31_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE31_SOURCED).expect("sourced slice31 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -587,6 +594,59 @@ fn every_slice11_card_matches_its_recorded_printing_and_islandwalk() {
     }
 }
 
+/// Slice 31 adds Beorn the Fierce. Its printing carries a keyword line
+/// ("Trample"), so the catalog's keyword flag must come from the record instead
+/// of being asserted by hand: the same invented-text class of defect this file
+/// exists to catch (R185-1/R185-2) would otherwise reappear as an invented
+/// keyword.
+#[test]
+fn every_slice31_card_matches_its_recorded_printing_and_trample() {
+    let cards = slice31_cards();
+    assert_eq!(cards.len(), 1, "slice 31 adds one sourced card");
+    for record in &cards {
+        let name = sourced_text(record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(record, "oracle_text"),
+            "{name} oracle"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()),
+            Some(sourced_text(record, "power").to_string()),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()),
+            Some(sourced_text(record, "toughness").to_string()),
+            "{name} toughness"
+        );
+        assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+        assert_eq!(
+            card_keywords(record),
+            vec!["Trample".to_string()],
+            "{name} printed keyword line"
+        );
+        assert!(def.has_trample(), "{name} prints Trample");
+        assert!(
+            sourced_text(record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert!(!sourced_text(record, "retrieved_at").is_empty());
+    }
+}
+
 #[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
     let starter: Vec<Value> = starter_new_cards()
@@ -619,6 +679,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice28_cards())
         .chain(slice29_cards())
         .chain(slice30_cards())
+        .chain(slice31_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

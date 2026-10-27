@@ -46,10 +46,11 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **134** are in the supported 146-card catalog and **325** are missing. Slice
+* **135** are in the supported 147-card catalog and **324** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
-  adds `Stuffed Bear` (132→133) and slice 30 adds `Drover Grizzly` (133→134) to the previously verified split. The union is unchanged because every one of them
+  adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
+  slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. The union is unchanged because every one of them
   was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -464,9 +465,9 @@ additive layer 4 animation that turns a non-creature permanent into a creature,
 so layers 4, 5, 6, 7b and 7c now exist. Still missing: layer 7a
 characteristic-defining power/toughness, which is why `Beorn's Hospitality`
 remains unsupported, and layer 7d, which belongs to the counters lane.) Ayula
-had 22 missing names after slice 26, 21 after slice 28 and 20 after slice 29;
-the eight-list gate remains open at 1 of 8 certified, and no new list is
-certified by this slice.
+had 22 missing names after slice 26, 21 after slice 28, 20 after slice 29,
+19 after slice 30 and 18 after slice 31; the eight-list gate remains open at
+1 of 8 certified, and no new list is certified by this slice.
 
 Three mutation REDs are retained in `evidence/issue17/slice23/`: disabling the
 reduction fails exactly the two cost tests, ignoring the printed power threshold
@@ -503,3 +504,20 @@ Verification retained in `evidence/issue17/slice29/`: four discriminating mutati
 
 ## Slice 30: Drover Grizzly and reusable saddle
 Drover Grizzly (`{2}{G}`, 4/2 Bear Mount) is sourced in `fixtures/starter-corpus/slice30-sourced.json` (OTJ 161, immutable 560062cd, retrieved 2026-10-27T14:40:04Z). Saddle 1 is a reusable typed cost/action: at sorcery timing, tap any bounded subset of other untapped creatures you control with total effective power at least 1; helpers need not be untapped since turn start. Saddle is a designation effect until cleanup and ends on battlefield departure. An attack while saddled grants trample to creatures controlled then, through the existing layer-6 grants; unsaddled attacks do not trigger.
+
+## Slice 31: Beorn the Fierce
+Beorn the Fierce (`{3}{G}{G}`, 6/6 Legendary Creature — Bear Shapeshifter Warrior) is sourced in `fixtures/starter-corpus/slice31-sourced.json` (Scryfall **HOB 119**, immutable `367d5f8b-77ee-47f7-bc71-972d62c280a9`, oracle `30ca8e92-5955-46a1-86c1-094a873f518f`, retrieved 2026-10-27T15:33:31Z). Printed text: "Trample / Other Bears you control get +2/+2. / At the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards."
+
+* **Printed trample** is carried by the catalog's `card_trample!` slot, so it is the same flag `Game::has_trample` already reads for any other trampling card.
+* **"Other Bears you control get +2/+2"** is the pool's first *subtype* anthem: a layer 7c additive static (`StaticAbility::OtherBearsYouControlGet`) whose recipient set is computed from the **effective** subtype, so a creature a layer 4 effect just made a Bear receives it, and the source never pumps itself.
+* **"At the beginning of combat on your turn"** is a new `TriggerEvent::BeginningOfCombat`, dispatched once when the beginning-of-combat step starts and only for the active player's permanents (CR 507.1, 603.6a). Nothing is stored, so it cannot double-fire.
+* **"Up to one target creature you control"** is a new `TargetSpec::UpToOneCreatureYouControl` plus `Action::DeclineTriggerTarget` (CR 115.6). The engine now always asks when legal targets exist — even one — and offers "choose no target"; declining still resolves the ability, so the conditional draw is unaffected.
+* **The trample counter** is the pool's first keyword counter: `CounterKind::Trample` (CR 122.1b). It is a counter, not a continuous effect — `Game::has_trample` reads it, cleanup never removes it, and the permanent keeps trample after the turn ends.
+* **"It becomes a Bear in addition to its other types"** is a layer 4 *addition* on the chosen target (`Effect::AddTargetCreatureType` → `ContinuousKind::AddCreatureSubtypes`). The ability states no duration, so the effect lasts until end of turn (CR 611.2a) and cleanup removes it: the counter stays, the subtype does not.
+* **"Then if you control three or more Bears"** is evaluated after the earlier instructions of the same resolution (CR 608.2c) against the effective subtype, so the creature this ability just turned into a Bear counts toward the three.
+
+Known limits, disclosed: the anthem's recipient set is recomputed only at the engine's existing layer-recompute points, so a creature that somehow changed subtype without a recompute would be stale (no supported effect does that); the "beginning of combat" event has no other card in the pool, so a second printing would share this single dispatch; and `CounterKind` now has a keyword kind, which the counter display prints as "trample" but which contributes no power/toughness.
+
+Verification retained in `evidence/issue17/slice31/`: four discriminating mutation REDs (trample-counter read dropped, Bear-count gate ignored, optional target made mandatory, subtype anthem disabled — engine restored byte-for-byte, proven by `run-mutations.py` and the pre/post sha256 files), a four-seat 40-life package journey from `evidence/issue17/slice31-journey-driver` (`decks/package-slice31.txt`, separate CLI replay matches) whose driver accepts the printed target on every offer and asserts that the trigger, the counter and the Bear addition really happened, and the usual gates. This slice certifies no starter list: Ayula still has 18 missing names and the eight-list gate remains 1 of 8.
+
+Separately disclosed, not fixed here: `Surrak and Goreclaw` (slice 24) prints **Trample** on itself, but its catalog row is a `card!` (trample `false`) and its static grants trample only to *other* creatures, so Surrak itself does not currently trample. Repairing that changes the behavior of an already-approved card and the digests of the journeys that used it, so it is recorded here as a known conformance gap for a later, separately reviewed increment rather than silently changed.

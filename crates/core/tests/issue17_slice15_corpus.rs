@@ -130,7 +130,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Sisma, which closes one more name. Slice 26 registers Ursine Champion,
     // which closes one more again. Slice 28 registers Circle of the Moon Druid
     // and slice 29 registers Stuffed Bear, so both numbers move together by
-    // one again.
-    assert_eq!(missing.len(), 19, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 146, "the compiled pool");
+    // one again. Slice 30 registers Drover Grizzly and slice 31 registers Beorn
+    // the Fierce, so both numbers move together by one each time.
+    assert_eq!(missing.len(), 18, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 147, "the compiled pool");
 }

@@ -64,6 +64,10 @@ pub enum TriggerEvent {
     /// narrower: a noncreature permanent spell and an instant/sorcery do not
     /// trigger it, and a creature spell does not trigger `SpellCast`.
     CreatureSpellCast,
+    /// CR 507.1 + 603.6a: "at the beginning of combat on your turn" — the
+    /// beginning-of-combat step of this source's controller's turn. The step
+    /// exists once per turn, so the trigger fires at most once per turn.
+    BeginningOfCombat,
 }
 
 impl TriggerEvent {
@@ -82,6 +86,7 @@ impl TriggerEvent {
             TriggerEvent::AnotherCreatureYouControlDies => "another creature you control dies",
             TriggerEvent::Attacks => "this creature attacks",
             TriggerEvent::CreatureSpellCast => "you cast a creature spell",
+            TriggerEvent::BeginningOfCombat => "at the beginning of combat on your turn",
         }
     }
 }
@@ -829,9 +834,40 @@ const STUFFED_BEAR: &[Ability] = &[Ability::Activated(ActivatedAbility {
     sorcery_timing: false,
 })];
 
+/// Beorn the Fierce (HOB 119): "Trample
+/// Other Bears you control get +2/+2.
+/// At the beginning of combat on your turn, put a trample counter on up to one
+/// target creature you control. It becomes a Bear in addition to its other
+/// types. Then if you control three or more Bears, draw two cards."
+///
+/// The triggered ability is one ability with three instructions that resolve in
+/// printed order (CR 608.2c): the counter (CR 122.1b, a keyword counter that
+/// grants trample for as long as it stays), the layer 4 addition of the Bear
+/// subtype (CR 613.1d, until end of turn because the ability states no
+/// duration, CR 611.2a), and the conditional draw, whose Bear count is taken
+/// after both earlier instructions have applied — so a creature that just
+/// became a Bear counts toward the three. The target is "up to one", so the
+/// controller may put the ability on the stack with no target at all
+/// (CR 115.6); the draw still happens.
+const BEORN_THE_FIERCE: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "At the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+    event: TriggerEvent::BeginningOfCombat,
+    optional: false,
+    target: TargetSpec::UpToOneCreatureYouControl,
+    effects: &[
+        Effect::PutTrampleCounterOnTarget,
+        Effect::AddTargetCreatureType(crate::layer::SubtypeLine::Bear),
+        Effect::DrawIfControlsBears {
+            minimum: 3,
+            cards: 2,
+        },
+    ],
+})];
+
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::StuffedBear => STUFFED_BEAR,
         CardId::UrsineChampion => URSINE_CHAMPION,
         CardId::StitchersSupplier => STITCHERS_SUPPLIER,
@@ -1014,6 +1050,16 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 613.4c: "Other Bears you control get +P/+T" (Beorn the Fierce). A
+    /// layer 7c additive static that applies to every *other* creature its
+    /// controller controls whose effective subtype is Bear — so a creature
+    /// animated or made a Bear by a layer 4 effect counts (CR 613.1d), and the
+    /// source never pumps itself.
+    OtherBearsYouControlGet {
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
 }
 
 impl StaticAbility {
@@ -1025,7 +1071,8 @@ impl StaticAbility {
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { text, .. }
             | StaticAbility::OtherControlledCreaturesHaveTrample { text }
             | StaticAbility::SelfBecomesSubtypeDuringYourTurn { text, .. }
-            | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. } => text,
+            | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. }
+            | StaticAbility::OtherBearsYouControlGet { text, .. } => text,
         }
     }
 
@@ -1038,6 +1085,7 @@ impl StaticAbility {
             StaticAbility::PowerToughnessPerCount { .. } => Some(Layer::Modifying),
             StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. } => Some(Layer::Type),
             StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. } => Some(Layer::Setting),
+            StaticAbility::OtherBearsYouControlGet { .. } => Some(Layer::Modifying),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
@@ -1053,7 +1101,8 @@ impl StaticAbility {
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
             | StaticAbility::OtherControlledCreaturesHaveTrample { .. }
             | StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. }
-            | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. } => None,
+            | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. }
+            | StaticAbility::OtherBearsYouControlGet { .. } => None,
         }
     }
 }
@@ -1111,9 +1160,20 @@ const CIRCLE_OF_THE_MOON_DRUID: &[StaticAbility] = &[
     },
 ];
 
+/// Beorn the Fierce's printed anthem. It is a layer 7c additive static, so it
+/// stacks with pumps and counters instead of setting a base value, and it reads
+/// the *effective* subtype of each other creature (a Bear made by any layer 4
+/// effect counts; Beorn itself never pumps itself).
+const BEORN_STATIC: &[StaticAbility] = &[StaticAbility::OtherBearsYouControlGet {
+    power: 2,
+    toughness: 2,
+    text: "Other Bears you control get +2/+2.",
+}];
+
 /// Every static ability the rules layer knows for a card, in printed order.
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
+        CardId::BeornTheFierce => BEORN_STATIC,
         CardId::WightOfPrecinctSix => WIGHT,
         CardId::SurrakAndGoreclaw => SURRAK_STATIC,
         CardId::AngrathsMarauders => ANGRATH,

@@ -25,15 +25,24 @@ pub enum CounterKind {
     PlusOnePlusOne,
     /// -1/-1 (CR 122.1a): -1 power and -1 toughness per counter.
     MinusOneMinusOne,
+    /// Trample (CR 122.1b): a keyword counter. It changes no power or
+    /// toughness; it grants trample for as long as the counter remains on the
+    /// permanent, so combat asks `Game::has_trample` (Beorn the Fierce).
+    Trample,
 }
 
 impl CounterKind {
-    pub const ALL: [CounterKind; 2] = [CounterKind::PlusOnePlusOne, CounterKind::MinusOneMinusOne];
+    pub const ALL: [CounterKind; 3] = [
+        CounterKind::PlusOnePlusOne,
+        CounterKind::MinusOneMinusOne,
+        CounterKind::Trample,
+    ];
 
     pub fn name(self) -> &'static str {
         match self {
             CounterKind::PlusOnePlusOne => "+1/+1",
             CounterKind::MinusOneMinusOne => "-1/-1",
+            CounterKind::Trample => "trample",
         }
     }
 
@@ -41,6 +50,9 @@ impl CounterKind {
         match self {
             CounterKind::PlusOnePlusOne => 1,
             CounterKind::MinusOneMinusOne => -1,
+            // CR 122.1b: a keyword counter grants an ability; it is not a
+            // power/toughness change.
+            CounterKind::Trample => 0,
         }
     }
 

@@ -1,0 +1,37 @@
+mutation: red-mutation-optional-target-made-mandatory.log
+engine_sha256_before: 8fe51710e795eea457fa9718b5b62596c630ca92dd8caae60684998c1b7030d2
+engine_sha256_after_restore: 8fe51710e795eea457fa9718b5b62596c630ca92dd8caae60684998c1b7030d2
+cargo_exit: 101
+expected_failures: ['trigger_fires_only_on_its_controllers_turn']
+observed_failures: ['trigger_fires_only_on_its_controllers_turn']
+discriminating: True
+
+
+running 8 tests
+test beorn_is_sourced_and_supported ... ok
+test two_bears_do_not_draw ... ok
+test trigger_offers_up_to_one_target_including_declining ... ok
+test chosen_creature_gets_a_trample_counter_and_becomes_a_bear ... ok
+test three_bears_draw_two_after_the_target_becomes_a_bear ... ok
+test trigger_fires_only_on_its_controllers_turn ... FAILED
+test trample_counter_lets_the_creature_trample_over_a_blocker ... ok
+test the_bear_type_ends_at_cleanup_but_the_counter_stays ... ok
+
+failures:
+
+---- trigger_fires_only_on_its_controllers_turn stdout ----
+
+thread 'trigger_fires_only_on_its_controllers_turn' (1356) panicked at crates\core\tests\common\mod.rs:209:21:
+expected 0 to be able to act, got: action pass is not legal here: a pending choice must be answered; no player has priority (CR 608.2d)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    trigger_fires_only_on_its_controllers_turn
+
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.89s
+     Running tests\issue17_slice31.rs (target\debug\deps\issue17_slice31-0f79262eb4dc15e5.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice31`

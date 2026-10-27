@@ -266,6 +266,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::SetBasePowerToughnessFromSource
                 | Effect::GrantTrampleToControlledCreatures
                 | Effect::SaddleSource
+                | Effect::PutTrampleCounterOnTarget
+                | Effect::AddTargetCreatureType(_)
+                | Effect::DrawIfControlsBears { .. }
                 | Effect::SetSourceCreatureSubtypes(_)
                 | Effect::AddSourceCreatureType(_)
                 | Effect::SetSourceColor(_)

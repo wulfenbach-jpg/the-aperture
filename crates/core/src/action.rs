@@ -119,6 +119,11 @@ pub enum Action {
     ChooseTriggerTarget {
         target: Target,
     },
+    /// CR 115.6: put a triggered ability whose printed target is "up to one"
+    /// on the stack with no target at all. Legal only while such a trigger is
+    /// waiting for its target choice; a trigger with a mandatory target never
+    /// offers it.
+    DeclineTriggerTarget,
     /// CR 603.5: accept or decline an optional ("you may") triggered ability as
     /// it resolves.
     AnswerTriggerChoice {
@@ -148,6 +153,7 @@ impl Action {
             Action::ActivateCostedAbility { .. } => "activate ability",
             Action::SaddleMount { .. } => "saddle mount",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
+            Action::DeclineTriggerTarget => "decline trigger target",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
         }
     }
