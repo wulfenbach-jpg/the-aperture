@@ -46,7 +46,11 @@ basic lands (coordinator evidence
 `evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
 
 * union of all referenced names: **459 unique names**;
-* **122** are in the supported 135-card catalog and **337** are missing;
+* **123** are in the supported 135-card catalog and **336** are missing. (Slice
+  18 registers `Ayula, Queen Among Bears`, so the previous 122/337 split moved by
+  one; the union is unchanged because Ayula was already a referenced name. The
+  five basic land types are part of the union, which is why the union exceeds the
+  sum of nonbasic names.)
 * the manifest's `missing_cards` per list is computed from the same catalog
   membership and sums to the same verified contents. Planned lists remain
   metadata only; Jasmine is the only certified/playable starter.
@@ -148,8 +152,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
 1. tokens and token permanents: **partially implemented** as typed 1/1 red
    Goblin tokens for the Krenko package (Krenko, Dragon Fodder, Krenko's
    Command, Hordeling Outburst, Goblin Instigator, Beetleback Chief) and a 2/2
-   blue Drake with functional flying for Talrand, Sky Summoner. Ayula and Zada
-   still need their own token types; the exact Krenko starter is still planned
+   blue Drake with functional flying for Talrand, Sky Summoner. Zada and the
+   remaining Ayula-list Bear makers still need their own token types (Ayula
+   herself needs no token); the exact Krenko starter is still planned
    (48 missing) and Talrand's desired list has 51 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
@@ -172,7 +177,10 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    blockers first and tramples the surplus to the player); defender, token
    flying and printed islandwalk are also implemented in their named packages.
    Haste and wider keyword semantics remain unimplemented;
-5. typed counters exist in the core (issue #16); Ayula's printed counter/tribal text is not implemented;
+5. typed counters exist in the core (issue #16); slice 18 implements Ayula's
+   printed counter/fight trigger as the bounded `TargetSpec::Bear` /
+   `TargetSpec::BearYouControl` modes with a typed fight effect (CR 701.14a/b).
+   Other counters-matter and tribal statics in these lists remain unimplemented;
 6. single-target spell copying and go-wide pump (Zada);
 7. legend rule, equipment and Aura permanents (Isamaru and any future legend);
 8. black basic land support (Elas): **implemented** as the sourced Swamp basic;
@@ -312,9 +320,9 @@ plays it well.
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
    `missing_interactions` entries in the manifest.
-2. **Commanders.** Three target commanders remain unsupported: Ayula, Elas and
-   Zada. Isamaru, Jasmine, Krenko, Talrand and Tatyova have named bounded support,
-   not complete desired starter lists.
+2. **Commanders.** Two target commanders remain unsupported: Elas and Zada.
+   Isamaru, Jasmine, Krenko, Talrand, Tatyova and (slice 18) Ayula have named
+   bounded support, not complete desired starter lists.
    Extending the typed registry is deliberately explicit: adding a name to
    `SUPPORTED_COMMANDERS` without implementing its printed text would fake
    support.

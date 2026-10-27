@@ -89,15 +89,23 @@ public state fields in `crates/ai/tests/common.rs` and `crates/core/tests/common
   commander for all four seats by the driver**. Ayula was cast 3 times, counters mode
   chosen 5 times, fight mode 4 times, 95 noncombat damage events.
 
-## Bookkeeping that is mine to reconcile, not the writer's
+## Bookkeeping reconciled (the reviewer's blocking finding)
 
-The writer's handoff and docs state **135 catalog / 123 supported / 336 missing**
-(union 459). My own independent parse of the eight desired deck files plus the
-manifest gives the same **336 unique missing names**, 135 cards in the CLI pool, and
-**no name in any `missing_cards` array is present in the catalog** — but my union
-count is **454 names** including the eight commanders, i.e. 118 supported by that
-arithmetic. The 5-name difference is unexplained and is recorded as an open
-bookkeeping item for the reviewer; do not treat 123/459 as independently confirmed.
+The writer's handoff states **135 catalog / 123 supported / 336 missing** (union
+459). My first independent parse produced 454 / 118 and I recorded the 5-name gap
+as unexplained; the original-history reviewer then returned CHANGES_REQUESTED on
+the stale records and supplied the resolution: the canonical union **includes the
+five basic land types** (`Plains`, `Island`, `Swamp`, `Mountain`, `Forest`), and my
+parse had filtered them out. 454 + 5 = 459, and 118 + 5 = 123 because all five
+basics are supported. So the correct figures are **459 union / 123 supported / 336
+missing**, per-list `55/0/51/48/30/52/52/53`, and my earlier 454/118 was an
+audit artefact, not a second truth.
+
+The same review found three stale statements in `docs/issue17-starter-corpus.md`
+that this increment had left behind (`122`/`337`, "Ayula's printed counter/tribal
+text is not implemented", and Ayula listed among unsupported commanders). I applied
+the corrections as a documentation-only commit, distinguishing authored code from
+record prose, and they are re-adjudicated below rather than assumed fixed.
 
 ## Original gate remains open
 
