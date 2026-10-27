@@ -1374,7 +1374,8 @@ fn fog_is_a_sourced_catalog_card() {
     // History, Little Bear), to 134 with the slice-17 death-history trio, to
     // 135 with the slice-18 commander Ayula, Queen Among Bears, and to 136 with
     // the slice-19 attack-trigger bear Spectral Bears.
-    assert_eq!(aperture_core::catalog::pool_size(), 138);
+    // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn.
+    assert_eq!(aperture_core::catalog::pool_size(), 139);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
@@ -1396,6 +1397,7 @@ fn departing_controller_stack_card_is_exiled_without_a_phantom_entry() {
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,
+        spell_mana_value: 0,
     });
     game.state.players[P0 as usize].life = 0;
     game.state.turn.step = Step::PrecombatMain;

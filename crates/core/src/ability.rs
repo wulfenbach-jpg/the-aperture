@@ -59,6 +59,11 @@ pub enum TriggerEvent {
     /// declare attackers step. The triggering object is the attacker itself and
     /// the step's defending seat is the one an intervening-if can read.
     Attacks,
+    /// CR 603.6a + 601.2: the controller cast a creature spell. Distinct from
+    /// `SpellCast` (instant or sorcery) because the printed wording is
+    /// narrower: a noncreature permanent spell and an instant/sorcery do not
+    /// trigger it, and a creature spell does not trigger `SpellCast`.
+    CreatureSpellCast,
 }
 
 impl TriggerEvent {
@@ -76,6 +81,7 @@ impl TriggerEvent {
             }
             TriggerEvent::AnotherCreatureYouControlDies => "another creature you control dies",
             TriggerEvent::Attacks => "this creature attacks",
+            TriggerEvent::CreatureSpellCast => "you cast a creature spell",
         }
     }
 }
@@ -638,6 +644,28 @@ const LITTLE_BEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::UntapTargetAndCounterIfBear],
 })];
 
+/// Dancing from Dark to Dawn prints two separate triggered abilities, so it is
+/// two entries here: a cast trigger whose size is the cast spell's mana value,
+/// and an ordinary landfall Bear token. The landfall entry re-reads the source's
+/// current zone, so it stops firing once the enchantment has left the
+/// battlefield, exactly like the other landfall watchers in the pool.
+const DANCING_FROM_DARK_TO_DAWN: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.",
+        event: TriggerEvent::CreatureSpellCast,
+        optional: false,
+        target: TargetSpec::CreatureYouControl,
+        effects: &[Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Landfall — Whenever a land you control enters, create a 2/2 green Bear creature token.",
+        event: TriggerEvent::LandEnters,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::CreateBearTokens(1)],
+    }),
+];
+
 /// "When this creature enters or dies, mill three cards." One printed ability
 /// with two trigger events is modelled as two `TriggeredAbility` entries on the
 /// same card (CR 603.6a for enters, CR 700.4/603.6c for dies); the printed text
@@ -716,6 +744,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::Bearscape => BEARSCAPE,
         CardId::MotherBear => MOTHER_BEAR,
         CardId::LittleBear => LITTLE_BEAR,
+        CardId::DancingFromDarkToDawn => DANCING_FROM_DARK_TO_DAWN,
         CardId::MindStone => MIND_STONE,
         CardId::HedronArchive => HEDRON_ARCHIVE,
         CardId::SoulsAttendant => SOULS_ATTENDANT,

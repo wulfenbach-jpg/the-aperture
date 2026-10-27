@@ -1,0 +1,29 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.24s
+     Running tests\issue17_slice22.rs (target\debug\deps\issue17_slice22-1be942bdc603fc37.exe)
+
+running 8 tests
+test mana_value_reads_the_printed_cost ... ok
+test an_opponents_land_does_not_trigger_the_landfall_half ... ok
+test an_opponents_creature_spell_does_not_trigger_it ... ok
+test a_noncreature_permanent_spell_does_not_trigger_it ... ok
+test landfall_creates_one_bear_token_and_adds_no_counters ... ok
+test the_counter_count_tracks_a_six_mana_creature ... ok
+test casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature ... ok
+test the_captured_mana_value_survives_a_save_and_reload_while_targeting ... FAILED
+
+failures:
+
+---- the_captured_mana_value_survives_a_save_and_reload_while_targeting stdout ----
+
+thread 'the_captured_mana_value_survives_a_save_and_reload_while_targeting' (12524) panicked at crates\core\tests\issue17_slice22.rs:71:58:
+save loads: Setup { source: InvalidState { reason: "a pending choice cannot coexist with a priority holder (CR 608.2d)" } }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    the_captured_mana_value_survives_a_save_and_reload_while_targeting
+
+test result: FAILED. 7 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice22`

@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-138-card pool. Isamaru itself is supported, and the slice-4 package implemented
+139-card pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,9 +46,10 @@ basic lands (coordinator evidence
 `evidence/issue17/slice20/corpus-audit.py` + `slice20/corpus-audit.log`):
 
 * union of all referenced names: **459 unique names**;
-* **125** are in the supported 138-card catalog and **334** are missing. Slice
-  20 adds `Vivien's Grizzly` to the previously verified 124/335 split; the union
-  is unchanged because it was already a referenced name. The
+* **127** are in the supported 139-card catalog and **332** are missing. Slice
+  20 adds `Vivien's Grizzly` to the previously verified 124/335 split and slice
+  22 adds `Dancing from Dark to Dawn` to the previous 126/333 split; the union
+  is unchanged because both were already referenced names. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog
@@ -63,7 +64,7 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **27** missing names.
+(slice 17). Ayula currently has **26** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -386,3 +387,28 @@ Vivien's Grizzly (`{2}{G}`, 2/3 Bear Spirit) is sourced in `fixtures/starter-cor
 
 ## Slice 21: Dragon-Scarred Bear
 Dragon-Scarred Bear (`{2}{G}`, 3/2 Bear) is sourced in `fixtures/starter-corpus/slice21-sourced.json` (Scryfall DTK 183, retrieved 2026-10-27T04:44:50Z). Formidable `{1}{G}` creates a repeatable, non-tapping regeneration shield only when current total creature power is at least 8. Shields are object-anchored, expire at cleanup, and replace only destruction (lethal-damage SBA or a destroy effect): damage is removed, the creature taps and leaves combat. Exile, bounce and zero-toughness moves do not regenerate.
+
+## Slice 22: Dancing from Dark to Dawn
+Dancing from Dark to Dawn (`{3}{G}{G}` Enchantment, Scryfall HOB 123, immutable
+printing `550cd0b6-ca61-4db7-9d20-0b68c48066f9`, oracle
+`5ba482e9-fbb0-4d9f-a3a9-414892bcdfed`, retrieved 2026-10-27T06:31:42Z, sourced
+in `fixtures/starter-corpus/slice22-sourced.json`) is
+the pool's first **"you cast a creature spell"** trigger and the first effect
+sized by the triggering spell's mana value. `TriggerEvent::CreatureSpellCast`
+is deliberately separate from the existing instant/sorcery `SpellCast`: a
+noncreature permanent spell triggers neither, and a creature spell never
+triggers the instant/sorcery wording. `CardDef::mana_value()` derives CR 202.3
+mana value from the printed cost (`{X}` counts 0, a hybrid symbol counts its
+numeric half, every other symbol 1). The value is captured when the spell is
+cast and travels on the trigger (`TriggerRef::spell_mana_value`) and the stack
+item, so resolution never re-derives it; both new fields are serde-skipped when
+zero, so every previously recorded digest is unchanged. The landfall half reuses
+`Effect::CreateBearTokens(1)`. Ayula has 26 missing names after this slice, the
+eight-list gate remains open, and no list is certified by this slice.
+
+**Defect found and repaired inside this slice:** the cast path granted priority
+after casting unconditionally, so a cast trigger waiting for a target produced a
+state with both a pending choice and a priority holder — the session validator
+refused to load it (retained RED
+`evidence/issue17/slice22/focused-2.log`). The caster now receives priority only
+when no choice is pending (CR 603.3d).

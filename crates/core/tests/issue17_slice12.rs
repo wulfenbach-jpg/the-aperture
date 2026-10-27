@@ -423,6 +423,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 controller: P1,
                 ability: 0,
                 seq: 0,
+                spell_mana_value: 0,
             });
         }),
         ("revealed", |state, id| state.revealed.push(id)),
@@ -438,6 +439,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 cursor: 0,
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
+                spell_mana_value: 0,
             });
         }),
         ("stack target", |state, id| {
@@ -449,6 +451,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 cursor: 0,
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
+                spell_mana_value: 0,
             });
         }),
         ("pending trigger", |state, id| {
@@ -460,6 +463,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                     controller: P1,
                     ability: 0,
                     seq: 0,
+                    spell_mana_value: 0,
                 },
             });
         }),

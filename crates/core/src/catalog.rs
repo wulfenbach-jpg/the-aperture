@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 138] = [
+pub static CARDS: [CardDef; 139] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1033,6 +1033,19 @@ pub static CARDS: [CardDef; 138] = [
         LittleBear, "Little Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear", power: Some(3), toughness: Some(2),
         oracle: "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
+        spell: None
+    ),
+    // Issue 17 slice 22: one more sourced Ayula-list card. Dancing from Dark to
+    // Dawn is the pool's first "you cast a creature spell" trigger and the first
+    // effect whose size is derived from the triggering spell's mana value; its
+    // landfall half reuses the existing Bear-token effect. The printed text is
+    // copied verbatim from the printing recorded in
+    // fixtures/starter-corpus/slice22-sourced.json.
+    card!(
+        DancingFromDarkToDawn, "Dancing from Dark to Dawn", cost: Some("{3}{G}{G}"),
+        kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.\nLandfall — Whenever a land you control enters, create a 2/2 green Bear creature token.",
         spell: None
     ),
 ];

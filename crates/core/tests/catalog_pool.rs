@@ -264,6 +264,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::RegenerateSource
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
+                | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue
                 | Effect::CreateBearTokensForEachDeathThisTurn => {}
                 Effect::MillTargetPlayer(_)
                 | Effect::LoseLife(_)

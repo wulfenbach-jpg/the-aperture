@@ -1,0 +1,29 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T06:31:42.173799+00:00",
+ "cards": [
+  {
+   "name": "Dancing from Dark to Dawn",
+   "oracle_id": "5ba482e9-fbb0-4d9f-a3a9-414892bcdfed",
+   "scryfall_id": "550cd0b6-ca61-4db7-9d20-0b68c48066f9",
+   "set": "hob",
+   "collector_number": "123",
+   "layout": "normal",
+   "mana_cost": "{3}{G}{G}",
+   "type_line": "Enchantment",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.\nLandfall — Whenever a land you control enters, create a 2/2 green Bear creature token.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/550cd0b6-ca61-4db7-9d20-0b68c48066f9",
+   "retrieved_at": "2026-10-27T06:31:42.173799+00:00"
+  }
+ ]
+}

@@ -3175,6 +3175,7 @@ impl Game {
             cursor: 0,
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
+            spell_mana_value: 0,
         });
         // CR 117.3c: activating is treated like casting for priority purposes.
         self.state.turn.passed = 0;
@@ -3209,6 +3210,7 @@ impl Game {
                 controller,
                 ability: 0,
                 seq,
+                spell_mana_value: 0,
             });
             return;
         }
@@ -3221,6 +3223,7 @@ impl Game {
                 controller,
                 ability: index,
                 seq,
+                spell_mana_value: 0,
             });
         }
     }
@@ -3430,6 +3433,7 @@ impl Game {
                 ability: trigger.ability,
             },
             trigger_answered: false,
+            spell_mana_value: trigger.spell_mana_value,
         });
         self.state.turn.passed = 0;
     }
@@ -3630,26 +3634,46 @@ impl Game {
             cursor: 0,
             entry: StackEntry::Spell,
             trigger_answered: false,
+            spell_mana_value: 0,
         });
         // CR 603.6a: "you cast" triggers are queued as the spell is cast, and
         // reach the stack above it before priority. Only the caster's
         // permanents trigger; an opponent's cast does not.
-        if matches!(card_id.def().kinds, kinds if kinds.contains(&crate::card::Kind::Instant) || kinds.contains(&crate::card::Kind::Sorcery))
+        //
+        // CR 202.3 + 603.2: two printed wordings are kept apart. "You cast an
+        // instant or sorcery spell" fires on instants and sorceries only, while
+        // "you cast a creature spell" fires on creature spells only; a
+        // noncreature permanent spell fires neither.
+        let def = card_id.def();
+        let cast_event = if def.kinds.contains(&crate::card::Kind::Instant)
+            || def.kinds.contains(&crate::card::Kind::Sorcery)
         {
+            Some(TriggerEvent::SpellCast)
+        } else if def.kinds.contains(&crate::card::Kind::Creature) {
+            Some(TriggerEvent::CreatureSpellCast)
+        } else {
+            None
+        };
+        if let Some(event) = cast_event {
             let sources: Vec<(ObjectId, CardId)> = self
                 .state
                 .objects
                 .values()
                 .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
-                .filter(|object| {
-                    ability::triggers_on(object.card, TriggerEvent::SpellCast)
-                        .next()
-                        .is_some()
-                })
+                .filter(|object| ability::triggers_on(object.card, event).next().is_some())
                 .map(|object| (object.id, object.card))
                 .collect();
             for (source, card) in sources {
-                self.queue_triggers(source, card, player, TriggerEvent::SpellCast);
+                let first_new = self.state.trigger_queue.len();
+                self.queue_triggers(source, card, player, event);
+                if event == TriggerEvent::CreatureSpellCast {
+                    // CR 202.3: the triggering spell's mana value is fixed now,
+                    // not at resolution, so it travels with the trigger.
+                    let mana_value = def.mana_value();
+                    for trigger in &mut self.state.trigger_queue[first_new..] {
+                        trigger.spell_mana_value = mana_value;
+                    }
+                }
             }
             // CR 603.3: put the "you cast" triggers on the stack above the
             // spell before any player receives priority.
@@ -3679,10 +3703,15 @@ impl Game {
             targets: target_labels,
         });
         self.apply_payment(player, payment, events);
-        // CR 117.3c: the caster receives priority after casting.
+        // CR 117.3c: the caster receives priority after casting — unless a cast
+        // trigger is waiting for a target (CR 603.3d), in which case the choice
+        // is the next thing the rules do and the engine must not hold priority
+        // alongside a pending choice.
         self.state.turn.passed = 0;
-        self.state.turn.priority = Some(player);
-        events.push(Event::Priority { player });
+        if self.state.pending.is_none() {
+            self.state.turn.priority = Some(player);
+            events.push(Event::Priority { player });
+        }
     }
 
     fn apply_declare_attackers(
@@ -5131,6 +5160,7 @@ impl Game {
                     controller: item.controller,
                     ability: ability_index(item.entry),
                     seq: 0,
+                    spell_mana_value: item.spell_mana_value,
                 },
             });
             self.state.resolving = Some(item.object);
@@ -5953,6 +5983,33 @@ impl Game {
                     }
                 }
                 self.recompute_layers();
+                false
+            }
+            // CR 202.3 + 608.2: the size was fixed when the triggering spell was
+            // cast and travelled here on the stack item, so a spell that has
+            // already left the stack still contributes its own mana value. A
+            // zero-mana-value spell still targets (X = 0) and adds nothing.
+            Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue => {
+                let n = item.spell_mana_value as u32;
+                if n > 0 {
+                    for target in item.targets.clone() {
+                        if let Target::Permanent(id) = target
+                            && let Some(object) = self.state.objects.get_mut(&id)
+                            && object.zone == Zone::Battlefield
+                        {
+                            let name = object.card.name();
+                            let total = object
+                                .counters
+                                .add(crate::counters::CounterKind::PlusOnePlusOne, n);
+                            events.push(Event::StateBasedAction {
+                                description: format!(
+                                    "{name} has {total} +1/+1 counter(s) from a cast triggered ability (X = {n}, CR 202.3)"
+                                ),
+                            });
+                        }
+                    }
+                    self.recompute_layers();
+                }
                 false
             }
             Effect::SkipNextUntapStep => {
@@ -7588,6 +7645,7 @@ mod slice17_cleanup_history_tests {
                     controller: P0,
                     ability: 0,
                     seq: 0,
+                    spell_mana_value: 0,
                 },
                 TriggerRef {
                     source: warden,
@@ -7595,6 +7653,7 @@ mod slice17_cleanup_history_tests {
                     controller: P0,
                     ability: 0,
                     seq: 1,
+                    spell_mana_value: 0,
                 },
             ],
             &mut events,

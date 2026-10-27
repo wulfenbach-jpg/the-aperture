@@ -335,6 +335,7 @@ fn spell_target_that_is_not_on_the_stack_is_rejected() {
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,
+        spell_mana_value: 0,
     };
 }
 

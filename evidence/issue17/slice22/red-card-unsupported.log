@@ -1,0 +1,36 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.17s
+     Running tests\issue17_slice22.rs (target\debug\deps\issue17_slice22-1be942bdc603fc37.exe)
+
+running 3 tests
+test the_slice22_card_prints_its_token_landfall_trigger ... FAILED
+test the_slice22_card_is_in_the_supported_pool ... FAILED
+test the_slice22_card_prints_two_triggered_abilities ... FAILED
+
+failures:
+
+---- the_slice22_card_prints_its_token_landfall_trigger stdout ----
+
+thread 'the_slice22_card_prints_its_token_landfall_trigger' (32984) panicked at crates\core\tests\issue17_slice22.rs:11:46:
+Dancing from Dark to Dawn must be supported
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_slice22_card_is_in_the_supported_pool stdout ----
+
+thread 'the_slice22_card_is_in_the_supported_pool' (40920) panicked at crates\core\tests\issue17_slice22.rs:11:46:
+Dancing from Dark to Dawn must be supported
+
+---- the_slice22_card_prints_two_triggered_abilities stdout ----
+
+thread 'the_slice22_card_prints_two_triggered_abilities' (14612) panicked at crates\core\tests\issue17_slice22.rs:11:46:
+Dancing from Dark to Dawn must be supported
+
+
+failures:
+    the_slice22_card_is_in_the_supported_pool
+    the_slice22_card_prints_its_token_landfall_trigger
+    the_slice22_card_prints_two_triggered_abilities
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice22`

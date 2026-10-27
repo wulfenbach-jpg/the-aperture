@@ -225,6 +225,12 @@ pub struct TriggerRef {
     pub ability: u8,
     /// Monotonic arrival serial; keeps same-controller ordering deterministic.
     pub seq: u64,
+    /// CR 202.3 + 603.2: the mana value of the spell that caused this trigger,
+    /// captured when the trigger was queued. Only a "you cast a creature spell"
+    /// trigger uses it; every other trigger carries 0 and — because zero is
+    /// skipped — serializes and hashes exactly as it did before slice 22.
+    #[serde(default, skip_serializing_if = "is_zero_u8")]
+    pub spell_mana_value: u8,
 }
 
 /// What one stack item is: a spell card, or an ability whose source never
@@ -587,6 +593,20 @@ pub struct StackItem {
     pub entry: StackEntry,
     /// Set once the controller has answered a CR 603.5 "you may" trigger.
     pub trigger_answered: bool,
+    /// CR 202.3: mana value of the spell that caused this triggered ability, when
+    /// the printed effect is sized by it (Dancing from Dark to Dawn). Copied from
+    /// `TriggerRef::spell_mana_value` when the trigger is put on the stack and 0
+    /// for spells and for every other ability, which keeps a zero-value item
+    /// byte-identical to the pre-slice-22 serialization.
+    #[serde(default, skip_serializing_if = "is_zero_u8")]
+    pub spell_mana_value: u8,
+}
+
+/// `skip_serializing_if` helper for the slice-22 mana-value fields: a zero
+/// (spell, or any ability that does not read a spell's mana value) is omitted so
+/// existing saves, replays and digests are unchanged.
+fn is_zero_u8(value: &u8) -> bool {
+    *value == 0
 }
 
 /// Stable registry entry for one physical commander card. The per-zone object

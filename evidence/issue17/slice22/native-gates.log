@@ -1,0 +1,92 @@
+=== git head ===
+b671414e9de383ff958bc2cedcdd3e9ffba5abc3
+head_exit=0
+=== fmt ===
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\src\engine.rs:3660:
+                 .objects
+                 .values()
+                 .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
+[31m-                .filter(|object| {
+[0m[31m-                    ability::triggers_on(object.card, event)
+[0m[31m-                        .next()
+[0m[31m-                        .is_some()
+[0m[31m-                })
+[0m[32m+                .filter(|object| ability::triggers_on(object.card, event).next().is_some())
+[0m                 .map(|object| (object.id, object.card))
+                 .collect();
+             for (source, card) in sources {
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice22.rs:49:
+         if game.state.pending.is_some() || game.state.stack.is_empty() {
+             return;
+         }
+[31m-        let Some(p) = game.decision_owner() else { return };
+[0m[32m+        let Some(p) = game.decision_owner() else {
+[0m[32m+            return;
+[0m[32m+        };
+[0m         log.extend(submit_ok(game, p, Action::Pass));
+     }
+     panic!("the stack did not settle");
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice22.rs:134:
+         );
+     };
+     assert_eq!(player, P0);
+[31m-    assert!(legal.contains(&Target::Permanent(bears)), "legal: {legal:?}");
+[0m[32m+    assert!(
+[0m[32m+        legal.contains(&Target::Permanent(bears)),
+[0m[32m+        "legal: {legal:?}"
+[0m[32m+    );
+[0m     assert_eq!(
+         triggered_by_dancing(&log),
+         0,
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\crates\core\tests\issue17_slice22.rs:208:
+     // "you cast" is controller-scoped: P1 casting on their own turn with P0's
+     // enchantment watching must not trigger it.
+     let mut game = fixture(2203)
+[31m-        .battlefield(
+[0m[31m-            P0,
+[0m[31m-            &[CardId::DancingFromDarkToDawn, CardId::GrizzlyBears],
+[0m[31m-        )
+[0m[32m+        .battlefield(P0, &[CardId::DancingFromDarkToDawn, CardId::GrizzlyBears])
+[0m         .battlefield(P1, &[CardId::RuneclawBear])
+         .hand(P1, &[CardId::RuneclawBear])
+         .library(P0, &[CardId::Forest; 12])
+fmt_exit=1
+=== clippy ===
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+    Checking aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 16.76s
+clippy_exit=0
+=== release build ===
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 49.91s
+release_exit=0
+=== slice22 focused ===
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+slice22_exit=0
+=== pinned/focused suites ===
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+printings_exit=0
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+catalog_exit=0
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.11s
+combat_exit=0
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+corpus_exit=0
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+abilities_exit=0
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+slice20_exit=0
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+slice21_exit=0
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+projection_exit=0
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+timing_exit=0
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+m1_exit=0
+=== workspace tests ===
+workspace_exit=0
+=== done ===

@@ -123,6 +123,10 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // recorded gap matches the compiled pool) is unchanged.
     // Slice 19 registers Spectral Bears, so the recorded Ayula gap and the
     // compiled pool move together by one; the assertions' purpose is unchanged.
-    assert_eq!(missing.len(), 27, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 138, "the compiled pool");
+    // Slice 22 registers Dancing from Dark to Dawn, so the recorded Ayula gap
+    // and the compiled pool move together by one again; the assertions' purpose
+    // (the three slice-15 cards stay supported and the recorded gap matches the
+    // compiled pool) is unchanged.
+    assert_eq!(missing.len(), 26, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 139, "the compiled pool");
 }

@@ -220,6 +220,12 @@ pub enum Effect {
     LookTopTakeOrBottom,
     /// CR 701.19a: create a regeneration shield on the ability's source.
     RegenerateSource,
+    /// "Put X +1/+1 counters on target creature you control, where X is that
+    /// spell's mana value" (Dancing from Dark to Dawn). The triggering creature
+    /// spell's mana value travels with the trigger (`TriggerRef` →
+    /// `StackItem::spell_mana_value`) so resolution reads the value the spell
+    /// had when it was cast, never the board's current state.
+    PutPlusOneCountersOnTargetForTriggerSpellManaValue,
 }
 
 impl Effect {
@@ -311,6 +317,10 @@ impl Effect {
             }
             Effect::UntapTargetAndCounterIfBear => {
                 "untap the target creature; if it is a Bear, put a +1/+1 counter on it".to_string()
+            }
+            Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue => {
+                "put X +1/+1 counters on the target creature, X = that spell's mana value"
+                    .to_string()
             }
         }
     }
@@ -460,6 +470,32 @@ impl CardDef {
         self.cost.map(crate::mana::parse_cost)
     }
 
+    /// CR 202.3: a card's mana value is the total amount of mana in its mana
+    /// cost. Read from the printed cost string: a numeric generic symbol adds
+    /// that number, `{X}` adds 0 (its value is fixed only while the spell is on
+    /// the stack, and no X-cost spell in this pool is a creature), a hybrid or
+    /// Phyrexian symbol adds its numeric half when it prints one and otherwise
+    /// 1, and any other single symbol adds 1.
+    pub fn mana_value(&self) -> u8 {
+        self.cost.map_or(0, |cost| {
+            cost.split('{')
+                .skip(1)
+                .filter_map(|rest| rest.split_once('}').map(|(symbol, _)| symbol))
+                .map(|symbol| {
+                    if let Ok(generic) = symbol.parse::<u8>() {
+                        generic
+                    } else if symbol.eq_ignore_ascii_case("X") {
+                        0
+                    } else if let Some((half, _)) = symbol.split_once('/') {
+                        half.parse::<u8>().unwrap_or(0)
+                    } else {
+                        1
+                    }
+                })
+                .sum()
+        })
+    }
+
     /// Spell characteristics used for casting and resolution. A vanilla
     /// creature is a permanent spell with no targets and no effects (CR 608.3).
     pub fn spell_spec(&self) -> Option<SpellSpec> {
@@ -549,6 +585,7 @@ pub enum CardId {
     MotherBear,
     FadeFromHistory,
     LittleBear,
+    DancingFromDarkToDawn,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,
