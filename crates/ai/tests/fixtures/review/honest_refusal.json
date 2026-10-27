@@ -1,0 +1,51 @@
+{
+  "spec": "move-review/1.2",
+  "binding": {
+    "seat": 1,
+    "generation": 4,
+    "revision": 12,
+    "decision": 41,
+    "view_digest": "masked-projection:77ab02",
+    "rules_revision": "2026-09-25"
+  },
+  "budget": {
+    "seeds": 2,
+    "node_budget": 30000,
+    "max_rollout_nodes": 6000,
+    "max_millis": "unbounded",
+    "max_candidates": 6,
+    "decisions_used": 0,
+    "stop": "not_started",
+    "cancelled": false,
+    "reproducible": false,
+    "fidelity": "no rollout ran; the decision point was refused before the search world was reconstructed"
+  },
+  "candidates": [],
+  "preference": null,
+  "refusal": "no ordinary priority decision point at this revision",
+  "notes": [
+    {
+      "kind": "provenance",
+      "body": "the search refused this decision point, so nothing is ranked",
+      "evidence": [
+        {
+          "budget": {
+            "field": "stop"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "provenance",
+      "body": "preference not reported; not a win probability",
+      "evidence": [
+        "view_digest",
+        {
+          "budget": {
+            "field": "reproducible"
+          }
+        }
+      ]
+    }
+  ]
+}

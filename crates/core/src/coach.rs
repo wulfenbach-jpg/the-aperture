@@ -8,7 +8,7 @@ use crate::engine::Game;
 use crate::ids::PlayerId;
 use crate::state::{OrderMode, Pending};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ExplanationKind {
     /// Derived from the deterministic state or the pinned rule text.
