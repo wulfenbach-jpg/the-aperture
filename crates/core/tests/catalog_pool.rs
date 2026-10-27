@@ -263,6 +263,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::LookTopTakeOrBottom
                 | Effect::RegenerateSource
                 | Effect::PutCounterAndHasteOnEntered
+                | Effect::SetBasePowerToughnessFromSource
                 | Effect::FightTargets
                 | Effect::PutPlusOneCountersOnTarget(_)
                 | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue

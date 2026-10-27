@@ -474,6 +474,29 @@ impl Game {
                 object.pump_toughness = 0;
             }
         }
+        // CR 613.4b base P/T setters apply before counters and modifiers. A
+        // later setter in timestamp order replaces an earlier base.
+        let mut setting: Vec<(u64, ObjectId, i32, i32)> = self
+            .state
+            .effects
+            .iter()
+            .filter(|effect| effect.layer == Layer::Setting)
+            .filter_map(|effect| match effect.kind {
+                ContinuousKind::SetBasePowerToughness { power, toughness } => {
+                    Some((effect.timestamp, effect.target, power, toughness))
+                }
+                _ => None,
+            })
+            .collect();
+        setting.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
+        for (_, target, power, toughness) in setting {
+            if let Some(object) = self.state.objects.get_mut(&target)
+                && object.zone == Zone::Battlefield
+            {
+                object.pump_power = power - object.card.def().power.unwrap_or(0);
+                object.pump_toughness = toughness - object.card.def().toughness.unwrap_or(0);
+            }
+        }
         // Printed layer 7c statics: +P/+T for each counted card, evaluated
         // against the current game state for the source's controller.
         for (id, card) in &battlefield {
@@ -541,7 +564,9 @@ impl Game {
                 ContinuousKind::ModifyPowerToughness { power, toughness } => {
                     Some((effect.timestamp, effect.target, power, toughness))
                 }
-                ContinuousKind::GrantsTrample | ContinuousKind::GrantsHaste => None,
+                ContinuousKind::GrantsTrample
+                | ContinuousKind::GrantsHaste
+                | ContinuousKind::SetBasePowerToughness { .. } => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -1056,11 +1081,65 @@ impl Game {
     /// Callers that move a commander then insert it back with `insert_object`,
     /// which allocates a fresh ObjectId (CR 400.7).
     fn detach_object(&mut self, id: ObjectId) -> Option<Object> {
+        let lki = self
+            .state
+            .objects
+            .get(&id)
+            .filter(|object| object.zone == Zone::Battlefield)
+            .map(|object| (object.power(), object.toughness()));
         let object = self.state.objects.remove(&id)?;
         // A regeneration shield belongs to one battlefield permanent, not to
         // the card identity that survives a zone change. Leaving the
         // battlefield ends it; this is not regeneration or shield consumption.
         if object.zone == Zone::Battlefield {
+            if object.card == CardId::ExuberantWolfbear
+                && let Some(pts) = lki
+            {
+                for trigger in &mut self.state.trigger_queue {
+                    if trigger.source == id && trigger.source_pt_lki.is_none() {
+                        trigger.source_pt_lki = Some(pts);
+                    }
+                }
+                for item in &mut self.state.stack {
+                    if item.object == id && item.source_pt_lki.is_none() {
+                        item.source_pt_lki = Some(pts);
+                    }
+                }
+                if let Some(pending) = &mut self.state.pending {
+                    match pending {
+                        Pending::TriggerTarget {
+                            trigger, queued, ..
+                        } => {
+                            if trigger.source == id && trigger.source_pt_lki.is_none() {
+                                trigger.source_pt_lki = Some(pts);
+                            }
+                            for t in queued.iter_mut() {
+                                if t.source == id && t.source_pt_lki.is_none() {
+                                    t.source_pt_lki = Some(pts);
+                                }
+                            }
+                        }
+                        Pending::TriggerChoice { trigger, .. } => {
+                            if trigger.source == id && trigger.source_pt_lki.is_none() {
+                                trigger.source_pt_lki = Some(pts);
+                            }
+                        }
+                        Pending::TriggerMode {
+                            trigger, queued, ..
+                        } => {
+                            if trigger.source == id && trigger.source_pt_lki.is_none() {
+                                trigger.source_pt_lki = Some(pts);
+                            }
+                            for t in queued.iter_mut() {
+                                if t.source == id && t.source_pt_lki.is_none() {
+                                    t.source_pt_lki = Some(pts);
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
             self.state
                 .regeneration_shields
                 .retain(|shield| shield.object != id);
@@ -2317,6 +2396,18 @@ impl Game {
                 .filter(|o| o.zone == Zone::Battlefield && o.is_creature())
                 .map(|o| Target::Permanent(o.id))
                 .collect(),
+            TargetSpec::HumanYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && o.is_creature()
+                        && o.controller == _caster
+                        && o.card.def().has_subtype("Human")
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
             TargetSpec::Bear => self
                 .state
                 .objects
@@ -3346,6 +3437,7 @@ impl Game {
             controller: player,
             targets: targets.to_vec(),
             affected: None,
+            source_pt_lki: None,
             cursor: 0,
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
@@ -3386,6 +3478,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                source_pt_lki: None,
             });
             return;
         }
@@ -3400,6 +3493,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                source_pt_lki: None,
             });
         }
     }
@@ -3605,6 +3699,7 @@ impl Game {
             controller: trigger.controller,
             targets,
             affected: trigger.affected,
+            source_pt_lki: trigger.source_pt_lki,
             cursor: 0,
             entry: StackEntry::Triggered {
                 ability: trigger.ability,
@@ -3809,6 +3904,7 @@ impl Game {
             controller: player,
             targets: targets.to_vec(),
             affected: None,
+            source_pt_lki: None,
             cursor: 0,
             entry: StackEntry::Spell,
             trigger_answered: false,
@@ -5340,6 +5436,7 @@ impl Game {
                     seq: 0,
                     spell_mana_value: item.spell_mana_value,
                     affected: item.affected,
+                    source_pt_lki: item.source_pt_lki,
                 },
             });
             self.state.resolving = Some(item.object);
@@ -6253,6 +6350,49 @@ impl Game {
                 }
                 false
             }
+            Effect::SetBasePowerToughnessFromSource => {
+                let [Target::Permanent(target)] = item.targets.as_slice() else {
+                    return false;
+                };
+                let target_ok = self.state.try_object(*target).is_some_and(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.is_creature()
+                        && object.controller == controller
+                        && object.card.def().has_subtype("Human")
+                });
+                let source_ok = self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|object| object.zone == Zone::Battlefield && object.is_creature());
+                if !target_ok || (!source_ok && item.source_pt_lki.is_none()) {
+                    return false;
+                }
+                let (power, toughness) = item.source_pt_lki.unwrap_or_else(|| {
+                    let source = self.state.object(item.object);
+                    (source.power(), source.toughness())
+                });
+                let timestamp = self.next_timestamp();
+                let id = self.next_effect_id();
+                self.state.effects.push(ContinuousEffect {
+                    id,
+                    timestamp,
+                    source: Some(item.object),
+                    card: item.card,
+                    controller,
+                    layer: Layer::Setting,
+                    target: *target,
+                    kind: ContinuousKind::SetBasePowerToughness { power, toughness },
+                    duration: EffectDuration::UntilEndOfTurn,
+                });
+                self.recompute_layers();
+                events.push(Event::ContinuousEffectStarted {
+                    object: *target,
+                    card: item.card,
+                    layer: Layer::Setting.label().to_string(),
+                    text: format!("base power/toughness {power}/{toughness}"),
+                });
+                false
+            }
             Effect::PutCounterAndHasteOnEntered => {
                 let Some(target) = item.affected else {
                     return false;
@@ -6499,6 +6639,7 @@ impl Game {
                         seq,
                         spell_mana_value: 0,
                         affected: Some(entering),
+                        source_pt_lki: None,
                     });
                 }
                 continue;
@@ -7503,6 +7644,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::CreatureYouControl => "target creature you control: CR 115.1",
         TargetSpec::Spell => "target spell: CR 115.1",
         TargetSpec::NoncreatureSpell => "target noncreature spell: CR 115.1",
+        TargetSpec::HumanYouControl => "target Human you control: CR 115.1",
         TargetSpec::Bear => "target Bear: CR 115.1",
         TargetSpec::BearYouControl => "target Bear you control: CR 115.1",
     }
@@ -7897,6 +8039,7 @@ mod slice17_cleanup_history_tests {
                     seq: 0,
                     spell_mana_value: 0,
                     affected: None,
+                    source_pt_lki: None,
                 },
                 TriggerRef {
                     source: warden,
@@ -7906,6 +8049,7 @@ mod slice17_cleanup_history_tests {
                     seq: 1,
                     spell_mana_value: 0,
                     affected: None,
+                    source_pt_lki: None,
                 },
             ],
             &mut events,

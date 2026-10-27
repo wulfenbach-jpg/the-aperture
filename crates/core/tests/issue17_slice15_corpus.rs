@@ -128,6 +128,6 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // (the three slice-15 cards stay supported and the recorded gap matches the
     // compiled pool) is unchanged. Slice 23 registers Goreclaw, Terror of Qal
     // Sisma, which closes one more name.
-    assert_eq!(missing.len(), 24, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 141, "the compiled pool");
+    assert_eq!(missing.len(), 23, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 142, "the compiled pool");
 }

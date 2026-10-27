@@ -235,6 +235,10 @@ pub struct TriggerRef {
     /// never retargeted; dangling after a battlefield departure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affected: Option<ObjectId>,
+    /// Effective source P/T captured when its battlefield incarnation leaves,
+    /// used by a queued/stacked source-left P/T-setting ability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source_pt_lki: Option<(i32, i32)>,
 }
 
 /// What one stack item is: a spell card, or an ability whose source never
@@ -607,6 +611,9 @@ pub struct StackItem {
     /// byte-identical to the pre-slice-22 serialization.
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub spell_mana_value: u8,
+    /// Effective source P/T captured before its battlefield departure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source_pt_lki: Option<(i32, i32)>,
 }
 
 /// `skip_serializing_if` helper for the slice-22 mana-value fields: a zero

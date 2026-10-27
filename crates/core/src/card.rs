@@ -96,6 +96,8 @@ pub enum TargetSpec {
     Bear,
     /// A Bear controlled by the effect's controller, including the source.
     BearYouControl,
+    /// A Human controlled by the effect's controller.
+    HumanYouControl,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -239,6 +241,9 @@ pub enum Effect {
     /// Put a +1/+1 counter on and grant haste to the entered object captured
     /// by the trigger (`it`, not a target).
     PutCounterAndHasteOnEntered,
+    /// Set the target Human's base P/T to the ability source's effective P/T
+    /// captured at resolution (or its LKI if the source departed).
+    SetBasePowerToughnessFromSource,
 }
 
 impl Effect {
@@ -320,6 +325,9 @@ impl Effect {
                 "target Bear you control fights target creature you don't control".to_string()
             }
             Effect::RegenerateSource => "regenerate this creature".to_string(),
+            Effect::SetBasePowerToughnessFromSource => {
+                "set target Human's base P/T to this creature's P/T".to_string()
+            }
             Effect::PutCounterAndHasteOnEntered => {
                 "put a +1/+1 counter on it and it gains haste".to_string()
             }
@@ -589,6 +597,7 @@ pub enum CardId {
     ViviensGrizzly,
     DragonScarredBear,
     SurrakAndGoreclaw,
+    ExuberantWolfbear,
     AyulasInfluence,
     Bearscape,
     MotherBear,

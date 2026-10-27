@@ -333,6 +333,7 @@ fn spell_target_that_is_not_on_the_stack_is_rejected() {
         controller: P0,
         targets: Vec::new(),
         affected: None,
+        source_pt_lki: None,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,

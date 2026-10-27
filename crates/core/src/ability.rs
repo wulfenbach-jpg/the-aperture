@@ -432,6 +432,14 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+const EXUBERANT_WOLFBEAR: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
+    event: TriggerEvent::Attacks,
+    optional: true,
+    target: TargetSpec::HumanYouControl,
+    effects: &[Effect::SetBasePowerToughnessFromSource],
+})];
+
 const SURRAK_AND_GORECLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Whenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
     event: TriggerEvent::AnotherCreatureEnters,
@@ -769,6 +777,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::ViviensGrizzly => VIVIENS_GRIZZLY,
         CardId::DragonScarredBear => DRAGON_SCARRED_BEAR,
         CardId::SurrakAndGoreclaw => SURRAK_AND_GORECLAW,
+        CardId::ExuberantWolfbear => EXUBERANT_WOLFBEAR,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,

@@ -42,6 +42,8 @@ pub enum Layer {
     /// Terror of Qal Sisma). It is ordered before `Modifying`, so a pump granted
     /// in the same resolution still applies after the ability grant.
     Ability,
+    /// CR 613.4b: effects that set base power/toughness, before modifiers.
+    Setting,
     /// CR 613.4c: effects that modify power and/or toughness without setting
     /// them, applied in timestamp order (CR 613.7).
     Modifying,
@@ -51,6 +53,7 @@ impl Layer {
     pub fn label(self) -> &'static str {
         match self {
             Layer::Ability => "6",
+            Layer::Setting => "7b",
             Layer::Modifying => "7c",
         }
     }
@@ -58,6 +61,7 @@ impl Layer {
     pub fn rules(self) -> &'static str {
         match self {
             Layer::Ability => "CR 613.4d ability-granting effects",
+            Layer::Setting => "CR 613.4b base power/toughness setting",
             Layer::Modifying => "CR 613.4c power/toughness modifiers",
         }
     }
@@ -85,6 +89,8 @@ pub enum ContinuousKind {
     GrantsTrample,
     /// CR 613.4d + 702.10a: the object has haste until end of turn.
     GrantsHaste,
+    /// CR 613.4b: set base power/toughness to the captured values.
+    SetBasePowerToughness { power: i32, toughness: i32 },
 }
 
 /// One continuous effect, carrying the timestamp that fixes its order inside
@@ -117,6 +123,12 @@ impl ContinuousEffect {
             }
             ContinuousKind::GrantsHaste => {
                 format!("haste until end of turn ({})", self.layer.rules())
+            }
+            ContinuousKind::SetBasePowerToughness { power, toughness } => {
+                format!(
+                    "base power/toughness {power}/{toughness} until end of turn ({})",
+                    self.layer.rules()
+                )
             }
         }
     }

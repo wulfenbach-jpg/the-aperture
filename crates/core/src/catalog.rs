@@ -239,7 +239,7 @@ macro_rules! card_trample {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 141] = [
+pub static CARDS: [CardDef; 142] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -855,6 +855,12 @@ pub static CARDS: [CardDef; 141] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        ExuberantWolfbear, "Exuberant Wolfbear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Wolf Bear", power: Some(4), toughness: Some(4),
+        oracle: "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
+        spell: None
     ),
     card!(
         SurrakAndGoreclaw, "Surrak and Goreclaw", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,

@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice24/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **129** are in the supported 141-card catalog and **330** are missing. Slice
+* **129** are in the supported 142-card catalog and **330** are missing. Slice
   24 adds `Surrak and Goreclaw` to the previously verified 128/331 split. The union
   is unchanged because it was already a referenced name. The
   five basic land types are part of the union, which is why the union exceeds the
@@ -63,7 +63,7 @@ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
 the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
-(slice 17). Ayula currently has **24** missing names.
+(slice 17). Ayula currently has **23** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -451,3 +451,6 @@ fails exactly the qualifying-creature test, and dropping the grant lookup from
 
 ## Slice 24: Surrak and Goreclaw
 Surrak and Goreclaw (`{4}{G}{G}`, 6/5 Legendary Human Bear) is sourced in `fixtures/starter-corpus/slice24-sourced.json` (Scryfall MOM 337, immutable 9c10934d, retrieved 2026-10-27T08:44:35Z). Printed trample; other creatures its controller controls have trample through a typed static scan. Its nontoken-own-creature entry trigger captures the entered object as a non-target identity, adds a +1/+1 counter, and grants haste until end of turn in the ability layer. Tokens, self-entry and opponents do not qualify. Losing the battlefield incarnation removes pending/stack affected references; haste expires at cleanup.
+
+## Slice 25: Exuberant Wolfbear
+Exuberant Wolfbear (`{3}{G}`, 4/4 Wolf Bear) is sourced in `fixtures/starter-corpus/slice25-sourced.json` (IKO 151, immutable 8c8ff0da, retrieved 2026-10-27T09:19:21Z). Its optional attack trigger targets a Human you control and sets that Human's base power/toughness to the Wolfbear's effective power/toughness captured at resolution. Base setting is layer 7b before counters and 7c modifiers; source LKI is captured on battlefield departure for source-left resolution. Target/source departure and cleanup follow normal continuous-effect rules.
