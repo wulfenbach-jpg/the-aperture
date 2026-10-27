@@ -43,3 +43,23 @@ discriminator; the audit/manifest read is.
 
 Full original #17 is unfinished (**1/8 certified**, 336 missing union names).
 This is not whole-issue acceptance, merge, closure, or downstream unlock.
+
+## RE-ADJUDICATION at `60e0bd9e7a706e92bc6d8f5e2e7534ed27a97bbf`: APPROVED_INCREMENT
+
+I re-read the current file rather than the summary. The delta
+`2785c2c..60e0bd9` contains only `docs/issue17-starter-corpus.md`, the human
+checkpoint and this review report; no product source changed.
+`docs/issue17-starter-corpus.md:48-52` now carries **459 union / 123 supported /
+336 missing** with the basics-and-Ayula explanation; `:176` describes Ayula's
+implemented bounded counter/fight trigger; `:320` says **two** target commanders
+remain unsupported (Elas, Zada) and lists Ayula with named bounded support; the
+token bullet says Ayula herself needs no token type. Grepping `122`, `337`,
+`Three target commanders`, `Ayula's printed counter/tribal text is not
+implemented` leaves only the historical explanatory reference to the old
+122/337 split, not a current claim. My independent manifest/catalog audit still
+gives 135 catalog / 459 union / 123 supported / 336 missing, per-list
+`55/0/51/48/30/52/52/53`, manifest match. The 454/118 checkpoint value was the
+basics-filtered audit artefact and is correctly recorded as superseded.
+No further blocking record/code issue. Full #17 remains unfinished; the journey
+is an evidence-only 40-card package with Ayula injected for all four seats, not
+a 100-card certificate. No merge, closure, or downstream unlock.
