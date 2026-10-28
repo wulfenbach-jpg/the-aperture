@@ -60,6 +60,9 @@ pub struct StackView {
     pub name: &'static str,
     pub controller: PlayerId,
     pub targets: Vec<String>,
+    /// Public choices announced when casting a modal spell, in printed order.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub modes: Vec<&'static str>,
 }
 
 /// Public command-zone information. The registry's current ObjectId is NOT
@@ -729,6 +732,14 @@ impl Game {
                     card: item.card,
                     name: item.card.name(),
                     controller: item.controller,
+                    modes: {
+                        let mut modes = item.modes.clone();
+                        modes.sort_unstable();
+                        modes
+                            .into_iter()
+                            .filter_map(|mode| crate::card::modal_mode_name(item.card, mode))
+                            .collect()
+                    },
                     targets: item
                         .targets
                         .iter()

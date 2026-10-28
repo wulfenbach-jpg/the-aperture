@@ -660,7 +660,7 @@ pub struct StackItem {
     pub card: CardId,
     pub controller: PlayerId,
     pub targets: Vec<crate::action::Target>,
-    /// Modal spell mode indices, sorted into printed order at cast time.
+    /// Modal spell mode indices, resolved and projected in printed order.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub modes: Vec<u8>,
     /// Non-target object captured by the trigger's "it" wording.
@@ -1718,6 +1718,30 @@ impl GameState {
                     reason: "snow land search must select at most one card, with remaining capacity accounting for its choice".to_string(),
                 });
             }
+            // A suspended modal instruction must retain its exact filter,
+            // controller, selection and printed-order cursor across save/load.
+            let modal_source = self.stack.last().filter(|item| {
+                item.entry == StackEntry::Spell
+                    && item.card == CardId::TitaniasCommand
+                    && self.resolving == Some(item.object)
+            });
+            if *mode == LibrarySearchMode::AnyLandToBattlefield || modal_source.is_some() {
+                let anchored = modal_source.is_some_and(|item| {
+                    let search_cursor = 1 + u8::from(item.modes.contains(&0));
+                    item.controller == *player
+                        && item.modes.contains(&1)
+                        && item.cursor == search_cursor
+                        && *mode == LibrarySearchMode::AnyLandToBattlefield
+                        && chosen.len() + usize::from(*remaining) == 2
+                });
+                if !anchored {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "modal land search is not anchored to its selected two-land instruction"
+                                .to_string(),
+                    });
+                }
+            }
             let library = &self.player(*player).library;
             let is_search_land = |id: &ObjectId| {
                 self.try_object(*id).is_some_and(|object| {
@@ -2527,6 +2551,25 @@ impl GameState {
             }
         }
         for item in &self.stack {
+            if item.card == CardId::TitaniasCommand && item.entry == StackEntry::Spell {
+                let valid_modes = item.modes.len() == 2
+                    && item.modes.iter().all(|mode| *mode < 4)
+                    && item.modes[0] != item.modes[1];
+                let valid_targets = if item.modes.contains(&0) {
+                    matches!(item.targets.as_slice(), [crate::action::Target::Player(p)] if in_range(*p))
+                } else {
+                    item.targets.is_empty()
+                };
+                if !valid_modes || !valid_targets || item.cursor > 2 {
+                    return Err(EngineError::InvalidState {
+                        reason: "Titania's Command must retain exactly two distinct printed modes and their targets".to_string(),
+                    });
+                }
+            } else if !item.modes.is_empty() {
+                return Err(EngineError::InvalidState {
+                    reason: "nonmodal stack item carries modal selections".to_string(),
+                });
+            }
             let Some(object) = self.objects.get(&item.object) else {
                 return Err(EngineError::InvalidState {
                     reason: format!("stack references missing object {}", item.object),

@@ -8823,7 +8823,11 @@ impl Game {
                             out.push(LegalAction {
                                 action,
                                 label: format!(
-                                    "Cast Titania's Command (modes {first}+{second}){}",
+                                    "Cast Titania's Command ({}; {}){}",
+                                    crate::card::modal_mode_name(CardId::TitaniasCommand, first)
+                                        .expect("printed mode"),
+                                    crate::card::modal_mode_name(CardId::TitaniasCommand, second)
+                                        .expect("printed mode"),
                                     if targets.is_empty() {
                                         String::new()
                                     } else {

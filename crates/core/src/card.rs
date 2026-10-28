@@ -365,6 +365,21 @@ const TITANIA_SEARCH: &[Effect] = &[Effect::SearchAnyLandUpToTwo];
 const TITANIA_BEARS: &[Effect] = &[Effect::CreateBearTokens(2)];
 const TITANIA_COUNTERS: &[Effect] = &[Effect::PutTwoCountersOnEachCreatureYouControl];
 
+/// Public labels for the same printed modal indices used by the resolver.
+pub fn modal_mode_name(card: CardId, mode: u8) -> Option<&'static str> {
+    if card != CardId::TitaniasCommand {
+        return None;
+    }
+    [
+        "Exile target player's graveyard and gain life",
+        "Search for up to two land cards",
+        "Create two Bear tokens",
+        "Put two +1/+1 counters on each creature you control",
+    ]
+    .get(usize::from(mode))
+    .copied()
+}
+
 /// Printed modal spell modes, indexed by the mode action's u8.
 pub fn modal_spell_effects(card: CardId) -> Option<&'static [&'static [Effect]]> {
     match card {
