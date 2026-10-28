@@ -344,6 +344,7 @@ pub enum Effect {
     /// the same resolution counts (CR 608.2c).
     CreateEarthKingBearToken,
     SearchBasicLandsUpToTriggerAmount,
+    AttachSourceToTarget,
     DrawIfControlsBears {
         minimum: u8,
         cards: u8,
@@ -438,6 +439,7 @@ impl Effect {
             Effect::SearchBasicLandsUpToTriggerAmount => {
                 "search for up to that many basic land cards".to_string()
             }
+            Effect::AttachSourceToTarget => "attach this Equipment to the target creature".to_string(),
             Effect::PutTrampleCounterOnTarget => {
                 "put a trample counter on the target creature".to_string()
             }
@@ -768,6 +770,8 @@ pub enum CardId {
     ExuberantWolfbear,
     DroverGrizzly,
     TheEarthKing,
+    LightningGreaves,
+    SwiftfootBoots,
     AyulasInfluence,
     Bearscape,
     MotherBear,

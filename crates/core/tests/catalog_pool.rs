@@ -273,6 +273,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::SaddleSource
                 | Effect::CreateEarthKingBearToken
                 | Effect::SearchBasicLandsUpToTriggerAmount
+                | Effect::AttachSourceToTarget
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)
                 | Effect::DrawIfControlsBears { .. }

@@ -780,7 +780,8 @@ impl Game {
                 | ContinuousKind::AddCreatureSubtypes(_)
                 | ContinuousKind::SetColor(_)
                 | ContinuousKind::PowerToughnessEqualToLands
-                | ContinuousKind::Saddled => None,
+                | ContinuousKind::Saddled
+                | ContinuousKind::Equipped { .. } => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -809,6 +810,17 @@ impl Game {
                             .is_some_and(|object| object.zone == Zone::Battlefield)
                     });
                 target_present && source_present
+            })
+            .collect();
+        // Equipment attachments end when the creature stops being a creature.
+        let effects = std::mem::take(&mut self.state.effects);
+        self.state.effects = effects
+            .into_iter()
+            .filter(|effect| {
+                !matches!(effect.kind, ContinuousKind::Equipped { .. })
+                    || self.state.try_object(effect.target).is_some_and(|object| {
+                        object.zone == Zone::Battlefield && self.is_creature(object)
+                    })
             })
             .collect();
         // A shield on a permanent that left the battlefield can never apply again.
@@ -943,6 +955,41 @@ impl Game {
             })
     }
 
+    fn has_shroud(&self, id: ObjectId) -> bool {
+        self.state.effects.iter().any(|effect| {
+            matches!(effect.kind, ContinuousKind::Equipped { shroud: true, .. })
+                && effect.target == id
+                && self.state.try_object(id).is_some_and(|object| {
+                    object.zone == Zone::Battlefield && self.is_creature(object)
+                })
+        })
+    }
+
+    fn has_hexproof(&self, id: ObjectId) -> bool {
+        self.state.effects.iter().any(|effect| {
+            matches!(effect.kind, ContinuousKind::Equipped { hexproof: true, .. })
+                && effect.target == id
+                && self.state.try_object(id).is_some_and(|object| {
+                    object.zone == Zone::Battlefield && self.is_creature(object)
+                })
+        })
+    }
+
+    fn can_target_permanent(&self, id: ObjectId, caster: PlayerId) -> bool {
+        if self.has_shroud(id) {
+            return false;
+        }
+        if self.has_hexproof(id)
+            && self
+                .state
+                .try_object(id)
+                .is_some_and(|object| object.controller != caster)
+        {
+            return false;
+        }
+        true
+    }
+
     fn has_saddled(&self, id: ObjectId) -> bool {
         self.state
             .effects
@@ -951,10 +998,11 @@ impl Game {
     }
 
     fn has_haste(&self, object: &Object) -> bool {
-        self.state
-            .effects
-            .iter()
-            .any(|effect| effect.kind == ContinuousKind::GrantsHaste && effect.target == object.id)
+        self.state.effects.iter().any(|effect| {
+            (effect.kind == ContinuousKind::GrantsHaste
+                || matches!(effect.kind, ContinuousKind::Equipped { haste: true, .. }))
+                && effect.target == object.id
+        })
     }
 
     /// Start one continuous effect on the ability's own source, for a printed
@@ -2991,7 +3039,7 @@ impl Game {
         spec: TargetSpec,
         exclude: ObjectId,
     ) -> Vec<Target> {
-        match spec {
+        let targets = match spec {
             TargetSpec::None => Vec::new(),
             TargetSpec::AnyTarget => {
                 let mut out: Vec<Target> = (0..self.state.seat_count() as PlayerId)
@@ -3150,7 +3198,14 @@ impl Game {
                 })
                 .map(|s| Target::Spell(s.object))
                 .collect(),
-        }
+        };
+        targets
+            .into_iter()
+            .filter(|target| match target {
+                Target::Permanent(id) => self.can_target_permanent(*id, _caster),
+                _ => true,
+            })
+            .collect()
     }
 
     fn validate_cast(
@@ -4297,12 +4352,13 @@ impl Game {
         if activated.cost.exile_source_from_graveyard {
             self.move_to_exile(source, events);
         }
+        let attach = activated.effects.contains(&Effect::AttachSourceToTarget);
         self.state.stack.push(StackItem {
             object: source,
             card,
             controller: player,
             targets: targets.to_vec(),
-            affected: None,
+            affected: attach.then_some(source),
             source_pt_lki: None,
             search_amount: 0,
             cursor: 0,
@@ -7647,6 +7703,56 @@ impl Game {
                 });
                 self.state.turn.priority = None;
                 true
+            }
+            Effect::AttachSourceToTarget => {
+                let [Target::Permanent(target)] = item.targets.as_slice() else {
+                    return false;
+                };
+                let source_ok = item.affected == Some(item.object)
+                    && self.state.try_object(item.object).is_some_and(|object| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == controller
+                            && crate::ability::equipment_grants(object.card).is_some()
+                    });
+                let target_ok = self.state.try_object(*target).is_some_and(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && self.is_creature(object)
+                });
+                if !source_ok || !target_ok {
+                    return false;
+                }
+                let grants = crate::ability::equipment_grants(item.card).expect("equipment grants");
+                self.state.effects.retain(|effect| {
+                    !(matches!(effect.kind, ContinuousKind::Equipped { .. })
+                        && effect.source == Some(item.object))
+                });
+                let timestamp = self.next_timestamp();
+                let id = self.next_effect_id();
+                self.state.effects.push(ContinuousEffect {
+                    id,
+                    timestamp,
+                    source: Some(item.object),
+                    card: item.card,
+                    controller,
+                    layer: Layer::Ability,
+                    target: *target,
+                    kind: ContinuousKind::Equipped {
+                        haste: grants.haste,
+                        shroud: grants.shroud,
+                        hexproof: grants.hexproof,
+                    },
+                    duration: EffectDuration::WhileSourceOnBattlefield,
+                });
+                self.recompute_layers();
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "{} is attached to {} (CR 301.5)",
+                        item.card.name(),
+                        self.describe_object(*target)
+                    ),
+                });
+                false
             }
             Effect::SaddleSource => {
                 if item.affected == Some(item.object)

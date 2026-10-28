@@ -442,6 +442,55 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct EquipmentGrants {
+    pub haste: bool,
+    pub shroud: bool,
+    pub hexproof: bool,
+}
+
+pub fn equipment_grants(card: CardId) -> Option<EquipmentGrants> {
+    match card {
+        CardId::LightningGreaves => Some(EquipmentGrants {
+            haste: true,
+            shroud: true,
+            hexproof: false,
+        }),
+        CardId::SwiftfootBoots => Some(EquipmentGrants {
+            haste: true,
+            shroud: false,
+            hexproof: true,
+        }),
+        _ => None,
+    }
+}
+
+const LIGHTNING_GREAVES: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Equip {0}",
+    cost: AbilityCost {
+        mana: Some("{0}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::CreatureYouControl,
+    modes: SINGLE_MODE,
+    effects: &[Effect::AttachSourceToTarget],
+    once_per_turn: false,
+    sorcery_timing: true,
+})];
+
+const SWIFTF00T_B00TS_REAL: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Equip {1}",
+    cost: AbilityCost {
+        mana: Some("{1}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::CreatureYouControl,
+    modes: SINGLE_MODE,
+    effects: &[Effect::AttachSourceToTarget],
+    once_per_turn: false,
+    sorcery_timing: true,
+})];
+
 const THE_EARTH_KING: &[Ability] = &[
     Ability::Triggered(TriggeredAbility {
         text: "When The Earth King enters, create a 4/4 green Bear creature token.",
@@ -998,6 +1047,8 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::ExuberantWolfbear => EXUBERANT_WOLFBEAR,
         CardId::DroverGrizzly => DROVER_GRIZZLY,
         CardId::TheEarthKing => THE_EARTH_KING,
+        CardId::LightningGreaves => LIGHTNING_GREAVES,
+        CardId::SwiftfootBoots => SWIFTF00T_B00TS_REAL,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,

@@ -1384,7 +1384,7 @@ fn fog_is_a_sourced_catalog_card() {
     // slice 32's Kamahl's Summons, and to 149 with slice 33's Beorn's
     // Hospitality, and to 151 with slice 37's Druid's Familiar, and to 152 with
     // slice 38's Spider-Ham, Peter Porker.
-    assert_eq!(aperture_core::catalog::pool_size(), 153);
+    assert_eq!(aperture_core::catalog::pool_size(), 155);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

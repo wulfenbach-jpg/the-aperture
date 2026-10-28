@@ -68,6 +68,7 @@ const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
 const INSTANT: &[Kind] = &[Kind::Instant];
 const SORCERY: &[Kind] = &[Kind::Sorcery];
+const ARTIFACT: &[Kind] = &[Kind::Artifact];
 const ARTIFACT_CREATURE: &[Kind] = &[Kind::Artifact, Kind::Creature];
 const ENCHANTMENT: &[Kind] = &[Kind::Enchantment];
 
@@ -274,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 153] = [
+pub static CARDS: [CardDef; 155] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -890,6 +891,18 @@ pub static CARDS: [CardDef; 153] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        LightningGreaves, "Lightning Greaves", cost: Some("{2}"), kinds: ARTIFACT, basic: None,
+        type_line: "Artifact — Equipment", power: None, toughness: None,
+        oracle: "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
+        spell: None
+    ),
+    card!(
+        SwiftfootBoots, "Swiftfoot Boots", cost: Some("{2}"), kinds: ARTIFACT, basic: None,
+        type_line: "Artifact — Equipment", power: None, toughness: None,
+        oracle: "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+        spell: None
     ),
     card!(
         TheEarthKing, "The Earth King", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,

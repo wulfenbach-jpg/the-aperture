@@ -1,0 +1,43 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-28T09:25:24.300844+00:00",
+ "cards": [
+  {
+   "name": "Lightning Greaves",
+   "oracle_id": "ca204b66-8d0c-431a-8d34-282f7c2d17da",
+   "scryfall_id": "b61634ae-05be-4b56-8ebb-9d4ade902e42",
+   "set": "msc",
+   "collector_number": "202",
+   "layout": "normal",
+   "mana_cost": "{2}",
+   "type_line": "Artifact — Equipment",
+   "oracle_text": "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
+   "color_identity": [],
+   "keywords": [
+    "Equip"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/b61634ae-05be-4b56-8ebb-9d4ade902e42",
+   "retrieved_at": "2026-10-28T09:25:23.858317+00:00"
+  },
+  {
+   "name": "Swiftfoot Boots",
+   "oracle_id": "c8b143ad-43ec-4e0d-a440-e348daa31391",
+   "scryfall_id": "3b69b12e-ef29-455c-8939-eacf44c6c3f6",
+   "set": "trc",
+   "collector_number": "501",
+   "layout": "normal",
+   "mana_cost": "{2}",
+   "type_line": "Artifact — Equipment",
+   "oracle_text": "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+   "color_identity": [],
+   "keywords": [
+    "Equip"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/3b69b12e-ef29-455c-8939-eacf44c6c3f6",
+   "retrieved_at": "2026-10-28T09:25:24.300844+00:00"
+  }
+ ]
+}

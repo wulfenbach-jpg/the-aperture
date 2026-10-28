@@ -1,0 +1,32 @@
+{
+  "casts": {
+    "Centaur Courser": 5,
+    "Craw Wurm": 4,
+    "Grizzly Bears": 3,
+    "Lightning Greaves": 7,
+    "Swiftfoot Boots": 7
+  },
+  "combat_damage_events": 48,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice42.txt",
+  "digest": "1750a81eb981f0112472e8c6908e0942ea3942a6d6f13afc722002199158f551",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "equip_activations": 17,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3949,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "05cb383d0882cad0b572155a2a1be3c2abc8500f085b944afd82f24ca01e6dcb",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1565,
+  "turns": 36
+}

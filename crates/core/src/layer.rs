@@ -161,6 +161,12 @@ pub enum ContinuousKind {
     SetBasePowerToughness { power: i32, toughness: i32 },
     /// CR 702.171: this Mount is saddled until end of turn.
     Saddled,
+    /// Attachment relation and keywords granted by an Equipment source.
+    Equipped {
+        haste: bool,
+        shroud: bool,
+        hexproof: bool,
+    },
     /// CR 613.1d: the creature's subtype line becomes this one, replacing the
     /// printed subtypes for as long as the effect applies. Type-changing
     /// effects apply before every power/toughness layer, so a pump in the same
@@ -216,6 +222,11 @@ impl ContinuousEffect {
                 format!("haste until end of turn ({})", self.layer.rules())
             }
             ContinuousKind::Saddled => "saddled until end of turn".to_string(),
+            ContinuousKind::Equipped {
+                haste,
+                shroud,
+                hexproof,
+            } => format!("equipped (haste={haste}, shroud={shroud}, hexproof={hexproof})"),
             ContinuousKind::SetBasePowerToughness { power, toughness } => {
                 format!(
                     "base power/toughness {power}/{toughness} until end of turn ({})",
