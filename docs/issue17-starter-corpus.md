@@ -43,7 +43,7 @@ complete, so all seven remain `planned`.
 
 Exact all-name totals over the eight desired lists, including commanders and
 basic lands (coordinator evidence
-`evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
+`evidence/issue17/slice44/corpus-audit.py` + `corpus-audit.log`; earlier slice-25 audit retained as historical):
 
 * union of all referenced names: **459 unique names**;
 * **145** are in the supported 158-card catalog and **314** are missing. Slice
@@ -52,7 +52,7 @@ basic lands (coordinator evidence
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
   slices bring the current implemented total to **158**; the intervening per-slice list is
-  historical. The union is unchanged because every added name was already referenced. The
+  historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog

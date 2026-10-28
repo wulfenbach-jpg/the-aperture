@@ -207,7 +207,7 @@ pub enum Pending {
         card: ObjectId,
         can_take: bool,
     },
-    /// Incremental private basic-land search. Chosen cards remain anchored in
+    /// Incremental private typed land search. Chosen cards remain anchored in
     /// the library until Done, so no temporary hidden holding is needed.
     SearchLibrary {
         player: PlayerId,
@@ -462,11 +462,18 @@ impl Pending {
                 player,
                 remaining,
                 chosen,
+                mode,
                 ..
-            } => format!(
-                "P{player}: choose up to {remaining} basic land(s) to put onto the battlefield tapped ({} chosen)",
-                chosen.len()
-            ),
+            } => match mode {
+                LibrarySearchMode::BasicLandToBattlefield => format!(
+                    "P{player}: choose up to {remaining} basic land(s) to put onto the battlefield tapped ({} chosen)",
+                    chosen.len()
+                ),
+                LibrarySearchMode::SnowLandToHand => format!(
+                    "P{player}: choose up to {remaining} snow land card to reveal and put into your hand ({} chosen)",
+                    chosen.len()
+                ),
+            },
             Pending::TopCardChoice {
                 player, can_take, ..
             } => {
@@ -1686,7 +1693,8 @@ impl GameState {
             player,
             chosen,
             eligible,
-            ..
+            remaining,
+            mode,
         }) = &self.pending
         {
             if !self.is_live(*player) || self.resolving.is_none() {
@@ -1695,21 +1703,33 @@ impl GameState {
                         .to_string(),
                 });
             }
+            if *mode == LibrarySearchMode::SnowLandToHand
+                && chosen.len() + usize::from(*remaining) != 1
+            {
+                return Err(EngineError::InvalidState {
+                    reason: "snow land search must select at most one card, with remaining capacity accounting for its choice".to_string(),
+                });
+            }
             let library = &self.player(*player).library;
-            let is_basic_land = |id: &ObjectId| {
+            let is_search_land = |id: &ObjectId| {
                 self.try_object(*id).is_some_and(|object| {
                     object.zone == Zone::Library
                         && object.owner == *player
                         && object.card.def().is_land()
-                        && object.card.def().basic_mana.is_some()
+                        && match mode {
+                            LibrarySearchMode::BasicLandToBattlefield => {
+                                object.card.def().basic_mana.is_some()
+                            }
+                            LibrarySearchMode::SnowLandToHand => object.card.def().is_snow(),
+                        }
                 }) && library.contains(id)
             };
             let mut seen_eligible: Vec<ObjectId> = Vec::new();
             for id in eligible {
-                if !is_basic_land(id) {
+                if !is_search_land(id) {
                     return Err(EngineError::InvalidState {
                         reason: format!(
-                            "library search references {id}, which is not a basic land in that player's library"
+                            "library search references {id}, which is not a matching land in that player's library"
                         ),
                     });
                 }
@@ -1722,10 +1742,10 @@ impl GameState {
             }
             let mut seen_chosen: Vec<ObjectId> = Vec::new();
             for id in chosen {
-                if !is_basic_land(id) {
+                if !is_search_land(id) {
                     return Err(EngineError::InvalidState {
                         reason: format!(
-                            "library search references {id}, which is not a basic land in that player's library"
+                            "library search references {id}, which is not a matching land in that player's library"
                         ),
                     });
                 }

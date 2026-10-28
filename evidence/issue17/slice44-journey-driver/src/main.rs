@@ -2,8 +2,9 @@
 //! strength claim. It chooses only from masked legal actions projected for the
 //! seat that has priority: no deck substitution, no state injection, no
 //! hidden-information access. It prefers offered search picks, nonempty attacks,
-//! lands, Spirit of the Aldergard casts and other creatures, so the ETB Bear token, the
-//! attack-triggered basic-land search and normal combat are all exercised.
+//! lands, Spirit of the Aldergard casts and other creatures, so snow-land searches,
+//! public reveals and normal combat are exercised. No Bear token or attack-triggered
+//! search is claimed by this package.
 //! It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
 use aperture_core::state::Step;
@@ -39,6 +40,9 @@ fn main() {
     .unwrap();
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
+    // Public-state instrumentation only; never fed to the projected policy.
+    let mut spirit_static_samples = 0usize;
+    let mut boosted_spirit_samples = 0usize;
     while !game.state.is_over() && steps < 20000 {
         let player = game.decision_owner().expect("decision owner");
         let view = game.view_for(player, &events);
@@ -46,7 +50,11 @@ fn main() {
             view.legal
                 .iter()
                 .find(|a| matches!(a.action, Action::SearchLibraryPick { .. }))
-                .or_else(|| view.legal.iter().find(|a| matches!(a.action, Action::SearchLibraryDone)))
+                .or_else(|| {
+                    view.legal
+                        .iter()
+                        .find(|a| matches!(a.action, Action::SearchLibraryDone))
+                })
                 .map(|a| a.action.clone())
         } else {
             None
@@ -119,6 +127,28 @@ fn main() {
             .submit_action(player, action.clone())
             .expect("all actions must be accepted; no rejection fallback");
         events.extend(accepted);
+        for spirit in game.state.objects.values().filter(|o| {
+            o.zone == aperture_core::Zone::Battlefield && o.card == CardId::SpiritOfTheAldergard
+        }) {
+            let other_snow = game
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == aperture_core::Zone::Battlefield
+                        && o.controller == spirit.controller
+                        && o.id != spirit.id
+                        && o.card.def().is_snow()
+                })
+                .count() as i32;
+            // This exact package has no other P/T-changing effects.
+            assert_eq!(spirit.power(), other_snow);
+            assert_eq!(spirit.toughness(), 4);
+            spirit_static_samples += 1;
+            if other_snow > 0 {
+                boosted_spirit_samples += 1;
+            }
+        }
         replay.record(ReplayStep {
             player,
             revision,
@@ -149,12 +179,26 @@ fn main() {
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 
     let mut casts = BTreeMap::<String, usize>::new();
-    for event in &events { if let Event::Cast { card, .. } = event { *casts.entry(card.name().to_string()).or_default() += 1; } }
-    assert!(casts.get("Spirit of the Aldergard").copied().unwrap_or(0) > 0, "Spirit must be cast");
+    for event in &events {
+        if let Event::Cast { card, .. } = event {
+            *casts.entry(card.name().to_string()).or_default() += 1;
+        }
+    }
+    assert!(
+        casts.get("Spirit of the Aldergard").copied().unwrap_or(0) > 0,
+        "Spirit must be cast"
+    );
     let reveals = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("reveals Snow-Covered Forest"))).count();
     let shuffles = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("shuffles their library"))).count();
-    assert!(reveals > 0, "ETB snow search must pick and reveal a snow land");
+    assert!(
+        reveals > 0,
+        "ETB snow search must pick and reveal a snow land"
+    );
     assert!(shuffles > 0, "ETB search must shuffle");
+    assert!(
+        boosted_spirit_samples > 0,
+        "the public board must exercise the snow static"
+    );
     std::fs::write(
         out.join("demo-replay.json"),
         serde_json::to_string_pretty(&replay).unwrap(),
@@ -172,6 +216,9 @@ fn main() {
         "casts": casts,
         "snow_reveals": reveals,
         "search_shuffles": shuffles,
+        "spirit_static_samples": spirit_static_samples,
+        "boosted_spirit_samples": boosted_spirit_samples,
+        "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
         "outcome": game.state.outcome,
     });
     std::fs::write(

@@ -2512,7 +2512,7 @@ impl Game {
                     if *remaining == 0 || chosen.contains(card) || !eligible.contains(card) {
                         return Err(EngineError::illegal(
                             "search library",
-                            "that card is not an available basic land for this search",
+                            "that card is not an available matching land for this search",
                         ));
                     }
                     Ok(())
@@ -9193,8 +9193,12 @@ impl Game {
                 remaining,
                 chosen,
                 eligible,
-                ..
+                mode,
             } => {
+                let land_kind = match mode {
+                    crate::state::LibrarySearchMode::BasicLandToBattlefield => "basic land",
+                    crate::state::LibrarySearchMode::SnowLandToHand => "snow land",
+                };
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,
                     label: "Finish searching".to_string(),
@@ -9205,7 +9209,7 @@ impl Game {
                         let name = self.state.object(*id).card.def().name;
                         out.push(LegalAction {
                             action: Action::SearchLibraryPick { card: *id },
-                            label: format!("P{player}: choose {name} (basic land)"),
+                            label: format!("P{player}: choose {name} ({land_kind})"),
                             rules: vec!["701.23"],
                         });
                     }
