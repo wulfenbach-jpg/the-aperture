@@ -1,0 +1,31 @@
+{
+  "casts": {
+    "Centaur Courser": 12,
+    "Grizzly Bears": 9,
+    "Thijarian Witness": 11
+  },
+  "clue_tokens_created": 104,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice46.txt",
+  "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+  "driver": "evidence-only masked alone-attacking demonstrator; NOT product heuristic or strength evidence",
+  "exile_events": 14,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+      "winner": 1
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 8098,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "ab8deef31bbef3606a19e4bcc532bac3b4023a4358c163128bbd7c239682818c",
+  "snapshots_exact": true,
+  "solo_attacks_declared": 38,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 3073,
+  "turns": 54
+}

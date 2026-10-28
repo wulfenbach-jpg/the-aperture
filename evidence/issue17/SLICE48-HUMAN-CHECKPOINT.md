@@ -92,7 +92,7 @@ printing's single keyword entry is the ability word (so `tokens::keywords` must 
 one printed rules line is the one typed ability. `slice48_cards()` is chained into the
 "every pool card has a recorded printing" guard.
 
-### The tests discriminate (control executed)
+### The tests discriminate (two controls executed)
 
 Removing only the printed condition (making the trigger `Always`) and re-running the suite:
 
@@ -102,8 +102,21 @@ panicked at issue17_slice48.rs:174: seven lands is not eight: nothing may be loo
 test result: FAILED. 5 passed; 1 failed
 ```
 
-Log: `slice48/control-always-condition.log` (exit 101). The condition was restored immediately
-afterwards (`git diff` clean).
+Log: `slice48/control-always-condition.log` (exit 101).
+
+Replacing the targeted bottom placement with a whole-library shuffle (`rest` = the entire library
+minus the chosen card) and re-running the suite:
+
+```
+test a_look_with_no_creature_card_puts_everything_on_the_bottom ... FAILED
+test declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order ... FAILED
+test result: FAILED. 4 passed; 2 failed
+```
+
+Log: `slice48/control-whole-library-shuffle.log` (exit 101). That is the discrimination the
+"look is not a search" claim needs: the ordering tests fail precisely when the rest of the library is
+reordered. Both controls were reverted immediately (`git diff` on `engine.rs`/`ability.rs` empty
+before the green re-run), so the committed tree is the version the controls were run against.
 
 ### Whole-field discipline
 
@@ -118,26 +131,37 @@ pass.
 | --- | --- | --- |
 | `cargo test -p aperture-core --locked` | **674 passed / 0 failed** | `slice48/core-tests.log` |
 | `cargo test -p aperture-core --test issue17_slice48 --locked` | 6 passed / 0 failed | same file |
+| `cargo test --workspace --locked` | **134 test binaries / 933 passed / 0 failed / 1 ignored, exit 0** | `slice48/workspace-tests.log` |
 | `cargo fmt --all --check` | exit 0 | `slice48/fmt.log` |
 | `cargo clippy -p aperture-core --all-targets --locked -- -D warnings` | exit 0 | `slice48/clippy.log` |
+| `cargo build --workspace --release --locked` | exit 0 | `slice48/release-build.log` |
+| Four-seat 40-life journey re-executed at this head (unchanged slice-46 package) | terminal `Win{P1}`, 3073 steps, 54 turns, **digest `da4eacd5…b995bde` — byte-identical to the slice-46/47 recording**, 8098 replay events, 38 solo attacks, 104 Clues, 14 exiles, in-driver replay + fresh `SessionSave` reload equal | `slice48/demo-journey.json`, `slice48/journey-build.log` (EXIT=0), `slice48/journey-run.log` |
+| Separate release-CLI replay of that recording | `replayed digest da4eacd5 | matches recorded | events 8098`, exit 0 | `slice48/cli-replay.log` |
 | Corpus audit (own parse of `catalog.rs` + the eight lists) | catalog **161**, union **459 = 148 supported + 311 missing**, per list `[55,0,51,48,5,52,52,53]`, **1 certified** | `slice48/corpus-audit.log` (`AUDIT OK`) |
+| Whole-field manifest check | Ayula `missing_cards` 5 ↔ `missing_interactions` 5, each entry naming a still-missing name; elas count 52 ↔ 52 | `issue17_slice15_corpus` + `starter_corpus` green |
+
+The journey is the regression half of this slice, not evidence for the new card: the same package,
+seed and policy must produce the same game, and they do, byte for byte. `cargo test --workspace`
+counts every test binary, so the earlier `filtered out` binaries are included.
 
 ## What this slice does NOT claim
 
 * **No list is certified beyond the one it started with.** Ayula still has 5 missing names
   (Dúnedain Rangers, Evercoat Ursine, Rampaging Yao Guai, Ruxa Patient Professor, Ursine
   Monstrosity); the eight-list gate is still **1 of 8**. There is no 100-card certification.
-* **No journey re-execution in this commit.** The slice-46/47 demonstration driver was not re-run
-  after this change, and its 40-card package does not contain Owlbear Cub, so **the binary journey
-  is not evidence for this card** — the six engine-driven tests are, and they drive real attack
-  declarations, real priority rounds and real combat damage rather than a fixed state. Re-running
-  the journey (ideally with the Cub in the package) and the exact-head CI readback are the next
-  run's first gates.
-* **No full-workspace run.** Only `-p aperture-core` was executed at this head; `crates/ai`,
-  `crates/ui`, `crates/cli` were not rebuilt after the catalog grew, so a workspace-wide
-  `cargo test --workspace --locked` is required before any of this is called reviewed.
+* **No journey coverage for Owlbear Cub itself.** The four-seat journey was re-executed and is
+  byte-identical to slice 46/47, which proves the new card perturbed nothing — but its 40-card
+  package does not contain Owlbear Cub, so **the binary journey is not evidence for this card**.
+  The six engine-driven tests are: they drive real attack declarations, real priority rounds, a real
+  intervening-if, a real pending answer and real combat damage, and the two controls above show they
+  fail when the rules are broken. A Cub-in-the-package journey is the first thing the next run should
+  add (eight lands under the defending seat is the fixture condition it needs).
+* **Exact-head CI is bound to `890ee81`, the evidence tip, not to the code head `3e7675a`.** The
+  check runs created for `3e7675a` were **cancelled** by the later push (9 cancelled / 1 success), so
+  they are not a pass; the runs keyed to `890ee81` cover the same code plus evidence only. Read them
+  before approving; do not infer a green code head from the cancelled set.
 * **Implementation-first, disclosed.** The engine code was written before the test file; the RED
-  proof above is a post-hoc discriminating control, not a pre-implementation failing test, so this
+  proofs above are post-hoc discriminating controls, not pre-implementation failing tests, so this
   increment must not be described as TDD.
 * Legend rule (CR 704.5j), the CR 903.9a commander-return over-trigger, the persistence limitation
   above and every earlier known limit are unchanged.
@@ -145,10 +169,10 @@ pass.
 
 ## Next actions (in order, for the next run on the same card/branch/PR46)
 
-1. `cargo test --workspace --locked`, `cargo build --workspace --release --locked`, and the
-   exact-head CI readback for `3e7675a` (locally **not yet claimed**).
-2. Re-run the four-seat 40-life journey with Owlbear Cub in the package so the new card is covered
-   by a real game, with a separate CLI replay.
+1. Read the exact-head CI for `890ee81` (or push a fresh evidence-only tip and wait for its own
+   checks) — no CI pass is claimed here yet.
+2. Add Owlbear Cub to a 40-card journey package with eight lands under the defending seat and
+   re-run the four-seat journey with a separate CLI replay, so the card has binary-game coverage.
 3. Then the remaining five Ayula names per `slice47/NEXT-CARDS-BRIEF.md` order — Ruxa, Rampaging Yao
    Guai, Ursine Monstrosity, Evercoat Ursine, Dúnedain Rangers — with the same whole-field
    discipline, then the exact 100-card four-seat certification with separate replays.
