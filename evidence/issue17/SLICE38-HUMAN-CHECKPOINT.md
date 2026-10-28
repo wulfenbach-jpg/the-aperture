@@ -6,7 +6,7 @@ increments 1–37 were **not** re-audited. This slice closes review 299's two
 record-integrity items and continues the supervisor's "Ayula to zero" package
 with the next sourced name.
 
-* **Code head of record:** `CODE_HEAD` (implementation + tests + fixture + docs +
+* **Code head of record:** 6bb0740 (implementation + tests + fixture + docs +
   the two pool-size guards + the manifest drop).
 * **Evidence tip:** `EVIDENCE_TIP` (journey driver and its artifacts, CI receipt,
   this checkpoint).
@@ -91,9 +91,9 @@ Printed text:
   test).
 * `catalog_pool` **5/5**, `issue17_slice15_corpus` **1/1**, `issue13_commander_combat`
   **43/43** after the two pool-size guards moved 151 → 152 and Ayula 14 → 13.
-* Whole workspace: `WORKSPACE_SUMMARY`.
+* Whole workspace: **122 suites / 867 passed / 0 failed**, exit 0 (evidence/issue17/slice38-workspace-tests.log).
 * `cargo fmt --all --check` and `cargo clippy --workspace --all-targets --locked
-  -- -D warnings`: `GATES_SUMMARY`.
+  -- -D warnings`: both exit 0 with no warnings (`evidence/issue17/slice38/gates.log`).
 
 ### Four-seat journey (delivery bar)
 
