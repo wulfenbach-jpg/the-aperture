@@ -156,6 +156,7 @@ fn projection_carries_the_decision_identity_and_legal_actions() {
         targets: Vec::new(),
         affected: None,
         source_pt_lki: None,
+        search_amount: 0,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,

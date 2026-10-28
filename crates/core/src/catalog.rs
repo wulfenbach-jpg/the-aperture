@@ -272,7 +272,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 152] = [
+pub static CARDS: [CardDef; 153] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -890,6 +890,12 @@ pub static CARDS: [CardDef; 152] = [
         oracle: "", spell: None
     ),
     card!(
+        TheEarthKing, "The Earth King", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Human Noble Ally", power: Some(2), toughness: Some(2),
+        oracle: "When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+        spell: None
+    ),
+    card!(
         DroverGrizzly, "Drover Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear Mount", power: Some(4), toughness: Some(2),
         oracle: "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
@@ -1229,7 +1235,7 @@ pub fn all() -> &'static [CardDef] {
 
 /// Token definitions. Deliberately separate from `CARDS`: tokens are engine
 /// objects, never importable or analyzer-supported cards.
-pub static TOKENS: [CardDef; 6] = [
+pub static TOKENS: [CardDef; 7] = [
     // Issue 17 slice 38: the Food token (CR 111.10, 205.3). An *artifact* token
     // with no power or toughness and one real activated ability; created only by
     // Spider-Ham, Peter Porker, never importable and never a catalog card.
@@ -1344,6 +1350,25 @@ pub static TOKENS: [CardDef; 6] = [
         islandwalk: false,
         power: Some(2),
         toughness: Some(2),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::EarthKingBearToken,
+        name: "Bear Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Bear",
+        colors: &[ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(4),
+        toughness: Some(4),
         oracle: "",
         spell: None,
     },

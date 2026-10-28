@@ -427,6 +427,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 spell_mana_value: 0,
                 affected: None,
                 source_pt_lki: None,
+                search_amount: 0,
             });
         }),
         ("revealed", |state, id| state.revealed.push(id)),
@@ -441,6 +442,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 targets: Vec::new(),
                 affected: None,
                 source_pt_lki: None,
+                search_amount: 0,
                 cursor: 0,
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
@@ -455,6 +457,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 targets: vec![Target::Permanent(id)],
                 affected: None,
                 source_pt_lki: None,
+                search_amount: 0,
                 cursor: 0,
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
@@ -473,6 +476,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                     spell_mana_value: 0,
                     affected: None,
                     source_pt_lki: None,
+                    search_amount: 0,
                 },
             });
         }),

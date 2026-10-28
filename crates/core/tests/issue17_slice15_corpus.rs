@@ -137,6 +137,6 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // registers Words of Wilding, which closes one more, and slice 37 registers
     // Druid's Familiar, which closes one more again, and slice 38 registers
     // Spider-Ham, Peter Porker, which closes one more again.
-    assert_eq!(missing.len(), 13, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 152, "the compiled pool");
+    assert_eq!(missing.len(), 12, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 153, "the compiled pool");
 }

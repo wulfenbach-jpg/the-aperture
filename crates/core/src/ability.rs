@@ -442,6 +442,23 @@ const CALLER_OF_THE_CLAW: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::CreateBearTokensForEachDeathThisTurn],
 })];
 
+const THE_EARTH_KING: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "When The Earth King enters, create a 4/4 green Bear creature token.",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::CreateEarthKingBearToken],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+        event: TriggerEvent::Attacks,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::SearchBasicLandsUpToTriggerAmount],
+    }),
+];
+
 const DROVER_GRIZZLY: &[Ability] = &[
     Ability::Triggered(TriggeredAbility {
         text: "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.",
@@ -980,6 +997,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::SurrakAndGoreclaw => SURRAK_AND_GORECLAW,
         CardId::ExuberantWolfbear => EXUBERANT_WOLFBEAR,
         CardId::DroverGrizzly => DROVER_GRIZZLY,
+        CardId::TheEarthKing => THE_EARTH_KING,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,

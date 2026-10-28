@@ -207,6 +207,14 @@ pub enum Pending {
         card: ObjectId,
         can_take: bool,
     },
+    /// Incremental private basic-land search. Chosen cards remain anchored in
+    /// the library until Done, so no temporary hidden holding is needed.
+    SearchLibrary {
+        player: PlayerId,
+        remaining: u8,
+        chosen: Vec<ObjectId>,
+        eligible: Vec<ObjectId>,
+    },
     /// Kamahl's Summons: every live seat, in APNAP order from the active player
     /// (CR 101.4, 608.2f), may reveal any number of creature cards from its own
     /// hand (CR 701.9a). `revealed` collects each public answer; the Bear tokens
@@ -249,6 +257,9 @@ pub struct TriggerRef {
     /// used by a queued/stacked source-left P/T-setting ability.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_pt_lki: Option<(i32, i32)>,
+    /// Count captured by The Earth King's attack trigger.
+    #[serde(default, skip_serializing_if = "is_zero_u8")]
+    pub search_amount: u8,
 }
 
 /// What one stack item is: a spell card, or an ability whose source never
@@ -345,7 +356,8 @@ impl Pending {
             Pending::TriggerTarget { player, .. }
             | Pending::TriggerChoice { player, .. }
             | Pending::TriggerMode { player, .. }
-            | Pending::TopCardChoice { player, .. } => *player,
+            | Pending::TopCardChoice { player, .. }
+            | Pending::SearchLibrary { player, .. } => *player,
         }
     }
 
@@ -444,6 +456,15 @@ impl Pending {
             Pending::TriggerMode { player, .. } => {
                 format!("P{player}: choose Ayula's counter or fight mode (CR 603.3c, 700.2b)")
             }
+            Pending::SearchLibrary {
+                player,
+                remaining,
+                chosen,
+                ..
+            } => format!(
+                "P{player}: choose up to {remaining} basic land(s) to put onto the battlefield tapped ({} chosen)",
+                chosen.len()
+            ),
             Pending::TopCardChoice {
                 player, can_take, ..
             } => {
@@ -646,6 +667,8 @@ pub struct StackItem {
     /// Effective source P/T captured before its battlefield departure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_pt_lki: Option<(i32, i32)>,
+    #[serde(default, skip_serializing_if = "is_zero_u8")]
+    pub search_amount: u8,
 }
 
 /// `skip_serializing_if` helper for the slice-22 mana-value fields: a zero
@@ -1030,6 +1053,9 @@ impl GameState {
                     trigger, queued, ..
                 } => trigger_ref(trigger) || queued.iter().any(trigger_ref),
                 Pending::TopCardChoice { card, .. } => *card == id,
+                Pending::SearchLibrary {
+                    chosen, eligible, ..
+                } => chosen.contains(&id) || eligible.contains(&id),
                 Pending::Mulligan { .. }
                 | Pending::BottomCards { .. }
                 | Pending::DeclareAttackers { .. }

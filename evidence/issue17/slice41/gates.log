@@ -1,0 +1,77 @@
+
+running 4 tests
+....
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+slice41 exit=0
+
+running 15 tests
+...............
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 5 tests
+.....
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 43 tests
+...........................................
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.99s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+......
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+focused exit=0
+fmt exit=0
+error[E0004]: non-exhaustive patterns: `Some(&aperture_core::Pending::SearchLibrary { .. })` not covered
+   --> crates\core\tests\rules_conformance.rs:917:11
+    |
+917 |     match pending {
+    |           ^^^^^^^ pattern `Some(&aperture_core::Pending::SearchLibrary { .. })` not covered
+    |
+note: `std::option::Option<&aperture_core::Pending>` defined here
+   --> /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\option.rs:597:0
+   ::: /rustc/8bab26f4f68e0e26f0bb7960be334d5b520ea452/library\core\src\option.rs:605:4
+    |
+    = note: not covered
+    = note: the matched value is of type `std::option::Option<&aperture_core::Pending>`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+934 ~         Some(Pending::TopCardChoice { .. }) => "TopCardChoice",
+935 ~         Some(&aperture_core::Pending::SearchLibrary { .. }) => todo!(),
+    |
+
+For more information about this error, try `rustc --explain E0004`.
+error: could not compile `aperture-core` (test "rules_conformance") due to 1 previous error
+error[E0004]: non-exhaustive patterns: `&aperture_core::Pending::SearchLibrary { .. }` not covered
+   --> crates\ai\tests\common.rs:231:19
+    |
+231 |             match pending {
+    |                   ^^^^^^^ pattern `&aperture_core::Pending::SearchLibrary { .. }` not covered
+    |
+note: `aperture_core::Pending` defined here
+   --> crates\core\src\state.rs:106:1
+    |
+106 | pub enum Pending {
+    | ^^^^^^^^^^^^^^^^
+...
+212 |     SearchLibrary {
+    |     ------------- not covered
+    = note: the matched value is of type `&aperture_core::Pending`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+    |
+284 ~                     .expect("sample action offered"),
+285 ~                 &aperture_core::Pending::SearchLibrary { .. } => todo!(),
+    |
+
+error: could not compile `aperture-ai` (test "decider_usage") due to 1 previous error
+clippy exit=101
+release exit=0

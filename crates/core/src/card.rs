@@ -342,6 +342,8 @@ pub enum Effect {
     /// The Bear count is the *effective* subtype of the permanents the effect's
     /// controller controls at resolution, so a Bear made a moment earlier in
     /// the same resolution counts (CR 608.2c).
+    CreateEarthKingBearToken,
+    SearchBasicLandsUpToTriggerAmount,
     DrawIfControlsBears {
         minimum: u8,
         cards: u8,
@@ -432,6 +434,10 @@ impl Effect {
                 "creatures you control gain trample until end of turn".to_string()
             }
             Effect::SaddleSource => "this Mount becomes saddled".to_string(),
+            Effect::CreateEarthKingBearToken => "create a 4/4 green Bear token".to_string(),
+            Effect::SearchBasicLandsUpToTriggerAmount => {
+                "search for up to that many basic land cards".to_string()
+            }
             Effect::PutTrampleCounterOnTarget => {
                 "put a trample counter on the target creature".to_string()
             }
@@ -761,6 +767,7 @@ pub enum CardId {
     SurrakAndGoreclaw,
     ExuberantWolfbear,
     DroverGrizzly,
+    TheEarthKing,
     AyulasInfluence,
     Bearscape,
     MotherBear,
@@ -793,6 +800,7 @@ pub enum CardId {
     BeastToken,
     PestToken,
     BearToken,
+    EarthKingBearToken,
     BrightstoneRitual,
     ManaGeyser,
     RiteOfFlame,
@@ -900,6 +908,7 @@ pub const TOKEN_CARDS: &[CardId] = &[
     CardId::PestToken,
     CardId::BearToken,
     CardId::FoodToken,
+    CardId::EarthKingBearToken,
 ];
 
 impl CardId {

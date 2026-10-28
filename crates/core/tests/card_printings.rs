@@ -46,6 +46,7 @@ const SLICE21_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE24_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice24-sourced.json");
 const SLICE25_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice25-sourced.json");
 const SLICE30_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice30-sourced.json");
+const SLICE41_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice41-sourced.json");
 /// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
 const SLICE26_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice26-sourced.json");
 const SLICE22_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice22-sourced.json");
@@ -420,6 +421,11 @@ fn slice32_new_cards() -> Vec<Value> {
         .into_iter()
         .filter(|card| sourced_text(card, "name") == "Kamahl's Summons")
         .collect()
+}
+
+fn slice41_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE41_SOURCED).expect("sourced slice41 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
 }
 
 fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
@@ -913,6 +919,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice28_cards())
         .chain(slice29_cards())
         .chain(slice30_cards())
+        .chain(slice41_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())

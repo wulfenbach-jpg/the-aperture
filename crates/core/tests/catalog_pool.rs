@@ -271,6 +271,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::SetBasePowerToughnessFromSource
                 | Effect::GrantTrampleToControlledCreatures
                 | Effect::SaddleSource
+                | Effect::CreateEarthKingBearToken
+                | Effect::SearchBasicLandsUpToTriggerAmount
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)
                 | Effect::DrawIfControlsBears { .. }

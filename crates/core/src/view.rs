@@ -611,7 +611,8 @@ impl Game {
         let pending_for_viewer = self.state.pending.as_ref().filter(|pending| match pending {
             crate::state::Pending::ApnapSacrifice { player, .. }
             | crate::state::Pending::ApnapReveal { player, .. }
-            | crate::state::Pending::TopCardChoice { player, .. } => *player == viewer,
+            | crate::state::Pending::TopCardChoice { player, .. }
+            | crate::state::Pending::SearchLibrary { player, .. } => *player == viewer,
             _ => true,
         });
         let rendered: Vec<String> = if log.len() > LOG_LINES {
@@ -765,7 +766,8 @@ impl Game {
                 crate::state::Pending::TriggerTarget { .. } => PendingKind::TriggerTarget,
                 crate::state::Pending::TriggerChoice { .. }
                 | crate::state::Pending::TriggerMode { .. }
-                | crate::state::Pending::TopCardChoice { .. } => PendingKind::TriggerChoice,
+                | crate::state::Pending::TopCardChoice { .. }
+                | crate::state::Pending::SearchLibrary { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })

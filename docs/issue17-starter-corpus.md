@@ -700,3 +700,6 @@ the printed list in singular form, and no pool card can change a creature's subt
 one except the layer 4 forms already supported; nothing in the pool grants or removes hexproof,
 shroud or protection, so none of those interacts with the token. This slice certifies no starter
 list: Ayula has 13 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 41: The Earth King
+The Earth King (`{3}{G}`, 2/2 Legendary Human Noble Ally) is sourced in `fixtures/starter-corpus/slice41-sourced.json` (TLA 172, immutable a8d5dca6, retrieved 2026-10-28T07:02:29Z). Its ETB creates a distinct 4/4 green Bear token (CR 111.4 name, nonimportable). Its attack trigger fires once when one or more of its controller's current 4+ power creatures attack and opens an incremental private basic-land search with a captured count; any number up to that count may be chosen, chosen lands enter tapped through the canonical land-entry path, and the library shuffles even for zero choices. Search choices are owner-only in projections. Legend rule is not implemented; the card follows the pool's existing ordinary-legend admission convention.

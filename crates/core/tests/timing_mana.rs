@@ -334,6 +334,7 @@ fn spell_target_that_is_not_on_the_stack_is_rejected() {
         targets: Vec::new(),
         affected: None,
         source_pt_lki: None,
+        search_amount: 0,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,

@@ -101,6 +101,11 @@ pub enum Action {
     /// no card cost are still activated through [`Action::ActivateAbility`],
     /// which keeps every pre-existing replay and test literal valid.
     /// CR 702.171: pay a Mount's saddle cost by tapping named other creatures.
+    /// Choose one basic land for the active library search, or finish.
+    SearchLibraryPick {
+        card: ObjectId,
+    },
+    SearchLibraryDone,
     SaddleMount {
         source: ObjectId,
         creatures: Vec<ObjectId>,
@@ -159,6 +164,8 @@ impl Action {
             Action::ActivateAbility { .. } => "activate ability",
             Action::ActivateCostedAbility { .. } => "activate ability",
             Action::SaddleMount { .. } => "saddle mount",
+            Action::SearchLibraryPick { .. } => "choose a basic land",
+            Action::SearchLibraryDone => "finish searching",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::DeclineTriggerTarget => "decline trigger target",
             Action::AnswerTriggerChoice { .. } => "trigger choice",

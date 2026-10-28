@@ -260,7 +260,8 @@ pub fn run_until(
                 Pending::TriggerTarget { .. }
                 | Pending::TriggerChoice { .. }
                 | Pending::TriggerMode { .. }
-                | Pending::TopCardChoice { .. } => game
+                | Pending::TopCardChoice { .. }
+                | Pending::SearchLibrary { .. } => game
                     .legal_actions()
                     .into_iter()
                     .find(|legal| {

@@ -2424,6 +2424,33 @@ impl Game {
             Action::ActivateColorManaAbility { source, color } => {
                 self.validate_color_mana_ability(player, *source, *color)
             }
+            Action::SearchLibraryPick { card } => match &state.pending {
+                Some(Pending::SearchLibrary {
+                    player: p,
+                    remaining,
+                    chosen,
+                    eligible,
+                }) if *p == player => {
+                    if *remaining == 0 || chosen.contains(card) || !eligible.contains(card) {
+                        return Err(EngineError::illegal(
+                            "search library",
+                            "that card is not an available basic land for this search",
+                        ));
+                    }
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "search library",
+                    "no library search is waiting for this player",
+                )),
+            },
+            Action::SearchLibraryDone => match &state.pending {
+                Some(Pending::SearchLibrary { player: p, .. }) if *p == player => Ok(()),
+                _ => Err(EngineError::illegal(
+                    "search library",
+                    "no library search is waiting for this player",
+                )),
+            },
             Action::SaddleMount { source, creatures } => {
                 self.validate_saddle_mount(player, *source, creatures)
             }
@@ -3487,6 +3514,17 @@ impl Game {
             Action::AnswerCommanderDraw { to_command_zone } => {
                 self.apply_commander_draw(player, *to_command_zone, events)
             }
+            Action::SearchLibraryPick { card } => {
+                if let Some(Pending::SearchLibrary {
+                    remaining, chosen, ..
+                }) = &mut self.state.pending
+                {
+                    chosen.push(*card);
+                    *remaining -= 1;
+                }
+                self.state.turn.priority = None;
+            }
+            Action::SearchLibraryDone => self.apply_search_library_done(player, events),
             Action::SaddleMount { source, creatures } => {
                 self.apply_saddle_mount(player, *source, creatures, events)
             }
@@ -3828,6 +3866,33 @@ impl Game {
         Ok(())
     }
 
+    fn apply_search_library_done(&mut self, player: PlayerId, events: &mut Vec<Event>) {
+        let Some(Pending::SearchLibrary { chosen, .. }) = self.state.pending.take() else {
+            return;
+        };
+        for id in chosen {
+            self.enter_battlefield(id, player, events);
+            if let Some(object) = self.state.objects.get_mut(&id) {
+                object.tapped = true;
+            }
+            if let Some(object) = self.state.try_object(id) {
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "P{player} puts {} onto the battlefield tapped (CR 701.23)",
+                        object.card.def().name
+                    ),
+                });
+            }
+        }
+        self.state
+            .rng
+            .shuffle(&mut self.state.players[player as usize].library);
+        events.push(Event::StateBasedAction {
+            description: format!("P{player} shuffles their library after searching (CR 701.23)"),
+        });
+        self.state.turn.priority = None;
+    }
+
     fn apply_saddle_mount(
         &mut self,
         player: PlayerId,
@@ -3870,6 +3935,7 @@ impl Game {
             targets: Vec::new(),
             affected: Some(source),
             source_pt_lki: None,
+            search_amount: 0,
             cursor: 0,
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
@@ -4228,6 +4294,7 @@ impl Game {
             targets: targets.to_vec(),
             affected: None,
             source_pt_lki: None,
+            search_amount: 0,
             cursor: 0,
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
@@ -4291,6 +4358,7 @@ impl Game {
                 spell_mana_value: 0,
                 affected: None,
                 source_pt_lki: None,
+                search_amount: 0,
             });
             return;
         }
@@ -4306,6 +4374,7 @@ impl Game {
                 spell_mana_value: 0,
                 affected: None,
                 source_pt_lki: None,
+                search_amount: 0,
             });
         }
     }
@@ -4547,6 +4616,7 @@ impl Game {
             targets,
             affected: trigger.affected,
             source_pt_lki: trigger.source_pt_lki,
+            search_amount: trigger.search_amount,
             cursor: 0,
             entry: StackEntry::Triggered {
                 ability: trigger.ability,
@@ -4766,6 +4836,7 @@ impl Game {
             targets: targets.to_vec(),
             affected: None,
             source_pt_lki: None,
+            search_amount: 0,
             cursor: 0,
             entry: StackEntry::Spell,
             trigger_answered: false,
@@ -4879,6 +4950,9 @@ impl Game {
                     continue;
                 };
                 let (card, controller) = (object.card, object.controller);
+                if card == CardId::TheEarthKing {
+                    continue;
+                }
                 if ability::triggers_on(card, TriggerEvent::Attacks)
                     .next()
                     .is_none()
@@ -4896,6 +4970,41 @@ impl Game {
                     continue;
                 }
                 self.queue_triggers(*id, card, controller, TriggerEvent::Attacks);
+            }
+            let qualifying = attackers
+                .iter()
+                .filter_map(|id| self.state.try_object(*id))
+                .filter(|object| {
+                    object.controller == player && self.is_creature(object) && object.power() >= 4
+                })
+                .count() as u8;
+            if qualifying > 0 {
+                let kings: Vec<(ObjectId, PlayerId)> = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == player
+                            && object.card == CardId::TheEarthKing
+                    })
+                    .map(|object| (object.id, object.controller))
+                    .collect();
+                for (source, controller) in kings {
+                    let seq = self.state.next_trigger_seq;
+                    self.state.next_trigger_seq += 1;
+                    self.state.trigger_queue.push(TriggerRef {
+                        source,
+                        card: CardId::TheEarthKing,
+                        controller,
+                        ability: 1,
+                        seq,
+                        spell_mana_value: 0,
+                        affected: None,
+                        source_pt_lki: None,
+                        search_amount: qualifying,
+                    });
+                }
             }
             self.put_triggers(events);
         }
@@ -6323,6 +6432,7 @@ impl Game {
                     spell_mana_value: item.spell_mana_value,
                     affected: item.affected,
                     source_pt_lki: item.source_pt_lki,
+                    search_amount: item.search_amount,
                 },
             });
             self.state.resolving = Some(item.object);
@@ -7496,6 +7606,38 @@ impl Game {
                 }
                 false
             }
+            Effect::CreateEarthKingBearToken => {
+                self.create_tokens(controller, CardId::EarthKingBearToken, 1, events);
+                false
+            }
+            Effect::SearchBasicLandsUpToTriggerAmount => {
+                let amount = item.search_amount;
+                if amount == 0 {
+                    return false;
+                }
+                let eligible: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .library
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state.try_object(*id).is_some_and(|object| {
+                            object.zone == Zone::Library
+                                && object.card.def().is_land()
+                                && object.card.def().basic_mana.is_some()
+                        })
+                    })
+                    .collect();
+                self.state.pending = Some(Pending::SearchLibrary {
+                    player: controller,
+                    remaining: amount,
+                    chosen: Vec::new(),
+                    eligible,
+                });
+                self.state.turn.priority = None;
+                true
+            }
             Effect::SaddleSource => {
                 if item.affected == Some(item.object)
                     && self
@@ -7908,6 +8050,7 @@ impl Game {
                         spell_mana_value: 0,
                         affected: Some(entering),
                         source_pt_lki: None,
+                        search_amount: 0,
                     });
                 }
                 continue;
@@ -8816,6 +8959,29 @@ impl Game {
                 }
                 out
             }
+            Pending::SearchLibrary {
+                player,
+                remaining,
+                chosen,
+                eligible,
+            } => {
+                let mut out = vec![LegalAction {
+                    action: Action::SearchLibraryDone,
+                    label: "Finish searching".to_string(),
+                    rules: vec!["701.23"],
+                }];
+                if *remaining > 0 {
+                    for id in eligible.iter().filter(|id| !chosen.contains(id)) {
+                        let name = self.state.object(*id).card.def().name;
+                        out.push(LegalAction {
+                            action: Action::SearchLibraryPick { card: *id },
+                            label: format!("P{player}: choose {name} (basic land)"),
+                            rules: vec!["701.23"],
+                        });
+                    }
+                }
+                out
+            }
             Pending::TopCardChoice { can_take, .. } => {
                 let mut out = Vec::new();
                 if *can_take {
@@ -9432,6 +9598,7 @@ mod slice17_cleanup_history_tests {
                     spell_mana_value: 0,
                     affected: None,
                     source_pt_lki: None,
+                    search_amount: 0,
                 },
                 TriggerRef {
                     source: warden,
@@ -9442,6 +9609,7 @@ mod slice17_cleanup_history_tests {
                     spell_mana_value: 0,
                     affected: None,
                     source_pt_lki: None,
+                    search_amount: 0,
                 },
             ],
             &mut events,

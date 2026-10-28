@@ -1,0 +1,27 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-28T07:02:29.879302+00:00",
+ "cards": [
+  {
+   "name": "The Earth King",
+   "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+   "scryfall_id": "a8d5dca6-381a-4361-b265-27de8d04335c",
+   "set": "tla",
+   "collector_number": "172",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Legendary Creature — Human Noble Ally",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/a8d5dca6-381a-4361-b265-27de8d04335c",
+   "retrieved_at": "2026-10-28T07:02:29.879302+00:00"
+  }
+ ]
+}

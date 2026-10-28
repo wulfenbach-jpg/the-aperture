@@ -932,5 +932,6 @@ fn pending_name(pending: Option<&Pending>) -> &'static str {
         Some(Pending::TriggerChoice { .. }) => "TriggerChoice",
         Some(Pending::TriggerMode { .. }) => "TriggerMode",
         Some(Pending::TopCardChoice { .. }) => "TopCardChoice",
+        Some(Pending::SearchLibrary { .. }) => "SearchLibrary",
     }
 }

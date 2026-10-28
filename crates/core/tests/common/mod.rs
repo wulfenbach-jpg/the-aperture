@@ -273,6 +273,7 @@ pub fn auto_answer(game: &Game) -> Action {
             Pending::CommanderReplacement { .. } => Action::AnswerCommanderReplacement {
                 to_command_zone: true,
             },
+            Pending::SearchLibrary { .. } => Action::SearchLibraryDone,
             Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
                 to_command_zone: true,
             },
