@@ -1,0 +1,82 @@
+{
+ "slice": 52,
+ "issue": 17,
+ "base": "6abd820bf570c5469d9e29379af5c3a4c253b368",
+ "head": "adeff72905f59c441567735e74708635c97c5fdc",
+ "branch": "aperture/issue-17",
+ "pr": 46,
+ "pr_url": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+ "increment": "review-335 record corrections R335-1 (search gate receipt from the real command) and R335-2 (crate-wide sweep statement), the NEXT-CARDS describe_target attribution fix, one docs known-gap paragraph, and a vetted Ruxa prerequisite file. No product code, no card enabled, no certificate.",
+ "record_items_closed": [
+  "R335-1: the true command `cargo test -p aperture-ai --test search --locked` now has its own receipt (9 passed / 0 failed, 240.47s, EXIT=0) at the slice-51 head in slice52/search-gate-slice51-head.log, and again in slice52/gates.log; slice51/gates.log:105-115 is labelled the zero-match `--lib search` attempt; the corrected script is slice52/run-gates.sh and slice51's script/log are preserved unmodified",
+  "R335-2: the slice-51 checkpoint section 1 R333-2 now records the crate-wide sweep (grep for 'declaration record', declared_attackers, declared_blockers across crates/, docs/, README.md), the accurate mentions that survive, and that no stale instance remains",
+  "NEXT-CARDS.md clause 3: describe_target is engine.rs:9022, not view.rs (review 335 non-blocking note)"
+ ],
+ "non_blocking_recorded": [
+  "docs/issue17-starter-corpus.md now states that no UI surface renders combat lists yet (ui/app.rs reads only legal_blockers), so PlayerView::unpaired_blockers is a data-layer projection today"
+ ],
+ "ruxa": {
+  "status": "not implemented, not enabled; no engine surface written",
+  "why": "all three printed clauses need engine surface that does not exist at this head - there is no graveyard-to-hand effect in crates/core/src (only move_to_hand at engine.rs:1971), no no-abilities anthem (only OtherBearsYouControlGet at ability.rs:1275 computed at engine.rs:678), and no combat-damage choice surface (blocked branch engine.rs:8865-8901 assigns lethal-first with no decision). A clause shipped alone would be unreachable code with no card to exercise it, and the card may only leave missing_cards when all three work.",
+  "brief_vetted": "evidence/issue17/slice52/RUXA-PREREQ-VERIFICATION.md",
+  "anchor_corrections": [
+   "describe_target: engine.rs:9022 (brief said view.rs)",
+   "AI pending mapping: ai/src/search.rs:345-365 (brief said ~760-800); the enum is view.rs:40",
+   "commander replacement prediction: state.rs:2026-2050 with answer path state.rs:1108 (brief said ~2078)",
+   "deal_combat_damage: engine.rs:8832, entered from engine.rs:5955 (brief said ~8827)"
+  ]
+ },
+ "local_gates": {
+  "receipt": "evidence/issue17/slice52/gates.log",
+  "script": "evidence/issue17/slice52/run-gates.sh",
+  "head_recorded_in_receipt": "adeff72905f59c441567735e74708635c97c5fdc",
+  "fmt_exit": 0,
+  "focused_suites": 6,
+  "focused_passed": 43,
+  "focused_failed": 0,
+  "focused_breakdown": {
+   "issue17_slice46": 14,
+   "issue17_slice48": 6,
+   "issue17_slice49": 8,
+   "starter_corpus": 8,
+   "catalog_pool": 5,
+   "issue17_slice15_corpus": 2
+  },
+  "separate_search_suite": {
+   "command": "cargo test -p aperture-ai --test search --locked",
+   "passed": 9,
+   "failed": 0,
+   "receipt_slice51_head": "evidence/issue17/slice52/search-gate-slice51-head.log",
+   "receipt_slice52_head": "evidence/issue17/slice52/gates.log",
+   "zero_match_attempt": "cargo test -p aperture-ai --lib search --locked ran 0 tests (EXIT=0) and is logged as ai_search_lib_zero_match_attempt, explicitly not the gate"
+  },
+  "corpus_audit": "AUDIT OK 161 catalog / 459 union / 148 supported / 311 missing, per-list [55,0,51,48,5,52,52,53], Ayula 5, 1 certified",
+  "corpus_audit_receipt": "evidence/issue17/slice52/gates.log section corpus_audit (script evidence/issue17/slice50/corpus-audit.py)",
+  "workspace_clippy_deny_warnings_exit": 0,
+  "locked_release_build_exit": 0,
+  "workspace": "cargo test --workspace --all-targets --locked: 133 result lines / 947 passed / 0 failed / 1 ignored, exit 0"
+ },
+ "journey": {
+  "driver": "evidence/issue17/slice50-witness-driver",
+  "receipt": "evidence/issue17/slice52/journey.log",
+  "kind": "committed four-seat 40-life witness package; evidence-only, not a 100-card certificate, not AI strength"
+ },
+ "corpus": {
+  "catalog": 161,
+  "union": 459,
+  "supported": 148,
+  "missing": 311,
+  "per_list_missing": [55, 0, 51, 48, 5, 52, 52, 53],
+  "ayula_missing": 5,
+  "certified_lists": 1,
+  "desired_lists": 8
+ },
+ "full_issue17_accepted": false,
+ "no_cards_enabled": true,
+ "no_engine_or_ai_policy_change": true,
+ "no_merge_master_push_closure_or_unlock": true,
+ "children_inspected": ["t_26a7a4ff", "t_3c2fe51a"],
+ "children_are": "evaluation dependency wait and unassigned soak backlog, not review children; left gated",
+ "actual_implementer_profile": "default",
+ "next_action": "Independent practical delta review 6abd820..adeff72 (record corrections only). Then the same writer/history/card/branch/PR46 builds Ruxa, Patient Professor per slice52/RUXA-PREREQ-VERIFICATION.md as one card (all three clauses plus validate+real-load refusals), whole-field missing_cards AND missing_interactions rewrite, then the exact 100-card four-seat certification with separate replays, reported as 2 of 8 only if it passes."
+}

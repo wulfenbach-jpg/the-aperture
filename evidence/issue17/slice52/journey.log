@@ -1,0 +1,57 @@
+head=adeff72905f59c441567735e74708635c97c5fdc
+=== build+run driver (release, --locked) ===
+    Finished `release` profile [optimized] target(s) in 0.78s
+     Running `target\release\issue17-slice46-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 12,
+    "Grizzly Bears": 9,
+    "Thijarian Witness": 11
+  },
+  "clue_tokens_created": 104,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice46.txt",
+  "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+  "driver": "evidence-only masked alone-attacking demonstrator; NOT product heuristic or strength evidence",
+  "exile_events": 14,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+      "winner": 1
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 8098,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "ab8deef31bbef3606a19e4bcc532bac3b4023a4358c163128bbd7c239682818c",
+  "snapshots_exact": true,
+  "solo_attacks_declared": 38,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 3073,
+  "turns": 54
+}
+DRIVER_EXIT=0
+CONTENT_IDENTICAL_AFTER_NEWLINE_NORMALISATION demo-journey.json
+CONTENT_IDENTICAL_AFTER_NEWLINE_NORMALISATION demo-replay.json
+CONTENT_IDENTICAL_AFTER_NEWLINE_NORMALISATION demo-save.json
+  "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+  "exile_events": 14,
+  "outcome": {
+  "replay_digest_matches": true,
+  "replay_events": 8098,
+  "steps": 3073,
+=== separate CLI replay ===
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 12.19s
+     Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice50/witness/demo-save.json`
+save evidence/issue17/slice50/witness/demo-save.json — 4 seat(s): P0 'package-slice46' vs P1 'package-slice46' vs P2 'package-slice46' vs P3 'package-slice46'
+  stored digest da4eacd5363f | recomputed da4eacd5363f | matches
+  turn 54 step upkeep step | pending None | sandbox modified: false
+  ai: human P0; AI seats P1 = deterministic baseline heuristic; autoplay off
+  replay of 3073 action(s) -> digest da4eacd5363f | events 8098 | reproduces the save
+SEPARATE_REPLAY_EXIT=0
