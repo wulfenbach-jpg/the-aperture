@@ -1,0 +1,76 @@
+{
+  "head": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+  "total": 10,
+  "checks": [
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "0c8f4e5026d88d603662281583fe98d028a6b5a9",
+      "app": "github-actions"
+    }
+  ]
+}

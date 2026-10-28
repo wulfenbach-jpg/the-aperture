@@ -99,9 +99,13 @@ Ordered by the shared primitive each needs, from the printed text in that captur
 
 ## 4. Exact-head CI
 
-Recorded in `evidence/issue17/slice40/exact-head-ci-<sha>.json` with the capture
-stdout beside it. Nothing is claimed about a commit whose check runs are not all
-completed SUCCESS and keyed to that commit.
+**Code head of record: `0c8f4e5`** (the commit carrying the predicate refactor, the
+record corrections and this evidence). `evidence/issue17/slice33/capture-ci.py`
+bounded every `gh` call at 120 s and reported `TOTAL=10 ALL_SUCCESS=True
+ALL_KEYED=True PENDING=0`: **10/10 check runs completed SUCCESS, every `head_sha`
+keyed to `0c8f4e5026d88d603662281583fe98d028a6b5a9`**
+(`evidence/issue17/slice40/exact-head-ci-0c8f4e5.json` + `.log`). The commit that
+adds that receipt is evidence-only and makes no CI claim of its own.
 
 ## Disclosed
 
