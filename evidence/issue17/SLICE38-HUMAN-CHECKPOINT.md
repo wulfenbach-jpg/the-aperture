@@ -154,8 +154,8 @@ Monstrosity.
   no pool card changes a creature's subtypes into a listed one except the layer 4
   forms already supported (Circle of the Moon Druid), which the tests cover.
 * The first mutation attempt in this run did not compile (it replaced the loop
-  header with an empty iterator, so the body's  dereference failed) and was
-  discarded; the recorded mutation adds  to the recipient filter, which
+  header with an empty iterator, so the body's `*id` dereference failed) and was
+  discarded; the recorded mutation adds `&& false` to the recipient filter, which
   compiles and fails exactly the two behavioural anthem tests.
 * The journey's anthem assertion skips creatures whose printed base is replaced
   by a layer 7b static (Circle of the Moon Druid's 4/2 Bear Form), because
