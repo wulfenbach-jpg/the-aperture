@@ -1,0 +1,16 @@
+== evidence/issue17/slice41/demo-replay.json
+replay seed 2323 — 4 seat(s), 1780 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest d646deedfac9 | matches recorded | events 4576
+exit=0
+== evidence/issue17/slice38/driver-replay.json
+replay seed 3838 — 4 seat(s), 1450 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 726fe20e72e1 | matches recorded | events 3861
+exit=0
+== evidence/issue17/slice35/driver-replay.json
+replay seed 3535 — 4 seat(s), 2048 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 1c13d8fdcdce | matches recorded | events 5347
+exit=0
+== evidence/issue17/slice37/driver-replay.json
+replay seed 3737 — 4 seat(s), 1758 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest c4c5985cd048 | matches recorded | events 4530
+exit=0

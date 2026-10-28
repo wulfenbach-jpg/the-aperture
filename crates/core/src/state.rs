@@ -1673,6 +1673,52 @@ impl GameState {
                 });
             }
         }
+        if let Some(Pending::SearchLibrary {
+            player,
+            chosen,
+            eligible,
+            ..
+        }) = &self.pending
+        {
+            if !self.is_live(*player) || self.resolving.is_none() {
+                return Err(EngineError::InvalidState {
+                    reason: "library search must belong to a live seat inside a resolution"
+                        .to_string(),
+                });
+            }
+            let library = &self.player(*player).library;
+            let is_basic_land = |id: &ObjectId| {
+                self.try_object(*id).is_some_and(|object| {
+                    object.zone == Zone::Library
+                        && object.owner == *player
+                        && object.card.def().is_land()
+                        && object.card.def().basic_mana.is_some()
+                }) && library.contains(id)
+            };
+            let mut seen: Vec<ObjectId> = Vec::new();
+            for id in eligible.iter().chain(chosen.iter()) {
+                if !is_basic_land(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!(
+                            "library search references {id}, which is not a basic land in that player's library"
+                        ),
+                    });
+                }
+                if chosen.contains(id) {
+                    if seen.contains(id) {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("library search chose {id} twice"),
+                        });
+                    }
+                    seen.push(*id);
+                }
+            }
+            if chosen.iter().any(|id| !eligible.contains(id)) {
+                return Err(EngineError::InvalidState {
+                    reason: "library search chose a card that was never eligible".to_string(),
+                });
+            }
+        }
         if let Some(Pending::CommanderReturn {
             order,
             cursor,

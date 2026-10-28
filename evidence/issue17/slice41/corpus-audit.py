@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Native independent corpus audit (slice 29: Stuffed Bear).
+"""Native independent corpus audit (slice 41: The Earth King).
 
 Reads the real sources of truth -- catalog.rs for supported names and the
 desired deck files -- and recomputes the eight-list union. Fails loudly on any
@@ -19,7 +19,7 @@ names = set()
 for macro in ("card", "card_artifact", "card_defender", "card_flash", "card_green", "card_islandwalk", "card_trample"):
     for m in re.finditer(rf"\b{macro}!\(\s*\w+,\s*\"([^\"]+)\"", CATALOG):
         names.add(m.group(1).lower())
-assert len(names) == 153, f"catalog parse found {len(names)} names, expected 152"
+assert len(names) == 153, f"catalog parse found {len(names)} names, expected 153"
 
 union = set()
 report = []

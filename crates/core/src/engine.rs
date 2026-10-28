@@ -2045,6 +2045,11 @@ impl Game {
         if is_creature {
             self.queue_another_creature_enters(new_id);
         }
+        if card.def().is_land() {
+            // A searched/returned land entering is not a land play, but it is
+            // the same LandEnters event for every existing landfall watcher.
+            self.queue_land_enters(controller);
+        }
         // CR 613.1d/613.4b: a *printed* layer 4 line or 7b base setter starts
         // applying the moment its permanent arrives (Circle of the Moon Druid's
         // Bear Form during its controller's turn). Unlike an additive layer 7c
@@ -3615,8 +3620,15 @@ impl Game {
             object: card,
             card: card_id,
         });
-        // CR 603.6a: landfall triggers fire when the land is already on the
-        // battlefield, only for permanents that player controls.
+        self.queue_land_enters(player);
+        self.put_triggers(events);
+        events.push(Event::Priority { player });
+    }
+
+    /// CR 603.6a: observe actual land entry regardless of whether a land was
+    /// played or put onto the battlefield by an effect. Staging remains with
+    /// the caller so searches finish their entire instruction before priority.
+    fn queue_land_enters(&mut self, player: PlayerId) {
         let sources: Vec<(ObjectId, CardId)> = self
             .state
             .objects
@@ -3632,8 +3644,6 @@ impl Game {
         for (source, source_card) in sources {
             self.queue_triggers(source, source_card, player, TriggerEvent::LandEnters);
         }
-        self.put_triggers(events);
-        events.push(Event::Priority { player });
     }
 
     fn dynamic_mana_colors(&self, player: PlayerId, source: ObjectId) -> Vec<ManaColor> {

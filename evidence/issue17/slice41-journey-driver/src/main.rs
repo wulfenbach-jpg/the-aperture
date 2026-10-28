@@ -1,9 +1,10 @@
 //! Evidence-only demonstration driver for slice 41, NOT a product AI and NOT a
 //! strength claim. It chooses only from masked legal actions projected for the
 //! seat that has priority: no deck substitution, no state injection, no
-//! hidden-information access. It prefers offered single-helper saddle activations,
-//! The Earth King casts and nonempty attacks to exercise saddle and the printed
-//! attack trigger granting trample. It is a 40-card package, not a starter certificate.
+//! hidden-information access. It prefers offered search picks, nonempty attacks,
+//! lands, The Earth King casts and other creatures, so the ETB Bear token, the
+//! attack-triggered basic-land search and normal combat are all exercised.
+//! It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
 use aperture_core::state::Step;
 use aperture_core::view::PendingKind;

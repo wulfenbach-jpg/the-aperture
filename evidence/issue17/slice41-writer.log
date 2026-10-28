@@ -1,0 +1,33 @@
+Working...
+**Slice 41 committed: `a7de079`.** Product diff clean; no push/merge/closure. Full #17 remains **1 of 8 certified**.
+
+### Implemented
+**The Earth King** `{3}{G}` 2/2 Legendary Human Noble Ally, TLA 172, freshly fetched immutable printing.
+- ETB creates a distinct `EarthKingBearToken`, 4/4 green Bear, CR 111.4 name `Bear Token`, registered in `TOKEN_CARDS`, never importable.
+- Attack trigger fires **once** for one or more live 4+ power attackers and captures their count; opponents’ creatures do not count.
+- Incremental, owner-private basic-land search:
+  - optional zero up to captured count;
+  - only basic lands in the controller’s library are eligible;
+  - chosen lands enter tapped through the canonical land-entry path;
+  - library shuffles through engine RNG after Done, even with no picks;
+  - choices are serialized and hidden from opposing projections.
+- Search choices remain practical with many basics via pick/Done actions, not a combinatorial subset cap.
+- Legend rule is not implemented; the card follows the pool’s existing ordinary-legend admission convention.
+
+### RED retained
+`issue17_slice41` failed `earth_king_is_sourced_and_supported` before registration.
+
+### Verified
+- `issue17_slice41`: **4 passed** — real offered cast/ETB token, one attack search for two qualifiers with basic-only/tapped/private results, mid-search save/reload parity.
+- card_printings 15, catalog_pool 5, slice15 corpus 2, commander 43, replay_digest 6.
+- fmt, workspace clippy `-D warnings`, release CLI: exit 0 (`slice41/gates.log`).
+- Fresh audit: **153 catalog / 141 supported / 318 missing**, Ayula 12.
+
+### Journey
+Evidence-only masked demonstrator, not product AI: exact 4 seats/40 life, seed 2323, terminal P3, 1780 decisions, 40 turns; Earth King cast 11, 11 Bear tokens, 18 tapped land entries, 14 shuffles; replay matched and save round-tripped. Digest `d646deed…f127`; snapshot SHA256 `d7805f3f…0f58`.
+
+### Remaining gaps
+- No dedicated source-left attack-search test.
+- No explicit zero-pick search control (implementation shuffles and offers Done).
+- Legend rule unimplemented; full #17 and 100-card certification remain open.
+- No full workspace matrix rerun; exact-head CI owns it.

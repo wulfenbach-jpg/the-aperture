@@ -1,5 +1,7 @@
-//! The supported card pool. One hundred and twenty-six real cards; every printed ability is
-//! implemented. Card text is the short functional Oracle wording (vanilla
+//! The supported card pool; every printed ability is implemented. The current
+//! cardinality is asserted by `crates/core/tests/catalog_pool.rs` and stated in
+//! `README.md`, so this header does not carry a number that drifts every slice.
+//! Card text is the short functional Oracle wording (vanilla
 //! creatures print no text at all).
 //!
 //! The issue-17 starter package adds 47 sourced vanilla green/white creatures
