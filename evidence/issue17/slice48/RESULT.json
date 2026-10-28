@@ -89,9 +89,10 @@
       "exit": 0
     },
     "ci": {
-      "head": "9761e111f1620a3c1bae54c915ffd7172eda1dc4",
-      "receipt": "evidence/issue17/slice48/exact-head-ci-9761e11.json",
-      "note": "Checks created for the code head 3e7675a were CANCELLED by later pushes (9 cancelled / 1 success) and are not a pass; the run to read is the one keyed to the final evidence tip. Both carry the same code."
+      "head": "6db8c2c03343db8b8b6b5b465ad3a6c60cdc394a",
+      "receipt": "evidence/issue17/slice48/exact-head-ci-6db8c2c.json",
+      "result": "10/10 completed SUCCESS, every head_sha keyed to 6db8c2c, 0 failed, 0 pending",
+      "note": "Checks created for the code head 3e7675a were CANCELLED by later pushes (9 cancelled / 1 success) and are not a pass; 6db8c2c carries the same code plus evidence only. The receipt commit that follows has no CI pass claim of its own."
     }
   },
   "disclosures": [

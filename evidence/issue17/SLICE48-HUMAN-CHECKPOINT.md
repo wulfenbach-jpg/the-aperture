@@ -157,10 +157,11 @@ and reload from their own save into an equal state.
   a 100-card certificate, not product AI and not a strength claim; it exists to show the printed
   trigger firing in a real four-seat game. Its "8 or more lands" hits came from lands accumulated in
   normal play, not from a staged board.
-* **Exact-head CI is bound to `890ee81`, the evidence tip, not to the code head `3e7675a`.** The
-  check runs created for `3e7675a` were **cancelled** by the later push (9 cancelled / 1 success), so
-  they are not a pass; the runs keyed to `890ee81` cover the same code plus evidence only. Read them
-  before approving; do not infer a green code head from the cancelled set.
+* **Exact-head CI readback: 10/10 completed SUCCESS, every `head_sha` keyed to `6db8c2c`** (board and
+  roadmap ×2, rust macos/ubuntu/windows ×2, windows package ×2), 0 failed, 0 pending — receipt
+  `slice48/exact-head-ci-6db8c2c.json`. The earlier runs created for the code head `3e7675a` were
+  **cancelled** by later pushes (9 cancelled / 1 success) and are not a pass; `6db8c2c` carries the
+  same code plus evidence only. The receipt commit that follows has no CI pass claim of its own.
 * **Implementation-first, disclosed.** The engine code was written before the test file; the RED
   proofs above are post-hoc discriminating controls, not pre-implementation failing tests, so this
   increment must not be described as TDD.
@@ -170,8 +171,9 @@ and reload from their own save into an equal state.
 
 ## Next actions (in order, for the next run on the same card/branch/PR46)
 
-1. Read the exact-head CI for `890ee81` (or push a fresh evidence-only tip and wait for its own
-   checks) — no CI pass is claimed here yet.
+1. Independent practical delta review of `1b1c542..` (this branch tip) — the record corrections, the
+   version decision, the Cub's look/attacking semantics and the two controls, including the CI
+   readback above. Approved increments 1-47 are preserved and need no re-audit.
 2. Then the remaining five Ayula names per `slice47/NEXT-CARDS-BRIEF.md` order — Ruxa, Rampaging Yao
    Guai, Ursine Monstrosity, Evercoat Ursine, Dúnedain Rangers — with the same whole-field
    discipline, then the exact 100-card four-seat certification with separate replays.
