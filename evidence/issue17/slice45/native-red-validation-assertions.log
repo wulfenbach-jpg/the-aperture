@@ -1,0 +1,44 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running tests\issue17_slice45_native.rs (target\debug\deps\issue17_slice45_native-dca8c409be5a9cbc.exe)
+
+running 5 tests
+test bears_created_by_earlier_mode_receive_counters_later_in_printed_order ... ok
+test search_pending_filter_cannot_be_swapped_on_save ... FAILED
+test any_land_pending_is_bound_to_selected_search_instruction ... FAILED
+test duplicate_and_unknown_saved_modes_are_refused ... FAILED
+test search_capacity_is_exactly_two_in_validation_and_load ... FAILED
+
+failures:
+
+---- search_pending_filter_cannot_be_swapped_on_save stdout ----
+
+thread 'search_pending_filter_cannot_be_swapped_on_save' (23152) panicked at crates\core\tests\issue17_slice45_native.rs:28:5:
+forged modal search must fail state validation
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- any_land_pending_is_bound_to_selected_search_instruction stdout ----
+
+thread 'any_land_pending_is_bound_to_selected_search_instruction' (24072) panicked at crates\core\tests\issue17_slice45_native.rs:28:5:
+forged modal search must fail state validation
+
+---- duplicate_and_unknown_saved_modes_are_refused stdout ----
+
+thread 'duplicate_and_unknown_saved_modes_are_refused' (47080) panicked at crates\core\tests\issue17_slice45_native.rs:28:5:
+forged modal search must fail state validation
+
+---- search_capacity_is_exactly_two_in_validation_and_load stdout ----
+
+thread 'search_capacity_is_exactly_two_in_validation_and_load' (33244) panicked at crates\core\tests\issue17_slice45_native.rs:28:5:
+forged modal search must fail state validation
+
+
+failures:
+    any_land_pending_is_bound_to_selected_search_instruction
+    duplicate_and_unknown_saved_modes_are_refused
+    search_capacity_is_exactly_two_in_validation_and_load
+    search_pending_filter_cannot_be_swapped_on_save
+
+test result: FAILED. 1 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice45_native`

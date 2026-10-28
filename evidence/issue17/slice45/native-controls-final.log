@@ -1,0 +1,15 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running tests\issue17_slice45_native.rs (target\debug\deps\issue17_slice45_native-dca8c409be5a9cbc.exe)
+
+running 7 tests
+test bears_created_by_earlier_mode_receive_counters_later_in_printed_order ... ok
+test searched_lands_enter_tapped_and_fire_landfall_once_each ... ok
+test private_candidates_do_not_change_opponent_view_and_zero_pick_still_shuffles ... ok
+test any_land_pending_is_bound_to_selected_search_instruction ... ok
+test search_pending_filter_cannot_be_swapped_on_save ... ok
+test search_capacity_is_exactly_two_in_validation_and_load ... ok
+test duplicate_and_unknown_saved_modes_are_refused ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

@@ -1,0 +1,21 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0599]: no method named `object_mut` found for struct `aperture_core::GameState` in the current scope
+  --> crates\core\tests\issue17_slice45_native.rs:57:13
+   |
+57 |     g.state.object_mut(old).counters.add(aperture_core::counters::CounterKind::PlusOnePlusOne,1);
+   |             ^^^^^^^^^^
+   |
+help: there is a method `object` with a similar name
+   |
+57 -     g.state.object_mut(old).counters.add(aperture_core::counters::CounterKind::PlusOnePlusOne,1);
+57 +     g.state.object(old).counters.add(aperture_core::counters::CounterKind::PlusOnePlusOne,1);
+   |
+
+error[E0599]: no method named `power_toughness` found for struct `aperture_core::Game` in the current scope
+  --> crates\core\tests\issue17_slice45_native.rs:64:117
+   |
+64 | ...nd::PlusOnePlusOne),2);assert_eq!(g.power_toughness(b.id),(4,4));}
+   |                                        ^^^^^^^^^^^^^^^ method not found in `aperture_core::Game`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `aperture-core` (test "issue17_slice45_native") due to 2 previous errors
