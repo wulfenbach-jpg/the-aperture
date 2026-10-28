@@ -112,7 +112,10 @@ fresh `SessionSave` JSON reloads to an equal state. Receipt: `slice43/journey-dr
 artifacts `slice43/demo-{journey,replay,save}.json`.
 
 Gates: `cargo fmt --all --check` 0; `cargo clippy --workspace --all-targets --locked -- -D warnings` 0;
-`cargo test --workspace --locked` in `slice43/native-verify.log`.
+`cargo test --workspace --locked` **898 passed / 0 failed / 1 ignored across 126 suite runs, exit 0**
+(`slice43/workspace-full.log` and `slice43/workspace-summary.log`). Two assertions moved with the pool
+size: `issue13_commander_combat`'s `pool_size()` and `issue17_slice15_corpus`'s compiled-pool count both
+went 155 → 156, and the latter's Ayula gap went 10 → 9.
 
 ## 6. What this slice does not do
 

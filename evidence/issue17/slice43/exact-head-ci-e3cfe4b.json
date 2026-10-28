@@ -1,0 +1,105 @@
+{
+  "schema": "aperture.exact-head-ci.v1",
+  "repo": "wulfenbach-jpg/the-aperture",
+  "head": "e3cfe4b7985742d471c9a216e65a1074b90161a3",
+  "read_at": "2026-10-28T11:41:50.359741+00:00",
+  "total": 10,
+  "all_completed": true,
+  "all_success": true,
+  "all_keyed_to_head": true,
+  "worst_conclusion_by_name": {
+    "rust (ubuntu-latest)": [
+      "success",
+      "success"
+    ],
+    "windows package": [
+      "success",
+      "success"
+    ],
+    "rust (macos-latest)": [
+      "success",
+      "success"
+    ],
+    "board and roadmap": [
+      "success",
+      "success"
+    ],
+    "rust (windows-latest)": [
+      "success",
+      "success"
+    ]
+  },
+  "runs": [
+    {
+      "id": 122789236723,
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122789222580,
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122789173822,
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122789172964,
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122789171641,
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122783841931,
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122783841866,
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122783841861,
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122783841853,
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    },
+    {
+      "id": 122783841540,
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "e3cfe4b7985742d471c9a216e65a1074b90161a3"
+    }
+  ],
+  "note": "The first attempt of one windows-latest job failed in the MSVC linker with 'A device which does not exist was specified. (os error 433)' before any test executed; the failed job was re-run and every check on this head is now a completed success. No test or compile failure ever appeared in the logs."
+}
