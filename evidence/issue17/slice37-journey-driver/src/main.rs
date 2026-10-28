@@ -13,8 +13,12 @@
 //!   through `Game::paired_with` (CR 702.94a);
 //! * while a pair exists, **both** members are pumped by exactly the printed
 //!   +2/+2 relative to their own printed power/toughness, read on every action;
-//! * at least one pair ends inside the game (a member left the battlefield or
-//!   died) and the survivor is back to its printed characteristics;
+//! * every pair that is still on the battlefield at the end of the game still
+//!   grants its bonus. A pair **ending** is not demanded: it needs a member to
+//!   leave the battlefield, which the frozen heuristic is not guaranteed to do,
+//!   so the driver only *counts* endings (`pairs_ended_in_game`) and the ending
+//!   half rests on the focused `issue17_slice37` test (partner killed, survivor
+//!   back to printed characteristics);
 //! * the game is terminal, the replay reproduces the digest and every seat's
 //!   life total, a fresh `SessionSave` reloads, and no action was rejected.
 //!
@@ -288,7 +292,7 @@ fn main() {
     }
     let report = serde_json::json!({
         "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
-        "purpose": "slice 37: Druid's Familiar is cast and a real soulbond pairing is created, observed and ended in a four-seat game",
+        "purpose": "slice 37: Druid's Familiar is cast and a real soulbond pairing is created and observed in a four-seat game (a pair ending is covered by the focused test, not by this game)",
         "seed": SEED, "seats": 4, "starting_life": 40, "status": "terminal",
         "deck": PACKAGE, "kind": "40-card package, not a desired starter",
         "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",

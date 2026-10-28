@@ -8,6 +8,10 @@ increments 1–36 were **not** re-audited; this slice answers review 298's
 * **Code head of record:** `d5ccc15` (implementation + tests + fixture + docs +
   the two pool-size guards).
 * **Evidence tip:** `108df74` (the journey driver and its artifacts).
+* **Record-only tip:** `07ad00e` commits the 10/10 exact-head CI receipt
+  (`evidence/issue17/slice37/exact-head-ci-07ad00e.json`, all ten check runs
+  `completed/success`, every `head_sha` = `07ad00e`); it carries no code, test or
+  fixture byte.
 * PR stays OPEN, **draft**, `BEHIND` master. No merge, master push, issue
   closure, downstream unlock, new team or global config change.
 * **Original issue-17 contract remains unfinished**: 1 of 8 desired 100-card

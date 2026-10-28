@@ -24,7 +24,7 @@
   "pair_invariant_checks": 574,
   "pairings_created": 2,
   "pairs_ended_in_game": 0,
-  "purpose": "slice 37: Druid's Familiar is cast and a real soulbond pairing is created, observed and ended in a four-seat game",
+  "purpose": "slice 37: Druid's Familiar is cast and a real soulbond pairing is created and observed in a four-seat game (a pair ending is covered by the focused test, not by this game)",
   "replay_digest_matches": true,
   "replay_events": 4530,
   "seats": 4,
