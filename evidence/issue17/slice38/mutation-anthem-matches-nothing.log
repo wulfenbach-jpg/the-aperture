@@ -1,0 +1,39 @@
+   Compiling aperture-core v0.1.0 (C:\AI\r300\1793150546\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.05s
+     Running tests\issue17_slice38.rs (target\debug\deps\issue17_slice38-9b9c752a333479d7.exe)
+
+running 6 tests
+test spider_ham_is_sourced_and_supported ... ok
+test the_food_ability_is_refused_without_its_printed_cost ... ok
+test entering_creates_one_food_token_that_is_an_artifact_and_not_a_creature ... ok
+test activating_the_food_gains_three_life_and_sacrifices_the_token ... ok
+test the_anthem_pumps_listed_subtypes_only_and_never_the_source ... FAILED
+test the_anthem_reads_the_effective_subtype_and_stacks_in_layer_7c ... FAILED
+
+failures:
+
+---- the_anthem_pumps_listed_subtypes_only_and_never_the_source stdout ----
+
+thread 'the_anthem_pumps_listed_subtypes_only_and_never_the_source' (32488) panicked at crates\core\tests\issue17_slice38.rs:319:5:
+assertion `left == right` failed: a Bear is in the printed list: 2/2 + 1/+1
+  left: (2, 2)
+ right: (3, 3)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_anthem_reads_the_effective_subtype_and_stacks_in_layer_7c stdout ----
+
+thread 'the_anthem_reads_the_effective_subtype_and_stacks_in_layer_7c' (36352) panicked at crates\core\tests\issue17_slice38.rs:354:5:
+assertion `left == right` failed: Bear Form 4/2 plus the anthem's +1/+1
+  left: (4, 2)
+ right: (5, 3)
+
+
+failures:
+    the_anthem_pumps_listed_subtypes_only_and_never_the_source
+    the_anthem_reads_the_effective_subtype_and_stacks_in_layer_7c
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice38`
+mutated_test_exit=101
+f2ed375af3df78313357300432b3fdfb2c27014d475ebbdfb185be823ab978da *C:/AI/r300/1793150546/crates/core/src/engine.rs

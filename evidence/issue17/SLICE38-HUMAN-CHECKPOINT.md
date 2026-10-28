@@ -8,8 +8,14 @@ with the next sourced name.
 
 * **Code head of record:** 6bb0740 (implementation + tests + fixture + docs +
   the two pool-size guards + the manifest drop).
-* **Evidence tip:** `EVIDENCE_TIP` (journey driver and its artifacts, CI receipt,
+* **Evidence tip:** 1cd966d (journey driver and its artifacts, CI receipt,
   this checkpoint).
+* **Status of this increment: UNVERIFIED.** No independent review exists for this
+  head yet. `evidence/issue17/review300/REVIEW300.md` was authored inside this
+  same run and is therefore a **self-check, not a review**; it claims no verdict,
+  and slice 38 must not be described as independently reviewed until a separate
+  review run adjudicates `1cd966d` from `git archive` and posts its own verdict.
+  The corpus counts here are *implementation* counts and stand on their own.
 * PR stays OPEN, **draft**, `BEHIND` master. No merge, master push, issue
   closure, downstream unlock, new team or global config change.
 * **Original issue-17 contract remains unfinished**: 1 of 8 desired 100-card
@@ -153,5 +159,6 @@ Monstrosity.
   that card's exact 5/3 and 8/6 values instead.
 * Nothing in the pool prints hexproof, shroud or protection, so no targeting
   interaction with the token is claimed.
-* Three tracked slice-23 evidence files still carry pre-existing uncommitted
-  appends from earlier runs; untouched here.
+* This worktree had **no** pre-existing tracked edits when this slice started
+  (`git diff` empty after the review-299 record commit); the only tracked change
+  outside the slice's own files is the manifest row regeneration.
