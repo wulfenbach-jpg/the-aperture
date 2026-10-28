@@ -617,3 +617,85 @@ fn midsearch_after_one_pick_save_reload_continues_identically() {
     assert_eq!(loaded.state, g.state);
     assert_eq!(loaded.digest(), g.digest());
 }
+
+#[test]
+fn forged_search_pending_duplicates_and_subset_are_rejected_by_validate_and_save() {
+    let mut g = search_fixture(
+        &[
+            CardId::Forest,
+            CardId::Island,
+            CardId::Forest,
+            CardId::Forest,
+        ],
+        false,
+    );
+    let first = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::SearchLibraryPick { .. }))
+        .unwrap()
+        .action;
+    submit_ok(&mut g, P0, first);
+    g.state
+        .validate()
+        .expect("legal post-pick control validates");
+    let decks = vec![
+        DeckList::parse_practice("A", "40 Forest\n").unwrap(),
+        DeckList::parse_practice("B", "40 Forest\n").unwrap(),
+    ];
+    let replay = Replay::new(
+        g.state.seed,
+        g.state.first_player,
+        decks,
+        AiSettings::default(),
+    )
+    .unwrap();
+
+    let mut duplicate_chosen = g.clone();
+    if let Some(Pending::SearchLibrary { chosen, .. }) = &mut duplicate_chosen.state.pending {
+        let id = chosen[0];
+        chosen.push(id);
+    }
+    assert!(
+        duplicate_chosen.state.validate().is_err(),
+        "duplicate chosen entry"
+    );
+    let save = SessionSave::capture(&duplicate_chosen, replay.clone(), Vec::new(), true);
+    assert!(
+        SessionSave::from_json(&save.to_json()).is_err(),
+        "forged chosen save refused"
+    );
+
+    let mut duplicate_eligible = g.clone();
+    if let Some(Pending::SearchLibrary { eligible, .. }) = &mut duplicate_eligible.state.pending {
+        let id = eligible[0];
+        eligible.push(id);
+    }
+    assert!(
+        duplicate_eligible.state.validate().is_err(),
+        "duplicate eligible entry"
+    );
+    let save = SessionSave::capture(&duplicate_eligible, replay.clone(), Vec::new(), true);
+    assert!(
+        SessionSave::from_json(&save.to_json()).is_err(),
+        "forged eligible save refused"
+    );
+
+    let mut non_subset = g.clone();
+    if let Some(Pending::SearchLibrary {
+        chosen, eligible, ..
+    }) = &mut non_subset.state.pending
+    {
+        let id = chosen[0];
+        eligible.retain(|x| *x != id);
+    }
+    assert!(
+        non_subset.state.validate().is_err(),
+        "chosen outside eligible"
+    );
+    let save = SessionSave::capture(&non_subset, replay, Vec::new(), true);
+    assert!(
+        SessionSave::from_json(&save.to_json()).is_err(),
+        "forged subset save refused"
+    );
+}
