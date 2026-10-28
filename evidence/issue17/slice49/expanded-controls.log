@@ -1,0 +1,43 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0061]: this method takes 1 argument but 2 arguments were supplied
+    --> crates\core\tests\issue17_slice49.rs:84:15
+     |
+  84 |     assert!(g.submit(P0, Action::SearchLibraryPick { card: before[0] }).is_err());
+     |               ^^^^^^ --  --------------------------------------------- unexpected argument #2 of type `aperture_core::Action`
+     |                      |
+     |                      expected `&Submission`, found `u8`
+     |
+note: method defined here
+    --> crates\core\src\engine.rs:2500:12
+     |
+2500 |     pub fn submit(&mut self, sub: &Submission) -> Result<Vec<Event>, EngineError> {
+     |            ^^^^^^
+help: remove the extra argument
+     |
+  84 -     assert!(g.submit(P0, Action::SearchLibraryPick { card: before[0] }).is_err());
+  84 +     assert!(g.submit(/* &Submission */).is_err());
+     |
+
+error[E0599]: no method named `digest` found for struct `PlayerView` in the current scope
+   --> crates\core\tests\issue17_slice49.rs:142:40
+    |
+142 |     assert_eq!(mixed.view_for(P1, &[]).digest(), ineligible.view_for(P1, &[]).digest());
+    |                -----                   ^^^^^^-- help: remove the arguments
+    |                |                       |
+    |                |                       field, not a method
+    |                method `digest` is available on `&aperture_core::Game`
+
+error[E0599]: no method named `digest` found for struct `PlayerView` in the current scope
+   --> crates\core\tests\issue17_slice49.rs:142:79
+    |
+142 |     assert_eq!(mixed.view_for(P1, &[]).digest(), ineligible.view_for(P1, &[]).digest());
+    |                                                  ----------                   ^^^^^^-- help: remove the arguments
+    |                                                  |                            |
+    |                                                  |                            field, not a method
+    |                                                  method `digest` is available on `&aperture_core::Game`
+
+Some errors have detailed explanations: E0061, E0599.
+For more information about an error, try `rustc --explain E0061`.
+error: could not compile `aperture-core` (test "issue17_slice49") due to 3 previous errors
+
+EXIT=101

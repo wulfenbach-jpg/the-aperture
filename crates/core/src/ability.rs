@@ -1179,10 +1179,6 @@ pub enum TriggerCondition {
     /// read from printed color (CR 202.2a, `CardDef::is_black`), and a token is
     /// excluded by CR 111.6 even though it can have a color.
     DefendingPlayerControlsNoBlackNontokenPermanent,
-    /// "attacks a player who controls eight or more lands" (Owlbear Cub). Counts
-    /// the defending seat's lands on the battlefield as the clause is evaluated —
-    /// once when attackers are declared (CR 603.4) and again as it resolves.
-    DefendingPlayerControlsEightOrMoreLands,
 }
 
 /// The intervening-if clause of `card`'s trigger, if it prints one.
@@ -1190,7 +1186,6 @@ pub fn trigger_condition(card: CardId) -> TriggerCondition {
     match card {
         CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
         CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
-        CardId::OwlbearCub => TriggerCondition::DefendingPlayerControlsEightOrMoreLands,
         _ => TriggerCondition::Always,
     }
 }
@@ -1506,9 +1501,9 @@ const THIJARIAN_WITNESS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::ExileDeadCreatureAndInvestigate],
 })];
 
-/// Owlbear Cub (CLB 246). One printed attack trigger whose intervening-if is a
-/// property of the *defending* player ("a player who controls eight or more
-/// lands"), followed by a private look at the top eight and an optional put onto
+/// Owlbear Cub (CLB 246). The attack event must be against a player controlling
+/// eight or more lands; this is not an intervening-if (CR 603.4) and is not
+/// rechecked at resolution. It is followed by a private look and optional put onto
 /// the battlefield tapped and attacking. The trigger itself is not optional — the
 /// "may" belongs to the put, which is the pending choice's decline path — so the
 /// typed ability is not `optional`.

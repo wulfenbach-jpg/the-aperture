@@ -1,0 +1,18 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running tests\issue17_slice49.rs (target\debug\deps\issue17_slice49-9b081ebe60690af6.exe)
+
+running 8 tests
+test review329_attack_restriction_is_not_intervening_if ... ok
+test review329_owner_must_see_every_looked_card ... ok
+test entire_opponent_view_and_digest_ignore_hidden_eligibility_and_pick ... ok
+test review329_no_creatures_still_requires_private_look ... ok
+test review329_post_pick_valid_continuation_control ... ok
+test review329_look_pending_cannot_replace_titania_search_on_load ... ok
+test short_and_empty_library_looks_round_trip_before_acknowledgement ... ok
+test forged_look_states_are_refused_by_validation_and_real_load ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+EXIT=0

@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (160 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (161 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -301,12 +301,12 @@ loss and full combat-damage prevention for one turn (Fog); partial prevention,
 redirection and replacement effects are not implemented, so the profile is not
 Commander gameplay. The offline deck-profile analyzer above is
 analysis only;
-**A commander never actually dies in a real game** — under CR 903.9a the
-command-zone return replaces the graveyard move — but this engine moves the
-commander to the graveyard, records the death (so `dies` watchers, e.g.
-Thijarian Witness, can over-trigger on a returned commander) and only then offers
-the CR 903.9a choice. Pre-existing deviation, tracked as backlog and documented
-in `docs/issue17-starter-corpus.md` (slice 46); no test pins the deviant shape.
+Commander graveyard/exile return is an SBA **after** zone entry (CR 903.9a),
+so a commander put into the graveyard does die before the return choice.
+Earlier "never dies" / replacement-effect guidance was incorrect and must not
+be implemented. Thijarian Witness's declaration-only interpretation of
+"was attacking or blocking alone" remains a known rules-reading gap before
+Ayula certification: CR 506.5 distinguishes attacks-alone from is-attacking-alone.
 networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the

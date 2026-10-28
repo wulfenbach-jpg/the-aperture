@@ -1,0 +1,16 @@
+
+COMMAND: python evidence/issue17/slice49/setup-journey.py
+C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice49-journey-driver
+EXIT=0
+
+COMMAND: cargo fmt --all
+EXIT=0
+
+COMMAND: cargo fmt --all --check
+EXIT=0
+
+COMMAND: cargo test -p aperture-core --locked --test issue17_slice49 --test issue17_slice48 --test issue17_slice45_native --test issue17_slice41 --test issue17_slice44_native --test issue17_slice19 --test ordering_persistence --test replay_digest --test starter_corpus --test card_printings
+error: no test target named `issue17_slice44_native` in `aperture-core` package
+
+help: a target with a similar name exists: `issue17_slice45_native`
+EXIT=101

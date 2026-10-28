@@ -46,12 +46,12 @@ basic lands (coordinator evidence
 `evidence/issue17/slice44/corpus-audit.py` + `corpus-audit.log`; earlier slice-25 audit retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **147** are in the supported 160-card catalog and **312** are missing. Slice
+* **148** are in the supported 161-card catalog and **311** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **160**; the intervening per-slice list is
+  slices bring the current implemented total to **161**; the intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -335,7 +335,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 160 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 161 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -728,15 +728,26 @@ Spirit of the Aldergard (`{3}{G}`, Snow Creature — Bear Spirit, 0/4) is source
 Titania's Command (`{4}{G}{G}` Sorcery) is sourced in `fixtures/starter-corpus/slice45-sourced.json` (BRO 194, immutable 753567c7…, oracle 7aae0a3d…, retrieved 2026-10-28T13:02:38Z). Casting uses a typed two-distinct-mode action; resolution follows printed mode order. Exile graveyard, up-to-two land search to tapped battlefield with shuffle, two canonical 2/2 Bears and two +1/+1 counters on each own creature are all implemented. Only the exile mode requires a player target; a modal action with duplicate/insufficient modes or unselected targets is refused atomically.
 
 ## Slice 46: Thijarian Witness
+
+**Rules-reading correction (slice 49 / review329):** the next paragraphs describe
+the shipped declaration-only interpretation, not a settled conformance claim.
+CR 506.5 distinguishes "attacks alone" (declaration) from "is attacking alone"
+(live combat). Witness prints "was attacking or blocking alone". Revisit that
+predicate before Ayula certification; the historical reviewer requirement and
+its tests are not independent evidence that this interpretation is correct.
 Thijarian Witness (`{1}{G}`, 0/4 Creature — Alien Cleric, printed Flash) is sourced in `fixtures/starter-corpus/slice46-sourced.json` (WHO 111, immutable `da05e23b-419f-4023-9ad4-1227bb1b53be`, oracle `d273033b-3b8b-4ce9-afe8-208d82dd20f1`, retrieved 2026-10-28T13:49:35Z; both printings of the card carry identical oracle text). It is the pool's first `TriggerEvent::AnotherCreatureDies` watcher and its first `investigate`.
 
-Two properties of this trigger are where an implementation can quietly be wrong, and both are now decided in one place each. **The printed intervening-if** ("if it was attacking or blocking alone") uses the CR 506.5 definition: a creature attacked alone if it was the *only creature declared* as an attacker during the declare attackers step, and blocked alone if it was the only one declared as a blocker. That is a fact about the declaration, not about who is still in combat afterwards, so the engine records the declaration in `Turn::declared_attackers` / `Turn::declared_blockers` when the declaration is submitted and never prunes it when a creature leaves combat (CR 506.4) or dies. **Simultaneous deaths** would otherwise make each move prune one attacker and leave the last creature of the batch looking like the only attacker; `DeathRecord` therefore carries a per-batch `CombatAloneSnapshot` taken before anything moves, so every death in a batch sees the same combat (CR 704.3). The two readings differ in ordinary play: **two attackers declared, one killed in the declare-blockers step, the other killed later in the same combat — the survivor does not trigger**, even though it is the only attacker still in combat. That is the declaration reading, it is the rules answer, and it is pinned by `attacker_killed_after_its_companion_left_combat_is_not_alone`; the earlier two-in-one-batch control could not discriminate because there neither attacker ever leaves combat alone.
+Two properties of this trigger are where an implementation can quietly be wrong, and both are now decided in one place each. **The printed intervening-if** ("if it was attacking or blocking alone") uses the CR 506.5 definition: a creature attacked alone if it was the *only creature declared* as an attacker during the declare attackers step, and blocked alone if it was the only one declared as a blocker. That is a fact about the declaration, not about who is still in combat afterwards, so the engine records the declaration in `Turn::declared_attackers` / `Turn::declared_blockers` when the declaration is submitted and never prunes it when a creature leaves combat (CR 506.4) or dies. **Simultaneous deaths** would otherwise make each move prune one attacker and leave the last creature of the batch looking like the only attacker; `DeathRecord` therefore carries a per-batch `CombatAloneSnapshot` taken before anything moves, so every death in a batch sees the same combat (CR 704.3). The two readings differ in ordinary play: **two attackers declared, one killed in the declare-blockers step, the other killed later in the same combat — the survivor does not trigger**, even though it is the only attacker still in combat. That is the shipped declaration reading, **not yet established as the correct reading of Witness's past-state predicate**, and it is pinned by `attacker_killed_after_its_companion_left_combat_is_not_alone`; the earlier two-in-one-batch control could not discriminate because there neither attacker ever leaves combat alone.
 
 Resolution exiles *that* card from its owner's graveyard where the trigger found it and then creates one Clue token (CR 701.16a) for the trigger's controller; a card that already left the graveyard is simply not found and the investigate still happens, because the printed text has no "if you do" between the two instructions. The Clue token is a real artifact token with the printed `{2}, Sacrifice this token: Draw a card` ability and no `{T}` in its cost, so a Clue created this turn can be cracked at once and its sacrifice goes through the ordinary token-cessation path (CR 111.7). Flash is the catalog's keyword flag; nothing here grants or removes it.
 
-Exclusions, disclosed: a commander that dies alone in combat is, under CR 903.9a, never put into a graveyard at all — its owner may put it into the command zone *instead* of the graveyard move, so a real game never fires a "dies" trigger for it. This engine models the return as a state-based action that happens *after* an ordinary graveyard move: `move_to_graveyard_inner` records the death and queues the `Dies` / `AnotherCreatureDies` watchers, and only then does the CR 903.9a choice run (`apply_commander_return_batch`). So a returned commander does produce a death event here, Thijarian Witness can queue for it, find no card to exile (the card is already in the command zone, a new object, CR 400.7) and still investigate, and the counter play is "return the commander and take a Clue". **That over-triggering is a pre-existing engine deviation, not something this slice introduced**: the correct shape is a replacement effect on the graveyard move (CR 614.1a, 903.9a), which would make the death invisible to every dies watcher. It is recorded here as a known limit and an explicit backlog item; nothing in the pool watches "commander dies" today, and no test in this slice pins the deviant behaviour. The trigger is otherwise modelled only for creatures that are creatures as they leave (CR 700.4), and nothing else in the pool watches "creature dies" with a combat-state condition. This slice certifies no starter list: Ayula has 6 missing names and the eight-list gate remains 1 of 8.
+Correction to inherited slice-47 guidance: under pinned CR 903.9a the graveyard/exile return is a state-based action **after** the commander enters that zone. A commander put into the graveyard therefore does die. The former claim that it never dies and needs a replacement effect was wrong; that claim is withdrawn, not implemented. The hand/library replacement is the separate CR 903.9b case. If the commander has returned to the command zone when Witness resolves, its graveyard object is no longer present, and investigate is not contingent on a successful exile. This correction changes no commander engine behavior. At slice 46's own checkpoint Ayula had 6 missing names; the current corpus counts are above.
 
 ## Slice 47: the declaration record for "attacking or blocking alone"
+
+Historical implementation record: the claim below that the prior live-state
+reading was wrong is **not** an established rules conclusion; see the slice-49
+correction above. No Witness behavior is changed by the Cub repair.
 
 Slice 46 read the CR 506.5 alone question off the live combat lists, and that was wrong in the one
 case the prose already described: `turn.attackers` / `turn.blockers` are pruned whenever a creature
@@ -762,3 +773,34 @@ Known weakness, recorded for a later hardening pass: the declaration record is *
 `GameState::validate`. A reloaded or hand-edited state may carry a declaration list that does not
 correspond to the creatures in combat. Today that only produces a conservative "not alone", but
 validate should eventually constrain it the way it constrains `attackers` / `blockers`.
+
+## Slices 48–49: Owlbear Cub and review329 repairs
+
+Owlbear Cub (CLB 246, `{2}{G}`, 3/3 Bird Bear) is recorded verbatim with
+printing/oracle IDs and retrieval stamp in `fixtures/starter-corpus/slice48-sourced.json`
+and `evidence/issue17/slice48/sources/`. It attacks a player controlling at least
+eight lands **at the attack event**. That restriction is not an intervening-if;
+falling to seven lands after the trigger is on the stack does not suppress its
+look (CR 603.4). Genuine intervening-if consumers are unchanged.
+
+All top min(8, library size) cards are privately projected to its controller,
+including noncreatures. Even when none is eligible, an acknowledgement keeps
+the looked-at cards visible before placing them on the bottom. Only a creature
+from that look may be selected; declining is allowed. The chosen creature enters
+tapped and attacking the defender, but was never declared as an attacker. Only
+the unchosen examined cards are randomly ordered on the bottom; the untouched
+library suffix keeps its order. No whole-library shuffle is substituted.
+
+The suspended look is bound to the real resolving Cub trigger, its controller,
+ability index and cursor. Validation requires the complete exact top prefix,
+exact eligible creature list and one-card total capacity. Titania's modal-search
+guard runs **before** mode dispatch, so a forged look mode cannot evade it.
+Regressions exercise validation **and** `SessionSave::from_json`, a real offered
+pick followed by identical loaded continuation, whole-opponent-view equality
+across hidden eligibility, atomic ineligible-take refusal, and short/empty looks.
+
+The initial slice-48 "intervening-if" and invisible all-ineligible look claims
+are superseded by this repair; historical logs remain intact. This adds no new
+card or certificate: catalog 161, union 459 = 148 implemented + 311 missing,
+Ayula five missing names, one of eight lists certified. Witness's rules-reading
+gap above must be settled before Ayula certification, not hidden by pool counts.

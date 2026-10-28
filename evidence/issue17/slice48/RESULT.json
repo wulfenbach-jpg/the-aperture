@@ -1,5 +1,6 @@
 {
   "slice": 48,
+  "superseded_by": "Slice49 repairs review329 R329-1..3: private look projection/acknowledgement, attack-event-only land restriction, and saved-instruction anchoring. Historical rule_design.intervening_if and disclosure 5 below were incorrect, not an untested valid rule. See ../SLICE49-HUMAN-CHECKPOINT.md; historical gate outputs remain unchanged.",
   "issue": 17,
   "increment": "Review-327 record corrections (R327-1..3, persistence version decision, elas count) + Owlbear Cub (CLB 246) implemented from its sourced printing",
   "full_issue17_accepted": false,

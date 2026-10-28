@@ -1,5 +1,10 @@
 # Slice 48 — review-327 record corrections, then Owlbear Cub
 
+**Superseded functional claims:** review329 found the private look was invisible,
+the resolution-time land recheck was invented, and saved look mode bypassed
+instruction anchoring. Slice49 repairs those three defects. This is the original
+slice48 record, not approval of its behavior; see `SLICE49-HUMAN-CHECKPOINT.md`.
+
 Branch `aperture/issue-17`, same draft PR46. **Original #17 remains UNFINISHED: 1 of 8 lists
 certified**, Ayula now 5 names missing. Nothing here merges, pushes master, closes an issue or
 unlocks a child.

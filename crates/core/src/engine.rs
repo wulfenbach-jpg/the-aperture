@@ -3714,21 +3714,6 @@ impl Game {
                         && self.has_color(object.id, crate::card::ManaColor::Black)
                 })
             }
-            ability::TriggerCondition::DefendingPlayerControlsEightOrMoreLands => {
-                // CR 603.4: the clause counts the *defending* player's lands at the
-                // moment it is evaluated, so a land that has left the battlefield
-                // is not counted and a land that arrived this turn is.
-                self.state
-                    .objects
-                    .values()
-                    .filter(|object| {
-                        object.zone == Zone::Battlefield
-                            && object.controller == defender
-                            && object.card.def().is_land()
-                    })
-                    .count()
-                    >= 8
-            }
         }
     }
 
@@ -5325,6 +5310,22 @@ impl Game {
                 };
                 let (card, controller) = (object.card, object.controller);
                 if card == CardId::TheEarthKing {
+                    continue;
+                }
+                // Cub qualifies the attack event, not a resolution-time "if".
+                if card == CardId::OwlbearCub
+                    && self
+                        .state
+                        .objects
+                        .values()
+                        .filter(|object| {
+                            object.zone == Zone::Battlefield
+                                && object.controller == defender
+                                && object.card.def().is_land()
+                        })
+                        .count()
+                        < 8
+                {
                     continue;
                 }
                 if ability::triggers_on(card, TriggerEvent::Attacks)
@@ -8113,21 +8114,11 @@ impl Game {
                 true
             }
             Effect::LookAtTopPutCreatureAttacking => {
-                let Some(defender) = self.state.turn.defender else {
-                    return false;
-                };
-                // CR 603.4: the printed intervening-if is checked twice — when the
-                // trigger would fire and again as it resolves.
-                if !self.trigger_condition_holds(item.card, defender, item.object) {
-                    events.push(Event::TriggerRemoved {
-                        controller,
-                        card: item.card,
-                        reason: "the printed intervening-if condition is false as the trigger \
-                                 resolves (CR 603.4)"
-                            .to_string(),
-                    });
+                if self.state.turn.defender.is_none() {
                     return false;
                 }
+                // The eight-land attack event already qualified. Cub prints no
+                // intervening-if, so a later land departure cannot suppress it.
                 let library = self.state.player(controller).library.clone();
                 let looked: Vec<ObjectId> = library.into_iter().take(8).collect();
                 let eligible: Vec<ObjectId> = looked
@@ -8145,12 +8136,8 @@ impl Game {
                         looked.len()
                     ),
                 });
-                if eligible.is_empty() {
-                    // Nothing to put: the whole look still goes to the bottom in
-                    // a random order and the instruction completes.
-                    self.finish_look_at_top(None, &looked, controller, events);
-                    return false;
-                }
+                // Even an all-ineligible look must reach its entitled viewer
+                // before they acknowledge bottoming the examined cards.
                 self.state.pending = Some(Pending::SearchLibrary {
                     player: controller,
                     remaining: 1,
@@ -9685,8 +9672,20 @@ impl Game {
                 };
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,
-                    label: "Finish searching".to_string(),
-                    rules: vec!["701.23"],
+                    label: if *mode
+                        == crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking
+                    {
+                        "Finish look and put the rest on the bottom".to_string()
+                    } else {
+                        "Finish searching".to_string()
+                    },
+                    rules: if *mode
+                        == crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking
+                    {
+                        vec!["701.20e"]
+                    } else {
+                        vec!["701.23"]
+                    },
                 }];
                 if *remaining > 0 {
                     for id in eligible.iter().filter(|id| !chosen.contains(id)) {

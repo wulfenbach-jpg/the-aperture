@@ -601,6 +601,17 @@ impl Game {
     pub fn view_for(&self, viewer: PlayerId, log: &[Event]) -> PlayerView {
         let me = self.state.player(viewer);
         let pending_viewed = match &self.state.pending {
+            Some(crate::state::Pending::SearchLibrary {
+                player,
+                looked,
+                mode,
+                ..
+            }) if *player == viewer
+                && *mode
+                    == crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking =>
+            {
+                looked.iter().map(|id| card_view(self, *id)).collect()
+            }
             Some(crate::state::Pending::OrderCard { player, viewed, .. }) if *player == viewer => {
                 viewed.iter().map(|id| card_view(self, *id)).collect()
             }

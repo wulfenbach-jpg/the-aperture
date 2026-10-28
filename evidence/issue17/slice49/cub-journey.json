@@ -1,0 +1,37 @@
+{
+  "casts": {
+    "Centaur Courser": 12,
+    "Grizzly Bears": 11,
+    "Owlbear Cub": 12
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "cub_bottoms": 5,
+  "cub_looks": 5,
+  "cub_private_looks_observed": 5,
+  "cub_puts": 4,
+  "deck": "decks/package-slice48.txt",
+  "digest": "acf204aa4711241f2c7c3124c3195d4f9ee93a6a471a25d5a8df56562e747ac9",
+  "done_only_acknowledgements": 5,
+  "driver": "evidence-only masked Owlbear Cub demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+      "winner": 2
+    }
+  },
+  "private_viewed_card_samples": 33,
+  "replay_digest_matches": true,
+  "replay_events": 8658,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "edb12266011a2f4c716fb4562273164f3b57a6cc4d605fc6277f86d742677cd9",
+  "snapshots_exact": true,
+  "solo_attacks_declared": 59,
+  "solo_exile_events": 0,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 3463,
+  "turns": 95,
+  "witness_style_clues": 0
+}

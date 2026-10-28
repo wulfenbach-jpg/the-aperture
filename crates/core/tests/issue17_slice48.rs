@@ -4,8 +4,8 @@
 //! tapped and attacking that player. Put the rest on the bottom of your library
 //! in a random order." (CLB 246)
 //!
-//! What is asserted is the printed text, not an approximation: the intervening-if
-//! is the *defending* player's land count and nothing else; the look is private
+//! What is asserted is the printed text: the attack event requires eight lands
+//! controlled by the defender (not an intervening-if); the look is private
 //! and covers exactly the top eight; only a creature card may be put, it arrives
 //! tapped and attacking that player and deals combat damage; declining puts
 //! nothing onto the battlefield; and the "rest" is the looked-at cards going to
@@ -153,7 +153,7 @@ fn owlbear_cub_is_registered_with_its_printed_text() {
     );
 }
 
-/// CR 603.4: the printed intervening-if is the *defending* player's land count.
+/// The attack event qualifies the *defending* player's land count, not resolution.
 /// Seven lands means the trigger never reaches the stack, so nothing is looked
 /// at and no choice is offered.
 #[test]
@@ -368,7 +368,8 @@ fn the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage() {
 }
 
 /// The look is a look, not a search: with no creature card among the top eight
-/// there is nothing to choose, the whole look goes to the bottom, and the rest of
+/// there is nothing to put, but the controller still acknowledges the private
+/// look before it goes to the bottom, and the rest of
 /// the library keeps its order.
 #[test]
 fn a_look_with_no_creature_card_puts_everything_on_the_bottom() {
@@ -399,9 +400,12 @@ fn a_look_with_no_creature_card_puts_everything_on_the_bottom() {
     attack_and_settle(&mut g, &[owl]);
 
     assert!(
-        search_pending(&g).is_none(),
-        "with nothing eligible there is no choice to offer"
+        search_pending(&g).is_some(),
+        "the private look requires acknowledgement"
     );
+    assert_eq!(g.view_for(P0, &[]).pending_viewed.len(), 8);
+    assert_eq!(g.legal_actions().len(), 1, "only acknowledgement is legal");
+    done(&mut g);
     let after = g.state.player(P0).library.clone();
     assert_eq!(after[0], before[8], "the ninth card is now on top");
     assert_eq!(after.len(), before.len());

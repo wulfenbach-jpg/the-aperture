@@ -1757,15 +1757,61 @@ impl GameState {
                         .to_string(),
                 });
             }
+            // Guard Titania before branching on an untrusted saved mode.
+            let modal_source = self.stack.last().filter(|item| {
+                item.entry == StackEntry::Spell
+                    && item.card == CardId::TitaniasCommand
+                    && self.resolving == Some(item.object)
+            });
+            if *mode == LibrarySearchMode::AnyLandToBattlefield || modal_source.is_some() {
+                let anchored = modal_source.is_some_and(|item| {
+                    let search_cursor = 1 + u8::from(item.modes.contains(&0));
+                    item.controller == *player
+                        && item.modes.contains(&1)
+                        && item.cursor == search_cursor
+                        && *mode == LibrarySearchMode::AnyLandToBattlefield
+                        && chosen.len() + usize::from(*remaining) == 2
+                });
+                if !anchored {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "modal land search is not anchored to its selected two-land instruction"
+                                .to_string(),
+                    });
+                }
+            }
+            let cub_source = self.stack.last().filter(|item| {
+                item.card == CardId::OwlbearCub && self.resolving == Some(item.object)
+            });
+            if *mode == LibrarySearchMode::CreatureFromTopToBattlefieldAttacking
+                || cub_source.is_some()
+            {
+                let anchored = cub_source.is_some_and(|item| {
+                    item.entry == (StackEntry::Triggered { ability: 0 })
+                        && item.controller == *player
+                        && item.cursor == 1
+                        && self
+                            .turn
+                            .defender
+                            .is_some_and(|defender| self.is_live(defender))
+                        && *mode == LibrarySearchMode::CreatureFromTopToBattlefieldAttacking
+                });
+                if !anchored {
+                    return Err(EngineError::InvalidState {
+                        reason: "private look is not anchored to its resolving Cub instruction"
+                            .to_string(),
+                    });
+                }
+            }
             if *mode == LibrarySearchMode::CreatureFromTopToBattlefieldAttacking {
                 // CR 701.20a: a look, not a search. The examined cards must be
                 // exactly the top of the library, in order, and nothing but the
                 // looked-at cards may be referenced; only a creature card among
                 // them can be eligible, and at most one card can be put.
                 let library = &self.player(*player).library;
-                if looked.is_empty() || looked.len() > 8 || looked.len() > library.len() {
+                if looked.len() != library.len().min(8) {
                     return Err(EngineError::InvalidState {
-                        reason: "a look must examine between one and eight cards of the library"
+                        reason: "a look must examine exactly the top min(8, library size) cards"
                             .to_string(),
                     });
                 }
@@ -1798,9 +1844,15 @@ impl GameState {
                         });
                     }
                 }
-                if !eligible.windows(2).all(|pair| pair[0] != pair[1]) {
+                let expected_eligible: Vec<ObjectId> = looked
+                    .iter()
+                    .copied()
+                    .filter(|id| is_looked_creature(id))
+                    .collect();
+                if *eligible != expected_eligible {
                     return Err(EngineError::InvalidState {
-                        reason: "the look lists a card twice".to_string(),
+                        reason: "the look must list exactly its eligible creature cards once"
+                            .to_string(),
                     });
                 }
                 for id in chosen {
@@ -1811,36 +1863,17 @@ impl GameState {
                     }
                 }
             } else {
+                if !looked.is_empty() {
+                    return Err(EngineError::InvalidState {
+                        reason: "a land search cannot carry a private top-card look".to_string(),
+                    });
+                }
                 if *mode == LibrarySearchMode::SnowLandToHand
                     && chosen.len() + usize::from(*remaining) != 1
                 {
                     return Err(EngineError::InvalidState {
                         reason: "snow land search must select at most one card, with remaining capacity accounting for its choice".to_string(),
                     });
-                }
-                // A suspended modal instruction must retain its exact filter,
-                // controller, selection and printed-order cursor across save/load.
-                let modal_source = self.stack.last().filter(|item| {
-                    item.entry == StackEntry::Spell
-                        && item.card == CardId::TitaniasCommand
-                        && self.resolving == Some(item.object)
-                });
-                if *mode == LibrarySearchMode::AnyLandToBattlefield || modal_source.is_some() {
-                    let anchored = modal_source.is_some_and(|item| {
-                        let search_cursor = 1 + u8::from(item.modes.contains(&0));
-                        item.controller == *player
-                            && item.modes.contains(&1)
-                            && item.cursor == search_cursor
-                            && *mode == LibrarySearchMode::AnyLandToBattlefield
-                            && chosen.len() + usize::from(*remaining) == 2
-                    });
-                    if !anchored {
-                        return Err(EngineError::InvalidState {
-                        reason:
-                            "modal land search is not anchored to its selected two-land instruction"
-                                .to_string(),
-                    });
-                    }
                 }
                 let library = &self.player(*player).library;
                 let is_search_land = |id: &ObjectId| {
