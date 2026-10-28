@@ -98,7 +98,22 @@ in release with `--locked` and re-run. `Win{P1}`, **3073 steps, 54 turns, 8098 e
 `replay of 3073 action(s) -> digest da4eacd5363f | events 8098`, exit 0. This is a 40-card evidence-only
 package, **not** a 100-card certificate and not AI-strength evidence.
 
-## 6. Corpus, certification and scope
+## 6. Exact-head CI — read back, with one cancelled job stated plainly
+
+`slice52/exact-head-ci-cd19bef.json` (`watch-ci.py`) records **10** check runs for `cd19bef…`, all keyed
+to that commit. They come from two runs because both the `push` and `pull_request` events fired:
+
+* `40770725440` (`pull_request`): **5/5 completed SUCCESS** — `rust` ubuntu/macos/windows,
+  `windows package`, `board and roadmap`.
+* `40770718159` (`push`): 4 SUCCESS, `rust (macos-latest)` **cancelled** by the runner after 15 minutes
+  with no step marked cancelled, so that run concluded `failure`.
+
+**This slice therefore does not claim a clean 10/10.** The same tree is green on all five
+pull-request checks including macOS; the push run's macOS job was terminated, not failed on an
+assertion, and it was not re-run here, so its `failure` conclusion stays as recorded. Details:
+`slice52/EXACT-HEAD-CI-NOTES.md`. This slice changes no product code, test or fixture.
+
+## 7. Corpus, certification and scope
 
 * Corpus re-derived at this head: **161** catalog cards, **459** union = **148** supported + **311**
   missing, per-list `[55,0,51,48,5,52,52,53]`, Ayula **5**, **1 of 8** certified. No card was enabled,

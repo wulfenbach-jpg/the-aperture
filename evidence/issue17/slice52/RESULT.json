@@ -66,7 +66,16 @@
   "union": 459,
   "supported": 148,
   "missing": 311,
-  "per_list_missing": [55, 0, 51, 48, 5, 52, 52, 53],
+  "per_list_missing": [
+   55,
+   0,
+   51,
+   48,
+   5,
+   52,
+   52,
+   53
+  ],
   "ayula_missing": 5,
   "certified_lists": 1,
   "desired_lists": 8
@@ -75,8 +84,32 @@
  "no_cards_enabled": true,
  "no_engine_or_ai_policy_change": true,
  "no_merge_master_push_closure_or_unlock": true,
- "children_inspected": ["t_26a7a4ff", "t_3c2fe51a"],
+ "children_inspected": [
+  "t_26a7a4ff",
+  "t_3c2fe51a"
+ ],
  "children_are": "evaluation dependency wait and unassigned soak backlog, not review children; left gated",
  "actual_implementer_profile": "default",
- "next_action": "Independent practical delta review 6abd820..adeff72 (record corrections only). Then the same writer/history/card/branch/PR46 builds Ruxa, Patient Professor per slice52/RUXA-PREREQ-VERIFICATION.md as one card (all three clauses plus validate+real-load refusals), whole-field missing_cards AND missing_interactions rewrite, then the exact 100-card four-seat certification with separate replays, reported as 2 of 8 only if it passes."
+ "next_action": "Independent practical delta review 6abd820..adeff72 (record corrections only). Then the same writer/history/card/branch/PR46 builds Ruxa, Patient Professor per slice52/RUXA-PREREQ-VERIFICATION.md as one card (all three clauses plus validate+real-load refusals), whole-field missing_cards AND missing_interactions rewrite, then the exact 100-card four-seat certification with separate replays, reported as 2 of 8 only if it passes.",
+ "ci": {
+  "head": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+  "receipt": "evidence/issue17/slice52/exact-head-ci-cd19bef.json",
+  "notes": "evidence/issue17/slice52/EXACT-HEAD-CI-NOTES.md",
+  "total_check_runs": 10,
+  "all_keyed_to_head": true,
+  "pull_request_run_40770725440": "5/5 completed SUCCESS (rust ubuntu/macos/windows, windows package, board and roadmap)",
+  "push_run_40770718159": "4 completed SUCCESS, rust (macos-latest) CANCELLED by the runner after 15 minutes with no step marked cancelled, so the run concluded failure",
+  "clean_10_of_10_claim": "none - one push-run macOS job was cancelled, not re-run, and its failure conclusion is not reinterpreted as a pass",
+  "product_code_changed": false
+ },
+ "pr_state": {
+  "pr": 46,
+  "state": "OPEN",
+  "draft": true,
+  "headRefOid": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+  "local_equals_remote": true,
+  "base": "master",
+  "pr_body_updated": "evidence/issue17/slice52/pr-body.md",
+  "master_untouched": true
+ }
 }
