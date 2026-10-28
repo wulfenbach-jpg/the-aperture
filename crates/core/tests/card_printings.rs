@@ -64,6 +64,8 @@ const SLICE33_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE35_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice35-sourced.json");
 /// Slice 37: Druid's Familiar (AVR 175), fetched 2026-10-27.
 const SLICE37_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice37-sourced.json");
+/// Slice 38: Spider-Ham, Peter Porker (SPM 114), fetched 2026-10-28.
+const SLICE38_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice38-sourced.json");
 const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
 const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
 const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
@@ -263,6 +265,46 @@ fn slice35_cards() -> Vec<Value> {
 fn slice37_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE37_SOURCED).expect("sourced slice37 JSON");
     value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice38_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE38_SOURCED).expect("sourced slice38 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+/// Slice 38 added Spider-Ham, Peter Porker (SPM 114). Its printing is the
+/// authority for the cost, the type line, the power/toughness and the whole
+/// two-ability oracle text — including the Food token's quoted ability — so a
+/// hand-authored string can never drift from the card. All five Scryfall
+/// printings (spm 114/201, pspm 114s, pw25 10, om1 118) carry one identical
+/// text, type line, cost and P/T (`evidence/issue17/slice38/sources/printings.json`).
+#[test]
+fn slice38_spider_ham_matches_its_recorded_printing() {
+    let cards = slice38_cards();
+    assert_eq!(cards.len(), 1, "slice 38 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Spider-Ham, Peter Porker");
+    let def = catalog::by_name("Spider-Ham, Peter Porker")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "spm");
+    assert_eq!(sourced_text(record, "collector_number"), "114");
+    assert_eq!(record["power"].as_str(), Some("2"));
+    assert_eq!(record["toughness"].as_str(), Some("2"));
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "41f18f42-b86b-4a12-9f0d-76b761571195",
+        "the immutable printing id, not the oracle id"
+    );
+    assert!(
+        def.oracle.contains(
+            "(It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+        ),
+        "the Food token's quoted ability is part of the printed text"
+    );
 }
 
 /// Slice 37 added Druid's Familiar (AVR 175). Its printing is the authority for
@@ -876,6 +918,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice33_cards())
         .chain(slice35_cards())
         .chain(slice37_cards())
+        .chain(slice38_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()

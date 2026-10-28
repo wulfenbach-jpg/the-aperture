@@ -229,6 +229,12 @@ pub enum Effect {
     /// Create one 2/2 green Bear token per nontoken creature its controller
     /// owned that was put into their graveyard from the battlefield this turn.
     CreateBearTokensForEachDeathThisTurn,
+    /// CR 111.10 + 205.3: create one Food token, the first *artifact* token in
+    /// the pool (Spider-Ham, Peter Porker). Its characteristics and its
+    /// "{2}, {T}, Sacrifice this token: You gain 3 life" ability live in the
+    /// token card table, so the token is a real rules object with a real
+    /// activated ability and never an importable card.
+    CreateFoodToken,
     /// CR 701.14a: two target creatures deal damage equal to their power to
     /// each other simultaneously. Both must still satisfy the printed
     /// Bear/opponent relation at resolution or no damage is dealt.
@@ -406,6 +412,7 @@ impl Effect {
             Effect::CreateBeastToken => "create a 4/4 green Beast token".to_string(),
             Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
             Effect::CreateBearTokens(n) => format!("create {n} 2/2 green Bear token(s)"),
+            Effect::CreateFoodToken => "create a Food token".to_string(),
             Effect::BearTokenForEachPlayerWithPermanent => {
                 "each player who controls an artifact or enchantment creates a 2/2 green Bear token"
                     .to_string()
@@ -776,6 +783,10 @@ pub enum CardId {
     WordsOfWilding,
     /// Issue 17 slice 37: Druid's Familiar (AVR 175).
     DruidSFamiliar,
+    /// Issue 17 slice 38: Spider-Ham, Peter Porker (SPM 114).
+    SpiderHamPeterPorker,
+    /// Issue 17 slice 38: the Food token card (never importable, CR 111.10).
+    FoodToken,
     SazhsChocobo,
     RampagingBaloths,
     ProfessorOfZoomancy,

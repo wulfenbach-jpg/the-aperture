@@ -272,7 +272,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 151] = [
+pub static CARDS: [CardDef; 152] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1209,6 +1209,18 @@ pub static CARDS: [CardDef; 151] = [
         oracle: "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
         spell: None
     ),
+    // Issue 17 slice 38: Spider-Ham, Peter Porker. The pool's first *artifact*
+    // token (Food) and its first activated ability that combines a mana cost,
+    // {T} and "Sacrifice this token"; also the first anthem filtered by a
+    // printed *list* of creature subtypes rather than one. Printed text copied
+    // verbatim from the SPM 114 printing recorded in
+    // fixtures/starter-corpus/slice38-sourced.json.
+    card!(
+        SpiderHamPeterPorker, "Spider-Ham, Peter Porker", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Spider Boar Hero", power: Some(2), toughness: Some(2),
+        oracle: "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+        spell: None
+    ),
 ];
 
 pub fn all() -> &'static [CardDef] {
@@ -1217,7 +1229,29 @@ pub fn all() -> &'static [CardDef] {
 
 /// Token definitions. Deliberately separate from `CARDS`: tokens are engine
 /// objects, never importable or analyzer-supported cards.
-pub static TOKENS: [CardDef; 5] = [
+pub static TOKENS: [CardDef; 6] = [
+    // Issue 17 slice 38: the Food token (CR 111.10, 205.3). An *artifact* token
+    // with no power or toughness and one real activated ability; created only by
+    // Spider-Ham, Peter Porker, never importable and never a catalog card.
+    CardDef {
+        id: CardId::FoodToken,
+        name: "Food Token",
+        cost: None,
+        kinds: &[Kind::Artifact],
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Artifact — Food",
+        colors: &[],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: None,
+        toughness: None,
+        oracle: "{2}, {T}, Sacrifice this token: You gain 3 life.",
+        spell: None,
+    },
     CardDef {
         id: CardId::GoblinToken,
         name: "Goblin Token",

@@ -135,7 +135,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // registers Kamahl's Summons, which closes one more. Slice 33 registers
     // Beorn's Hospitality, so both numbers move together by one again. Slice 35
     // registers Words of Wilding, which closes one more, and slice 37 registers
-    // Druid's Familiar, which closes one more again.
-    assert_eq!(missing.len(), 14, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 151, "the compiled pool");
+    // Druid's Familiar, which closes one more again, and slice 38 registers
+    // Spider-Ham, Peter Porker, which closes one more again.
+    assert_eq!(missing.len(), 13, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 152, "the compiled pool");
 }

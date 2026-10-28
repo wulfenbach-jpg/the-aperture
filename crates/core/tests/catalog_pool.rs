@@ -230,6 +230,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::CreateBeastToken
                 | Effect::CreateBearTokens(_)
                 | Effect::CreatePestToken
+                | Effect::CreateFoodToken
                 | Effect::BearTokenForEachPlayerWithPermanent
                 | Effect::EachPlayerMayRevealCreatureCardsForBears
                 | Effect::DestroyAllArtifactsAndEnchantments => {

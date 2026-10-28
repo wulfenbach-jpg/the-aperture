@@ -683,6 +683,56 @@ impl Game {
                 }
             }
         }
+        // Printed layer 7c *list*-filtered subtype anthems: "Other Spiders,
+        // Boars, Bats, Bears, ... and Wolves you control get +1/+1"
+        // (Spider-Ham, Peter Porker). Same layer, same additive behaviour and
+        // the same effective-subtype read as the Bear anthem above, but the
+        // recipient qualifies on *any* one of the printed subtypes, so a
+        // creature made a Bear by a layer 4 effect counts and a creature with
+        // none of the listed subtypes never does. The printed word is "Other",
+        // so the source never pumps itself.
+        for (id, card) in &battlefield {
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
+            let listed = ability::static_abilities(*card)
+                .iter()
+                .find_map(|static_ability| match static_ability {
+                    ability::StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
+                        subtypes,
+                        power,
+                        toughness,
+                        ..
+                    } => Some((*subtypes, *power, *toughness)),
+                    _ => None,
+                });
+            let Some((subtypes, power, toughness)) = listed else {
+                continue;
+            };
+            let recipients: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && object.id != *id
+                        && self.is_creature(object)
+                        && subtypes
+                            .iter()
+                            .any(|subtype| self.has_subtype(object, subtype))
+                })
+                .map(|object| object.id)
+                .collect();
+            for recipient in recipients {
+                if let Some(object) = self.state.objects.get_mut(&recipient) {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
+            }
+        }
         // Printed layer 7c pair static: "As long as this creature is paired with
         // another creature, each of those creatures gets +2/+2" (Druid's
         // Familiar, CR 702.94a). Like every other 7c modifier it is additive, and
@@ -781,7 +831,7 @@ impl Game {
     /// question in the rules layer asks this instead of reading the printed type
     /// line directly. Successive layer 4 effects apply in timestamp order
     /// (CR 613.7), so the last one wins.
-    fn has_subtype(&self, object: &Object, subtype: &str) -> bool {
+    pub fn has_subtype(&self, object: &Object, subtype: &str) -> bool {
         let mut effective: Option<crate::layer::SubtypeLine> = None;
         // CR 613.1d: an *additive* layer 4 effect (Stuffed Bear's animation)
         // adds its subtype line to the printed one instead of replacing it, so
@@ -7189,6 +7239,10 @@ impl Game {
             }
             Effect::CreatePestToken => {
                 self.create_tokens(controller, CardId::PestToken, 1, events);
+                false
+            }
+            Effect::CreateFoodToken => {
+                self.create_tokens(controller, CardId::FoodToken, 1, events);
                 false
             }
             Effect::CreateBearTokens(n) => {

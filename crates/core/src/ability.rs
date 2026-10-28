@@ -953,6 +953,8 @@ const DRUIDS_FAMILIAR: &[Ability] = &[
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::SpiderHamPeterPorker => SPIDER_HAM,
+        CardId::FoodToken => FOOD_TOKEN,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
@@ -1149,6 +1151,19 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 613.4c + 205.3: "Other Spiders, Boars, ... you control get +P/+T"
+    /// (Spider-Ham, Peter Porker). The same layer 7c additive static as the Bear
+    /// anthem above, but the recipient set is the printed *list* of creature
+    /// subtypes: a creature qualifies if its effective subtype line carries any
+    /// one of them, so a Bear made by a layer 4 animation counts and a creature
+    /// with none of them never does. The printed word is "Other", so the source
+    /// never pumps itself.
+    OtherControlledCreaturesWithAnySubtypeGet {
+        subtypes: &'static [&'static str],
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
     /// CR 702.94a + 613.4c: "As long as this creature is paired with another
     /// creature, each of those creatures gets +P/+T" (Druid's Familiar). A
     /// layer 7c additive static that applies to *both* members of the pair, read
@@ -1173,6 +1188,7 @@ impl StaticAbility {
             | StaticAbility::SelfBecomesSubtypeDuringYourTurn { text, .. }
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. }
             | StaticAbility::OtherBearsYouControlGet { text, .. }
+            | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { text, .. }
             | StaticAbility::PairedEachGet { text, .. } => text,
         }
     }
@@ -1187,6 +1203,9 @@ impl StaticAbility {
             StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. } => Some(Layer::Type),
             StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. } => Some(Layer::Setting),
             StaticAbility::OtherBearsYouControlGet { .. } => Some(Layer::Modifying),
+            StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. } => {
+                Some(Layer::Modifying)
+            }
             StaticAbility::PairedEachGet { .. } => Some(Layer::Modifying),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
@@ -1205,6 +1224,7 @@ impl StaticAbility {
             | StaticAbility::SelfBecomesSubtypeDuringYourTurn { .. }
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. }
             | StaticAbility::OtherBearsYouControlGet { .. }
+            | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. }
             | StaticAbility::PairedEachGet { .. } => None,
         }
     }
@@ -1284,9 +1304,61 @@ const DRUIDS_FAMILIAR_STATIC: &[StaticAbility] = &[StaticAbility::PairedEachGet 
     text: "As long as this creature is paired with another creature, each of those creatures gets +2/+2.",
 }];
 
+/// The Food token's printed ability (CR 111.10, 205.3): "{2}, {T}, Sacrifice
+/// this token: You gain 3 life." The cost combines a mana cost, `{T}` and
+/// "Sacrifice this token" — the first pool ability with all three at once — and
+/// the token itself is the source, so the ability is only offered while the
+/// token is untapped and on the battlefield. Paying the sacrifice cost moves
+/// the token to its owner's graveyard and then out of existence (CR 111.7),
+/// exactly like any other token that leaves the battlefield.
+const FOOD_TOKEN: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{2}, {T}, Sacrifice this token: You gain 3 life.",
+    cost: AbilityCost {
+        tap: true,
+        sacrifice_source: true,
+        mana: Some("{2}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::GainLife(3)],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
+/// Spider-Ham, Peter Porker (SPM 114). Two printed abilities: an enters trigger
+/// that creates a Food token, and "Animal May-Ham — Other Spiders, Boars, ... you
+/// control get +1/+1". The anthem is the first *list*-filtered subtype static in
+/// the pool (see `SPIDER_HAM_STATIC`).
+const SPIDER_HAM: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When Spider-Ham enters, create a Food token.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateFoodToken],
+})];
+
+/// The printed subtype list of Spider-Ham's anthem, in singular form because
+/// CR 205.3 writes subtypes in the singular and a type line prints "Bear", not
+/// "Bears" ("Mice" and "Wolves" are the two plurals that are not just a suffix).
+const SPIDER_HAM_SUBTYPES: &[&str] = &[
+    "Spider", "Boar", "Bat", "Bear", "Bird", "Cat", "Dog", "Frog", "Jackal", "Lizard", "Mouse",
+    "Otter", "Rabbit", "Raccoon", "Rat", "Squirrel", "Turtle", "Wolf",
+];
+
+const SPIDER_HAM_STATIC: &[StaticAbility] = &[
+    StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
+        subtypes: SPIDER_HAM_SUBTYPES,
+        power: 1,
+        toughness: 1,
+        text: "Animal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+    },
+];
+
 /// Every static ability the rules layer knows for a card, in printed order.
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
+        CardId::SpiderHamPeterPorker => SPIDER_HAM_STATIC,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR_STATIC,
         CardId::BeornTheFierce => BEORN_STATIC,
         CardId::WightOfPrecinctSix => WIGHT,

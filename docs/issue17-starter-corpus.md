@@ -635,3 +635,56 @@ the pool has shroud or hexproof, so no interaction between the two is observable
 control-changing effect exists in the pool, so the "as long as you control both" half is enforced at
 the exit point and by the validating query rather than by a control-change test. This slice
 certifies no starter list: Ayula has 14 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 38: Spider-Ham, Peter Porker — the first artifact (Food) token
+
+`Spider-Ham, Peter Porker` (`{1}{G}`, 2/2 Legendary Creature — Spider Boar Hero) is sourced from
+Scryfall **SPM 114** (immutable printing id `41f18f42-b86b-4a12-9f0d-76b761571195`, oracle id
+`00b50215-e832-417f-9c80-2bc3050b6ebb`, retrieved 2026-10-28T00:54:14Z; all five printings —
+`spm 114`, `spm 201`, `pspm 114s`, `pw25 10`, `om1 118` — carry one identical text, type line, cost
+and P/T). Printed text:
+
+> When Spider-Ham enters, create a Food token. (It's an artifact with "{2}, {T}, Sacrifice this
+> token: You gain 3 life.")
+> Animal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards,
+> Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.
+
+**What is modelled.** Two new reusable surfaces rather than a one-card patch.
+
+*The Food token* is the pool's first **artifact token** (CR 111.10, 205.3): a `CardId::FoodToken`
+card definition in the catalog's token table (`Token Artifact — Food`, no power or toughness,
+never importable, never part of `catalog::all()`), created by `Effect::CreateFoodToken`. It carries
+a real activated ability whose cost is the first in the pool to combine a mana cost, `{T}` and
+"Sacrifice this token": the engine pays `{2}` from the pool, taps the token, moves it to its
+owner's graveyard as part of the cost (CR 602.2b) and only then puts the ability on the stack, so
+the token has already left the battlefield when "You gain 3 life" resolves (CR 111.7) and the
+ability is offered only while the token is untapped and the mana is payable.
+
+*The anthem* is the first layer 7c static filtered by a printed **list** of subtypes instead of
+one (`StaticAbility::OtherControlledCreaturesWithAnySubtypeGet`). It asks `Game::has_subtype`, so a
+creature made a Bear by a layer 4 effect counts and a creature with none of the listed subtypes
+never does; the printed "Other" keeps the source out of its own set, while a *second* copy of
+Spider-Ham is a Spider and is pumped by the first copy's anthem, exactly as printed.
+
+**Verification.** `crates/core/tests/issue17_slice38.rs` (6 tests): the sourced text and both
+printed abilities; entering creates exactly one Food token that is an artifact, not a creature, and
+whose ability is offered once `{2}` is available; activating it gains exactly 3 life, spends the
+mana, sacrifices the token as a cost and removes it from the battlefield; the activation is neither
+offered nor legal without its cost (no mana, or a tapped token); the anthem pumps a Bear and leaves
+an Elf alone while never pumping the source; and the anthem reads the *effective* subtype, so
+Circle of the Moon Druid is 5/3 on its controller's turn (4/2 Bear Form + 1/+1) and 8/6 after Giant
+Growth. `card_printings` asserts the catalog row against the recorded printing, and the four-seat
+journey below exercises the whole card in a real game.
+
+**Four-seat journey.** `evidence/issue17/slice38-journey-driver` plays `decks/package-slice38.txt`
+(4 seats, 40 life, seed 3838, exact snapshot) and casts Spider-Ham 8 times, creating 8 Food tokens
+and activating all 8 for 24 life, while asserting the anthem 7 110 times (once per listed-subtype
+creature per action boundary) over the game; the game is terminal (`Win{P2}`, 1450 steps, 34 turns,
+digest `93329b63…`) and a separate release-CLI replay reproduces it.
+
+Known limits, disclosed: the Food token's ability is modelled with the printed cost and effect
+only (it is not a "sacrifice an artifact" outlet for other cards); the anthem's recipient list is
+the printed list in singular form, and no pool card can change a creature's subtypes into a listed
+one except the layer 4 forms already supported; nothing in the pool grants or removes hexproof,
+shroud or protection, so none of those interacts with the token. This slice certifies no starter
+list: Ayula has 13 missing names and the eight-list gate remains 1 of 8.
