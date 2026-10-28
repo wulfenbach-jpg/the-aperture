@@ -177,7 +177,13 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 continue;
             }
         };
-        assert!(!spec.effects.is_empty(), "{} does nothing", card.name);
+        assert!(
+            !spec.effects.is_empty()
+                || aperture_core::card::modal_spell_effects(card.id)
+                    .is_some_and(|modes| modes.iter().all(|effects| !effects.is_empty())),
+            "{} does nothing",
+            card.name
+        );
         assert!(card.cost.is_some(), "{} has no cost", card.name);
         if card.is_creature() {
             assert!(
@@ -297,6 +303,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::ReturnLandCardsFromGraveyardTapped
                 | Effect::AttachSourceToTarget
                 | Effect::SearchSnowLandToHand
+                | Effect::ExileTargetPlayersGraveyardAndGainLife
+                | Effect::SearchAnyLandUpToTwo
+                | Effect::PutTwoCountersOnEachCreatureYouControl
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)
                 | Effect::DrawIfControlsBears { .. }

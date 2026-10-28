@@ -470,7 +470,11 @@ impl Pending {
                     chosen.len()
                 ),
                 LibrarySearchMode::SnowLandToHand => format!(
-                    "P{player}: choose up to {remaining} snow land card to reveal and put into your hand ({} chosen)",
+                    "P{player}: choose up to {remaining} snow land card(s) to reveal and put into hand ({} chosen)",
+                    chosen.len()
+                ),
+                LibrarySearchMode::AnyLandToBattlefield => format!(
+                    "P{player}: choose up to {remaining} land card(s) to put onto the battlefield tapped ({} chosen)",
                     chosen.len()
                 ),
             },
@@ -656,6 +660,9 @@ pub struct StackItem {
     pub card: CardId,
     pub controller: PlayerId,
     pub targets: Vec<crate::action::Target>,
+    /// Modal spell mode indices, sorted into printed order at cast time.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub modes: Vec<u8>,
     /// Non-target object captured by the trigger's "it" wording.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affected: Option<ObjectId>,
@@ -771,6 +778,7 @@ pub enum LibrarySearchMode {
     #[default]
     BasicLandToBattlefield,
     SnowLandToHand,
+    AnyLandToBattlefield,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -1721,6 +1729,7 @@ impl GameState {
                                 object.card.def().basic_mana.is_some()
                             }
                             LibrarySearchMode::SnowLandToHand => object.card.def().is_snow(),
+                            LibrarySearchMode::AnyLandToBattlefield => true,
                         }
                 }) && library.contains(id)
             };

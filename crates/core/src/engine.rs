@@ -2529,6 +2529,11 @@ impl Game {
                     "no library search is waiting for this player",
                 )),
             },
+            Action::CastSpellWithModes {
+                card,
+                modes,
+                targets,
+            } => self.validate_modal_cast(player, *card, modes, targets),
             Action::SaddleMount { source, creatures } => {
                 self.validate_saddle_mount(player, *source, creatures)
             }
@@ -3233,6 +3238,66 @@ impl Game {
             .collect()
     }
 
+    fn validate_modal_cast(
+        &self,
+        player: PlayerId,
+        card: ObjectId,
+        modes: &[u8; 2],
+        targets: &[Target],
+    ) -> Result<(), EngineError> {
+        let object = self
+            .state
+            .try_object(card)
+            .ok_or(EngineError::UnknownObject)?;
+        if object.card != CardId::TitaniasCommand {
+            return Err(EngineError::illegal(
+                "cast modal spell",
+                "that card has no modal modes",
+            ));
+        }
+        if object.zone != Zone::Hand || object.owner != player {
+            return Err(EngineError::WrongZone {
+                name: "Titania's Command",
+                zone: "hand of the acting player",
+            });
+        }
+        if modes[0] == modes[1] || modes[0] > 3 || modes[1] > 3 {
+            return Err(EngineError::illegal(
+                "cast modal spell",
+                "choose exactly two distinct printed modes",
+            ));
+        }
+        let exile = modes.contains(&0);
+        if exile {
+            if targets.len() != 1 {
+                return Err(EngineError::TargetKind { card: object.card });
+            }
+            let Target::Player(p) = targets[0] else {
+                return Err(EngineError::BadTarget {
+                    card: object.card,
+                    reason: "exile mode requires a target player".to_string(),
+                });
+            };
+            if !self.state.is_live(p) {
+                return Err(EngineError::BadTarget {
+                    card: object.card,
+                    reason: "target player is not live".to_string(),
+                });
+            }
+        } else if !targets.is_empty() {
+            return Err(EngineError::TargetKind { card: object.card });
+        }
+        let spec = object
+            .card
+            .def()
+            .spell_spec()
+            .ok_or(EngineError::illegal("cast modal spell", "not a spell"))?;
+        self.check_timing(player, object.card.def(), spec)?;
+        let cost = self.effective_cost(card)?;
+        self.plan_payment(player, &cost)?;
+        Ok(())
+    }
+
     fn validate_cast(
         &self,
         player: PlayerId,
@@ -3252,6 +3317,12 @@ impl Game {
             .try_object(card)
             .ok_or(EngineError::UnknownObject)?;
         let def = obj.card.def();
+        if obj.card == CardId::TitaniasCommand {
+            return Err(EngineError::illegal(
+                "cast spell",
+                "Titania's Command is modal; choose modes with CastSpellWithModes",
+            ));
+        }
         let from_command_zone = obj.zone == Zone::Command;
         if from_command_zone {
             let Some(commander) = obj.commander else {
@@ -3570,7 +3641,14 @@ impl Game {
         match action {
             Action::Pass => self.apply_pass(player, events),
             Action::PlayLand { card } => self.apply_play_land(player, *card, events),
-            Action::CastSpell { card, targets } => self.apply_cast(player, *card, targets, events),
+            Action::CastSpell { card, targets } => {
+                self.apply_cast(player, *card, &[], targets, events)
+            }
+            Action::CastSpellWithModes {
+                card,
+                modes,
+                targets,
+            } => self.apply_cast(player, *card, modes, targets, events),
             Action::ActivateManaAbility { land } => self.apply_mana_ability(player, *land, events),
             Action::ActivateColorManaAbility { source, color } => {
                 self.apply_color_mana_ability(player, *source, *color, events)
@@ -3962,7 +4040,8 @@ impl Game {
         };
         for id in chosen {
             match mode {
-                crate::state::LibrarySearchMode::BasicLandToBattlefield => {
+                crate::state::LibrarySearchMode::BasicLandToBattlefield
+                | crate::state::LibrarySearchMode::AnyLandToBattlefield => {
                     self.enter_battlefield(id, player, events);
                     if let Some(object) = self.state.objects.get_mut(&id) {
                         object.tapped = true;
@@ -4037,6 +4116,7 @@ impl Game {
             card,
             controller: player,
             targets: Vec::new(),
+            modes: Vec::new(),
             affected: Some(source),
             source_pt_lki: None,
             search_amount: 0,
@@ -4397,6 +4477,7 @@ impl Game {
             card,
             controller: player,
             targets: targets.to_vec(),
+            modes: Vec::new(),
             affected: attach.then_some(source),
             source_pt_lki: None,
             search_amount: 0,
@@ -4719,6 +4800,7 @@ impl Game {
             card: trigger.card,
             controller: trigger.controller,
             targets,
+            modes: Vec::new(),
             affected: trigger.affected,
             source_pt_lki: trigger.source_pt_lki,
             search_amount: trigger.search_amount,
@@ -4919,6 +5001,7 @@ impl Game {
         &mut self,
         player: PlayerId,
         card: ObjectId,
+        modes: &[u8],
         targets: &[Target],
         events: &mut Vec<Event>,
     ) {
@@ -4939,6 +5022,7 @@ impl Game {
             card: card_id,
             controller: player,
             targets: targets.to_vec(),
+            modes: modes.to_vec(),
             affected: None,
             source_pt_lki: None,
             search_amount: 0,
@@ -6470,7 +6554,24 @@ impl Game {
                 return;
             }
 
-            if item.cursor as usize >= spec.effects.len() {
+            let modal_effects: Vec<Effect> =
+                if let Some(table) = crate::card::modal_spell_effects(card) {
+                    let mut selected = item.modes.clone();
+                    selected.sort_unstable();
+                    selected
+                        .into_iter()
+                        .filter_map(|mode| table.get(mode as usize))
+                        .flat_map(|effects| effects.iter().copied())
+                        .collect()
+                } else {
+                    Vec::new()
+                };
+            let effects: &[Effect] = if modal_effects.is_empty() {
+                spec.effects
+            } else {
+                &modal_effects
+            };
+            if item.cursor as usize >= effects.len() {
                 events.push(Event::Resolve {
                     controller: item.controller,
                     object: item.object,
@@ -6487,7 +6588,7 @@ impl Game {
                 return;
             }
 
-            let effect = spec.effects[item.cursor as usize];
+            let effect = effects[item.cursor as usize];
             let pending_created = self.apply_effect(effect, &item, events);
             match self.state.stack.last_mut() {
                 Some(top) => top.cursor += 1,
@@ -7867,6 +7968,70 @@ impl Game {
                 self.state.turn.priority = None;
                 true
             }
+            Effect::ExileTargetPlayersGraveyardAndGainLife => {
+                let Some(Target::Player(victim)) = item.targets.first().copied() else {
+                    return false;
+                };
+                let graveyard = self.state.player(victim).graveyard.clone();
+                let count = graveyard.len() as i32;
+                for id in graveyard {
+                    self.move_to_exile(id, events);
+                }
+                if count > 0 {
+                    self.state.players[controller as usize].life += count;
+                    events.push(Event::LifeChange {
+                        player: controller,
+                        delta: count,
+                        life: self.state.player(controller).life,
+                    });
+                }
+                events.push(Event::StateBasedAction { description: format!("P{controller} exiles P{victim}'s graveyard ({count} card(s)) and gains {count} life") });
+                false
+            }
+            Effect::SearchAnyLandUpToTwo => {
+                let eligible: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .library
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state.try_object(*id).is_some_and(|object| {
+                            object.zone == Zone::Library && object.card.def().is_land()
+                        })
+                    })
+                    .collect();
+                self.state.pending = Some(Pending::SearchLibrary {
+                    player: controller,
+                    remaining: 2,
+                    chosen: Vec::new(),
+                    eligible,
+                    mode: crate::state::LibrarySearchMode::AnyLandToBattlefield,
+                });
+                self.state.turn.priority = None;
+                true
+            }
+            Effect::PutTwoCountersOnEachCreatureYouControl => {
+                let creatures: Vec<ObjectId> = self
+                    .state
+                    .battlefield(controller)
+                    .into_iter()
+                    .filter(|o| self.is_creature(o))
+                    .map(|o| o.id)
+                    .collect();
+                for id in creatures {
+                    if let Some(object) = self.state.objects.get_mut(&id) {
+                        let total = object
+                            .counters
+                            .add(crate::counters::CounterKind::PlusOnePlusOne, 2);
+                        let name = object.card.def().name;
+                        events.push(Event::StateBasedAction {
+                            description: format!("{name} gets two +1/+1 counters (now {total})"),
+                        });
+                    }
+                }
+                false
+            }
             Effect::SaddleSource => {
                 if item.affected == Some(item.object)
                     && self
@@ -8634,6 +8799,44 @@ impl Game {
             if self.state.object(id).card.def().is_land() {
                 continue;
             }
+            if self.state.object(id).card == CardId::TitaniasCommand {
+                for first in 0u8..4 {
+                    for second in (first + 1)..4 {
+                        let modes = [first, second];
+                        let target_sets: Vec<Vec<Target>> = if modes.contains(&0) {
+                            (0..self.state.seat_count() as PlayerId)
+                                .filter(|p| self.state.is_live(*p))
+                                .map(|p| vec![Target::Player(p)])
+                                .collect()
+                        } else {
+                            vec![Vec::new()]
+                        };
+                        for targets in target_sets {
+                            let action = Action::CastSpellWithModes {
+                                card: id,
+                                modes,
+                                targets: targets.clone(),
+                            };
+                            if self.validate(player, &action).is_err() {
+                                continue;
+                            }
+                            out.push(LegalAction {
+                                action,
+                                label: format!(
+                                    "Cast Titania's Command (modes {first}+{second}){}",
+                                    if targets.is_empty() {
+                                        String::new()
+                                    } else {
+                                        format!(" -> {}", self.describe_target(targets[0]))
+                                    }
+                                ),
+                                rules: vec!["601.2b", "700.2"],
+                            });
+                        }
+                    }
+                }
+                continue;
+            }
             for targets in self.target_combinations(player, id) {
                 let action = Action::CastSpell {
                     card: id,
@@ -9198,6 +9401,7 @@ impl Game {
                 let land_kind = match mode {
                     crate::state::LibrarySearchMode::BasicLandToBattlefield => "basic land",
                     crate::state::LibrarySearchMode::SnowLandToHand => "snow land",
+                    crate::state::LibrarySearchMode::AnyLandToBattlefield => "land",
                 };
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,

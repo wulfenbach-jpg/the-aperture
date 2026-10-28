@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, bounded combat with attack/block
   declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (158 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (159 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -308,7 +308,7 @@ the shroud/hexproof the two Equipment grant), layer 7a
 characteristic-defining power/toughness beyond Beorn's Hospitality's land count and Lumra, Bellow of the Woods' land count (Lumra is modelled as a printed layer-7c additive static with no printed P/T, not as a generic fully ordered layer-7a claim),
 layer 7d (counters stay
 display-only), Arcane/splice interactions, and any card outside this branch
-candidate's 158-card pool.
+candidate's 159-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

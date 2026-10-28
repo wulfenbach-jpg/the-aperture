@@ -46,12 +46,12 @@ basic lands (coordinator evidence
 `evidence/issue17/slice44/corpus-audit.py` + `corpus-audit.log`; earlier slice-25 audit retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **145** are in the supported 158-card catalog and **314** are missing. Slice
+* **146** are in the supported 159-card catalog and **313** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **158**; the intervening per-slice list is
+  slices bring the current implemented total to **159**; the intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -68,7 +68,7 @@ the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
 (slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
-`Stuffed Bear`. Ayula currently has **8** missing names.
+`Stuffed Bear`. Ayula currently has **7** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -723,3 +723,6 @@ Exclusions, unchanged from slice 41 and still true here: the legend rule (CR 704
 
 ## Slice 44: Spirit of the Aldergard
 Spirit of the Aldergard (`{3}{G}`, Snow Creature — Bear Spirit, 0/4) is sourced in `fixtures/starter-corpus/slice44-sourced.json` (Scryfall 220df551…, oracle ff3bc67b…, retrieved 2026-10-28T12:05:47Z). Its ETB search uses the private incremental search machinery with a snow-land filter and reveal-to-hand destination, shuffling even on failure to find. The snow supertype is parsed from the printed type line. Its static is a printed layer-7c additive +1/+0 for each other snow permanent its controller controls; self and opponents are excluded. The narrowly required Snow-Covered Forest basic is sourced and supported to make the snow search/count real; no broad snow set is claimed.
+
+## Slice 45: Titania's Command
+Titania's Command (`{4}{G}{G}` Sorcery) is sourced in `fixtures/starter-corpus/slice45-sourced.json` (BRO 194, immutable 753567c7…, oracle 7aae0a3d…, retrieved 2026-10-28T13:02:38Z). Casting uses a typed two-distinct-mode action; resolution follows printed mode order. Exile graveyard, up-to-two land search to tapped battlefield with shuffle, two canonical 2/2 Bears and two +1/+1 counters on each own creature are all implemented. Only the exile mode requires a player target; a modal action with duplicate/insufficient modes or unselected targets is refused atomically.

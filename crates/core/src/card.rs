@@ -351,10 +351,31 @@ pub enum Effect {
     ReturnLandCardsFromGraveyardTapped,
     AttachSourceToTarget,
     SearchSnowLandToHand,
+    ExileTargetPlayersGraveyardAndGainLife,
+    SearchAnyLandUpToTwo,
+    PutTwoCountersOnEachCreatureYouControl,
     DrawIfControlsBears {
         minimum: u8,
         cards: u8,
     },
+}
+
+const TITANIA_EXILE_GRAVE: &[Effect] = &[Effect::ExileTargetPlayersGraveyardAndGainLife];
+const TITANIA_SEARCH: &[Effect] = &[Effect::SearchAnyLandUpToTwo];
+const TITANIA_BEARS: &[Effect] = &[Effect::CreateBearTokens(2)];
+const TITANIA_COUNTERS: &[Effect] = &[Effect::PutTwoCountersOnEachCreatureYouControl];
+
+/// Printed modal spell modes, indexed by the mode action's u8.
+pub fn modal_spell_effects(card: CardId) -> Option<&'static [&'static [Effect]]> {
+    match card {
+        CardId::TitaniasCommand => Some(&[
+            TITANIA_EXILE_GRAVE,
+            TITANIA_SEARCH,
+            TITANIA_BEARS,
+            TITANIA_COUNTERS,
+        ]),
+        _ => None,
+    }
 }
 
 impl Effect {
@@ -451,6 +472,16 @@ impl Effect {
             Effect::AttachSourceToTarget => "attach this Equipment to the target creature".to_string(),
             Effect::SearchSnowLandToHand => {
                 "search for a snow land card, reveal it, put it into hand, then shuffle".to_string()
+            }
+            Effect::ExileTargetPlayersGraveyardAndGainLife => {
+                "exile target player's graveyard and gain 1 life per card".to_string()
+            }
+            Effect::SearchAnyLandUpToTwo => {
+                "search for up to two land cards, put them onto the battlefield tapped, then shuffle"
+                    .to_string()
+            }
+            Effect::PutTwoCountersOnEachCreatureYouControl => {
+                "put two +1/+1 counters on each creature you control".to_string()
             }
             Effect::PutTrampleCounterOnTarget => {
                 "put a trample counter on the target creature".to_string()
@@ -797,6 +828,7 @@ pub enum CardId {
     SwiftfootBoots,
     SpiritOfTheAldergard,
     SnowCoveredForest,
+    TitaniasCommand,
     AyulasInfluence,
     Bearscape,
     MotherBear,

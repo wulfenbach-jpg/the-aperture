@@ -31,6 +31,12 @@ pub enum Action {
         card: ObjectId,
         targets: Vec<Target>,
     },
+    /// Cast a modal spell with exactly two distinct modes chosen at cast time.
+    CastSpellWithModes {
+        card: ObjectId,
+        modes: [u8; 2],
+        targets: Vec<Target>,
+    },
     ActivateManaAbility {
         land: ObjectId,
     },
@@ -149,6 +155,7 @@ impl Action {
             Action::Pass => "pass",
             Action::PlayLand { .. } => "play land",
             Action::CastSpell { .. } => "cast spell",
+            Action::CastSpellWithModes { .. } => "cast modal spell",
             Action::ActivateManaAbility { .. } => "mana ability",
             Action::ActivateColorManaAbility { .. } => "mana ability",
             Action::DeclareAttackers { .. } => "declare attackers",

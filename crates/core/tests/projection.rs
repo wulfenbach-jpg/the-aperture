@@ -154,6 +154,7 @@ fn projection_carries_the_decision_identity_and_legal_actions() {
         card: CardId::Shock,
         controller: P0,
         targets: Vec::new(),
+        modes: Vec::new(),
         affected: None,
         source_pt_lki: None,
         search_amount: 0,
