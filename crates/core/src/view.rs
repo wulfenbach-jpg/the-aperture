@@ -135,6 +135,12 @@ pub struct PlayerView {
     /// Public combat state (CR 508/509: declarations are public).
     pub attackers: Vec<ObjectId>,
     pub blockers: Vec<(ObjectId, ObjectId)>,
+    /// CR 509.1g: a blocker whose attacker has left combat is still a blocking
+    /// creature until it is removed from combat or the combat phase ends, so it
+    /// has no pair to report in `blockers`. It is public combat state exactly
+    /// like the pairs above and is listed separately rather than invented as a
+    /// pair with a departed attacker.
+    pub unpaired_blockers: Vec<ObjectId>,
     pub stack: Vec<StackView>,
     pub turn_number: u32,
     pub active: PlayerId,
@@ -732,6 +738,7 @@ impl Game {
             own_mulligans: me.mulligans,
             attackers: self.state.turn.attackers.clone(),
             blockers: self.state.turn.blockers.clone(),
+            unpaired_blockers: self.state.turn.unpaired_blockers.clone(),
             stack: self
                 .state
                 .stack

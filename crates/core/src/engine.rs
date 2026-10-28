@@ -2055,9 +2055,12 @@ impl Game {
             (object.zone == Zone::Battlefield)
                 .then(|| (object.card, object.controller, self.is_creature(object)))
         });
-        // CR 508.1 + 509.1: "attacking alone" / "blocking alone" are read from
-        // this combat's declaration record, which `detach_object` clears as part
-        // of the zone change. The fact therefore comes from the batch snapshot.
+        // CR 508.1 + 509.1: "was attacking or blocking alone" is read from the
+        // live pre-death combat membership captured ONCE for this batch by
+        // `capture_combat_alone` (CR 704.3). It must be captured before this
+        // call, because `detach_object` prunes the live lists as part of the
+        // zone change below. The declaration record is NOT this predicate
+        // (CR 506.5 separates "attacks alone" from "is attacking alone").
         let alone_in_combat = combat.died_alone(id);
         let token = self
             .state

@@ -764,6 +764,19 @@ fn blocker_still_blocks_alone_after_its_attacker_is_bounced() {
     assert_eq!(g.state.object(blocker).zone, Zone::Battlefield);
     g.state.validate().unwrap();
     assert_eq!(g.state.turn.unpaired_blockers, vec![blocker]);
+    // Review 333 N-1: the orphan blocker is public combat state, so every
+    // seat's view reports it as a blocking creature — and never as a pair with
+    // the attacker that already left (CR 509.1g).
+    for viewer in [P0, P1] {
+        let view = g.view_for(viewer, &[]);
+        assert!(view.blockers.is_empty(), "the pair itself is gone");
+        assert!(view.attackers.is_empty());
+        assert_eq!(
+            view.unpaired_blockers,
+            vec![blocker],
+            "the blocker is still blocking and P{viewer} can see it"
+        );
+    }
     let mut loaded = fixture_save_round_trip(&g);
     cast_at_creature(&mut loaded, P0, CardId::LightningStrike, blocker);
     settle_through_combat(&mut loaded);

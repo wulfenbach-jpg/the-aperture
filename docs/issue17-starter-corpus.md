@@ -795,6 +795,17 @@ constructor initializer; no AI policy, budget, sampling or hidden-data behavior
 is changed. This narrow shared-state initializer exception is disclosed for
 review, not hidden as a core-only diff.
 
+**Projection of the orphan blocker (slice 51, review 333 N-1):** slice 50 kept
+the orphan in the engine but `PlayerView` still projected only paired attackers
+and blockers, so a seat's public combat state showed no blocking creature while
+the engine held one. `PlayerView::unpaired_blockers` now carries the same public
+list, separately from `blockers` rather than inventing a pair with a departed
+attacker (CR 509.1g: the creature is still blocking; it simply blocks nothing
+that is still attacking). Every seat sees it, because combat declarations and
+their consequences are public. A temporary removal of the projection made the
+committed combat regression fail (`left: [] / right: [ObjectId(8)]`, exit 101);
+the committed test asserts it for both seats and that the pair list stays empty.
+
 ## Slices 48–49: Owlbear Cub and review329 repairs
 
 Owlbear Cub (CLB 246, `{2}{G}`, 3/3 Bird Bear) is recorded verbatim with
