@@ -6,7 +6,11 @@ increments 1–35 were **not** re-audited; this slice answers review 297 only.
 
 * **Code head of record:** `7bb8197c2b842ff7c2ba071b05bdb309988e735d`
   (driver + its artifacts + one player-facing description line + docs).
-* Local = remote = PR `headRefOid` = `7bb8197`. PR is OPEN, **draft**, `BEHIND`
+* **Evidence tip of record:** `be561114114010991b3371ebb4508370dc0d7825`
+  (this checkpoint, both exact-head CI receipts and the PR-body update). The two
+  are different commits on purpose: the code head is what the focused tests and
+  the journey describe, the tip is what carries the record for them.
+* Local = remote = PR `headRefOid` = `be56111`. PR is OPEN, **draft**, `BEHIND`
   master, no merge, master push, issue closure or downstream unlock.
 * **Original issue-17 contract remains unfinished**: 1 of 8 desired 100-card
   lists certified, Ayula 15 names short, 321 of 459 union names unsupported.

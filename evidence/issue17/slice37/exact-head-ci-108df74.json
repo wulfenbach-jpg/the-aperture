@@ -1,0 +1,13 @@
+head 108df741852df08c062ec69fecf746bb7bf3870c
+total 10  states {'completed/success': 10}
+ALL_KEYED=True ALL_SUCCESS=True
+   completed   success  board and roadmap
+   completed   success  board and roadmap
+   completed   success  rust (macos-latest)
+   completed   success  rust (macos-latest)
+   completed   success  rust (ubuntu-latest)
+   completed   success  rust (ubuntu-latest)
+   completed   success  rust (windows-latest)
+   completed   success  rust (windows-latest)
+   completed   success  windows package
+   completed   success  windows package
