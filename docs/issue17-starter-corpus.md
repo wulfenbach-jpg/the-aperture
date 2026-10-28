@@ -735,3 +735,30 @@ Two properties of this trigger are where an implementation can quietly be wrong,
 Resolution exiles *that* card from its owner's graveyard where the trigger found it and then creates one Clue token (CR 701.16a) for the trigger's controller; a card that already left the graveyard is simply not found and the investigate still happens, because the printed text has no "if you do" between the two instructions. The Clue token is a real artifact token with the printed `{2}, Sacrifice this token: Draw a card` ability and no `{T}` in its cost, so a Clue created this turn can be cracked at once and its sacrifice goes through the ordinary token-cessation path (CR 111.7). Flash is the catalog's keyword flag; nothing here grants or removes it.
 
 Exclusions, disclosed: a commander that dies alone in combat is, under CR 903.9a, never put into a graveyard at all — its owner may put it into the command zone *instead* of the graveyard move, so a real game never fires a "dies" trigger for it. This engine models the return as a state-based action that happens *after* an ordinary graveyard move: `move_to_graveyard_inner` records the death and queues the `Dies` / `AnotherCreatureDies` watchers, and only then does the CR 903.9a choice run (`apply_commander_return_batch`). So a returned commander does produce a death event here, Thijarian Witness can queue for it, find no card to exile (the card is already in the command zone, a new object, CR 400.7) and still investigate, and the counter play is "return the commander and take a Clue". **That over-triggering is a pre-existing engine deviation, not something this slice introduced**: the correct shape is a replacement effect on the graveyard move (CR 614.1a, 903.9a), which would make the death invisible to every dies watcher. It is recorded here as a known limit and an explicit backlog item; nothing in the pool watches "commander dies" today, and no test in this slice pins the deviant behaviour. The trigger is otherwise modelled only for creatures that are creatures as they leave (CR 700.4), and nothing else in the pool watches "creature dies" with a combat-state condition. This slice certifies no starter list: Ayula has 6 missing names and the eight-list gate remains 1 of 8.
+
+## Slice 47: the declaration record for "attacking or blocking alone"
+
+Slice 46 read the CR 506.5 alone question off the live combat lists, and that was wrong in the one
+case the prose already described: `turn.attackers` / `turn.blockers` are pruned whenever a creature
+leaves combat (CR 506.4), so two attackers declared together, one killed in the declare-blockers
+step and the other killed later in the same combat, made the survivor look like the only attacker.
+`Turn::declared_attackers` / `Turn::declared_blockers` are now the answer: written when the
+declaration is submitted, never pruned when a creature leaves combat or dies, cleared at end of
+combat (CR 511.3) and at the start of a turn. Two regressions pin the discriminating case (an
+attacker and its blocker mirror), and both fail on the old live-state read. A creature put onto the
+battlefield *attacking* is not added to the declaration record — it was never declared (CR 506.5
+reads "declared as an attacker"), so it does not stop its companion from having attacked alone.
+
+The record is public state and therefore serialized, which changes the canonical JSON of any state
+that holds a live declaration. `SAVE_VERSION` stays 10 and `REPLAY_VERSION` stays 6 deliberately:
+raising either would reject every earlier artifact, including the pinned pre-#16 v10 fixture whose
+purpose is to prove an old save still loads. The consequence is documented rather than hidden — an
+older mid-combat recording re-executes to a different digest than it stored, and a pre-change
+mid-combat save carries no declaration, so for the rest of that combat the alone question answers
+no and a genuine alone-attack death is under-reported. Pre-combat old saves are byte-identical
+because an absent field stays absent. See README "Versioned persistence".
+
+Known weakness, recorded for a later hardening pass: the declaration record is **not** checked by
+`GameState::validate`. A reloaded or hand-edited state may carry a declaration list that does not
+correspond to the creatures in combat. Today that only produces a conservative "not alone", but
+validate should eventually constrain it the way it constrains `attackers` / `blockers`.

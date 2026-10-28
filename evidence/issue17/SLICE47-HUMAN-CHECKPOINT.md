@@ -60,9 +60,32 @@ recorded digest**. Executed here, both ways:
 Log: `slice47/prior-recordings.log`. This is not avoidable without keeping the defect: the
 declaration is public game state that must survive a save/load, and the alternative — omitting it
 from serialization — would make a reloaded mid-combat save forget which creatures were declared (a
-rules error in the opposite direction). Saves recorded before this change still load and still
-verify their own stored digest, because an absent field stays absent and serializes identically
-(`skip_serializing_if` empty); the pre-#16 fixture test proves that path in the workspace suite.
+rules error in the opposite direction).
+
+**Saves recorded before this change are a different story, and the earlier draft of this checkpoint
+told it wrongly.** They still *parse*, but they do not all replay to their stored digest, and a
+legacy mid-combat save no longer answers the alone question at all. Executed at this head:
+
+| Pre-change artifact | Under this head |
+| --- | --- |
+| `slice45/demo-save.json` | parses and re-executes, then **fails**: `replay ended early: digest 99bc8446… != recorded 45d674d2…`, `aperture-cli` exit **1** |
+| a mid-combat save written before this change | `Turn::declared_attackers` deserializes **empty**, so for the rest of that combat `capture_combat_alone` says "not alone" and a genuine alone-attack death stops firing Thijarian Witness — the declaration happened in a build that never recorded it, and nothing can recover it from the save |
+| the pinned pre-#16 v10 fixture | still loads and still verifies (a pre-combat state, so the absent field really is absent) — the workspace suite's green run covers only this narrower path |
+
+**Version decision, taken deliberately and recorded rather than implied:** `SAVE_VERSION` stays
+**10** and `REPLAY_VERSION` stays **6**. Bumping either would reject every older artifact outright,
+including the pinned pre-#16 v10 fixture whose whole purpose is to prove an old save still loads; a
+bump would turn a readable old file into a hard version error, which is strictly worse than the
+digest under-report above. The consequence is therefore a documented limitation, not a hidden one:
+**older mid-combat saves replay to a different digest and may under-report alone-attack triggers for
+the remainder of that combat.** The user-facing form of this is under README "Versioned persistence".
+
+A related known weakness, recorded for a later hardening pass rather than fixed here: the
+declaration record is **not** checked by `GameState::validate`. A reloaded or forged state may carry
+`declared_attackers` that does not correspond to the creatures that are in combat. That is harmless
+today (the record is only read for the CR 506.5 alone question, and a mismatch produces a
+conservative "not alone"), but it is state that validate should eventually constrain the way it
+constrains `attackers`/`blockers`.
 
 ### 3. CR 903.9a commander return recorded as a known limit
 
@@ -95,7 +118,7 @@ Owlbear Cub first and the Ring last as its own issue.
 | `cargo fmt --all --check` | exit 0 | `slice47/fmt.log` |
 | `cargo clippy --workspace --all-targets --locked -- -D warnings` | exit 0 | `slice47/clippy.log` |
 | `cargo build --workspace --release --locked` | exit 0 | `slice47/release-build.log` |
-| Four-seat 40-life journey, re-executed from the committed driver | terminal `Win{P1}`, 3073 steps, 54 turns, **digest `da4eacd5363f…b995bde` — identical to the slice-46 recording**, 8098 replay events, 38 solo attacks, 104 Clues, 14 exiles | `slice47/demo-journey.json`, `slice47/journey.log` |
+| Four-seat 40-life journey, re-executed from the committed driver | terminal `Win{P1}`, 3073 steps, 54 turns, **digest `da4eacd5363f…b995bde` — identical to the slice-46 recording**, 8098 replay events, 38 solo attacks, 104 Clues, 14 exiles | `slice47/demo-journey.json`, `slice47/journey-build.log` (EXIT=0) |
 | Separate release-CLI replay of that recorded line | `replayed digest da4eacd5363f \| matches recorded \| events 8098` | `slice47/cli-replay.log` |
 | Replay/save agreement inside the driver | `replay.run()` digest equal; fresh `SessionSave` reload equal to the live state | driver assertions |
 | Corpus audit (own parse of `catalog.rs` + the eight lists) | catalog **160**, union **459 = 147 supported + 312 missing**, per list `[55,0,51,48,6,52,52,53]`, **1 certified** | `slice47/corpus-audit.log` |
@@ -104,6 +127,11 @@ Owlbear Cub first and the Ring last as its own issue.
 The journey being **byte-identical** to slice 46 is the useful part of that gate: the fix changes
 only the case it must change. The demo driver declares one attacker per combat, so its game never
 depends on the discarded live-state reading.
+
+`slice47/journey-locked-attempt-FAILED.log` is kept on purpose, labelled, and is **not** the gate:
+that run asked for `--locked` before the driver's `Cargo.lock` existed and exited 101. The gate is
+`slice47/journey-build.log`, the same driver built and run successfully (EXIT=0), whose
+`demo-journey.json` is the artifact quoted above.
 
 ## What this slice does NOT claim
 

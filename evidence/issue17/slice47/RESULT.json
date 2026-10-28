@@ -21,7 +21,7 @@
   "base_head": "aab47c1604b110d9188f9f1f9f20c89614d1a73f",
   "branch": "aperture/issue-17",
   "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
-  "pr_state": "OPEN, draft, headRefOid 4c55d94 == local == remote, base master untouched",
+  "pr_state": "OPEN, draft. Code head 4c55d94 == local == remote; PR headRefOid 1b1c542 is the evidence tip and differs from the code head by the CI/journey receipts commit only. Base master untouched.",
   "changes": {
     "product": [
       "crates/core/src/state.rs: Turn::declared_attackers / Turn::declared_blockers (serde default + skip_serializing_if empty), documented as the CR 506.5 declaration record",
@@ -67,7 +67,7 @@
   "disclosures": [
     "Original #17 remains UNFINISHED: 1 of 8 lists certified, Ayula 6 names missing, catalog still 160 — this slice adds no card.",
     "Recording the declaration record changes the canonical JSON of a state that has a live declaration. A replay whose terminal state is a combat kill with declared attackers no longer reproduces its recorded digest: the slice-45 recording re-executes to the same actions and outcome but hashes 99bc8446… where 45d674d2… was recorded. The slice-46 recording (empty-library ending, no declaration) still matches exactly. This is intrinsic to storing public game state that must survive save/load; omitting it from serialization would make a reloaded mid-combat save forget the declaration.",
-    "Pre-change saves still load and verify their own stored digest (an absent field stays absent); pre-#16 fixture coverage runs green in the workspace suite.",
+    "Pre-change artifacts do NOT all verify at this head, and the version numbers stay where they are on purpose. Executed: `aperture-cli replay --file evidence/issue17/slice45/demo-save.json` parses, re-executes and then fails with `replay ended early: digest 99bc8446... != recorded 45d674d2...`, exit 1; the pinned pre-#16 v10 fixture still loads and verifies because it is a pre-combat state with the absent field genuinely absent. A legacy mid-combat save carries no declaration record, so for the rest of that combat the alone question answers \"not alone\" and a genuine alone-attack death stops firing Thijarian Witness, unrecoverably. SAVE_VERSION deliberately stays 10 and REPLAY_VERSION stays 6: a bump would reject every older artifact including that pinned fixture, which is worse than the digest under-report. Recorded as a documented limitation in README 'Versioned persistence' and in the slice-47 checkpoint.",
     "crates/ai/src/search.rs is the only non-core file touched: two Turn literal fields, read from real_state like blocked/defender because declarations are public. No search policy, budget, sampling or hidden-information rule changed.",
     "The CR 903.9a commander-return over-triggering is pre-existing engine behaviour, recorded as a known limit; no test pins the deviant shape and nothing was fixed there.",
     "Legend rule CR 704.5j and every earlier limitation are unchanged.",

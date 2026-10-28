@@ -101,14 +101,26 @@ implementation and it says so everywhere it matters.
   `legal` never means playable. All 2+ commander variants and every non-normal
   layout are refused as `not_certified`. See
   [docs/commander-legality.md](docs/commander-legality.md).
-* **Versioned persistence:** replay v5 embeds ordered seat deck snapshots, the
+* **Versioned persistence:** replay **v6** embeds ordered seat deck snapshots, the
   explicit named profile (`practice-20`, `command-zone-practice-20` or
   `commander-combat-practice-40`), the explicit commander setup (empty for
-  ordinary practice), and the recorded first player; save v8 embeds the game,
+  ordinary practice), and the recorded first player; save **v10** embeds the game,
   replay, seat snapshots, AI settings, the Commander-combat damage ledger and
   digest, including the mulligan round and sacrifice queue. Older replay/save versions are rejected explicitly rather
   than silently reinterpreted, and a recorded `rules_revision` must match this
   build before a replay runs. The pinned rules revision is unchanged.
+  Both numbers are deliberately **not** bumped by the combat-declaration record
+  (`Turn::declared_attackers` / `declared_blockers`, CR 506.5): a bump would
+  reject every older artifact outright, including the pinned pre-#16 v10 fixture
+  that exists to prove an old save still loads. The cost of staying at v10/v6 is
+  a documented limitation rather than a silent one — a save or replay written
+  before that record existed can re-execute to a **different digest** than the
+  one it stored (an older mid-combat recording fails with
+  `replay ended early: digest … != recorded …`), and a pre-change mid-combat save
+  carries no declaration at all, so for the remainder of that combat "attacking
+  or blocking alone" answers no and a genuine alone-attack death is
+  under-reported. Pre-combat old saves are unaffected because the absent field
+  stays absent.
 * **Native desktop UI** (`aperture`): dark charcoal/brass 2–4-seat card table
   with compact 2x2 seat panels, all public battlefields, command zones, life,
   counters, status, stack view, own hand, legal-action buttons, coaching panel

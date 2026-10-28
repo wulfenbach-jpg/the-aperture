@@ -1,3 +1,6 @@
+# FAILED attempt, kept for honesty: running the demo driver with --locked failed here
+# because its Cargo.lock had not been generated yet. The successful build+run of the
+# same driver is journey-build.log (EXIT=0).
 error: cannot update the lock file C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice47-journey-driver\Cargo.lock because --locked was passed to prevent this
 help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.
 EXIT=101

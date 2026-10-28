@@ -326,7 +326,7 @@
         "Yawgmoth, Thran Physician"
       ],
       "missing_interactions": [
-        "remaining 53 desired-list nonland names are unsupported",
+        "remaining 52 desired-list nonland names are unsupported",
         "sacrifice outlets",
         "death/drain triggers",
         "tutor and reanimation interactions"
