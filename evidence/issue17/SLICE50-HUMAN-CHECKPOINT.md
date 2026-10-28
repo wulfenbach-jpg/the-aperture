@@ -67,7 +67,12 @@ Journeys, both re-executed from the committed drivers:
 * **Cub package unchanged** — `Win{P2}`, 3463 steps, 95 turns, 8658 events, digest
   `acf204aa…747ac9`, replay matches.
 
-## 4. Persistence position (recorded, not papered over)
+## 4. CI
+
+10/10 exact-head checks completed SUCCESS keyed to code `dc9e99b` (both workflows), read back with
+`gh pr checks 46`; no rerun requested (`slice50/exact-head-ci-dc9e99b.json`).
+
+## 5. Persistence position (recorded, not papered over)
 
 `SAVE_VERSION` stays **10**, `REPLAY_VERSION` stays **6**. The witness predicate now needs no
 declaration, so an older mid-combat save no longer under-reports an alone death; the absent-field
@@ -77,7 +82,7 @@ digest because new declaration/`unpaired_blockers` fields are written). A save m
 all blocking pairs has already discarded that membership and cannot be reconstructed; stated in
 README and docs.
 
-## 5. What is deliberately not done
+## 6. What is deliberately not done
 
 No card was enabled, Ruxa's three-clause card is **not** implemented, and the exact 100-card
 four-seat certification has **not** run — Ayula still has five missing names. Next work is written

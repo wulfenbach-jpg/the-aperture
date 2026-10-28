@@ -153,5 +153,10 @@
   ],
   "children_are": "Scheduled evaluation dependency wait and unassigned soak backlog; not review children; left gated",
   "no_merge_master_push_closure_or_unlock": true,
-  "next_action": "Independent practical delta review of b82c3f5..HEAD (predicate reading against pinned CR 506.5/704.3/509.1g, RED discrimination, malformed-state refusals, narrow AI-field exception), then same writer/branch/PR46 takes slice50/NEXT-CARDS.md in order (Ruxa first), then exact 100-card four-seat certification with separate replays."
+  "next_action": "Independent practical delta review of b82c3f5..HEAD (predicate reading against pinned CR 506.5/704.3/509.1g, RED discrimination, malformed-state refusals, narrow AI-field exception), then same writer/branch/PR46 takes slice50/NEXT-CARDS.md in order (Ruxa first), then exact 100-card four-seat certification with separate replays.",
+  "ci": {
+    "head": "dc9e99b828a89b419246e9680ebdd7563a2f63d1",
+    "receipt": "evidence/issue17/slice50/exact-head-ci-dc9e99b.json",
+    "result": "10/10 completed SUCCESS, every head_sha keyed to dc9e99b; 0 failed/pending; gh pr checks 46 read back all ten pass; no rerun requested"
+  }
 }
