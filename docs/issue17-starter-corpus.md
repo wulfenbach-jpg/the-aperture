@@ -783,7 +783,12 @@ continuation. Additional controls cover paired-plus-unpaired counts and the
 same blocker bounced and legally Flash-recast with the same ObjectId: it no
 longer blocks. Eight malformed field shapes are refused by validation and the
 real save loader. The fixture saves use dummy replay decks and establish load
-and continuation, not replay provenance of a constructed initial board.
+and continuation, not replay provenance of a constructed initial board. Slice 51
+projects the orphan list to both seats (`PlayerView::unpaired_blockers`), but no
+UI surface renders combat lists yet — `ui/app.rs` still reads only
+`legal_blockers`, so today the projection is a data-layer fact that a renderer
+consumer does not yet display (review 335 non-blocking note, recorded here rather
+than left in a review thread).
 
 The new field is empty/omitted in unaffected states, but states actually holding
 unpaired blockers gain a new digest basis. Older saves written **after** losing

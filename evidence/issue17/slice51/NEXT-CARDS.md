@@ -71,8 +71,9 @@ re-read at slice-51 head, so the next run starts from them instead of re-derivin
   duplicated, or a non-creature) is refused by `GameState::validate` **and** by a real
   `SessionSave::load` — that is exactly the review-329 R329-3 class of defect.
 * `crates/core/src/action.rs` — one answer action; `crates/core/src/view.rs` — the pending must be
-  projected to its owner only (contents masked for every other seat), and `describe_target` needs the
-  new `Target::Card` case for the stack view.
+  projected to its owner only (contents masked for every other seat), and `Game::describe_target`
+  (`crates/core/src/engine.rs:9022`, **not** `view.rs` as an earlier revision of this brief said)
+  needs the new `Target::Card` case for the stack view.
 * `crates/core/src/engine.rs` — `deal_combat_damage` (~8827) currently assigns automatically: a
   blocked attacker with blockers splits its damage lethal-first, trample spills to the player, and
   there is no choice surface. A creature answered "yes" must assign its damage **to the defending

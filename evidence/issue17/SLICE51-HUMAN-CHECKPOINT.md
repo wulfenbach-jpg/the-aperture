@@ -20,6 +20,17 @@ from the **live pre-death membership captured once per batch by `capture_combat_
 declaration record is **not** this predicate (CR 506.5). It no longer states the superseded
 slice-47 reading. **Comment only — no engine behaviour changed.**
 
+**R333-2 closure included the crate-wide sweep review 333 asked for (recorded here, per review
+335 R335-2).** The sweep was run, not assumed: `grep -rn` for `declaration record`,
+`declared_attackers` and `declared_blockers` across `crates/`, `docs/` and `README.md` at this head,
+plus a read of every hit, leaving only accurate mentions — `engine.rs:2062` (the declaration record
+is **not** the alone predicate), `engine.rs:2495` (the record stays separate from Witness),
+`engine.rs:5302-5305` (declaration semantics), `state.rs:784-796` (Witness reads the live lists),
+`card.rs:256-260` (Owlbear Cub stays outside the record), `docs/issue17-starter-corpus.md:754` and
+its §Slice 46 entry, and `README.md:112`. **No surviving instance of the retired vocabulary remains**;
+this was a sweep across the crate, not a one-line fix. Review 335 re-ran the same grep and found the
+same result.
+
 **R333-3 — code head and evidence tip are stated apart.** The checkpoint §4 and `RESULT.json.ci`
 now publish `code_head dc9e99b` (10/10 exact-head checks SUCCESS) and `evidence_only_tip 1a6ae1c`
 **separately**, with the tip's own CI pass explicitly *not* claimed.
@@ -59,9 +70,14 @@ it is a projection/observability fix, not a policy change.
 * `cargo fmt --all --check`
 * focused, 6 suites / **43 passed / 0 failed**: `issue17_slice46` 14, `issue17_slice48` 6,
   `issue17_slice49` 8, `starter_corpus` 8, `catalog_pool` 5, `issue17_slice15_corpus` 2
-* `cargo test -p aperture-ai --test search --locked` → **9 passed / 0 failed** (separate crate,
-  reported apart; the first attempt used `--lib search`, which matched **zero** test names — an own
-  harness-path error, retained rather than hidden)
+* `cargo test -p aperture-ai --test search --locked` → **9 passed / 0 failed**. **Receipt:** the
+  true command's own output and `EXIT=` line live in `slice52/search-gate-slice51-head.log`
+  (recorded against this slice's head, `6abd820`) and in `slice52/gates.log` §`ai_search` for the
+  slice-52 head; `slice51/gates.log:105-115` holds only the *earlier* `--lib search` invocation,
+  which matched **zero** test names (`running 0 tests`, `EXIT=0`) — an own harness-path error that is
+  labelled as the zero-match attempt, never as the nine-test gate (review 335 R335-1). The corrected
+  script that runs the true command is `slice52/run-gates.sh`; slice 51's script and log are left
+  unmodified as historical artifacts.
 * corpus audit **AUDIT OK**: 161 catalog / 459 union / 148 supported / 311 missing, per-list
   `[55,0,51,48,5,52,52,53]`, Ayula 5, **1 certified**
 * `cargo clippy --workspace --all-targets --locked -- -D warnings` exit 0

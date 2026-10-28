@@ -1,104 +1,116 @@
 {
-  "slice": 51,
-  "issue": 17,
-  "base": "1a6ae1c96d70ce07ec5cffa1a0bf0c0ab0bc6adb",
-  "branch": "aperture/issue-17",
-  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
-  "scope": "review-333 record corrections R333-1..R333-3 + public PlayerView projection of CR 509.1g unpaired blockers (review 333 N-1); no card added, no certificate added",
-  "full_issue17_accepted": false,
-  "independent_review_outcome": null,
-  "authorship": "Native integration owner wrote this increment and is not its independent reviewer",
-  "record_items_closed": [
-    "R333-1 focused total: checkpoint now 11 suites / 129 passed plus the separately logged aperture-ai search 9, with 138 labelled an aggregate; RESULT.json of slice50 rewritten the same way",
-    "R333-2 engine.rs move_to_graveyard_inner comment now describes the live pre-death snapshot captured once per batch and states the declaration record is not the predicate (comment only, no behaviour change)",
-    "R333-3 code head dc9e99b and evidence-only tip 1a6ae1c are stated apart in the slice-50 checkpoint and RESULT.json, with no CI pass claimed for the tip",
-    "non-blocking N-2/N-3/N-4 precision notes written into the slice-50 records (newline-normalised identity, stale log line numbers, 135 result lines = 131 binaries + 4 doc-test runs)"
+ "slice": 51,
+ "issue": 17,
+ "base": "1a6ae1c96d70ce07ec5cffa1a0bf0c0ab0bc6adb",
+ "branch": "aperture/issue-17",
+ "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+ "scope": "review-333 record corrections R333-1..R333-3 + public PlayerView projection of CR 509.1g unpaired blockers (review 333 N-1); no card added, no certificate added",
+ "full_issue17_accepted": false,
+ "independent_review_outcome": null,
+ "authorship": "Native integration owner wrote this increment and is not its independent reviewer",
+ "record_items_closed": [
+  "R333-1 focused total: checkpoint now 11 suites / 129 passed plus the separately logged aperture-ai search 9, with 138 labelled an aggregate; RESULT.json of slice50 rewritten the same way",
+  "R333-2 engine.rs move_to_graveyard_inner comment now describes the live pre-death snapshot captured once per batch and states the declaration record is not the predicate (comment only, no behaviour change). Review 335 R335-2 additionally required the crate-wide SWEEP statement, now recorded in the slice-51 checkpoint section 1: grep -rn for 'declaration record', declared_attackers and declared_blockers across crates/, docs/ and README.md left only accurate mentions (engine.rs:2062, 2495, 5302-5305; state.rs:784-796; card.rs:256-260; docs/issue17-starter-corpus.md:754 and its Slice 46 entry; README.md:112) and no surviving instance of the retired vocabulary - a sweep, not a one-line fix.",
+  "R333-3 code head dc9e99b and evidence-only tip 1a6ae1c are stated apart in the slice-50 checkpoint and RESULT.json, with no CI pass claimed for the tip",
+  "non-blocking N-2/N-3/N-4 precision notes written into the slice-50 records (newline-normalised identity, stale log line numbers, 135 result lines = 131 binaries + 4 doc-test runs)"
+ ],
+ "product_change": {
+  "what": "PlayerView::unpaired_blockers now projects Turn::unpaired_blockers from the engine, separately from the paired blockers list",
+  "why": "review 333 N-1: the engine kept the orphan blocker but a seat's public combat state projected no blocking creature (CR 509.1g)",
+  "behaviour_change": "projection only: no engine state, digest, rules outcome, AI policy or persistence change",
+  "files": [
+   "crates/core/src/view.rs",
+   "crates/core/src/engine.rs (comment correction only, R333-2)",
+   "crates/core/tests/issue17_slice46.rs (view assertions added to the existing orphan-blocker regression)",
+   "docs/issue17-starter-corpus.md"
+  ]
+ },
+ "red": {
+  "log": "evidence/issue17/slice51/red-view-projection.log",
+  "what": "the projection was temporarily replaced by Vec::new() (pre-slice-51 behaviour); the committed orphan-blocker regression failed",
+  "symptom": "left: [] / right: [ObjectId(8)], 0 passed / 1 failed, exit 101",
+  "restored": "same test passes with the projection; it asserts for both seats that blockers and attackers are empty and unpaired_blockers == [blocker]"
+ },
+ "local_gates": {
+  "receipt": "evidence/issue17/slice51/gates.log",
+  "fmt_exit": 0,
+  "focused_suites": 6,
+  "focused_passed": 43,
+  "focused_failed": 0,
+  "focused_breakdown": {
+   "issue17_slice46": 14,
+   "issue17_slice48": 6,
+   "issue17_slice49": 8,
+   "starter_corpus": 8,
+   "catalog_pool": 5,
+   "issue17_slice15_corpus": 2
+  },
+  "separate_search_suite": "cargo test -p aperture-ai --test search --locked: 9 passed / 0 failed. Receipt: evidence/issue17/slice52/search-gate-slice51-head.log (command output plus its own EXIT line, recorded at slice-51 head 6abd820) and evidence/issue17/slice52/gates.log section ai_search for the slice-52 head.",
+  "harness_error_disclosed": "slice51/gates.log:105-115 is the zero-match attempt: `cargo test -p aperture-ai --lib search --locked` ran 0 tests and exited 0, and is labelled as such - it is NOT the nine-test gate. The corrected script is evidence/issue17/slice52/run-gates.sh; slice 51's script and log are preserved unmodified.",
+  "corpus_audit": "AUDIT OK 161 catalog / 459 union / 148 supported / 311 missing, per-list [55,0,51,48,5,52,52,53], Ayula 5, 1 certified",
+  "workspace_clippy_deny_warnings_exit": 0,
+  "locked_release_cli_exit": 0,
+  "workspace": "cargo test --workspace --all-targets --locked: 133 result lines / 947 passed / 0 failed, exit 0",
+  "journey_driver_exit": 0
+ },
+ "journeys": {
+  "kind": "committed four-seat 40-life witness package re-executed at this head; an evidence-only demonstrator, not a 100-card certificate and not AI-strength evidence",
+  "driver": "evidence/issue17/slice50-witness-driver",
+  "log": "evidence/issue17/slice51/journey.log",
+  "outcome": "Win{P1}",
+  "steps": 3073,
+  "turns": 54,
+  "events": 8098,
+  "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+  "artifacts": "demo-journey.json, demo-replay.json, demo-save.json content-identical after newline normalisation",
+  "replay_digest_matches": true
+ },
+ "corpus": {
+  "catalog_cards": 161,
+  "union_names": 459,
+  "supported_union": 148,
+  "missing_union": 311,
+  "per_list_missing": [
+   55,
+   0,
+   51,
+   48,
+   5,
+   52,
+   52,
+   53
   ],
-  "product_change": {
-    "what": "PlayerView::unpaired_blockers now projects Turn::unpaired_blockers from the engine, separately from the paired blockers list",
-    "why": "review 333 N-1: the engine kept the orphan blocker but a seat's public combat state projected no blocking creature (CR 509.1g)",
-    "behaviour_change": "projection only: no engine state, digest, rules outcome, AI policy or persistence change",
-    "files": [
-      "crates/core/src/view.rs",
-      "crates/core/src/engine.rs (comment correction only, R333-2)",
-      "crates/core/tests/issue17_slice46.rs (view assertions added to the existing orphan-blocker regression)",
-      "docs/issue17-starter-corpus.md"
-    ]
-  },
-  "red": {
-    "log": "evidence/issue17/slice51/red-view-projection.log",
-    "what": "the projection was temporarily replaced by Vec::new() (pre-slice-51 behaviour); the committed orphan-blocker regression failed",
-    "symptom": "left: [] / right: [ObjectId(8)], 0 passed / 1 failed, exit 101",
-    "restored": "same test passes with the projection; it asserts for both seats that blockers and attackers are empty and unpaired_blockers == [blocker]"
-  },
-  "local_gates": {
-    "receipt": "evidence/issue17/slice51/gates.log",
-    "fmt_exit": 0,
-    "focused_suites": 6,
-    "focused_passed": 43,
-    "focused_failed": 0,
-    "focused_breakdown": {
-      "issue17_slice46": 14,
-      "issue17_slice48": 6,
-      "issue17_slice49": 8,
-      "starter_corpus": 8,
-      "catalog_pool": 5,
-      "issue17_slice15_corpus": 2
-    },
-    "separate_search_suite": "cargo test -p aperture-ai --test search --locked: 9 passed / 0 failed",
-    "harness_error_disclosed": "the first attempt used `cargo test -p aperture-ai --lib search`, which matched 0 test names; the correct command is --test search",
-    "corpus_audit": "AUDIT OK 161 catalog / 459 union / 148 supported / 311 missing, per-list [55,0,51,48,5,52,52,53], Ayula 5, 1 certified",
-    "workspace_clippy_deny_warnings_exit": 0,
-    "locked_release_cli_exit": 0,
-    "workspace": "cargo test --workspace --all-targets --locked: 133 result lines / 947 passed / 0 failed, exit 0",
-    "journey_driver_exit": 0
-  },
-  "journeys": {
-    "kind": "committed four-seat 40-life witness package re-executed at this head; an evidence-only demonstrator, not a 100-card certificate and not AI-strength evidence",
-    "driver": "evidence/issue17/slice50-witness-driver",
-    "log": "evidence/issue17/slice51/journey.log",
-    "outcome": "Win{P1}",
-    "steps": 3073,
-    "turns": 54,
-    "events": 8098,
-    "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
-    "artifacts": "demo-journey.json, demo-replay.json, demo-save.json content-identical after newline normalisation",
-    "replay_digest_matches": true
-  },
-  "corpus": {
-    "catalog_cards": 161,
-    "union_names": 459,
-    "supported_union": 148,
-    "missing_union": 311,
-    "per_list_missing": [55, 0, 51, 48, 5, 52, 52, 53],
-    "certified_lists": 1,
-    "desired_lists": 8,
-    "remaining_ayula_names": [
-      "Dúnedain Rangers",
-      "Evercoat Ursine",
-      "Rampaging Yao Guai",
-      "Ruxa, Patient Professor",
-      "Ursine Monstrosity"
-    ]
-  },
-  "ci": {
-    "code_head": "b4880b5f00075ac4d281a7bcd1d32089f65e97c3",
-    "evidence_only_tip": "the evidence commit that contains this file, published immediately after b4880b5",
-    "receipt": "evidence/issue17/slice51/exact-head-ci-b4880b5.json",
-    "code_head_result": "10/10 checks completed SUCCESS, every head_sha keyed to b4880b5, 0 failed/pending, no re-run requested",
-    "tip_ci_claim": "none: the published evidence-only tip has no CI pass of its own"
-  },
-  "persistence": "SAVE_VERSION 10 / REPLAY_VERSION 6 unchanged; this slice serializes nothing new and moves no digest (PlayerView is a projection)",
-  "disclosures": [
-    "Original #17 unfinished: 1 of 8 certified, Ayula 5 missing, catalog 161, 148 + 311; Ruxa is NOT implemented and NOT enabled.",
-    "Native authored this increment and is not its independent reviewer.",
-    "Ruxa's three printed clauses remain unimplemented; slice51/NEXT-CARDS.md carries the verified integration map so the next run does not re-derive it.",
-    "The view fix is observability only: no engine behaviour, digest, AI policy or persistence change; no card consumes blocking status today.",
-    "The journey is an evidence-only 40-card package and proves digest stability, not the new projection.",
-    "Prior untracked reviewer artifacts and the modified saved-session JSONL remain untouched and uncommitted."
-  ],
-  "children_inspected": ["t_26a7a4ff", "t_3c2fe51a"],
-  "children_are": "Scheduled evaluation dependency wait and unassigned soak backlog; not review children; left gated",
-  "no_merge_master_push_closure_or_unlock": true,
-  "next_action": "Independent practical delta review of 1a6ae1c..HEAD (three record corrections, the view projection and its discriminating RED, the journey re-run, CI readback), then the same writer/card/branch/PR46 implements Ruxa, Patient Professor per slice51/NEXT-CARDS.md, then the exact 100-card four-seat certification with separate replays."
+  "certified_lists": 1,
+  "desired_lists": 8,
+  "remaining_ayula_names": [
+   "Dúnedain Rangers",
+   "Evercoat Ursine",
+   "Rampaging Yao Guai",
+   "Ruxa, Patient Professor",
+   "Ursine Monstrosity"
+  ]
+ },
+ "ci": {
+  "code_head": "b4880b5f00075ac4d281a7bcd1d32089f65e97c3",
+  "evidence_only_tip": "the evidence commit that contains this file, published immediately after b4880b5",
+  "receipt": "evidence/issue17/slice51/exact-head-ci-b4880b5.json",
+  "code_head_result": "10/10 checks completed SUCCESS, every head_sha keyed to b4880b5, 0 failed/pending, no re-run requested",
+  "tip_ci_claim": "none: the published evidence-only tip has no CI pass of its own"
+ },
+ "persistence": "SAVE_VERSION 10 / REPLAY_VERSION 6 unchanged; this slice serializes nothing new and moves no digest (PlayerView is a projection)",
+ "disclosures": [
+  "Original #17 unfinished: 1 of 8 certified, Ayula 5 missing, catalog 161, 148 + 311; Ruxa is NOT implemented and NOT enabled.",
+  "Native authored this increment and is not its independent reviewer.",
+  "Ruxa's three printed clauses remain unimplemented; slice51/NEXT-CARDS.md carries the verified integration map so the next run does not re-derive it.",
+  "The view fix is observability only: no engine behaviour, digest, AI policy or persistence change; no card consumes blocking status today.",
+  "The journey is an evidence-only 40-card package and proves digest stability, not the new projection.",
+  "Prior untracked reviewer artifacts and the modified saved-session JSONL remain untouched and uncommitted."
+ ],
+ "children_inspected": [
+  "t_26a7a4ff",
+  "t_3c2fe51a"
+ ],
+ "children_are": "Scheduled evaluation dependency wait and unassigned soak backlog; not review children; left gated",
+ "no_merge_master_push_closure_or_unlock": true,
+ "next_action": "Independent practical delta review of 1a6ae1c..HEAD (three record corrections, the view projection and its discriminating RED, the journey re-run, CI readback), then the same writer/card/branch/PR46 implements Ruxa, Patient Professor per slice51/NEXT-CARDS.md, then the exact 100-card four-seat certification with separate replays."
 }
