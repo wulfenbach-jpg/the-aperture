@@ -1,0 +1,8 @@
+// package-slice53 — evidence-only 40-card Ruxa, Patient Professor package, NOT a desired starter.
+// Every nonland card is a vanilla creature, so the anthem and the damage-assignment
+// permission have real recipients and the graveyard has real "no abilities" cards.
+4 Ruxa, Patient Professor
+4 Grizzly Bears
+4 Elite Vanguard
+4 Centaur Courser
+24 Forest

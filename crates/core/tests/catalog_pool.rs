@@ -270,6 +270,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::SkipNextUntapStep
                 | Effect::ReplaceNextDrawWithBearToken
                 | Effect::PairSourceWithChosenCreature
+                | Effect::ReturnGraveyardCardToHand
                 | Effect::LookAtTopPutCreatureAttacking => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",

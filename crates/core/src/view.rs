@@ -39,11 +39,25 @@ pub struct CardView {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum PendingKind {
     Mulligan,
-    BottomCards { count: u8 },
+    BottomCards {
+        count: u8,
+    },
     DeclareAttackers,
     DeclareBlockers,
-    OrderCard { index: usize, mode: OrderMode },
-    Discard { count: u8 },
+    OrderCard {
+        index: usize,
+        mode: OrderMode,
+    },
+    Discard {
+        count: u8,
+    },
+    /// CR 510.1: one blocked attacker is waiting for its controller's
+    /// "assign as though it weren't blocked" answer. The attacker stays a public
+    /// object, so the projection carries its id and card name.
+    CombatDamageAssignment {
+        attacker: ObjectId,
+        card: CardId,
+    },
     ApnapSacrifice,
     ApnapReveal,
     CommanderReturn,
@@ -256,6 +270,21 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             format!("P{player} puts {count} card(s) on the bottom of their library")
         }
         Event::TurnBegin { turn, active } => format!("— Turn {turn}: P{active} —"),
+        Event::CombatDamageAssignment {
+            player,
+            attacker,
+            card,
+            as_though_unblocked,
+        } => format!(
+            "P{player} has {} ({attacker}) assign its combat damage {}{}",
+            card.name(),
+            if *as_though_unblocked {
+                "as though it weren't blocked"
+            } else {
+                "normally"
+            },
+            " (CR 510.1)"
+        ),
         Event::StepBegin { step } => format!("[{}]", step.name()),
         Event::Priority { player } => format!("P{player} receives priority"),
         Event::Pass { player } => format!("P{player} passes"),
@@ -787,6 +816,12 @@ impl Game {
                 }
                 crate::state::Pending::ApnapSacrifice { .. } => PendingKind::ApnapSacrifice,
                 crate::state::Pending::ApnapReveal { .. } => PendingKind::ApnapReveal,
+                crate::state::Pending::CombatDamageAssignment { order, cursor, .. } => {
+                    PendingKind::CombatDamageAssignment {
+                        attacker: order[*cursor].attacker,
+                        card: self.state.object(order[*cursor].attacker).card,
+                    }
+                }
                 crate::state::Pending::CommanderReturn { .. } => PendingKind::CommanderReturn,
                 crate::state::Pending::CommanderReplacement { .. } => {
                     PendingKind::CommanderReplacement

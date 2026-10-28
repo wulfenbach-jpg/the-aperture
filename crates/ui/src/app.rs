@@ -836,6 +836,32 @@ impl ApertureApp {
                     "London mulligan: a fresh seven, then one card on the bottom per mulligan (CR 103.5)",
                 );
             }
+            aperture_core::view::PendingKind::CombatDamageAssignment { attacker, card } => {
+                ui.label(format!(
+                    "{} ({attacker}) is blocked — assign its combat damage as though it weren't?",
+                    card.name()
+                ));
+                ui.horizontal(|ui| {
+                    if ui.button("As though unblocked").clicked() {
+                        let _ = self
+                            .session
+                            .submit_human(Action::AnswerCombatDamageAssignment {
+                                as_though_unblocked: true,
+                            });
+                    }
+                    if ui.button("Normally").clicked() {
+                        let _ = self
+                            .session
+                            .submit_human(Action::AnswerCombatDamageAssignment {
+                                as_though_unblocked: false,
+                            });
+                    }
+                });
+                theme::muted(
+                    ui,
+                    "CR 510.1: all of its combat damage goes to the defending player and none to the blockers",
+                );
+            }
             aperture_core::view::PendingKind::OrderCard { index, mode } => {
                 let name = view
                     .pending_viewed

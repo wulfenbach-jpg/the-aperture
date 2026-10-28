@@ -54,6 +54,8 @@ const SLICE45_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
 const SLICE48_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice48-sourced.json");
+/// Slice 53: Ruxa, Patient Professor (C21 66), fetched 2026-10-28.
+const SLICE53_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice53-sourced.json");
 /// Slice 43: Lumra, Bellow of the Woods (BLB 183), fetched 2026-10-28.
 const SLICE43_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice43-sourced.json");
 /// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
@@ -464,6 +466,11 @@ fn slice46_cards() -> Vec<Value> {
 
 fn slice48_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE48_SOURCED).expect("sourced slice48 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice53_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE53_SOURCED).expect("sourced slice53 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -965,6 +972,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice45_cards())
         .chain(slice46_cards())
         .chain(slice48_cards())
+        .chain(slice53_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())
@@ -1137,6 +1145,76 @@ fn slice48_owlbear_cub_matches_its_recorded_printing() {
     let abilities = aperture_core::abilities(CardId::OwlbearCub);
     assert_eq!(abilities.len(), 1, "one printed trigger line");
     assert_eq!(abilities[0].text(), def.oracle, "the line is implemented");
+}
+
+/// Slice 53: Ruxa, Patient Professor (C21 66). The catalog string equals the
+/// printing's `oracle_text` verbatim, the card has no printed keyword ability,
+/// and the three printed lines are exactly the abilities the engine executes:
+/// one trigger table entry per printed event, and one static per printed
+/// continuous sentence. A line the engine executed twice, or a line it did not
+/// execute at all, fails here.
+#[test]
+fn slice53_ruxa_matches_its_recorded_printing() {
+    let cards = slice53_cards();
+    assert_eq!(cards.len(), 1, "slice 53 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Ruxa, Patient Professor");
+    let def = catalog::by_name(name).expect("Ruxa is in the pool").def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    assert_eq!(
+        def.power,
+        sourced_text(record, "power").parse::<i32>().ok(),
+        "{name} power"
+    );
+    assert_eq!(
+        def.toughness,
+        sourced_text(record, "toughness").parse::<i32>().ok(),
+        "{name} toughness"
+    );
+    assert!(
+        card_keywords(record).is_empty(),
+        "the printing has no keyword ability"
+    );
+    assert!(
+        aperture_core::tokens::keywords(CardId::RuxaPatientProfessor).is_empty(),
+        "no keyword is executed for it"
+    );
+    let printed: Vec<&str> = def.oracle.split('\n').collect();
+    assert_eq!(printed.len(), 3, "three printed lines");
+
+    // The enters/attacks sentence is one trigger entry per event, both carrying
+    // the printed wording verbatim (CR 603.1: the event is what triggers).
+    let triggers = aperture_core::abilities(CardId::RuxaPatientProfessor);
+    assert_eq!(triggers.len(), 2, "one entry per printed trigger event");
+    for trigger in triggers {
+        assert_eq!(trigger.text(), printed[0], "the trigger line is executed");
+    }
+
+    // The two continuous sentences are layer-7c statics and the permission.
+    let statics = aperture_core::ability::static_abilities(CardId::RuxaPatientProfessor);
+    assert_eq!(statics.len(), 2, "two printed continuous sentences");
+    let static_text: Vec<&str> = statics.iter().map(|entry| entry.text()).collect();
+    for line in &printed[1..] {
+        assert!(
+            static_text.contains(line),
+            "printed continuous line is executed: {line}"
+        );
+    }
 }
 
 /// Slice 5 adds six cards whose behaviour is new (mill, counter target

@@ -1070,6 +1070,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::ClueToken => CLUE_TOKEN,
         CardId::ThijarianWitness => THIJARIAN_WITNESS,
         CardId::OwlbearCub => OWLBEAR_CUB,
+        CardId::RuxaPatientProfessor => RUXA_PATIENT_PROFESSOR,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
@@ -1301,6 +1302,24 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 613.4c: "Creatures you control with no abilities get +P/+T" (Ruxa,
+    /// Patient Professor). A layer 7c additive static whose recipient set is
+    /// filtered by the shared no-abilities predicate rather than by subtype. The
+    /// printed text has **no** "Other", so the source is a legal recipient if it
+    /// ever stops having abilities — which cannot happen while this static is
+    /// one of its abilities, but the code does not special-case the source.
+    ControlledCreaturesWithNoAbilitiesGet {
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
+    /// CR 510.1 + 509.1h: "For each creature you control with no abilities, you
+    /// may have that creature assign its combat damage as though it weren't
+    /// blocked" (Ruxa, Patient Professor). Not a layer effect: it is a
+    /// permission that changes *how* one creature assigns its combat damage, so
+    /// the combat-damage step reads it and asks the controller instead of
+    /// assigning automatically.
+    ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text: &'static str },
 }
 
 impl StaticAbility {
@@ -1315,7 +1334,9 @@ impl StaticAbility {
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. }
             | StaticAbility::OtherBearsYouControlGet { text, .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { text, .. }
-            | StaticAbility::PairedEachGet { text, .. } => text,
+            | StaticAbility::PairedEachGet { text, .. }
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { text, .. }
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text } => text,
         }
     }
 
@@ -1333,10 +1354,12 @@ impl StaticAbility {
                 Some(Layer::Modifying)
             }
             StaticAbility::PairedEachGet { .. } => Some(Layer::Modifying),
+            StaticAbility::ControlledCreaturesWithNoAbilitiesGet { .. } => Some(Layer::Modifying),
             StaticAbility::DamageFromControlledSources { .. }
             | StaticAbility::ThresholdPowerToughness { .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
-            | StaticAbility::OtherControlledCreaturesHaveTrample { .. } => None,
+            | StaticAbility::OtherControlledCreaturesHaveTrample { .. }
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
         }
     }
 
@@ -1351,7 +1374,9 @@ impl StaticAbility {
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. }
             | StaticAbility::OtherBearsYouControlGet { .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. }
-            | StaticAbility::PairedEachGet { .. } => None,
+            | StaticAbility::PairedEachGet { .. }
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { .. }
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
         }
     }
 }
@@ -1515,6 +1540,45 @@ const OWLBEAR_CUB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     effects: &[Effect::LookAtTopPutCreatureAttacking],
 })];
 
+/// Ruxa, Patient Professor (C21 66). One printed sentence with **two** trigger
+/// events ("Whenever Ruxa enters or attacks"), so the ability table carries two
+/// entries with the same printed text and the same effect — the engine indexes
+/// abilities per event and `TriggerRef::ability` is an index into this table, so
+/// one shared entry could not fire on both. The printed target is a *card* in a
+/// graveyard, which is `Target::Card`, not `Target::Permanent` (CR 110.1); the
+/// "no abilities" filter is the shared predicate in the engine, so the trigger
+/// has no legal target when the graveyard holds only creatures with abilities
+/// and is then not put on the stack at all (CR 603.3d).
+const RUXA_PATIENT_PROFESSOR: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::NoAbilityCreatureCardInYourGraveyard,
+        effects: &[Effect::ReturnGraveyardCardToHand],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.",
+        event: TriggerEvent::Attacks,
+        optional: false,
+        target: TargetSpec::NoAbilityCreatureCardInYourGraveyard,
+        effects: &[Effect::ReturnGraveyardCardToHand],
+    }),
+];
+
+/// Ruxa's two statics, in printed order: the layer 7c anthem and the
+/// damage-assignment permission.
+const RUXA_STATIC: &[StaticAbility] = &[
+    StaticAbility::ControlledCreaturesWithNoAbilitiesGet {
+        power: 1,
+        toughness: 1,
+        text: "Creatures you control with no abilities get +1/+1.",
+    },
+    StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked {
+        text: "For each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
+    },
+];
+
 /// Spider-Ham, Peter Porker (SPM 114). Two printed abilities: an enters trigger
 /// that creates a Food token, and "Animal May-Ham — Other Spiders, Boars, ... you
 /// control get +1/+1". The anthem is the first *list*-filtered subtype static in
@@ -1558,6 +1622,7 @@ pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
         CardId::Werebear => WEREBEAR,
         CardId::GoreclawTerrorOfQalSisma => GORECLAW_STATIC,
         CardId::CircleOfTheMoonDruid => CIRCLE_OF_THE_MOON_DRUID,
+        CardId::RuxaPatientProfessor => RUXA_STATIC,
         _ => NO_STATICS,
     }
 }

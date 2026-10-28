@@ -30,8 +30,8 @@ use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::sandbox::{SandboxEdit, SandboxOp, SandboxOutcome};
 use crate::state::{
-    DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending, Player, Profile,
-    StackEntry, StackItem, Step, TriggerRef, Turn,
+    CombatDamageChoice, DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending,
+    Player, Profile, StackEntry, StackItem, Step, TriggerRef, Turn,
 };
 
 /// Safety bound on scheduler iterations inside one submission. Reaching it is a
@@ -693,6 +693,52 @@ impl Game {
                         && object.id != *id
                         && self.is_creature(object)
                         && self.has_subtype(object, "Bear")
+                })
+                .map(|object| object.id)
+                .collect();
+            for recipient in recipients {
+                if let Some(object) = self.state.objects.get_mut(&recipient) {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
+            }
+        }
+        // Printed layer 7c "no abilities" anthem: "Creatures you control with no
+        // abilities get +1/+1" (Ruxa, Patient Professor). The same additive 7c
+        // layer as the subtype anthems above, but the recipient filter is the
+        // shared no-abilities predicate rather than a subtype. The printed text
+        // has **no** "Other", so the source itself is a candidate; it can never
+        // qualify while this static is one of its abilities, and the code does
+        // not special-case it — if some effect ever stripped Ruxa's abilities it
+        // would pump itself, which is what the printed words say.
+        for (id, card) in &battlefield {
+            let controller = self
+                .state
+                .try_object(*id)
+                .map(|object| object.controller)
+                .unwrap_or(0);
+            let bonus = ability::static_abilities(*card)
+                .iter()
+                .find_map(|static_ability| match static_ability {
+                    ability::StaticAbility::ControlledCreaturesWithNoAbilitiesGet {
+                        power,
+                        toughness,
+                        ..
+                    } => Some((*power, *toughness)),
+                    _ => None,
+                });
+            let Some((power, toughness)) = bonus else {
+                continue;
+            };
+            let recipients: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && self.is_creature(object)
+                        && self.state.object_has_no_abilities(object.id)
                 })
                 .map(|object| object.id)
                 .collect();
@@ -2710,6 +2756,17 @@ impl Game {
                     "no optional triggered ability is waiting for its controller (CR 603.5)",
                 )),
             },
+            Action::AnswerCombatDamageAssignment { .. } => match &state.pending {
+                Some(Pending::CombatDamageAssignment { order, cursor, .. })
+                    if order[*cursor].player == player =>
+                {
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "combat damage assignment choice",
+                    "no creature is waiting for its controller's damage-assignment answer (CR 510.1)",
+                )),
+            },
             Action::DeclareAttackers {
                 attackers,
                 defender,
@@ -3302,6 +3359,28 @@ impl Game {
                 .filter(|s| s.object != exclude && s.entry == StackEntry::Spell)
                 .map(|s| Target::Spell(s.object))
                 .collect(),
+            // CR 115.1 + 110.1: "target creature card with no abilities from
+            // your graveyard". The set is read from the graveyard list, not from
+            // the battlefield, and each candidate must be a creature card owned
+            // by the ability's controller with no abilities (the same shared
+            // predicate the anthem and the damage permission use, so the three
+            // clauses can never disagree about what "no abilities" means).
+            TargetSpec::NoAbilityCreatureCardInYourGraveyard => self
+                .state
+                .player(_caster)
+                .graveyard
+                .iter()
+                .copied()
+                .filter(|id| {
+                    self.state.try_object(*id).is_some_and(|object| {
+                        object.zone == Zone::Graveyard
+                            && object.owner == _caster
+                            && object.card.def().is_creature()
+                            && self.state.object_has_no_abilities(*id)
+                    })
+                })
+                .map(Target::Card)
+                .collect(),
             TargetSpec::NoncreatureSpell => self
                 .state
                 .stack
@@ -3325,6 +3404,10 @@ impl Game {
             .into_iter()
             .filter(|target| match target {
                 Target::Permanent(id) => self.can_target_permanent(*id, _caster),
+                // A graveyard card is already filtered to the controller's own
+                // graveyard above; shroud/hexproof are battlefield-only
+                // restrictions (CR 702.11a, 702.18a), so nothing else applies.
+                Target::Card(_) => true,
                 _ => true,
             })
             .collect()
@@ -3823,6 +3906,9 @@ impl Game {
             Action::AnswerTriggerChoice { use_ability } => {
                 self.apply_trigger_choice(player, *use_ability, events)
             }
+            Action::AnswerCombatDamageAssignment {
+                as_though_unblocked,
+            } => self.apply_combat_damage_assignment(player, *as_though_unblocked, events),
         }
     }
 
@@ -5957,7 +6043,15 @@ impl Game {
                 // SBAs (including CR 903.9a commander-return choices) complete
                 // before any player receives priority. A pending choice grants
                 // the single post-answer priority from the answer path.
-                self.deal_combat_damage(events);
+                //
+                // CR 510.1: a printed permission ("you may have that creature
+                // assign its combat damage as though it weren't blocked") turns
+                // the automatic assignment into a choice, so ask first and deal
+                // the whole batch from the answer path.
+                if self.begin_combat_damage_assignment() {
+                    return;
+                }
+                self.deal_combat_damage(&[], events);
                 self.check_sbas(events);
                 if self.state.pending.is_some() || self.state.is_over() {
                     return;
@@ -6683,6 +6777,15 @@ impl Game {
                     .state
                     .try_object(*id)
                     .is_some_and(|o| o.zone == Zone::Battlefield && self.is_creature(o)),
+                // CR 608.2b: the target is checked against the zone the printed
+                // instruction names. A card that left the graveyard (or that
+                // gained an ability in the meantime) is no longer legal.
+                Target::Card(id) => self.state.try_object(*id).is_some_and(|o| {
+                    o.zone == Zone::Graveyard
+                        && o.owner == item.controller
+                        && o.card.def().is_creature()
+                        && self.state.object_has_no_abilities(*id)
+                }),
                 Target::Spell(id) => self
                     .state
                     .stack
@@ -7231,6 +7334,9 @@ impl Game {
                             });
                         }
                         Target::Spell(_) => {}
+                        // A graveyard card is not a damage recipient; the arm
+                        // exists only for exhaustiveness (CR 115.4).
+                        Target::Card(_) => {}
                     }
                 }
                 false
@@ -7259,6 +7365,10 @@ impl Game {
                         Target::Player(p) => ShieldTarget::Player(p),
                         Target::Permanent(id) => ShieldTarget::Permanent(id),
                         Target::Spell(_) => continue,
+                        // A graveyard card is not a permanent and never a
+                        // damage recipient, so this arm cannot be reached by a
+                        // legal action (CR 115.4).
+                        Target::Card(_) => continue,
                     };
                     let card = self.state.object(item.object).card;
                     let label = shield_target.label(&self.state);
@@ -7299,6 +7409,23 @@ impl Game {
             Effect::ReturnToHand => {
                 for target in &item.targets {
                     if let Target::Permanent(id) = target {
+                        if self.begin_commander_replacement(*id, Zone::Hand, item) {
+                            return true;
+                        }
+                        self.move_to_hand(*id, events);
+                    }
+                }
+                false
+            }
+            // CR 400.7 + 608.2c: a card returned from a graveyard to its owner's
+            // hand moves through the same zone-change path as every other move,
+            // so it never travels the draw path (which would emit `Event::Draw`
+            // and set `drew_from_empty`) and never fires a draw trigger. A
+            // commander card is offered its CR 903.9b command-zone replacement
+            // first, exactly like a battlefield permanent returned to hand.
+            Effect::ReturnGraveyardCardToHand => {
+                for target in &item.targets {
+                    if let Target::Card(id) = target {
                         if self.begin_commander_replacement(*id, Zone::Hand, item) {
                             return true;
                         }
@@ -8829,7 +8956,128 @@ impl Game {
         self.state.turn.unpaired_blockers = unpaired;
     }
 
-    fn deal_combat_damage(&mut self, events: &mut Vec<Event>) {
+    /// CR 510.1 + 509.1h: create the combat-damage-assignment choice for every
+    /// blocked attacker whose controller also controls a permanent printing
+    /// "... you may have that creature assign its combat damage as though it
+    /// weren't blocked". An unblocked creature already assigns as though it
+    /// weren't blocked, so no choice is created for it: the permission would
+    /// have no consequence and asking would invent a decision the game does not
+    /// actually require.
+    fn begin_combat_damage_assignment(&mut self) -> bool {
+        if self.state.turn.combat_damage_done {
+            return false;
+        }
+        // A creature that has already left the battlefield neither deals nor
+        // receives combat damage, so it cannot be asked either.
+        self.prune_combat();
+        let mut order: Vec<CombatDamageChoice> = Vec::new();
+        for source in self.state.objects.values() {
+            if source.zone != Zone::Battlefield {
+                continue;
+            }
+            let grants = ability::static_abilities(source.card)
+                .iter()
+                .any(|static_ability| {
+                    matches!(
+                    static_ability,
+                    ability::StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked {
+                        ..
+                    }
+                )
+                });
+            if !grants {
+                continue;
+            }
+            let controller = source.controller;
+            let source_id = source.id;
+            for attacker in self.state.turn.attackers.clone() {
+                let Some(object) = self.state.try_object(attacker) else {
+                    continue;
+                };
+                if object.controller != controller
+                    || !self.state.turn.blocked.contains(&attacker)
+                    || !self.state.object_has_no_abilities(attacker)
+                {
+                    continue;
+                }
+                order.push(CombatDamageChoice {
+                    player: controller,
+                    attacker,
+                    source: source_id,
+                });
+            }
+        }
+        if order.is_empty() {
+            return false;
+        }
+        // CR 101.4: ask in APNAP order from the active player. Two permission
+        // sources controlled by the same seat would otherwise offer the same
+        // creature twice, so the list is deduplicated by attacker after sorting.
+        let seats = self.state.seat_count();
+        let anchor = self.state.turn.active;
+        order.sort_by_key(|choice| {
+            (
+                (choice.player as usize + seats - anchor as usize) % seats,
+                choice.attacker,
+            )
+        });
+        order.dedup_by_key(|choice| choice.attacker);
+        self.state.pending = Some(Pending::CombatDamageAssignment {
+            order,
+            cursor: 0,
+            answers: Vec::new(),
+        });
+        self.state.turn.priority = None;
+        true
+    }
+
+    fn apply_combat_damage_assignment(
+        &mut self,
+        _player: PlayerId,
+        as_though_unblocked: bool,
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::CombatDamageAssignment {
+            order,
+            cursor,
+            mut answers,
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        answers.push(as_though_unblocked);
+        let next = cursor + 1;
+        if next < order.len() {
+            self.state.pending = Some(Pending::CombatDamageAssignment {
+                order,
+                cursor: next,
+                answers,
+            });
+            self.state.turn.priority = None;
+            return;
+        }
+        let mut chosen: Vec<ObjectId> = Vec::new();
+        for (choice, assigned) in order.iter().zip(answers.iter()) {
+            events.push(Event::CombatDamageAssignment {
+                player: choice.player,
+                attacker: choice.attacker,
+                card: self.state.object(choice.attacker).card,
+                as_though_unblocked: *assigned,
+            });
+            if *assigned {
+                chosen.push(choice.attacker);
+            }
+        }
+        // CR 510.2: every creature assigns and deals its combat damage as one
+        // simultaneous event, so the whole batch waits for the last answer.
+        self.deal_combat_damage(&chosen, events);
+    }
+
+    /// CR 510.1: deal combat damage. `as_unblocked` names the attacking
+    /// creatures whose controller chose "assign its combat damage as though it
+    /// weren't blocked"; every other attacker keeps the automatic assignment
+    /// this slice has always used.
+    fn deal_combat_damage(&mut self, as_unblocked: &[ObjectId], events: &mut Vec<Event>) {
         if self.state.turn.combat_damage_done {
             return;
         }
@@ -8856,7 +9104,21 @@ impl Game {
                 .map(|(b, _)| *b)
                 .collect();
             let is_blocked = self.state.turn.blocked.contains(attacker);
-            if its_blockers.is_empty() {
+            if as_unblocked.contains(attacker) {
+                // CR 510.1: the controller chose to have this creature assign as
+                // though it weren't blocked. Its whole damage goes to the
+                // defending player and none to the blockers; the blockers are
+                // still blocking creatures and still deal their own damage to it.
+                damage.push((*attacker, None, power as u32));
+                for blocker in &its_blockers {
+                    if let Some(b) = self.state.try_object(*blocker) {
+                        let bp = b.power();
+                        if bp > 0 {
+                            damage.push((*blocker, Some(*attacker), bp as u32));
+                        }
+                    }
+                }
+            } else if its_blockers.is_empty() {
                 // CR 509.1h: a blocked creature stays blocked even when every
                 // blocker has left, so it assigns no damage to the player.
                 if !is_blocked {
@@ -9023,6 +9285,10 @@ impl Game {
         match target {
             Target::Player(p) => format!("P{p}"),
             Target::Permanent(id) => self.describe_object(id),
+            Target::Card(id) => match self.state.try_object(id) {
+                Some(o) => format!("{} in the graveyard", o.card.name()),
+                None => "a card that has left the graveyard".to_string(),
+            },
             Target::Spell(id) => match self.state.try_object(id) {
                 Some(o) => format!("{} on the stack", o.card.name()),
                 None => "a spell that has left the stack".to_string(),
@@ -9545,6 +9811,28 @@ impl Game {
                         .collect()
                 }
             }
+            Pending::CombatDamageAssignment { order, cursor, .. } => {
+                let attacker = order[*cursor].attacker;
+                let name = self.describe_object(attacker);
+                vec![
+                    LegalAction {
+                        action: Action::AnswerCombatDamageAssignment {
+                            as_though_unblocked: true,
+                        },
+                        label: format!(
+                            "Have {name} assign its combat damage as though it weren't blocked"
+                        ),
+                        rules: vec!["510.1", "509.1h"],
+                    },
+                    LegalAction {
+                        action: Action::AnswerCombatDamageAssignment {
+                            as_though_unblocked: false,
+                        },
+                        label: format!("Have {name} assign its combat damage normally"),
+                        rules: vec!["510.1"],
+                    },
+                ]
+            }
             Pending::ApnapReveal { player, .. } => {
                 let creatures: Vec<ObjectId> = self
                     .state
@@ -9961,6 +10249,9 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::BearYouControl => "target Bear you control: CR 115.1",
         TargetSpec::UnpairedAnotherCreatureYouControl => {
             "another unpaired creature you control to pair with: CR 702.94a"
+        }
+        TargetSpec::NoAbilityCreatureCardInYourGraveyard => {
+            "target creature card with no abilities in your graveyard: CR 115.1, 110.1"
         }
     }
 }

@@ -350,6 +350,12 @@ fn pending_kind_name(kind: PendingKind) -> String {
         PendingKind::DeclareBlockers => "declare blockers".to_string(),
         PendingKind::OrderCard { index, .. } => format!("order card (index {index})"),
         PendingKind::Discard { count } => format!("discard (count {count})"),
+        PendingKind::CombatDamageAssignment { attacker, card } => {
+            format!(
+                "combat damage assignment ({} {attacker} as {card:?})",
+                card.name()
+            )
+        }
         PendingKind::ApnapSacrifice => "Crack the Earth APNAP queue".to_string(),
         PendingKind::ApnapReveal => "APNAP reveal queue".to_string(),
         PendingKind::CommanderReturn => "commander return".to_string(),

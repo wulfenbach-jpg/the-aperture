@@ -286,6 +286,15 @@ pub fn run_until(
                     })
                     .map(|a| a.action)
                     .expect("sample action offered"),
+                // CR 510.1: this driver's fixed policy takes the permission.
+                Pending::CombatDamageAssignment { .. } => game
+                    .legal_actions()
+                    .into_iter()
+                    .find(|legal| {
+                        matches!(legal.action, Action::AnswerCombatDamageAssignment { .. })
+                    })
+                    .map(|legal| legal.action)
+                    .expect("a combat damage assignment option is offered"),
             }
         } else {
             Action::Pass

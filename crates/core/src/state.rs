@@ -6,6 +6,7 @@ use crate::card::{CardId, Effect};
 use crate::counters::Counters;
 use crate::error::EngineError;
 use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
+use crate::layer::ContinuousKind;
 use crate::mana::ManaPool;
 use crate::rng::Pcg32;
 
@@ -98,6 +99,18 @@ impl Step {
 pub enum OrderMode {
     Scry,
     Surveil,
+}
+
+/// One combat-damage-assignment choice: which attacking creature's controller
+/// answers, the creature, and the permanent whose printed permission makes the
+/// creature eligible. The source is captured per choice so a player with two
+/// permission sources, or two players each with one, can never have a choice
+/// validated against the wrong instruction.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CombatDamageChoice {
+    pub player: PlayerId,
+    pub attacker: ObjectId,
+    pub source: ObjectId,
 }
 
 /// A decision the engine is waiting on. While a `Pending` exists, no player has
@@ -234,6 +247,23 @@ pub enum Pending {
         order: Vec<PlayerId>,
         revealed: BTreeMap<PlayerId, Vec<ObjectId>>,
     },
+    /// CR 510.1 + 509.1h: "For each creature you control with no abilities, you
+    /// may have that creature assign its combat damage as though it weren't
+    /// blocked" (Ruxa, Patient Professor). Every eligible attacking creature is
+    /// asked in APNAP order from the active player; only after the last answer is
+    /// combat damage dealt, in one simultaneous batch (CR 510.2). The choice
+    /// exists only for creatures the permission actually changes — a blocked
+    /// attacker — because an unblocked attacker already assigns as though it
+    /// weren't blocked.
+    CombatDamageAssignment {
+        /// Eligible attackers in active-anchored APNAP order, fixed when the
+        /// combat damage step began.
+        order: Vec<CombatDamageChoice>,
+        /// Number of leading entries already answered.
+        cursor: usize,
+        /// `true` = assign as though unblocked, aligned with `order[..cursor]`.
+        answers: Vec<bool>,
+    },
 }
 
 /// One triggered ability waiting to be put on the stack (CR 603.2, 603.3).
@@ -365,6 +395,7 @@ impl Pending {
             | Pending::Discard { player, .. }
             | Pending::ApnapSacrifice { player, .. } => *player,
             Pending::ApnapReveal { player, .. } => *player,
+            Pending::CombatDamageAssignment { order, cursor, .. } => order[*cursor].player,
             Pending::CommanderReturn { order, cursor, .. } => order[*cursor].player,
             Pending::CommanderReplacement { player, .. } => *player,
             Pending::CommanderDraw { player, .. } => *player,
@@ -424,6 +455,21 @@ impl Pending {
             Pending::ApnapReveal { player, .. } => format!(
                 "P{player}: reveal any number of creature cards from hand (CR 101.4, 701.9a)"
             ),
+            Pending::CombatDamageAssignment {
+                order,
+                cursor,
+                answers,
+            } => {
+                let current = &order[*cursor];
+                format!(
+                    "P{}: may {} assign its combat damage as though it weren't blocked? (CR 510.1; {}/{} answered, {} chose to)",
+                    current.player,
+                    current.attacker,
+                    cursor,
+                    order.len(),
+                    answers.iter().filter(|chosen| **chosen).count()
+                )
+            }
             Pending::CommanderReturn { order, cursor, .. } => {
                 let current = &order[*cursor];
                 format!(
@@ -1050,6 +1096,7 @@ impl GameState {
             crate::action::Target::Permanent(object) | crate::action::Target::Spell(object) => {
                 *object == id
             }
+            crate::action::Target::Card(object) => *object == id,
             crate::action::Target::Player(_) => false,
         };
         let trigger_ref =
@@ -1109,6 +1156,9 @@ impl GameState {
                     *object == id || *source == id
                 }
                 Pending::CommanderDraw { object, .. } => *object == id,
+                Pending::CombatDamageAssignment { order, .. } => order
+                    .iter()
+                    .any(|choice| choice.attacker == id || choice.source == id),
                 Pending::TriggerTarget {
                     trigger,
                     legal,
@@ -2052,7 +2102,9 @@ impl GameState {
                         reason: "commander replacement object is missing".to_string(),
                     });
                 };
-                if current.zone != *from_zone || *from_zone != Zone::Battlefield {
+                if current.zone != *from_zone
+                    || !matches!(*from_zone, Zone::Battlefield | Zone::Graveyard)
+                {
                     return Err(EngineError::InvalidState {
                         reason: "commander replacement from_zone is stale".to_string(),
                     });
@@ -2069,23 +2121,148 @@ impl GameState {
                             .to_string(),
                     });
                 }
-                let produced_destination = cursor.checked_sub(1).and_then(|index| {
-                    self.objects
-                        .get(source)
-                        .and_then(|object| object.card.def().spell_spec())
-                        .and_then(|spec| spec.effects.get(index as usize))
-                        .and_then(|effect| match effect {
-                            Effect::ReturnToHand => Some(Zone::Hand),
-                            Effect::PutOnTopOfLibrary => Some(Zone::Library),
-                            _ => None,
-                        })
+                let produced = cursor.checked_sub(1).and_then(|index| {
+                    let source_object = self.objects.get(source)?;
+                    // The instruction a suspension is anchored to belongs to the
+                    // thing on the stack: a spell's printed effects, or a
+                    // triggered/activated ability's effects. `cursor` counts
+                    // instructions already taken, so `cursor - 1` is the one that
+                    // suspended. Reading only spell effects would let a forged
+                    // source choose its own destination.
+                    let effect = match top.entry {
+                        StackEntry::Spell => source_object
+                            .card
+                            .def()
+                            .spell_spec()
+                            .and_then(|spec| spec.effects.get(index as usize)),
+                        StackEntry::Triggered { ability } | StackEntry::Activated { ability } => {
+                            crate::ability::abilities(source_object.card)
+                                .get(ability as usize)
+                                .and_then(|ability| ability.effects().get(index as usize))
+                        }
+                    }?;
+                    match effect {
+                        Effect::ReturnToHand => Some((Zone::Hand, false)),
+                        Effect::PutOnTopOfLibrary => Some((Zone::Library, false)),
+                        // CR 903.9b: "from anywhere" — a commander card returned
+                        // from a graveyard to hand is offered the command zone,
+                        // and its target is a card, not a permanent.
+                        Effect::ReturnGraveyardCardToHand => Some((Zone::Hand, true)),
+                        _ => None,
+                    }
                 });
-                if produced_destination != Some(*destination)
-                    || top.targets.as_slice() != [crate::action::Target::Permanent(*object)]
+                let (expected_destination, card_target) = match produced {
+                    Some(produced) => produced,
+                    None => {
+                        return Err(EngineError::InvalidState {
+                            reason:
+                                "commander replacement does not match its producer effect/target"
+                                    .to_string(),
+                        });
+                    }
+                };
+                let expected_from = if card_target {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                };
+                let expected_target = if card_target {
+                    crate::action::Target::Card(*object)
+                } else {
+                    crate::action::Target::Permanent(*object)
+                };
+                if expected_destination != *destination
+                    || *from_zone != expected_from
+                    || top.targets.as_slice() != [expected_target]
                 {
                     return Err(EngineError::InvalidState {
                         reason: "commander replacement does not match its producer effect/target"
                             .to_string(),
+                    });
+                }
+            }
+            Some(Pending::CombatDamageAssignment {
+                order,
+                cursor,
+                answers,
+            }) => {
+                if order.is_empty() || *cursor >= order.len() || answers.len() != *cursor {
+                    return Err(EngineError::InvalidState {
+                        reason: "combat damage assignment cursor/answers are not a valid prefix"
+                            .to_string(),
+                    });
+                }
+                // CR 510.1: the choice exists only while combat damage has not
+                // been dealt yet, in the combat damage step. A pending outside
+                // that window could not have been produced by the engine.
+                if self.turn.step != Step::CombatDamage || self.turn.combat_damage_done {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "combat damage assignment pending is outside the combat damage step"
+                                .to_string(),
+                    });
+                }
+                let n = self.seat_count();
+                let anchor = self.turn.active;
+                let mut offsets: Vec<usize> = Vec::new();
+                let mut seen_attackers: Vec<ObjectId> = Vec::new();
+                for choice in order {
+                    if !in_range(choice.player) || !self.is_live(choice.player) {
+                        return Err(EngineError::InvalidState {
+                            reason: format!(
+                                "combat damage assignment names non-live seat P{}",
+                                choice.player
+                            ),
+                        });
+                    }
+                    let Some(source) = self.objects.get(&choice.source) else {
+                        return Err(EngineError::InvalidState {
+                            reason: "combat damage assignment source is missing".to_string(),
+                        });
+                    };
+                    if source.zone != Zone::Battlefield
+                        || source.card != CardId::RuxaPatientProfessor
+                        || source.controller != choice.player
+                    {
+                        return Err(EngineError::InvalidState {
+                            reason: "combat damage assignment source is not this seat's Ruxa on the battlefield"
+                                .to_string(),
+                        });
+                    }
+                    let Some(attacker) = self.objects.get(&choice.attacker) else {
+                        return Err(EngineError::InvalidState {
+                            reason: "combat damage assignment attacker is missing".to_string(),
+                        });
+                    };
+                    if attacker.zone != Zone::Battlefield
+                        || !attacker.is_creature()
+                        || attacker.controller != choice.player
+                        || !self.turn.attackers.contains(&choice.attacker)
+                        || !self.turn.blocked.contains(&choice.attacker)
+                    {
+                        return Err(EngineError::InvalidState {
+                            reason: "combat damage assignment attacker is not a blocked attacker of that seat"
+                                .to_string(),
+                        });
+                    }
+                    if !self.object_has_no_abilities(choice.attacker) {
+                        return Err(EngineError::InvalidState {
+                            reason: "combat damage assignment attacker has abilities".to_string(),
+                        });
+                    }
+                    if seen_attackers.contains(&choice.attacker) {
+                        return Err(EngineError::InvalidState {
+                            reason: "combat damage assignment repeats an attacker".to_string(),
+                        });
+                    }
+                    seen_attackers.push(choice.attacker);
+                    offsets.push((choice.player as usize + n - anchor as usize) % n);
+                }
+                if offsets.windows(2).any(|pair| pair[0] > pair[1]) {
+                    return Err(EngineError::InvalidState {
+                        reason:
+                            "combat damage assignment queue is not in active-anchored APNAP order"
+                                .to_string(),
                     });
                 }
             }
@@ -2868,6 +3045,77 @@ impl GameState {
 
     pub fn try_object(&self, id: ObjectId) -> Option<&Object> {
         self.objects.get(&id)
+    }
+
+    /// CR 113.6: "no abilities" is a property of the object's whole ability set —
+    /// its printed abilities, any intrinsic mana ability (CR 605.1a) and
+    /// anything currently granting it an ability. This one predicate is shared by
+    /// Ruxa's graveyard target set, its layer 7c anthem and its combat-damage
+    /// permission, so the three printed clauses of one card can never disagree
+    /// about which creatures qualify. A missing object is never eligible.
+    pub fn object_has_no_abilities(&self, id: ObjectId) -> bool {
+        let Some(object) = self.objects.get(&id) else {
+            return false;
+        };
+        let card = object.card;
+        let def = card.def();
+        if !crate::ability::abilities(card).is_empty()
+            || !crate::ability::static_abilities(card).is_empty()
+        {
+            return false;
+        }
+        // CR 605.1a: an intrinsic mana ability is an ability even though it is
+        // not in the printed rules text (every basic land, Sol Ring).
+        if def.basic_mana.is_some() || def.artifact_mana.is_some() || card.dynamic_mana().is_some()
+        {
+            return false;
+        }
+        // Printed keyword abilities this engine executes.
+        if def.has_trample()
+            || def.has_flying()
+            || def.has_flash()
+            || def.has_defender()
+            || def.has_islandwalk()
+        {
+            return false;
+        }
+        // CR 122.1b: a keyword counter grants its keyword for as long as it is
+        // on the permanent.
+        if object.counters.get(crate::counters::CounterKind::Trample) > 0 {
+            return false;
+        }
+        // Abilities granted by a continuous effect on this exact object:
+        // keyword grants and every keyword an Equipment is granting it.
+        let granted = self.effects.iter().any(|effect| {
+            effect.target == object.id
+                && matches!(
+                    effect.kind,
+                    ContinuousKind::GrantsTrample
+                        | ContinuousKind::GrantsHaste
+                        | ContinuousKind::Equipped { haste: true, .. }
+                        | ContinuousKind::Equipped { shroud: true, .. }
+                        | ContinuousKind::Equipped { hexproof: true, .. }
+                )
+        });
+        if granted {
+            return false;
+        }
+        // Abilities granted by another permanent's printed static ("other
+        // creatures you control have trample").
+        let granted_by_static = self.objects.values().any(|source| {
+            source.zone == Zone::Battlefield
+                && source.id != object.id
+                && source.controller == object.controller
+                && crate::ability::static_abilities(source.card)
+                    .iter()
+                    .any(|ability| {
+                        matches!(
+                            ability,
+                            crate::ability::StaticAbility::OtherControlledCreaturesHaveTrample { .. }
+                        )
+                    })
+        });
+        !granted_by_static
     }
 
     pub fn battlefield(&self, p: PlayerId) -> Vec<&Object> {

@@ -307,6 +307,14 @@ pub fn auto_answer(game: &Game) -> Action {
                 })
                 .map(|a| a.action)
                 .expect("a sample bottom/discard action is offered"),
+            // CR 510.1: this helper's fixed policy takes the permission, which is
+            // the deterministic first offer from `pending_actions`.
+            Pending::CombatDamageAssignment { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| matches!(legal.action, Action::AnswerCombatDamageAssignment { .. }))
+                .map(|legal| legal.action)
+                .expect("a combat damage assignment option is offered"),
         };
     }
     Action::Pass

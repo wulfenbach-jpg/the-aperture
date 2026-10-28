@@ -8,6 +8,14 @@ pub enum Target {
     Player(PlayerId),
     /// A permanent on the battlefield.
     Permanent(ObjectId),
+    /// CR 110.1 + 400.1: a **card** in a zone that is not the battlefield. Today
+    /// only a card in a graveyard is ever offered ("target creature card with no
+    /// abilities **from your graveyard**", Ruxa, Patient Professor). It is a
+    /// distinct variant rather than a reuse of `Permanent` so a
+    /// `Target::Permanent` can never name an object that is not on the
+    /// battlefield, and so a permanent-only effect can never consume a
+    /// graveyard card by accident.
+    Card(ObjectId),
     /// A spell on the stack, identified by the stack object's id.
     Spell(ObjectId),
 }
@@ -140,6 +148,14 @@ pub enum Action {
     AnswerTriggerChoice {
         use_ability: bool,
     },
+    /// CR 510.1 + 608.2c: answer Ruxa, Patient Professor's "you may have that
+    /// creature assign its combat damage as though it weren't blocked" for the
+    /// creature the pending choice names. `true` assigns the creature's whole
+    /// combat damage as though it had no blockers (so it goes to the defending
+    /// player and none to the blockers); `false` assigns normally.
+    AnswerCombatDamageAssignment {
+        as_though_unblocked: bool,
+    },
     /// CR 701.9a + 101.4: answer Kamahl's Summons' "each player may reveal any
     /// number of creature cards from their hand". The named cards must all be
     /// in the choosing seat's hand and be creature cards; they stay in hand.
@@ -176,6 +192,7 @@ impl Action {
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::DeclineTriggerTarget => "decline trigger target",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
+            Action::AnswerCombatDamageAssignment { .. } => "combat damage assignment choice",
             Action::RevealCreatureCards { .. } => "reveal creature cards",
         }
     }

@@ -1385,7 +1385,9 @@ fn fog_is_a_sourced_catalog_card() {
     // Hospitality, and to 151 with slice 37's Druid's Familiar, and to 152 with
     // slice 38's Spider-Ham, Peter Porker, and to 160 with the Ayula-list cards
     // of slices 41-46 (the last being Thijarian Witness).
-    assert_eq!(aperture_core::catalog::pool_size(), 161);
+    // Slice 48 adds Owlbear Cub (160 -> 161) and slice 53 adds Ruxa, Patient
+    // Professor (161 -> 162); the assertion's purpose is unchanged.
+    assert_eq!(aperture_core::catalog::pool_size(), 162);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

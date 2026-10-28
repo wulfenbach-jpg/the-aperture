@@ -46,12 +46,14 @@ basic lands (coordinator evidence
 `evidence/issue17/slice44/corpus-audit.py` + `corpus-audit.log`; earlier slice-25 audit retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **148** are in the supported 161-card catalog and **311** are missing. Slice
+* **149** are in the supported 162-card catalog and **310** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **161**; the intervening per-slice list is
+  slices bring the current implemented total to **162**; slice 53 adds Ruxa,
+  Patient Professor (161→162, so supported 148→149 and missing 311→310, and
+  Ruxa leaves the Ayula gap 5→4). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -335,7 +337,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 161 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 162 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -842,3 +844,77 @@ card or certificate: catalog 161, union 459 = 148 implemented + 311 missing,
 Ayula five missing names, one of eight lists certified. Slice 50 settles the
 Witness live-state predicate separately above; no new card or certificate is
 claimed by that correction.
+
+## Slice 53: Ruxa, Patient Professor — the pool's first graveyard-card target, no-abilities anthem and combat-damage-assignment choice
+
+Ruxa, Patient Professor (**C21 66**, `{2}{G}{G}`, legendary 4/4 Bear Druid) is sourced in
+`fixtures/starter-corpus/slice53-sourced.json` (Scryfall oracle id
+`d760f2f0-6653-47c4-bd7b-aab2f398ddf2`, scryfall id `e07b8142-6a49-46e7-b862-41f89a59b894`,
+retrieved 2026-10-28). It prints three separate abilities, and each one needed engine
+surface that did not exist:
+
+> Whenever Ruxa enters or attacks, return target creature card with no abilities from
+> your graveyard to your hand.
+> Creatures you control with no abilities get +1/+1.
+> For each creature you control with no abilities, you may have that creature assign its
+> combat damage as though it weren't blocked.
+
+**«Enters or attacks» is two trigger entries.** `TriggerRef::ability` indexes the ability
+table per event, so one printed sentence with two events is modelled as two typed
+`TriggeredAbility` entries carrying the same printed text and the same effect. A single
+entry could only ever fire on one of the two events.
+
+**Clause 1 — a card, not a permanent.** `Target::Card` is a new target variant used only
+for a card in a non-battlefield zone; the printed set is
+`TargetSpec::NoAbilityCreatureCardInYourGraveyard`, read from the controller's graveyard
+list and filtered by the shared no-abilities predicate. `Effect::ReturnGraveyardCardToHand`
+moves the card with the ordinary zone-change path (`move_to_hand`), never the draw path:
+routing it through the draw path would emit `Event::Draw`, fire draw triggers and set
+`drew_from_empty`, none of which a return from a graveyard does. The CR 903.9b
+command-zone replacement is offered for a commander card, and the
+`Pending::CommanderReplacement` validator now predicts the destination from the **ability**
+on the stack (not only a spell's effects) and requires `from_zone == Graveyard` with a
+`Target::Card` stack target for this effect, so a forged suspension cannot choose its own
+destination.
+
+**Clause 2 — one shared predicate.** `GameState::object_has_no_abilities` is the single
+answer used by the target set, the anthem and the permission: printed abilities, typed
+activated/triggered abilities, static abilities, an intrinsic mana ability (CR 605.1a),
+printed keyword abilities, a keyword counter (CR 122.1b), abilities granted by a continuous
+effect (including an Equipment's granted keywords) and abilities granted by another
+permanent's printed static. The anthem is a new layer 7c additive static
+(`ControlledCreaturesWithNoAbilitiesGet`) whose recipient loop is modelled on
+`OtherControlledCreaturesWithAnySubtypeGet`; the printed text has no "Other", so the source
+itself is a candidate and is never special-cased (it cannot qualify while this static is one
+of its abilities).
+
+**Clause 3 — a real choice while damage is assigned.** `Pending::CombatDamageAssignment`
+holds the eligible attacking creatures in active-anchored APNAP order, one answer each, and
+the whole batch is dealt once after the last answer (CR 510.2). The answer action is
+`Action::AnswerCombatDamageAssignment { as_though_unblocked }`; `PendingKind` projects it and
+the AI gains a declaration copy (plus a heuristic that takes the permission — a policy
+choice for harnesses, not strength evidence). An accepted creature assigns its whole combat
+damage to the defending player and none to its blockers, while the blockers still deal their
+own combat damage to it. `Event::CombatDamageAssignment` records the choice itself.
+
+**Deliberate limits recorded, not hidden.** (a) The choice is created only for **blocked**
+attackers: an unblocked creature already assigns as though it weren't blocked, so asking
+would invent a decision the rules do not require. (b) Combat damage assignment for every
+other creature remains the pre-existing automatic lethal-first/trample model; arbitrary
+splits are still not implemented. (c) The no-abilities predicate enumerates the ability
+sources this engine has today, so a future ability-granting mechanism must be added to it —
+a maintenance point, stated here so it is not rediscovered as a bug. (d) The command-zone
+prediction covers the two hand/library destinations this effect can produce; a
+graveyard-to-library "from anywhere" effect is still unimplemented.
+
+Regression coverage is `crates/core/tests/issue17_slice53_ruxa.rs`: the printed text
+registration, both trigger events, the graveyard-card target set (with abilities, keyword
+abilities and opponent graveyards excluded), no draw path, both anthem directions, both
+damage-assignment answers, multi-attacker APNAP ordering, the unblocked and
+has-abilities counter-cases, the commander destination, and forged pendings refused by
+**both** `GameState::validate` and a real `SessionSave::from_json`.
+
+Whole-field discipline: Ruxa left `missing_cards` **and** its `missing_interactions` entry in
+`decks/starter-corpus/manifest.json` in the same change; Ayula is now four missing names and
+the corpus is 162 catalog / 459 union = 149 supported + 310 missing, per-list
+`[55, 0, 51, 48, 4, 52, 52, 53]`, still one of eight lists certified.

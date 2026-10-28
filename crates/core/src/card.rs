@@ -118,6 +118,15 @@ pub enum TargetSpec {
     /// any creature that is already in a pair, because pairing needs an
     /// unpaired creature on both sides.
     UnpairedAnotherCreatureYouControl,
+    /// CR 115.1 + 110.1: "target creature card with no abilities from your
+    /// graveyard" (Ruxa, Patient Professor). The set is every **card** in the
+    /// ability controller's graveyard that is a creature card and has no
+    /// abilities, read as a card (CR 113.6: a card's abilities are its printed
+    /// ones plus anything granting it abilities in that zone; nothing in this
+    /// pool grants abilities to a graveyard card, so the printed list plus the
+    /// intrinsic mana ability is the whole answer). Targets are
+    /// [`crate::action::Target::Card`], never `Target::Permanent`.
+    NoAbilityCreatureCardInYourGraveyard,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -136,6 +145,12 @@ pub enum Effect {
     EachPlayerSacrifice,
     /// Return the target creature to its owner's hand.
     ReturnToHand,
+    /// CR 400.7 + 608.2c: return the target *card* from its owner's graveyard to
+    /// its owner's hand. The card is moved with the same zone-change path every
+    /// other move uses, so it never travels the draw path and never fires a draw
+    /// trigger (Ruxa, Patient Professor). A commander card is offered the CR
+    /// 903.9b command-zone replacement before the move.
+    ReturnGraveyardCardToHand,
     /// Put the target creature on top of its owner's library.
     PutOnTopOfLibrary,
     /// Exile the target creature, then its controller gains life equal to its
@@ -428,6 +443,9 @@ impl Effect {
             Effect::Pump(p, t) => format!("target creature gets {p:+}/{t:+} until end of turn"),
             Effect::EachPlayerSacrifice => "each player sacrifices a permanent".to_string(),
             Effect::ReturnToHand => "return the target creature to its owner's hand".to_string(),
+            Effect::ReturnGraveyardCardToHand => {
+                "return the target creature card from your graveyard to your hand".to_string()
+            }
             Effect::PutOnTopOfLibrary => {
                 "put the target creature on top of its owner's library".to_string()
             }
@@ -996,6 +1014,11 @@ pub enum CardId {
     /// top N cards, you may put a creature card from among them onto the
     /// battlefield tapped and attacking" trigger.
     OwlbearCub,
+    /// Issue 17 slice 53: Ruxa, Patient Professor (C21 66), the pool's first
+    /// "return target creature card with no abilities from your graveyard to
+    /// your hand" trigger, first no-abilities anthem and first combat-damage
+    /// assignment choice.
+    RuxaPatientProfessor,
     /// Issue 17 slice 46: the Clue token card (never importable, CR 111.10,
     /// 701.16a).
     ClueToken,

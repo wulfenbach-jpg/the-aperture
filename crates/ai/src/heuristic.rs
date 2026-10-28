@@ -91,6 +91,16 @@ impl HeuristicPolicy {
             Some(PendingKind::DeclareBlockers) => Action::DeclareBlockers {
                 blocks: self.blocks(view),
             },
+            // CR 510.1 + 509.1h: Ruxa's permission is always taken by this
+            // heuristic. Assigning as though unblocked sends all of the
+            // creature's combat damage to the defending player and none to the
+            // blockers, which is the aggressive reading of a "may"; it is a
+            // policy choice for an evidence harness, not a claim of strength.
+            Some(PendingKind::CombatDamageAssignment { .. }) => {
+                Action::AnswerCombatDamageAssignment {
+                    as_though_unblocked: true,
+                }
+            }
             Some(
                 PendingKind::ApnapSacrifice
                 | PendingKind::CommanderReturn

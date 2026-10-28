@@ -140,7 +140,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // register The Earth King, the two Equipment, Lumra Bellow of the Woods,
     // Spirit of the Aldergard, Titania's Command and Thijarian Witness, so the
     // gap closes by six while the pool grows by six. Slice 48 registers Owlbear
-    // Cub, which closes one more and grows the pool by one.
-    assert_eq!(missing.len(), 5, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 161, "the compiled pool");
+    // Cub, which closes one more and grows the pool by one. Slice 53 registers
+    // Ruxa, Patient Professor, so both numbers move together one more time.
+    assert_eq!(missing.len(), 4, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 162, "the compiled pool");
 }

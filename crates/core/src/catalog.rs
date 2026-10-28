@@ -275,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 161] = [
+pub static CARDS: [CardDef; 162] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1284,6 +1284,18 @@ pub static CARDS: [CardDef; 161] = [
         OwlbearCub, "Owlbear Cub", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bird Bear", power: Some(3), toughness: Some(3),
         oracle: "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+        spell: None
+    ),
+    // Issue 17 slice 53: Ruxa, Patient Professor (C21 66). The pool's first
+    // graveyard-card target ("target creature card with no abilities from your
+    // graveyard"), its first no-abilities anthem and its first combat-damage
+    // assignment choice. Printed text copied verbatim from the C21 66 printing
+    // fetched from Scryfall on 2026-10-28 and recorded in
+    // fixtures/starter-corpus/slice53-sourced.json.
+    card!(
+        RuxaPatientProfessor, "Ruxa, Patient Professor", cost: Some("{2}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear Druid", power: Some(4), toughness: Some(4),
+        oracle: "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.\nCreatures you control with no abilities get +1/+1.\nFor each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
         spell: None
     ),
 ];

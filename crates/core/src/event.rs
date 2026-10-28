@@ -158,6 +158,16 @@ pub enum Event {
         blocker: Option<(ObjectId, CardId)>,
         amount: u32,
     },
+    /// CR 510.1: one attacking creature's controller answered "you may have
+    /// that creature assign its combat damage as though it weren't blocked"
+    /// (Ruxa, Patient Professor). Emitted before the damage, so a trace shows
+    /// the choice itself and not only its consequences.
+    CombatDamageAssignment {
+        player: PlayerId,
+        attacker: ObjectId,
+        card: CardId,
+        as_though_unblocked: bool,
+    },
     /// Typed CR 903.10a credit: combat damage actually dealt to a player by one
     /// stable commander identity, plus the resulting cumulative total.
     CommanderDamage {
