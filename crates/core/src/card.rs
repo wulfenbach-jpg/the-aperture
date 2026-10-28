@@ -951,24 +951,15 @@ impl CardId {
     /// True for a token's synthetic characteristic card (CR 111.1: a token is
     /// not a card, but it needs characteristics and an identity).
     ///
-    /// This predicate is what every CR 111.7 path reads (the cease-to-exist SBA,
-    /// the state validator, the nontoken filters and the public view), so a new
-    /// token variant must be registered here — and in [`TOKEN_CARDS`] — or it
-    /// would be treated as an ordinary card once it left the battlefield.
-    /// `slice38::every_token_card_is_registered_as_a_token` keeps the two lists
-    /// and the catalog token table in step.
+    /// [`TOKEN_CARDS`] is the single source of this predicate, so registering a
+    /// variant there is what makes every CR 111.7 path (the cease-to-exist SBA,
+    /// the state validator, the nontoken filters and the public view) treat it as
+    /// a token; a creatable variant left out of the registry would be treated as
+    /// an ordinary card once it left the battlefield.
+    /// `slice38::every_token_card_is_registered_as_a_token` keeps the registry
+    /// and the two characteristics tables in step.
     pub fn is_token(self) -> bool {
-        matches!(
-            self,
-            CardId::SoldierToken
-                | CardId::SpiritToken
-                | CardId::GoblinToken
-                | CardId::DrakeToken
-                | CardId::BeastToken
-                | CardId::PestToken
-                | CardId::BearToken
-                | CardId::FoodToken
-        )
+        TOKEN_CARDS.contains(&self)
     }
 }
 

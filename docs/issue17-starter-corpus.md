@@ -663,8 +663,10 @@ as part of the cost (CR 602.2b) and only then puts the ability on the stack, so 
 already left the battlefield when "You gain 3 life" resolves. Because the sacrificed object is a
 token, CR 111.7 then makes it cease to exist — the object is removed, it appears in no zone and in
 no public graveyard view, and it cannot inflate a graveyard-count condition such as Werebear's
-threshold. That registration is what the `is_token()`/`TOKEN_CARDS` entry and the pool-wide token
-registration test protect, and the four-seat journey below counts the ceasing events.
+threshold. `CardId::is_token()` is derived from the `TOKEN_CARDS` registry, so registering a new
+token variant there is what makes CR 111.7 apply; the pool-wide token registration test keeps the
+registry and the two characteristics tables in step, and the four-seat journey below counts the
+ceasing events.
 
 *The anthem* is the first layer 7c static filtered by a printed **list** of subtypes instead of
 one (`StaticAbility::OtherControlledCreaturesWithAnySubtypeGet`). It asks `Game::has_subtype`, so a

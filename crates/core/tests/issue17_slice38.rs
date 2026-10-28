@@ -380,10 +380,13 @@ fn every_token_card_is_registered_as_a_token() {
     // Review 301's blocking defect was a registration gap, not a rules gap: the
     // Food token was creatable but absent from `CardId::is_token()` and
     // `aperture_core::card::TOKEN_CARDS`, so every CR 111.7 path treated it as an ordinary
-    // card. Token characteristics are declared in two tables (`tokens::TOKEN_CARDS`
-    // for Soldier/Spirit and the catalog's `TOKENS`), so this test keeps both
-    // tables, the registry list and the predicate in step for every variant the
-    // engine can create — the next token cannot repeat the mistake silently.
+    // card. `CardId::is_token()` is now *derived* from `card::TOKEN_CARDS`, which
+    // makes that registry the single source of the predicate; token
+    // characteristics are still declared in two tables (`tokens::TOKEN_CARDS` for
+    // Soldier/Spirit and the catalog's `TOKENS`), so this test keeps both tables
+    // and the registry in step for every variant the engine can create — the next
+    // token cannot repeat the mistake silently, and the registry half of this test
+    // is load-bearing rather than documentary.
     let mut declared: Vec<CardId> = aperture_core::tokens::TOKEN_CARDS
         .iter()
         .map(|def| def.id)

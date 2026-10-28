@@ -40,9 +40,15 @@ The repair:
 
 * registers `CardId::FoodToken` in `CardId::is_token()` **and** `TOKEN_CARDS`
   (the registry now also lists `SoldierToken`/`SpiritToken`, which had lived only
-  in `tokens::TOKEN_CARDS`, so the two lists are the same list);
+  in `tokens::TOKEN_CARDS`, so the registry enumerates every declared variant.
+  The two constants are *not* identical and were not made identical:
+  `tokens::TOKEN_CARDS` still holds the two `CardDef` rows it always did. Review
+  306 corrected an earlier wording that said "the two lists are the same list");
 * documents on `is_token()` that every CR 111.7 path reads it, so a new token
-  variant must register there;
+  variant must register in the registry — slice 40 went one step further and
+  derived the predicate from `TOKEN_CARDS` (`is_token()` is now
+  `TOKEN_CARDS.contains(&self)`), because review 306 found that the constant had
+  no non-test consumer at this head;
 * replaces the permissive lane assertion (`matches!(zone, Graveyard | Removed)`),
   which accepted exactly the state CR 111.7 forbids, with the printed outcome:
   the object is gone from state objects, absent from the player's graveyard list,
