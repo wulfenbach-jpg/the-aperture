@@ -1,4 +1,4 @@
-# Slice44 checkpoint
+# Slice44 writer-stage checkpoint (superseded by SLICE44-FINAL-NATIVE-CHECKPOINT.md)
 
 - Branch `aperture/issue-17`, base `d250391`; local slice44 head in final receipt. No push/
   merge/closure. Full #17 unfinished, 1 of 8 certified.

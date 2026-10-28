@@ -1,0 +1,19 @@
+{
+  "status": "ready_for_independent_increment_review",
+  "full_issue17_accepted": false,
+  "code_head": "d7dc5c9f0e2b5e6d989a05ebfd749f7b81a521a8",
+  "writer_commit": "c94e82d",
+  "base": "d250391638bb31004872c92c234b861f1ed0663a",
+  "authorship": "Saved OMP writer plus native integration owner; neither claims independent approval",
+  "checkpoint": "evidence/issue17/SLICE44-FINAL-NATIVE-CHECKPOINT.md",
+  "counts": {"catalog_cards":158,"union_names":459,"supported_union":145,"missing_union":314,"ayula_missing":8,"certified_lists":1,"desired_lists":8},
+  "cards": ["Spirit of the Aldergard", "Snow-Covered Forest (auxiliary, outside starter union)"],
+  "native_checks": {"focused_suites":12,"focused_passed":106,"failed":0,"fmt_exit":0,"clippy_exit":0,"release_exit":0,"receipt":"evidence/issue17/slice44/native-verify.log","full_workspace_tests_rerun_locally":false},
+  "ci": {"head":"d7dc5c9f0e2b5e6d989a05ebfd749f7b81a521a8","completed_success":10,"total":10,"all_keyed":true,"receipt":"evidence/issue17/slice44/exact-head-ci-d7dc5c9.json"},
+  "native_defects_fixed": ["Snow search validator admitted ordinary Forest", "One-card snow search accepted two chosen cards", "Snow prompt falsely described basic-land-to-battlefield destination"],
+  "retained_red": "native-red-search.log: compiling assertions3failed1passed, exit101 at c94e82d; same4 pass after native repair",
+  "journey": {"seats":4,"starting_life":40,"package_cards":40,"seed":2323,"terminal_winner":2,"steps":1689,"turns":40,"events":4360,"digest":"a31bed4673732ccda50ce9dccd46ca44143f6b34caaab750d800340aa6219a1c","spirit_casts":9,"snow_reveals":8,"shuffles":9,"static_samples":4489,"boosted_static_samples":4093,"samples_are_not_events":true,"separate_cli_replay_matches":true,"save_reload_matches":true},
+  "disclosures": ["Original new-mechanic implementation-first deviation retained, not retroactive TDD", "No independent verdict yet", "No100-card certification in this slice", "No product AI or playing-strength claim", "No generic snow corpus or snow-cost payment support implied", "Legend rule and prior limitations remain", "Other starters interaction prose not fully re-audited"],
+  "children_inspected": ["t_26a7a4ff","t_3c2fe51a"],
+  "no_merge_master_push_closure_or_unlock": true
+}

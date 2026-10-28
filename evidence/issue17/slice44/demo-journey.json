@@ -1,4 +1,5 @@
 {
+  "boosted_spirit_samples": 4093,
   "casts": {
     "Centaur Courser": 8,
     "Craw Wurm": 4,
@@ -24,7 +25,9 @@
   "snapshot_sha256": "877155d67162135a82271ebc2b19b543b11f9f417d97c297dace00427663f06c",
   "snapshots_exact": true,
   "snow_reveals": 8,
+  "spirit_static_samples": 4489,
   "starting_life": 40,
+  "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
   "status": "terminal",
   "steps": 1689,
   "turns": 40
