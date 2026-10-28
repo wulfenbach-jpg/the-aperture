@@ -47,9 +47,23 @@
   },
   "limitations": [
     "Target legal at cast but protected at resolution is not directly exercised; no supported instant can attach Equipment while a spell is on the stack.",
-    "Explicit wrong-phase/stack/not-owner/cost equip refusal controls remain incomplete.",
-    "No full workspace matrix; journey does not prove same-turn equipped haste attack.",
+    "Explicit wrong-phase/stack/not-owner/cost equip refusals are covered by native controls (issue17_slice42_equip_controls, 3 tests), not by a resolution-time protection probe.",
+    "Journey does not prove a same-turn equipped haste attack; that is proven at focused level (Prodigal Sorcerer {T} offer and legal_attackers).",
     "No generic Equipment/Aura/ward/protection beyond implemented semantics."
   ],
-  "native_animation_fix": "recompute_layers now evaluates attachment creature type while animation effects remain present; native RED evidence/issue17/slice42/native-red-animation.log"
+  "native_animation_fix": "recompute_layers now evaluates attachment creature type while animation effects remain present; native RED evidence/issue17/slice42/native-red-animation.log",
+  "native_controls": {
+    "file": "crates/core/tests/issue17_slice42_equip_controls.rs",
+    "tests": 3,
+    "result": "3 passed",
+    "receipt": "evidence/issue17/slice42/native-verify-final.log",
+    "authorship": "integration owner, not the saved writer and not an independent review"
+  },
+  "native_verification": {
+    "receipt": "evidence/issue17/slice42/native-verify.log",
+    "workspace_passed": 995,
+    "workspace_failed": 0,
+    "note": "fmt exited 1 on the new coordinator test file in that first run; it was formatted and the final receipt native-verify-final.log has fmt_exit=0"
+  },
+  "journey_after_native_fix": "regenerated at the corrected engine: digest 1750a81e...f551 unchanged, 1565 steps, 36 turns, Win{P2}, 3949 replay events, 17 attachments, 48 combat-damage events"
 }

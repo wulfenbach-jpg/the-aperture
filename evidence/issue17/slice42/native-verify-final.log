@@ -1,0 +1,38 @@
+fmt_exit=0
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.85s
+clippy_exit=0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+     Running tests\issue17_slice42_equip_controls.rs (target\debug\deps\issue17_slice42_equip_controls-3f29c607308de6a5.exe)
+
+running 3 tests
+test equip_is_refused_while_a_spell_is_on_the_stack ... ok
+test equip_refusals_are_atomic_for_control_target_and_cost ... ok
+test protection_is_read_live_and_two_equipment_coexist_on_one_creature ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+slice42_equip_controls_exit=0
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running tests\issue17_slice42.rs (target\debug\deps\issue17_slice42-cad1f883e9e2fa4e.exe)
+
+running 9 tests
+test equipment_sources_are_registered_and_castable ... ok
+test boots_hexproof_allows_owner_but_refuses_opponent_and_grants_haste ... ok
+test equipped_haste_allows_a_real_prodigal_sorcerer_tap_activation_offer ... ok
+test equipment_source_departure_invalidates_queued_equip_and_same_id_recast ... ok
+test equipment_stays_attached_to_a_legally_animated_permanent ... ok
+test old_attachment_remains_when_new_equip_target_becomes_illegal ... ok
+test old_attachment_survives_until_equip_resolves_and_bounce_does_not_transfer ... ok
+test greaves_equip_grants_haste_and_shroud_to_all_players_targeting ... ok
+test attached_and_mid_equip_save_reload_have_identical_continuation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+slice42_exit=0
+    Finished `release` profile [optimized] target(s) in 0.33s
+     Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice42/demo-replay.json`
+replay seed 2323 — 4 seat(s), 1565 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 1750a81eb981 | matches recorded | events 3949
+replay_exit=0
