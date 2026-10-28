@@ -2,7 +2,7 @@ ARTIFACTS_IDENTICAL=yes
 == separate release CLI replay ==
 cli_replay_exit=0
    Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
-    Finished `release` profile [optimized] target(s) in 40.00s
+    Finished `release` profile [optimized] target(s) in 32.77s
      Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice38/driver-replay.json`
 replay seed 3838 — 4 seat(s), 1450 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
-  replayed digest 93329b639483 | matches recorded | events 3845
+  replayed digest 726fe20e72e1 | matches recorded | events 3861

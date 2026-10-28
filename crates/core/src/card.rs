@@ -892,11 +892,14 @@ pub const SUPPORTED_COMMANDERS: &[CardId] = &[
 /// and `catalog::by_name` deliberately exclude them, and the deck parser
 /// refuses them like any other unknown name.
 pub const TOKEN_CARDS: &[CardId] = &[
+    CardId::SoldierToken,
+    CardId::SpiritToken,
     CardId::GoblinToken,
     CardId::DrakeToken,
     CardId::BeastToken,
     CardId::PestToken,
     CardId::BearToken,
+    CardId::FoodToken,
 ];
 
 impl CardId {
@@ -947,6 +950,13 @@ impl CardId {
 
     /// True for a token's synthetic characteristic card (CR 111.1: a token is
     /// not a card, but it needs characteristics and an identity).
+    ///
+    /// This predicate is what every CR 111.7 path reads (the cease-to-exist SBA,
+    /// the state validator, the nontoken filters and the public view), so a new
+    /// token variant must be registered here — and in [`TOKEN_CARDS`] — or it
+    /// would be treated as an ordinary card once it left the battlefield.
+    /// `slice38::every_token_card_is_registered_as_a_token` keeps the two lists
+    /// and the catalog token table in step.
     pub fn is_token(self) -> bool {
         matches!(
             self,
@@ -957,6 +967,7 @@ impl CardId {
                 | CardId::BeastToken
                 | CardId::PestToken
                 | CardId::BearToken
+                | CardId::FoodToken
         )
     }
 }

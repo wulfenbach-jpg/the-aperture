@@ -1,0 +1,6 @@
+== slice-35 replay at the slice-39 head ==
+replay seed 3535 — 4 seat(s), 2048 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 1c13d8fdcdce | matches recorded | events 5347
+== slice-37 replay at the slice-39 head ==
+replay seed 3737 — 4 seat(s), 1758 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest c4c5985cd048 | matches recorded | events 4530

@@ -203,10 +203,40 @@ fn activating_the_food_gains_three_life_and_sacrifices_the_token() {
         )),
         "the activation is a real event: {activation:?}"
     );
+    // CR 602.2b: the sacrifice half of the cost is paid as the ability is
+    // activated, before it resolves — the effect has not happened yet, and the
+    // token has already left the battlefield for its owner's graveyard.
     assert_eq!(
-        g.state.object(food).zone,
-        Zone::Graveyard,
-        "the sacrifice half of the cost is paid as the ability is activated, not on resolution"
+        g.state.players[P0 as usize].life, 20,
+        "the ability is on the stack: no life has been gained yet"
+    );
+    assert!(
+        activation.iter().any(|event| matches!(
+            event,
+            Event::Destroyed { card, .. } if *card == CardId::FoodToken
+        )),
+        "the token's zone change happened while activating, not on resolution: {activation:?}"
+    );
+    assert!(
+        activation.iter().any(|event| matches!(
+            event,
+            Event::StateBasedAction { description }
+                if description.contains("Food Token")
+                    && description.contains("will cease to exist (CR 111.7)")
+        )),
+        "the sacrifice records the token's pending cessation (CR 111.7): {activation:?}"
+    );
+    assert!(
+        activation.iter().any(|event| matches!(
+            event,
+            Event::StateBasedAction { description }
+                if description == "Food Token token ceases to exist (CR 111.7)"
+        )),
+        "the state-based action really removes the token (CR 111.7): {activation:?}"
+    );
+    assert!(
+        g.state.try_object(food).is_none(),
+        "CR 111.7: the sacrificed token ceases to exist — it is not parked in a zone as a card"
     );
     assert_eq!(
         g.state.players[P0 as usize].mana.colorless, 0,
@@ -232,8 +262,21 @@ fn activating_the_food_gains_three_life_and_sacrifices_the_token() {
         "the sacrificed Food token is no longer a battlefield permanent"
     );
     assert!(
-        matches!(g.state.object(food).zone, Zone::Graveyard | Zone::Removed),
-        "the sacrificed token left the battlefield for its owner's graveyard (CR 111.7)"
+        !g.state.players[P0 as usize].graveyard.contains(&food),
+        "the token is not left in the graveyard list: {:?}",
+        g.state.players[P0 as usize].graveyard
+    );
+    let view = g.view_for(P0, &log);
+    assert!(
+        !view
+            .own_graveyard
+            .iter()
+            .any(|card| card.card == CardId::FoodToken),
+        "the public graveyard view shows no Food card: {:?}",
+        view.own_graveyard
+            .iter()
+            .map(|card| card.card)
+            .collect::<Vec<_>>()
     );
     let offers: Vec<Action> = g.legal_actions().into_iter().map(|a| a.action).collect();
     assert!(
@@ -242,6 +285,149 @@ fn activating_the_food_gains_three_life_and_sacrifices_the_token() {
             Action::ActivateAbility { source, .. } if *source == food
         )),
         "a token that left the battlefield is no longer activatable"
+    );
+}
+
+#[test]
+fn sacrificed_food_tokens_do_not_count_as_graveyard_cards_for_threshold() {
+    // The cross-card consequence review 301 demonstrated: threshold counts
+    // graveyard *objects* (`engine.rs` ThresholdPowerToughness), so a token that
+    // wrongly survives in the graveyard inflates it. Three real cards plus four
+    // sacrificed Foods must leave three objects and a 1/1 Werebear, because the
+    // printed condition is seven or more *cards*.
+    let mut g = fixture(3809)
+        .battlefield(
+            P0,
+            &[
+                CardId::Werebear,
+                CardId::FoodToken,
+                CardId::FoodToken,
+                CardId::FoodToken,
+                CardId::FoodToken,
+            ],
+        )
+        .add(P0, Zone::Graveyard, CardId::Forest)
+        .add(P0, Zone::Graveyard, CardId::Forest)
+        .add(P0, Zone::Graveyard, CardId::Forest)
+        .library(P0, &[CardId::Forest; 20])
+        .library(P1, &[CardId::Forest; 20])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let werebear = battlefield_card(&g, P0, CardId::Werebear);
+    let foods: Vec<ObjectId> = g
+        .state
+        .battlefield(P0)
+        .iter()
+        .filter(|object| object.card == CardId::FoodToken)
+        .map(|object| object.id)
+        .collect();
+    assert_eq!(foods.len(), 4, "four Food tokens on the battlefield");
+    assert_eq!(
+        stats(&g, werebear),
+        (1, 1),
+        "three cards is below the printed threshold of seven"
+    );
+
+    for food in foods {
+        pay(&mut g, P0, 0, 2);
+        let activation = submit_ok(
+            &mut g,
+            P0,
+            Action::ActivateAbility {
+                source: food,
+                ability: 0,
+                mode: 0,
+                targets: Vec::new(),
+            },
+        );
+        pass_until_settled(&mut g, 64);
+        assert!(
+            activation.iter().any(|event| matches!(
+                event,
+                Event::StateBasedAction { description }
+                    if description == "Food Token token ceases to exist (CR 111.7)"
+            )),
+            "each sacrificed Food ceases to exist: {activation:?}"
+        );
+        assert!(
+            g.state.try_object(food).is_none(),
+            "the sacrificed token is gone from the state"
+        );
+    }
+
+    assert_eq!(
+        g.state.players[P0 as usize].graveyard.len(),
+        3,
+        "three real cards, and no phantom Food objects: {:?}",
+        g.state.players[P0 as usize].graveyard
+    );
+    assert!(
+        g.state.players[P0 as usize].graveyard.iter().all(|id| g
+            .state
+            .try_object(*id)
+            .is_some_and(|o| o.card == CardId::Forest)),
+        "every graveyard object is one of the three Forests"
+    );
+    assert_eq!(
+        stats(&g, werebear),
+        (1, 1),
+        "seven graveyard *cards* are required; four vanished tokens do not count"
+    );
+}
+
+#[test]
+fn every_token_card_is_registered_as_a_token() {
+    // Review 301's blocking defect was a registration gap, not a rules gap: the
+    // Food token was creatable but absent from `CardId::is_token()` and
+    // `aperture_core::card::TOKEN_CARDS`, so every CR 111.7 path treated it as an ordinary
+    // card. Token characteristics are declared in two tables (`tokens::TOKEN_CARDS`
+    // for Soldier/Spirit and the catalog's `TOKENS`), so this test keeps both
+    // tables, the registry list and the predicate in step for every variant the
+    // engine can create — the next token cannot repeat the mistake silently.
+    let mut declared: Vec<CardId> = aperture_core::tokens::TOKEN_CARDS
+        .iter()
+        .map(|def| def.id)
+        .chain(catalog::TOKENS.iter().map(|def| def.id))
+        .collect();
+    declared.sort();
+    declared.dedup();
+    assert!(
+        declared.len() >= 8,
+        "the engine declares its token variants in two tables: {declared:?}"
+    );
+    for id in &declared {
+        assert!(
+            id.is_token(),
+            "{id:?} has token characteristics but CardId::is_token() says it is a card"
+        );
+        assert!(
+            aperture_core::card::TOKEN_CARDS.contains(id),
+            "{id:?} is missing from aperture_core::card::TOKEN_CARDS"
+        );
+        assert!(
+            !catalog::all().iter().any(|def| def.id == *id),
+            "{id:?} is a token and must never be an importable pool card"
+        );
+        assert_eq!(
+            catalog::by_name(id.name()),
+            None,
+            "{id:?} must not be importable by name"
+        );
+    }
+    for id in aperture_core::card::TOKEN_CARDS {
+        assert!(id.is_token(), "{id:?} is registered but not a token");
+        assert!(
+            declared.contains(id),
+            "{id:?} is registered but has no characteristics in either token table"
+        );
+    }
+    assert!(
+        CardId::FoodToken.is_token(),
+        "the Food token is a token (CR 111.10)"
+    );
+    assert!(
+        aperture_core::card::TOKEN_CARDS.contains(&CardId::FoodToken),
+        "the Food token is in the token registry"
     );
 }
 

@@ -1,0 +1,47 @@
+== mutated is_token() ==
+237:    CreateFoodToken,
+415:            Effect::CreateFoodToken => "create a Food token".to_string(),
+789:    FoodToken,
+902:    CardId::FoodToken,
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.54s
+     Running tests\issue17_slice38.rs (target\debug\deps\issue17_slice38-9b9c752a333479d7.exe)
+
+running 8 tests
+test spider_ham_is_sourced_and_supported ... ok
+test every_token_card_is_registered_as_a_token ... FAILED
+test sacrificed_food_tokens_do_not_count_as_graveyard_cards_for_threshold ... FAILED
+test the_food_ability_is_refused_without_its_printed_cost ... ok
+test entering_creates_one_food_token_that_is_an_artifact_and_not_a_creature ... ok
+test activating_the_food_gains_three_life_and_sacrifices_the_token ... FAILED
+test the_anthem_pumps_listed_subtypes_only_and_never_the_source ... ok
+test the_anthem_reads_the_effective_subtype_and_stacks_in_layer_7c ... ok
+
+failures:
+
+---- every_token_card_is_registered_as_a_token stdout ----
+
+thread 'every_token_card_is_registered_as_a_token' (30556) panicked at crates\core\tests\issue17_slice38.rs:400:9:
+FoodToken has token characteristics but CardId::is_token() says it is a card
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- sacrificed_food_tokens_do_not_count_as_graveyard_cards_for_threshold stdout ----
+
+thread 'sacrificed_food_tokens_do_not_count_as_graveyard_cards_for_threshold' (46112) panicked at crates\core\tests\issue17_slice38.rs:344:9:
+each sacrificed Food ceases to exist: [AbilityActivated { player: 0, source: ObjectId(2), card: FoodToken, text: "{2}, {T}, Sacrifice this token: You gain 3 life.", targets: [] }, Destroyed { object: ObjectId(2), card: FoodToken }, Priority { player: 0 }]
+
+---- activating_the_food_gains_three_life_and_sacrifices_the_token stdout ----
+
+thread 'activating_the_food_gains_three_life_and_sacrifices_the_token' (376) panicked at crates\core\tests\issue17_slice38.rs:220:5:
+the sacrifice records the token's pending cessation (CR 111.7): [AbilityActivated { player: 0, source: ObjectId(42), card: FoodToken, text: "{2}, {T}, Sacrifice this token: You gain 3 life.", targets: [] }, Destroyed { object: ObjectId(42), card: FoodToken }, Priority { player: 0 }]
+
+
+failures:
+    activating_the_food_gains_three_life_and_sacrifices_the_token
+    every_token_card_is_registered_as_a_token
+    sacrificed_food_tokens_do_not_count_as_graveyard_cards_for_threshold
+
+test result: FAILED. 5 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice38`
+mutation_test_exit=101

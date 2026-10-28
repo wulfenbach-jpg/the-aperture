@@ -654,11 +654,17 @@ and P/T). Printed text:
 *The Food token* is the pool's first **artifact token** (CR 111.10, 205.3): a `CardId::FoodToken`
 card definition in the catalog's token table (`Token Artifact — Food`, no power or toughness,
 never importable, never part of `catalog::all()`), created by `Effect::CreateFoodToken`. It carries
-a real activated ability whose cost is the first in the pool to combine a mana cost, `{T}` and
-"Sacrifice this token": the engine pays `{2}` from the pool, taps the token, moves it to its
-owner's graveyard as part of the cost (CR 602.2b) and only then puts the ability on the stack, so
-the token has already left the battlefield when "You gain 3 life" resolves (CR 111.7) and the
-ability is offered only while the token is untapped and the mana is payable.
+a real activated ability whose cost is the first in the pool printed on a **token** to combine a
+mana cost, `{T}` and "Sacrifice this token" (the cost *shape* is not new — Mind Stone's
+"{1}, {T}, Sacrifice this artifact: Draw a card." and Hedron Archive's "{2}, {T}, Sacrifice this
+artifact: Draw two cards." already pay mana, `{T}` and the source; what is new is that the source
+is a token): the engine pays `{2}` from the pool, taps the token, moves it to its owner's graveyard
+as part of the cost (CR 602.2b) and only then puts the ability on the stack, so the token has
+already left the battlefield when "You gain 3 life" resolves. Because the sacrificed object is a
+token, CR 111.7 then makes it cease to exist — the object is removed, it appears in no zone and in
+no public graveyard view, and it cannot inflate a graveyard-count condition such as Werebear's
+threshold. That registration is what the `is_token()`/`TOKEN_CARDS` entry and the pool-wide token
+registration test protect, and the four-seat journey below counts the ceasing events.
 
 *The anthem* is the first layer 7c static filtered by a printed **list** of subtypes instead of
 one (`StaticAbility::OtherControlledCreaturesWithAnySubtypeGet`). It asks `Game::has_subtype`, so a
@@ -666,21 +672,25 @@ creature made a Bear by a layer 4 effect counts and a creature with none of the 
 never does; the printed "Other" keeps the source out of its own set, while a *second* copy of
 Spider-Ham is a Spider and is pumped by the first copy's anthem, exactly as printed.
 
-**Verification.** `crates/core/tests/issue17_slice38.rs` (6 tests): the sourced text and both
+**Verification.** `crates/core/tests/issue17_slice38.rs` (8 tests): the sourced text and both
 printed abilities; entering creates exactly one Food token that is an artifact, not a creature, and
 whose ability is offered once `{2}` is available; activating it gains exactly 3 life, spends the
-mana, sacrifices the token as a cost and removes it from the battlefield; the activation is neither
-offered nor legal without its cost (no mana, or a tapped token); the anthem pumps a Bear and leaves
-an Elf alone while never pumping the source; and the anthem reads the *effective* subtype, so
+mana, sacrifices the token as a cost and the token then ceases to exist (object gone, absent from
+the graveyard list and the public graveyard view, with the CR 111.7 records); the activation is
+neither offered nor legal without its cost (no mana, or a tapped token); three real cards plus four
+sacrificed Foods leave three graveyard objects and a 1/1 Werebear; every token variant in either
+characteristics table is registered as a token and is never importable; the anthem pumps a Bear and
+leaves an Elf alone while never pumping the source; and the anthem reads the *effective* subtype, so
 Circle of the Moon Druid is 5/3 on its controller's turn (4/2 Bear Form + 1/+1) and 8/6 after Giant
 Growth. `card_printings` asserts the catalog row against the recorded printing, and the four-seat
 journey below exercises the whole card in a real game.
 
 **Four-seat journey.** `evidence/issue17/slice38-journey-driver` plays `decks/package-slice38.txt`
 (4 seats, 40 life, seed 3838, exact snapshot) and casts Spider-Ham 8 times, creating 8 Food tokens
-and activating all 8 for 24 life, while asserting the anthem 7 110 times (once per listed-subtype
-creature per action boundary) over the game; the game is terminal (`Win{P2}`, 1450 steps, 34 turns,
-digest `93329b63…`) and a separate release-CLI replay reproduces it.
+and activating all 8 for 24 life, with every sacrificed token reported and counted as ceasing to
+exist (0 Food objects left in any live zone), while asserting the anthem 7 110 times (once per
+listed-subtype creature per action boundary) over the game; the game is terminal (`Win{P2}`, 1450
+steps, 34 turns, 3861 events, digest `726fe20e…`) and a separate release-CLI replay reproduces it.
 
 Known limits, disclosed: the Food token's ability is modelled with the printed cost and effect
 only (it is not a "sacrifice an artifact" outlet for other cards); the anthem's recipient list is

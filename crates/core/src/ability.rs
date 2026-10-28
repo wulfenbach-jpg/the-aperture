@@ -1305,12 +1305,13 @@ const DRUIDS_FAMILIAR_STATIC: &[StaticAbility] = &[StaticAbility::PairedEachGet 
 }];
 
 /// The Food token's printed ability (CR 111.10, 205.3): "{2}, {T}, Sacrifice
-/// this token: You gain 3 life." The cost combines a mana cost, `{T}` and
-/// "Sacrifice this token" — the first pool ability with all three at once — and
-/// the token itself is the source, so the ability is only offered while the
-/// token is untapped and on the battlefield. Paying the sacrifice cost moves
-/// the token to its owner's graveyard and then out of existence (CR 111.7),
-/// exactly like any other token that leaves the battlefield.
+/// this token: You gain 3 life." The cost shape itself is not new — Mind Stone
+/// ("{1}, {T}, Sacrifice this artifact: Draw a card.") and Hedron Archive
+/// ("{2}, {T}, Sacrifice this artifact: Draw two cards.") already combine a mana
+/// cost, `{T}` and sacrificing the source. What is new is that the source is a
+/// *token*, so paying the cost puts a token into the graveyard and CR 111.7 then
+/// makes it cease to exist, and that the ability is offered only while the
+/// untapped token is on the battlefield and the mana is payable.
 const FOOD_TOKEN: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "{2}, {T}, Sacrifice this token: You gain 3 life.",
     cost: AbilityCost {

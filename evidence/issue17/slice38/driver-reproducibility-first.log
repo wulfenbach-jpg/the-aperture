@@ -1,6 +1,4 @@
 == first run ==
-    Finished `release` profile [optimized] target(s) in 32.99s
-     Running `target\release\issue17-slice38-journey.exe`
 {
   "anthem_checks": 7110,
   "casts": {
@@ -14,9 +12,11 @@
   },
   "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
   "deck": "decks/package-slice38.txt",
-  "digest": "93329b6394838334e60bd2b9ecbfa646c3044c4a91ba347d1c59cb387a5bbc34",
+  "digest": "726fe20e72e17b353e8d7fc9f4f8317bc06ab6b2bfd9ab1fbc0f2fb1a871cb31",
   "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
   "food_activations": 8,
+  "food_objects_left_at_game_end": 0,
+  "food_tokens_ceased": 8,
   "food_tokens_created": 8,
   "kind": "40-card package, not a desired starter",
   "life_gained_from_food": 24,
@@ -28,7 +28,7 @@
   },
   "purpose": "slice 38: Spider-Ham is cast, its Food token is created and activated for 3 life, and the printed-subtype anthem is asserted on every action boundary of a four-seat game",
   "replay_digest_matches": true,
-  "replay_events": 3845,
+  "replay_events": 3861,
   "seats": 4,
   "seed": 3838,
   "snapshot_sha256": "b141662be86fd899f837666505be4b726ae893faef805818fea8b5552d4a100e",
@@ -39,6 +39,6 @@
   "steps": 1450,
   "turns": 34
 }
-2a096e6826c2a49902417570f3d001cc0aab23a9185bc9b1659db9d9ca0086c3 *evidence/issue17/slice38/driver-journey.json
-1e590f10fd7b2fc09e942f011bf45929e74457df7d7c0c4bab5de09e7e639e3d *evidence/issue17/slice38/driver-replay.json
-436c3bf07d475216d8669f64090ce90c89cb71df3c9047d73e77d033918e66a2 *evidence/issue17/slice38/driver-save.json
+a769ffcac5ba5c34931b54edf3cc17c821fe8efd5c97b643329f5f6f2a8828ab *evidence/issue17/slice38/driver-journey.json
+a0facbd5863691752cb2a43d348f3e528836eb93b1de6a0386651dafd5ae3511 *evidence/issue17/slice38/driver-replay.json
+4bb4af41f01ab81e5806f63ab7133f7ee152fd53714dd2056b3e345164e0d5ec *evidence/issue17/slice38/driver-save.json

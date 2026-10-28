@@ -11,8 +11,11 @@
 //!
 //! * Spider-Ham is cast at least once (`Event::Cast`);
 //! * at least one Food token enters under its controller (`Event::PermanentEntered`
-//!   with the token card), and at least one such token is activated
-//!   (`Event::AbilityActivated`) and sacrificed as a cost;
+//!   with the token card), at least one such token is activated
+//!   (`Event::AbilityActivated`) and sacrificed as a cost, and **every** sacrificed
+//!   token ceases to exist (CR 111.7: one `StateBasedAction` record per
+//!   activation, no Food object left in a live zone, and the final state accepted
+//!   by the engine's own validator on the fresh-save reload);
 //! * the ability really gains life: every activation's 3 life shows up as a
 //!   `LifeChange` for the activating seat, and the deck contains no other life
 //!   gain, so the positive life total of the seat that activated equals
@@ -86,6 +89,7 @@ fn main() {
     let mut ham_casts = 0usize;
     let mut food_created = 0usize;
     let mut food_activations = 0usize;
+    let mut foods_ceased = 0usize;
     let mut anthem_checks = 0usize;
     let mut ants = 0usize;
 
@@ -172,6 +176,14 @@ fn main() {
                 }
                 Event::AbilityActivated { card, .. } if *card == CardId::FoodToken => {
                     food_activations += 1
+                }
+                // CR 111.7: the state-based action that removes the sacrificed
+                // token. Counting it makes the report prove cessation rather than
+                // assert it in prose (review 301).
+                Event::StateBasedAction { description }
+                    if description == "Food Token token ceases to exist (CR 111.7)" =>
+                {
+                    foods_ceased += 1
                 }
                 _ => {}
             }
@@ -323,6 +335,37 @@ fn main() {
         "the printed ability gains exactly 3 life per activation, and the package has no other life gain"
     );
     assert!(anthem_checks > 0, "the anthem must be observed on a real board");
+    // CR 111.7, proven from the engine's own events rather than asserted in
+    // prose (review 301): every activated Food token ceases to exist, and no
+    // Food object survives in a live zone. A token whose owner already left the
+    // game may only remain as the inert `Removed` archival record that the state
+    // validator allows.
+    assert_eq!(
+        foods_ceased, food_activations,
+        "every sacrificed Food token ceases to exist (CR 111.7)"
+    );
+    let stray: Vec<(ObjectId, Zone, bool)> = game
+        .state
+        .objects
+        .values()
+        .filter(|object| object.card == CardId::FoodToken && object.zone != Zone::Removed)
+        .map(|object| (object.id, object.zone, game.state.is_live(object.owner)))
+        .collect();
+    assert!(
+        stray.is_empty(),
+        "no Food object survives in a live zone: {stray:?}"
+    );
+    let archived: Vec<(ObjectId, bool)> = game
+        .state
+        .objects
+        .values()
+        .filter(|object| object.card == CardId::FoodToken)
+        .map(|object| (object.id, game.state.is_live(object.owner)))
+        .collect();
+    assert!(
+        archived.iter().all(|(_, live)| !*live),
+        "the only Food objects left are inert archival records of eliminated seats: {archived:?}"
+    );
 
     let mut casts = BTreeMap::<String, usize>::new();
     for event in &events {
@@ -344,6 +387,8 @@ fn main() {
         "spider_ham_casts": ham_casts,
         "food_tokens_created": food_created,
         "food_activations": food_activations,
+        "food_tokens_ceased": foods_ceased,
+        "food_objects_left_at_game_end": archived.len(),
         "life_gained_from_food": ants,
         "anthem_checks": anthem_checks,
         "outcome": game.state.outcome,

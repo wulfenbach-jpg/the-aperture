@@ -68,10 +68,23 @@ Printed text:
   in the catalog's token table — `Token Artifact — Food`, no power/toughness,
   never importable, never part of `catalog::all()` — created by
   `Effect::CreateFoodToken`. Its printed ability is the pool's first activated
-  ability whose cost combines a mana cost, `{T}` **and** "Sacrifice this token":
-  the engine pays `{2}`, taps the token, moves it to the graveyard as part of the
-  cost (CR 602.2b) and only then puts the ability on the stack, so the token has
-  already left the battlefield when "You gain 3 life" resolves.
+  ability printed on a **token** whose cost combines a mana cost, `{T}` **and**
+  "Sacrifice this token" (the cost *shape* is not new: Mind Stone's
+  "{1}, {T}, Sacrifice this artifact: Draw a card." and Hedron Archive's
+  "{2}, {T}, Sacrifice this artifact: Draw two cards." already pay mana, `{T}`
+  and the source): the engine pays `{2}`, taps the token, moves it to the
+  graveyard as part of the cost (CR 602.2b) and only then puts the ability on the
+  stack, so the token has already left the battlefield when "You gain 3 life"
+  resolves.
+  **Correction (review 301, repair commit in slice 39).** At this head the
+  registration was incomplete: `CardId::FoodToken` was missing from
+  `CardId::is_token()` and `TOKEN_CARDS`, so the sacrificed token did *not* cease
+  to exist — it stayed a graveyard object, appeared in the public graveyard view
+  and inflated Threshold. The slice-38 claims that the token goes "out of
+  existence (CR 111.7)" were false at `6bb0740`. The repair adds the two
+  registrations, replaces the permissive test assertion with the printed one,
+  adds the registration and Threshold regressions, and regenerates every journey
+  artifact (new digest `726fe20e…`, 8 tokens ceased, 0 Food objects left).
 * **The anthem (CR 613.4c + 205.3).**
   `StaticAbility::OtherControlledCreaturesWithAnySubtypeGet` is a layer 7c
   additive static over a printed *list* of subtypes. It asks
@@ -85,18 +98,25 @@ Printed text:
 
 ## Verification
 
-* `crates/core/tests/issue17_slice38.rs` — **6/6**: sourced text and both printed
-  abilities; entering creates exactly one Food token that is an artifact, not a
-  creature, and whose ability is offered once `{2}` is payable; activating gains
-  exactly 3 life, spends the mana, sacrifices the token as a cost and removes it
-  from the battlefield; the activation is neither offered nor legal without its
-  cost (no mana / tapped token); the anthem pumps a Bear, leaves an Elf alone and
-  never pumps the source; and the anthem reads the *effective* subtype (Circle of
-  the Moon Druid 5/3 on its turn, 8/6 after Giant Growth).
+* `crates/core/tests/issue17_slice38.rs` — **8/8** after the slice-39 repair
+  (6/6 at this head): sourced text and both printed abilities; entering creates
+  exactly one Food token that is an artifact, not a creature, and whose ability is
+  offered once `{2}` is payable; activating gains exactly 3 life, spends the mana,
+  sacrifices the token as a cost, and the token then **ceases to exist** (object
+  gone, absent from the graveyard list and from the public graveyard view, with
+  the CR 111.7 records); the activation is neither offered nor legal without its
+  cost (no mana / tapped token); three real cards plus four sacrificed Foods leave
+  three objects and a 1/1 Werebear; every token variant in either characteristics
+  table is registered in `is_token()`/`TOKEN_CARDS` and is never importable; the
+  anthem pumps a Bear, leaves an Elf alone and never pumps the source; and the
+  anthem reads the *effective* subtype (Circle of the Moon Druid 5/3 on its turn,
+  8/6 after Giant Growth).
 * `card_printings` — **15/15** (the new record plus the exhaustive pool-coverage
   test).
-* `catalog_pool` **5/5**, `issue17_slice15_corpus` **1/1**, `issue13_commander_combat`
+* `catalog_pool` **5/5**, `issue17_slice15_corpus` **2/2**, `issue13_commander_combat`
   **43/43** after the two pool-size guards moved 151 → 152 and Ayula 14 → 13.
+  (Review 301 corrected this line: it read "1/1", but the binary has two tests and
+  both pass at this head.)
 * Whole workspace: **122 suites / 867 passed / 0 failed**, exit 0 (evidence/issue17/slice38-workspace-tests.log).
 * `cargo fmt --all --check` and `cargo clippy --workspace --all-targets --locked
   -- -D warnings`: both exit 0 with no warnings (`evidence/issue17/slice38/gates.log`).
@@ -107,11 +127,20 @@ Printed text:
 snapshot (4 seats, 40 life, seed 3838) choosing only from the masked legal actions
 of the seat with priority:
 
-* terminal **`Win{P2}`**, **1450** steps, **34** turns, **3845** replay events,
-  digest **`93329b6394838334e60bd2b9ecbfa646c3044c4a91ba347d1c59cb387a5bbc34`**;
+* terminal **`Win{P2}`**, **1450** steps, **34** turns, **3861** replay events,
+  digest **`726fe20e72e17b353e8d7fc9f4f8317bc06ab6b2bfd9ab1fbc0f2fb1a871cb31`**;
+  (Review 301 blocked this artifact: the pre-repair run recorded digest
+  `93329b639483…` with **3845** events and shipped four phantom `FoodToken`
+  objects in the winner's graveyard. The repair regenerated the journey: the same
+  seed, seats, deck, steps, turns and outcome, **16** more events — the 8
+  "will cease to exist" records and the 8 removal state-based actions — and no
+  Food object left in any live zone. The old digest is not reproducible at this
+  head and is not cited as current.)
 * **8** Spider-Ham casts, **8** Food tokens created, **8** Food activations,
-  **24** life gained — reconciled exactly (3 life × 8 activations) against every
-  positive life change in the game, and the package has no other life gain;
+  **8** tokens ceased to exist (CR 111.7, counted from the engine's own
+  `StateBasedAction` records), **0** Food objects left at game end, **24** life
+  gained — reconciled exactly (3 life × 8 activations) against every positive life
+  change in the game, and the package has no other life gain;
 * **7 110** anthem assertions (once per listed-subtype creature per action
   boundary), each requiring at least printed + 1/+1 beside its controller's
   Spider-Ham, with the source asserted at printed + 1/+1 per *other* copy of the
