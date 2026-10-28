@@ -3102,7 +3102,9 @@ impl GameState {
         }
         // Abilities granted by another permanent's printed static ("other
         // creatures you control have trample").
-        let granted_by_static = self.objects.values().any(|source| {
+        // A static grant to "creatures you control" reaches battlefield
+        // permanents only, not creature cards in that player's graveyard.
+        let granted_by_static = object.zone == Zone::Battlefield && self.objects.values().any(|source| {
             source.zone == Zone::Battlefield
                 && source.id != object.id
                 && source.controller == object.controller

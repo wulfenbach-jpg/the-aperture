@@ -350,6 +350,37 @@ fn the_enters_trigger_returns_the_chosen_no_ability_creature_card() {
     );
 }
 
+/// A battlefield-only grant affects creatures, not creature cards in graveyards.
+#[test]
+fn battlefield_trample_grants_do_not_reach_graveyard_cards() {
+    let mut g = fixture(5314)
+        .battlefield(P0, &[CardId::SurrakAndGoreclaw, vanilla()])
+        .hand(P0, &[ruxa()])
+        .mana(P0, add_mana(green(2), colorless(2)))
+        .graveyard(P0, &[vanilla(), vanilla()])
+        .library(P0, &[CardId::Forest; 10])
+        .library(P1, &[CardId::Forest; 10])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let dead = g.state.player(P0).graveyard[0];
+    let other_dead = g.state.player(P0).graveyard[1];
+    let live = g.state.find_permanent(P0, vanilla()).unwrap().id;
+    assert!(!g.state.object_has_no_abilities(live));
+    assert!(
+        g.state.object_has_no_abilities(dead),
+        "a graveyard card is not a creature controlled on the battlefield"
+    );
+    cast_ruxa(&mut g);
+    assert_eq!(
+        offered_targets(&g),
+        vec![Target::Card(dead), Target::Card(other_dead)]
+    );
+    choose(&mut g, Target::Card(dead));
+    settle_quiet(&mut g);
+    assert!(g.state.player(P0).hand.contains(&dead));
+    assert!(!g.state.player(P0).graveyard.contains(&dead));
+}
+
 /// A creature card WITH abilities is not a legal target: printed abilities, a
 /// keyword ability and an intrinsic mana ability all disqualify it.
 #[test]
@@ -752,7 +783,14 @@ fn two_eligible_attackers_are_asked_in_order_and_damage_is_dealt_once() {
         20,
         "the batch is not dealt until the last answer (CR 510.2)"
     );
-    answer_assignment(&mut g, false);
+    // Save after the first answer, with the second choice still pending.
+    // A before-first-choice round trip would miss prefix/cursor mistakes.
+    assert!(g.state.validate().is_ok());
+    let mut loaded = round_trip(&g);
+    let direct_events = answer_assignment(&mut g, false);
+    let loaded_events = answer_assignment(&mut loaded, false);
+    assert_eq!(direct_events, loaded_events);
+    assert_eq!(g.state, loaded.state);
 
     assert_eq!(
         g.state.player(P1).life,
