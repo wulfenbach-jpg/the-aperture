@@ -3,47 +3,52 @@
   "full_issue17_accepted": false,
   "certified_lists": "1 of 8",
   "base": "a9e3429",
-  "commit": "local slice41 head in final receipt",
+  "authoring_commit": "ddd99f045355294a89c5e5ecccc4afbc572c2345",
   "card": "The Earth King",
+  "sourced_printing": {
+    "set_and_number": "TLA 172",
+    "scryfall_id": "a8d5dca6-381a-4361-b265-27de8d04335c",
+    "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+    "retrieved_at": "2026-10-28T07:02:29Z",
+    "fixture": "fixtures/starter-corpus/slice41-sourced.json"
+  },
   "counts": {
     "catalog": 153,
+    "union": 459,
     "supported": 141,
     "missing": 318,
-    "ayula_missing": 12
+    "ayula_missing": 12,
+    "per_list_missing": [55, 0, 51, 48, 12, 52, 52, 53]
   },
-  "focused": {
-    "issue17_slice41": "4 passed",
-    "card_printings": "15 passed",
-    "catalog_pool": "5 passed",
-    "issue17_slice15_corpus": "2 passed",
-    "issue13_commander_combat": "43 passed",
-    "replay_digest": "6 passed",
-    "fmt": "0",
-    "clippy": "0",
-    "release": "0",
-    "gates": "evidence/issue17/slice41/gates.log"
+  "new_primitives": [
+    "CardId::EarthKingBearToken — distinct 4/4 green Bear token, CR 111.4 name, registered in card::TOKEN_CARDS",
+    "Pending::SearchLibrary with Action::SearchLibraryPick / SearchLibraryDone (incremental, private, linear offers)",
+    "TriggerRef/StackItem search_amount carrying the captured qualifying-attacker count",
+    "land-entry hook in Game::enter_battlefield so effect-driven land entry fires LandEnters (CR 603.6a)",
+    "GameState::validate rejects malformed SearchLibrary pendings"
+  ],
+  "delivery_bar": {
+    "focused_tests": "issue17_slice41 9/9; card_printings 15/15; catalog_pool 5/5; issue17_slice15_corpus 2/2; issue13_commander_combat 43/43; replay_digest 6/6; counters_tokens_library green; abilities green",
+    "fmt": "exit 0",
+    "clippy_deny_warnings": "exit 0",
+    "workspace": "131 test binaries / 987 passed / 0 failed / 1 ignored, exit 0",
+    "release": "exit 0",
+    "four_seat_journey": "decks/package-slice41.txt, 4 seats, 40 life, seed 2323; terminal Win{P3}; 1780 decisions; 40 turns; 4576 replay events; digest d646deedfac9b96744448b7f981f74f28825279022a64970f7651ba2f59bf127; 11 Earth King casts; 11 Bear tokens; 14 searches; 18 tapped land entries; replay verified; fresh SessionSave reloaded",
+    "separate_replay": "release CLI replays slice41 d646deedfac9 (4576 events), slice38 726fe20e72e1 (3861), slice35 1c13d8fdcdce (5347), slice37 c4c5985cd048 (4530) — all match",
+    "archive_reproducibility": "clean git archive ddd99f0 + --locked build reproduces all three driver artifacts byte-identically",
+    "exact_head_ci": "ddd99f0 10/10 completed SUCCESS, every head_sha keyed (receipt evidence/issue17/slice41/exact-head-ci-ddd99f0.json)"
   },
-  "journey": {
-    "package": "decks/package-slice41.txt",
-    "seats": 4,
-    "life": 40,
-    "seed": 2323,
-    "status": "terminal",
-    "winner": 3,
-    "steps": 1780,
-    "turns": 40,
-    "digest": "d646deedfac9b96744448b7f981f74f28825279022a64970f7651ba2f59bf127",
-    "snapshot_sha256": "d7805f3f2ccdc6fad30c8bfced4d636c44877839bf9f3509810c310c8db00f58",
-    "replay_matches": true,
-    "save_roundtrip": true,
-    "earth_king_casts": 11,
-    "bear_tokens": 11,
-    "tapped_land_entries": 18,
-    "shuffles": 14
-  },
+  "retained_red": "evidence/issue17/slice41/native-red-landfall.log — searched lands gained no landfall life (20 != 22) before the enter_battlefield hook",
   "limitations": [
-    "no dedicated source-left attack-search test",
-    "legend rule not implemented (existing admission convention)",
-    "no full workspace matrix rerun"
-  ]
+    "legend rule (CR 704.5j) unimplemented; The Earth King is the first legendary card admitted into a library (documented exclusion, singleton Commander lists cannot reach it)",
+    "search offers one action per eligible basic land — linear but unbounded in count",
+    "SearchLibrary validation does not cross-check remaining against the originally captured count (not stored)",
+    "journey is a 40-card evidence package and a masked demonstrator, not a 100-card certificate, product AI or strength evidence",
+    "slice 41 has no independent review yet"
+  ],
+  "next_actions": [
+    "independent review of ddd99f0 (and the evidence-only receipt commit)",
+    "continue Ayula: Spirit of the Aldergard and Owlbear Cub both build on the land/top-of-library search surface; then equipment pair for Lightning Greaves / Swiftfoot Boots"
+  ],
+  "no_merge_master_push_or_closure": true
 }

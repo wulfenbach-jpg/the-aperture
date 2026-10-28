@@ -74,6 +74,14 @@ response + retrieval stamp in `slice41/sources/`, fixture
   behaviour-preservation check for the shared land-entry hook: no recorded game
   moved.
 
+## Reproducibility from the committed bytes
+
+A clean `git archive ddd99f0` export built the driver with `--locked` in its own
+`CARGO_TARGET_DIR` and replayed the same game: exit 0 and `demo-journey.json`,
+`demo-replay.json` and `demo-save.json` came out **byte-identical** to the
+committed artifacts (`/c/AI/r41v-driver.log`). A reviewer therefore needs only
+the archive, not this worktree.
+
 ## Four-seat journey
 
 `evidence/issue17/slice41-journey-driver` plays `decks/package-slice41.txt`
@@ -87,6 +95,18 @@ triggers resolve into 14 shuffles carrying 18 tapped basic-land entries**, with
 the replay verifying and a fresh `SessionSave` reloading. It is a 40-card
 evidence package and a masked demonstrator, not a starter certificate and not
 product AI or playing-strength evidence.
+
+## Exact-head CI
+
+**Code/evidence head of record: `ddd99f045355294a89c5e5ecccc4afbc572c2345`.**
+`evidence/issue17/slice35/capture-ci.py` (120 s bound on every `gh` call) was
+polled by `slice41/poll-ci.sh` until it reported `TOTAL=10 states
+{'completed/success': 10} ALL_KEYED=True ALL_SUCCESS=True`: **10/10 check runs
+completed SUCCESS, every `head_sha` keyed to `ddd99f0`** — `board and roadmap`
+×2, `rust (ubuntu|windows|macos-latest)` ×2, `windows package` ×2. Receipt:
+`evidence/issue17/slice41/exact-head-ci-ddd99f0.json` (+ `.log` with the poll
+attempts). The commit that adds the receipt is evidence-only and makes no CI
+claim of its own.
 
 ## Disclosed limits
 
