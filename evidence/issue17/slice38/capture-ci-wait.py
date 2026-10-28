@@ -42,7 +42,9 @@ def main():
             states[key] = states.get(key, 0) + 1
         pending = [r for r in runs if r["status"] != "completed"]
         print(f"[{int(time.time() - start)}s] runs={len(runs)} states={states} pending={len(pending)}")
-        if not pending or time.time() - start > DEADLINE_S:
+        # `runs == 0` means the workflow has not been created yet, not that it is
+        # green: keep polling until at least one run exists.
+        if (runs and not pending) or time.time() - start > DEADLINE_S:
             break
         time.sleep(30)
 
