@@ -10,8 +10,11 @@ returned **CHANGES_REQUESTED** for one functional conformance defect in the new
 Food token plus two false record statements. This slice is the repair, on the same
 card.
 
-* **Code head of record:** `8ecc40f` (registration fix, tests, ability comment,
-  driver assertions, docs and both checkpoints).
+* **Code head of record:** `a2a3b08` (registration fix, tests, ability comment,
+  driver assertions, docs and both checkpoints). **Exact-head CI: 10/10 completed
+  SUCCESS, every `head_sha` keyed to `a2a3b08`**
+  (`evidence/issue17/slice38-repair/exact-head-ci-a2a3b08.json` + `.log`, captured
+  with `timeout=120` on every `gh` call).
 * **Status of this increment: UNVERIFIED pending a fresh independent
   re-adjudication.** The reviewer asked for exactly that after the repair, and a
   repair authored in the run that also claims to verify it is not independent.
