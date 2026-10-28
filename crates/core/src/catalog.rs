@@ -275,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 159] = [
+pub static CARDS: [CardDef; 160] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1265,6 +1265,17 @@ pub static CARDS: [CardDef; 159] = [
         oracle: "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
         spell: None
     ),
+    // Issue 17 slice 46: Thijarian Witness (WHO 111). The pool's first watcher
+    // for "another creature dies, if it was attacking or blocking alone" and its
+    // first `investigate` (CR 701.16a). Printed text copied verbatim from the
+    // WHO 111 printing recorded in
+    // fixtures/starter-corpus/slice46-sourced.json.
+    card_flash!(
+        ThijarianWitness, "Thijarian Witness", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Alien Cleric", power: Some(0), toughness: Some(4),
+        oracle: "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+        spell: None
+    ),
 ];
 
 pub fn all() -> &'static [CardDef] {
@@ -1273,7 +1284,7 @@ pub fn all() -> &'static [CardDef] {
 
 /// Token definitions. Deliberately separate from `CARDS`: tokens are engine
 /// objects, never importable or analyzer-supported cards.
-pub static TOKENS: [CardDef; 7] = [
+pub static TOKENS: [CardDef; 8] = [
     // Issue 17 slice 38: the Food token (CR 111.10, 205.3). An *artifact* token
     // with no power or toughness and one real activated ability; created only by
     // Spider-Ham, Peter Porker, never importable and never a catalog card.
@@ -1294,6 +1305,29 @@ pub static TOKENS: [CardDef; 7] = [
         power: None,
         toughness: None,
         oracle: "{2}, {T}, Sacrifice this token: You gain 3 life.",
+        spell: None,
+    },
+    // Issue 17 slice 46: the Clue token (CR 111.10, 701.16a). An artifact token
+    // with no power or toughness and one real activated ability that sacrifices
+    // itself to draw; created only by Thijarian Witness' investigate, never
+    // importable and never a catalog card.
+    CardDef {
+        id: CardId::ClueToken,
+        name: "Clue Token",
+        cost: None,
+        kinds: &[Kind::Artifact],
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Artifact — Clue",
+        colors: &[],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: None,
+        toughness: None,
+        oracle: "{2}, Sacrifice this token: Draw a card.",
         spell: None,
     },
     CardDef {

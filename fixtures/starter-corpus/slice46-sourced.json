@@ -1,0 +1,31 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-28T13:49:35.417772+00:00",
+ "cards": [
+  {
+   "name": "Thijarian Witness",
+   "oracle_id": "d273033b-3b8b-4ce9-afe8-208d82dd20f1",
+   "scryfall_id": "da05e23b-419f-4023-9ad4-1227bb1b53be",
+   "set": "who",
+   "collector_number": "111",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Creature — Alien Cleric",
+   "power": "0",
+   "toughness": "4",
+   "oracle_text": "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Investigate",
+    "Bear Witness",
+    "Flash"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/da05e23b-419f-4023-9ad4-1227bb1b53be",
+   "retrieved_at": "2026-10-28T13:49:35.417772+00:00"
+  }
+ ]
+}

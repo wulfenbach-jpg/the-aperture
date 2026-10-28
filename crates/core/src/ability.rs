@@ -68,6 +68,13 @@ pub enum TriggerEvent {
     /// beginning-of-combat step of this source's controller's turn. The step
     /// exists once per turn, so the trigger fires at most once per turn.
     BeginningOfCombat,
+    /// CR 603.6c + 700.4 with the printed wording "whenever another creature
+    /// dies": a creature other than the source died, regardless of controller.
+    /// The printed intervening-if "if it was attacking or blocking alone" is
+    /// evaluated by the engine where the death is dispatched, because it is a
+    /// property of the dying creature's combat state at that moment (CR 506.4,
+    /// 508.1, 509.1) and not of this source.
+    AnotherCreatureDies,
 }
 
 impl TriggerEvent {
@@ -87,6 +94,7 @@ impl TriggerEvent {
             TriggerEvent::Attacks => "this creature attacks",
             TriggerEvent::CreatureSpellCast => "you cast a creature spell",
             TriggerEvent::BeginningOfCombat => "at the beginning of combat on your turn",
+            TriggerEvent::AnotherCreatureDies => "another creature dies",
         }
     }
 }
@@ -1059,6 +1067,8 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
         CardId::SpiderHamPeterPorker => SPIDER_HAM,
         CardId::FoodToken => FOOD_TOKEN,
+        CardId::ClueToken => CLUE_TOKEN,
+        CardId::ThijarianWitness => THIJARIAN_WITNESS,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
@@ -1453,6 +1463,41 @@ const FOOD_TOKEN: &[Ability] = &[Ability::Activated(ActivatedAbility {
     effects: &[Effect::GainLife(3)],
     once_per_turn: false,
     sorcery_timing: false,
+})];
+
+/// The Clue token's printed ability (CR 111.10, 701.16a): "{2}, Sacrifice this
+/// token: Draw a card." Unlike the Food token there is no `{T}`: the sacrifice is
+/// the whole nonmana cost, so a Clue that entered this turn can be cracked at
+/// once. Paying it puts a *token* into the graveyard, which then ceases to exist
+/// as a state-based action (CR 111.7), exactly like the Food token's cost.
+const CLUE_TOKEN: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{2}, Sacrifice this token: Draw a card.",
+    cost: AbilityCost {
+        tap: false,
+        sacrifice_source: true,
+        mana: Some("{2}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::Draw(1)],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
+/// Thijarian Witness (WHO 111). One printed trigger: "Bear Witness — Whenever
+/// another creature dies, if it was attacking or blocking alone, exile it and
+/// investigate." The intervening-if is a combat-state property of the dying
+/// creature, so the death dispatch evaluates it before the trigger is queued and
+/// the engine records the dead object on the trigger so the resolution can exile
+/// that exact card (never "a" card the controller picks). Flash is printed
+/// separately in the catalog definition and needs no ability literal (CR 702.8a).
+const THIJARIAN_WITNESS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Bear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate.",
+    event: TriggerEvent::AnotherCreatureDies,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::ExileDeadCreatureAndInvestigate],
 })];
 
 /// Spider-Ham, Peter Porker (SPM 114). Two printed abilities: an enters trigger

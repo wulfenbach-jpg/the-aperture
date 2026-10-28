@@ -156,6 +156,7 @@ fn projection_carries_the_decision_identity_and_legal_actions() {
         targets: Vec::new(),
         modes: Vec::new(),
         affected: None,
+        dead_object: None,
         source_pt_lki: None,
         search_amount: 0,
         cursor: 0,

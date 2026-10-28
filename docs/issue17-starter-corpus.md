@@ -46,12 +46,12 @@ basic lands (coordinator evidence
 `evidence/issue17/slice44/corpus-audit.py` + `corpus-audit.log`; earlier slice-25 audit retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **146** are in the supported 159-card catalog and **313** are missing. Slice
+* **147** are in the supported 160-card catalog and **312** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **159**; the intervening per-slice list is
+  slices bring the current implemented total to **160**; the intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -68,7 +68,7 @@ the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
 (slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
-`Stuffed Bear`. Ayula currently has **7** missing names.
+`Stuffed Bear`. Ayula currently has **6** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -335,7 +335,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 159 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 160 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -726,3 +726,12 @@ Spirit of the Aldergard (`{3}{G}`, Snow Creature — Bear Spirit, 0/4) is source
 
 ## Slice 45: Titania's Command
 Titania's Command (`{4}{G}{G}` Sorcery) is sourced in `fixtures/starter-corpus/slice45-sourced.json` (BRO 194, immutable 753567c7…, oracle 7aae0a3d…, retrieved 2026-10-28T13:02:38Z). Casting uses a typed two-distinct-mode action; resolution follows printed mode order. Exile graveyard, up-to-two land search to tapped battlefield with shuffle, two canonical 2/2 Bears and two +1/+1 counters on each own creature are all implemented. Only the exile mode requires a player target; a modal action with duplicate/insufficient modes or unselected targets is refused atomically.
+
+## Slice 46: Thijarian Witness
+Thijarian Witness (`{1}{G}`, 0/4 Creature — Alien Cleric, printed Flash) is sourced in `fixtures/starter-corpus/slice46-sourced.json` (WHO 111, immutable `da05e23b-419f-4023-9ad4-1227bb1b53be`, oracle `d273033b-3b8b-4ce9-afe8-208d82dd20f1`, retrieved 2026-10-28T13:49:35Z; both printings of the card carry identical oracle text). It is the pool's first `TriggerEvent::AnotherCreatureDies` watcher and its first `investigate`.
+
+Two properties of this trigger are where an implementation can quietly be wrong, and both are now decided in one place each. **The printed intervening-if** ("if it was attacking or blocking alone") is a fact about the *dying* creature's combat state, read from this combat's declaration lists before the zone change — `detach_object` clears a departing creature's combat membership, so a per-death read after the move reports "not in combat" for every creature that died in combat. **Simultaneous deaths** make that worse: each move prunes one attacker, so the last creature of a batch looks like the only attacker. `DeathRecord` therefore carries a per-batch `CombatAloneSnapshot` taken before anything moves, and every death in a batch sees the same combat (CR 704.3, 506.5).
+
+Resolution exiles *that* card from its owner's graveyard where the trigger found it and then creates one Clue token (CR 701.16a) for the trigger's controller; a card that already left the graveyard is simply not found and the investigate still happens, because the printed text has no "if you do" between the two instructions. The Clue token is a real artifact token with the printed `{2}, Sacrifice this token: Draw a card` ability and no `{T}` in its cost, so a Clue created this turn can be cracked at once and its sacrifice goes through the ordinary token-cessation path (CR 111.7). Flash is the catalog's keyword flag; nothing here grants or removes it.
+
+Exclusions, disclosed: a commander that dies alone in combat and is put into the command zone is a new object (CR 400.7), so this trigger finds nothing to exile and still investigates; if its controller lets it reach the graveyard the exile applies. The trigger is modelled only for creatures that are creatures as they leave (CR 700.4), and nothing else in the pool watches "creature dies" with a combat-state condition. This slice certifies no starter list: Ayula has 6 missing names and the eight-list gate remains 1 of 8.

@@ -301,6 +301,7 @@ fn active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_liv
         targets: vec![Target::Player(2)],
         modes: Vec::new(),
         affected: None,
+        dead_object: None,
         source_pt_lki: None,
         search_amount: 0,
         cursor: 0,

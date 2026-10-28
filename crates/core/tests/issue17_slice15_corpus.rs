@@ -136,9 +136,10 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Beorn's Hospitality, so both numbers move together by one again. Slice 35
     // registers Words of Wilding, which closes one more, and slice 37 registers
     // Druid's Familiar, which closes one more again, and slice 38 registers
-    // Spider-Ham, Peter Porker, which closes one more again. Slices 41-43
-    // register The Earth King, the two Equipment and Lumra, Bellow of the Woods,
-    // so the gap closes by four while the pool grows by four.
-    assert_eq!(missing.len(), 7, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 159, "the compiled pool");
+    // Spider-Ham, Peter Porker, which closes one more again. Slices 41-46
+    // register The Earth King, the two Equipment, Lumra Bellow of the Woods,
+    // Spirit of the Aldergard, Titania's Command and Thijarian Witness, so the
+    // gap closes by six while the pool grows by six.
+    assert_eq!(missing.len(), 6, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 160, "the compiled pool");
 }

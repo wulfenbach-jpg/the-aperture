@@ -1964,11 +1964,9 @@ impl Game {
     }
 
     fn move_to_graveyard(&mut self, id: ObjectId, events: &mut Vec<Event>) {
-        if let Some((dying, new_id, card, controller, was_creature)) =
-            self.move_to_graveyard_inner(id, events)
-        {
-            let death = (dying, new_id, card, controller, was_creature);
-            self.queue_watchers_for_deaths(&death_watchers(self), &[death]);
+        let combat = self.capture_combat_alone();
+        if let Some(record) = self.move_to_graveyard_inner(id, events, &combat) {
+            self.queue_watchers_for_deaths(&death_watchers(self), &[record]);
         }
     }
 
@@ -2031,7 +2029,8 @@ impl Game {
         &mut self,
         id: ObjectId,
         events: &mut Vec<Event>,
-    ) -> Option<(ObjectId, ObjectId, CardId, PlayerId, bool)> {
+        combat: &CombatAloneSnapshot,
+    ) -> Option<DeathRecord> {
         // CR 700.4 + 613.1d: a permanent that dies while a layer 4 effect makes
         // it a creature *is* a creature dying, so the record keeps that answer
         // from the moment it leaves rather than the printed card type (an
@@ -2040,6 +2039,10 @@ impl Game {
             (object.zone == Zone::Battlefield)
                 .then(|| (object.card, object.controller, self.is_creature(object)))
         });
+        // CR 508.1 + 509.1: "attacking alone" / "blocking alone" are read from
+        // this combat's declaration record, which `detach_object` clears as part
+        // of the zone change. The fact therefore comes from the batch snapshot.
+        let alone_in_combat = combat.died_alone(id);
         let token = self
             .state
             .try_object(id)
@@ -2082,7 +2085,13 @@ impl Game {
             // The dying permanent's own "this creature ... dies" trigger is
             // order-independent, so it is queued here rather than in the batch.
             self.queue_self_death(new_id, card, controller, was_creature);
-            return Some((id, new_id, card, controller, was_creature));
+            return Some(DeathRecord {
+                battlefield_id: id,
+                graveyard_id: new_id,
+                controller,
+                was_creature,
+                alone_in_combat,
+            });
         }
         None
     }
@@ -2370,23 +2379,23 @@ impl Game {
     fn queue_watchers_for_deaths(
         &mut self,
         watchers: &[(ObjectId, CardId, PlayerId)],
-        deaths: &[(ObjectId, ObjectId, CardId, PlayerId, bool)],
+        deaths: &[DeathRecord],
     ) {
-        let deaths: Vec<(ObjectId, CardId, PlayerId)> = deaths
+        let deaths: Vec<DeathRecord> = deaths
             .iter()
-            .filter(|(_, _, _, _, was_creature)| *was_creature)
-            .map(|(dying, _, card, controller, _)| (*dying, *card, *controller))
+            .filter(|record| record.was_creature)
+            .cloned()
             .collect();
         if deaths.is_empty() {
             return;
         }
         for (source, source_card, source_controller) in watchers.iter().copied() {
-            for (dying, _death_card, death_controller) in deaths.iter().copied() {
+            for record in deaths.iter() {
                 // The dying permanent's own "this creature ... dies" triggers
                 // were already queued by `queue_self_death` at the zone change.
                 // Dispatching it again through the watcher batch would double
                 // every self-death trigger.
-                if dying == source {
+                if record.battlefield_id == source {
                     continue;
                 }
                 self.queue_triggers(
@@ -2395,7 +2404,7 @@ impl Game {
                     source_controller,
                     TriggerEvent::CreatureDies,
                 );
-                if source_controller == death_controller {
+                if source_controller == record.controller {
                     self.queue_triggers(
                         source,
                         source_card,
@@ -2409,7 +2418,72 @@ impl Game {
                         TriggerEvent::AnotherCreatureYouControlDies,
                     );
                 }
+                // CR 603.6c: "whenever another creature dies" has no controller
+                // restriction. Its printed intervening-if ("if it was attacking
+                // or blocking alone") is a fact about the dying creature's
+                // combat state, which the death record captured before the zone
+                // change cleared its combat membership.
+                if record.alone_in_combat {
+                    self.queue_another_creature_dies(
+                        source,
+                        source_card,
+                        source_controller,
+                        record.graveyard_id,
+                    );
+                }
             }
+        }
+    }
+
+    /// Queue one "whenever another creature dies" watcher for one death in a
+    /// batch, recording the dead object so the resolution can exile that exact
+    /// card (Thijarian Witness). The caller has already evaluated the printed
+    /// intervening-if (CR 603.4) against the pre-zone-change combat state.
+    fn queue_another_creature_dies(
+        &mut self,
+        source: ObjectId,
+        card: CardId,
+        controller: PlayerId,
+        dead_object: ObjectId,
+    ) {
+        for (index, _) in ability::triggers_on(card, TriggerEvent::AnotherCreatureDies) {
+            let seq = self.state.next_trigger_seq;
+            self.state.next_trigger_seq += 1;
+            self.state.trigger_queue.push(TriggerRef {
+                source,
+                card,
+                controller,
+                ability: index,
+                seq,
+                spell_mana_value: 0,
+                affected: None,
+                dead_object: Some(dead_object),
+                source_pt_lki: None,
+                search_amount: 0,
+            });
+        }
+    }
+
+    /// CR 508.1 + 509.1: a creature attacked alone if it was the only creature
+    /// declared as an attacker this combat, and blocked alone if it was the only
+    /// creature declared as a blocker. Both lists are cleared at end of combat
+    /// (CR 511.3), so outside the combat phase this is false for every creature;
+    /// inside it, the lists are the declaration record the rules text names.
+    ///
+    /// The record is snapshotted once per batch of deaths, because moving one
+    /// creature to the graveyard prunes it from `turn.attackers` / `turn.blockers`
+    /// (CR 506.4). Read per death, the second creature of a simultaneous combat
+    /// batch would look like the only attacker left and a removal spell that kills
+    /// two attackers at once would wrongly trigger an "alone" watcher.
+    fn capture_combat_alone(&self) -> CombatAloneSnapshot {
+        let turn = &self.state.turn;
+        let mut blockers: Vec<ObjectId> =
+            turn.blockers.iter().map(|(blocker, _)| *blocker).collect();
+        blockers.sort();
+        blockers.dedup();
+        CombatAloneSnapshot {
+            attackers: turn.attackers.clone(),
+            blockers,
         }
     }
 
@@ -4118,6 +4192,7 @@ impl Game {
             targets: Vec::new(),
             modes: Vec::new(),
             affected: Some(source),
+            dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
             cursor: 0,
@@ -4479,6 +4554,7 @@ impl Game {
             targets: targets.to_vec(),
             modes: Vec::new(),
             affected: attach.then_some(source),
+            dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
             cursor: 0,
@@ -4543,6 +4619,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
             });
@@ -4559,6 +4636,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
             });
@@ -4802,6 +4880,7 @@ impl Game {
             targets,
             modes: Vec::new(),
             affected: trigger.affected,
+            dead_object: trigger.dead_object,
             source_pt_lki: trigger.source_pt_lki,
             search_amount: trigger.search_amount,
             cursor: 0,
@@ -5024,6 +5103,7 @@ impl Game {
             targets: targets.to_vec(),
             modes: modes.to_vec(),
             affected: None,
+            dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
             cursor: 0,
@@ -5195,6 +5275,7 @@ impl Game {
                         seq,
                         spell_mana_value: 0,
                         affected: None,
+                        dead_object: None,
                         source_pt_lki: None,
                         search_amount: qualifying,
                     });
@@ -6261,7 +6342,8 @@ impl Game {
                 // once for every death, so the result does not depend on which
                 // dying creature happens to be moved first.
                 let watchers = death_watchers(self);
-                let mut deaths: Vec<(ObjectId, ObjectId, CardId, PlayerId, bool)> = Vec::new();
+                let combat = self.capture_combat_alone();
+                let mut deaths: Vec<DeathRecord> = Vec::new();
                 let mut regenerated = 0usize;
                 for id in &dying {
                     let lethal_now = self.state.try_object(*id).is_some_and(|o| {
@@ -6274,10 +6356,8 @@ impl Game {
                         regenerated += 1;
                         continue;
                     }
-                    if let Some((dying_id, new_id, card, controller, was_creature)) =
-                        self.move_to_graveyard_inner(*id, events)
-                    {
-                        deaths.push((dying_id, new_id, card, controller, was_creature));
+                    if let Some(record) = self.move_to_graveyard_inner(*id, events, &combat) {
+                        deaths.push(record);
                     }
                 }
                 self.queue_watchers_for_deaths(&watchers, &deaths);
@@ -6642,6 +6722,7 @@ impl Game {
                     seq: 0,
                     spell_mana_value: item.spell_mana_value,
                     affected: item.affected,
+                    dead_object: None,
                     source_pt_lki: item.source_pt_lki,
                     search_amount: item.search_amount,
                 },
@@ -7609,6 +7690,29 @@ impl Game {
                 self.create_tokens(controller, CardId::FoodToken, 1, events);
                 false
             }
+            Effect::CreateClueToken => {
+                self.create_tokens(controller, CardId::ClueToken, 1, events);
+                false
+            }
+            // CR 701.16a: "exile it and investigate". The card exiled is the one
+            // the trigger watched die, recorded on the stack item; if it is no
+            // longer in a graveyard the exile simply finds nothing and the
+            // investigate still happens, because the printed text has no "if you
+            // do" between the two instructions.
+            Effect::ExileDeadCreatureAndInvestigate => {
+                if let Some(dead) = item.dead_object {
+                    let in_graveyard = self
+                        .state
+                        .try_object(dead)
+                        .is_some_and(|object| object.zone == Zone::Graveyard);
+                    if in_graveyard {
+                        // `move_to_exile` records its own "is exiled" event.
+                        self.move_to_exile(dead, events);
+                    }
+                }
+                self.create_tokens(controller, CardId::ClueToken, 1, events);
+                false
+            }
             Effect::CreateBearTokens(n) => {
                 self.create_tokens(controller, CardId::BearToken, u32::from(n) as usize, events);
                 false
@@ -7670,12 +7774,13 @@ impl Game {
                     .collect();
                 if !doomed.is_empty() {
                     let watchers = death_watchers(self);
+                    let combat = self.capture_combat_alone();
                     let mut deaths = Vec::new();
                     for id in &doomed {
                         if self.try_regenerate(*id, events) {
                             continue;
                         }
-                        if let Some(record) = self.move_to_graveyard_inner(*id, events) {
+                        if let Some(record) = self.move_to_graveyard_inner(*id, events, &combat) {
                             deaths.push(record);
                         }
                     }
@@ -8443,6 +8548,7 @@ impl Game {
                         seq,
                         spell_mana_value: 0,
                         affected: Some(entering),
+                        dead_object: None,
                         source_pt_lki: None,
                         search_amount: 0,
                     });
@@ -9575,9 +9681,49 @@ fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
                 || ability::triggers_on(object.card, TriggerEvent::AnotherCreatureYouControlDies)
                     .next()
                     .is_some()
+                || ability::triggers_on(object.card, TriggerEvent::AnotherCreatureDies)
+                    .next()
+                    .is_some()
         })
         .map(|object| (object.id, object.card, object.controller))
         .collect()
+}
+
+/// One creature death in a batch, recorded while the permanent is still on the
+/// battlefield so facts that only hold there survive the zone change.
+///
+/// `battlefield_id` is the identity watched by "another creature dies" self
+/// comparisons; `graveyard_id` is the object the card *is* after the move, which
+/// is what the trigger's "exile it" must find (they differ only for a commander,
+/// whose zone change creates a new object, CR 400.7). `alone_in_combat` is the
+/// printed intervening-if, read before `detach_object` clears combat membership.
+#[derive(Clone, Copy, Debug)]
+struct DeathRecord {
+    battlefield_id: ObjectId,
+    graveyard_id: ObjectId,
+    controller: PlayerId,
+    was_creature: bool,
+    alone_in_combat: bool,
+}
+
+/// This combat's attacker and blocker declarations, snapshotted once before a
+/// batch of deaths. "Attacks alone" and "blocks alone" (CR 506.5) are properties
+/// of the declaration record *as it was when the batch happened*, so the record
+/// must not be re-read after each creature leaves combat.
+#[derive(Clone, Debug)]
+struct CombatAloneSnapshot {
+    attackers: Vec<ObjectId>,
+    /// Distinct blocking creatures; one blocker blocking two attackers blocks
+    /// alone only if it is the only creature that blocked.
+    blockers: Vec<ObjectId>,
+}
+
+impl CombatAloneSnapshot {
+    fn died_alone(&self, id: ObjectId) -> bool {
+        let attacking_alone = self.attackers.len() == 1 && self.attackers[0] == id;
+        let blocking_alone = self.blockers.len() == 1 && self.blockers[0] == id;
+        attacking_alone || blocking_alone
+    }
 }
 
 /// One activation request: which object, which printed ability and mode, which
@@ -10039,6 +10185,7 @@ mod slice17_cleanup_history_tests {
                     seq: 0,
                     spell_mana_value: 0,
                     affected: None,
+                    dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
                 },
@@ -10050,6 +10197,7 @@ mod slice17_cleanup_history_tests {
                     seq: 1,
                     spell_mana_value: 0,
                     affected: None,
+                    dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
                 },

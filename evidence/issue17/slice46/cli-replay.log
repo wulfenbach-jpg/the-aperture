@@ -1,0 +1,5 @@
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 4.27s
+     Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice46/demo-replay.json`
+replay seed 2323 — 4 seat(s), 3073 action(s), recorded outcome Some(Win { winner: 1, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
+  replayed digest da4eacd5363f | matches recorded | events 8098

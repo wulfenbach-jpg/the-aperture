@@ -255,6 +255,12 @@ pub struct TriggerRef {
     /// never retargeted; dangling after a battlefield departure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affected: Option<ObjectId>,
+    /// The creature a "whenever another creature dies" trigger watched die,
+    /// captured when the death was dispatched so the resolution can exile that
+    /// exact card from its owner's graveyard (CR 603.6c). Absent for every other
+    /// trigger, so the field is skipped and pre-slice-46 digests are unchanged.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dead_object: Option<ObjectId>,
     /// Effective source P/T captured when its battlefield incarnation leaves,
     /// used by a queued/stacked source-left P/T-setting ability.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -666,6 +672,10 @@ pub struct StackItem {
     /// Non-target object captured by the trigger's "it" wording.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affected: Option<ObjectId>,
+    /// The dead card a "whenever another creature dies" trigger watched, copied
+    /// from `TriggerRef::dead_object` when the item was put on the stack.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dead_object: Option<ObjectId>,
     /// Index of the next effect to apply during resolution (CR 608.2c).
     pub cursor: u8,
     /// Spell or ability. Ability entries resolve without moving their source

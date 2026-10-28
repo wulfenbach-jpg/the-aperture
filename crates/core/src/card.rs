@@ -235,6 +235,19 @@ pub enum Effect {
     /// token card table, so the token is a real rules object with a real
     /// activated ability and never an importable card.
     CreateFoodToken,
+    /// CR 701.16a: create one Clue token, the pool's second *artifact* token and
+    /// its first token whose activated ability draws (Thijarian Witness,
+    /// "investigate"). Characteristics and the "{2}, Sacrifice this token: Draw
+    /// a card" ability live in the token card table, so the token is a real
+    /// rules object and never an importable card.
+    CreateClueToken,
+    /// "Exile it and investigate" (Thijarian Witness). The "it" is the creature
+    /// the trigger watched die (CR 603.6c, CR 700.4): the card is exiled from
+    /// its owner's graveyard where the trigger found it and the trigger's
+    /// controller then investigates. The two halves are one instruction pair in
+    /// printed order; a card that already left the graveyard is simply not
+    /// found, and the investigate still happens (CR 609.3 has no "if you do").
+    ExileDeadCreatureAndInvestigate,
     /// CR 701.14a: two target creatures deal damage equal to their power to
     /// each other simultaneously. Both must still satisfy the printed
     /// Bear/opponent relation at resolution or no damage is dealt.
@@ -458,6 +471,10 @@ impl Effect {
             Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
             Effect::CreateBearTokens(n) => format!("create {n} 2/2 green Bear token(s)"),
             Effect::CreateFoodToken => "create a Food token".to_string(),
+            Effect::CreateClueToken => "create a Clue token".to_string(),
+            Effect::ExileDeadCreatureAndInvestigate => {
+                "exile it and investigate".to_string()
+            }
             Effect::BearTokenForEachPlayerWithPermanent => {
                 "each player who controls an artifact or enchantment creates a 2/2 green Bear token"
                     .to_string()
@@ -955,6 +972,12 @@ pub enum CardId {
     SoldierToken,
     /// 1/1 flying Spirit token (CR 111, 702.9).
     SpiritToken,
+    /// Issue 17 slice 46: Thijarian Witness (WHO 111), the pool's first
+    /// "another creature dies if it was attacking or blocking alone" watcher.
+    ThijarianWitness,
+    /// Issue 17 slice 46: the Clue token card (never importable, CR 111.10,
+    /// 701.16a).
+    ClueToken,
 }
 
 /// Explicit command-zone practice allow-list. This is deliberately narrower
@@ -985,6 +1008,7 @@ pub const TOKEN_CARDS: &[CardId] = &[
     CardId::BearToken,
     CardId::FoodToken,
     CardId::EarthKingBearToken,
+    CardId::ClueToken,
 ];
 
 impl CardId {

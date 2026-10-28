@@ -1,0 +1,215 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.07s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 17 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test slice37_druids_familiar_matches_its_recorded_printing ... ok
+test slice38_spider_ham_matches_its_recorded_printing ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test slice43_lumra_matches_its_recorded_printing ... ok
+test slice46_thijarian_witness_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+
+running 43 tests
+test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+test departing_controller_battlefield_permanent_is_exiled ... ok
+test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+test commander_damage_to_a_creature_never_credits_a_player ... ok
+test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+test discard_pending_then_active_departure_settles_once ... ok
+test fog_is_a_sourced_catalog_card ... ok
+test fog_does_not_prevent_noncombat_damage ... ok
+test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+test commander_combat_damage_is_publicly_credited ... ok
+test fog_prevents_combat_damage_to_creatures ... ok
+test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+test departed_identity_omitted_from_retired_is_refused ... ok
+test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+test fabricated_retired_commander_identity_is_refused ... ok
+test commander_damage_identity_survives_a_modeled_control_change ... ok
+test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+test fog_shield_expires_after_cleanup ... ok
+test named_20_life_profiles_are_unchanged ... ok
+test noncombat_damage_never_credits_the_ledger ... ok
+test previous_replay_schema_version_is_rejected ... ok
+test live_commander_cannot_be_listed_as_retired ... ok
+test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+test independent_commanders_do_not_pool ... ok
+test commander_draw_answer_then_owner_departure_is_atomic ... ok
+test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+test real_departure_retires_identity_and_keeps_historic_row ... ok
+test exact_commander_damage_boundaries ... ok
+test simultaneous_losses_settle_once_in_seat_order ... ok
+test serialized_commander_combat_profile_reconstructs_40_life ... ok
+test survivor_owned_source_exiled_but_queue_continues ... ok
+test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+test malformed_commander_damage_ledgers_are_refused ... ok
+test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+test commander_return_queue_survives_a_departing_owner ... ok
+test twenty_two_commander_damage_is_a_loss ... ok
+test previous_save_schema_version_is_rejected ... ok
+test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+test accepted_action_midledger_save_and_replay_roundtrip ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.89s
+
+     Running tests\issue17_slice12.rs (target\debug\deps\issue17_slice12-92fee262fbf05d7d.exe)
+
+running 11 tests
+test sourced_artifacts_match_printings_and_are_noncreature_permanents ... ok
+test removed_tokens_are_valid_only_as_inert_archives_of_departed_owners ... ok
+test archived_tokens_cannot_anchor_live_engine_references ... ok
+test mind_stone_mana_then_sacrifice_draws_on_the_stack ... ok
+test hedron_archive_mana_and_sacrifice_draw_two_with_source_left ... ok
+test artifact_cast_requires_sorcery_timing_and_negate_sees_noncreature ... ok
+test all_three_artifacts_cast_from_hand_and_activate_same_turn ... ok
+test mind_and_hedron_mana_abilities_produce_printed_amounts ... ok
+test sol_ring_taps_immediately_for_two_colorless_and_cannot_repeat ... ok
+test insufficient_generic_mana_refusal_preserves_state ... ok
+test tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice15_corpus.rs (target\debug\deps\issue17_slice15_corpus-2520fcad538eaf2c.exe)
+
+running 2 tests
+test the_three_slice15_cards_leave_the_ayula_gap ... ok
+test every_desired_list_missing_cards_equals_pool_membership ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice41.rs (target\debug\deps\issue17_slice41-c6fbb863586e85a0.exe)
+
+running 11 tests
+test earth_king_is_sourced_and_supported ... ok
+test earth_king_really_casts_and_creates_distinct_four_four_bear ... ok
+test carved_bear_token_ceases_to_exist_after_leaving_the_battlefield ... ok
+test searched_lands_fire_existing_landfall_once_each_without_spending_land_play ... ok
+test attack_search_resolves_from_the_captured_count_after_its_source_leaves ... ok
+test zero_pick_search_still_shuffles_and_forged_or_duplicate_picks_are_atomic_refusals ... ok
+test attack_search_is_one_trigger_for_two_qualifiers_and_puts_basic_lands_tapped ... ok
+test full_opponent_projection_is_independent_of_hidden_search_candidates ... ok
+test midsearch_save_reload_keeps_private_progress_and_finishes_identically ... ok
+test midsearch_after_one_pick_save_reload_continues_identically ... ok
+test forged_search_pending_duplicates_and_subset_are_rejected_by_validate_and_save ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice42.rs (target\debug\deps\issue17_slice42-cad1f883e9e2fa4e.exe)
+
+running 9 tests
+test equipment_sources_are_registered_and_castable ... ok
+test boots_hexproof_allows_owner_but_refuses_opponent_and_grants_haste ... ok
+test equipped_haste_allows_a_real_prodigal_sorcerer_tap_activation_offer ... ok
+test equipment_source_departure_invalidates_queued_equip_and_same_id_recast ... ok
+test equipment_stays_attached_to_a_legally_animated_permanent ... ok
+test old_attachment_survives_until_equip_resolves_and_bounce_does_not_transfer ... ok
+test old_attachment_remains_when_new_equip_target_becomes_illegal ... ok
+test greaves_equip_grants_haste_and_shroud_to_all_players_targeting ... ok
+test attached_and_mid_equip_save_reload_have_identical_continuation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice42_equip_controls.rs (target\debug\deps\issue17_slice42_equip_controls-3f29c607308de6a5.exe)
+
+running 4 tests
+test equip_is_refused_while_a_spell_is_on_the_stack ... ok
+test equip_refusals_are_atomic_for_control_target_and_cost ... ok
+test protection_is_read_live_and_two_equipment_coexist_on_one_creature ... ok
+test equip_cannot_target_a_protected_creature_but_keeps_existing_attachments ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice44.rs (target\debug\deps\issue17_slice44-ec9d32a043ff5d73.exe)
+
+running 3 tests
+test static_counts_other_current_snow_permanents_only_and_excludes_self ... ok
+test spirit_casts_and_etb_search_reveals_snow_land_to_hand ... ok
+test snow_search_fails_to_find_and_postpick_save_continues ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice45.rs (target\debug\deps\issue17_slice45-82c814dbea110dbe.exe)
+
+running 2 tests
+test pairs_complete_printed_modes_independently ... ok
+test modal_refusals_and_postpick_search_save_continue_identically ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice46.rs (target\debug\deps\issue17_slice46-e6ff61e91e13a057.exe)
+
+running 6 tests
+test witness_and_clue_are_catalogued_as_printed_and_token_is_not_a_card ... ok
+test clue_token_sacrifices_itself_to_draw_a_card ... ok
+test death_outside_combat_does_not_trigger ... ok
+test death_beside_another_attacker_does_not_trigger ... ok
+test sole_blocker_dying_in_combat_is_exiled_and_investigated ... ok
+test sole_attacker_dying_in_combat_is_exiled_and_investigated ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\ordering_persistence.rs (target\debug\deps\ordering_persistence-617dbda96e8e7eeb.exe)
+
+running 2 tests
+test ordinary_and_command_opt_consider_both_order_answers_save_resume_and_replay ... ok
+test legal_time_ebb_decline_consider_all_owner_answers_preserve_draw_identity_tax_and_replay ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.55s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\starter_corpus.rs (target\debug\deps\starter_corpus-05f2cda4096c1ba4.exe)
+
+running 8 tests
+test jasmine_is_refused_in_every_ordinary_library ... ok
+test the_starter_manifest_names_eight_targets_and_claims_only_one ... ok
+test jasmine_boreal_is_a_typed_supported_commander ... ok
+test jasmine_commander_damage_uses_the_existing_ledger ... ok
+test jasmine_commander_cast_tax_and_return_use_the_existing_paths ... ok
+test every_sourced_vanilla_creature_matches_its_printing ... ok
+test the_first_starter_library_is_exact_and_fully_supported ... ok
+test every_sourced_vanilla_creature_casts_and_resolves ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

@@ -1383,8 +1383,9 @@ fn fog_is_a_sourced_catalog_card() {
     // 30's Drover Grizzly and slice 31's Beorn the Fierce, and to 148 with
     // slice 32's Kamahl's Summons, and to 149 with slice 33's Beorn's
     // Hospitality, and to 151 with slice 37's Druid's Familiar, and to 152 with
-    // slice 38's Spider-Ham, Peter Porker.
-    assert_eq!(aperture_core::catalog::pool_size(), 159);
+    // slice 38's Spider-Ham, Peter Porker, and to 160 with the Ayula-list cards
+    // of slices 41-46 (the last being Thijarian Witness).
+    assert_eq!(aperture_core::catalog::pool_size(), 160);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
@@ -1405,6 +1406,7 @@ fn departing_controller_stack_card_is_exiled_without_a_phantom_entry() {
         targets: vec![Target::Player(P1)],
         modes: Vec::new(),
         affected: None,
+        dead_object: None,
         source_pt_lki: None,
         search_amount: 0,
         cursor: 0,

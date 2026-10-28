@@ -1,0 +1,80 @@
+{
+ "status": "PARTIAL #17",
+ "full_issue17_accepted": false,
+ "certified_lists": "1 of 8",
+ "base": "6bbe221",
+ "commit": "slice46 local head in final receipt",
+ "card": "Thijarian Witness",
+ "slice": "46 (resumed WIP; the record-only R321-1 delta was also named slice 46)",
+ "counts": {
+  "catalog": 160,
+  "union": 459,
+  "supported": 147,
+  "missing": 312,
+  "ayula_missing": 6,
+  "per_list_missing": [55, 0, 51, 48, 6, 52, 52, 53]
+ },
+ "source": {
+  "fixture": "fixtures/starter-corpus/slice46-sourced.json",
+  "printing": "who/111",
+  "scryfall_id": "da05e23b-419f-4023-9ad4-1227bb1b53be",
+  "oracle_id": "d273033b-3b8b-4ce9-afe8-208d82dd20f1",
+  "retrieved_at": "2026-10-28T13:49:35Z",
+  "live_recheck": "2 printings (who 111, who 716), 1 distinct oracle text, identical to the fixture and the catalog"
+ },
+ "harness_paths_fixed": [
+  "declare-blockers only becomes pending after both players pass (CR 508.2); tests now pass P0 then P1 before asserting the pending",
+  "the out-of-combat burn control now passes priority to P1 (CR 117.1d) before asking for P1's offers"
+ ],
+ "product_defects_fixed": [
+  "death_watchers did not include TriggerEvent::AnotherCreatureDies, so the Witness was never snapshotted as a watcher",
+  "the printed intervening-if was evaluated after detach_object, which had already cleared the dying creature's combat membership",
+  "a per-death read made the last death of a simultaneous batch look like the only attacker; the declaration record is now snapshotted once per batch (CombatAloneSnapshot on DeathRecord)",
+  "the exile addressed the pre-move object id instead of the graveyard object id",
+  "the effect emitted a duplicate exile event on top of the one move_to_exile records"
+ ],
+ "red": {
+  "retained": "the deliberate control death_beside_another_attacker_does_not_trigger failed with [GrizzlyBears] already exiled before the batch snapshot fix; the WIP itself never passed it",
+  "note": "this run wrote the fix and the test in the same change, so no strict pre-fix RED file exists for each defect; the batch control genuinely failed and discriminated"
+ },
+ "gates": {
+  "focused": "129 passed / 0 failed over 14 suites (slice46/focused-tests.log)",
+  "workspace": "924 passed / 0 failed / 1 ignored over 133 binaries, exit 0 (slice46/workspace-tests.log)",
+  "fmt": "exit 0 (slice46/fmt.log)",
+  "clippy": "exit 0, -D warnings, workspace all targets (slice46/clippy.log)",
+  "release": "exit 0, workspace locked (slice46/release-build.log)",
+  "first_failure_retained": "slice46/workspace-tests-failure-159.log (two frozen pool sizes broke with the 160th card; both corrected)"
+ },
+ "journey": {
+  "package": "decks/package-slice46.txt",
+  "driver": "evidence/issue17/slice46-journey-driver",
+  "seats": 4,
+  "life": 40,
+  "seed": 2323,
+  "status": "terminal",
+  "winner": 1,
+  "steps": 3073,
+  "turns": 54,
+  "replay_events": 8098,
+  "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+  "snapshot_sha256": "ab8deef31bbef3606a19e4bcc532bac3b4023a4358c163128bbd7c239682818c",
+  "replay_matches": true,
+  "save_roundtrip": true,
+  "separate_cli_replay": "matches recorded, da4eacd5363f, 8098 events (slice46/cli-replay.log)",
+  "witness_casts": 11,
+  "solo_attacks_declared": 38,
+  "clue_tokens_created": 104,
+  "exile_events": 14
+ },
+ "disclosures": [
+  "This run co-authored the increment (it resumed and repaired the WIP), so it is not an independent review.",
+  "No starter list is certified; Ayula still has 6 missing names and the eight-list gate remains 1 of 8.",
+  "The journey is a 40-card package, not a 100-card certificate, and not AI strength evidence.",
+  "The 104 Clue tokens versus 14 exiles is the printed behaviour with several Witnesses out: each one triggers per qualifying death, and only the first exile finds the card still in the graveyard.",
+  "A commander that dies alone in combat and is put into the command zone is a new object (CR 400.7), so the trigger finds nothing to exile there and still investigates.",
+  "The legend rule (CR 704.5j) remains unimplemented and this card does not change that gap.",
+  "The six remaining Ayula names are heavy new mechanics; their authoritative sources are preserved in slice46/sources/ from the previous run.",
+  "Reviewer artifacts from earlier rounds remain untracked and were not republished."
+ ],
+ "next_action": "Independent practical review of this delta against 6bbe221, then the same writer/history/card/PR46 for the remaining six Ayula names, then exact 100-card four-seat certification."
+}

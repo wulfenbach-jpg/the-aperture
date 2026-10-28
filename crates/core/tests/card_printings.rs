@@ -50,6 +50,8 @@ const SLICE41_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE42_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice42-sourced.json");
 const SLICE44_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice44-sourced.json");
 const SLICE45_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice45-sourced.json");
+/// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
+const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 43: Lumra, Bellow of the Woods (BLB 183), fetched 2026-10-28.
 const SLICE43_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice43-sourced.json");
 /// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
@@ -450,6 +452,11 @@ fn slice44_cards() -> Vec<Value> {
 
 fn slice45_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE45_SOURCED).expect("sourced slice45 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice46_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE46_SOURCED).expect("sourced slice46 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -949,6 +956,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice43_cards())
         .chain(slice44_cards())
         .chain(slice45_cards())
+        .chain(slice46_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())
@@ -987,6 +995,80 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         PRINTINGS.len() + LEGACY_POOL.len() + starter.len(),
         "the pool size must equal the recorded, legacy and starter-sourced cards"
     );
+}
+
+/// Slice 46: Thijarian Witness (WHO 111). The catalog string must equal the
+/// printing's `oracle_text` verbatim, the printed Flash must be the catalog's
+/// keyword flag, and the one printed trigger line must be a typed ability — the
+/// card must not print rules text the engine cannot execute.
+#[test]
+fn slice46_thijarian_witness_matches_its_recorded_printing() {
+    let cards = slice46_cards();
+    assert_eq!(cards.len(), 1, "slice 46 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Thijarian Witness");
+    let def = catalog::by_name(name)
+        .expect("Thijarian Witness is in the pool")
+        .def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    assert_eq!(
+        def.power,
+        sourced_text(record, "power").parse::<i32>().ok(),
+        "{name} power"
+    );
+    assert_eq!(
+        def.toughness,
+        sourced_text(record, "toughness").parse::<i32>().ok(),
+        "{name} toughness"
+    );
+    assert!(
+        def.flash,
+        "printed Flash (CR 702.8a) is a real keyword flag"
+    );
+    assert_eq!(
+        card_keywords(record),
+        vec!["Investigate", "Bear Witness", "Flash"],
+        "the printing's keyword list, including its two ability words"
+    );
+    assert!(
+        aperture_core::tokens::keywords(CardId::ThijarianWitness).is_empty(),
+        "none of the printed keyword entries is one the keyword table executes"
+    );
+    // Every printed rules line is carried by a typed ability: "Flash" is the
+    // catalog's keyword flag and the Bear Witness line is the one trigger.
+    // Reminder text in parentheses is not rules text (CR 207.2a); the Clue
+    // reminder's content is carried by the token definition asserted below, so
+    // the typed ability is compared against the rule line without it.
+    let abilities = aperture_core::abilities(CardId::ThijarianWitness);
+    assert_eq!(abilities.len(), 1, "one printed trigger");
+    for line in def.oracle.lines().filter(|line| *line != "Flash") {
+        let rule_text = line.split(" (").next().unwrap_or(line);
+        assert!(
+            abilities.iter().any(|ability| ability.text() == rule_text),
+            "the printed line {rule_text:?} has no typed implementation"
+        );
+    }
+    // The Clue token's own printed line is its one activated ability.
+    let clue = CardId::ClueToken.def();
+    assert_eq!(clue.oracle, "{2}, Sacrifice this token: Draw a card.");
+    let clue_abilities = aperture_core::abilities(CardId::ClueToken);
+    assert_eq!(clue_abilities.len(), 1);
+    assert_eq!(clue_abilities[0].text(), clue.oracle);
 }
 
 /// Slice 5 adds six cards whose behaviour is new (mill, counter target
