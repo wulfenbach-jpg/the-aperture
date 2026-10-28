@@ -440,7 +440,12 @@ impl Game {
 
     /// How many cards a printed count-based static ability counts for the
     /// object controlled by `controller`.
-    fn count_value(&self, controller: PlayerId, source: ability::CountSource) -> i32 {
+    fn count_value(
+        &self,
+        controller: PlayerId,
+        source: ability::CountSource,
+        source_id: ObjectId,
+    ) -> i32 {
         match source {
             ability::CountSource::CreatureCardsInOpponentsGraveyards => {
                 self.state
@@ -454,6 +459,17 @@ impl Game {
                     .count() as i32
             }
             ability::CountSource::LandsYouControl => self.lands_controlled_by(controller),
+            ability::CountSource::OtherSnowPermanentsYouControl => self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == controller
+                        && object.id != source_id
+                        && object.card.def().is_snow()
+                })
+                .count() as i32,
         }
     }
 
@@ -605,7 +621,7 @@ impl Game {
                 let Some(count) = static_ability.count_source() else {
                     continue;
                 };
-                let value = self.count_value(controller, count);
+                let value = self.count_value(controller, count, *id);
                 if value == 0 {
                     continue;
                 }
@@ -2491,6 +2507,7 @@ impl Game {
                     remaining,
                     chosen,
                     eligible,
+                    ..
                 }) if *p == player => {
                     if *remaining == 0 || chosen.contains(card) || !eligible.contains(card) {
                         return Err(EngineError::illegal(
@@ -3940,21 +3957,35 @@ impl Game {
     }
 
     fn apply_search_library_done(&mut self, player: PlayerId, events: &mut Vec<Event>) {
-        let Some(Pending::SearchLibrary { chosen, .. }) = self.state.pending.take() else {
+        let Some(Pending::SearchLibrary { chosen, mode, .. }) = self.state.pending.take() else {
             return;
         };
         for id in chosen {
-            self.enter_battlefield(id, player, events);
-            if let Some(object) = self.state.objects.get_mut(&id) {
-                object.tapped = true;
-            }
-            if let Some(object) = self.state.try_object(id) {
-                events.push(Event::StateBasedAction {
-                    description: format!(
-                        "P{player} puts {} onto the battlefield tapped (CR 701.23)",
-                        object.card.def().name
-                    ),
-                });
+            match mode {
+                crate::state::LibrarySearchMode::BasicLandToBattlefield => {
+                    self.enter_battlefield(id, player, events);
+                    if let Some(object) = self.state.objects.get_mut(&id) {
+                        object.tapped = true;
+                    }
+                    if let Some(object) = self.state.try_object(id) {
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "P{player} puts {} onto the battlefield tapped (CR 701.23)",
+                                object.card.def().name
+                            ),
+                        });
+                    }
+                }
+                crate::state::LibrarySearchMode::SnowLandToHand => {
+                    let card = self.state.object(id).card;
+                    self.move_to_hand(id, events);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{player} reveals {} and puts it into their hand (CR 701.23)",
+                            card.def().name
+                        ),
+                    });
+                }
             }
         }
         self.state
@@ -7756,6 +7787,7 @@ impl Game {
                     remaining: amount,
                     chosen: Vec::new(),
                     eligible,
+                    mode: crate::state::LibrarySearchMode::BasicLandToBattlefield,
                 });
                 self.state.turn.priority = None;
                 true
@@ -7809,6 +7841,31 @@ impl Game {
                     ),
                 });
                 false
+            }
+            Effect::SearchSnowLandToHand => {
+                let eligible: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .library
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state.try_object(*id).is_some_and(|object| {
+                            object.zone == Zone::Library
+                                && object.card.def().is_land()
+                                && object.card.def().is_snow()
+                        })
+                    })
+                    .collect();
+                self.state.pending = Some(Pending::SearchLibrary {
+                    player: controller,
+                    remaining: 1,
+                    chosen: Vec::new(),
+                    eligible,
+                    mode: crate::state::LibrarySearchMode::SnowLandToHand,
+                });
+                self.state.turn.priority = None;
+                true
             }
             Effect::SaddleSource => {
                 if item.affected == Some(item.object)
@@ -9136,6 +9193,7 @@ impl Game {
                 remaining,
                 chosen,
                 eligible,
+                ..
             } => {
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,

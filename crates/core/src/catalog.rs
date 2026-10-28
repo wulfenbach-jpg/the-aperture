@@ -275,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 156] = [
+pub static CARDS: [CardDef; 158] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -891,6 +891,17 @@ pub static CARDS: [CardDef; 156] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        SpiritOfTheAldergard, "Spirit of the Aldergard", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Snow Creature — Bear Spirit", power: Some(0), toughness: Some(4),
+        oracle: "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.\nThis creature gets +1/+0 for each other snow permanent you control.",
+        spell: None
+    ),
+    card!(
+        SnowCoveredForest, "Snow-Covered Forest", cost: None, kinds: LAND, basic: Some(ManaColor::Green),
+        type_line: "Basic Snow Land — Forest", power: None, toughness: None,
+        oracle: "({T}: Add {G}.)", spell: None
     ),
     card!(
         LightningGreaves, "Lightning Greaves", cost: Some("{2}"), kinds: ARTIFACT, basic: None,

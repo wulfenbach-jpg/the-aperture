@@ -214,6 +214,8 @@ pub enum Pending {
         remaining: u8,
         chosen: Vec<ObjectId>,
         eligible: Vec<ObjectId>,
+        #[serde(default, skip_serializing_if = "is_default_search_mode")]
+        mode: LibrarySearchMode,
     },
     /// Kamahl's Summons: every live seat, in APNAP order from the active player
     /// (CR 101.4, 608.2f), may reveal any number of creature cards from its own
@@ -755,6 +757,13 @@ pub enum Outcome {
     Draw {
         reason: String,
     },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub enum LibrarySearchMode {
+    #[default]
+    BasicLandToBattlefield,
+    SnowLandToHand,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -2661,6 +2670,10 @@ impl GameState {
 
 /// Serde helper: skip a zero `u32` so state written before the effect pipeline
 /// keeps its original canonical JSON (and therefore its recorded digest).
+fn is_default_search_mode(mode: &LibrarySearchMode) -> bool {
+    *mode == LibrarySearchMode::BasicLandToBattlefield
+}
+
 fn is_false(value: &bool) -> bool {
     !*value
 }

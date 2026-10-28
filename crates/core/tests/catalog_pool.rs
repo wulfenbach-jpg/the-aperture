@@ -296,6 +296,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::SearchBasicLandsUpToTriggerAmount
                 | Effect::ReturnLandCardsFromGraveyardTapped
                 | Effect::AttachSourceToTarget
+                | Effect::SearchSnowLandToHand
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)
                 | Effect::DrawIfControlsBears { .. }

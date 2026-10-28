@@ -305,7 +305,7 @@ targets, multi-face cards (transform/split/meld/modal), sideboard/companion play
 layers 5 colour changes beyond the printed Stuffed Bear animation, layer 6
 ability grants beyond printed keywords and the typed grants (trample, haste, and
 the shroud/hexproof the two Equipment grant), layer 7a
-characteristic-defining power/toughness beyond Beorn's Hospitality's land count,
+characteristic-defining power/toughness beyond Beorn's Hospitality's land count and Lumra, Bellow of the Woods' land count (Lumra is modelled as a printed layer-7c additive static with no printed P/T, not as a generic fully ordered layer-7a claim),
 layer 7d (counters stay
 display-only), Arcane/splice interactions, and any card outside this branch
 candidate's 156-card pool.

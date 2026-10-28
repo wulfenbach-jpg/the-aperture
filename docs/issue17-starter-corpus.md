@@ -46,12 +46,13 @@ basic lands (coordinator evidence
 `evidence/issue17/slice25/native-corpus-audit.py` + `native-corpus-audit.json`):
 
 * union of all referenced names: **459 unique names**;
-* **135** are in the supported 147-card catalog and **324** are missing. Slice
+* **145** are in the supported 158-card catalog and **314** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
-  slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. The union is unchanged because every one of them
-  was already a referenced name. The
+  slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
+  slices bring the current implemented total to **158**; the intervening per-slice list is
+  historical. The union is unchanged because every added name was already referenced. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog
@@ -67,7 +68,7 @@ the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
 (slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
-`Stuffed Bear`. Ayula currently has **19** missing names.
+`Stuffed Bear`. Ayula currently has **8** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -719,3 +720,6 @@ Two rule surfaces arrive with it. **Reach** is a blocking permission (`tokens::k
 
 Exclusions, unchanged from slice 41 and still true here: the legend rule (CR 704.5j) is not implemented, so two copies of the same legendary permanent can coexist on this engine's battlefield; a singleton Commander list cannot reach that state, and Lumra is the pool's second legendary card admitted into a practice library. Nothing about lands' own abilities is inferred from text: a returned land is a permanent with its printed mana ability, nothing more.
 
+
+## Slice 44: Spirit of the Aldergard
+Spirit of the Aldergard (`{3}{G}`, Snow Creature — Bear Spirit, 0/4) is sourced in `fixtures/starter-corpus/slice44-sourced.json` (Scryfall 220df551…, oracle ff3bc67b…, retrieved 2026-10-28T12:05:47Z). Its ETB search uses the private incremental search machinery with a snow-land filter and reveal-to-hand destination, shuffling even on failure to find. The snow supertype is parsed from the printed type line. Its static is a printed layer-7c additive +1/+0 for each other snow permanent its controller controls; self and opponents are excluded. The narrowly required Snow-Covered Forest basic is sourced and supported to make the snow search/count real; no broad snow set is claimed.

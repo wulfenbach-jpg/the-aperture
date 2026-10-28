@@ -465,6 +465,21 @@ pub fn equipment_grants(card: CardId) -> Option<EquipmentGrants> {
     }
 }
 
+const SPIRIT_OF_THE_ALDERGARD: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::SearchSnowLandToHand],
+})];
+
+const SPIRIT_STATIC: &[StaticAbility] = &[StaticAbility::PowerToughnessPerCount {
+    count: CountSource::OtherSnowPermanentsYouControl,
+    power: 1,
+    toughness: 0,
+    text: "This creature gets +1/+0 for each other snow permanent you control.",
+}];
+
 const LIGHTNING_GREAVES: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "Equip {0}",
     cost: AbilityCost {
@@ -1071,6 +1086,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::DroverGrizzly => DROVER_GRIZZLY,
         CardId::TheEarthKing => THE_EARTH_KING,
         CardId::LumraBellowOfTheWoods => LUMRA,
+        CardId::SpiritOfTheAldergard => SPIRIT_OF_THE_ALDERGARD,
         CardId::LightningGreaves => LIGHTNING_GREAVES,
         CardId::SwiftfootBoots => SWIFTFOOT_BOOTS,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
@@ -1177,6 +1193,8 @@ pub enum CountSource {
     /// from the board on every characteristic pass (CR 604.3), so a land that
     /// enters or leaves changes the value immediately.
     LandsYouControl,
+    /// Other snow permanents controlled by the source's controller.
+    OtherSnowPermanentsYouControl,
 }
 
 /// A printed static ability that produces a continuous or replacement effect.
@@ -1475,6 +1493,7 @@ pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
         CardId::WightOfPrecinctSix => WIGHT,
         CardId::LumraBellowOfTheWoods => LUMRA_STATIC,
         CardId::SurrakAndGoreclaw => SURRAK_STATIC,
+        CardId::SpiritOfTheAldergard => SPIRIT_STATIC,
         CardId::AngrathsMarauders => ANGRATH,
         CardId::Werebear => WEREBEAR,
         CardId::GoreclawTerrorOfQalSisma => GORECLAW_STATIC,

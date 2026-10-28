@@ -350,6 +350,7 @@ pub enum Effect {
     /// the canonical entry path, so landfall watchers fire once per land.
     ReturnLandCardsFromGraveyardTapped,
     AttachSourceToTarget,
+    SearchSnowLandToHand,
     DrawIfControlsBears {
         minimum: u8,
         cards: u8,
@@ -448,6 +449,9 @@ impl Effect {
                 "return all land cards from your graveyard to the battlefield tapped".to_string()
             }
             Effect::AttachSourceToTarget => "attach this Equipment to the target creature".to_string(),
+            Effect::SearchSnowLandToHand => {
+                "search for a snow land card, reveal it, put it into hand, then shuffle".to_string()
+            }
             Effect::PutTrampleCounterOnTarget => {
                 "put a trample counter on the target creature".to_string()
             }
@@ -647,6 +651,16 @@ impl CardDef {
         self.has_subtype("Goblin")
     }
 
+    /// Snow supertype (CR 205.4a), parsed from the printed type line before the
+    /// subtype dash. Never inferred from a card name or arbitrary substring.
+    pub fn is_snow(&self) -> bool {
+        self.type_line
+            .split_once('—')
+            .map_or(self.type_line, |(types, _)| types)
+            .split_whitespace()
+            .any(|word| word == "Snow")
+    }
+
     /// A creature/land subtype (CR 205.3) from the printed type line, which is
     /// written `Types — Subtype Subtype`. Landwalk (CR 702.14b) and tribal
     /// counts both read subtypes here rather than special-casing a card name.
@@ -781,6 +795,8 @@ pub enum CardId {
     LumraBellowOfTheWoods,
     LightningGreaves,
     SwiftfootBoots,
+    SpiritOfTheAldergard,
+    SnowCoveredForest,
     AyulasInfluence,
     Bearscape,
     MotherBear,

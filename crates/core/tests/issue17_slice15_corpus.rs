@@ -139,6 +139,6 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Spider-Ham, Peter Porker, which closes one more again. Slices 41-43
     // register The Earth King, the two Equipment and Lumra, Bellow of the Woods,
     // so the gap closes by four while the pool grows by four.
-    assert_eq!(missing.len(), 9, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 156, "the compiled pool");
+    assert_eq!(missing.len(), 8, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 158, "the compiled pool");
 }
