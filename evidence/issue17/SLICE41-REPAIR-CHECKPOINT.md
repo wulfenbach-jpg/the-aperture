@@ -17,7 +17,7 @@ the fix at `g.state.validate()`:
 
 ## GREEN
 `evidence/issue17/slice41-repair/gates.log`: issue17_slice41 10 passed; ordering_persistence 2,
-replay_digest 6, issue17_slice12 8, rules_conformance 5; fmt/clippy/release exit 0.
+replay_digest 6, issue17_slice12 11, rules_conformance 5; fmt/clippy/release exit 0.
 Release CLI replay of slice41 journey exit 0, digest `d646deedfac9`, matches recorded.
 
 ## Negative validator controls (added)
@@ -26,6 +26,20 @@ a legal post-pick state, confirms the control validates, then forges duplicate `
 duplicate `eligible`, and chosen-outside-eligible. Each is rejected by both
 `GameState::validate` and real `SessionSave` JSON loading. issue17_slice41 is 11 passed;
 fmt/clippy exit 0 (`slice41-repair/negative-gates.log`).
+
+## Native coordinator verification (not independent review)
+
+Product fix `c3e939872f229a459a367460cfc6481f1a37a681`; negative controls
+`5af167e761d8013b5601f4f73f8daf3ea0fa9721`. Native coordinator executed
+`slice41-repair/native-verify.sh` at `c7f7dedb0d5e1eabb630540099745e92961f5cbb`:
+issue17_slice41 11, issue17_slice12 11, ordering_persistence 2, replay_digest 6,
+rules_conformance 5; fmt, workspace all-target warnings-denied Clippy, locked release CLI,
+and separate journey replay all exit0. Every command/exit is retained in native-verify.log.
+Writer RED extracted verbatim from the exact preserved session to writer-red-extracted.log;
+extract-red.py identifies the actual failing tool result. No new RED claimed for negative controls.
+Native coordinator corrected the writer's stale slice12 count (8 -> 11), and added receipts only;
+all product code/tests remain authored by the saved writer. Independent review is still required.
+The earlier no-push checkpoint above is the writer's exit state, not the publication receipt.
 
 ## Remaining
 - No full workspace matrix. Repair certifies no list; Ayula 12 missing.
