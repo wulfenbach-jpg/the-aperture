@@ -16,4 +16,9 @@ registration. Focused: issue17_slice42 5 passed; card_printings 15, catalog_pool
 commander 43, replay 6; fmt/clippy/release exit 0 (`slice42/gates.log`). Journey: 4 seats/40
 life, terminal P2, 1565 decisions, 36 turns, both equipment cast, 17 equip activations, 48
 combat-damage events; digest `1750a81e…f551`, snapshot SHA256 `05cb383d…6dcb`, replay and
-save parity. No 100-card certificate.
+save parity. Native animation defect and minimal fix retained: recompute_layers must query
+creature type before removing animation effects. Added same-ID target recast, old-attachment
+survival on illegal new target, and real Prodigal Sorcerer haste tap-offer controls. Journey
+driver now uses projected turn number and reports 17 successful attachments; header corrected.
+Residual gaps: target-protection-at-resolution and explicit wrong-phase/not-owner/cost refusal
+controls are incomplete; no same-turn equipped haste-attack event proof. No 100-card certificate.

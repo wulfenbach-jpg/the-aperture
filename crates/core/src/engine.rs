@@ -812,17 +812,24 @@ impl Game {
                 target_present && source_present
             })
             .collect();
-        // Equipment attachments end when the creature stops being a creature.
-        let effects = std::mem::take(&mut self.state.effects);
-        self.state.effects = effects
-            .into_iter()
+        // Evaluate creature types while animation effects are still present.
+        // Taking the effects out first makes a legally animated permanent look
+        // noncreature and incorrectly detaches its Equipment immediately.
+        let invalid_attachments: Vec<_> = self
+            .state
+            .effects
+            .iter()
             .filter(|effect| {
-                !matches!(effect.kind, ContinuousKind::Equipped { .. })
-                    || self.state.try_object(effect.target).is_some_and(|object| {
+                matches!(effect.kind, ContinuousKind::Equipped { .. })
+                    && !self.state.try_object(effect.target).is_some_and(|object| {
                         object.zone == Zone::Battlefield && self.is_creature(object)
                     })
             })
+            .map(|effect| effect.id)
             .collect();
+        self.state
+            .effects
+            .retain(|effect| !invalid_attachments.contains(&effect.id));
         // A shield on a permanent that left the battlefield can never apply again.
         let shields = std::mem::take(&mut self.state.shields);
         self.state.shields = shields

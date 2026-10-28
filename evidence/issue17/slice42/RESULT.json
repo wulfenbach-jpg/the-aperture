@@ -1,1 +1,55 @@
-{"status":"PARTIAL #17","full_issue17_accepted":false,"certified_lists":"1 of 8","base":"728e776","commit":"slice42 local head in final receipt","cards":["Lightning Greaves","Swiftfoot Boots"],"counts":{"catalog":155,"supported":143,"missing":316,"ayula_missing":10},"red":"issue17_slice42 equipment_sources_are_registered_and_castable failed before registration","focused":{"issue17_slice42":"5 passed","card_printings":"15 passed","catalog_pool":"5 passed","issue17_slice15_corpus":"2 passed","issue13_commander_combat":"43 passed","replay_digest":"6 passed","fmt":"0","clippy":"0","release":"0","gates":"evidence/issue17/slice42/gates.log"},"journey":{"package":"decks/package-slice42.txt","seats":4,"life":40,"seed":2323,"status":"terminal","winner":2,"steps":1565,"turns":36,"digest":"1750a81eb981f0112472e8c6908e0942ea3942a6d6f13afc722002199158f551","snapshot_sha256":"05cb383d0882cad0b572155a2a1be3c2abc8500f085b944afd82f24ca01e6dcb","replay_matches":true,"save_roundtrip":true,"equip_activations":17,"combat_damage_events":48},"limitations":["no dedicated target-legal-at-cast-protected-at-resolution equipment case","no full workspace matrix","generic Equipment/Aura/ward/protection beyond implemented semantics not claimed"]}
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "728e776",
+  "commit": "final local receipt after controls",
+  "cards": [
+    "Lightning Greaves",
+    "Swiftfoot Boots"
+  ],
+  "counts": {
+    "catalog": 155,
+    "supported": 143,
+    "missing": 316,
+    "ayula_missing": 10
+  },
+  "red": "issue17_slice42 equipment_sources_are_registered_and_castable failed before registration",
+  "focused": {
+    "issue17_slice42": "9 passed",
+    "card_printings": "15 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "replay_digest": "6 passed",
+    "fmt": "0",
+    "clippy": "0",
+    "release": "0",
+    "gates": "evidence/issue17/slice42/gates.log",
+    "control_gates": "evidence/issue17/slice42/control-gates.log"
+  },
+  "journey": {
+    "package": "decks/package-slice42.txt",
+    "seats": 4,
+    "life": 40,
+    "seed": 2323,
+    "status": "terminal",
+    "winner": 2,
+    "steps": 1565,
+    "turns": 36,
+    "digest": "1750a81eb981f0112472e8c6908e0942ea3942a6d6f13afc722002199158f551",
+    "snapshot_sha256": "05cb383d0882cad0b572155a2a1be3c2abc8500f085b944afd82f24ca01e6dcb",
+    "replay_matches": true,
+    "save_roundtrip": true,
+    "equip_activations": 17,
+    "combat_damage_events": 48,
+    "successful_attachments": 17
+  },
+  "limitations": [
+    "Target legal at cast but protected at resolution is not directly exercised; no supported instant can attach Equipment while a spell is on the stack.",
+    "Explicit wrong-phase/stack/not-owner/cost equip refusal controls remain incomplete.",
+    "No full workspace matrix; journey does not prove same-turn equipped haste attack.",
+    "No generic Equipment/Aura/ward/protection beyond implemented semantics."
+  ],
+  "native_animation_fix": "recompute_layers now evaluates attachment creature type while animation effects remain present; native RED evidence/issue17/slice42/native-red-animation.log"
+}

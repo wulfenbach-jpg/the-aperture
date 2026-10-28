@@ -1,9 +1,8 @@
 //! Evidence-only demonstration driver for slice 42, NOT a product AI and NOT a
 //! strength claim. It chooses only from masked legal actions projected for the
 //! seat that has priority: no deck substitution, no state injection, no
-//! hidden-information access. It prefers offered search picks, nonempty attacks,
-//! lands, Lightning Greaves casts and other creatures, so the ETB Bear token, the
-//! attack-triggered basic-land search and normal combat are all exercised.
+//! hidden-information access. It prefers offered equip/attack/land/cast actions
+//! so both Equipment are cast, equipped and used in normal combat.
 //! It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
 use aperture_core::state::Step;
@@ -40,17 +39,19 @@ fn main() {
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
     let mut last_equip_turn: Option<u32> = None;
+    let mut current_turn = 0u32;
     while !game.state.is_over() && steps < 20000 {
         let player = game.decision_owner().expect("decision owner");
         let view = game.view_for(player, &events);
+        current_turn = view.turn_number;
         let equip_action = if view.pending_kind.is_none()
             && view.stack.is_empty()
-            && last_equip_turn != Some(game.state.turn.number)
+            && last_equip_turn != Some(view.turn_number)
             && matches!(view.step, Step::PrecombatMain | Step::PostcombatMain)
         {
             view.legal.iter().find(|a| matches!(a.action, Action::ActivateAbility { .. })).map(|a| a.action.clone())
         } else { None };
-        if equip_action.is_some() { last_equip_turn = Some(game.state.turn.number); }
+        if equip_action.is_some() { last_equip_turn = Some(view.turn_number); }
         let search_action = if view.pending_kind.is_some() {
             view.legal
                 .iter()
@@ -162,8 +163,10 @@ fn main() {
     assert!(casts.get("Lightning Greaves").copied().unwrap_or(0) > 0, "Greaves cast");
     assert!(casts.get("Swiftfoot Boots").copied().unwrap_or(0) > 0, "Boots cast");
     let equips = events.iter().filter(|e| matches!(e, Event::AbilityActivated { card: CardId::LightningGreaves | CardId::SwiftfootBoots, .. })).count();
+    let attachments = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("is attached to"))).count();
     let combat = events.iter().filter(|e| matches!(e, Event::CombatDamage { .. })).count();
     assert!(equips > 0, "equip ability must be used");
+    assert!(attachments > 0, "at least one equipment must successfully attach");
     assert!(combat > 0, "equipped/other creatures must attack");
     std::fs::write(
         out.join("demo-replay.json"),
@@ -177,10 +180,11 @@ fn main() {
         "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
         "snapshots_exact": true,
         "snapshot_sha256": aperture_core::digest::snapshot_digest(text.as_bytes()).unwrap(),
-        "steps": steps, "turns": game.state.turn.number, "digest": game.digest(),
+        "steps": steps, "turns": current_turn, "digest": game.digest(),
         "replay_events": replay_events.len(), "replay_digest_matches": true,
         "casts": casts,
         "equip_activations": equips,
+        "successful_attachments": attachments,
         "combat_damage_events": combat,
         "outcome": game.state.outcome,
     });

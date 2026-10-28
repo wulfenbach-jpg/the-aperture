@@ -478,7 +478,7 @@ const LIGHTNING_GREAVES: &[Ability] = &[Ability::Activated(ActivatedAbility {
     sorcery_timing: true,
 })];
 
-const SWIFTF00T_B00TS_REAL: &[Ability] = &[Ability::Activated(ActivatedAbility {
+const SWIFTFOOT_BOOTS: &[Ability] = &[Ability::Activated(ActivatedAbility {
     text: "Equip {1}",
     cost: AbilityCost {
         mana: Some("{1}"),
@@ -1048,7 +1048,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::DroverGrizzly => DROVER_GRIZZLY,
         CardId::TheEarthKing => THE_EARTH_KING,
         CardId::LightningGreaves => LIGHTNING_GREAVES,
-        CardId::SwiftfootBoots => SWIFTF00T_B00TS_REAL,
+        CardId::SwiftfootBoots => SWIFTFOOT_BOOTS,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
         CardId::CommandersSphere => COMMANDERS_SPHERE,
         CardId::AyulasInfluence => AYULAS_INFLUENCE,

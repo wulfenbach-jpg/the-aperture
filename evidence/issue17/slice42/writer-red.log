@@ -1,0 +1,5 @@
+original writer RED (slice42 first test):
+running 1 test
+equipment_sources_are_registered_and_castable --- FAILED
+test result: FAILED. 0 passed; 1 failed
+cause: Lightning Greaves / Swiftfoot Boots were not yet registered

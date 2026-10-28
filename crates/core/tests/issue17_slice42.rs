@@ -1,5 +1,49 @@
 //! Slice 42: Lightning Greaves / Swiftfoot Boots shared Equipment.
 mod common;
+
+#[test]
+fn equipment_stays_attached_to_a_legally_animated_permanent() {
+    let hospitality = catalog::by_name("Beorn's Hospitality").unwrap();
+    let mut g = fixture(424201)
+        .hand(P0, &[card42("Swiftfoot Boots")])
+        .battlefield(P0, &[hospitality, CardId::Forest, CardId::Forest])
+        .mana(
+            P0,
+            ManaPool {
+                green: 20,
+                ..ManaPool::default()
+            },
+        )
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let source = battlefield_card(&g, P0, hospitality);
+    let animate = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::ActivateAbility { source: s, .. } if s == source))
+        .expect("animation offered")
+        .action;
+    submit_ok(&mut g, P0, animate);
+    drain(&mut g);
+    assert!(g.is_creature(g.state.object(source)));
+    let boots = hand_card(&g, P0, card42("Swiftfoot Boots"));
+    cast42(&mut g, boots);
+    equip(&mut g, boots, source);
+    assert!(
+        g.state
+            .effects
+            .iter()
+            .any(|e| matches!(e.kind, ContinuousKind::Equipped { .. }) && e.target == source),
+        "equipping an animated enchantment must retain its attachment"
+    );
+    assert!(
+        !g.legal_targets(P1, TargetSpec::AnyTarget, ObjectId(u32::MAX))
+            .contains(&Target::Permanent(source)),
+        "animated creature has hexproof"
+    );
+}
 use aperture_core::catalog;
 #[test]
 fn equipment_sources_are_registered_and_castable() {
@@ -363,5 +407,161 @@ fn attached_and_mid_equip_save_reload_have_identical_continuation() {
             .effects
             .iter()
             .any(|e| matches!(e.kind, ContinuousKind::Equipped { .. }) && e.target == bears[1])
+    );
+}
+
+#[test]
+fn equipped_haste_allows_a_real_prodigal_sorcerer_tap_activation_offer() {
+    let mut g = fixture(4205)
+        .hand(P0, &[card42("Lightning Greaves")])
+        .battlefield(
+            P0,
+            &[
+                CardId::Forest,
+                CardId::Forest,
+                CardId::ProdigalSorcerer,
+                CardId::GrizzlyBears,
+            ],
+        )
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let greaves = hand_card(&g, P0, card42("Lightning Greaves"));
+    cast42(&mut g, greaves);
+    let sorter = battlefield_card(&g, P0, CardId::ProdigalSorcerer);
+    g.state.objects.get_mut(&sorter).unwrap().summoning_sick = true;
+    equip(&mut g, greaves, sorter);
+    let offers: Vec<_> = g
+        .legal_actions()
+        .into_iter()
+        .filter(|a| matches!(&a.action,Action::ActivateAbility{source,..} if *source==sorter))
+        .collect();
+    assert!(
+        !offers.is_empty(),
+        "haste must make the tap ability actually offered"
+    );
+    submit_ok(&mut g, P0, offers[0].action.clone());
+    drain(&mut g);
+}
+
+#[test]
+fn equipment_source_departure_invalidates_queued_equip_and_same_id_recast() {
+    // No supported card can remove an artifact while the equip ability is on
+    // the stack; cover the same incarnation hazard through its target instead.
+    let mut g = fixture(4206)
+        .hand(P0, &[card42("Swiftfoot Boots"), CardId::Unsummon])
+        .battlefield(
+            P0,
+            &[
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Island,
+                CardId::GrizzlyBears,
+            ],
+        )
+        .mana(
+            P0,
+            ManaPool {
+                green: 20,
+                ..ManaPool::default()
+            },
+        )
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let boots = hand_card(&g, P0, card42("Swiftfoot Boots"));
+    cast42(&mut g, boots);
+    let bear = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    let equip_action=g.legal_actions().into_iter().find(|a|matches!(&a.action,Action::ActivateAbility{source,targets,..} if *source==boots && targets==&vec![Target::Permanent(bear)])).expect("equip offered").action;
+    submit_ok(&mut g, P0, equip_action);
+    let unsummon = hand_card(&g, P0, CardId::Unsummon);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpell {
+            card: unsummon,
+            targets: vec![Target::Permanent(bear)],
+        },
+    );
+    drain(&mut g);
+    assert_eq!(g.state.object(bear).zone, Zone::Hand);
+    assert!(
+        !g.state
+            .effects
+            .iter()
+            .any(|e| matches!(e.kind, ContinuousKind::Equipped { .. }) && e.target == bear),
+        "queued equip cannot attach a departed target"
+    );
+    let recast = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(&a.action,Action::CastSpell{card,..} if *card==bear))
+        .expect("recast offered")
+        .action;
+    submit_ok(&mut g, P0, recast);
+    drain(&mut g);
+    assert_eq!(g.state.object(bear).zone, Zone::Battlefield);
+    assert!(
+        !g.state
+            .effects
+            .iter()
+            .any(|e| matches!(e.kind, ContinuousKind::Equipped { .. }) && e.target == bear),
+        "old queued equip cannot attach a new incarnation"
+    );
+}
+
+#[test]
+fn old_attachment_remains_when_new_equip_target_becomes_illegal() {
+    let mut g = fixture(4207)
+        .hand(P0, &[card42("Swiftfoot Boots"), CardId::Unsummon])
+        .battlefield(
+            P0,
+            &[
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Island,
+                CardId::GrizzlyBears,
+                CardId::GrizzlyBears,
+            ],
+        )
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let boots = hand_card(&g, P0, card42("Swiftfoot Boots"));
+    cast42(&mut g, boots);
+    let bears: Vec<_> = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .filter(|o| o.card == CardId::GrizzlyBears)
+        .map(|o| o.id)
+        .collect();
+    equip(&mut g, boots, bears[0]);
+    let a=g.legal_actions().into_iter().find(|a|matches!(&a.action,Action::ActivateAbility{source,targets,..} if *source==boots && targets==&vec![Target::Permanent(bears[1])])).expect("second equip offered").action;
+    submit_ok(&mut g, P0, a);
+    let unsummon = hand_card(&g, P0, CardId::Unsummon);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpell {
+            card: unsummon,
+            targets: vec![Target::Permanent(bears[1])],
+        },
+    );
+    drain(&mut g);
+    assert_eq!(g.state.object(bears[1]).zone, Zone::Hand);
+    assert!(
+        g.state
+            .effects
+            .iter()
+            .any(|e| matches!(e.kind, ContinuousKind::Equipped { .. }) && e.target == bears[0]),
+        "old attachment survives illegal new target"
     );
 }
