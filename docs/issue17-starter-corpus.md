@@ -729,50 +729,71 @@ Titania's Command (`{4}{G}{G}` Sorcery) is sourced in `fixtures/starter-corpus/s
 
 ## Slice 46: Thijarian Witness
 
-**Rules-reading correction (slice 49 / review329):** the next paragraphs describe
-the shipped declaration-only interpretation, not a settled conformance claim.
-CR 506.5 distinguishes "attacks alone" (declaration) from "is attacking alone"
-(live combat). Witness prints "was attacking or blocking alone". Revisit that
-predicate before Ayula certification; the historical reviewer requirement and
-its tests are not independent evidence that this interpretation is correct.
+**Rules-reading correction (slice 50):** Witness's past-state predicate uses
+live combat membership immediately **before the death event**, not the attack
+or block declaration. Pinned CR 506.5 distinguishes those predicates; CR 603.10
+looks back before the departure. The earlier declaration-only requirement was
+wrong and is superseded, not defended by its historical review approval.
+Source re-fetch and the two genuine pre-repair assertion failures are retained
+in `evidence/issue17/slice50/`.
 Thijarian Witness (`{1}{G}`, 0/4 Creature — Alien Cleric, printed Flash) is sourced in `fixtures/starter-corpus/slice46-sourced.json` (WHO 111, immutable `da05e23b-419f-4023-9ad4-1227bb1b53be`, oracle `d273033b-3b8b-4ce9-afe8-208d82dd20f1`, retrieved 2026-10-28T13:49:35Z; both printings of the card carry identical oracle text). It is the pool's first `TriggerEvent::AnotherCreatureDies` watcher and its first `investigate`.
 
-Two properties of this trigger are where an implementation can quietly be wrong, and both are now decided in one place each. **The printed intervening-if** ("if it was attacking or blocking alone") uses the CR 506.5 definition: a creature attacked alone if it was the *only creature declared* as an attacker during the declare attackers step, and blocked alone if it was the only one declared as a blocker. That is a fact about the declaration, not about who is still in combat afterwards, so the engine records the declaration in `Turn::declared_attackers` / `Turn::declared_blockers` when the declaration is submitted and never prunes it when a creature leaves combat (CR 506.4) or dies. **Simultaneous deaths** would otherwise make each move prune one attacker and leave the last creature of the batch looking like the only attacker; `DeathRecord` therefore carries a per-batch `CombatAloneSnapshot` taken before anything moves, so every death in a batch sees the same combat (CR 704.3). The two readings differ in ordinary play: **two attackers declared, one killed in the declare-blockers step, the other killed later in the same combat — the survivor does not trigger**, even though it is the only attacker still in combat. That is the shipped declaration reading, **not yet established as the correct reading of Witness's past-state predicate**, and it is pinned by `attacker_killed_after_its_companion_left_combat_is_not_alone`; the earlier two-in-one-batch control could not discriminate because there neither attacker ever leaves combat alone.
+**The printed intervening-if** ("if it was attacking or blocking alone") is a past-state question: immediately before death, was this the only creature attacking or the only creature blocking? The engine reads `turn.attackers` and distinct `turn.blockers`, not `declared_*`. **Simultaneous deaths** still use one pre-departure `CombatAloneSnapshot` carried into every `DeathRecord` in the batch (CR 704.3), so the final death cannot falsely look alone merely because earlier moves in the same batch pruned combat membership. **Sequential departures differ:** if two creatures attack together, the first dies in one event, and the survivor dies later in that combat, the second death qualifies and the first does not. The blocking mirror also qualifies only the second death. A creature put onto the battlefield attacking counts in live membership despite never having been declared: Cub is no longer attacking alone while its put companion remains. These cases are executed in `issue17_slice46`; the two original declaration-only expectations are explicitly corrected, not silently deleted.
 
 Resolution exiles *that* card from its owner's graveyard where the trigger found it and then creates one Clue token (CR 701.16a) for the trigger's controller; a card that already left the graveyard is simply not found and the investigate still happens, because the printed text has no "if you do" between the two instructions. The Clue token is a real artifact token with the printed `{2}, Sacrifice this token: Draw a card` ability and no `{T}` in its cost, so a Clue created this turn can be cracked at once and its sacrifice goes through the ordinary token-cessation path (CR 111.7). Flash is the catalog's keyword flag; nothing here grants or removes it.
 
-Correction to inherited slice-47 guidance: under pinned CR 903.9a the graveyard/exile return is a state-based action **after** the commander enters that zone. A commander put into the graveyard therefore does die. The former claim that it never dies and needs a replacement effect was wrong; that claim is withdrawn, not implemented. The hand/library replacement is the separate CR 903.9b case. If the commander has returned to the command zone when Witness resolves, its graveyard object is no longer present, and investigate is not contingent on a successful exile. This correction changes no commander engine behavior. At slice 46's own checkpoint Ayula had 6 missing names; the current corpus counts are above.
+Correction to inherited slice-47 guidance: under pinned CR 903.9a the graveyard/exile return is a state-based action **after** the commander enters that zone. A commander put into the graveyard therefore does die. The former claim that it needs a replacement effect to avoid dying was wrong; that claim is withdrawn, not implemented. The hand/library replacement is the separate CR 903.9b case. If the commander has returned to the command zone when Witness resolves, its graveyard object is no longer present, and investigate is not contingent on a successful exile. This correction changes no commander engine behavior. At slice 46's own checkpoint Ayula had 6 missing names; the current corpus counts are above.
 
-## Slice 47: the declaration record for "attacking or blocking alone"
+## Slices 47 and 50: declaration bookkeeping versus live combat
 
-Historical implementation record: the claim below that the prior live-state
-reading was wrong is **not** an established rules conclusion; see the slice-49
-correction above. No Witness behavior is changed by the Cub repair.
+Slice 47 added public `Turn::declared_attackers` / `declared_blockers` and
+incorrectly made Witness depend on them. Slice 50 corrects the predicate to
+live pre-departure membership. The fields remain written at declaration,
+unpruned by departures and cleared at end of combat/turn start; they describe
+who **attacked**, not who **is attacking**. They are no longer read by Witness.
+A put-attacking creature stays outside the declaration record but counts in
+the live snapshot. No existing replay expectations or historical evidence are
+regenerated to conceal the correction.
 
-Slice 46 read the CR 506.5 alone question off the live combat lists, and that was wrong in the one
-case the prose already described: `turn.attackers` / `turn.blockers` are pruned whenever a creature
-leaves combat (CR 506.4), so two attackers declared together, one killed in the declare-blockers
-step and the other killed later in the same combat, made the survivor look like the only attacker.
-`Turn::declared_attackers` / `Turn::declared_blockers` are now the answer: written when the
-declaration is submitted, never pruned when a creature leaves combat or dies, cleared at end of
-combat (CR 511.3) and at the start of a turn. Two regressions pin the discriminating case (an
-attacker and its blocker mirror), and both fail on the old live-state read. A creature put onto the
-battlefield *attacking* is not added to the declaration record — it was never declared (CR 506.5
-reads "declared as an attacker"), so it does not stop its companion from having attacked alone.
+The public record stays serialized, so canonical states carrying it retain the
+slice-47 digest shape. `SAVE_VERSION` stays 10 and `REPLAY_VERSION` stays 6:
+a bump would reject every older artifact, including the pinned pre-#16 fixture.
+A pre-record mid-combat artifact can still re-execute to a different digest
+because the new execution writes declaration fields. **The former Witness
+under-reporting from an absent declaration is fixed**: live `attackers` and
+`blockers` survive in those saves and are sufficient. A regression actually
+deserializes the absent-field shape and drives the alone death through combat;
+this is a state-continuation test, not a claim that every legacy SessionSave
+now verifies its stored digest. See README "Versioned persistence".
 
-The record is public state and therefore serialized, which changes the canonical JSON of any state
-that holds a live declaration. `SAVE_VERSION` stays 10 and `REPLAY_VERSION` stays 6 deliberately:
-raising either would reject every earlier artifact, including the pinned pre-#16 v10 fixture whose
-purpose is to prove an old save still loads. The consequence is documented rather than hidden — an
-older mid-combat recording re-executes to a different digest than it stored, and a pre-change
-mid-combat save carries no declaration, so for the rest of that combat the alone question answers
-no and a genuine alone-attack death is under-reported. Pre-combat old saves are byte-identical
-because an absent field stays absent. See README "Versioned persistence".
+Known weakness retained for a later hardening pass: `GameState::validate` does
+not constrain the declaration lists. Witness no longer consumes them, so a
+forged declaration cannot alter this predicate, but structural hardening is
+still deferred.
 
-Known weakness, recorded for a later hardening pass: the declaration record is **not** checked by
-`GameState::validate`. A reloaded or hand-edited state may carry a declaration list that does not
-correspond to the creatures in combat. Today that only produces a conservative "not alone", but
-validate should eventually constrain it the way it constrains `attackers` / `blockers`.
+**Unpaired blockers (slice 50, CR 509.1g):** a blocker remains a blocking creature
+when its attacker leaves combat; removing the pair must not erase that fact.
+A new omitted-when-empty `Turn::unpaired_blockers` retains only these live
+unpaired creatures. It joins paired blockers in the pre-death snapshot, is
+removed on that creature's own departure or regeneration, and clears at end of
+combat/turn start. Pruning a noncreature attacker also retains its surviving
+blockers. A real Unsummon then Lightning Strike regression failed before this
+repair; actual saved-state load now preserves the orphan and identical
+continuation. Additional controls cover paired-plus-unpaired counts and the
+same blocker bounced and legally Flash-recast with the same ObjectId: it no
+longer blocks. Eight malformed field shapes are refused by validation and the
+real save loader. The fixture saves use dummy replay decks and establish load
+and continuation, not replay provenance of a constructed initial board.
+
+The new field is empty/omitted in unaffected states, but states actually holding
+unpaired blockers gain a new digest basis. Older saves written **after** losing
+all blocking pairs contain no recoverable membership for those blockers; this
+repair cannot reconstruct that already-discarded information. Save/replay
+versions remain 10/6 under the explicit best-effort compatibility policy above.
+The AI determinization gains only the required public field copy and its test
+constructor initializer; no AI policy, budget, sampling or hidden-data behavior
+is changed. This narrow shared-state initializer exception is disclosed for
+review, not hidden as a core-only diff.
 
 ## Slices 48–49: Owlbear Cub and review329 repairs
 
@@ -802,5 +823,6 @@ across hidden eligibility, atomic ineligible-take refusal, and short/empty looks
 The initial slice-48 "intervening-if" and invisible all-ineligible look claims
 are superseded by this repair; historical logs remain intact. This adds no new
 card or certificate: catalog 161, union 459 = 148 implemented + 311 missing,
-Ayula five missing names, one of eight lists certified. Witness's rules-reading
-gap above must be settled before Ayula certification, not hidden by pool counts.
+Ayula five missing names, one of eight lists certified. Slice 50 settles the
+Witness live-state predicate separately above; no new card or certificate is
+claimed by that correction.

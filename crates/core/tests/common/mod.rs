@@ -76,6 +76,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
                 blockers: Vec::new(),
                 declared_attackers: Vec::new(),
                 declared_blockers: Vec::new(),
+                unpaired_blockers: Vec::new(),
                 combat_damage_done: false,
                 defender: None,
             },

@@ -774,16 +774,19 @@ pub struct Turn {
     pub blocked: Vec<ObjectId>,
     /// blocker -> attacker pairs.
     pub blockers: Vec<(ObjectId, ObjectId)>,
+    /// CR 509.1g: a creature remains blocking after all creatures it blocked
+    /// leave combat. Pairs alone cannot represent it then. Only those unpaired
+    /// live blockers are stored here; normal combats keep the field omitted.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub unpaired_blockers: Vec<ObjectId>,
     /// CR 506.5: "attacks alone" / "blocks alone" are properties of the
-    /// *declaration*, not of the live combat state — a creature attacks alone
-    /// "if it's the only creature declared as an attacker during the declare
-    /// attackers step". These two lists are that declaration record: written
-    /// once when the declaration is submitted and never pruned when a creature
-    /// leaves combat, so an attacker declared beside another that has since
-    /// died or left combat is still not attacking alone. Cleared with the rest
-    /// of the combat state at end of combat (CR 511.3) and at the start of a
-    /// turn; `skip_serializing_if` keeps states with no declaration byte-
-    /// identical to the pre-record form, so recorded digests stay verifiable.
+    /// *declaration*, not of the live combat state. These two lists are that
+    /// declaration record: written once when the declaration is submitted and
+    /// never pruned when a creature leaves combat. A surviving companion did
+    /// not "attack alone", but may now BE attacking alone. Witness's past-state
+    /// predicate reads the live lists instead. Cleared at end of combat
+    /// (CR 511.3) and turn start. Kept serialized for existing slice-47+ saves;
+    /// empty fields stay omitted to preserve earlier no-declaration digests.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub declared_attackers: Vec<ObjectId>,
     /// Distinct creatures declared as blockers this combat (one blocker
@@ -1066,6 +1069,7 @@ impl GameState {
                 })
             || self.turn.attackers.contains(&id)
             || self.turn.blocked.contains(&id)
+            || self.turn.unpaired_blockers.contains(&id)
             || self
                 .turn
                 .blockers
@@ -2751,7 +2755,13 @@ impl GameState {
                 reason: format!("resolving object {resolving} is not on the stack"),
             });
         }
-        for id in self.turn.attackers.iter().chain(self.turn.blocked.iter()) {
+        for id in self
+            .turn
+            .attackers
+            .iter()
+            .chain(self.turn.blocked.iter())
+            .chain(self.turn.unpaired_blockers.iter())
+        {
             let Some(object) = self.objects.get(id) else {
                 return Err(EngineError::InvalidState {
                     reason: format!("combat references missing object {id}"),
@@ -2760,6 +2770,36 @@ impl GameState {
             if object.zone != Zone::Battlefield {
                 return Err(EngineError::InvalidState {
                     reason: format!("combat object {id} is not on the battlefield"),
+                });
+            }
+        }
+        if !self.turn.unpaired_blockers.is_empty() {
+            let valid_step = matches!(
+                self.turn.step,
+                Step::DeclareBlockers | Step::CombatDamage | Step::EndCombat
+            );
+            let canonical = self
+                .turn
+                .unpaired_blockers
+                .windows(2)
+                .all(|pair| pair[0] < pair[1]);
+            let game = crate::engine::Game {
+                state: self.clone(),
+            };
+            if !valid_step
+                || !canonical
+                || self.turn.defender.is_none()
+                || self.turn.unpaired_blockers.iter().any(|id| {
+                    !game.is_creature(&self.objects[id])
+                        || self.objects[id].controller != self.turn.defender.unwrap()
+                        || self.turn.attackers.contains(id)
+                        || self.turn.blockers.iter().any(|(blocker, _)| blocker == id)
+                })
+            {
+                return Err(EngineError::InvalidState {
+                    reason:
+                        "unpaired blocking creatures are not canonical live defenders in combat"
+                            .into(),
                 });
             }
         }

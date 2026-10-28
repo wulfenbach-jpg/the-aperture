@@ -690,11 +690,12 @@ fn reconstruct(
         blocked: real_state.turn.blocked.clone(),
         blockers: view.blockers.clone(),
         // Public combat facts, like `blocked`/`defender` above: the attack and
-        // block declarations were announced to every seat, and CR 506.5's
-        // "alone" reading is about those declarations, so the search world may
-        // take them from the real state without leaking anything hidden.
+        // block declarations were announced to every seat, and whether a
+        // blocker remains in combat after its attacker leaves is also public.
+        // These are not hidden-zone or policy inputs.
         declared_attackers: real_state.turn.declared_attackers.clone(),
         declared_blockers: real_state.turn.declared_blockers.clone(),
+        unpaired_blockers: real_state.turn.unpaired_blockers.clone(),
         combat_damage_done: real_state.turn.combat_damage_done,
         defender: real_state.turn.defender,
     };

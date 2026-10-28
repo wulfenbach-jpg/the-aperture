@@ -324,16 +324,11 @@ fn death_beside_another_attacker_does_not_trigger() {
     );
 }
 
-/// R325-1 discriminator: two creatures are declared as attackers and the first
-/// is killed by a burn spell; only then is the second killed by a *separate*
-/// spell in the same combat. The survivor is the only creature left in the live
-/// attacker list, so a "live state" read calls it attacking alone and fires —
-/// but it was declared beside the other, so under CR 506.5 it never attacked
-/// alone. Nothing is exiled and no Clue is created. The shipped two-in-one-batch
-/// control cannot tell the two readings apart, because there both attackers die
-/// before either leaves combat.
+/// CR 506.5 live-state discriminator: after the first of two attackers dies,
+/// the second IS attacking alone even though it did not ATTACK alone.
+/// Witness says "was attacking", so its last-known pre-departure state qualifies.
 #[test]
-fn attacker_killed_after_its_companion_left_combat_is_not_alone() {
+fn attacker_killed_after_its_companion_left_combat_is_attacking_alone() {
     let mut g = fixture(4706)
         .hand(P1, &[CardId::LightningStrike, CardId::LightningStrike])
         .battlefield(P0, &[witness(), CardId::GrizzlyBears, CardId::GrizzlyBears])
@@ -395,40 +390,29 @@ fn attacker_killed_after_its_companion_left_combat_is_not_alone() {
         "the live attacker list now holds only the second attacker"
     );
 
-    // The discriminating death: the survivor is alone in the live list, but was
-    // declared beside the first attacker, so the printed condition is false.
+    // The survivor is now attacking alone: the second death qualifies even
+    // though both creatures were originally declared together.
     assert_eq!(g.decision_owner(), Some(P0));
     submit_ok(&mut g, P0, Action::Pass);
     assert_eq!(g.decision_owner(), Some(P1));
     cast_at_creature(&mut g, P1, CardId::LightningStrike, second);
-    assert_eq!(
-        g.state.object(second).zone,
-        Zone::Graveyard,
-        "the second attacker is dead"
-    );
-    assert!(
-        g.state.turn.attackers.is_empty(),
-        "no attacker is left in combat"
-    );
-
-    assert!(
-        !exiled_cards(&g, P0).contains(&CardId::GrizzlyBears),
-        "neither death was an alone-attack death, so nothing is exiled: {:?}",
-        exiled_cards(&g, P0)
-    );
-    assert!(
-        clue_tokens(&g, P0).is_empty(),
-        "no alone-attack death, so the watcher does not investigate"
-    );
+    // The first spell did not trigger; the second death must trigger once.
+    settle_through_combat(&mut g);
+    assert_eq!(g.state.object(first).zone, Zone::Graveyard);
+    assert_eq!(g.state.object(second).zone, Zone::Exile);
+    assert!(g.state.turn.attackers.is_empty());
+    assert_eq!(exiled_cards(&g, P0), vec![CardId::GrizzlyBears]);
+    assert_eq!(clue_tokens(&g, P0).len(), 1);
+    assert!(g.state.stack.is_empty());
+    assert!(g.state.trigger_queue.is_empty());
+    assert!(g.state.resolving.is_none());
+    assert!(g.state.pending.is_none());
 }
 
-/// The same declaration reading on the blocking side: two creatures are declared
-/// as blockers, one is killed by a burn spell in the declare-blockers step, and
-/// the other then dies to combat damage. The survivor is the only blocker left
-/// in the live list but was declared beside the other, so it was not "blocking
-/// alone" and nothing triggers.
+/// On the blocking side, after the first blocker dies to a spell the survivor
+/// IS blocking alone when combat damage kills it. Only the second death qualifies.
 #[test]
-fn blocker_killed_after_its_companion_left_combat_is_not_alone() {
+fn blocker_killed_after_its_companion_left_combat_is_blocking_alone() {
     let mut g = fixture(4707)
         .hand(P0, &[CardId::LightningStrike])
         .battlefield(
@@ -495,15 +479,14 @@ fn blocker_killed_after_its_companion_left_combat_is_not_alone() {
         Zone::Battlefield,
         "the second blocker died to combat damage"
     );
-    assert!(
-        !exiled_cards(&g, P1).contains(&CardId::GrizzlyBears),
-        "neither death was a blocking-alone death, so nothing is exiled: {:?}",
-        exiled_cards(&g, P1)
-    );
-    assert!(
-        clue_tokens(&g, P0).is_empty(),
-        "no blocking-alone death, so the watcher does not investigate"
-    );
+    assert_eq!(g.state.object(first).zone, Zone::Graveyard);
+    assert_eq!(g.state.object(second).zone, Zone::Exile);
+    assert_eq!(exiled_cards(&g, P1), vec![CardId::GrizzlyBears]);
+    assert_eq!(clue_tokens(&g, P0).len(), 1);
+    assert!(g.state.stack.is_empty());
+    assert!(g.state.trigger_queue.is_empty());
+    assert!(g.state.resolving.is_none());
+    assert!(g.state.pending.is_none());
 }
 
 /// A creature that dies outside combat never satisfies "attacking or blocking
@@ -625,4 +608,356 @@ fn witness_and_clue_are_catalogued_as_printed_and_token_is_not_a_card() {
         CardId::ClueToken.def().oracle,
         "{2}, Sacrifice this token: Draw a card."
     );
+}
+
+/// A creature put onto the battlefield attacking counts in LIVE combat even
+/// though it never attacked. Cub is declared alone but no longer IS attacking
+/// alone once its put joins it. After Cub dies, the put creature IS alone.
+#[test]
+fn cub_put_attacker_counts_without_a_declaration() {
+    let mut g = fixture(5001)
+        .battlefield(P0, &[witness(), CardId::OwlbearCub])
+        .battlefield(P1, &[CardId::Forest; 8])
+        .battlefield(P1, &[CardId::Mountain; 4])
+        .hand(P1, &[CardId::LightningStrike; 2])
+        .library(
+            P0,
+            &[
+                CardId::GrizzlyBears,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+                CardId::Forest,
+            ],
+        )
+        .library(P1, &[CardId::Forest; 8])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let cub = battlefield_card(&g, P0, CardId::OwlbearCub);
+    let put = g.state.player(P0).library[0];
+    g.state.pending = Some(Pending::DeclareAttackers { player: P0 });
+    submit_ok(
+        &mut g,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![cub],
+            defender: Some(P1),
+        },
+    );
+    for _ in 0..16 {
+        if g.state.pending.is_some() {
+            break;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert!(matches!(
+        g.state.pending,
+        Some(Pending::SearchLibrary { .. })
+    ));
+    let pick = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::SearchLibraryPick { card } if card == put))
+        .expect("the real Cub put is offered")
+        .action;
+    submit_ok(&mut g, P0, pick);
+    submit_ok(&mut g, P0, Action::SearchLibraryDone);
+    assert_eq!(g.state.turn.declared_attackers, vec![cub]);
+    assert!(g.state.turn.attackers.contains(&put));
+    assert_eq!(g.state.turn.attackers.len(), 2);
+    assert!(g.state.object(put).tapped);
+    assert_eq!(g.decision_owner(), Some(P0));
+    submit_ok(&mut g, P0, Action::Pass);
+    cast_at_creature(&mut g, P1, CardId::LightningStrike, cub);
+    assert_eq!(g.state.object(cub).zone, Zone::Graveyard);
+    assert!(
+        clue_tokens(&g, P0).is_empty(),
+        "declared alone is NOT attacking alone"
+    );
+    assert_eq!(g.state.turn.attackers, vec![put]);
+    submit_ok(&mut g, P0, Action::Pass);
+    cast_at_creature(&mut g, P1, CardId::LightningStrike, put);
+    settle_through_combat(&mut g);
+    assert_eq!(g.state.object(put).zone, Zone::Exile);
+    assert_eq!(
+        clue_tokens(&g, P0).len(),
+        1,
+        "undeclared put attacker was attacking alone"
+    );
+    assert!(g.state.stack.is_empty());
+    assert!(g.state.resolving.is_none());
+    assert!(g.state.trigger_queue.is_empty());
+    assert!(g.state.pending.is_none());
+}
+
+/// Legacy saves lack declared_* fields. The serialized public live combat
+/// membership is sufficient for Witness; no declaration record is consulted.
+#[test]
+fn absent_legacy_declaration_does_not_suppress_a_live_alone_death() {
+    let mut g = fixture(5002)
+        .battlefield(P0, &[witness(), CardId::GrizzlyBears])
+        .battlefield(P1, &[CardId::OrdinaryBear])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let bear = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    let blocker = battlefield_card(&g, P1, CardId::OrdinaryBear);
+    attack_and_block(
+        &mut g,
+        &[bear],
+        vec![BlockDecl {
+            blocker,
+            attacker: bear,
+        }],
+    );
+    // Model the serde(default) absent-field shape, then actually round-trip it.
+    let mut value = serde_json::to_value(&g.state).unwrap();
+    value["turn"]
+        .as_object_mut()
+        .unwrap()
+        .remove("declared_attackers");
+    value["turn"]
+        .as_object_mut()
+        .unwrap()
+        .remove("declared_blockers");
+    g.state = serde_json::from_value(value).unwrap();
+    assert!(g.state.turn.declared_attackers.is_empty());
+    assert_eq!(g.state.turn.attackers, vec![bear]);
+    g.state.validate().unwrap();
+    settle_through_combat(&mut g);
+    assert_eq!(g.state.object(bear).zone, Zone::Exile);
+    assert_eq!(clue_tokens(&g, P0).len(), 1);
+}
+
+/// CR 509.1g: a blocker remains blocking after its attacker leaves combat.
+/// Losing the pair is NOT removal of the blocking creature from combat.
+#[test]
+fn blocker_still_blocks_alone_after_its_attacker_is_bounced() {
+    let mut g = fixture(5003)
+        .hand(P0, &[CardId::Unsummon, CardId::LightningStrike])
+        .battlefield(
+            P0,
+            &[
+                witness(),
+                CardId::OrdinaryBear,
+                CardId::Island,
+                CardId::Mountain,
+                CardId::Mountain,
+            ],
+        )
+        .battlefield(P1, &[CardId::GrizzlyBears])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let attacker = battlefield_card(&g, P0, CardId::OrdinaryBear);
+    let blocker = battlefield_card(&g, P1, CardId::GrizzlyBears);
+    attack_and_block(&mut g, &[attacker], vec![BlockDecl { blocker, attacker }]);
+    cast_at_creature(&mut g, P0, CardId::Unsummon, attacker);
+    assert_eq!(g.state.object(attacker).zone, Zone::Hand);
+    assert!(g.state.turn.attackers.is_empty());
+    assert_eq!(g.state.object(blocker).zone, Zone::Battlefield);
+    g.state.validate().unwrap();
+    assert_eq!(g.state.turn.unpaired_blockers, vec![blocker]);
+    let mut loaded = fixture_save_round_trip(&g);
+    cast_at_creature(&mut loaded, P0, CardId::LightningStrike, blocker);
+    settle_through_combat(&mut loaded);
+    cast_at_creature(&mut g, P0, CardId::LightningStrike, blocker);
+    settle_through_combat(&mut g);
+    assert_eq!(g.state.object(blocker).zone, Zone::Exile);
+    assert_eq!(
+        clue_tokens(&g, P0).len(),
+        1,
+        "the blocker never left combat before dying"
+    );
+    assert_eq!(
+        g.state, loaded.state,
+        "actual saved-state load continues identically"
+    );
+    assert!(g.state.turn.unpaired_blockers.is_empty(), "combat ended");
+}
+
+// Fixture saves exercise the actual loader and continuation. Dummy replay decks
+// do not claim these hand-built initial states are reproducible legal replays.
+fn fixture_save(g: &Game) -> SessionSave {
+    let decks = vec![DeckList::parse_practice("fixture", "40 Forest\n").unwrap(); 2];
+    let replay = Replay::new(
+        g.state.seed,
+        g.state.first_player,
+        decks,
+        AiSettings::default(),
+    )
+    .unwrap();
+    SessionSave::capture(g, replay, vec![], true)
+}
+fn fixture_save_round_trip(g: &Game) -> Game {
+    let loaded = SessionSave::from_json(&fixture_save(g).to_json()).unwrap();
+    Game { state: loaded.game }
+}
+
+#[test]
+fn unpaired_blocker_and_paired_blocker_are_not_blocking_alone() {
+    let mut g = fixture(5004)
+        .hand(
+            P0,
+            &[
+                CardId::Unsummon,
+                CardId::LightningStrike,
+                CardId::LightningStrike,
+            ],
+        )
+        .battlefield(
+            P0,
+            &[
+                witness(),
+                CardId::OrdinaryBear,
+                CardId::OrdinaryBear,
+                CardId::Island,
+            ],
+        )
+        .battlefield(P0, &[CardId::Mountain; 4])
+        .battlefield(P1, &[CardId::GrizzlyBears; 2])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let attackers: Vec<_> = g
+        .state
+        .battlefield(P0)
+        .iter()
+        .filter(|o| o.card == CardId::OrdinaryBear)
+        .map(|o| o.id)
+        .collect();
+    let blockers: Vec<_> = g.state.battlefield(P1).iter().map(|o| o.id).collect();
+    attack_and_block(
+        &mut g,
+        &attackers,
+        vec![
+            BlockDecl {
+                blocker: blockers[0],
+                attacker: attackers[0],
+            },
+            BlockDecl {
+                blocker: blockers[1],
+                attacker: attackers[1],
+            },
+        ],
+    );
+    cast_at_creature(&mut g, P0, CardId::Unsummon, attackers[0]);
+    assert_eq!(g.state.turn.unpaired_blockers, vec![blockers[0]]);
+    cast_at_creature(&mut g, P0, CardId::LightningStrike, blockers[1]);
+    assert_eq!(g.state.object(blockers[1]).zone, Zone::Graveyard);
+    assert!(
+        clue_tokens(&g, P0).is_empty(),
+        "the unpaired blocker still counts beside it"
+    );
+    cast_at_creature(&mut g, P0, CardId::LightningStrike, blockers[0]);
+    settle_through_combat(&mut g);
+    assert_eq!(g.state.object(blockers[0]).zone, Zone::Exile);
+    assert_eq!(clue_tokens(&g, P0).len(), 1);
+}
+
+#[test]
+fn bounced_and_recast_unpaired_blocker_is_not_still_blocking() {
+    let mut g = fixture(5005)
+        .hand(
+            P0,
+            &[CardId::Unsummon, CardId::Unsummon, CardId::LightningStrike],
+        )
+        .battlefield(
+            P0,
+            &[
+                witness(),
+                CardId::OrdinaryBear,
+                CardId::Island,
+                CardId::Island,
+                CardId::Mountain,
+                CardId::Mountain,
+            ],
+        )
+        .battlefield(P1, &[CardId::AshcoatBear, CardId::Forest, CardId::Forest])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let attacker = battlefield_card(&g, P0, CardId::OrdinaryBear);
+    let blocker = battlefield_card(&g, P1, CardId::AshcoatBear);
+    attack_and_block(&mut g, &[attacker], vec![BlockDecl { blocker, attacker }]);
+    cast_at_creature(&mut g, P0, CardId::Unsummon, attacker);
+    assert_eq!(g.state.turn.unpaired_blockers, vec![blocker]);
+    cast_at_creature(&mut g, P0, CardId::Unsummon, blocker);
+    assert!(g.state.turn.unpaired_blockers.is_empty());
+    submit_ok(&mut g, P0, Action::Pass);
+    let recast = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::CastSpell { card, .. } if card == blocker))
+        .expect("same card's Flash recast is offered")
+        .action;
+    submit_ok(&mut g, P1, recast);
+    for _ in 0..8 {
+        if g.state.stack.is_empty() {
+            break;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert_eq!(g.state.object(blocker).zone, Zone::Battlefield);
+    assert_eq!(g.decision_owner(), Some(P0));
+    cast_at_creature(&mut g, P0, CardId::LightningStrike, blocker);
+    settle_through_combat(&mut g);
+    assert_eq!(g.state.object(blocker).zone, Zone::Graveyard);
+    assert!(
+        clue_tokens(&g, P0).is_empty(),
+        "same ObjectId is not the old blocking incarnation"
+    );
+}
+
+#[test]
+fn malformed_unpaired_blockers_fail_validation_and_real_save_load() {
+    let base = fixture(5006)
+        .battlefield(P0, &[witness(), CardId::OrdinaryBear])
+        .battlefield(P1, &[CardId::GrizzlyBears, CardId::Forest])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::DeclareBlockers)
+        .build();
+    let blocker = battlefield_card(&base, P1, CardId::GrizzlyBears);
+    let own = battlefield_card(&base, P0, CardId::OrdinaryBear);
+    let land = battlefield_card(&base, P1, CardId::Forest);
+    for case in 0..8 {
+        let mut g = Game {
+            state: base.state.clone(),
+        };
+        g.state.turn.defender = Some(P1);
+        g.state.turn.unpaired_blockers = vec![blocker];
+        match case {
+            0 => g.state.turn.unpaired_blockers.push(blocker),
+            1 => g.state.turn.unpaired_blockers = vec![ObjectId(u32::MAX)],
+            2 => g.state.turn.unpaired_blockers = vec![own],
+            3 => g.state.turn.unpaired_blockers = vec![land],
+            4 => g.state.turn.step = Step::PostcombatMain,
+            5 => g.state.turn.defender = None,
+            6 => g.state.turn.blockers.push((blocker, own)),
+            7 => {
+                let o = g.state.objects.get_mut(&blocker).unwrap();
+                o.zone = Zone::Hand;
+                g.state.players[P1 as usize].hand.push(blocker);
+            }
+            _ => unreachable!(),
+        }
+        assert!(
+            g.state.validate().is_err(),
+            "validator admitted case {case}"
+        );
+        assert!(
+            SessionSave::from_json(&fixture_save(&g).to_json()).is_err(),
+            "real loader admitted case {case}"
+        );
+    }
 }

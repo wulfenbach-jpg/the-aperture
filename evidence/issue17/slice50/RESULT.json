@@ -1,0 +1,157 @@
+{
+  "slice": 50,
+  "issue": 17,
+  "base": "b82c3f53d561811941b14059289a270bf320436d",
+  "branch": "aperture/issue-17",
+  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "scope": "Witness predicate conformance correction + CR509.1g unpaired-blocker repair; no card added, no certificate added",
+  "full_issue17_accepted": false,
+  "independent_review_outcome": null,
+  "authorship": "Native integration owner authored the correction and is not its independent reviewer",
+  "source": {
+    "rules_url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "rules_bytes": 977752,
+    "rules_sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "pin_matches_docs_rules_reference": true,
+    "card": "Thijarian Witness, WHO 111, printing da05e23b-419f-4023-9ad4-1227bb1b53be",
+    "card_sha256": "004d8309fe2eb0b939b3de09702aadbfab4d56f15dfcec118377db9d300f3da5",
+    "retrieved_utc": "2026-10-28T18:32:50Z",
+    "card_rulings": "none returned (has_more false)"
+  },
+  "rules_basis": {
+    "CR 506.5": "attacks alone = only creature declared; is attacking alone = attacking with no other creatures. Witness says 'was attacking', a past-state predicate.",
+    "CR 704.3": "simultaneous deaths share one pre-departure snapshot.",
+    "CR 509.1g": "a blocker remains blocking after its attacker leaves combat; only its own departure or phase end removes it."
+  },
+  "red": [
+    {
+      "log": "evidence/issue17/slice50/red-witness.log",
+      "before_product_edits": true,
+      "compiles": true,
+      "failed": 2,
+      "passed": 6,
+      "exit": 101,
+      "symptom": "Graveyard != Exile on both sequential attacker and blocker cases"
+    },
+    {
+      "log": "evidence/issue17/slice50/red-orphan-blocker.log",
+      "before_orphan_repair": true,
+      "compiles": true,
+      "failed": 1,
+      "exit": 101,
+      "symptom": "Graveyard != Exile: blocker forgotten after its attacker was bounced"
+    }
+  ],
+  "repairs": {
+    "witness_predicate": "capture_combat_alone reads live pre-departure turn.attackers and distinct blocking creatures (paired + unpaired); declaration record retained but no longer a Witness predicate; engine comments, DeathRecord docs and corpus docs corrected; superseded tests rewritten with explicit names, not deleted silently",
+    "CR509.1g": "new omitted-when-empty Turn::unpaired_blockers, shared remove_from_combat, prune_combat retains and drops correctly, cleared at end of combat/turn start, validated in GameState::validate",
+    "persistence": "SAVE_VERSION 10 / REPLAY_VERSION 6 retained; older recording digest divergence and already-discarded pre-repair membership stated in README and docs"
+  },
+  "tests": {
+    "file": "crates/core/tests/issue17_slice46.rs",
+    "base_count": 8,
+    "head_count": 14,
+    "delta": 6,
+    "cases": [
+      "sole attacker / sole blocker still trigger",
+      "sequential attacker second death is attacking alone",
+      "sequential blocker second death is blocking alone",
+      "simultaneous two-attacker death does not trigger",
+      "death outside combat does not trigger",
+      "Cub put attacker counts in live membership without a declaration",
+      "absent declaration legacy-shaped state loads and triggers",
+      "blocker keeps blocking after its attacker is bounced, saved-state continuation identical",
+      "paired + unpaired blockers count together",
+      "same ObjectId bounced and Flash-recast is no longer blocking",
+      "8 malformed unpaired-blocker states refused by validate AND actual SessionSave load"
+    ]
+  },
+  "local_gates": {
+    "receipt": "evidence/issue17/slice50/gates.log",
+    "fmt_exit": 0,
+    "focused_suites": 12,
+    "focused_passed": 138,
+    "focused_failed": 0,
+    "separate_search_suite": "aperture-ai search 9 passed, log only",
+    "corpus_audit": "AUDIT OK 161 / 459 / 148 / 311, per-list [55,0,51,48,5,52,52,53], 1 certified",
+    "workspace_clippy_deny_warnings_exit": 0,
+    "locked_release_cli_exit": 0,
+    "git_diff_check_exit": 0,
+    "new_local_full_workspace_test_claim": false,
+    "failed_attempts_retained": [
+      "slice50/first-compile-FAILED.log (missing field accessor)",
+      "slice50/unpaired-controls-compile-FAILED.log (no player_mut)"
+    ],
+    "full_workspace": "cargo test --workspace --locked: 135 binaries / 947 passed / 0 failed / 1 ignored, EXIT=0 (slice50/workspace.log)"
+  },
+  "journeys": {
+    "witness": {
+      "log": "evidence/issue17/slice50/witness-journey.log",
+      "driver": "evidence/issue17/slice50-witness-driver",
+      "outcome": "Win{P1}",
+      "steps": 3073,
+      "turns": 54,
+      "events": 8098,
+      "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+      "witness_casts": 11,
+      "solo_attacks": 38,
+      "clue_tokens": 104,
+      "exiles": 14,
+      "separate_cli_replay_matches": true,
+      "note": "byte-identical to the slice-46 recording: this recording never exercised the corrected paths, so it does not prove the fix"
+    },
+    "cub": {
+      "log": "evidence/issue17/slice50/gates.log",
+      "outcome": "Win{P2}",
+      "steps": 3463,
+      "events": 8658,
+      "digest": "acf204aa4711241f2c7c3124c3195d4f9ee93a6a471a25d5a8df56562e747ac9",
+      "separate_cli_replay_matches": true
+    },
+    "not_a_100_card_certificate": true,
+    "not_product_ai_or_strength_evidence": true
+  },
+  "corpus": {
+    "catalog_cards": 161,
+    "union_names": 459,
+    "implemented_union": 148,
+    "missing_union": 311,
+    "per_list_missing": [
+      55,
+      0,
+      51,
+      48,
+      5,
+      52,
+      52,
+      53
+    ],
+    "certified_lists": 1,
+    "desired_lists": 8,
+    "remaining_ayula_names": [
+      "Dúnedain Rangers",
+      "Evercoat Ursine",
+      "Rampaging Yao Guai",
+      "Ruxa, Patient Professor",
+      "Ursine Monstrosity"
+    ],
+    "audit": "evidence/issue17/slice50/corpus-audit.py"
+  },
+  "disclosures": [
+    "Original #17 unfinished: 1 of 8 certified, Ayula 5 missing, no card added.",
+    "Native authored the correction and is not independent reviewer.",
+    "Narrow scope exception: crates/ai/src/search.rs gains one public field copy (plus comment fix) and crates/ai/tests/common.rs one initializer; no policy/budget/sampling/hidden-data change.",
+    "The Witness journey is byte-identical, which shows digest stability but NOT that the corrected behaviour was exercised there; the focused regressions are the evidence.",
+    "A pre-repair save made after losing all blocking pairs cannot recover that membership; documented, not silently repaired.",
+    "Fixture saves use dummy replay decks: they prove load and identical continuation, not replay provenance of constructed boards.",
+    "Legend rule, damage-assignment policy, arbitrary Archidekt support and Ruxa's unblocked-damage choice remain unimplemented.",
+    "Prior untracked reviewer artifacts and the modified saved-session JSONL remain untouched."
+  ],
+  "children_inspected": [
+    "t_26a7a4ff",
+    "t_3c2fe51a"
+  ],
+  "children_are": "Scheduled evaluation dependency wait and unassigned soak backlog; not review children; left gated",
+  "no_merge_master_push_closure_or_unlock": true,
+  "next_action": "Independent practical delta review of b82c3f5..HEAD (predicate reading against pinned CR 506.5/704.3/509.1g, RED discrimination, malformed-state refusals, narrow AI-field exception), then same writer/branch/PR46 takes slice50/NEXT-CARDS.md in order (Ruxa first), then exact 100-card four-seat certification with separate replays."
+}

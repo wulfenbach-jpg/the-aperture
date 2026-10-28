@@ -290,6 +290,7 @@ impl Game {
                 blockers: Vec::new(),
                 declared_attackers: Vec::new(),
                 declared_blockers: Vec::new(),
+                unpaired_blockers: Vec::new(),
                 combat_damage_done: false,
                 defender: None,
             },
@@ -1693,13 +1694,31 @@ impl Game {
         if self.state.resolving == Some(id) {
             self.state.resolving = None;
         }
-        self.state.turn.attackers.retain(|c| *c != id);
-        self.state.turn.blocked.retain(|c| *c != id);
-        self.state
-            .turn
-            .blockers
-            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+        self.remove_from_combat(id);
         Some(object)
+    }
+
+    /// CR 506.4 / 509.1g: removing an attacker does not remove its blockers
+    /// from combat. Retain unpaired blocking membership until those creatures
+    /// themselves leave combat, not until their former target disappears.
+    fn remove_from_combat(&mut self, id: ObjectId) {
+        let turn = &mut self.state.turn;
+        let newly_unpaired: Vec<_> = turn
+            .blockers
+            .iter()
+            .filter(|(blocker, attacker)| *attacker == id && *blocker != id)
+            .map(|(blocker, _)| *blocker)
+            .collect();
+        turn.attackers.retain(|c| *c != id);
+        turn.blocked.retain(|c| *c != id);
+        turn.blockers
+            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+        turn.unpaired_blockers.retain(|c| *c != id);
+        turn.unpaired_blockers.extend(newly_unpaired);
+        turn.unpaired_blockers
+            .retain(|c| !turn.blockers.iter().any(|(blocker, _)| blocker == c));
+        turn.unpaired_blockers.sort_unstable();
+        turn.unpaired_blockers.dedup();
     }
 
     /// Insert an object into `zone`, re-keying commander objects. The stable
@@ -2012,13 +2031,8 @@ impl Game {
         };
         object.damage = 0;
         object.tapped = true;
-        self.state.turn.attackers.retain(|c| *c != id);
-        self.state.turn.blocked.retain(|c| *c != id);
-        self.state
-            .turn
-            .blockers
-            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
         let name = object.card.name();
+        self.remove_from_combat(id);
         events.push(Event::StateBasedAction {
             description: format!(
                 "{name} is regenerated: destruction replaced, damage removed, tapped, removed from combat (CR 701.19a)"
@@ -2421,12 +2435,11 @@ impl Game {
                     );
                 }
                 // CR 603.6c: "whenever another creature dies" has no controller
-                // restriction. Its printed intervening-if ("if it was attacking
-                // or blocking alone") is the CR 506.5 declaration reading: was
-                // this creature the only one *declared* as an attacker (or
-                // blocker) this combat. The death record carries that answer,
-                // which survives the zone change and any earlier companion
-                // that already left combat.
+                // restriction. "Was attacking or blocking alone" uses the
+                // pre-death live combat state (CR 506.5), NOT "attacks alone",
+                // which describes a declaration. Each death in one simultaneous
+                // batch carries the same pre-departure snapshot. A companion
+                // leaving in an EARLIER event can make a later death alone.
                 if record.alone_in_combat {
                     self.queue_another_creature_dies(
                         source,
@@ -2468,29 +2481,23 @@ impl Game {
         }
     }
 
-    /// CR 506.5: a creature attacked alone if it was the only creature
-    /// *declared* as an attacker this combat, and blocked alone if it was the
-    /// only creature declared as a blocker. That is a fact about the
-    /// declaration, not about the live combat state: `turn.attackers` and
-    /// `turn.blockers` are pruned whenever a creature leaves combat (CR 506.4),
-    /// so reading those would call the last survivor of a two-attacker combat
-    /// "alone" purely because its companion died first. The declaration record
-    /// (`turn.declared_attackers` / `turn.declared_blockers`) is written once
-    /// when the declaration is submitted and cleared only at end of combat
-    /// (CR 511.3), so every death in the combat — simultaneous or sequential —
-    /// sees the same answer. Outside the combat phase the record is empty for
-    /// every creature.
+    /// CR 506.5 distinguishes "attacks alone" (declared alone) from "is
+    /// attacking alone" (currently the only attacker), likewise for blockers.
+    /// Witness's "was attacking or blocking alone" uses the latter, immediately
+    /// before death. A creature put onto the battlefield attacking counts too;
+    /// a companion removed in an earlier event no longer counts.
     ///
-    /// The snapshot is still taken once per batch of deaths so that a
-    /// simultaneous batch cannot observe combat state that a *different* death
-    /// in the same batch already changed (CR 704.3).
+    /// Capture ONCE before a simultaneous batch (CR 704.3), never after each
+    /// detach: otherwise the final death would falsely become alone. The
+    /// declaration record remains separate and is not a Witness predicate.
     fn capture_combat_alone(&self) -> CombatAloneSnapshot {
         let turn = &self.state.turn;
-        let mut blockers = turn.declared_blockers.clone();
+        let mut blockers: Vec<_> = turn.blockers.iter().map(|block| block.0).collect();
+        blockers.extend_from_slice(&turn.unpaired_blockers);
         blockers.sort_unstable();
         blockers.dedup();
         CombatAloneSnapshot {
-            attackers: turn.declared_attackers.clone(),
+            attackers: turn.attackers.clone(),
             blockers,
         }
     }
@@ -5396,6 +5403,7 @@ impl Game {
     ) {
         self.state.pending = None;
         self.state.turn.blockers = blocks.iter().map(|b| (b.blocker, b.attacker)).collect();
+        self.state.turn.unpaired_blockers.clear();
         self.state.turn.blocked = blocks.iter().map(|b| b.attacker).collect();
         {
             // CR 506.5: "blocks alone" counts distinct blocking creatures, so a
@@ -5855,6 +5863,7 @@ impl Game {
             self.state.turn.blockers.clear();
             self.state.turn.declared_attackers.clear();
             self.state.turn.declared_blockers.clear();
+            self.state.turn.unpaired_blockers.clear();
             self.state.turn.combat_damage_done = false;
             self.state.turn.defender = None;
             // CR 602.5b: "activate only once each turn" limits reset with the
@@ -5958,6 +5967,7 @@ impl Game {
                 self.state.turn.blockers.clear();
                 self.state.turn.declared_attackers.clear();
                 self.state.turn.declared_blockers.clear();
+                self.state.turn.unpaired_blockers.clear();
                 self.state.turn.defender = None;
                 self.grant_priority(active, events);
             }
@@ -6196,22 +6206,7 @@ impl Game {
             self.state.resolving = None;
         }
 
-        let alive: Vec<ObjectId> = self
-            .state
-            .objects
-            .values()
-            .filter(|o| o.zone == Zone::Battlefield)
-            .map(|o| o.id)
-            .collect();
-        self.state.turn.attackers.retain(|id| alive.contains(id));
-        self.state
-            .turn
-            .blockers
-            .retain(|(blocker, attacker)| alive.contains(blocker) && alive.contains(attacker));
-        self.state
-            .turn
-            .blocked
-            .retain(|id| self.state.turn.attackers.contains(id));
+        self.prune_combat();
 
         if self.state.turn.priority == Some(p) {
             // CR 800.4a: priority passes to the next live player in turn order.
@@ -8810,9 +8805,25 @@ impl Game {
             .copied()
             .filter(|(blocker, attacker)| alive(self, *blocker) && attackers.contains(attacker))
             .collect();
+        let mut unpaired = self.state.turn.unpaired_blockers.clone();
+        unpaired.extend(
+            self.state
+                .turn
+                .blockers
+                .iter()
+                .filter(|(blocker, attacker)| {
+                    alive(self, *blocker) && !attackers.contains(attacker)
+                })
+                .map(|(blocker, _)| *blocker),
+        );
+        unpaired
+            .retain(|id| alive(self, *id) && !blockers.iter().any(|(blocker, _)| blocker == id));
+        unpaired.sort_unstable();
+        unpaired.dedup();
         self.state.turn.attackers = attackers;
         self.state.turn.blocked = blocked;
         self.state.turn.blockers = blockers;
+        self.state.turn.unpaired_blockers = unpaired;
     }
 
     fn deal_combat_damage(&mut self, events: &mut Vec<Event>) {
@@ -9865,9 +9876,9 @@ fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
 /// comparisons; `graveyard_id` is the object the card *is* after the move, which
 /// is what the trigger's "exile it" must find (they differ only for a commander,
 /// whose zone change creates a new object, CR 400.7). `alone_in_combat` is the
-/// printed intervening-if under the CR 506.5 declaration reading, taken from the
-/// combat's declaration record so a zone change or a companion leaving combat
-/// cannot change the answer.
+/// printed intervening-if evaluated in the live combat state immediately before
+/// this death batch. All simultaneous deaths share the same snapshot; a creature
+/// that left combat in an earlier event is absent from that snapshot.
 #[derive(Clone, Copy, Debug)]
 struct DeathRecord {
     battlefield_id: ObjectId,
@@ -9877,15 +9888,14 @@ struct DeathRecord {
     alone_in_combat: bool,
 }
 
-/// This combat's attacker and blocker declarations, snapshotted once before a
-/// batch of deaths. "Attacks alone" and "blocks alone" (CR 506.5) are properties
-/// of the declaration record *as it was when the batch happened*, so the record
-/// must not be re-read after each creature leaves combat.
+/// Live attacking and blocking creatures, snapshotted once BEFORE a death
+/// batch. A previous separate departure can change the live membership, but
+/// no death in the same simultaneous batch may see another's detach.
 #[derive(Clone, Debug)]
 struct CombatAloneSnapshot {
     attackers: Vec<ObjectId>,
-    /// Distinct blocking creatures; one blocker blocking two attackers blocks
-    /// alone only if it is the only creature that blocked.
+    /// Distinct live blocking creatures, paired or unpaired; blocking several
+    /// attackers does not make one creature count more than once.
     blockers: Vec<ObjectId>,
 }
 

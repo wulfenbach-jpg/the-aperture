@@ -116,11 +116,17 @@ implementation and it says so everywhere it matters.
   a documented limitation rather than a silent one — a save or replay written
   before that record existed can re-execute to a **different digest** than the
   one it stored (an older mid-combat recording fails with
-  `replay ended early: digest … != recorded …`), and a pre-change mid-combat save
-  carries no declaration at all, so for the remainder of that combat "attacking
-  or blocking alone" answers no and a genuine alone-attack death is
-  under-reported. Pre-combat old saves are unaffected because the absent field
-  stays absent.
+  `replay ended early: digest … != recorded …`). Slice 50 restores Witness's
+  correct live pre-death predicate: a missing declaration no longer suppresses
+  an alone death. Live combat membership is enough, as the absent-field
+  state-continuation regression proves; this does **not** claim every legacy
+  save now verifies its stored digest. Rule-corrected games can also differ
+  behaviorally from recordings made with the earlier declaration-only bug.
+  Slice 50 also preserves blockers whose attackers left combat (CR 509.1g), in
+  an omitted-when-empty `unpaired_blockers` field. It changes hashes only when
+  present. An older save made after losing all blocking pairs has already
+  discarded that membership and cannot reconstruct it; v10/v6 stay in use
+  with that explicit best-effort limitation.
 * **Native desktop UI** (`aperture`): dark charcoal/brass 2–4-seat card table
   with compact 2x2 seat panels, all public battlefields, command zones, life,
   counters, status, stack view, own hand, legal-action buttons, coaching panel

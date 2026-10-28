@@ -1,0 +1,424 @@
+
+COMMAND: python evidence/issue17/slice50/setup-journey.py
+C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice50-journey-driver
+EXIT=0
+
+COMMAND: cargo fmt --all
+EXIT=0
+
+COMMAND: cargo fmt --all --check
+EXIT=0
+
+COMMAND: cargo test -p aperture-core --locked --test issue17_slice46 --test issue17_slice48 --test issue17_slice49 --test issue17_slice43 --test combat --test combat_teaching --test issue13_commander_combat --test m1_multiplayer --test ordering_persistence --test replay_digest --test starter_corpus
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.93s
+     Running tests\combat.rs (target\debug\deps\combat-4a9f3a04c853e9ee.exe)
+
+running 8 tests
+test attackers_are_declared_only_during_the_declare_attackers_step ... ok
+test summoning_sick_creature_cannot_attack ... ok
+test a_blocker_can_only_block_one_attacker_and_must_be_untapped ... ok
+test unblocked_attacker_damages_the_defending_player ... ok
+test combat_damage_happens_once ... ok
+test two_blockers_split_damage_lethal_first_and_all_die ... ok
+test blocking_creatures_trade_and_lethal_damage_is_a_state_based_action ... ok
+test giant_growth_pumps_until_end_of_turn ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\combat_teaching.rs (target\debug\deps\combat_teaching-5dc0e9e20e981503.exe)
+
+running 2 tests
+test the_5101c_note_does_not_teach_lethal_first_as_the_rule ... ok
+test combat_coaching_identifies_the_automatic_assignment_as_a_simplification ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+
+running 43 tests
+test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+test departing_controller_battlefield_permanent_is_exiled ... ok
+test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+test commander_damage_to_a_creature_never_credits_a_player ... ok
+test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+test discard_pending_then_active_departure_settles_once ... ok
+test fog_is_a_sourced_catalog_card ... ok
+test fog_does_not_prevent_noncombat_damage ... ok
+test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+test commander_combat_damage_is_publicly_credited ... ok
+test fog_prevents_combat_damage_to_creatures ... ok
+test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+test fabricated_retired_commander_identity_is_refused ... ok
+test departed_identity_omitted_from_retired_is_refused ... ok
+test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+test commander_damage_identity_survives_a_modeled_control_change ... ok
+test fog_shield_expires_after_cleanup ... ok
+test named_20_life_profiles_are_unchanged ... ok
+test noncombat_damage_never_credits_the_ledger ... ok
+test previous_replay_schema_version_is_rejected ... ok
+test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+test live_commander_cannot_be_listed_as_retired ... ok
+test independent_commanders_do_not_pool ... ok
+test real_departure_retires_identity_and_keeps_historic_row ... ok
+test commander_draw_answer_then_owner_departure_is_atomic ... ok
+test serialized_commander_combat_profile_reconstructs_40_life ... ok
+test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+test survivor_owned_source_exiled_but_queue_continues ... ok
+test simultaneous_losses_settle_once_in_seat_order ... ok
+test exact_commander_damage_boundaries ... ok
+test malformed_commander_damage_ledgers_are_refused ... ok
+test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+test twenty_two_commander_damage_is_a_loss ... ok
+test commander_return_queue_survives_a_departing_owner ... ok
+test previous_save_schema_version_is_rejected ... ok
+test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+test accepted_action_midledger_save_and_replay_roundtrip ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.87s
+
+     Running tests\issue17_slice43.rs (target\debug\deps\issue17_slice43-1cb6696c78ebb2e9.exe)
+
+running 4 tests
+test vigilance_keeps_lumra_untapped_when_it_attacks ... ok
+test reach_leaves_lumra_able_to_block_a_flyer ... ok
+test power_and_toughness_equal_the_lands_its_controller_controls ... ok
+test enters_mills_four_then_returns_every_land_card_tapped ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice46.rs (target\debug\deps\issue17_slice46-e6ff61e91e13a057.exe)
+
+running 14 tests
+test death_outside_combat_does_not_trigger ... ok
+test clue_token_sacrifices_itself_to_draw_a_card ... ok
+test death_beside_another_attacker_does_not_trigger ... ok
+test sole_blocker_dying_in_combat_is_exiled_and_investigated ... ok
+test sole_attacker_dying_in_combat_is_exiled_and_investigated ... ok
+test witness_and_clue_are_catalogued_as_printed_and_token_is_not_a_card ... ok
+test blocker_killed_after_its_companion_left_combat_is_blocking_alone ... ok
+test attacker_killed_after_its_companion_left_combat_is_attacking_alone ... ok
+test absent_legacy_declaration_does_not_suppress_a_live_alone_death ... ok
+test bounced_and_recast_unpaired_blocker_is_not_still_blocking ... ok
+test cub_put_attacker_counts_without_a_declaration ... ok
+test unpaired_blocker_and_paired_blocker_are_not_blocking_alone ... ok
+test blocker_still_blocks_alone_after_its_attacker_is_bounced ... ok
+test malformed_unpaired_blockers_fail_validation_and_real_save_load ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests\issue17_slice48.rs (target\debug\deps\issue17_slice48-05f096c1faa3d463.exe)
+
+running 6 tests
+test owlbear_cub_is_registered_with_its_printed_text ... ok
+test a_defender_with_seven_lands_never_triggers_the_look ... ok
+test eight_lands_looks_at_the_top_eight_and_offers_only_creature_cards ... ok
+test declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order ... ok
+test the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage ... ok
+test a_look_with_no_creature_card_puts_everything_on_the_bottom ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice49.rs (target\debug\deps\issue17_slice49-9b081ebe60690af6.exe)
+
+running 8 tests
+test review329_attack_restriction_is_not_intervening_if ... ok
+test review329_owner_must_see_every_looked_card ... ok
+test entire_opponent_view_and_digest_ignore_hidden_eligibility_and_pick ... ok
+test review329_no_creatures_still_requires_private_look ... ok
+test review329_post_pick_valid_continuation_control ... ok
+test review329_look_pending_cannot_replace_titania_search_on_load ... ok
+test short_and_empty_library_looks_round_trip_before_acknowledgement ... ok
+test forged_look_states_are_refused_by_validation_and_real_load ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests\m1_multiplayer.rs (target\debug\deps\m1_multiplayer-fb9653ac7b4d4ce4.exe)
+
+running 28 tests
+test last_live_seat_wins_after_simultaneous_losses ... ok
+test a_response_resets_the_priority_pass_mask ... ok
+test active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_live_seat ... ok
+test four_seat_eliminated_seat_projects_no_hidden_information ... ok
+test later_mulligan_round_reversal_is_rejected_independently_of_metadata ... ok
+test first_multiplayer_mulligan_is_free_but_the_second_bottoms_one ... ok
+test mulligan_rounds_wrap_and_lock_kept_hands ... ok
+test paid_bottom_count_and_hand_shape_are_validated ... ok
+test mulligan_round_counter_must_match_eligible_mulligan_counts ... ok
+test mulligan_validation_rejects_malformed_first_rounds ... ok
+test replay_rejects_a_mismatched_rules_revision ... ok
+test four_seat_turn_order_skips_eliminated_seats_and_wraps ... ok
+test mulligan_declarations_start_with_the_starting_player_and_do_not_redraw_early ... ok
+test four_seat_unequal_views_keep_pending_choices_owner_only ... ok
+test masked_projection_digest_does_not_depend_on_hidden_state ... ok
+test three_seat_priority_round_resolves_exactly_one_item ... ok
+test three_seat_game_has_valid_ordered_seats_and_no_panic ... ok
+test three_seat_first_player_draws_but_two_seat_first_player_skips ... ok
+test unequal_seats_are_masked_and_only_the_owner_has_legal_actions ... ok
+test save_rejects_malformed_mulligan_state ... ok
+test wrong_seat_mulligan_is_rejected_without_mutation ... ok
+test all_viewers_ignore_hidden_state_for_2_3_4_seats ... ok
+test save_v3_is_rejected_explicitly ... ok
+test save_rejects_a_missing_object_reference_and_stale_replay_invariants ... ok
+test save_rejects_a_tampered_embedded_replay ... ok
+test pending_choice_survives_a_save_round_trip ... ok
+test mulligan_intermediate_and_bottom_states_save_and_replay ... ok
+test three_seat_replay_and_save_round_trip_and_v1_is_rejected ... ok
+
+test result: ok. 28 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\ordering_persistence.rs (target\debug\deps\ordering_persistence-617dbda96e8e7eeb.exe)
+
+running 2 tests
+test ordinary_and_command_opt_consider_both_order_answers_save_resume_and_replay ... ok
+test legal_time_ebb_decline_consider_all_owner_answers_preserve_draw_identity_tax_and_replay ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.55s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\starter_corpus.rs (target\debug\deps\starter_corpus-05f2cda4096c1ba4.exe)
+
+running 8 tests
+test jasmine_is_refused_in_every_ordinary_library ... ok
+test the_starter_manifest_names_eight_targets_and_claims_only_one ... ok
+test jasmine_boreal_is_a_typed_supported_commander ... ok
+test jasmine_commander_damage_uses_the_existing_ledger ... ok
+test jasmine_commander_cast_tax_and_return_use_the_existing_paths ... ok
+test every_sourced_vanilla_creature_matches_its_printing ... ok
+test the_first_starter_library_is_exact_and_fully_supported ... ok
+test every_sourced_vanilla_creature_casts_and_resolves ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+EXIT=0
+
+COMMAND: cargo test -p aperture-ai --locked --test search
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.88s
+     Running tests\search.rs (target\debug\deps\search-2756d6508be01f6d.exe)
+
+running 9 tests
+test pending_decisions_are_refused_with_a_typed_reason ... ok
+test cancellation_reports_the_labelled_fallback ... ok
+test budget_exhaustion_labels_the_fallback ... ok
+test candidates_are_only_offered_actions ... ok
+test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+test reconstruction_is_reproducible_determinization ... ok
+test declared_own_deck_is_used_for_own_draws_only ... ok
+test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
+test small_paired_trial_against_the_frozen_heuristic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 240.30s
+
+EXIT=0
+
+COMMAND: python evidence/issue17/slice50/corpus-audit.py
+catalog_cards      = 161
+union_names        = 459
+supported_union    = 148
+missing_union      = 311
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=5
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 5, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+AUDIT OK
+EXIT=0
+
+COMMAND: cargo clippy --workspace --all-targets --locked -- -D warnings
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+    Checking aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.90s
+EXIT=0
+
+COMMAND: cargo build -p aperture-cli --release --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 30.07s
+EXIT=0
+
+COMMAND: cargo run --release --locked --manifest-path evidence/issue17/slice50-journey-driver/Cargo.toml
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling stable_deref_trait v1.2.1
+   Compiling windows-link v0.2.1
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.12.1
+   Compiling futures-core v0.3.34
+   Compiling itoa v1.0.18
+   Compiling smallvec v1.16.4
+   Compiling litemap v0.8.3
+   Compiling writeable v0.6.4
+   Compiling windows-sys v0.61.2
+   Compiling icu_properties_data v2.4.0
+   Compiling icu_normalizer_data v2.4.0
+   Compiling memchr v2.8.3
+   Compiling utf8_iter v1.0.4
+   Compiling futures-sink v0.3.34
+   Compiling slab v0.4.12
+   Compiling futures-task v0.3.34
+   Compiling rustversion v1.0.23
+   Compiling serde_core v1.0.229
+   Compiling futures-io v0.3.34
+   Compiling typenum v1.20.1
+   Compiling httparse v1.10.1
+   Compiling percent-encoding v2.3.2
+   Compiling try-lock v0.2.5
+   Compiling native-tls v0.2.18
+   Compiling zmij v1.0.23
+   Compiling http v1.5.0
+   Compiling libc v0.2.191
+   Compiling tower-service v0.3.3
+   Compiling once_cell v1.21.4
+   Compiling futures-util v0.3.34
+   Compiling tracing-core v0.1.36
+   Compiling syn v3.0.9
+   Compiling want v0.3.2
+   Compiling hybrid-array v0.4.15
+   Compiling serde v1.0.229
+   Compiling atomic-waker v1.1.2
+   Compiling cfg-if v1.0.5
+   Compiling serde_json v1.0.154
+   Compiling http-body v1.1.0
+   Compiling encoding_rs v0.8.42
+   Compiling tracing v0.1.44
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling form_urlencoded v1.2.2
+   Compiling futures-channel v0.3.34
+   Compiling sync_wrapper v1.0.2
+   Compiling const-oid v0.10.2
+   Compiling tower-layer v0.3.3
+   Compiling ipnet v2.12.2
+   Compiling thiserror v2.0.21
+   Compiling base64 v0.23.1
+   Compiling http-body-util v0.1.5
+   Compiling zeroize v1.9.1
+   Compiling digest v0.11.3
+   Compiling cpufeatures v0.3.1
+   Compiling core_detect v1.0.0
+   Compiling scopeguard v1.2.0
+   Compiling bitflags v2.13.2
+   Compiling simdutf8 v0.1.5
+   Compiling multiversion_no_op v1.0.0
+   Compiling sha2 v0.11.1
+   Compiling rustls-pki-types v1.15.1
+   Compiling mime v0.3.17
+   Compiling log v0.4.34
+   Compiling synstructure v0.14.0
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.7
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.4
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling schannel v0.1.30
+   Compiling zerovec v0.11.9
+   Compiling zerotrie v0.2.5
+   Compiling tokio v1.54.1
+   Compiling tinystr v0.8.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_collections v2.4.0
+   Compiling icu_locale_core v2.4.0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling icu_provider v2.4.0
+   Compiling icu_properties v2.4.0
+   Compiling icu_normalizer v2.4.0
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice48-cub-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice50-journey-driver)
+    Finished `release` profile [optimized] target(s) in 43.00s
+     Running `evidence\issue17\slice50-journey-driver\target\release\issue17-slice48-cub-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 12,
+    "Grizzly Bears": 11,
+    "Owlbear Cub": 12
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "cub_bottoms": 5,
+  "cub_looks": 5,
+  "cub_private_looks_observed": 5,
+  "cub_puts": 4,
+  "deck": "decks/package-slice48.txt",
+  "digest": "acf204aa4711241f2c7c3124c3195d4f9ee93a6a471a25d5a8df56562e747ac9",
+  "done_only_acknowledgements": 5,
+  "driver": "evidence-only masked Owlbear Cub demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+      "winner": 2
+    }
+  },
+  "private_viewed_card_samples": 33,
+  "replay_digest_matches": true,
+  "replay_events": 8658,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "edb12266011a2f4c716fb4562273164f3b57a6cc4d605fc6277f86d742677cd9",
+  "snapshots_exact": true,
+  "solo_attacks_declared": 59,
+  "solo_exile_events": 0,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 3463,
+  "turns": 95,
+  "witness_style_clues": 0
+}
+EXIT=0
+
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice50/cub-replay.json
+replay seed 2323 — 4 seat(s), 3463 action(s), recorded outcome Some(Win { winner: 2, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
+  replayed digest acf204aa4711 | matches recorded | events 8658
+EXIT=0
+
+COMMAND: git diff --check
+warning: in the working copy of 'crates/core/src/engine.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'crates/core/src/state.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'crates/core/tests/issue17_slice46.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl', LF will be replaced by CRLF the next time Git touches it
+EXIT=0
