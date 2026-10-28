@@ -1,0 +1,427 @@
+diff --git a/crates/core/src/ability.rs b/crates/core/src/ability.rs
+index d7cf906..8bdde4d 100644
+--- a/crates/core/src/ability.rs
++++ b/crates/core/src/ability.rs
+@@ -68,6 +68,13 @@ pub enum TriggerEvent {
+     /// beginning-of-combat step of this source's controller's turn. The step
+     /// exists once per turn, so the trigger fires at most once per turn.
+     BeginningOfCombat,
++    /// CR 603.6c + 700.4 with the printed wording "whenever another creature
++    /// dies": a creature other than the source died, regardless of controller.
++    /// The printed intervening-if "if it was attacking or blocking alone" is
++    /// evaluated by the engine where the death is dispatched, because it is a
++    /// property of the dying creature's combat state at that moment (CR 506.4,
++    /// 508.1, 509.1) and not of this source.
++    AnotherCreatureDies,
+ }
+ 
+ impl TriggerEvent {
+@@ -87,6 +94,7 @@ impl TriggerEvent {
+             TriggerEvent::Attacks => "this creature attacks",
+             TriggerEvent::CreatureSpellCast => "you cast a creature spell",
+             TriggerEvent::BeginningOfCombat => "at the beginning of combat on your turn",
++            TriggerEvent::AnotherCreatureDies => "another creature dies",
+         }
+     }
+ }
+@@ -1059,6 +1067,8 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
+     match card {
+         CardId::SpiderHamPeterPorker => SPIDER_HAM,
+         CardId::FoodToken => FOOD_TOKEN,
++        CardId::ClueToken => CLUE_TOKEN,
++        CardId::ThijarianWitness => THIJARIAN_WITNESS,
+         CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
+         CardId::BeornTheFierce => BEORN_THE_FIERCE,
+         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
+@@ -1455,6 +1465,41 @@ const FOOD_TOKEN: &[Ability] = &[Ability::Activated(ActivatedAbility {
+     sorcery_timing: false,
+ })];
+ 
++/// The Clue token's printed ability (CR 111.10, 701.16a): "{2}, Sacrifice this
++/// token: Draw a card." Unlike the Food token there is no `{T}`: the sacrifice is
++/// the whole nonmana cost, so a Clue that entered this turn can be cracked at
++/// once. Paying it puts a *token* into the graveyard, which then ceases to exist
++/// as a state-based action (CR 111.7), exactly like the Food token's cost.
++const CLUE_TOKEN: &[Ability] = &[Ability::Activated(ActivatedAbility {
++    text: "{2}, Sacrifice this token: Draw a card.",
++    cost: AbilityCost {
++        tap: false,
++        sacrifice_source: true,
++        mana: Some("{2}"),
++        ..AbilityCost::NONE
++    },
++    target: TargetSpec::None,
++    modes: SINGLE_MODE,
++    effects: &[Effect::Draw(1)],
++    once_per_turn: false,
++    sorcery_timing: false,
++})];
++
++/// Thijarian Witness (WHO 111). One printed trigger: "Bear Witness — Whenever
++/// another creature dies, if it was attacking or blocking alone, exile it and
++/// investigate." The intervening-if is a combat-state property of the dying
++/// creature, so the death dispatch evaluates it before the trigger is queued and
++/// the engine records the dead object on the trigger so the resolution can exile
++/// that exact card (never "a" card the controller picks). Flash is printed
++/// separately in the catalog definition and needs no ability literal (CR 702.8a).
++const THIJARIAN_WITNESS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
++    text: "Bear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate.",
++    event: TriggerEvent::AnotherCreatureDies,
++    optional: false,
++    target: TargetSpec::None,
++    effects: &[Effect::ExileDeadCreatureAndInvestigate],
++})];
++
+ /// Spider-Ham, Peter Porker (SPM 114). Two printed abilities: an enters trigger
+ /// that creates a Food token, and "Animal May-Ham — Other Spiders, Boars, ... you
+ /// control get +1/+1". The anthem is the first *list*-filtered subtype static in
+diff --git a/crates/core/src/card.rs b/crates/core/src/card.rs
+index 793c738..e179853 100644
+--- a/crates/core/src/card.rs
++++ b/crates/core/src/card.rs
+@@ -235,6 +235,19 @@ pub enum Effect {
+     /// token card table, so the token is a real rules object with a real
+     /// activated ability and never an importable card.
+     CreateFoodToken,
++    /// CR 701.16a: create one Clue token, the pool's second *artifact* token and
++    /// its first token whose activated ability draws (Thijarian Witness,
++    /// "investigate"). Characteristics and the "{2}, Sacrifice this token: Draw
++    /// a card" ability live in the token card table, so the token is a real
++    /// rules object and never an importable card.
++    CreateClueToken,
++    /// "Exile it and investigate" (Thijarian Witness). The "it" is the creature
++    /// the trigger watched die (CR 603.6c, CR 700.4): the card is exiled from
++    /// its owner's graveyard where the trigger found it and the trigger's
++    /// controller then investigates. The two halves are one instruction pair in
++    /// printed order; a card that already left the graveyard is simply not
++    /// found, and the investigate still happens (CR 609.3 has no "if you do").
++    ExileDeadCreatureAndInvestigate,
+     /// CR 701.14a: two target creatures deal damage equal to their power to
+     /// each other simultaneously. Both must still satisfy the printed
+     /// Bear/opponent relation at resolution or no damage is dealt.
+@@ -458,6 +471,10 @@ impl Effect {
+             Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
+             Effect::CreateBearTokens(n) => format!("create {n} 2/2 green Bear token(s)"),
+             Effect::CreateFoodToken => "create a Food token".to_string(),
++            Effect::CreateClueToken => "create a Clue token".to_string(),
++            Effect::ExileDeadCreatureAndInvestigate => {
++                "exile it and investigate".to_string()
++            }
+             Effect::BearTokenForEachPlayerWithPermanent => {
+                 "each player who controls an artifact or enchantment creates a 2/2 green Bear token"
+                     .to_string()
+@@ -955,6 +972,12 @@ pub enum CardId {
+     SoldierToken,
+     /// 1/1 flying Spirit token (CR 111, 702.9).
+     SpiritToken,
++    /// Issue 17 slice 46: Thijarian Witness (WHO 111), the pool's first
++    /// "another creature dies if it was attacking or blocking alone" watcher.
++    ThijarianWitness,
++    /// Issue 17 slice 46: the Clue token card (never importable, CR 111.10,
++    /// 701.16a).
++    ClueToken,
+ }
+ 
+ /// Explicit command-zone practice allow-list. This is deliberately narrower
+@@ -985,6 +1008,7 @@ pub const TOKEN_CARDS: &[CardId] = &[
+     CardId::BearToken,
+     CardId::FoodToken,
+     CardId::EarthKingBearToken,
++    CardId::ClueToken,
+ ];
+ 
+ impl CardId {
+diff --git a/crates/core/src/catalog.rs b/crates/core/src/catalog.rs
+index 6885890..30059a4 100644
+--- a/crates/core/src/catalog.rs
++++ b/crates/core/src/catalog.rs
+@@ -275,7 +275,7 @@ macro_rules! card_green {
+ }
+ 
+ /// Compiled-in pool; the order matches the catalog documentation.
+-pub static CARDS: [CardDef; 159] = [
++pub static CARDS: [CardDef; 160] = [
+     card!(
+         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
+         type_line: "Basic Land — Island", power: None, toughness: None,
+@@ -1265,6 +1265,17 @@ pub static CARDS: [CardDef; 159] = [
+         oracle: "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+         spell: None
+     ),
++    // Issue 17 slice 46: Thijarian Witness (WHO 111). The pool's first watcher
++    // for "another creature dies, if it was attacking or blocking alone" and its
++    // first `investigate` (CR 701.16a). Printed text copied verbatim from the
++    // WHO 111 printing recorded in
++    // fixtures/starter-corpus/slice46-sourced.json.
++    card_flash!(
++        ThijarianWitness, "Thijarian Witness", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
++        type_line: "Creature — Alien Cleric", power: Some(0), toughness: Some(4),
++        oracle: "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
++        spell: None
++    ),
+ ];
+ 
+ pub fn all() -> &'static [CardDef] {
+@@ -1273,7 +1284,7 @@ pub fn all() -> &'static [CardDef] {
+ 
+ /// Token definitions. Deliberately separate from `CARDS`: tokens are engine
+ /// objects, never importable or analyzer-supported cards.
+-pub static TOKENS: [CardDef; 7] = [
++pub static TOKENS: [CardDef; 8] = [
+     // Issue 17 slice 38: the Food token (CR 111.10, 205.3). An *artifact* token
+     // with no power or toughness and one real activated ability; created only by
+     // Spider-Ham, Peter Porker, never importable and never a catalog card.
+@@ -1296,6 +1307,29 @@ pub static TOKENS: [CardDef; 7] = [
+         oracle: "{2}, {T}, Sacrifice this token: You gain 3 life.",
+         spell: None,
+     },
++    // Issue 17 slice 46: the Clue token (CR 111.10, 701.16a). An artifact token
++    // with no power or toughness and one real activated ability that sacrifices
++    // itself to draw; created only by Thijarian Witness' investigate, never
++    // importable and never a catalog card.
++    CardDef {
++        id: CardId::ClueToken,
++        name: "Clue Token",
++        cost: None,
++        kinds: &[Kind::Artifact],
++        basic_mana: None,
++        artifact_mana: None,
++        type_line: "Token Artifact — Clue",
++        colors: &[],
++        flying: false,
++        defender: false,
++        flash: false,
++        trample: false,
++        islandwalk: false,
++        power: None,
++        toughness: None,
++        oracle: "{2}, Sacrifice this token: Draw a card.",
++        spell: None,
++    },
+     CardDef {
+         id: CardId::GoblinToken,
+         name: "Goblin Token",
+diff --git a/crates/core/src/engine.rs b/crates/core/src/engine.rs
+index 6015e1d..ddf69b0 100644
+--- a/crates/core/src/engine.rs
++++ b/crates/core/src/engine.rs
+@@ -2409,10 +2409,68 @@ impl Game {
+                         TriggerEvent::AnotherCreatureYouControlDies,
+                     );
+                 }
++                // CR 603.6c: "whenever another creature dies" has no controller
++                // restriction, and its printed intervening-if reads the dying
++                // creature's combat state, which is only available here.
++                self.queue_another_creature_dies(
++                    source,
++                    source_card,
++                    source_controller,
++                    dying,
++                );
+             }
+         }
+     }
+ 
++    /// Queue one "whenever another creature dies" watcher for one death in a
++    /// batch, recording the dead object so the resolution can exile that exact
++    /// card (Thijarian Witness). CR 603.4: the printed intervening-if "if it was
++    /// attacking or blocking alone" is checked before the trigger is queued, so
++    /// a creature that died outside combat — or alongside other attackers or
++    /// blockers — never triggers.
++    fn queue_another_creature_dies(
++        &mut self,
++        source: ObjectId,
++        card: CardId,
++        controller: PlayerId,
++        dying: ObjectId,
++    ) {
++        if !self.died_attacking_or_blocking_alone(dying) {
++            return;
++        }
++        for (index, _) in ability::triggers_on(card, TriggerEvent::AnotherCreatureDies) {
++            let seq = self.state.next_trigger_seq;
++            self.state.next_trigger_seq += 1;
++            self.state.trigger_queue.push(TriggerRef {
++                source,
++                card,
++                controller,
++                ability: index,
++                seq,
++                spell_mana_value: 0,
++                affected: None,
++                dead_object: Some(dying),
++                source_pt_lki: None,
++                search_amount: 0,
++            });
++        }
++    }
++
++    /// CR 508.1 + 509.1: a creature attacked alone if it was the only creature
++    /// declared as an attacker this combat, and blocked alone if it was the only
++    /// creature declared as a blocker. Both lists are cleared at end of combat
++    /// (CR 511.3), so outside the combat phase this is false for every creature;
++    /// inside it, the lists are the declaration record the rules text names.
++    fn died_attacking_or_blocking_alone(&self, id: ObjectId) -> bool {
++        let turn = &self.state.turn;
++        let attacking_alone = turn.attackers.len() == 1 && turn.attackers[0] == id;
++        let mut blockers: Vec<ObjectId> = turn.blockers.iter().map(|(blocker, _)| *blocker).collect();
++        blockers.sort();
++        blockers.dedup();
++        let blocking_alone = blockers.len() == 1 && blockers[0] == id;
++        attacking_alone || blocking_alone
++    }
++
+     // ------------------------------------------------------------ submission
+ 
+     pub fn submit(&mut self, sub: &Submission) -> Result<Vec<Event>, EngineError> {
+@@ -4118,6 +4176,7 @@ impl Game {
+             targets: Vec::new(),
+             modes: Vec::new(),
+             affected: Some(source),
++            dead_object: None,
+             source_pt_lki: None,
+             search_amount: 0,
+             cursor: 0,
+@@ -4479,6 +4538,7 @@ impl Game {
+             targets: targets.to_vec(),
+             modes: Vec::new(),
+             affected: attach.then_some(source),
++            dead_object: None,
+             source_pt_lki: None,
+             search_amount: 0,
+             cursor: 0,
+@@ -4543,6 +4603,7 @@ impl Game {
+                 seq,
+                 spell_mana_value: 0,
+                 affected: None,
++                dead_object: None,
+                 source_pt_lki: None,
+                 search_amount: 0,
+             });
+@@ -4559,6 +4620,7 @@ impl Game {
+                 seq,
+                 spell_mana_value: 0,
+                 affected: None,
++                dead_object: None,
+                 source_pt_lki: None,
+                 search_amount: 0,
+             });
+@@ -4802,6 +4864,7 @@ impl Game {
+             targets,
+             modes: Vec::new(),
+             affected: trigger.affected,
++            dead_object: trigger.dead_object,
+             source_pt_lki: trigger.source_pt_lki,
+             search_amount: trigger.search_amount,
+             cursor: 0,
+@@ -5024,6 +5087,7 @@ impl Game {
+             targets: targets.to_vec(),
+             modes: modes.to_vec(),
+             affected: None,
++            dead_object: None,
+             source_pt_lki: None,
+             search_amount: 0,
+             cursor: 0,
+@@ -5195,6 +5259,7 @@ impl Game {
+                         seq,
+                         spell_mana_value: 0,
+                         affected: None,
++                        dead_object: None,
+                         source_pt_lki: None,
+                         search_amount: qualifying,
+                     });
+@@ -6642,6 +6707,7 @@ impl Game {
+                     seq: 0,
+                     spell_mana_value: item.spell_mana_value,
+                     affected: item.affected,
++                    dead_object: None,
+                     source_pt_lki: item.source_pt_lki,
+                     search_amount: item.search_amount,
+                 },
+@@ -7609,6 +7675,34 @@ impl Game {
+                 self.create_tokens(controller, CardId::FoodToken, 1, events);
+                 false
+             }
++            Effect::CreateClueToken => {
++                self.create_tokens(controller, CardId::ClueToken, 1, events);
++                false
++            }
++            // CR 701.16a: "exile it and investigate". The card exiled is the one
++            // the trigger watched die, recorded on the stack item; if it is no
++            // longer in a graveyard the exile simply finds nothing and the
++            // investigate still happens, because the printed text has no "if you
++            // do" between the two instructions.
++            Effect::ExileDeadCreatureAndInvestigate => {
++                if let Some(dead) = item.dead_object {
++                    let in_graveyard = self
++                        .state
++                        .try_object(dead)
++                        .is_some_and(|object| object.zone == Zone::Graveyard);
++                    if in_graveyard {
++                        let card = self.state.object(dead).card;
++                        self.move_to_exile(dead, events);
++                        events.push(Event::StateBasedAction {
++                            description: format!(
++                                "P{controller} exiles {card} ({dead}) from the graveyard (CR 603.6c)"
++                            ),
++                        });
++                    }
++                }
++                self.create_tokens(controller, CardId::ClueToken, 1, events);
++                false
++            }
+             Effect::CreateBearTokens(n) => {
+                 self.create_tokens(controller, CardId::BearToken, u32::from(n) as usize, events);
+                 false
+@@ -8443,6 +8537,7 @@ impl Game {
+                         seq,
+                         spell_mana_value: 0,
+                         affected: Some(entering),
++                        dead_object: None,
+                         source_pt_lki: None,
+                         search_amount: 0,
+                     });
+@@ -10039,6 +10134,7 @@ mod slice17_cleanup_history_tests {
+                     seq: 0,
+                     spell_mana_value: 0,
+                     affected: None,
++                    dead_object: None,
+                     source_pt_lki: None,
+                     search_amount: 0,
+                 },
+@@ -10050,6 +10146,7 @@ mod slice17_cleanup_history_tests {
+                     seq: 1,
+                     spell_mana_value: 0,
+                     affected: None,
++                    dead_object: None,
+                     source_pt_lki: None,
+                     search_amount: 0,
+                 },
+diff --git a/crates/core/src/state.rs b/crates/core/src/state.rs
+index 283e16e..57aea49 100644
+--- a/crates/core/src/state.rs
++++ b/crates/core/src/state.rs
+@@ -255,6 +255,12 @@ pub struct TriggerRef {
+     /// never retargeted; dangling after a battlefield departure.
+     #[serde(default, skip_serializing_if = "Option::is_none")]
+     pub affected: Option<ObjectId>,
++    /// The creature a "whenever another creature dies" trigger watched die,
++    /// captured when the death was dispatched so the resolution can exile that
++    /// exact card from its owner's graveyard (CR 603.6c). Absent for every other
++    /// trigger, so the field is skipped and pre-slice-46 digests are unchanged.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub dead_object: Option<ObjectId>,
+     /// Effective source P/T captured when its battlefield incarnation leaves,
+     /// used by a queued/stacked source-left P/T-setting ability.
+     #[serde(default, skip_serializing_if = "Option::is_none")]
+@@ -666,6 +672,10 @@ pub struct StackItem {
+     /// Non-target object captured by the trigger's "it" wording.
+     #[serde(default, skip_serializing_if = "Option::is_none")]
+     pub affected: Option<ObjectId>,
++    /// The dead card a "whenever another creature dies" trigger watched, copied
++    /// from `TriggerRef::dead_object` when the item was put on the stack.
++    #[serde(default, skip_serializing_if = "Option::is_none")]
++    pub dead_object: Option<ObjectId>,
+     /// Index of the next effect to apply during resolution (CR 608.2c).
+     pub cursor: u8,
+     /// Spell or ability. Ability entries resolve without moving their source

@@ -1,0 +1,328 @@
+//! Slice 46: Thijarian Witness — "another creature dies, if it was attacking or
+//! blocking alone", exile it and investigate (WHO 111).
+//!
+//! The behavior asserted here is the printed text, not an approximation of it:
+//! the dying creature must be the only attacker (or the only blocker) of the
+//! combat, the card that is exiled is *that* card, the Clue token is a real
+//! artifact token with a real "{2}, Sacrifice this token: Draw a card" ability,
+//! and a death with no combat meaning (a burn spell in a main phase, or a death
+//! beside other attackers) does nothing at all.
+
+mod common;
+
+use aperture_core::action::BlockDecl;
+use aperture_core::*;
+use common::*;
+
+fn c46(name: &str) -> CardId {
+    catalog::by_name(name).expect("supported card")
+}
+
+fn witness() -> CardId {
+    c46("Thijarian Witness")
+}
+
+fn pass_round(g: &mut Game) {
+    for _ in 0..8 {
+        if g.state.pending.is_some() || g.state.stack.is_empty() {
+            return;
+        }
+        match g.decision_owner() {
+            Some(p) => {
+                submit_ok(g, p, Action::Pass);
+            }
+            None => return,
+        }
+    }
+    panic!("priority round never settled");
+}
+
+fn clue_tokens(g: &Game, p: PlayerId) -> Vec<ObjectId> {
+    g.state
+        .battlefield(p)
+        .iter()
+        .filter(|o| o.card == CardId::ClueToken)
+        .map(|o| o.id)
+        .collect()
+}
+
+/// Attacker is the only creature declared as an attacker (CR 508.1) and dies to
+/// its blocker's combat damage: the printed trigger fires, exiles exactly that
+/// card from its owner's graveyard and creates one Clue token for the watcher's
+/// controller.
+#[test]
+fn sole_attacker_dying_in_combat_is_exiled_and_investigated() {
+    let mut g = fixture(4601)
+        .battlefield(P0, &[witness(), CardId::GrizzlyBears])
+        .battlefield(P1, &[CardId::OrdinaryBear])
+        .library(P0, &[CardId::Forest; 6])
+        .library(P1, &[CardId::Forest; 6])
+        .main(P0, Step::DeclareAttackers)
+        .build();
+    let bears = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    let bear = battlefield_card(&g, P1, CardId::OrdinaryBear);
+    object_mut(&mut g.state, bears).summoning_sick = false;
+    object_mut(&mut g.state, bear).summoning_sick = false;
+    g.state.turn.attackers.clear();
+    g.state.turn.blockers.clear();
+    g.state.turn.blocked.clear();
+    g.state.turn.defender = Some(P1);
+    g.state.pending = Some(Pending::DeclareAttackers { player: P0 });
+    submit_ok(
+        &mut g,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![bears],
+            defender: Some(P1),
+        },
+    );
+    assert_eq!(g.state.turn.attackers, vec![bears]);
+    let defender = match g.state.pending {
+        Some(Pending::DeclareBlockers { player }) => player,
+        ref other => panic!("expected declare blockers, got {other:?}"),
+    };
+    assert_eq!(defender, P1);
+    submit_ok(
+        &mut g,
+        P1,
+        Action::DeclareBlockers {
+            blocks: vec![BlockDecl {
+                blocker: bear,
+                attacker: bears,
+            }],
+        },
+    );
+    // Walk the combat damage step and the resulting triggers/SBAs.
+    for _ in 0..24 {
+        if g.state.pending.is_some() || g.state.stack.is_empty() {
+            if g.state.pending.is_none() && g.state.stack.is_empty() && g.state.is_over() {
+                break;
+            }
+        }
+        let Some(p) = g.decision_owner() else { break };
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    pass_round(&mut g);
+
+    // The 2/2 attacker took lethal damage and died; the 4/5 blocker survived.
+    assert!(
+        g.state.try_object(bears).is_none() || g.state.object(bears).zone != Zone::Battlefield,
+        "the attacker must have left the battlefield"
+    );
+    assert_eq!(g.state.object(bear).zone, Zone::Battlefield);
+    let gy = g.state.player(P0).graveyard.clone();
+    assert!(
+        !gy.iter().any(|id| g.state.object(*id).card == CardId::GrizzlyBears),
+        "the dead attacker cannot also be in a graveyard: {gy:?}"
+    );
+    let exile = g.state.player(P0).exile.clone();
+    assert!(
+        exile
+            .iter()
+            .any(|id| g.state.object(*id).card == CardId::GrizzlyBears),
+        "the dead attacker is exiled from its owner's graveyard: {exile:?}"
+    );
+    let clues = clue_tokens(&g, P0);
+    assert_eq!(clues.len(), 1, "one investigate, one Clue token");
+    assert!(g.state.object(clues[0]).card.is_token(), "the Clue is a token");
+    assert_eq!(g.state.object(clues[0]).controller, P0);
+}
+
+/// Two attackers: the same death is not "attacking alone", so nothing is exiled
+/// and no Clue exists (the control that makes the first test discriminate).
+#[test]
+fn death_beside_another_attacker_does_not_trigger() {
+    let mut g = fixture(4602)
+        .battlefield(
+            P0,
+            &[witness(), CardId::GrizzlyBears, CardId::GrizzlyBears],
+        )
+        .battlefield(P1, &[CardId::OrdinaryBear, CardId::OrdinaryBear])
+        .library(P0, &[CardId::Forest; 6])
+        .library(P1, &[CardId::Forest; 6])
+        .main(P0, Step::DeclareAttackers)
+        .build();
+    let first = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    let second = g
+        .state
+        .battlefield(P0)
+        .iter()
+        .filter(|o| o.card == CardId::GrizzlyBears)
+        .map(|o| o.id)
+        .find(|id| *id != first)
+        .expect("second attacker");
+    let b1 = battlefield_card(&g, P1, CardId::OrdinaryBear);
+    let b2 = g
+        .state
+        .battlefield(P1)
+        .iter()
+        .filter(|o| o.card == CardId::OrdinaryBear)
+        .map(|o| o.id)
+        .find(|id| *id != b1)
+        .expect("second blocker");
+    for id in [first, second, b1, b2] {
+        object_mut(&mut g.state, id).summoning_sick = false;
+    }
+    g.state.turn.attackers.clear();
+    g.state.turn.blockers.clear();
+    g.state.turn.blocked.clear();
+    g.state.turn.defender = Some(P1);
+    g.state.pending = Some(Pending::DeclareAttackers { player: P0 });
+    submit_ok(
+        &mut g,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![first, second],
+            defender: Some(P1),
+        },
+    );
+    submit_ok(
+        &mut g,
+        P1,
+        Action::DeclareBlockers {
+            blocks: vec![
+                BlockDecl {
+                    blocker: b1,
+                    attacker: first,
+                },
+                BlockDecl {
+                    blocker: b2,
+                    attacker: second,
+                },
+            ],
+        },
+    );
+    for _ in 0..24 {
+        let Some(p) = g.decision_owner() else { break };
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    pass_round(&mut g);
+    assert_eq!(g.state.turn.attackers.len(), 0, "combat ended");
+    let exile = g.state.player(P0).exile.clone();
+    assert!(
+        !exile
+            .iter()
+            .any(|id| g.state.object(*id).card == CardId::GrizzlyBears),
+        "no alone-attacker death, so nothing is exiled: {exile:?}"
+    );
+    assert!(
+        clue_tokens(&g, P0).is_empty(),
+        "no alone-attacker death, so no investigate"
+    );
+}
+
+/// A creature that dies outside combat never satisfies "attacking or blocking
+/// alone", even though the same watcher is on the battlefield.
+#[test]
+fn death_outside_combat_does_not_trigger() {
+    let mut g = fixture(4603)
+        .hand(P1, &[CardId::LightningStrike])
+        .battlefield(P0, &[witness(), CardId::GrizzlyBears])
+        .battlefield(P1, &[CardId::Mountain; 2])
+        .library(P0, &[CardId::Forest; 6])
+        .library(P1, &[CardId::Forest; 6])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bears = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    pass_round(&mut g);
+    let bolt = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(
+                &a.action,
+                Action::CastSpell { card, targets }
+                    if targets == &vec![Target::Permanent(bears)]
+                        && g.state.object(*card).card == CardId::LightningStrike
+            )
+        })
+        .map(|a| a.action);
+    let Some(bolt) = bolt else {
+        panic!("the burn spell is offered at the sole creature target");
+    };
+    let p = g.decision_owner().expect("priority");
+    submit_ok(&mut g, p, bolt);
+    for _ in 0..10 {
+        let Some(p) = g.decision_owner() else { break };
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert_ne!(
+        g.state.object(bears).zone,
+        Zone::Battlefield,
+        "the burn spell killed the creature"
+    );
+    let exile = g.state.player(P0).exile.clone();
+    assert!(
+        !exile
+            .iter()
+            .any(|id| g.state.object(*id).card == CardId::GrizzlyBears),
+        "a creature that was not in combat is not exiled: {exile:?}"
+    );
+    assert!(clue_tokens(&g, P0).is_empty(), "and does not investigate");
+}
+
+/// The Clue token is a real artifact token whose printed ability sacrifices it
+/// and draws a card (CR 111.10, 701.16a) — the payoff of investigate.
+#[test]
+fn clue_token_sacrifices_itself_to_draw_a_card() {
+    let mut g = fixture(4604)
+        .battlefield(P0, &[CardId::ClueToken, CardId::Forest, CardId::Forest])
+        .library(P0, &[CardId::Forest; 4])
+        .library(P1, &[CardId::Forest; 6])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let clue = battlefield_card(&g, P0, CardId::ClueToken);
+    object_mut(&mut g.state, clue).summoning_sick = false;
+    let before = g.state.player(P0).hand.len();
+    let activate = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(
+                &a.action,
+                Action::ActivateAbility { source, .. } if *source == clue
+            )
+        })
+        .map(|a| a.action)
+        .expect("the Clue token offers its printed activated ability");
+    submit_ok(&mut g, P0, activate);
+    for _ in 0..10 {
+        let Some(p) = g.decision_owner() else { break };
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert_eq!(g.state.player(P0).hand.len(), before + 1, "drew one card");
+    assert!(
+        g.state.try_object(clue).is_none(),
+        "the sacrificed token ceased to exist (CR 111.7)"
+    );
+}
+
+/// Source provenance and registration: the card is a real catalog creature with
+/// the printed WHO 111 text, and the Clue token is a token, not a card.
+#[test]
+fn witness_and_clue_are_catalogued_as_printed_and_token_is_not_a_card() {
+    let def = witness().def();
+    assert_eq!(def.name, "Thijarian Witness");
+    assert_eq!(
+        def.mana_cost().map(|c| (c.generic, c.pips.len())),
+        Some((1, 1)),
+        "{{1}}{{G}}"
+    );
+    assert_eq!(def.type_line, "Creature — Alien Cleric");
+    assert_eq!((def.power, def.toughness), (Some(0), Some(4)));
+    assert!(def.flash, "printed Flash (CR 702.8a)");
+    assert_eq!(
+        def.oracle,
+        "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")"
+    );
+    assert!(!witness().is_token());
+    assert!(CardId::ClueToken.is_token(), "the Clue is a token card");
+    assert!(
+        catalog::by_name("Clue Token").is_none(),
+        "a token is never importable"
+    );
+    assert_eq!(
+        CardId::ClueToken.def().oracle,
+        "{2}, Sacrifice this token: Draw a card."
+    );
+}

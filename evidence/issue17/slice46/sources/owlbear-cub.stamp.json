@@ -1,0 +1,17 @@
+{
+  "name": "Owlbear Cub",
+  "set": "CLB",
+  "collector_number": "246",
+  "mana_cost": "{2}{G}",
+  "type_line": "Creature — Bird Bear",
+  "power": "3",
+  "toughness": "3",
+  "oracle_text": "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+  "printing_id": "be177b66-dab3-47ef-bcdf-8d99eb57e19f",
+  "oracle_id": "0c92432d-ac76-47d2-af7a-fdffd4b546a2",
+  "retrieved_utc": "2026-10-28T13:49:35.417772+00:00",
+  "request_url": "https://api.scryfall.com/cards/named?fuzzy=Owlbear%20Cub",
+  "request_kind": "named_fuzzy",
+  "sha256": "f6edd91a89638c9dfb7dee9e83f2c76e33065cb6310f11d3713f973faf804488",
+  "bytes": 5352
+}
