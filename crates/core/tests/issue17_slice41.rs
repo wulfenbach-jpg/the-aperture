@@ -521,3 +521,99 @@ fn full_opponent_projection_is_independent_of_hidden_search_candidates() {
         b.view_for(P0, &[]).legal.len()
     );
 }
+
+#[test]
+fn midsearch_after_one_pick_save_reload_continues_identically() {
+    let mut g = fixture(4104)
+        .battlefield(
+            P0,
+            &[
+                card41("The Earth King"),
+                card41("Craw Wurm"),
+                card41("Craw Wurm"),
+            ],
+        )
+        .library(
+            P0,
+            &[
+                CardId::Forest,
+                CardId::Island,
+                CardId::Forest,
+                CardId::Forest,
+            ],
+        )
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let king = battlefield_card(&g, P0, card41("The Earth King"));
+    let wurms: Vec<_> = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .filter(|o| o.card == card41("Craw Wurm"))
+        .map(|o| o.id)
+        .collect();
+    let mut log = Vec::new();
+    assert!(run_until(
+        &mut g,
+        &mut log,
+        |g| g.state.turn.step == Step::DeclareAttackers && g.state.pending.is_some(),
+        64
+    ));
+    submit_ok(
+        &mut g,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![king, wurms[0], wurms[1]],
+            defender: Some(P1),
+        },
+    );
+    assert!(run_until(
+        &mut g,
+        &mut log,
+        |g| matches!(g.state.pending, Some(Pending::SearchLibrary { .. })),
+        64
+    ));
+    let first = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a.action, Action::SearchLibraryPick { .. }))
+        .unwrap()
+        .action;
+    submit_ok(&mut g, P0, first);
+    assert!(matches!(
+        g.state.pending,
+        Some(Pending::SearchLibrary { remaining: 1, .. })
+    ));
+    g.state
+        .validate()
+        .expect("a legal post-pick search must validate");
+    let decks = vec![
+        DeckList::parse_practice("A", "40 Forest\n").unwrap(),
+        DeckList::parse_practice("B", "40 Forest\n").unwrap(),
+    ];
+    let replay = Replay::new(
+        g.state.seed,
+        g.state.first_player,
+        decks,
+        AiSettings::default(),
+    )
+    .unwrap();
+    let save = SessionSave::capture(&g, replay, Vec::new(), true);
+    let loaded = SessionSave::from_json(&save.to_json()).expect("post-pick search save loads");
+    let mut loaded = Game::from_state(loaded.game).unwrap();
+    assert_eq!(loaded.digest(), g.digest());
+    for game in [&mut g, &mut loaded] {
+        let pick = game
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a.action, Action::SearchLibraryPick { .. }))
+            .unwrap()
+            .action;
+        submit_ok(game, P0, pick);
+        submit_ok(game, P0, Action::SearchLibraryDone);
+        drain(game);
+    }
+    assert_eq!(loaded.state, g.state);
+    assert_eq!(loaded.digest(), g.digest());
+}

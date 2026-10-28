@@ -1695,8 +1695,8 @@ impl GameState {
                         && object.card.def().basic_mana.is_some()
                 }) && library.contains(id)
             };
-            let mut seen: Vec<ObjectId> = Vec::new();
-            for id in eligible.iter().chain(chosen.iter()) {
+            let mut seen_eligible: Vec<ObjectId> = Vec::new();
+            for id in eligible {
                 if !is_basic_land(id) {
                     return Err(EngineError::InvalidState {
                         reason: format!(
@@ -1704,19 +1704,33 @@ impl GameState {
                         ),
                     });
                 }
-                if chosen.contains(id) {
-                    if seen.contains(id) {
-                        return Err(EngineError::InvalidState {
-                            reason: format!("library search chose {id} twice"),
-                        });
-                    }
-                    seen.push(*id);
+                if seen_eligible.contains(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("library search lists eligible card {id} twice"),
+                    });
                 }
+                seen_eligible.push(*id);
             }
-            if chosen.iter().any(|id| !eligible.contains(id)) {
-                return Err(EngineError::InvalidState {
-                    reason: "library search chose a card that was never eligible".to_string(),
-                });
+            let mut seen_chosen: Vec<ObjectId> = Vec::new();
+            for id in chosen {
+                if !is_basic_land(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!(
+                            "library search references {id}, which is not a basic land in that player's library"
+                        ),
+                    });
+                }
+                if seen_chosen.contains(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("library search chose {id} twice"),
+                    });
+                }
+                if !eligible.contains(id) {
+                    return Err(EngineError::InvalidState {
+                        reason: "library search chose a card that was never eligible".to_string(),
+                    });
+                }
+                seen_chosen.push(*id);
             }
         }
         if let Some(Pending::CommanderReturn {

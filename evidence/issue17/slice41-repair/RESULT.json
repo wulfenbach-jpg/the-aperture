@@ -1,0 +1,13 @@
+{
+  "status": "REPAIR-GREEN",
+  "review_verdict_preserved": "BLOCK in evidence/issue17/review309-recovery/REVIEW.md",
+  "base_head": "e6babc6e75242ac35886f95b62b82c44686ef285",
+  "product_head_before_repair": "ddd99f0",
+  "repair_commit": "local final head in receipt",
+  "changed_paths": ["crates/core/src/state.rs", "crates/core/tests/issue17_slice41.rs", "evidence/issue17/slice41-repair/"],
+  "red": "crates/core/tests/issue17_slice41.rs midsearch_after_one_pick_save_reload_continues_identically compiled and failed at g.state.validate(): InvalidState { reason: \"library search chose #4 twice\" }",
+  "fix": "Validator checks uniqueness within eligible and within chosen separately; chosen must be an eligible basic land in that player's library. Legitimate overlap (a chosen card is also eligible) is accepted. Owner/live/resolution, zone, owner, basic-land and subset checks preserved.",
+  "green": {"issue17_slice41": "10 passed", "ordering_persistence": "2 passed", "replay_digest": "6 passed", "issue17_slice12": "8 passed", "rules_conformance": "5 passed", "fmt": "exit 0", "clippy": "workspace all-targets -D warnings exit 0", "release": "exit 0"},
+  "replay": "target/release/aperture-cli replay --file evidence/issue17/slice41/demo-replay.json exit 0, digest d646deedfac9 matches, 1780 actions",
+  "remaining": ["No new forged duplicate eligible/chosen Pending negative validator control added; existing duplicate-choice action refusals remain.", "No full workspace matrix. 1/8 certified, Ayula 12 missing; this repair certifies no list."]
+}
