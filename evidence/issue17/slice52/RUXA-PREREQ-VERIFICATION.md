@@ -17,7 +17,7 @@ recorded explicitly instead of silently rewritten.
 |---|---|
 | `describe_target` lives in `view.rs` | `Game::describe_target` is `crates/core/src/engine.rs:9022`; `view.rs` has no such function (review 335 non-blocking note; corrected in the map by slice 52) |
 | AI mapping at `crates/ai/src/search.rs` `~760-800` | the pending projection enum is `PendingKind` in `crates/core/src/view.rs`, and the only AI-side consumer is `pending_kind_name` at `crates/ai/src/search.rs:345-365` (declaration copy, no policy) |
-| commander destination prediction at `state.rs` `~2078` | `Pending::CommanderReplacement` validation is `state.rs:2026-2050`; the dispatch/answer path starts at `state.rs:1108`; `move_to_graveyard` insertion is `state.rs:2077` |
+| commander destination prediction at `state.rs` `~2078` | `Pending::CommanderReplacement` validation is `state.rs:2026-2050`; the dispatch/answer path starts at `state.rs:1108`; the ReturnToHand destination arm that `~2078` meant is `state.rs:2078`. Correction (review 337 R337-1): the move-to-graveyard *insertion* is **not** in `state.rs` at all — it is `engine.rs:2077` |
 | `deal_combat_damage` at `~8827` | `fn deal_combat_damage` is `engine.rs:8832`; the only caller is the `Step::CombatDamage` arm of `advance_step` at `engine.rs:5955-5960` |
 | `abilities()` table at `~1043` | `pub fn abilities(card)` is `ability.rs:1066`; `static_abilities(card)` is `ability.rs:1548`; `pub enum StaticAbility` is `ability.rs:1213` (these three were right to within a dozen lines) |
 
@@ -27,10 +27,18 @@ recorded explicitly instead of silently rewritten.
 
 * **No such primitive exists today.** `grep -rn` for a graveyard-to-hand effect, `GraveyardCard`,
   `ReturnFromGraveyard` and `graveyard_to_hand` across `crates/core/src/` returns nothing; the only
-  zone mover that touches a hand is `fn move_to_hand` at `engine.rs:1971`. So clause 1 is new engine
-  surface, exactly as the map says — it is not data authoring.
+  **effect-driven** zone mover that touches a hand is `fn move_to_hand` at `engine.rs:1971`. So clause 1
+  is new engine surface, exactly as the map says — it is not data authoring.
+  Correction (review 337 R337-1): `move_to_hand` is *not* the only code that writes a hand list. The
+  draw path inserts into hand directly at `engine.rs:2301` (it emits `Event::Draw` and set
+  `drew_from_empty`), and the commander replacement intercepts a hand move at `engine.rs:7302`. A
+  graveyard-to-hand effect must therefore go through `move_to_hand`, never through the draw path —
+  routing a returned card through the draw path would fire draw triggers and set `drew_from_empty`.
 * **Graveyard cards are real objects with printed characteristics.** A card put into a graveyard is
-  inserted as an `Object` in `Zone::Graveyard` (`state.rs:1774`, `state.rs:2077`, `state.rs:2339`) and
+  inserted as an `Object` in `Zone::Graveyard` (`engine.rs:2077`, `engine.rs:2339`, `engine.rs:5683`,
+  `engine.rs:5702`, `engine.rs:10296` — correction from review 337 R337-1, which found the earlier
+  `state.rs:1774/2077/2339` citations were the `SearchLibrary` validator, the `CommanderReplacement`
+  ReturnToHand destination arm and the `OrderCard` validator, not insertions) and
   `Game::object`/`try_object` (`state.rs:2863`, `state.rs:2869`) resolve it. So a graveyard-card target
   can be checked against the *printed* ability list and intrinsic mana ability, which is what CR 113.6
   and 400.7 require.
@@ -50,7 +58,11 @@ recorded explicitly instead of silently rewritten.
 
 * `StaticAbility::OtherBearsYouControlGet` (`ability.rs:1275`) is the closest existing static and is
   computed in the pump block around `engine.rs:678`, inside the region the map cites as `618-790`.
-  A layer 7c "no abilities" anthem is a new variant in the same table, not a reuse of the Bear one.
+  Correction (review 337 R337-1): it is **not** the only layer 7c additive statics —
+  `OtherControlledCreaturesWithAnySubtypeGet` (`ability.rs:1287`), `OtherControlledCreaturesHaveTrample`
+  (`ability.rs:1249`) and `PairedEachGet` (`ability.rs:1299`) are also 7c statics. The conclusion stands
+  (a "no abilities" anthem is a new variant, not a reuse of the Bear one), but the *plumbing* to copy is
+  `OtherControlledCreaturesWithAnySubtypeGet`'s recipient-set loop, not the Bear one's subtype filter.
 * The predicate the map asks for ("printed abilities empty **and** no intrinsic mana ability **and**
   no granted ability") is the part that must be written once and shared with clause 3. The engine
   already distinguishes the three sources: `ability::abilities(card)` (`ability.rs:1066`),

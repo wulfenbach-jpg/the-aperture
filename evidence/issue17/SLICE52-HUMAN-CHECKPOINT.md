@@ -93,8 +93,10 @@ Filled from `slice52/gates.log` (`head=adeff72…` recorded inside the log) and 
 Journey (`slice52/journey.log`, `head=adeff72…`): the committed four-seat 40-life witness driver rebuilt
 in release with `--locked` and re-run. `Win{P1}`, **3073 steps, 54 turns, 8098 events**, digest
 `da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde`, `replay_digest_matches: true`,
-14 exile events; all three committed artifacts **content-identical after newline normalisation**
-(committed CRLF vs fresh LF, the honest form review 333 asked for); separate release CLI replay
+14 exile events; all three committed artifacts **byte-identical** (correction from review 337 R337-3:
+the earlier "committed CRLF vs fresh LF" parenthetical was false at this head — all three witness
+artifacts carry zero CR bytes in blob and worktree, and the fresh run left the worktree unmodified);
+separate release CLI replay
 `replay of 3073 action(s) -> digest da4eacd5363f | events 8098`, exit 0. This is a 40-card evidence-only
 package, **not** a 100-card certificate and not AI-strength evidence.
 

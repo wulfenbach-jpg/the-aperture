@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Re-run the committed four-seat 40-life witness journey driver at the slice-52 head and compare its
-# artifacts with the committed ones after newline normalisation (the committed JSONs are CRLF and a
-# fresh driver run writes LF, which is why "byte-identical" alone would be a false claim).
+# Re-run the committed four-seat 40-life witness journey driver and compare its artifacts with the
+# committed ones. Correction from review 337 R337-3: the earlier "committed CRLF vs fresh LF" note was
+# false - all three committed artifacts carry zero CR bytes in blob and worktree, so the comparison below
+# still normalises newlines defensively but the artifacts are byte-identical at this head.
 set -u
 cd "$(dirname "$0")/../../.." || exit 1
 LOG=evidence/issue17/slice52/journey.log

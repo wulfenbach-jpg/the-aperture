@@ -23,11 +23,14 @@ slice-47 reading. **Comment only — no engine behaviour changed.**
 **R333-2 closure included the crate-wide sweep review 333 asked for (recorded here, per review
 335 R335-2).** The sweep was run, not assumed: `grep -rn` for `declaration record`,
 `declared_attackers` and `declared_blockers` across `crates/`, `docs/` and `README.md` at this head,
-plus a read of every hit, leaving only accurate mentions — `engine.rs:2062` (the declaration record
+plus a read of every hit, leaving only accurate mentions at the *alone-predicate prose sites* —
+`engine.rs:2062` (the declaration record
 is **not** the alone predicate), `engine.rs:2495` (the record stays separate from Witness),
 `engine.rs:5302-5305` (declaration semantics), `state.rs:784-796` (Witness reads the live lists),
 `card.rs:256-260` (Owlbear Cub stays outside the record), `docs/issue17-starter-corpus.md:754` and
-its §Slice 46 entry, and `README.md:112`. **No surviving instance of the retired vocabulary remains**;
+its §Slice 46 entry, and `README.md:112`. **No surviving prose at those sites claims the retired
+reading** (review 337's non-blocking note: 40+ lines match the three words, so this lists the
+alone-predicate *prose sites*, not every lexical hit);
 this was a sweep across the crate, not a one-line fix. Review 335 re-ran the same grep and found the
 same result.
 
