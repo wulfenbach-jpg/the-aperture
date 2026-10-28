@@ -275,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 155] = [
+pub static CARDS: [CardDef; 156] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -908,6 +908,12 @@ pub static CARDS: [CardDef; 155] = [
         TheEarthKing, "The Earth King", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human Noble Ally", power: Some(2), toughness: Some(2),
         oracle: "When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+        spell: None
+    ),
+    card!(
+        LumraBellowOfTheWoods, "Lumra, Bellow of the Woods", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Elemental Bear", power: None, toughness: None,
+        oracle: "Reach, vigilance\nLumra's power and toughness are each equal to the number of lands you control.\nWhen Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped.",
         spell: None
     ),
     card!(

@@ -7,6 +7,20 @@ use aperture_core::card::CardDef;
 use aperture_core::*;
 use common::*;
 
+/// A card that prints `*` for its power/toughness carries no fixed numbers; the
+/// value must come from a characteristic-defining static the engine executes
+/// (Lumra's land count), never from a hand-written constant.
+fn prints_star_power_and_toughness(card: &CardDef) -> bool {
+    aperture_core::ability::static_abilities(card.id)
+        .iter()
+        .any(|static_ability| {
+            matches!(
+                static_ability,
+                aperture_core::ability::StaticAbility::PowerToughnessPerCount { .. }
+            )
+        })
+}
+
 /// True only when the card's whole printed rules text is keywords this slice
 /// models with a `CardDef` flag. The reminder text Scryfall prints in
 /// parentheses is allowed; anything else, including any keyword the engine does
@@ -152,7 +166,13 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                     card.name
                 );
                 if card.is_creature() {
-                    assert!(card.power.is_some() && card.toughness.is_some());
+                    assert!(
+                        card.power.is_some() && card.toughness.is_some()
+                            || prints_star_power_and_toughness(card),
+                        "{} is a creature with no printed power/toughness and no \
+                         characteristic-defining static to supply them",
+                        card.name
+                    );
                 }
                 continue;
             }
@@ -161,7 +181,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
         assert!(card.cost.is_some(), "{} has no cost", card.name);
         if card.is_creature() {
             assert!(
-                card.power.is_some() && card.toughness.is_some(),
+                card.power.is_some() && card.toughness.is_some()
+                    || prints_star_power_and_toughness(card),
                 "{}",
                 card.name
             );
@@ -273,6 +294,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::SaddleSource
                 | Effect::CreateEarthKingBearToken
                 | Effect::SearchBasicLandsUpToTriggerAmount
+                | Effect::ReturnLandCardsFromGraveyardTapped
                 | Effect::AttachSourceToTarget
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)

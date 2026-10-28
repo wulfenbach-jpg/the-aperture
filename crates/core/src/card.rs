@@ -344,6 +344,11 @@ pub enum Effect {
     /// the same resolution counts (CR 608.2c).
     CreateEarthKingBearToken,
     SearchBasicLandsUpToTriggerAmount,
+    /// CR 701.23b + 608.2c: return *every* land card from the effect
+    /// controller's graveyard to the battlefield tapped (Lumra, Bellow of the
+    /// Woods). One simultaneous zone change: each returned land enters through
+    /// the canonical entry path, so landfall watchers fire once per land.
+    ReturnLandCardsFromGraveyardTapped,
     AttachSourceToTarget,
     DrawIfControlsBears {
         minimum: u8,
@@ -438,6 +443,9 @@ impl Effect {
             Effect::CreateEarthKingBearToken => "create a 4/4 green Bear token".to_string(),
             Effect::SearchBasicLandsUpToTriggerAmount => {
                 "search for up to that many basic land cards".to_string()
+            }
+            Effect::ReturnLandCardsFromGraveyardTapped => {
+                "return all land cards from your graveyard to the battlefield tapped".to_string()
             }
             Effect::AttachSourceToTarget => "attach this Equipment to the target creature".to_string(),
             Effect::PutTrampleCounterOnTarget => {
@@ -770,6 +778,7 @@ pub enum CardId {
     ExuberantWolfbear,
     DroverGrizzly,
     TheEarthKing,
+    LumraBellowOfTheWoods,
     LightningGreaves,
     SwiftfootBoots,
     AyulasInfluence,

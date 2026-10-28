@@ -453,6 +453,7 @@ impl Game {
                     .filter(|object| object.card.def().is_creature())
                     .count() as i32
             }
+            ability::CountSource::LandsYouControl => self.lands_controlled_by(controller),
         }
     }
 
@@ -5003,7 +5004,12 @@ impl Game {
         self.state.pending = None;
         for id in attackers {
             if let Some(obj) = self.objects_mut(*id) {
-                obj.tapped = true; // CR 508.1f
+                // CR 702.20a: vigilance replaces the tap an attack would
+                // otherwise cause (CR 508.1f). Nothing else about the attack
+                // changes, so a vigilant creature can also block next turn.
+                if !obj.has_keyword(crate::tokens::Keyword::Vigilance) {
+                    obj.tapped = true; // CR 508.1f
+                }
             }
         }
         self.state.turn.attackers = attackers.to_vec();
@@ -7211,6 +7217,49 @@ impl Game {
             }
             Effect::MillSelf(n) => {
                 self.mill_cards(controller, n, events);
+                false
+            }
+            Effect::ReturnLandCardsFromGraveyardTapped => {
+                // CR 608.2c: "return all land cards from your graveyard" is the
+                // set chosen at resolution, so the list is captured first and
+                // every land then enters through the one canonical entry path.
+                // That path queues the `LandEnters` event for each returning
+                // land, so landfall watches fire once per land even though no
+                // land play was spent (slice 41's shared hook).
+                let lands: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .graveyard
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state
+                            .try_object(*id)
+                            .is_some_and(|object| object.card.def().is_land())
+                    })
+                    .collect();
+                if !lands.is_empty() {
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} returns {} land card(s) from their graveyard to the battlefield tapped (CR 608.2c)",
+                            lands.len()
+                        ),
+                    });
+                }
+                for id in lands {
+                    let name = self
+                        .state
+                        .try_object(id)
+                        .map(|object| object.card.def().name)
+                        .unwrap_or("land");
+                    self.enter_battlefield(id, controller, events);
+                    if let Some(object) = self.state.objects.get_mut(&id) {
+                        object.tapped = true;
+                    }
+                    events.push(Event::StateBasedAction {
+                        description: format!("{name} enters the battlefield tapped"),
+                    });
+                }
                 false
             }
             Effect::MillEachOpponent(n) => {

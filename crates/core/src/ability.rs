@@ -508,6 +508,29 @@ const THE_EARTH_KING: &[Ability] = &[
     }),
 ];
 
+/// Lumra, Bellow of the Woods (BLB 183): `{4}{G}{G}` Legendary Creature —
+/// Elemental Bear with reach and vigilance, a characteristic-defining
+/// power/toughness equal to the number of lands its controller controls, and an
+/// enters trigger that mills four cards and then returns every land card from
+/// its controller's graveyard to the battlefield tapped.
+///
+/// The CDA is a printed static (`LUMRA_STATIC`), so it is read from the board on
+/// every characteristic pass rather than captured when something else happens:
+/// a land play, a land entering from this very trigger, or a land destroyed all
+/// move the value (CR 604.3). The card prints `*` for both numbers, which is
+/// represented as no printed power/toughness plus that static; the addend is
+/// therefore exactly the land count.
+const LUMRA: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[
+        Effect::MillSelf(4),
+        Effect::ReturnLandCardsFromGraveyardTapped,
+    ],
+})];
+
 const DROVER_GRIZZLY: &[Ability] = &[
     Ability::Triggered(TriggeredAbility {
         text: "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.",
@@ -1047,6 +1070,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::ExuberantWolfbear => EXUBERANT_WOLFBEAR,
         CardId::DroverGrizzly => DROVER_GRIZZLY,
         CardId::TheEarthKing => THE_EARTH_KING,
+        CardId::LumraBellowOfTheWoods => LUMRA,
         CardId::LightningGreaves => LIGHTNING_GREAVES,
         CardId::SwiftfootBoots => SWIFTFOOT_BOOTS,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
@@ -1149,6 +1173,10 @@ pub enum CountSource {
     /// "for each creature card in your opponents' graveyards"
     /// (Wight of Precinct Six — a layer 7c static, *not* characteristic-defining).
     CreatureCardsInOpponentsGraveyards,
+    /// "the number of lands you control" (Lumra, Bellow of the Woods). Read
+    /// from the board on every characteristic pass (CR 604.3), so a land that
+    /// enters or leaves changes the value immediately.
+    LandsYouControl,
 }
 
 /// A printed static ability that produces a continuous or replacement effect.
@@ -1309,6 +1337,19 @@ const WIGHT: &[StaticAbility] = &[StaticAbility::PowerToughnessPerCount {
     text: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
 }];
 
+/// Lumra's characteristic-defining power/toughness (CR 604.3, 613.4a). The card
+/// prints `*`/`*`, so the catalog records no printed numbers and this static is
+/// the whole value: one point of each per land its controller controls, read from
+/// the board on every characteristic pass. Counters and pumps still add on top
+/// (layer 7d/7c), which is what "equal to the number of lands" plus a +1/+1
+/// counter means.
+const LUMRA_STATIC: &[StaticAbility] = &[StaticAbility::PowerToughnessPerCount {
+    count: CountSource::LandsYouControl,
+    power: 1,
+    toughness: 1,
+    text: "Lumra's power and toughness are each equal to the number of lands you control.",
+}];
+
 const ANGRATH: &[StaticAbility] = &[StaticAbility::DamageFromControlledSources {
     factor: 2,
     text: "If a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
@@ -1432,6 +1473,7 @@ pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR_STATIC,
         CardId::BeornTheFierce => BEORN_STATIC,
         CardId::WightOfPrecinctSix => WIGHT,
+        CardId::LumraBellowOfTheWoods => LUMRA_STATIC,
         CardId::SurrakAndGoreclaw => SURRAK_STATIC,
         CardId::AngrathsMarauders => ANGRATH,
         CardId::Werebear => WEREBEAR,

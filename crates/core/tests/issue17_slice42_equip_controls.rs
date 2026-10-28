@@ -335,3 +335,102 @@ fn protection_is_read_live_and_two_equipment_coexist_on_one_creature() {
         "a shrouded creature does not hide its controller"
     );
 }
+
+/// CR 702.6b: equip is a *targeted* activated ability, so shroud and hexproof
+/// apply to the equip target exactly as they apply to a spell's target — the
+/// grant is read from the live attachment at offer time and again at submit.
+///
+/// This is the direction the test above could not reach: it only proved that an
+/// already-attached Equipment keeps its place when a second attachment arrives.
+/// Here the creature is protected *first*, so the equip itself must refuse.
+#[test]
+fn equip_cannot_target_a_protected_creature_but_keeps_existing_attachments() {
+    let mut g = game(425005);
+    let gv = hand_card(&g, P0, greaves());
+    let bt = hand_card(&g, P0, boots());
+    cast(&mut g, gv);
+    cast(&mut g, bt);
+    let bears: Vec<ObjectId> = g
+        .state
+        .objects
+        .values()
+        .filter(|o| o.zone == Zone::Battlefield && o.card == CardId::GrizzlyBears)
+        .map(|o| o.id)
+        .collect();
+    assert_eq!(bears.len(), 2, "two creatures to equip");
+    let (bear1, bear2) = (bears[0], bears[1]);
+
+    // Greaves onto bear1 (Equip {0}): bear1 now has shroud for every player.
+    equip(&mut g, gv, bear1);
+    assert_eq!(attached_to(&g, bear1), 1);
+    assert!(
+        g.state.effects.iter().any(|e| matches!(
+            &e.kind,
+            ContinuousKind::Equipped { shroud: true, .. }
+        ) && e.target == bear1),
+        "Greaves grants shroud to its equipped creature"
+    );
+
+    // The controller's own equip is a targeted ability, so it is refused too.
+    let boots_equip = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(&a.action, Action::ActivateAbility { source, .. } if *source == bt))
+        .expect("Boots equip offered")
+        .action;
+    let Action::ActivateAbility { ability, mode, .. } = boots_equip else {
+        unreachable!("equip is an activated ability")
+    };
+    assert!(
+        !g.legal_actions().into_iter().any(|a| matches!(
+            &a.action,
+            Action::ActivateAbility { source, targets, .. }
+                if *source == bt && targets == &vec![Target::Permanent(bear1)]
+        )),
+        "a shrouded creature is not offered as an equip target, even to its controller"
+    );
+    let before = g.state.clone();
+    assert!(
+        g.submit_action(P0, activate(bt, ability, mode, bear1))
+            .is_err(),
+        "shroud refuses the controller's own equip (CR 702.6b)"
+    );
+    assert_eq!(g.state, before, "shroud refusal leaves the state untouched");
+    assert_eq!(attached_to(&g, bear1), 1, "bear1 keeps only Greaves");
+    assert_eq!(attached_to(&g, bear2), 0, "nothing moved to bear2");
+
+    // Hexproof is opponents-only, so the controller's equip is legal on bear2.
+    equip(&mut g, bt, bear2);
+    assert_eq!(attached_to(&g, bear2), 1);
+
+    // bear2 then takes a second Equipment *while* it has hexproof, and that
+    // attachment predates the shroud Greaves is about to add: a keyword gained
+    // after attachment never retroactively detaches anything.
+    equip(&mut g, gv, bear2);
+    assert_eq!(
+        attached_to(&g, bear2),
+        2,
+        "both Equipment stay after shroud"
+    );
+    assert!(
+        g.state.effects.iter().any(|e| matches!(
+            &e.kind,
+            ContinuousKind::Equipped { shroud: true, .. }
+        ) && e.target == bear2),
+        "bear2 now has shroud from Greaves"
+    );
+
+    // Moving Greaves away leaves only Boots: no stale attachment survives.
+    equip(&mut g, gv, bear1);
+    assert_eq!(attached_to(&g, bear2), 1, "only Boots remains on bear2");
+    assert_eq!(attached_to(&g, bear1), 1, "Greaves moved back to bear1");
+    assert_eq!(
+        g.state
+            .effects
+            .iter()
+            .filter(|e| matches!(e.kind, ContinuousKind::Equipped { .. }))
+            .count(),
+        2,
+        "exactly one attachment per Equipment"
+    );
+}

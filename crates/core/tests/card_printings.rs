@@ -48,6 +48,8 @@ const SLICE25_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE30_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice30-sourced.json");
 const SLICE41_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice41-sourced.json");
 const SLICE42_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice42-sourced.json");
+/// Slice 43: Lumra, Bellow of the Woods (BLB 183), fetched 2026-10-28.
+const SLICE43_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice43-sourced.json");
 /// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
 const SLICE26_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice26-sourced.json");
 const SLICE22_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice22-sourced.json");
@@ -431,6 +433,11 @@ fn slice41_cards() -> Vec<Value> {
 
 fn slice42_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE42_SOURCED).expect("sourced slice42 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice43_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE43_SOURCED).expect("sourced slice43 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -927,6 +934,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice30_cards())
         .chain(slice41_cards())
         .chain(slice42_cards())
+        .chain(slice43_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())
@@ -1131,4 +1139,72 @@ fn card_keywords(record: &Value) -> Vec<String> {
         .iter()
         .filter_map(|keyword| keyword.as_str().map(str::to_string))
         .collect()
+}
+
+/// Slice 43: Lumra, Bellow of the Woods. The catalog string must equal the
+/// printing's oracle text verbatim, and the two places where this card differs
+/// from every other sourced card are asserted explicitly: it prints `*`/`*`
+/// rather than numbers (so the catalog carries no fixed power/toughness and the
+/// value comes from a characteristic-defining static), and its two keywords are
+/// the ones the engine's keyword table actually executes for it.
+#[test]
+fn slice43_lumra_matches_its_recorded_printing() {
+    let cards = slice43_cards();
+    assert_eq!(cards.len(), 1, "slice 43 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Lumra, Bellow of the Woods");
+    let def = catalog::by_name(name).expect("Lumra is in the pool").def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    for side in ["power", "toughness"] {
+        assert_eq!(
+            sourced_text(record, side),
+            "*",
+            "{name} prints a characteristic-defining {side}"
+        );
+    }
+    assert!(
+        def.power.is_none() && def.toughness.is_none(),
+        "a */* card must not carry invented numbers"
+    );
+    let keywords = card_keywords(record);
+    assert_eq!(keywords, vec!["Reach", "Vigilance", "Mill"]);
+    let executed = aperture_core::tokens::keywords(CardId::LumraBellowOfTheWoods);
+    assert_eq!(
+        executed,
+        &[
+            aperture_core::tokens::Keyword::Reach,
+            aperture_core::tokens::Keyword::Vigilance
+        ],
+        "the two printed keywords the engine executes"
+    );
+    // Every printed line of text is carried by a typed ability or static, so no
+    // sentence of the printing is silently unimplemented.
+    let abilities = aperture_core::abilities(CardId::LumraBellowOfTheWoods);
+    let statics = aperture_core::ability::static_abilities(CardId::LumraBellowOfTheWoods);
+    assert_eq!(abilities.len(), 1);
+    assert_eq!(statics.len(), 1);
+    for line in def.oracle.lines().skip(1) {
+        assert!(
+            abilities.iter().any(|ability| ability.text() == line)
+                || statics
+                    .iter()
+                    .any(|static_ability| static_ability.text() == line),
+            "the printed line {line:?} has no typed implementation"
+        );
+    }
 }

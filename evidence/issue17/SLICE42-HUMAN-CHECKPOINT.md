@@ -52,7 +52,7 @@ animation effects still present. Journey digest is unchanged by the fix (`1750a8
 | replay_digest | 0 (6 passed) |
 | clippy `--workspace --all-targets -- -D warnings` | 0 |
 | release CLI build (`--locked`) | 0 |
-| workspace `cargo test --workspace --locked` | 0 — **995 passed / 0 failed** |
+| workspace `cargo test --workspace --locked` | 0 — **892 passed / 0 failed / 1 ignored (125 binaries)** |
 
 `fmt` exited 1 in that first pass **only** on the coordinator's new test file; it was formatted and
 `slice42/native-verify-final.log` records `fmt_exit=0`, `clippy_exit=0`,

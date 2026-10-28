@@ -1,0 +1,45 @@
+   Compiling url v2.5.8
+   Compiling hyper v1.12.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower v0.5.3
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice43-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice43-journey-driver)
+    Finished `release` profile [optimized] target(s) in 39.61s
+     Running `target\release\issue17-slice43-journey.exe`
+{
+  "casts": {
+    "Craw Wurm": 3,
+    "Grizzly Bears": 8,
+    "Lumra, Bellow of the Woods": 4
+  },
+  "combat_damage_events": 29,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice43.txt",
+  "digest": "689ed550346410ea041334384a1034a92fdd751b593ca6faffee740e8465677f",
+  "driver": "evidence-only masked land/cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "graveyard_land_return_triggers": 4,
+  "kind": "40-card package, not a desired starter",
+  "lumra_attacks": 9,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3604,
+  "returned_land_entries": 12,
+  "seats": 4,
+  "seed": 2324,
+  "snapshot_sha256": "32378ca06d1829ea272e43c8f42d1ee1f401cccfb7f0eadb0e3f150c079e3099",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1433,
+  "turns": 34,
+  "vigilance_checks": 9
+}

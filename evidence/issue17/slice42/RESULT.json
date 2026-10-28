@@ -54,16 +54,20 @@
   "native_animation_fix": "recompute_layers now evaluates attachment creature type while animation effects remain present; native RED evidence/issue17/slice42/native-red-animation.log",
   "native_controls": {
     "file": "crates/core/tests/issue17_slice42_equip_controls.rs",
-    "tests": 3,
-    "result": "3 passed",
-    "receipt": "evidence/issue17/slice42/native-verify-final.log",
-    "authorship": "integration owner, not the saved writer and not an independent review"
+    "tests": 4,
+    "result": "4 passed",
+    "receipt": "evidence/issue17/slice43/native-verify.log",
+    "authorship": "integration owner, not the saved writer and not an independent review",
+    "note": "the fourth test (equip against an already-shrouded/hexproof creature) was added in slice 43 to close review 314's unproven CR 702.6b rule; the three original tests are unchanged"
   },
   "native_verification": {
     "receipt": "evidence/issue17/slice42/native-verify.log",
-    "workspace_passed": 995,
+    "workspace_command": "cargo test --workspace --locked",
+    "workspace_passed": 892,
     "workspace_failed": 0,
-    "note": "fmt exited 1 on the new coordinator test file in that first run; it was formatted and the final receipt native-verify-final.log has fmt_exit=0"
+    "workspace_ignored": 1,
+    "workspace_binaries": 125,
+    "note": "892 is what `cargo test --workspace --locked` reports at this head. The 995 previously published here was the aggregate sum across the whole native-verify.log receipt (134 suite runs), which counts the nine focused suites twice; corrected in slice 43 per review 314 R314-2. fmt exited 1 on the new coordinator test file in that first run; it was formatted and the final receipt native-verify-final.log has fmt_exit=0"
   },
   "journey_after_native_fix": "regenerated at the corrected engine: digest 1750a81e...f551 unchanged, 1565 steps, 36 turns, Win{P2}, 3949 replay events, 17 attachments, 48 combat-damage events"
 }

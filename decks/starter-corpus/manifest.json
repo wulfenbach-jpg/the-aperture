@@ -251,7 +251,6 @@
       "missing_cards": [
         "D\u00fanedain Rangers",
         "Evercoat Ursine",
-        "Lumra, Bellow of the Woods",
         "Owlbear Cub",
         "Rampaging Yao Guai",
         "Ruxa, Patient Professor",
@@ -261,9 +260,15 @@
         "Ursine Monstrosity"
       ],
       "missing_interactions": [
-        "equipment (Lightning Greaves, Swiftfoot Boots)",
-        "library search / hideaway / Ring temptation (D\u00fanedain Rangers, Evercoat Ursine, Spirit of the Aldergard, The Earth King, Titania's Command)",
-        "combat-damage-as-though-unblocked (Ruxa) and modal spells (Titania's Command)"
+        "the Ring tempts you and the Ring-bearer (D\u00fanedain Rangers)",
+        "hideaway, and playing a card exiled with the same permanent (Evercoat Ursine)",
+        "snow permanents and searching for a snow land card (Spirit of the Aldergard)",
+        "modal spells that choose two of four modes (Titania's Command)",
+        "combat-damage-as-though-unblocked (Ruxa, Patient Professor)",
+        "an X-cost creature entry with a total-mana-value destruction cap (Rampaging Yao Guai)",
+        "digging the top cards and putting a creature onto the battlefield tapped and attacking (Owlbear Cub)",
+        "investigate / Clue tokens, and 'attacking or blocking alone' (Thijarian Witness)",
+        "mill-driven attack restriction and card types in a graveyard (Ursine Monstrosity)"
       ]
     },
     {

@@ -697,8 +697,11 @@ steps, 34 turns, 3861 events, digest `726fe20e…`) and a separate release-CLI r
 Known limits, disclosed: the Food token's ability is modelled with the printed cost and effect
 only (it is not a "sacrifice an artifact" outlet for other cards); the anthem's recipient list is
 the printed list in singular form, and no pool card can change a creature's subtypes into a listed
-one except the layer 4 forms already supported; nothing in the pool grants or removes hexproof,
-shroud or protection, so none of those interacts with the token. This slice certifies no starter
+one except the layer 4 forms already supported; hexproof and shroud entered the pool with slice 42,
+where Lightning Greaves and Swiftfoot Boots grant them to the equipped creature, so shroud (every
+player) and hexproof (opponents only) are now enforced against spells, activated abilities and the
+equip ability itself — the token/Equipment interaction the Ayula list needs. Protection is still
+unsupported and no pool card grants or removes it. This slice certifies no starter
 list: Ayula has 13 missing names and the eight-list gate remains 1 of 8.
 
 ## Slice 41: The Earth King
@@ -708,3 +711,11 @@ The Earth King (`{3}{G}`, 2/2 Legendary Human Noble Ally) is sourced in `fixture
 
 ## Slice 42: shared Equipment — Lightning Greaves and Swiftfoot Boots
 Lightning Greaves and Swiftfoot Boots are ordinary artifact Equipment with typed attachment effects. Equip is a targeted activated ability with its printed mana cost, sorcery timing, source-controller restriction and target creature you control; attachment changes only when the equip ability resolves, and the previous attachment persists while the new equip is on the stack. Greaves grants haste/shroud; Boots grants haste/hexproof. Shroud blocks all targeting, hexproof blocks only opponents; player targets and nontarget effects are unaffected. Attachments end when either object leaves the battlefield, when the creature ceases to be a creature, or on a later incantation of the same ObjectId. No broader Equipment/Aura/protection support is claimed.
+
+## Slice 43: Lumra, Bellow of the Woods
+Lumra (`{4}{G}{G}` Legendary Creature — Elemental Bear) is sourced in `fixtures/starter-corpus/slice43-sourced.json` (BLB 183, immutable `ae4f3aaf-3960-48cd-b34b-32e4ae5ae088`, oracle `97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb`, retrieved 2026-10-28T10:55:27Z), and the catalog string equals that printing line for line. It prints `*`/`*`, which is represented in the catalog as *no printed numbers* plus a characteristic-defining static: `CardId::LumraBellowOfTheWoods` carries `StaticAbility::PowerToughnessPerCount { count: LandsYouControl }`, read from the board on every characteristic pass, so the value follows lands entering or leaving and counts only its controller's lands. This is the second land-count value in the pool (the first is Beorn's Hospitality's animation) and the first printed `*`/`*` card.
+
+Two rule surfaces arrive with it. **Reach** is a blocking permission (`tokens::keywords`), so Lumra can block a flyer a ground creature cannot. **Vigilance** (CR 702.20a) is read at the single place an attacker is tapped (CR 508.1f): attacking leaves Lumra untapped and nothing else about the attack changes. The enters trigger mills four cards (`Effect::MillSelf`, already supported) and then returns **every** land card from its controller's graveyard to the battlefield tapped (`Effect::ReturnLandCardsFromGraveyardTapped`): the set is taken at resolution (CR 608.2c) and each land enters through the canonical entry path, so landfall watchers fire once per returning land although no land play is spent.
+
+Exclusions, unchanged from slice 41 and still true here: the legend rule (CR 704.5j) is not implemented, so two copies of the same legendary permanent can coexist on this engine's battlefield; a singleton Commander list cannot reach that state, and Lumra is the pool's second legendary card admitted into a practice library. Nothing about lands' own abilities is inferred from text: a returned land is a permanent with its printed mana ability, nothing more.
+

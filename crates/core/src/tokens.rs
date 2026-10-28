@@ -31,6 +31,11 @@ pub enum Keyword {
     /// controls an Island." Modelled as a blocking restriction only; nothing
     /// grants or removes it, and no other landwalk variant is supported.
     Islandwalk,
+    /// CR 702.20a: "Attacking doesn't cause this creature to tap." The combat
+    /// engine reads it at the only place an attacker is tapped (CR 508.1f); it
+    /// changes nothing else, so a vigilant creature can block in the following
+    /// turn's combat just as it can attack again.
+    Vigilance,
 }
 
 impl Keyword {
@@ -40,6 +45,7 @@ impl Keyword {
             Keyword::Reach => "reach",
             Keyword::Defender => "defender",
             Keyword::Islandwalk => "islandwalk",
+            Keyword::Vigilance => "vigilance",
         }
     }
 }
@@ -78,6 +84,9 @@ pub fn keywords(card: CardId) -> &'static [Keyword] {
         CardId::SpiritToken | CardId::DrakeToken => &[Keyword::Flying],
         CardId::JaddiOffshoot => &[Keyword::Defender],
         CardId::PaleBears | CardId::RiverBear => &[Keyword::Islandwalk],
+        // Lumra, Bellow of the Woods prints "Reach, vigilance": reach lets it
+        // block a flyer, vigilance keeps it untapped when it attacks.
+        CardId::LumraBellowOfTheWoods => &[Keyword::Reach, Keyword::Vigilance],
         _ => &[],
     }
 }
