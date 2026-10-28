@@ -1,0 +1,31 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.77s
+     Running tests\issue17_slice46.rs (target\debug\deps\issue17_slice46-e6ff61e91e13a057.exe)
+
+running 2 tests
+test blocker_killed_after_its_companion_left_combat_is_not_alone ... FAILED
+test attacker_killed_after_its_companion_left_combat_is_not_alone ... FAILED
+
+failures:
+
+---- blocker_killed_after_its_companion_left_combat_is_not_alone stdout ----
+
+thread 'blocker_killed_after_its_companion_left_combat_is_not_alone' (14436) panicked at crates\core\tests\issue17_slice46.rs:498:5:
+neither death was a blocking-alone death, so nothing is exiled: [GrizzlyBears]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- attacker_killed_after_its_companion_left_combat_is_not_alone stdout ----
+
+thread 'attacker_killed_after_its_companion_left_combat_is_not_alone' (27944) panicked at crates\core\tests\issue17_slice46.rs:404:5:
+assertion `left == right` failed: the second attacker is dead
+  left: Exile
+ right: Graveyard
+
+
+failures:
+    attacker_killed_after_its_companion_left_combat_is_not_alone
+    blocker_killed_after_its_companion_left_combat_is_not_alone
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 6 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice46`

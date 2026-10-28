@@ -101,6 +101,41 @@ fn attack_and_block(g: &mut Game, attackers: &[ObjectId], blocks: Vec<BlockDecl>
     submit_ok(g, P1, Action::DeclareBlockers { blocks });
 }
 
+/// Cast `spell` from `caster` at one battlefield permanent and pass priority
+/// until the spell has left the stack. The loop stops as soon as the stack is
+/// empty, so it never passes an extra time and accidentally advances the step.
+fn cast_at_creature(g: &mut Game, caster: PlayerId, spell: CardId, target: ObjectId) {
+    assert_eq!(
+        g.decision_owner(),
+        Some(caster),
+        "the caster must hold priority before casting"
+    );
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(
+                &a.action,
+                Action::CastSpell { card, targets }
+                    if g.state.object(*card).card == spell
+                        && targets == &vec![Target::Permanent(target)]
+            )
+        })
+        .map(|a| a.action)
+        .expect("the spell is offered at that permanent");
+    submit_ok(g, caster, action);
+    for _ in 0..8 {
+        if g.state.stack.is_empty() {
+            return;
+        }
+        let p = g
+            .decision_owner()
+            .expect("someone holds priority while a spell is on the stack");
+        submit_ok(g, p, Action::Pass);
+    }
+    panic!("the spell never left the stack");
+}
+
 /// Attacker is the only creature declared as an attacker (CR 508.1, 506.5) and
 /// dies to its blocker's combat damage: the printed trigger fires, exiles
 /// exactly that card from its owner's graveyard and creates one Clue token for
@@ -286,6 +321,188 @@ fn death_beside_another_attacker_does_not_trigger() {
     assert!(
         clue_tokens(&g, P0).is_empty(),
         "no alone-attacker death, so no investigate"
+    );
+}
+
+/// R325-1 discriminator: two creatures are declared as attackers and the first
+/// is killed by a burn spell; only then is the second killed by a *separate*
+/// spell in the same combat. The survivor is the only creature left in the live
+/// attacker list, so a "live state" read calls it attacking alone and fires —
+/// but it was declared beside the other, so under CR 506.5 it never attacked
+/// alone. Nothing is exiled and no Clue is created. The shipped two-in-one-batch
+/// control cannot tell the two readings apart, because there both attackers die
+/// before either leaves combat.
+#[test]
+fn attacker_killed_after_its_companion_left_combat_is_not_alone() {
+    let mut g = fixture(4706)
+        .hand(P1, &[CardId::LightningStrike, CardId::LightningStrike])
+        .battlefield(P0, &[witness(), CardId::GrizzlyBears, CardId::GrizzlyBears])
+        .battlefield(
+            P1,
+            &[
+                CardId::OrdinaryBear,
+                CardId::Mountain,
+                CardId::Mountain,
+                CardId::Mountain,
+                CardId::Mountain,
+            ],
+        )
+        .library(P0, &[CardId::Forest; 6])
+        .library(P1, &[CardId::Forest; 6])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let first = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    let second = g
+        .state
+        .battlefield(P0)
+        .iter()
+        .filter(|o| o.card == CardId::GrizzlyBears)
+        .map(|o| o.id)
+        .find(|id| *id != first)
+        .expect("second attacker");
+    for id in [first, second] {
+        object_mut(&mut g.state, id).summoning_sick = false;
+    }
+
+    // P1 has a legal blocker and declines to use it, so the declare-blockers
+    // step really happens and the bolts are cast in a real combat.
+    attack_and_block(&mut g, &[first, second], vec![]);
+    assert_eq!(g.state.turn.attackers, vec![first, second]);
+    assert_eq!(
+        g.state.turn.declared_attackers,
+        vec![first, second],
+        "both attackers are in this combat's declaration record"
+    );
+
+    // CR 509.2: the active player holds priority after blockers are declared.
+    assert_eq!(g.decision_owner(), Some(P0));
+    submit_ok(&mut g, P0, Action::Pass);
+    assert_eq!(g.decision_owner(), Some(P1));
+    cast_at_creature(&mut g, P1, CardId::LightningStrike, first);
+    assert_eq!(
+        g.state.object(first).zone,
+        Zone::Graveyard,
+        "the first attacker is dead"
+    );
+    assert_eq!(
+        g.state.turn.step,
+        Step::DeclareBlockers,
+        "the first death happens inside the same combat"
+    );
+    assert_eq!(
+        g.state.turn.attackers,
+        vec![second],
+        "the live attacker list now holds only the second attacker"
+    );
+
+    // The discriminating death: the survivor is alone in the live list, but was
+    // declared beside the first attacker, so the printed condition is false.
+    assert_eq!(g.decision_owner(), Some(P0));
+    submit_ok(&mut g, P0, Action::Pass);
+    assert_eq!(g.decision_owner(), Some(P1));
+    cast_at_creature(&mut g, P1, CardId::LightningStrike, second);
+    assert_eq!(
+        g.state.object(second).zone,
+        Zone::Graveyard,
+        "the second attacker is dead"
+    );
+    assert!(
+        g.state.turn.attackers.is_empty(),
+        "no attacker is left in combat"
+    );
+
+    assert!(
+        !exiled_cards(&g, P0).contains(&CardId::GrizzlyBears),
+        "neither death was an alone-attack death, so nothing is exiled: {:?}",
+        exiled_cards(&g, P0)
+    );
+    assert!(
+        clue_tokens(&g, P0).is_empty(),
+        "no alone-attack death, so the watcher does not investigate"
+    );
+}
+
+/// The same declaration reading on the blocking side: two creatures are declared
+/// as blockers, one is killed by a burn spell in the declare-blockers step, and
+/// the other then dies to combat damage. The survivor is the only blocker left
+/// in the live list but was declared beside the other, so it was not "blocking
+/// alone" and nothing triggers.
+#[test]
+fn blocker_killed_after_its_companion_left_combat_is_not_alone() {
+    let mut g = fixture(4707)
+        .hand(P0, &[CardId::LightningStrike])
+        .battlefield(
+            P0,
+            &[
+                witness(),
+                CardId::OrdinaryBear,
+                CardId::Mountain,
+                CardId::Mountain,
+            ],
+        )
+        .battlefield(P1, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
+        .library(P0, &[CardId::Forest; 6])
+        .library(P1, &[CardId::Forest; 6])
+        .step_no_priority(P0, Step::DeclareAttackers)
+        .build();
+    let attacker = battlefield_card(&g, P0, CardId::OrdinaryBear);
+    object_mut(&mut g.state, attacker).summoning_sick = false;
+    let first = battlefield_card(&g, P1, CardId::GrizzlyBears);
+    let second = g
+        .state
+        .battlefield(P1)
+        .iter()
+        .filter(|o| o.card == CardId::GrizzlyBears)
+        .map(|o| o.id)
+        .find(|id| *id != first)
+        .expect("second blocker");
+    for id in [first, second] {
+        object_mut(&mut g.state, id).summoning_sick = false;
+    }
+
+    attack_and_block(
+        &mut g,
+        &[attacker],
+        vec![
+            BlockDecl {
+                blocker: first,
+                attacker,
+            },
+            BlockDecl {
+                blocker: second,
+                attacker,
+            },
+        ],
+    );
+    assert_eq!(
+        g.state.turn.declared_blockers,
+        vec![first.min(second), first.max(second)],
+        "both blockers are in this combat's declaration record"
+    );
+
+    // CR 509.2: the active player holds priority after blockers are declared.
+    assert_eq!(g.decision_owner(), Some(P0));
+    cast_at_creature(&mut g, P0, CardId::LightningStrike, first);
+    assert_eq!(
+        g.state.object(first).zone,
+        Zone::Graveyard,
+        "the first blocker is dead"
+    );
+    settle_through_combat(&mut g);
+
+    assert_ne!(
+        g.state.object(second).zone,
+        Zone::Battlefield,
+        "the second blocker died to combat damage"
+    );
+    assert!(
+        !exiled_cards(&g, P1).contains(&CardId::GrizzlyBears),
+        "neither death was a blocking-alone death, so nothing is exiled: {:?}",
+        exiled_cards(&g, P1)
+    );
+    assert!(
+        clue_tokens(&g, P0).is_empty(),
+        "no blocking-alone death, so the watcher does not investigate"
     );
 }
 

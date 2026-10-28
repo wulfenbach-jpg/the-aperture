@@ -763,6 +763,23 @@ pub struct Turn {
     pub blocked: Vec<ObjectId>,
     /// blocker -> attacker pairs.
     pub blockers: Vec<(ObjectId, ObjectId)>,
+    /// CR 506.5: "attacks alone" / "blocks alone" are properties of the
+    /// *declaration*, not of the live combat state — a creature attacks alone
+    /// "if it's the only creature declared as an attacker during the declare
+    /// attackers step". These two lists are that declaration record: written
+    /// once when the declaration is submitted and never pruned when a creature
+    /// leaves combat, so an attacker declared beside another that has since
+    /// died or left combat is still not attacking alone. Cleared with the rest
+    /// of the combat state at end of combat (CR 511.3) and at the start of a
+    /// turn; `skip_serializing_if` keeps states with no declaration byte-
+    /// identical to the pre-record form, so recorded digests stay verifiable.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub declared_attackers: Vec<ObjectId>,
+    /// Distinct creatures declared as blockers this combat (one blocker
+    /// blocking two attackers is a single blocking creature), for the same
+    /// CR 506.5 reason as `declared_attackers`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub declared_blockers: Vec<ObjectId>,
     pub combat_damage_done: bool,
     /// The defending seat chosen in this combat's attacker declaration. In the
     /// bounded M1 model every attacker in one declaration attacks this seat.

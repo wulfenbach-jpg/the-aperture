@@ -1,0 +1,6 @@
+--- slice46 recording under slice47 engine
+replay seed 2323 — 4 seat(s), 3073 action(s), recorded outcome Some(Win { winner: 1, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
+  replayed digest da4eacd5363f | matches recorded | events 8098
+--- slice45 recording under slice47 engine
+replay seed 2323 — 4 seat(s), 1618 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+Error: replay failed: replay ended early: digest 99bc84466546ebe4f873e76b751b3b01baa44825af6f0e8e930d4d90228431da != recorded 45d674d2e926bbab485106311929bd5c796d751676bac36b03efa8e8716e2143

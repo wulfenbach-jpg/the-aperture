@@ -289,6 +289,12 @@ loss and full combat-damage prevention for one turn (Fog); partial prevention,
 redirection and replacement effects are not implemented, so the profile is not
 Commander gameplay. The offline deck-profile analyzer above is
 analysis only;
+**A commander never actually dies in a real game** — under CR 903.9a the
+command-zone return replaces the graveyard move — but this engine moves the
+commander to the graveyard, records the death (so `dies` watchers, e.g.
+Thijarian Witness, can over-trigger on a returned commander) and only then offers
+the CR 903.9a choice. Pre-existing deviation, tracked as backlog and documented
+in `docs/issue17-starter-corpus.md` (slice 46); no test pins the deviant shape.
 networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
