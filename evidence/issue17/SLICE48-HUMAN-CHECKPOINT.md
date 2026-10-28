@@ -135,27 +135,28 @@ pass.
 | `cargo fmt --all --check` | exit 0 | `slice48/fmt.log` |
 | `cargo clippy -p aperture-core --all-targets --locked -- -D warnings` | exit 0 | `slice48/clippy.log` |
 | `cargo build --workspace --release --locked` | exit 0 | `slice48/release-build.log` |
-| Four-seat 40-life journey re-executed at this head (unchanged slice-46 package) | terminal `Win{P1}`, 3073 steps, 54 turns, **digest `da4eacd5…b995bde` — byte-identical to the slice-46/47 recording**, 8098 replay events, 38 solo attacks, 104 Clues, 14 exiles, in-driver replay + fresh `SessionSave` reload equal | `slice48/demo-journey.json`, `slice48/journey-build.log` (EXIT=0), `slice48/journey-run.log` |
-| Separate release-CLI replay of that recording | `replayed digest da4eacd5 | matches recorded | events 8098`, exit 0 | `slice48/cli-replay.log` |
+| Four-seat 40-life journey, unchanged slice-46 package (regression half) | terminal `Win{P1}`, 3073 steps, 54 turns, **digest `da4eacd5…b995bde` — byte-identical to the slice-46/47 recording**, 8098 replay events, 38 solo attacks, 104 Clues, 14 exiles, in-driver replay + fresh `SessionSave` reload equal | `slice48/demo-journey.json`, `slice48/journey-build.log` (EXIT=0), `slice48/journey-run.log` |
+| **Four-seat 40-life journey, Owlbear Cub package** (`decks/package-slice48.txt`: 4 Cub / 4 Grizzly Bears / 4 Elite Vanguard / 4 Centaur Courser / 24 Forest) | terminal `Win{P2}` (empty-library draw), 3462 steps, 95 turns, 8666 replay events, **digest `2b9f3b3d…b4893`**, **12 Cub casts, 5 looks, 4 puts onto the battlefield tapped and attacking, 5 bottom placements**, 59 solo attacks; in-driver replay + fresh `SessionSave` reload equal | `slice48-cub/cub-journey.json`, `slice48-cub/journey-build.log` (EXIT=0), `slice48-cub/journey-run.log` |
+| Separate release-CLI replay of both recordings | both `matches recorded`: `da4eacd5` (8098 events) and `2b9f3b3d` (8666 events), exit 0 | `slice48/cli-replay.log`, `slice48-cub/cli-replay.log` |
 | Corpus audit (own parse of `catalog.rs` + the eight lists) | catalog **161**, union **459 = 148 supported + 311 missing**, per list `[55,0,51,48,5,52,52,53]`, **1 certified** | `slice48/corpus-audit.log` (`AUDIT OK`) |
 | Whole-field manifest check | Ayula `missing_cards` 5 ↔ `missing_interactions` 5, each entry naming a still-missing name; elas count 52 ↔ 52 | `issue17_slice15_corpus` + `starter_corpus` green |
 
-The journey is the regression half of this slice, not evidence for the new card: the same package,
-seed and policy must produce the same game, and they do, byte for byte. `cargo test --workspace`
-counts every test binary, so the earlier `filtered out` binaries are included.
+The first journey is the regression half of this slice: the same package, seed and policy must produce
+the same game as slice 46/47, and they do, byte for byte. The second journey is the card's own binary
+coverage and it is a real game, not a fixture: the printed trigger fired five times against defenders
+with eight or more lands, four creature cards were put onto the battlefield tapped and attacking, and
+the looked-at remainder went to the bottom five times. Both games replay in a separate release CLI
+and reload from their own save into an equal state.
 
 ## What this slice does NOT claim
 
 * **No list is certified beyond the one it started with.** Ayula still has 5 missing names
   (Dúnedain Rangers, Evercoat Ursine, Rampaging Yao Guai, Ruxa Patient Professor, Ursine
   Monstrosity); the eight-list gate is still **1 of 8**. There is no 100-card certification.
-* **No journey coverage for Owlbear Cub itself.** The four-seat journey was re-executed and is
-  byte-identical to slice 46/47, which proves the new card perturbed nothing — but its 40-card
-  package does not contain Owlbear Cub, so **the binary journey is not evidence for this card**.
-  The six engine-driven tests are: they drive real attack declarations, real priority rounds, a real
-  intervening-if, a real pending answer and real combat damage, and the two controls above show they
-  fail when the rules are broken. A Cub-in-the-package journey is the first thing the next run should
-  add (eight lands under the defending seat is the fixture condition it needs).
+* **The Cub journey is a 40-card package driven by an evidence-only masked demonstrator.** It is not
+  a 100-card certificate, not product AI and not a strength claim; it exists to show the printed
+  trigger firing in a real four-seat game. Its "8 or more lands" hits came from lands accumulated in
+  normal play, not from a staged board.
 * **Exact-head CI is bound to `890ee81`, the evidence tip, not to the code head `3e7675a`.** The
   check runs created for `3e7675a` were **cancelled** by the later push (9 cancelled / 1 success), so
   they are not a pass; the runs keyed to `890ee81` cover the same code plus evidence only. Read them
@@ -171,8 +172,6 @@ counts every test binary, so the earlier `filtered out` binaries are included.
 
 1. Read the exact-head CI for `890ee81` (or push a fresh evidence-only tip and wait for its own
    checks) — no CI pass is claimed here yet.
-2. Add Owlbear Cub to a 40-card journey package with eight lands under the defending seat and
-   re-run the four-seat journey with a separate CLI replay, so the card has binary-game coverage.
-3. Then the remaining five Ayula names per `slice47/NEXT-CARDS-BRIEF.md` order — Ruxa, Rampaging Yao
+2. Then the remaining five Ayula names per `slice47/NEXT-CARDS-BRIEF.md` order — Ruxa, Rampaging Yao
    Guai, Ursine Monstrosity, Evercoat Ursine, Dúnedain Rangers — with the same whole-field
    discipline, then the exact 100-card four-seat certification with separate replays.

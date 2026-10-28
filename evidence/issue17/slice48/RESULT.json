@@ -1,0 +1,108 @@
+{
+  "slice": 48,
+  "issue": 17,
+  "increment": "Review-327 record corrections (R327-1..3, persistence version decision, elas count) + Owlbear Cub (CLB 246) implemented from its sourced printing",
+  "full_issue17_accepted": false,
+  "certified_lists": 1,
+  "certified_lists_total": 8,
+  "catalog_cards": 161,
+  "ayula_missing": 5,
+  "commits": {
+    "record_corrections": "2d425b7d3d488fa8563bc3648ecc49d2f030752c",
+    "owlbear_cub": "3e7675a3d9768a2c7e64fec4b6be91313ffe9043",
+    "gates_and_controls": "9761e111f1620a3c1bae54c915ffd7172eda1dc4",
+    "previous_evidence_tip": "1b1c54274af539125362aa5a656e47afc82dfc79"
+  },
+  "branch": "aperture/issue-17",
+  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "pr_state": "OPEN, draft. Code head 3e7675a; final evidence tip 9761e11 == local == remote. Base master untouched.",
+  "record_corrections": {
+    "R327-1": "Both sites (checkpoint section 2, RESULT.json disclosure 3 of slice 47) claimed pre-change saves still verify their own digest. False at 1b1c542: aperture-cli replay --file evidence/issue17/slice45/demo-save.json parses, re-executes and fails 'replay ended early: digest 99bc8446... != recorded 45d674d2...', exit 1. Both sites rewritten; a legacy mid-combat save carries no declaration record so the alone question answers no for the rest of that combat.",
+    "version_decision": "SAVE_VERSION stays 10 and REPLAY_VERSION stays 6 deliberately: a bump would reject every older artifact including the pinned pre-#16 v10 fixture, which is worse than the digest under-report. Recorded in the checkpoint, RESULT.json, README 'Versioned persistence' and docs/issue17-starter-corpus.md section Slice 47. README's stale replay v5 / save v8 numbers corrected to 6 / 10 in the same paragraph.",
+    "R327-2": "The checkpoint journey row cited slice47/journey.log (a --locked lock-file failure, EXIT=101). It now cites journey-build.log (EXIT=0); the failed log is kept but renamed journey-locked-attempt-FAILED.log with a header saying it is not the gate.",
+    "R327-3": "RESULT.json.pr_state of slice 47 published headRefOid 4c55d94 == local == remote while the PR head was 1b1c542; it now states code head and evidence tip separately.",
+    "whole_field_count": "decks/starter-corpus/manifest.json starters[elas-sacrifice].missing_interactions[0] said 'remaining 53' against 52 missing_cards -> 52.",
+    "recorded_not_fixed": "The declaration record being outside GameState::validate is written up as a known weakness for a later hardening pass (docs section Slice 47 + checkpoint section 2)."
+  },
+  "card": {
+    "name": "Owlbear Cub",
+    "printing": "clb 246",
+    "scryfall_id": "be177b66-dab3-47ef-bcdf-8d99eb57e19f",
+    "oracle_id": "0c92432d-ac76-47d2-af7a-fdffd4b546a2",
+    "cost": "{2}{G}",
+    "type_line": "Creature — Bird Bear",
+    "power_toughness": "3/3",
+    "retrieved_utc": "2026-10-28T13:49:35.417772+00:00",
+    "sources": ["evidence/issue17/slice48/sources/owlbear-cub.json", "evidence/issue17/slice48/sources/owlbear-cub.stamp.json"],
+    "fixture": "fixtures/starter-corpus/slice48-sourced.json",
+    "oracle_text": "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order."
+  },
+  "rule_design": {
+    "intervening_if": "Defending player's land count (CR 603.4), evaluated when attackers are declared and again as the trigger resolves; TriggerCondition::DefendingPlayerControlsEightOrMoreLands.",
+    "look_not_search": "CR 701.20a. Pending::SearchLibrary gains a `looked` list so 'the rest' is the examined cards only; finish_look_at_top randomises only those and puts them under the library (CR 701.20e). No shuffle; the rest of the library keeps its order.",
+    "attacking_but_not_declared": "The put creature is appended to turn.attackers so it deals combat damage, and deliberately NOT to turn.declared_attackers: CR 508.1 makes 'attacked' a declaration and CR 506.5 reads 'the only creature declared as an attacker'. slice47/NEXT-CARDS-BRIEF.md suggested recording it in both; that would have stopped the Cub counting as having attacked alone, so it is overridden and tested.",
+    "validate": "GameState::validate requires the looked set to be exactly the top of the library in order, only creature cards among it to be eligible, and at most one card to be put."
+  },
+  "tests": {
+    "file": "crates/core/tests/issue17_slice48.rs",
+    "count": 6,
+    "names": [
+      "owlbear_cub_is_registered_with_its_printed_text",
+      "a_defender_with_seven_lands_never_triggers_the_look",
+      "eight_lands_looks_at_the_top_eight_and_offers_only_creature_cards",
+      "declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order",
+      "the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage",
+      "a_look_with_no_creature_card_puts_everything_on_the_bottom"
+    ],
+    "provenance_test": "card_printings::slice48_owlbear_cub_matches_its_recorded_printing (catalog string == printing oracle_text verbatim, type line, cost, P/T, ability word is not an executable keyword, the printed line is the typed ability)"
+  },
+  "discriminating_controls": [
+    {
+      "what": "trigger condition replaced with TriggerCondition::Always",
+      "result": "a_defender_with_seven_lands_never_triggers_the_look FAILED (5 passed / 1 failed), exit 101",
+      "log": "evidence/issue17/slice48/control-always-condition.log"
+    },
+    {
+      "what": "targeted bottom placement replaced by a whole-library shuffle",
+      "result": "a_look_with_no_creature_card_puts_everything_on_the_bottom and declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order FAILED (4 passed / 2 failed), exit 101",
+      "log": "evidence/issue17/slice48/control-whole-library-shuffle.log"
+    }
+  ],
+  "gates": {
+    "focused_core": "674 passed / 0 failed (cargo test -p aperture-core --locked)",
+    "slice48": "6 passed / 0 failed",
+    "workspace": "134 test binaries / 933 passed / 0 failed / 1 ignored, exit 0",
+    "fmt": "exit 0",
+    "clippy_core_all_targets_locked_deny_warnings": "exit 0",
+    "release_build_workspace_locked": "exit 0",
+    "journey": "slice48-journey-driver on the unchanged slice-46 package: 4 seats / 40 life / seed 2323, Win{P1}, 3073 steps, 54 turns, 8098 replay events, digest da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde — byte-identical to slice 46/47; in-driver replay and fresh SessionSave reload equal",
+    "journey_owlbear_cub": "slice48-cub-journey-driver on decks/package-slice48.txt (4 Cub / 4 Grizzly Bears / 4 Elite Vanguard / 4 Centaur Courser / 24 Forest): 4 seats / 40 life / seed 2323, Win{P2} (empty-library draw), 3462 steps, 95 turns, 8666 replay events, digest 2b9f3b3d190bdbc912982d3f663aed9298714b656e1e19e8f4a6813062cb4893; 12 Cub casts, 5 look resolutions, 4 creature cards put onto the battlefield tapped and attacking, 5 bottom placements, 59 solo attacks; in-driver replay and fresh SessionSave reload equal",
+    "separate_cli_replay": "target/release/aperture-cli replay on both recordings -> 'replayed digest da4eacd5 | matches recorded | events 8098' and 'replayed digest 2b9f3b3d | matches recorded | events 8666', exit 0",
+    "corpus_audit": {
+      "catalog_cards": 161,
+      "union_names": 459,
+      "supported_union": 148,
+      "missing_union": 311,
+      "per_list_missing": [55, 0, 51, 48, 5, 52, 52, 53],
+      "certified_lists": ["jasmine-vanilla-stompy"],
+      "log": "evidence/issue17/slice48/corpus-audit.log",
+      "exit": 0
+    },
+    "ci": {
+      "head": "9761e111f1620a3c1bae54c915ffd7172eda1dc4",
+      "receipt": "evidence/issue17/slice48/exact-head-ci-9761e11.json",
+      "note": "Checks created for the code head 3e7675a were CANCELLED by later pushes (9 cancelled / 1 success) and are not a pass; the run to read is the one keyed to the final evidence tip. Both carry the same code."
+    }
+  },
+  "disclosures": [
+    "Original #17 remains UNFINISHED: 1 of 8 lists certified, Ayula 5 names missing (Dunadan Rangers, Evercoat Ursine, Rampaging Yao Guai, Ruxa Patient Professor, Ursine Monstrosity). No 100-card certification.",
+    "The Cub journey is a 40-card package driven by an evidence-only masked demonstrator: not a 100-card certificate, not product AI and not a strength claim. Its eight-land conditions arose from lands accumulated in normal play, not a staged board.",
+    "Implementation-first, disclosed: the engine code was written before the test file, so the two retained REDs are post-hoc discriminating controls, not pre-implementation failing tests. This increment must not be described as TDD.",
+    "CI on the code head 3e7675a was cancelled by later pushes; no CI pass is claimed for 3e7675a. The evidence tip's own run is the one to read.",
+    "The intervening-if resolution re-check is implemented but has no dedicated test: arranging a defender whose land count drops below eight while the trigger is on the stack needs a destruction path this card's package does not give the test harness cheaply. Disclosed rather than claimed.",
+    "A creature put onto the battlefield tap-attacking is not covered by the legend rule (CR 704.5j, still unimplemented) or by the CR 903.9a commander-return deviation; both are unchanged.",
+    "Prior reviewer artifacts and the modified saved-session JSONL remain untracked/uncommitted."
+  ],
+  "no_merge_master_push_closure_or_unlock": true,
+  "next_action": "Independent practical delta review of 1b1c542..9761e11 (record corrections, the version decision, the Cub's look/attacking semantics and the two controls, including the CI readback), then the same writer/history/card/PR46 adds Owlbear Cub to a journey package with eight defending lands, then the remaining five Ayula names per slice47/NEXT-CARDS-BRIEF.md in order, then the exact 100-card four-seat certification with separate replays."
+}
