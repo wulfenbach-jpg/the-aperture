@@ -50,27 +50,42 @@ exception disclosed for review, not a policy, budgeting, sampling or hidden-info
 ## 3. Executed evidence (all exit 0)
 
 `slice50/gates.log` records every command's own exit code:
-`fmt --check`; focused **12 suites / 138 passed / 0 failed** (`issue17_slice46` 14, slice48 6,
+`fmt --check`; focused **11 suites / 129 passed / 0 failed** (`issue17_slice46` 14, slice48 6,
 slice49 8, slice43 4, combat 8, combat_teaching 2, commander_combat 43, m1_multiplayer 28,
-ordering_persistence 2, replay_digest 6, starter_corpus 8, and `aperture-ai search` 9 — the search
-suite is listed separately in the log and **not** counted in the 138); corpus audit **AUDIT OK**
+ordering_persistence 2, replay_digest 6, starter_corpus 8 = **129**), plus the separate
+`aperture-ai search` suite **9 passed** (different crate, logged separately); the twelve-command
+**aggregate** receipt is therefore **138 passed / 0 failed**, and no command count is presented as
+excluding the 9. Corpus audit **AUDIT OK**
 (161 / 459 / 148 / 311, per-list `[55,0,51,48,5,52,52,53]`, 1 certified); **workspace Clippy
 `-D warnings`**; locked release CLI build; `git diff --check`.
 
 Journeys, both re-executed from the committed drivers:
 
-* **Witness package unchanged and byte-identical** — `Win{P1}`, 3073 steps, 54 turns, 8098 events,
+* **Witness package unchanged and content-identical** (equal after newline normalisation: the
+  committed JSONs are CRLF, a fresh driver run writes LF; digests, counts and per-step data match
+  exactly) — `Win{P1}`, 3073 steps, 54 turns, 8098 events,
   digest `da4eacd5…b995bde`, 11 Witness casts, 38 solo attacks, **104 Clue tokens**, **14 exiles**;
   separate release-CLI replay matches (`slice50/witness-journey.log`). This recording did not
   exercise the corrected paths, so the fix changed no recorded behaviour here — say that plainly
   rather than claiming the journey proves the fix.
-* **Cub package unchanged** — `Win{P2}`, 3463 steps, 95 turns, 8658 events, digest
-  `acf204aa…747ac9`, replay matches.
+* **Cub package unchanged** (content-identical under the same newline normalisation) — `Win{P2}`,
+  3463 steps, 95 turns, 8658 events, digest `acf204aa…747ac9`, replay matches.
+
+Precision notes on this slice's own receipts (from review 333's non-blocking observations):
+* `slice50/workspace.log` reports **135 result lines**, which is 131 test binaries plus 4 doc-test
+  runs; the pass total 947 is unaffected.
+* `slice50/red-orphan-blocker.log` cites `issue17_slice46.rs:762` from the 11-test file; the file
+  now has 14 tests, so the line numbers in that retained log are stale even though the
+  discrimination reproduces (review 333 re-ran both reverts and saw the behavioural failures).
 
 ## 4. CI
 
-10/10 exact-head checks completed SUCCESS keyed to code `dc9e99b` (both workflows), read back with
-`gh pr checks 46`; no rerun requested (`slice50/exact-head-ci-dc9e99b.json`).
+Two heads are published here and they are stated apart:
+
+* **Code head `dc9e99b`** — **10/10** exact-head checks completed SUCCESS (both workflows), read
+  back with `gh pr checks 46`; no rerun requested (`slice50/exact-head-ci-dc9e99b.json`).
+* **Evidence-only tip `1a6ae1c`** (the actual PR `headRefOid`) — **no CI pass of its own is claimed**;
+  its run was still in progress at hand-off and it changes no Rust source.
 
 ## 5. Persistence position (recorded, not papered over)
 

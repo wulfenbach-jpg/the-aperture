@@ -69,10 +69,12 @@
   "local_gates": {
     "receipt": "evidence/issue17/slice50/gates.log",
     "fmt_exit": 0,
-    "focused_suites": 12,
-    "focused_passed": 138,
+    "focused_suites": 11,
+    "focused_passed": 129,
     "focused_failed": 0,
-    "separate_search_suite": "aperture-ai search 9 passed, log only",
+    "separate_search_suite": "aperture-ai search 9 passed (different crate, logged separately)",
+    "aggregate_twelve_command_receipt_passed": 138,
+    "focused_label_note": "11 non-search suites = 129; adding the separately logged aperture-ai search 9 gives the 138 aggregate. No wording presents the 9 as excluded from 138.",
     "corpus_audit": "AUDIT OK 161 / 459 / 148 / 311, per-list [55,0,51,48,5,52,52,53], 1 certified",
     "workspace_clippy_deny_warnings_exit": 0,
     "locked_release_cli_exit": 0,
@@ -82,7 +84,7 @@
       "slice50/first-compile-FAILED.log (missing field accessor)",
       "slice50/unpaired-controls-compile-FAILED.log (no player_mut)"
     ],
-    "full_workspace": "cargo test --workspace --locked: 135 binaries / 947 passed / 0 failed / 1 ignored, EXIT=0 (slice50/workspace.log)"
+    "full_workspace": "cargo test --workspace --locked: 947 passed / 0 failed / 1 ignored, EXIT=0 (slice50/workspace.log); its 135 result lines are 131 test binaries + 4 doc-test runs"
   },
   "journeys": {
     "witness": {
@@ -141,7 +143,7 @@
     "Original #17 unfinished: 1 of 8 certified, Ayula 5 missing, no card added.",
     "Native authored the correction and is not independent reviewer.",
     "Narrow scope exception: crates/ai/src/search.rs gains one public field copy (plus comment fix) and crates/ai/tests/common.rs one initializer; no policy/budget/sampling/hidden-data change.",
-    "The Witness journey is byte-identical, which shows digest stability but NOT that the corrected behaviour was exercised there; the focused regressions are the evidence.",
+    "The Witness journey is content-identical after newline normalisation (committed JSON is CRLF, a fresh run writes LF), which shows digest stability but NOT that the corrected behaviour was exercised there; the focused regressions are the evidence.",
     "A pre-repair save made after losing all blocking pairs cannot recover that membership; documented, not silently repaired.",
     "Fixture saves use dummy replay decks: they prove load and identical continuation, not replay provenance of constructed boards.",
     "Legend rule, damage-assignment policy, arbitrary Archidekt support and Ruxa's unblocked-damage choice remain unimplemented.",
@@ -155,8 +157,10 @@
   "no_merge_master_push_closure_or_unlock": true,
   "next_action": "Independent practical delta review of b82c3f5..HEAD (predicate reading against pinned CR 506.5/704.3/509.1g, RED discrimination, malformed-state refusals, narrow AI-field exception), then same writer/branch/PR46 takes slice50/NEXT-CARDS.md in order (Ruxa first), then exact 100-card four-seat certification with separate replays.",
   "ci": {
-    "head": "dc9e99b828a89b419246e9680ebdd7563a2f63d1",
+    "code_head": "dc9e99b828a89b419246e9680ebdd7563a2f63d1",
+    "evidence_only_tip": "1a6ae1c96d70ce07ec5cffa1a0bf0c0ab0bc6adb",
     "receipt": "evidence/issue17/slice50/exact-head-ci-dc9e99b.json",
-    "result": "10/10 completed SUCCESS, every head_sha keyed to dc9e99b; 0 failed/pending; gh pr checks 46 read back all ten pass; no rerun requested"
+    "code_head_result": "10/10 completed SUCCESS, every head_sha keyed to dc9e99b; 0 failed/pending; gh pr checks 46 read back all ten pass; no rerun requested",
+    "tip_ci_claim": "none: the evidence-only tip 1a6ae1c is the PR headRefOid and has no CI pass of its own in this slice"
   }
 }
