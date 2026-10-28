@@ -3714,6 +3714,21 @@ impl Game {
                         && self.has_color(object.id, crate::card::ManaColor::Black)
                 })
             }
+            ability::TriggerCondition::DefendingPlayerControlsEightOrMoreLands => {
+                // CR 603.4: the clause counts the *defending* player's lands at the
+                // moment it is evaluated, so a land that has left the battlefield
+                // is not counted and a land that arrived this turn is.
+                self.state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == defender
+                            && object.card.def().is_land()
+                    })
+                    .count()
+                    >= 8
+            }
         }
     }
 
@@ -4117,9 +4132,21 @@ impl Game {
     }
 
     fn apply_search_library_done(&mut self, player: PlayerId, events: &mut Vec<Event>) {
-        let Some(Pending::SearchLibrary { chosen, mode, .. }) = self.state.pending.take() else {
+        let Some(Pending::SearchLibrary {
+            chosen,
+            mode,
+            looked,
+            ..
+        }) = self.state.pending.take()
+        else {
             return;
         };
+        // CR 701.20a/e: a "look at the top N" is not a search. Only the looked-at
+        // cards move, only they are randomised, and no shuffle happens.
+        if mode == crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking {
+            self.finish_look_at_top(chosen.first().copied(), &looked, player, events);
+            return;
+        }
         for id in chosen {
             match mode {
                 crate::state::LibrarySearchMode::BasicLandToBattlefield
@@ -4147,6 +4174,9 @@ impl Game {
                         ),
                     });
                 }
+                // Not reachable: the look mode returns above, before this loop,
+                // because it moves the looked-at cards rather than searching.
+                crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => {}
             }
         }
         self.state
@@ -4154,6 +4184,64 @@ impl Game {
             .shuffle(&mut self.state.players[player as usize].library);
         events.push(Event::StateBasedAction {
             description: format!("P{player} shuffles their library after searching (CR 701.23)"),
+        });
+        self.state.turn.priority = None;
+    }
+
+    /// Finish a "look at the top N" pending choice: put the chosen creature card
+    /// onto the battlefield tapped and attacking the defending player, then put
+    /// the looked-at cards that were not chosen on the bottom in a random order.
+    ///
+    /// CR 701.20e is the reason this is not `shuffle`: only the looked-at cards
+    /// are randomised, and they go under the rest of the library, so a card that
+    /// was below the look keeps its position relative to the top. CR 508.1 is the
+    /// reason the new object is appended to `turn.attackers` but **not** to
+    /// `turn.declared_attackers`: it is attacking, but it was never *declared* as
+    /// an attacker, and CR 506.5's "attacks alone" is a fact about the
+    /// declaration.
+    fn finish_look_at_top(
+        &mut self,
+        chosen: Option<ObjectId>,
+        looked: &[ObjectId],
+        player: PlayerId,
+        events: &mut Vec<Event>,
+    ) {
+        if let Some(id) = chosen {
+            let card = self.state.object(id).card;
+            let defender = self.state.turn.defender;
+            self.enter_battlefield(id, player, events);
+            if let Some(object) = self.state.objects.get_mut(&id) {
+                object.tapped = true;
+            }
+            if !self.state.turn.attackers.contains(&id) {
+                self.state.turn.attackers.push(id);
+            }
+            events.push(Event::StateBasedAction {
+                description: match defender {
+                    Some(defender) => format!(
+                        "P{player} puts {} onto the battlefield tapped and attacking P{defender} (CR 701.20e, 508.1)",
+                        card.def().name
+                    ),
+                    None => format!(
+                        "P{player} puts {} onto the battlefield tapped (CR 701.20e, 508.1)",
+                        card.def().name
+                    ),
+                },
+            });
+        }
+        let mut rest: Vec<ObjectId> = looked
+            .iter()
+            .copied()
+            .filter(|id| Some(*id) != chosen)
+            .collect();
+        self.state.rng.shuffle(&mut rest);
+        let library = &mut self.state.players[player as usize].library;
+        library.retain(|id| !rest.contains(id));
+        library.extend(rest.iter().copied());
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{player} puts the rest of the looked-at cards on the bottom of their library in a random order (CR 701.20e)"
+            ),
         });
         self.state.turn.priority = None;
     }
@@ -8019,6 +8107,57 @@ impl Game {
                     chosen: Vec::new(),
                     eligible,
                     mode: crate::state::LibrarySearchMode::BasicLandToBattlefield,
+                    looked: Vec::new(),
+                });
+                self.state.turn.priority = None;
+                true
+            }
+            Effect::LookAtTopPutCreatureAttacking => {
+                let Some(defender) = self.state.turn.defender else {
+                    return false;
+                };
+                // CR 603.4: the printed intervening-if is checked twice — when the
+                // trigger would fire and again as it resolves.
+                if !self.trigger_condition_holds(item.card, defender, item.object) {
+                    events.push(Event::TriggerRemoved {
+                        controller,
+                        card: item.card,
+                        reason: "the printed intervening-if condition is false as the trigger \
+                                 resolves (CR 603.4)"
+                            .to_string(),
+                    });
+                    return false;
+                }
+                let library = self.state.player(controller).library.clone();
+                let looked: Vec<ObjectId> = library.into_iter().take(8).collect();
+                let eligible: Vec<ObjectId> = looked
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state
+                            .try_object(*id)
+                            .is_some_and(|object| object.card.def().is_creature())
+                    })
+                    .collect();
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "P{controller} looks at the top {} card(s) of their library (CR 701.20a)",
+                        looked.len()
+                    ),
+                });
+                if eligible.is_empty() {
+                    // Nothing to put: the whole look still goes to the bottom in
+                    // a random order and the instruction completes.
+                    self.finish_look_at_top(None, &looked, controller, events);
+                    return false;
+                }
+                self.state.pending = Some(Pending::SearchLibrary {
+                    player: controller,
+                    remaining: 1,
+                    chosen: Vec::new(),
+                    eligible,
+                    mode: crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking,
+                    looked,
                 });
                 self.state.turn.priority = None;
                 true
@@ -8094,6 +8233,7 @@ impl Game {
                     chosen: Vec::new(),
                     eligible,
                     mode: crate::state::LibrarySearchMode::SnowLandToHand,
+                    looked: Vec::new(),
                 });
                 self.state.turn.priority = None;
                 true
@@ -8137,6 +8277,7 @@ impl Game {
                     chosen: Vec::new(),
                     eligible,
                     mode: crate::state::LibrarySearchMode::AnyLandToBattlefield,
+                    looked: Vec::new(),
                 });
                 self.state.turn.priority = None;
                 true
@@ -9532,11 +9673,15 @@ impl Game {
                 chosen,
                 eligible,
                 mode,
+                ..
             } => {
                 let land_kind = match mode {
                     crate::state::LibrarySearchMode::BasicLandToBattlefield => "basic land",
                     crate::state::LibrarySearchMode::SnowLandToHand => "snow land",
                     crate::state::LibrarySearchMode::AnyLandToBattlefield => "land",
+                    crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => {
+                        "creature card from the look"
+                    }
                 };
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,

@@ -52,6 +52,8 @@ const SLICE44_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE45_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice45-sourced.json");
 /// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
+/// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
+const SLICE48_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice48-sourced.json");
 /// Slice 43: Lumra, Bellow of the Woods (BLB 183), fetched 2026-10-28.
 const SLICE43_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice43-sourced.json");
 /// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
@@ -457,6 +459,11 @@ fn slice45_cards() -> Vec<Value> {
 
 fn slice46_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE46_SOURCED).expect("sourced slice46 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice48_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE48_SOURCED).expect("sourced slice48 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -957,6 +964,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice44_cards())
         .chain(slice45_cards())
         .chain(slice46_cards())
+        .chain(slice48_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())
@@ -1069,6 +1077,66 @@ fn slice46_thijarian_witness_matches_its_recorded_printing() {
     let clue_abilities = aperture_core::abilities(CardId::ClueToken);
     assert_eq!(clue_abilities.len(), 1);
     assert_eq!(clue_abilities[0].text(), clue.oracle);
+}
+
+/// Slice 48: Owlbear Cub (CLB 246). The catalog string must equal the printing's
+/// `oracle_text` verbatim and the whole printed trigger line must be the one typed
+/// ability — the card must not print rules text the engine cannot execute. The
+/// printing's only keyword entry is its ability word ("Mama's Coming"), which is
+/// not a rules keyword, so the keyword table must stay empty for it.
+#[test]
+fn slice48_owlbear_cub_matches_its_recorded_printing() {
+    let cards = slice48_cards();
+    assert_eq!(cards.len(), 1, "slice 48 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Owlbear Cub");
+    let def = catalog::by_name(name)
+        .expect("Owlbear Cub is in the pool")
+        .def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    assert_eq!(
+        def.power,
+        sourced_text(record, "power").parse::<i32>().ok(),
+        "{name} power"
+    );
+    assert_eq!(
+        def.toughness,
+        sourced_text(record, "toughness").parse::<i32>().ok(),
+        "{name} toughness"
+    );
+    assert!(
+        def.kinds
+            .iter()
+            .any(|kind| matches!(kind, aperture_core::card::Kind::Creature)),
+        "it is a creature"
+    );
+    assert_eq!(
+        card_keywords(record),
+        vec!["Mama's Coming"],
+        "the printing's one keyword entry is an ability word"
+    );
+    assert!(
+        aperture_core::tokens::keywords(CardId::OwlbearCub).is_empty(),
+        "an ability word is not a keyword the table executes"
+    );
+    let abilities = aperture_core::abilities(CardId::OwlbearCub);
+    assert_eq!(abilities.len(), 1, "one printed trigger line");
+    assert_eq!(abilities[0].text(), def.oracle, "the line is implemented");
 }
 
 /// Slice 5 adds six cards whose behaviour is new (mill, counter target

@@ -248,6 +248,17 @@ pub enum Effect {
     /// printed order; a card that already left the graveyard is simply not
     /// found, and the investigate still happens (CR 609.3 has no "if you do").
     ExileDeadCreatureAndInvestigate,
+    /// "Look at the top eight cards of your library. You may put a creature card
+    /// from among them onto the battlefield tapped and attacking that player.
+    /// Put the rest on the bottom of your library in a random order" (Owlbear
+    /// Cub). CR 701.20a: looking at the top N is a private look, not a search, so
+    /// nothing is shuffled for it; the looked-at cards stay where they are until
+    /// the choice is answered, and only the *unchosen* looked-at cards go to the
+    /// bottom, in a random order among themselves (CR 701.20e) — the rest of the
+    /// library is never reordered. A creature put onto the battlefield attacking
+    /// never "attacked" (CR 508.1) and is therefore not part of the CR 506.5
+    /// declaration record.
+    LookAtTopPutCreatureAttacking,
     /// CR 701.14a: two target creatures deal damage equal to their power to
     /// each other simultaneously. Both must still satisfy the printed
     /// Bear/opponent relation at resolution or no damage is dealt.
@@ -474,6 +485,12 @@ impl Effect {
             Effect::CreateClueToken => "create a Clue token".to_string(),
             Effect::ExileDeadCreatureAndInvestigate => {
                 "exile it and investigate".to_string()
+            }
+            Effect::LookAtTopPutCreatureAttacking => {
+                "look at the top eight cards, put a creature card from among them onto the \
+                 battlefield tapped and attacking, then put the rest on the bottom in a random \
+                 order"
+                    .to_string()
             }
             Effect::BearTokenForEachPlayerWithPermanent => {
                 "each player who controls an artifact or enchantment creates a 2/2 green Bear token"
@@ -975,6 +992,10 @@ pub enum CardId {
     /// Issue 17 slice 46: Thijarian Witness (WHO 111), the pool's first
     /// "another creature dies if it was attacking or blocking alone" watcher.
     ThijarianWitness,
+    /// Issue 17 slice 48: Owlbear Cub (CLB 246), the pool's first "look at the
+    /// top N cards, you may put a creature card from among them onto the
+    /// battlefield tapped and attacking" trigger.
+    OwlbearCub,
     /// Issue 17 slice 46: the Clue token card (never importable, CR 111.10,
     /// 701.16a).
     ClueToken,

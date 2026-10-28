@@ -269,7 +269,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::UntapTargetAndCounterIfBear
                 | Effect::SkipNextUntapStep
                 | Effect::ReplaceNextDrawWithBearToken
-                | Effect::PairSourceWithChosenCreature => {
+                | Effect::PairSourceWithChosenCreature
+                | Effect::LookAtTopPutCreatureAttacking => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name

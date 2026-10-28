@@ -275,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 160] = [
+pub static CARDS: [CardDef; 161] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1274,6 +1274,16 @@ pub static CARDS: [CardDef; 160] = [
         ThijarianWitness, "Thijarian Witness", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Alien Cleric", power: Some(0), toughness: Some(4),
         oracle: "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+        spell: None
+    ),
+    // Issue 17 slice 48: Owlbear Cub (CLB 246). The pool's first "look at the top
+    // N, may put a creature card onto the battlefield tapped and attacking"
+    // trigger. Printed text copied verbatim from the CLB 246 printing recorded in
+    // fixtures/starter-corpus/slice48-sourced.json.
+    card!(
+        OwlbearCub, "Owlbear Cub", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bird Bear", power: Some(3), toughness: Some(3),
+        oracle: "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
         spell: None
     ),
 ];

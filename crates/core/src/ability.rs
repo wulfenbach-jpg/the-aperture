@@ -1069,6 +1069,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::FoodToken => FOOD_TOKEN,
         CardId::ClueToken => CLUE_TOKEN,
         CardId::ThijarianWitness => THIJARIAN_WITNESS,
+        CardId::OwlbearCub => OWLBEAR_CUB,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
@@ -1178,6 +1179,10 @@ pub enum TriggerCondition {
     /// read from printed color (CR 202.2a, `CardDef::is_black`), and a token is
     /// excluded by CR 111.6 even though it can have a color.
     DefendingPlayerControlsNoBlackNontokenPermanent,
+    /// "attacks a player who controls eight or more lands" (Owlbear Cub). Counts
+    /// the defending seat's lands on the battlefield as the clause is evaluated —
+    /// once when attackers are declared (CR 603.4) and again as it resolves.
+    DefendingPlayerControlsEightOrMoreLands,
 }
 
 /// The intervening-if clause of `card`'s trigger, if it prints one.
@@ -1185,6 +1190,7 @@ pub fn trigger_condition(card: CardId) -> TriggerCondition {
     match card {
         CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
         CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
+        CardId::OwlbearCub => TriggerCondition::DefendingPlayerControlsEightOrMoreLands,
         _ => TriggerCondition::Always,
     }
 }
@@ -1498,6 +1504,20 @@ const THIJARIAN_WITNESS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     optional: false,
     target: TargetSpec::None,
     effects: &[Effect::ExileDeadCreatureAndInvestigate],
+})];
+
+/// Owlbear Cub (CLB 246). One printed attack trigger whose intervening-if is a
+/// property of the *defending* player ("a player who controls eight or more
+/// lands"), followed by a private look at the top eight and an optional put onto
+/// the battlefield tapped and attacking. The trigger itself is not optional — the
+/// "may" belongs to the put, which is the pending choice's decline path — so the
+/// typed ability is not `optional`.
+const OWLBEAR_CUB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+    event: TriggerEvent::Attacks,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::LookAtTopPutCreatureAttacking],
 })];
 
 /// Spider-Ham, Peter Porker (SPM 114). Two printed abilities: an enters trigger

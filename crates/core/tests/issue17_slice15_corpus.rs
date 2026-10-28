@@ -139,7 +139,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Spider-Ham, Peter Porker, which closes one more again. Slices 41-46
     // register The Earth King, the two Equipment, Lumra Bellow of the Woods,
     // Spirit of the Aldergard, Titania's Command and Thijarian Witness, so the
-    // gap closes by six while the pool grows by six.
-    assert_eq!(missing.len(), 6, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 160, "the compiled pool");
+    // gap closes by six while the pool grows by six. Slice 48 registers Owlbear
+    // Cub, which closes one more and grows the pool by one.
+    assert_eq!(missing.len(), 5, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 161, "the compiled pool");
 }
