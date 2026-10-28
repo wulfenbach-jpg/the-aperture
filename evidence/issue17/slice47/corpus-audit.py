@@ -19,7 +19,7 @@ names = set()
 for macro in ("card", "card_artifact", "card_defender", "card_flash", "card_green", "card_islandwalk", "card_trample"):
     for m in re.finditer(rf"\b{macro}!\(\s*\w+,\s*\"([^\"]+)\"", CATALOG):
         names.add(m.group(1).lower())
-assert len(names) == 160, f"catalog parse found {len(names)} names, expected 153"
+assert len(names) == 161, f"catalog parse found {len(names)} names, expected 161"
 
 union = set()
 report = []
