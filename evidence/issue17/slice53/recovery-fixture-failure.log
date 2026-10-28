@@ -1,0 +1,736 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.97s
+     Running tests\issue17_slice53_ruxa.rs (target\debug\deps\issue17_slice53_ruxa-06c8b90dabc425f5.exe)
+
+running 1 test
+test battlefield_trample_grants_do_not_reach_graveyard_cards ... FAILED
+
+failures:
+
+---- battlefield_trample_grants_do_not_reach_graveyard_cards stdout ----
+
+thread 'battlefield_trample_grants_do_not_reach_graveyard_cards' (21444) panicked at crates\core\tests\issue17_slice53_ruxa.rs:373:5:
+Ruxa state after cast: GameState {
+    seed: 5314,
+    first_player: 0,
+    rng: Pcg32 {
+        state: 12041057855945640564,
+        inc: 15726070495360670683,
+    },
+    objects: {
+        ObjectId(
+            1,
+        ): Object {
+            id: ObjectId(
+                1,
+            ),
+            card: SurrakAndGoreclaw,
+            owner: 0,
+            controller: 0,
+            zone: Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            2,
+        ): Object {
+            id: ObjectId(
+                2,
+            ),
+            card: GrizzlyBears,
+            owner: 0,
+            controller: 0,
+            zone: Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            3,
+        ): Object {
+            id: ObjectId(
+                3,
+            ),
+            card: RuxaPatientProfessor,
+            owner: 0,
+            controller: 0,
+            zone: Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: true,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {
+                    PlusOnePlusOne: 1,
+                },
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            4,
+        ): Object {
+            id: ObjectId(
+                4,
+            ),
+            card: GrizzlyBears,
+            owner: 0,
+            controller: 0,
+            zone: Hand,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            5,
+        ): Object {
+            id: ObjectId(
+                5,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            6,
+        ): Object {
+            id: ObjectId(
+                6,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            7,
+        ): Object {
+            id: ObjectId(
+                7,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            8,
+        ): Object {
+            id: ObjectId(
+                8,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            9,
+        ): Object {
+            id: ObjectId(
+                9,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            10,
+        ): Object {
+            id: ObjectId(
+                10,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            11,
+        ): Object {
+            id: ObjectId(
+                11,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            12,
+        ): Object {
+            id: ObjectId(
+                12,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            13,
+        ): Object {
+            id: ObjectId(
+                13,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            14,
+        ): Object {
+            id: ObjectId(
+                14,
+            ),
+            card: Forest,
+            owner: 0,
+            controller: 0,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            15,
+        ): Object {
+            id: ObjectId(
+                15,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            16,
+        ): Object {
+            id: ObjectId(
+                16,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            17,
+        ): Object {
+            id: ObjectId(
+                17,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            18,
+        ): Object {
+            id: ObjectId(
+                18,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            19,
+        ): Object {
+            id: ObjectId(
+                19,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            20,
+        ): Object {
+            id: ObjectId(
+                20,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            21,
+        ): Object {
+            id: ObjectId(
+                21,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            22,
+        ): Object {
+            id: ObjectId(
+                22,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            23,
+        ): Object {
+            id: ObjectId(
+                23,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+        ObjectId(
+            24,
+        ): Object {
+            id: ObjectId(
+                24,
+            ),
+            card: Forest,
+            owner: 1,
+            controller: 1,
+            zone: Library,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: Counters {
+                counts: {},
+            },
+            paired_with: None,
+        },
+    },
+    commanders: [],
+    profile: Practice20,
+    commander_damage: [],
+    retired_commanders: [],
+    prevent_all_combat_damage_turn: None,
+    players: [
+        Player {
+            id: 0,
+            name: "P0",
+            deck_name: "fixture-P0",
+            library: [
+                ObjectId(
+                    5,
+                ),
+                ObjectId(
+                    6,
+                ),
+                ObjectId(
+                    7,
+                ),
+                ObjectId(
+                    8,
+                ),
+                ObjectId(
+                    9,
+                ),
+                ObjectId(
+                    10,
+                ),
+                ObjectId(
+                    11,
+                ),
+                ObjectId(
+                    12,
+                ),
+                ObjectId(
+                    13,
+                ),
+                ObjectId(
+                    14,
+                ),
+            ],
+            hand: [
+                ObjectId(
+                    4,
+                ),
+            ],
+            graveyard: [],
+            exile: [],
+            command_zone: [],
+            life: 20,
+            mana: ManaPool {
+                white: 0,
+                blue: 0,
+                black: 0,
+                red: 0,
+                green: 0,
+                colorless: 0,
+            },
+            mulligans: 0,
+            drew_from_empty: false,
+            lost: false,
+        },
+        Player {
+            id: 1,
+            name: "P1",
+            deck_name: "fixture-P1",
+            library: [
+                ObjectId(
+                    15,
+                ),
+                ObjectId(
+                    16,
+                ),
+                ObjectId(
+                    17,
+                ),
+                ObjectId(
+                    18,
+                ),
+                ObjectId(
+                    19,
+                ),
+                ObjectId(
+                    20,
+                ),
+                ObjectId(
+                    21,
+                ),
+                ObjectId(
+                    22,
+                ),
+                ObjectId(
+                    23,
+                ),
+                ObjectId(
+                    24,
+                ),
+            ],
+            hand: [],
+            graveyard: [],
+            exile: [],
+            command_zone: [],
+            life: 20,
+            mana: ManaPool {
+                white: 0,
+                blue: 0,
+                black: 0,
+                red: 0,
+                green: 0,
+                colorless: 0,
+            },
+            mulligans: 0,
+            drew_from_empty: false,
+            lost: false,
+        },
+    ],
+    stack: [],
+    turn: Turn {
+        number: 1,
+        active: 0,
+        step: PrecombatMain,
+        priority: Some(
+            0,
+        ),
+        passed: 0,
+        lands_played: 0,
+        attackers: [],
+        blocked: [],
+        blockers: [],
+        unpaired_blockers: [],
+        declared_attackers: [],
+        declared_blockers: [],
+        combat_damage_done: false,
+        defender: None,
+    },
+    pending: None,
+    mulligan: None,
+    resolving: None,
+    next_object: 25,
+    trigger_queue: [],
+    next_trigger_seq: 2,
+    revealed: [],
+    creature_died_this_turn: false,
+    nontoken_creature_deaths_this_turn: [],
+    draw_replacements: [],
+    activation_uses: {},
+    skip_next_untap: {},
+    effects: [
+        ContinuousEffect {
+            id: 1,
+            timestamp: 2,
+            source: Some(
+                ObjectId(
+                    1,
+                ),
+            ),
+            card: SurrakAndGoreclaw,
+            controller: 0,
+            layer: Ability,
+            target: ObjectId(
+                3,
+            ),
+            kind: GrantsHaste,
+            duration: UntilEndOfTurn,
+        },
+    ],
+    shields: [],
+    regeneration_shields: [],
+    next_effect: 2,
+    next_timestamp: 2,
+    revision: 7,
+    decision: 7,
+    outcome: None,
+    rules_revision: "2026-09-25",
+}
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    battlefield_trample_grants_do_not_reach_graveyard_cards
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice53_ruxa`

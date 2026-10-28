@@ -1,0 +1,30 @@
+{
+  "cards_returned_from_graveyard_to_hand": 12,
+  "casts": {
+    "Centaur Courser": 6,
+    "Grizzly Bears": 19,
+    "Ruxa, Patient Professor": 5
+  },
+  "combat_damage_to_creatures": 68,
+  "combat_damage_to_players": 166,
+  "commander": "Jasmine Boreal",
+  "deck": "decks/package-slice53.txt",
+  "digest": "b5cb7a5679b90e2ef4de2a4759e8fec6be840a5feac24d9fef20e86e544eee1a",
+  "driver": "evidence-only masked Ruxa demonstrator; NOT product heuristic or strength evidence",
+  "events": 3646,
+  "kind": "40-card package, not a desired starter",
+  "outcome": "Some(Win { winner: 0, reason: \"opponents' life totals reached 0 or less (CR 704.5a)\" })",
+  "profile": "CommanderCombat40",
+  "replay_digest_matches": true,
+  "ruxa_assignments_accepted": 6,
+  "ruxa_assignments_declined": 5,
+  "ruxa_assignments_offered": 11,
+  "ruxa_casts": 5,
+  "seats": 4,
+  "seed": 5353,
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1410,
+  "turns": 33
+}
