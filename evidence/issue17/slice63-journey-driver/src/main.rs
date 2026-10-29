@@ -95,33 +95,37 @@ fn main() {
                     .find(|legal| matches!(legal.action, Action::PlayLand { .. }))
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                                c.id == *card && c.card == CardId::GoblinWarchief
-                            }),
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::GoblinWarchief),
                             _ => false,
                         })
                     })
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                                c.id == *card && c.card == CardId::GoblinKing
-                            }),
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::GoblinKing),
                             _ => false,
                         })
                     })
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                                c.id == *card && c.card == CardId::DragonlordsServant
-                            }),
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::DragonlordsServant),
                             _ => false,
                         })
                     })
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                                c.id == *card && c.card == CardId::VolcanicDragon
-                            }),
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::VolcanicDragon),
                             _ => false,
                         })
                     })
