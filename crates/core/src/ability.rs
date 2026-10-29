@@ -1257,6 +1257,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::SiegeGangCommander => SIEGE_GANG_COMMANDER,
         CardId::PashalikMons => PASHALIK_MONS,
         CardId::GoblinTrashmaster => GOBLIN_TRASHMASTER,
+        CardId::Moggcatcher => MOGGCATCHER,
         CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
@@ -2074,6 +2075,29 @@ const SIEGE_GANG_COMMANDER: &[Ability] = &[
         sorcery_timing: false,
     }),
 ];
+
+/// Moggcatcher (NEM 96): "{3}, {T}: Search your library for a Goblin
+/// permanent card, put it onto the battlefield, then shuffle."
+///
+/// CR 701.23: the search is a real search of the whole library, answered as a
+/// resumable pending choice (one offer per Goblin permanent card plus a
+/// "finish searching" offer that finds nothing). The found card is put onto the
+/// battlefield rather than revealed into hand, so it enters through the ordinary
+/// entry path and its entry triggers fire (CR 603.6a). CR 110.4a is why the
+/// filter is "permanent card": a Goblin instant or sorcery is not eligible.
+const MOGGCATCHER: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{3}, {T}: Search your library for a Goblin permanent card, put it onto the battlefield, then shuffle.",
+    cost: AbilityCost {
+        tap: true,
+        mana: Some("{3}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::None,
+    modes: SINGLE_MODE,
+    effects: &[Effect::SearchGoblinPermanentToBattlefield],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
 
 const SPIDER_HAM_STATIC: &[StaticAbility] = &[
     StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {

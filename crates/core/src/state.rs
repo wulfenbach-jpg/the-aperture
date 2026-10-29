@@ -664,6 +664,10 @@ impl Pending {
                     "P{player}: choose up to {remaining} Goblin card(s) to reveal and put into hand ({} chosen)",
                     chosen.len()
                 ),
+                LibrarySearchMode::GoblinPermanentToBattlefield => format!(
+                    "P{player}: choose up to {remaining} Goblin permanent card(s) to put onto the battlefield ({} chosen)",
+                    chosen.len()
+                ),
             },
             Pending::TopCardChoice {
                 player, can_take, ..
@@ -1031,6 +1035,12 @@ pub enum LibrarySearchMode {
     /// Goblin card in any zone-independent sense — creature cards only in this
     /// pool — is eligible and nothing else is.
     GoblinCardToHand,
+    /// Moggcatcher: "search your library for a Goblin permanent card, put it
+    /// onto the battlefield, then shuffle." A real whole-library search
+    /// (CR 701.23) filtered by the Goblin subtype on the printed type line and
+    /// by CR 110.4a (a permanent card only). The found card is put onto the
+    /// battlefield, not revealed into hand.
+    GoblinPermanentToBattlefield,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -2486,7 +2496,9 @@ impl GameState {
                 }
                 if matches!(
                     mode,
-                    LibrarySearchMode::SnowLandToHand | LibrarySearchMode::GoblinCardToHand
+                    LibrarySearchMode::SnowLandToHand
+                        | LibrarySearchMode::GoblinCardToHand
+                        | LibrarySearchMode::GoblinPermanentToBattlefield
                 ) && chosen.len() + usize::from(*remaining) != 1
                 {
                     return Err(EngineError::InvalidState {
@@ -2512,6 +2524,10 @@ impl GameState {
                                 LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => false,
                                 LibrarySearchMode::GoblinCardToHand => {
                                     object.card.def().is_goblin()
+                                }
+                                LibrarySearchMode::GoblinPermanentToBattlefield => {
+                                    object.card.def().is_goblin()
+                                        && object.card.def().is_permanent_card()
                                 }
                             }
                     }) && library.contains(id)

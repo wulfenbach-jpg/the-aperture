@@ -334,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 182] = [
+pub static CARDS: [CardDef; 183] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1510,6 +1510,18 @@ pub static CARDS: [CardDef; 182] = [
         GoblinTrashmaster, "Goblin Trashmaster", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin Warrior", power: Some(3), toughness: Some(3),
         oracle: "Other Goblins you control get +1/+1.\nSacrifice a Goblin: Destroy target artifact.",
+        spell: None
+    ),
+    // Slice 69. Moggcatcher (NEM 96) fetched live from Scryfall on 2026-10-29;
+    // every printing was checked for one distinct oracle text. Its printed
+    // ability searches a *Goblin permanent card* onto the battlefield, so the
+    // search filter accepts any Goblin permanent card (CR 110.4a) and the found
+    // card enters through the ordinary entry path. Record:
+    // fixtures/starter-corpus/slice69-sourced.json.
+    card!(
+        Moggcatcher, "Moggcatcher", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Mercenary", power: Some(2), toughness: Some(2),
+        oracle: "{3}, {T}: Search your library for a Goblin permanent card, put it onto the battlefield, then shuffle.",
         spell: None
     ),
 ];

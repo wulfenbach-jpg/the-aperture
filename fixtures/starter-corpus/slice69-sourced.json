@@ -1,0 +1,35 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-29T20:20:00Z",
+  "cards": [
+    {
+      "name": "Moggcatcher",
+      "oracle_id": "4845dc21-7534-4896-b298-4d44cd7a3b27",
+      "scryfall_id": "9ba582d7-1dce-4664-8bd9-6b419596788c",
+      "set": "nem",
+      "collector_number": "96",
+      "layout": "normal",
+      "released_at": "2000-02-14",
+      "mana_cost": "{2}{R}{R}",
+      "type_line": "Creature — Human Mercenary",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "{3}, {T}: Search your library for a Goblin permanent card, put it onto the battlefield, then shuffle.",
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [],
+      "legalities_commander": "legal",
+      "mana_value": 4,
+      "printings_checked": 3,
+      "printings": [
+        "nem/96",
+        "plst/NEM-96",
+        "sld/7081"
+      ],
+      "printings_distinct_oracle_texts": 1,
+      "retrieved_at_utc": "2026-10-29T20:20:00Z"
+    }
+  ]
+}

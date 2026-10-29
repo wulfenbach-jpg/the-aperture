@@ -207,7 +207,6 @@
         "Legion Loyalist",
         "Legion Warboss",
         "Mogg War Marshal",
-        "Moggcatcher",
         "Redcap Gutter-Dweller",
         "Rundvelt Hordemaster",
         "Scuzzback Scrounger",
@@ -219,9 +218,9 @@
         "Zada, Hedron Grinder"
       ],
       "missing_interactions": [
-        "remaining 33 desired-list cards are not in the supported pool (first unsupported names: Brash Taunter, Breeches, Eager Pillager, Conspicuous Snoop, Crime Novelist, Empty the Warrens, General Kreat, the Boltbringer)",
-        "goblin tribal payoffs still unsupported: library search onto the battlefield (Moggcatcher), goblin-count-scaled combat payoffs (Grenzo, Howlsquad Heavy, General Kreat), and artifact/graveyard Goblin recursion (Goblin Engineer, Goblin Welder, Squee)",
-        "tokens outside the typed 1/1 red Goblin package; the three-token enters package, the two-token sacrifice payoff and the artifact-destruction sacrifice of this family are now implemented, so what remains under this heading is the other token-making cards named above"
+        "remaining 32 desired-list cards are not in the supported pool (first unsupported names: Brash Taunter, Breeches, Eager Pillager, Conspicuous Snoop, Crime Novelist, Empty the Warrens, General Kreat, the Boltbringer)",
+        "goblin tribal payoffs still unsupported: goblin-count-scaled combat payoffs (Grenzo, Howlsquad Heavy, General Kreat), artifact/graveyard Goblin recursion (Goblin Engineer, Goblin Welder, Squee) and spell-copying payoffs (Zada, Hedron Grinder)",
+        "tokens outside the typed 1/1 red Goblin package; the three-token enters package, the two-token sacrifice payoff, the artifact-destruction sacrifice and the library-to-battlefield Goblin search of this family are now implemented, so what remains under this heading is the other token-making cards named above"
       ]
     },
     {

@@ -475,6 +475,13 @@ pub enum Effect {
     /// action per Goblin card in the library plus a "finish searching" action
     /// that finds nothing.
     SearchGoblinCardToHand,
+    /// CR 701.23: "{3}, {T}: Search your library for a Goblin permanent card,
+    /// put it onto the battlefield, then shuffle" (Moggcatcher). The same
+    /// resumable search as [`Effect::SearchGoblinCardToHand`], but the found card
+    /// is put onto the battlefield instead of into hand, so it is not revealed
+    /// separately and it enters through the ordinary entry path (entry triggers
+    /// fire, CR 603.6a).
+    SearchGoblinPermanentToBattlefield,
 }
 
 const TITANIA_EXILE_GRAVE: &[Effect] = &[Effect::ExileTargetPlayersGraveyardAndGainLife];
@@ -631,6 +638,11 @@ impl Effect {
             Effect::SearchGoblinCardToHand => {
                 "search your library for a Goblin card, reveal it, put it into your hand, then \
                  shuffle"
+                    .to_string()
+            }
+            Effect::SearchGoblinPermanentToBattlefield => {
+                "search your library for a Goblin permanent card, put it onto the battlefield, \
+                 then shuffle"
                     .to_string()
             }
             Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
@@ -951,6 +963,14 @@ impl CardDef {
     pub fn is_permanent_spell(&self) -> bool {
         self.is_creature() || self.is_artifact() || self.is_enchantment()
     }
+
+    /// CR 110.4a: a permanent card is a card that can be put onto the
+    /// battlefield — an artifact, creature, enchantment, land or planeswalker
+    /// card. Used by "search your library for a Goblin permanent card"
+    /// (Moggcatcher), which must not find a Goblin instant or sorcery.
+    pub fn is_permanent_card(&self) -> bool {
+        self.is_creature() || self.is_artifact() || self.is_enchantment() || self.is_land()
+    }
 }
 
 /// Card identity inside the supported pool.
@@ -1089,6 +1109,7 @@ pub enum CardId {
     SiegeGangCommander,
     PashalikMons,
     GoblinTrashmaster,
+    Moggcatcher,
     BeetlebackChief,
     GoblinToken,
     AlabornTrooper,

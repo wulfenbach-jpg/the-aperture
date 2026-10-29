@@ -5177,6 +5177,19 @@ impl Game {
                         ),
                     });
                 }
+                // CR 701.23 + 110.4a: a searched Goblin *permanent* card is put
+                // onto the battlefield, so it enters through the ordinary entry
+                // path (entry triggers fire) and nothing is revealed into hand.
+                crate::state::LibrarySearchMode::GoblinPermanentToBattlefield => {
+                    let card = self.state.object(id).card;
+                    self.enter_battlefield(id, player, events, 0);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{player} puts {} onto the battlefield from their library (CR 701.23)",
+                            card.def().name
+                        ),
+                    });
+                }
                 // Not reachable: the look mode returns above, before this loop,
                 // because it moves the looked-at cards rather than searching.
                 crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => {}
@@ -10320,6 +10333,36 @@ impl Game {
                 self.state.turn.priority = None;
                 true
             }
+            // CR 701.23: "search your library for a Goblin permanent card, put
+            // it onto the battlefield, then shuffle" (Moggcatcher). Same
+            // resumable search as Goblin Matron, with a CR 110.4a permanent-card
+            // filter; the found card enters rather than going to hand.
+            Effect::SearchGoblinPermanentToBattlefield => {
+                let eligible: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .library
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state.try_object(*id).is_some_and(|object| {
+                            object.zone == Zone::Library
+                                && object.card.def().is_goblin()
+                                && object.card.def().is_permanent_card()
+                        })
+                    })
+                    .collect();
+                self.state.pending = Some(Pending::SearchLibrary {
+                    player: controller,
+                    remaining: 1,
+                    chosen: Vec::new(),
+                    eligible,
+                    mode: crate::state::LibrarySearchMode::GoblinPermanentToBattlefield,
+                    looked: Vec::new(),
+                });
+                self.state.turn.priority = None;
+                true
+            }
             Effect::SearchSnowLandToHand => {
                 let eligible: Vec<ObjectId> = self
                     .state
@@ -12491,6 +12534,9 @@ impl Game {
                         "creature card from the look"
                     }
                     crate::state::LibrarySearchMode::GoblinCardToHand => "Goblin card",
+                    crate::state::LibrarySearchMode::GoblinPermanentToBattlefield => {
+                        "Goblin permanent card"
+                    }
                 };
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,

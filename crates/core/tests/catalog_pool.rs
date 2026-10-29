@@ -353,7 +353,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::UntapSource
                 | Effect::CreateGoblinTokensEqualToSourcePower
                 | Effect::DamageTargetForGoblinsEnteredThisTurn
-                | Effect::SearchGoblinCardToHand => {
+                | Effect::SearchGoblinCardToHand
+                | Effect::SearchGoblinPermanentToBattlefield => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name

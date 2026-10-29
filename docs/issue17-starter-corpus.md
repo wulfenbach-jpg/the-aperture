@@ -46,14 +46,14 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **168** are in the supported 182-card catalog and **291** are missing. Slice
+* **169** are in the supported 183-card catalog and **290** are missing. Slice
  25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **179**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **183**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
-  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). Slice 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit Lord and Goblin Matron (172→176, supported 158→162, missing 301→297, Krenko 43→39). Slice 65 adds Siege-Gang Commander (176→177, supported 162→163, missing 297→296, Krenko 39→38). Slice 66 adds Pashalik Mons and Goblin Trashmaster (177→179, supported 163→165, missing 296→294, Krenko 38→36). The intervening per-slice list is
+  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). Slice 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit Lord and Goblin Matron (172→176, supported 158→162, missing 301→297, Krenko 43→39). Slice 65 adds Siege-Gang Commander (176→177, supported 162→163, missing 297→296, Krenko 39→38). Slice 66 adds Pashalik Mons and Goblin Trashmaster (177→179, supported 163→165, missing 296→294, Krenko 38→36). Slice 67 adds Siege-Gang Lieutenant (179→180, supported 165→166, missing 294→293, Krenko 36→35). Slice 68 adds Skirk Prospector and Zo-Zu the Punisher (180→182, supported 166→168, missing 293→291, Krenko 35→33). Slice 69 adds Moggcatcher (182→183, supported 168→169, missing 291→290, Krenko 33→32). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -345,7 +345,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 182 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 183 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1479,4 +1479,30 @@ claimed for newly affected triggers.
 
 **Corpus after this slice.** 182 catalog / 459 union = **168 supported + 291
 missing**, per-list `[55, 0, 51, 33, 0, 52, 52, 53]`, Krenko **33** missing;
+**two of eight** lists certified. No 3/8 claim.
+
+## Slice 69 — Moggcatcher: a Goblin permanent searched onto the battlefield
+
+Moggcatcher (NEM 96, `{2}{R}{R}`, 2/2 Human Mercenary; live Scryfall text fetched
+2026-10-29, all 3 printings checked for one distinct oracle text) prints
+"{3}, {T}: Search your library for a Goblin permanent card, put it onto the
+battlefield, then shuffle." It reuses the resumable whole-library search added
+for Goblin Matron (CR 701.23) with a new `LibrarySearchMode`, so an activation
+offers one choice per Goblin permanent card in the library plus the printed
+"finish searching" answer, and a forged pick outside that offer is refused by
+`GameState::validate` through the ordinary search checks. The difference from
+Goblin Matron is the destination and the filter: the found card is put onto the
+battlefield (not revealed into hand), so it enters through the ordinary entry
+path and its entry triggers fire (CR 603.6a) — the test proves this with
+Siege-Gang Commander, whose three Goblin tokens arrive after the search — and
+the filter is a Goblin *permanent* card (CR 110.4a), so a Goblin instant or
+sorcery could never be found. Every Goblin card in today's pool is a creature,
+so the permanent-card half of the filter is not yet discriminating; it is stated
+that way rather than claimed as covered by a test. The search suspends on a
+`Pending::SearchLibrary` that round-trips through the real
+`SessionSave::capture` → JSON → `from_json` path and continues to the same
+digest.
+
+**Corpus after this slice.** 183 catalog / 459 union = **169 supported + 290
+missing**, per-list `[55, 0, 51, 32, 0, 52, 52, 53]`, Krenko **32** missing;
 **two of eight** lists certified. No 3/8 claim.
