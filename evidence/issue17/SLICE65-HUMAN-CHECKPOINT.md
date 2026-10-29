@@ -96,3 +96,41 @@ plausible implementation passes its own test and is still wrong. Then the same w
 history, card, branch and draft PR 46 continues the remaining sacrifice-a-Goblin family
 (Skirk Prospector, Siege-Gang Lieutenant, Goblin Trashmaster, Pashalik Mons) and the rest of
 Krenko's 38 names.
+
+## Errata (added in slice 66 — review 365 R365-2/R365-3/R365-4)
+
+The body above is the historical record and is **not** rewritten. Three
+corrections were required by review 365 and are recorded here so nobody reads
+the original text as current:
+
+* **R365-2 — event count.** The card handoff and its comment said the CLI journey
+  produced `5578` events. That figure appears in no artifact: `slice65/journey.json`,
+  this checkpoint, the shipped replay and the reviewer's own rerun all say
+  **5571**. 5571 is the correct number; 5578 was a transcription error in the
+  handoff text only, never in the artifacts.
+* **R365-3 — the journey command was not runnable as written.** The row above
+  quotes `selfplay --seats 4 --seed 2525 --commander-combat-practice`, which is
+  refused (the profile requires one `--commander SEAT:CARD` per seat) and would
+  have used the bundled practice decks. The command that actually reproduces the
+  recorded artifact is:
+
+  ```sh
+  target/debug/aperture-cli selfplay --seats 4 --seed 2525 \
+    --commander-combat-practice \
+    --commander "0:Krenko, Mob Boss" --commander "1:Krenko, Mob Boss" \
+    --commander "2:Krenko, Mob Boss" --commander "3:Krenko, Mob Boss" \
+    --deck decks/package-slice65.txt --deck decks/package-slice65.txt \
+    --deck decks/package-slice65.txt --deck decks/package-slice65.txt \
+    --out evidence/issue17/slice65/journey.json \
+    --replay-out evidence/issue17/slice65/journey-replay.json
+  target/debug/aperture-cli replay --file evidence/issue17/slice65/journey-replay.json
+  ```
+
+  The reviewer confirmed this reproduces terminal `Win{P2}`, 1648 steps, 38
+  turns, 5571 events, digest `3ae78bd3a0c1…`.
+* **R365-4 — the package deck's header described a different deck.** It claimed
+  "one other Goblin payoff" and "34 Mountains" and that the journey "really
+  casts" Siege-Gang Commander. The file is `3 Siege-Gang Commander` + `37
+  Mountain`, and the heuristic never cast it. The header in
+  `decks/package-slice65.txt` is corrected in slice 66 and now states exactly
+  what the file contains and what the game did.
