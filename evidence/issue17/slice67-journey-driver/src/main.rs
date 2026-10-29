@@ -260,7 +260,7 @@ fn main() {
         "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
         "seed": SEED, "seats": 4, "starting_life": 40, "status": "terminal",
         "deck": PACKAGE, "kind": "40-card package, not a desired starter",
-        "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+        "commanders": "Krenko, Mob Boss injected as commander for all four seats by this demonstrator",
         "snapshots_exact": true,
         "snapshot_sha256": aperture_core::digest::snapshot_digest(text.as_bytes()).unwrap(),
         "steps": steps, "turns": game.state.turn.number, "digest": game.digest(),
