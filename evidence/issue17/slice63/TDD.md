@@ -22,6 +22,10 @@ The King expectation was later corrected from 2 to 3 because two Kings each add
 After statics, landwalk, cost reduction and the shared no-abilities update, the
 suite is GREEN. Later added tests cover Warchief-granted haste/mountainwalk in the
 no-abilities predicate, departure, Chieftain-style recipient controls, colored-pip
-refusal and the Dragon-typed static. Final targeted test count: 8.
+refusal and the Dragon-typed static. Final targeted test count: 10 (the
+five-compiled-failure RED phase produced 8 tests; two controls — the real-cast
+positively-reduced Dragon payment and the Krenko command-tax case — were added
+after the prepublication cooperative-payment review, so the shipped binary runs
+10, not 8).
 
 No compile error is counted as RED.

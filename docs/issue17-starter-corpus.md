@@ -51,15 +51,19 @@ basic lands (coordinator evidence
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **168**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **172**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
-  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). The intervening per-slice list is
+  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
 * the manifest's `missing_cards` per list is computed from the same catalog
-  membership and sums to the same verified contents. Planned lists remain
-  metadata only; Jasmine is the only certified/playable starter.
+  membership and sums to the same verified contents. **Two of the eight lists
+  are certified and playable** — `jasmine-vanilla-stompy` (slice 3) and
+  `ayula-bear-counters` (slice 60) — each with an exact 100-card snapshot and
+  three terminal four-seat certification games; the other six remain metadata
+  only, and a list is never called playable because its gap counters reached
+  zero without a `certify` run.
 * Structure per list is still 99 library cards + a separately named commander;
   the Swamp basic in Elas is now supported, but the rest of that desired list
   still needs its unsupported cards and interactions.
@@ -174,7 +178,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    blue Drake with functional flying for Talrand, Sky Summoner. Zada and the
    remaining Ayula-list Bear makers still need their own token types (Ayula
    herself needs no token); the exact Krenko starter is still planned
-   (46 missing) and Talrand's desired list has 51 missing cards;
+   (43 missing as review 363 audited it, 39 after slice 64's Goblin
+   Sharpshooter / Krenko, Tin Street Kingpin / Hobgoblin Bandit Lord / Goblin
+   Matron batch) and Talrand's desired list has 51 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
    independent of counters), **bounded implemented** landfall for Tatyova and
