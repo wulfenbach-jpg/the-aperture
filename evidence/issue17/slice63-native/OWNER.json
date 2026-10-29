@@ -1,0 +1,22 @@
+{
+  "task_id": "t_67778feb",
+  "base": "a4ac11ca9813d6ba8327c658e8f793673755dc27",
+  "writer_history": "evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+  "history_bytes_before": 14493359,
+  "history_lines_before": 7293,
+  "assignment": "evidence/issue17/ASSIGN-SLICE63.md",
+  "process_session": "proc_a157b9060530",
+  "launcher_pid": 32424,
+  "log": "evidence/issue17/slice63-writer.log",
+  "worktree": "C:/AI/aperture-worktrees/issue-17",
+  "status": "writer_exited_native_selfcheck_and_exact_head_ci_passed_preparing_review_handoff",
+  "repair_process_session": "proc_5ebab6fad389",
+  "repair_launcher_pid": 30684,
+  "code_and_driver_head": "150435b94f2e5282eaf6c5dbc782ffe1c148680e",
+  "ci_process_session": "proc_6f3014c6b003",
+  "ci_launcher_pid": 4164,
+  "exact_history_append_verified": true,
+  "native_owns": ["publication", "exact-head CI", "independent review handoff"],
+  "no_competing_workers": true,
+  "global_configs_unchanged": true
+}

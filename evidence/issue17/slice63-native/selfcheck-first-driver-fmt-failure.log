@@ -1,0 +1,58 @@
+corpus-audit exit 0
+journey exit 0
+separate-cli-replay exit 0
+fmt exit 0
+driver-fmt exit 1
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice63-journey-driver\src\main.rs:95:
+                     .find(|legal| matches!(legal.action, Action::PlayLand { .. }))
+                     .or_else(|| {
+                         view.legal.iter().find(|legal| match &legal.action {
+[31m-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
+[0m[31m-                                c.id == *card && c.card == CardId::GoblinWarchief
+[0m[31m-                            }),
+[0m[32m+                            Action::CastSpell { card, .. } => view
+[0m[32m+                                .own_hand
+[0m[32m+                                .iter()
+[0m[32m+                                .any(|c| c.id == *card && c.card == CardId::GoblinWarchief),
+[0m                             _ => false,
+                         })
+                     })
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice63-journey-driver\src\main.rs:104:
+                     .or_else(|| {
+                         view.legal.iter().find(|legal| match &legal.action {
+[31m-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
+[0m[31m-                                c.id == *card && c.card == CardId::GoblinKing
+[0m[31m-                            }),
+[0m[32m+                            Action::CastSpell { card, .. } => view
+[0m[32m+                                .own_hand
+[0m[32m+                                .iter()
+[0m[32m+                                .any(|c| c.id == *card && c.card == CardId::GoblinKing),
+[0m                             _ => false,
+                         })
+                     })
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice63-journey-driver\src\main.rs:112:
+                     .or_else(|| {
+                         view.legal.iter().find(|legal| match &legal.action {
+[31m-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
+[0m[31m-                                c.id == *card && c.card == CardId::DragonlordsServant
+[0m[31m-                            }),
+[0m[32m+                            Action::CastSpell { card, .. } => view
+[0m[32m+                                .own_hand
+[0m[32m+                                .iter()
+[0m[32m+                                .any(|c| c.id == *card && c.card == CardId::DragonlordsServant),
+[0m                             _ => false,
+                         })
+                     })
+Diff in \\?\C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice63-journey-driver\src\main.rs:120:
+                     .or_else(|| {
+                         view.legal.iter().find(|legal| match &legal.action {
+[31m-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
+[0m[31m-                                c.id == *card && c.card == CardId::VolcanicDragon
+[0m[31m-                            }),
+[0m[32m+                            Action::CastSpell { card, .. } => view
+[0m[32m+                                .own_hand
+[0m[32m+                                .iter()
+[0m[32m+                                .any(|c| c.id == *card && c.card == CardId::VolcanicDragon),
+[0m                             _ => false,
+                         })
+                     })

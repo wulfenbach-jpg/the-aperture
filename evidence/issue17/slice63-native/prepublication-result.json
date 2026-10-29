@@ -1,0 +1,100 @@
+{
+  "self_check": true,
+  "independent_review": false,
+  "head": "150435b94f2e5282eaf6c5dbc782ffe1c148680e",
+  "commands": {
+    "corpus-audit": {
+      "command": [
+        "python",
+        "evidence/issue17/slice63/corpus-audit.py"
+      ],
+      "exit": 0
+    },
+    "journey": {
+      "command": [
+        "cargo",
+        "run",
+        "--release",
+        "--locked",
+        "--manifest-path",
+        "evidence/issue17/slice63-journey-driver/Cargo.toml"
+      ],
+      "exit": 0
+    },
+    "separate-cli-replay": {
+      "command": [
+        "target/release/aperture-cli.exe",
+        "replay",
+        "--file",
+        "C:\\AI\\aperture-worktrees\\issue-17\\evidence\\issue17\\slice63-native\\demo-replay.json"
+      ],
+      "exit": 0
+    },
+    "fmt": {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit": 0
+    },
+    "driver-fmt": {
+      "command": [
+        "cargo",
+        "fmt",
+        "--manifest-path",
+        "evidence/issue17/slice63-journey-driver/Cargo.toml",
+        "--check"
+      ],
+      "exit": 0
+    }
+  },
+  "three_artifacts_byte_identical_to_writer": {
+    "demo-journey.json": true,
+    "demo-replay.json": true,
+    "demo-save.json": true
+  },
+  "writer_focused_result_lines": 12,
+  "writer_focused_passed": 139,
+  "writer_focused_failed": 0,
+  "native_affected": "issue17_slice62 7/0 + issue17_slice63 10/0; overlap writer, not additive",
+  "journey": {
+    "all_goblin_tokens": 2,
+    "attack_declarations": 14,
+    "casts": {
+      "Dragonlord's Servant": 3,
+      "Goblin Instigator": 2,
+      "Goblin King": 6,
+      "Goblin Warchief": 6,
+      "Volcanic Dragon": 1
+    },
+    "combat_damage_events": 44,
+    "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+    "deck": "decks/package-slice63.txt",
+    "digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+    "dragon_casts_with_servant": 1,
+    "driver": "projected legal-offer evidence driver; explicitly not product AI",
+    "kind": "40-card package, not a desired starter",
+    "outcome": {
+      "Win": {
+        "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+        "winner": 3
+      }
+    },
+    "replay_digest_matches": true,
+    "replay_events": 2455,
+    "seats": 4,
+    "seed": 2323,
+    "snapshot_sha256": "b2539164ff5335e672549608b0d17a51a714137981ff99eb6819f2d01f68fa6a",
+    "snapshots_exact": true,
+    "starting_life": 40,
+    "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+    "status": "terminal",
+    "steps": 954,
+    "turns": 23
+  },
+  "full_issue17_accepted": false,
+  "certified": 2,
+  "desired": 8
+}

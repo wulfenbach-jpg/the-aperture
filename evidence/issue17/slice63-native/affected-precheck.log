@@ -1,0 +1,28 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.96s
+     Running tests\issue17_slice62.rs (target\debug\deps\issue17_slice62-64c0257e086a991f.exe)
+
+running 7 tests
+test actual_attack_declaration_records_the_turn_fact_after_the_attacker_leaves ... ok
+test chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate ... FAILED
+test goblin_chieftain_anthem_and_haste_are_other_owned_goblins_only ... ok
+test raid_does_not_trigger_when_entering_end_step_without_an_attack ... ok
+test searslicer_casts_and_raid_end_step_makes_a_real_token_after_attackers_leave ... ok
+test real_attack_history_save_loads_and_both_games_finish_identically ... ok
+test raid_history_resets_on_turn_transition_and_roundtrips_a_save ... ok
+
+failures:
+
+---- chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate stdout ----
+
+thread 'chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate' (14444) panicked at crates\core\tests\issue17_slice62.rs:419:5:
+an opposing Chieftain does not grant abilities
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate
+
+test result: FAILED. 6 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice62`

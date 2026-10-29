@@ -1,0 +1,28 @@
+     Locking 24 packages to latest Rust 1.97.1 compatible versions
+   Compiling memchr v2.8.3
+   Compiling syn v3.0.9
+   Compiling serde_json v1.0.154
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling thiserror v2.0.21
+   Compiling serde v1.0.229
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling slice63-native-offer-audit v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice63-native\offer-probe)
+    Finished `release` profile [optimized] target(s) in 32.77s
+     Running `evidence/issue17/slice63-journey-driver/target\release\slice63-native-offer-audit.exe evidence/issue17/slice63-native/demo-replay.json`
+{
+  "accepted_actions_checked": 954,
+  "all_actions_exactly_offered": true,
+  "discounted_dragon_payments": [
+    {
+      "mana_paid": 4,
+      "printed_mana": 6,
+      "seat": 2,
+      "servants": 2,
+      "step": 864
+    }
+  ],
+  "final_digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+  "self_check_not_independent_review": true,
+  "terminal": true
+}
