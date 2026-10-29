@@ -1145,6 +1145,11 @@ pub struct GameState {
     /// Per-seat The Ring state; empty/skipped when untouched.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub rings: Vec<RingState>,
+    /// CR 117.3c: the activator receives the next priority grant after an
+    /// activated ability completes its post-payment checkpoint. Cleared as soon
+    /// as that grant is delivered; omitted when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub activation_priority: Option<PlayerId>,
     /// Seats that declared at least one attacker this turn ("Raid — if you
     /// attacked this turn"). Empty and skipped until an attack is declared;
     /// cleared only when the turn number advances, not on cleanup.
@@ -1462,6 +1467,13 @@ impl GameState {
         // A Ring projection is either absent (never materialized) or exactly one
         // canonical slot per seat. Validate every stored reference before any
         // decision code indexes it.
+        if let Some(seat) = self.activation_priority
+            && !in_range(seat)
+        {
+            return Err(EngineError::InvalidState {
+                reason: "activation priority seat is out of range".to_string(),
+            });
+        }
         if !self.rings.is_empty() {
             if self.rings.len() != n {
                 return Err(EngineError::InvalidState {

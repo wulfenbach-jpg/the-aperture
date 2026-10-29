@@ -236,3 +236,50 @@ fn sacrifice_anthem_runs_sbas_before_choosing_cost_trigger_targets() {
         "a 1/1 with 1 damage must die BEFORE any cost-trigger target is chosen (CR117.5)"
     );
 }
+
+#[test]
+fn nonactive_activator_gets_priority_back_without_a_spurious_active_round() {
+    let mut g = fixture(36706)
+        .battlefield(P0, &[CardId::GoblinTrashmaster])
+        .battlefield(P1, &[CardId::ArcaneSignet])
+        .library(P0, &[CardId::Mountain; 12])
+        .library(P1, &[CardId::Forest; 12])
+        .mana(
+            P0,
+            ManaPool {
+                red: 2,
+                colorless: 2,
+                ..Default::default()
+            },
+        )
+        .main(P1, Step::PrecombatMain)
+        .build();
+    submit_ok(&mut g, P1, Action::Pass);
+    assert_eq!(g.state.turn.priority, Some(P0));
+    let trash = battlefield_card(&g, P0, CardId::GoblinTrashmaster);
+    let artifact = battlefield_card(&g, P1, CardId::ArcaneSignet);
+    let action = Action::ActivateCostedAbility {
+        source: trash,
+        ability: 0,
+        mode: 0,
+        cost_cards: vec![trash],
+        targets: vec![Target::Permanent(artifact)],
+    };
+    assert!(
+        g.legal_actions().iter().any(|x| x.action == action),
+        "activation offered to non-active seat"
+    );
+    let events = submit_ok(&mut g, P0, action);
+    assert_eq!(g.state.turn.active, P1, "P1 remains the active player");
+    assert_eq!(
+        g.state.turn.priority,
+        Some(P0),
+        "CR 117.3c returns priority to the activator P0"
+    );
+    assert!(
+        !events
+            .iter()
+            .any(|e| matches!(e,Event::Priority{player} if *player==P1)),
+        "no spurious active-player priority"
+    );
+}

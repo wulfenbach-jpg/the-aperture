@@ -52,6 +52,7 @@ pub fn fixture(seed: u64) -> Fixture {
             nontoken_creature_deaths_this_turn: Vec::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            activation_priority: None,
             attacked_this_turn: Vec::new(),
             goblins_entered_this_turn: Vec::new(),
             hideaway: Vec::new(),

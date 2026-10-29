@@ -30,15 +30,27 @@ missing (nonland mana ability not approximated).
 ## Counts/gates
 - Fresh audit: **180 catalog / 459 union = 166 supported + 293 missing**;
   per-list `[55,0,51,35,0,52,52,53]`, Krenko **35**, **2/8 certified**.
-- checkpoint 5, cards 3, ordering, slice62 7, slice63 10, printings 26, catalog 5,
+- checkpoint 6, cards 5, ordering, slice62 7, slice63 10, printings 26, catalog 5,
   commander 43, slice15 2, replay_digest 6, import 3+1.
-- fmt/clippy/release and all focused exits 0; aggregate 0
-  (`slice67/final-native/gates.log`).
+- Full workspace: `cargo test --workspace --all-targets --locked --no-fail-fast`
+  **159 result lines / 1174 passed / 0 failed / 2 ignored, exit 0**; fmt 0,
+  workspace all-target clippy -D warnings 0, workspace release 0
+  (`slice67/native-check/workspace-repair.log`). Focused gates also 0.
 - Journey: 1233 steps/26 turns, terminal P2, digest `e9bc716d…db3`, snapshot
   `2522cd7e…0732`; Krenko cast 4, Siege-Gang Lieutenant 4, 14 Siege tokens,
   15 attacks, 147 combat-damage events. Shipped CLI replay matches.
 - Driver is an explicit 40-card evidence tool; injected combat is disclosed and
   it is not product AI/strength/GUI/100-card certification.
+
+## R367-1/2 activator-priority cause and fix
+The pre-repair failure was `command_zone_setup::ayula_ignores_opposing_bears...`
+at line 2115: `pass: NotYourDecision { expected: 1, got: 0 }`. `apply_activate_ability`
+left priority None and canonical settle granted it to the active player, but P0
+was a non-active activator on P1's turn. `activation_priority` now records the
+activator and `grant_priority` consumes it only after SBAs and trigger staging;
+pending/resolving and R367-1/2 behavior stay intact. Both health: active activations
+still receive the same seat they previously did, so accepted active-player cases
+cannot regress; the full workspace is green.
 
 ## Honest TDD note
 R367 has retained compiling REDs. No separate Siege pretest RED was retained;

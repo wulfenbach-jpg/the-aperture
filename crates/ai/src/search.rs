@@ -916,6 +916,7 @@ fn reconstruct(
         nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
         commanders: real_state.commanders.clone(),
         rings,
+        activation_priority: None,
         attacked_this_turn: real_state.attacked_this_turn.clone(),
         goblins_entered_this_turn: real_state.goblins_entered_this_turn.clone(),
         hideaway: real_state.hideaway.clone(),

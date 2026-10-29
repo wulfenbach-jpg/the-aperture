@@ -287,6 +287,7 @@ impl Game {
             objects: BTreeMap::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            activation_priority: None,
             attacked_this_turn: Vec::new(),
             goblins_entered_this_turn: Vec::new(),
             hideaway: Vec::new(),
@@ -5746,6 +5747,10 @@ impl Game {
         // priority holder while a TriggerTarget choice is suspended.
         self.state.turn.passed = 0;
         self.state.turn.priority = None;
+        // CR 117.3c: the next priority grant belongs to the activator, not
+        // necessarily the active player. grant_priority consumes this only after
+        // SBAs/staging and never while a pending/resolving item remains.
+        self.state.activation_priority = Some(player);
     }
 
     // --------------------------------------------------- triggered abilities
@@ -7143,6 +7148,10 @@ impl Game {
             self.state.turn.priority = None;
             return;
         }
+        // CR 117.3c: a completed activation checkpoint restores priority to its
+        // activator. Consume the marker only here, after SBAs and trigger
+        // staging, never while pending/resolving.
+        let player = self.state.activation_priority.take().unwrap_or(player);
         // CR 800.4j: if the seat that would receive priority has left the game,
         // the next live seat in turn order receives it.
         let recipient = if self.state.is_live(player) {

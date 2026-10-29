@@ -107,6 +107,12 @@ fn siege_gang_lieutenant_cast_trigger_tokens_haste_and_activation() {
         g.state.battlefield(P0).iter().any(|o| o.id == card),
         "cast resolved"
     );
+    let preexisting = add_object(&mut g, P0, CardId::GoblinToken, Zone::Battlefield);
+    g.state
+        .objects
+        .get_mut(&preexisting)
+        .unwrap()
+        .summoning_sick = true;
     // Enter BeginCombat through a real step transition.
     g.state.turn.step = Step::PrecombatMain;
     g.state.turn.priority = Some(P0);
@@ -117,7 +123,7 @@ fn siege_gang_lieutenant_cast_trigger_tokens_haste_and_activation() {
             .iter()
             .filter(|o| o.card == CardId::GoblinToken)
             .count()
-            == 2
+            == 3
         {
             break;
         }
@@ -131,20 +137,34 @@ fn siege_gang_lieutenant_cast_trigger_tokens_haste_and_activation() {
         .filter(|o| o.card == CardId::GoblinToken)
         .map(|o| o.id)
         .collect();
-    assert_eq!(tokens.len(), 2, "Lieutenant creates exactly two tokens");
-    for id in &tokens {
+    assert_eq!(
+        tokens.len(),
+        3,
+        "pre-existing token plus the Lieutenant's two"
+    );
+    let new_tokens: Vec<ObjectId> = tokens
+        .iter()
+        .copied()
+        .filter(|id| *id != preexisting)
+        .collect();
+    assert_eq!(new_tokens.len(), 2);
+    for id in &new_tokens {
         assert_eq!(g.state.object(*id).power(), 1);
         assert_eq!(g.state.object(*id).toughness(), 1);
         assert!(
             g.legal_attackers(P0).contains(id),
-            "tokens gain haste this turn"
+            "new tokens gain haste this turn"
         );
     }
+    assert!(
+        !g.legal_attackers(P0).contains(&preexisting),
+        "the printed word 'those' excludes the pre-existing token"
+    );
     // Activated ability: {2}, sacrifice a Goblin, deal 1 to any target.
     add_object(&mut g, P0, CardId::Mountain, Zone::Battlefield);
     add_object(&mut g, P0, CardId::Mountain, Zone::Battlefield);
     let before = g.state.player(P1).life;
-    let token = tokens[0];
+    let token = new_tokens[0];
     let action = Action::ActivateCostedAbility {
         source: card,
         ability: 1,
@@ -229,9 +249,129 @@ fn lieutenant_requires_your_commander_at_trigger_and_is_absent_without_one() {
 }
 
 #[test]
+fn lieutenant_haste_expires_in_the_next_turn() {
+    let mut g = commander_game(6705, true, P0);
+    add_object(&mut g, P0, CardId::SiegeGangLieutenant, Zone::Battlefield);
+    g.state.turn.step = Step::PrecombatMain;
+    g.state.turn.priority = Some(P0);
+    submit_ok(&mut g, P0, Action::Pass);
+    for _ in 0..30 {
+        if g.state
+            .battlefield(P0)
+            .iter()
+            .filter(|o| o.card == CardId::GoblinToken)
+            .count()
+            == 2
+        {
+            break;
+        }
+        let Some(p) = g.decision_owner() else { break };
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    let tokens: Vec<ObjectId> = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .filter(|o| o.card == CardId::GoblinToken)
+        .map(|o| o.id)
+        .take(2)
+        .collect();
+    assert_eq!(tokens.len(), 2);
+    let start_turn = g.state.turn.number;
+    for _ in 0..120 {
+        if g.state.turn.number > start_turn {
+            break;
+        }
+        let Some(p) = g.decision_owner() else { break };
+        let action = auto_answer(&g);
+        let _ = g.submit_action(p, action);
+    }
+    assert!(
+        g.state.turn.number > start_turn,
+        "a real turn transition occurred"
+    );
+    assert!(
+        !g.state
+            .effects
+            .iter()
+            .any(|effect| tokens.contains(&effect.target)
+                && effect.kind == aperture_core::layer::ContinuousKind::GrantsHaste),
+        "temporary grants ended with the turn"
+    );
+}
+
+#[test]
 fn lieutenant_trigger_still_resolves_after_its_source_leaves() {
     let mut g = commander_game(6704, true, P0);
     let lieutenant = add_object(&mut g, P0, CardId::SiegeGangLieutenant, Zone::Battlefield);
+    g.state.turn.step = Step::PrecombatMain;
+    g.state.turn.priority = Some(P0);
+    submit_ok(&mut g, P0, Action::Pass);
+    for _ in 0..12 {
+        if g.state
+            .stack
+            .iter()
+            .any(|item| item.card == CardId::SiegeGangLieutenant)
+        {
+            break;
+        }
+        if g.state.pending.is_some() {
+            let p = g.state.pending.as_ref().unwrap().player();
+            let action = auto_answer(&g);
+            submit_ok(&mut g, p, action);
+        } else if let Some(p) = g.decision_owner() {
+            submit_ok(&mut g, p, Action::Pass);
+        } else {
+            break;
+        }
+    }
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.card == CardId::SiegeGangLieutenant)
+    );
+    if let Some(object) = g.state.objects.get_mut(&lieutenant) {
+        object.zone = Zone::Graveyard;
+    }
+    g.state.players[P0 as usize].graveyard.push(lieutenant);
+    for _ in 0..12 {
+        if g.state
+            .battlefield(P0)
+            .iter()
+            .filter(|o| o.card == CardId::GoblinToken)
+            .count()
+            == 3
+        {
+            break;
+        }
+        if g.state.pending.is_some() {
+            let p = g.state.pending.as_ref().unwrap().player();
+            let action = auto_answer(&g);
+            submit_ok(&mut g, p, action);
+        } else if let Some(p) = g.decision_owner() {
+            submit_ok(&mut g, p, Action::Pass);
+        } else {
+            break;
+        }
+    }
+    assert_eq!(
+        g.state
+            .battlefield(P0)
+            .iter()
+            .filter(|o| o.card == CardId::GoblinToken)
+            .count(),
+        2,
+        "the queued Lieutenant trigger resolves with source LKI"
+    );
+}
+
+#[test]
+fn lieutenant_fizzles_if_own_commander_leaves_before_resolution() {
+    let mut g = commander_game(6706, true, P0);
+    add_object(&mut g, P0, CardId::SiegeGangLieutenant, Zone::Battlefield);
+    add_object(&mut g, P1, CardId::Island, Zone::Battlefield);
+    let unsummon = add_object(&mut g, P1, CardId::Unsummon, Zone::Hand);
     g.state.turn.step = Step::PrecombatMain;
     g.state.turn.priority = Some(P0);
     submit_ok(&mut g, P0, Action::Pass);
@@ -252,22 +392,35 @@ fn lieutenant_trigger_still_resolves_after_its_source_leaves() {
             .iter()
             .any(|item| item.card == CardId::SiegeGangLieutenant)
     );
-    if let Some(object) = g.state.objects.get_mut(&lieutenant) {
-        object.zone = Zone::Graveyard;
-    }
-    g.state.players[P0 as usize].graveyard.push(lieutenant);
-    for _ in 0..12 {
-        if g.state
-            .battlefield(P0)
-            .iter()
-            .filter(|o| o.card == CardId::GoblinToken)
-            .count()
-            == 2
-        {
+    let commander = g.state.commanders[0].object;
+    submit_ok(&mut g, P0, Action::Pass); // P1 receives priority with the trigger on the stack
+    submit_ok(
+        &mut g,
+        P1,
+        Action::CastSpell {
+            card: unsummon,
+            targets: vec![Target::Permanent(commander)],
+        },
+    );
+    for _ in 0..20 {
+        if let Some(pending) = &g.state.pending {
+            let p = pending.player();
+            let action = if matches!(pending, Pending::CommanderReplacement { .. }) {
+                Action::AnswerCommanderReplacement {
+                    to_command_zone: true,
+                }
+            } else {
+                auto_answer(&g)
+            };
+            submit_ok(&mut g, p, action);
+        } else if let Some(p) = g.decision_owner() {
+            submit_ok(&mut g, p, Action::Pass);
+        } else {
             break;
         }
-        let Some(p) = g.decision_owner() else { break };
-        submit_ok(&mut g, p, Action::Pass);
+        if g.state.stack.is_empty() && g.state.pending.is_none() {
+            break;
+        }
     }
     assert_eq!(
         g.state
@@ -275,7 +428,13 @@ fn lieutenant_trigger_still_resolves_after_its_source_leaves() {
             .iter()
             .filter(|o| o.card == CardId::GoblinToken)
             .count(),
-        2,
-        "the queued Lieutenant trigger resolves with source LKI"
+        0,
+        "the commander left before resolution, so Lieutenant creates no tokens"
+    );
+    let command_object = g.state.commanders[0].object;
+    assert!(
+        g.state.players[P0 as usize]
+            .command_zone
+            .contains(&command_object)
     );
 }

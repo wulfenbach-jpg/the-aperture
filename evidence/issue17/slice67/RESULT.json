@@ -7,7 +7,8 @@
   "activation_checkpoint": {
     "R367-1": "pending target no longer coexists with priority; real sandbox SessionSave loads and continues identically",
     "R367-2": "canonical settle recomputes/SBAs before staging; doomed token absent, both deaths trigger once, triggered abilities remain above paid ability",
-    "R367-3": "slice66 in-engine journey mislabel corrected as fixture-driven injected combat; historical logs unchanged"
+    "R367-3": "slice66 in-engine journey mislabel corrected as fixture-driven injected combat; historical logs unchanged",
+    "activator_priority": "non-active activator gets priority via activation_priority consumed only after SBA/staging; command_zone_setup RED now green"
   },
   "card": {
     "name": "Siege-Gang Lieutenant",
@@ -33,8 +34,8 @@
     "certified_lists": "2 of 8"
   },
   "tests": {
-    "checkpoint": "5 passed",
-    "cards": "3 passed",
+    "checkpoint": "6 passed",
+    "cards": "5 passed",
     "ordering_slice66": "passed",
     "slice62": "7 passed",
     "slice63": "10 passed",
@@ -43,13 +44,23 @@
     "commander": "43 passed",
     "slice15": "2 passed",
     "replay_digest": "6 passed",
-    "import": "3+1 passed"
+    "import": "3+1 passed",
+    "workspace": "159 result lines / 1174 passed / 0 failed / 2 ignored"
   },
   "gates": {
     "script": "evidence/issue17/slice67/gates.sh",
     "log": "evidence/issue17/slice67/final-native/gates.log",
     "aggregate_failure_propagates": true,
-    "all_exit": 0
+    "all_exit": 0,
+    "workspace_test_log": "evidence/issue17/slice67/native-check/workspace-repair.log",
+    "native_workspace_log": "evidence/issue17/slice67/native-check/workspace-repair.log",
+    "workspace_test": 0,
+    "workspace_test_no_fail_fast": 0,
+    "fmt": 0,
+    "clippy": 0,
+    "release": 0,
+    "workspace_log": "evidence/issue17/slice67/native-check/workspace-repair.log",
+    "workspace_summary": "159 result lines / 1174 passed / 0 failed / 2 ignored"
   },
   "journey": {
     "path": "evidence/issue17/slice67/final-native/demo-journey.json",
