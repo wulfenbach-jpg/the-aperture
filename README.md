@@ -20,10 +20,12 @@ implementation and it says so everywhere it matters.
   resolve exactly one stack item), sorcery/instant timing, targets with
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
   discard, damage removal, state-based actions, the CR 508.1d maximal attack
-  requirement, indestructible in the state-based-action path, bounded combat with
+  requirement, indestructible in the state-based-action path, announced `{X}` costs
+  with X carried through resolution, aggregate "total mana value X or less" target
+  sets, bounded combat with
   attack/block declarations and simultaneous damage, empty-library loss, game
   win/loss.
-* **Supported branch-candidate pool (163 real cards)**: the 16-card practice
+* **Supported branch-candidate pool (164 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -340,7 +342,7 @@ the shroud/hexproof the two Equipment grant), layer 7a
 characteristic-defining power/toughness beyond Beorn's Hospitality's land count and Lumra, Bellow of the Woods' land count (Lumra is modelled as a printed layer-7c additive static with no printed P/T, not as a generic fully ordered layer-7a claim),
 layer 7d (counters stay
 display-only), Arcane/splice interactions, and any card outside this branch
-candidate's 163-card pool.
+candidate's 164-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints

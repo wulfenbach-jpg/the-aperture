@@ -163,5 +163,6 @@ fn projection_carries_the_decision_identity_and_legal_actions() {
         entry: StackEntry::Spell,
         trigger_answered: false,
         spell_mana_value: 0,
+        x_value: 0,
     };
 }

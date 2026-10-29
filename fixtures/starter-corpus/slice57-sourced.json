@@ -1,0 +1,36 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-29T02:29:04.000000+00:00",
+  "cards": [
+    {
+      "name": "Rampaging Yao Guai",
+      "oracle_id": "d37e8f75-c7cb-4270-bb2f-0125e972ed15",
+      "scryfall_id": "63619236-a27a-4fdd-add6-7a295901f906",
+      "set": "pip",
+      "set_name": "Fallout",
+      "collector_number": "82",
+      "rarity": "rare",
+      "layout": "normal",
+      "mana_cost": "{X}{G}{G}{G}",
+      "mana_value": 3,
+      "type_line": "Creature — Bear Mutant",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+      "colors": [
+        "G"
+      ],
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Vigilance",
+        "Trample"
+      ],
+      "legalities_commander": "legal",
+      "printing_url": "https://api.scryfall.com/cards/63619236-a27a-4fdd-add6-7a295901f906",
+      "retrieved_at": "2026-10-29T02:29:04.000000+00:00"
+    }
+  ]
+}

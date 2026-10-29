@@ -45,6 +45,17 @@ pub enum Action {
         modes: [u8; 2],
         targets: Vec<Target>,
     },
+    /// CR 107.3a + 601.2b: cast a spell whose printed cost contains `{X}` and
+    /// announce the value of X. The value is paid as additional generic mana and
+    /// travels with the spell (manifest value, entry counters, entry triggers),
+    /// so a later resolution never has to guess it. A card that does not print
+    /// `{X}` is refused, and a card that does print it cannot be cast through
+    /// [`Action::CastSpell`] — X is announced explicitly or not at all.
+    CastSpellWithX {
+        card: ObjectId,
+        x: u8,
+        targets: Vec<Target>,
+    },
     ActivateManaAbility {
         land: ObjectId,
     },
@@ -143,6 +154,11 @@ pub enum Action {
     /// waiting for its target choice; a trigger with a mandatory target never
     /// offers it.
     DeclineTriggerTarget,
+    /// CR 601.2c: finish choosing the *set* of targets for a triggered ability
+    /// printed as "any number of target ..." (Rampaging Yao Guai). Legal only
+    /// while that trigger is waiting for its set; the chosen set may be empty,
+    /// which is the "destroy nothing" answer.
+    FinishTriggerTargets,
     /// CR 603.5: accept or decline an optional ("you may") triggered ability as
     /// it resolves.
     AnswerTriggerChoice {
@@ -172,6 +188,7 @@ impl Action {
             Action::PlayLand { .. } => "play land",
             Action::CastSpell { .. } => "cast spell",
             Action::CastSpellWithModes { .. } => "cast modal spell",
+            Action::CastSpellWithX { .. } => "cast spell",
             Action::ActivateManaAbility { .. } => "mana ability",
             Action::ActivateColorManaAbility { .. } => "mana ability",
             Action::DeclareAttackers { .. } => "declare attackers",
@@ -191,6 +208,7 @@ impl Action {
             Action::SearchLibraryDone => "finish searching",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::DeclineTriggerTarget => "decline trigger target",
+            Action::FinishTriggerTargets => "finish trigger targets",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
             Action::AnswerCombatDamageAssignment { .. } => "combat damage assignment choice",
             Action::RevealCreatureCards { .. } => "reveal creature cards",

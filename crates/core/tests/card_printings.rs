@@ -57,6 +57,7 @@ const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE48_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice48-sourced.json");
 /// Slice 53: Ruxa, Patient Professor (C21 66), fetched 2026-10-28.
 const SLICE53_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice53-sourced.json");
+const SLICE57_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice57-sourced.json");
 /// Slice 43: Lumra, Bellow of the Woods (BLB 183), fetched 2026-10-28.
 const SLICE43_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice43-sourced.json");
 /// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
@@ -477,6 +478,11 @@ fn slice53_cards() -> Vec<Value> {
 
 fn slice54_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE54_SOURCED).expect("sourced slice54 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice57_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE57_SOURCED).expect("sourced slice57 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -980,6 +986,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice46_cards())
         .chain(slice48_cards())
         .chain(slice53_cards())
+        .chain(slice57_cards())
         .chain(slice31_cards())
         .chain(slice32_new_cards())
         .chain(slice33_cards())

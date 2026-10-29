@@ -1079,6 +1079,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::ThijarianWitness => THIJARIAN_WITNESS,
         CardId::OwlbearCub => OWLBEAR_CUB,
         CardId::RuxaPatientProfessor => RUXA_PATIENT_PROFESSOR,
+        CardId::RampagingYaoGuai => RAMPAGING_YAO_GUAI,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR,
         CardId::BeornTheFierce => BEORN_THE_FIERCE,
         CardId::BeornsHospitality => BEORNS_HOSPITALITY,
@@ -1574,6 +1575,18 @@ const RUXA_PATIENT_PROFESSOR: &[Ability] = &[
         effects: &[Effect::ReturnGraveyardCardToHand],
     }),
 ];
+
+/// Rampaging Yao Guai's single printed triggered ability (PIP 82). "Any number
+/// of target artifacts and/or enchantments with total mana value X or less" is
+/// a *set* of targets under one aggregate restriction, so the target spec is the
+/// aggregate one and the budget is the X the entering spell announced.
+const RAMPAGING_YAO_GUAI: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: false,
+    target: TargetSpec::ArtifactOrEnchantment,
+    effects: &[Effect::DestroyTargetArtifactsAndEnchantments],
+})];
 
 /// Ruxa's two statics, in printed order: the layer 7c anthem and the
 /// damage-assignment permission.

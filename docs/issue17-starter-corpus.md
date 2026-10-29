@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
 is supported, playable and certified; the other seven are **planned metadata**, never
 supported defaults. Their `deck_path` points under
 `decks/starter-corpus/planned/`, and their cards are mostly outside the current
-163-card branch-candidate pool. Isamaru itself is supported, and the slice-4 package implemented
+164-card branch-candidate pool. Isamaru itself is supported, and the slice-4 package implemented
 one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
 cards; it stays `planned` because 55 of its chosen cards are still unsupported.
 Slice 5 implemented one card in each of four other planned lists:
@@ -46,14 +46,14 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **150** are in the supported 163-card catalog and **309** are missing. Slice
+* **151** are in the supported 164-card catalog and **308** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **163**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **164**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
-  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). The intervening per-slice list is
+  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -337,7 +337,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 163 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 164 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1000,3 +1000,71 @@ lethal-damage wording, zero toughness without indestructible (CR 704.5f sentence
 destroy claim, no lethal-damage claim) and zero toughness **with** indestructible (the
 zero-toughness sentence still wins, because CR 704.5f has no destroy to excuse), plus the
 departed-source mill line from slice 55.
+
+## Slice 57: Rampaging Yao Guai, the pool's first `{X}` spell and its first aggregate target set
+
+**The card.** Rampaging Yao Guai, PIP 82 (Fallout), `{X}{G}{G}{G}`, 2/2 Bear Mutant with
+vigilance and trample. Printed text fetched from Scryfall on 2026-10-29
+(`https://api.scryfall.com/cards/63619236-a27a-4fdd-add6-7a295901f906`, printing id
+`63619236-a27a-4fdd-add6-7a295901f906`, oracle id `d37e8f75-c7cb-4270-bb2f-0125e972ed15`,
+retrieved 2026-10-29T02:29:04Z, recorded verbatim in
+`fixtures/starter-corpus/slice57-sourced.json`). The catalog string is that text, so the
+three printed clauses are the whole card and nothing is paraphrased.
+
+**The three clauses, each enabled.**
+
+1. *`{X}{G}{G}{G}`* — X is announced through `Action::CastSpellWithX` (CR 107.3a), paid as
+   additional generic mana, and carried on the stack item. The plain cast action is refused
+   for this card and the X cast is refused for a card that does not print `{X}`, so X is
+   never silently zero. The announced value survives resolution, a suspended pending choice
+   and a save/load round trip.
+2. *"This creature enters with X +1/+1 counters on it"* — an entry replacement (CR 614.1c)
+   applied by the entry itself, after the zone change (CR 122.2 clears counters that
+   belonged to the previous zone) and before the entry is announced, with X read from the
+   resolving spell rather than from the board.
+3. *"When this creature enters, destroy any number of target artifacts and/or enchantments
+   with total mana value X or less"* — a target *set* under one aggregate restriction
+   (CR 115.1, 601.2c). The trigger records X as its budget, offers only artifacts and
+   enchantments that fit, keeps choosing until the controller commits with
+   `Action::FinishTriggerTargets` (the empty set is legal — "any number" includes zero), and
+   destroys the committed set as one instruction (CR 701.7a, 704.3).
+
+**Deliberate limits recorded.**
+
+* The aggregate total is a *targeting* restriction (CR 601.2c), checked as each target is
+  added; it is not re-derived at resolution. At resolution each committed target that is
+  still an artifact/enchantment is destroyed; one that left the battlefield does nothing
+  (CR 608.2b), and if every target is gone the ability does not resolve. The identical
+  card in two zones is two objects, so a bounced target is simply no longer a target.
+* A permanent's mana value for the restriction is its printed cost with `{X}` read as 0
+  (CR 202.3). Copy effects, cost-modifying effects and face-down cards are outside the
+  supported pool, so no other reading is claimed.
+* `{X}` is paid from the mana pool and untapped lands, with the supported announced range
+  `0..=20`; a static cost reduction applies to the *total* generic cost, so an announced X
+  is reduced like printed generic mana (CR 601.2f).
+* Counters are +1/+1 counters on the permanent and are read by the characteristic path
+  (CR 613.4d) exactly like every other counter in the pool; there is still no full ordered
+  layer 7d pass, and that pre-existing limit is unchanged by this card.
+* The two printed keywords are the two mechanisms the pool already has: vigilance is the
+  keyword-table entry the attack path consults before tapping an attacker (CR 702.20a), and
+  trample is the `CardDef` flag the damage assignment reads.
+* A "you cast a creature spell" trigger that reads the spell's mana value sees `3 + X`
+  while the spell is on the stack (CR 202.3), which is the only place X counts.
+
+**Whole-field discipline.** Rampaging Yao Guai left `missing_cards` **and** its matching
+`missing_interactions` entry in `decks/starter-corpus/manifest.json` in the same change; the
+whole-field audit recomputes every list from the catalog and the deck files. The corpus is
+now 164 catalog / 459 union = 151 supported + 308 missing, per-list
+`[55, 0, 51, 48, 2, 52, 52, 53]`, Ayula two missing names (Dúnedain Rangers and Evercoat
+Ursine), still one of eight lists certified. The pool grew by exactly one
+(163→164) and no other list's gaps moved.
+
+**Regression coverage** is `crates/core/tests/issue17_slice57.rs`: the printed text and mana
+value, the two cast-action refusals, an unaffordable and an out-of-range X, X=0 as a real
+cast with no counters, X counters with the generic actually paid, the offer inside the
+budget (both controllers, artifacts and enchantments, MV 4 excluded at X=2), a set that
+reaches but never exceeds the budget, a duplicate target refused, the chosen set destroyed
+together while an unchosen permanent survives, the empty set destroying nothing, a departed
+target costing only its own destruction, a mid-choice save/load continuing to the same
+result, and six forged pendings refused by both `GameState::validate` and a real
+`SessionSave::from_json` load.

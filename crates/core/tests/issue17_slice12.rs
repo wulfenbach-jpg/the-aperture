@@ -429,6 +429,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
+                x_value: 0,
             });
         }),
         ("revealed", |state, id| state.revealed.push(id)),
@@ -450,6 +451,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
                 spell_mana_value: 0,
+                x_value: 0,
             });
         }),
         ("stack target", |state, id| {
@@ -467,6 +469,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                 entry: StackEntry::Activated { ability: 0 },
                 trigger_answered: false,
                 spell_mana_value: 0,
+                x_value: 0,
             });
         }),
         ("pending trigger", |state, id| {
@@ -483,6 +486,7 @@ fn archived_tokens_cannot_anchor_live_engine_references() {
                     dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
+                    x_value: 0,
                 },
             });
         }),

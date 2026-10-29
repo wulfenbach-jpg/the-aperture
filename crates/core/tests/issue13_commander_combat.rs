@@ -1387,7 +1387,7 @@ fn fog_is_a_sourced_catalog_card() {
     // of slices 41-46 (the last being Thijarian Witness).
     // Slice 48 adds Owlbear Cub (160 -> 161) and slice 53 adds Ruxa, Patient
     // Professor (161 -> 162); the assertion's purpose is unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 163);
+    assert_eq!(aperture_core::catalog::pool_size(), 164);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
@@ -1415,6 +1415,7 @@ fn departing_controller_stack_card_is_exiled_without_a_phantom_entry() {
         entry: StackEntry::Spell,
         trigger_answered: false,
         spell_mana_value: 0,
+        x_value: 0,
     });
     game.state.players[P0 as usize].life = 0;
     game.state.turn.step = Step::PrecombatMain;

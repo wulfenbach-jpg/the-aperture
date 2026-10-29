@@ -308,6 +308,7 @@ fn active_departure_keeps_the_turn_and_stack_alive_then_advances_to_the_next_liv
         entry: StackEntry::Spell,
         trigger_answered: false,
         spell_mana_value: 0,
+        x_value: 0,
     });
 
     submit_ok(&mut game, P0, Action::Pass);

@@ -241,6 +241,37 @@ macro_rules! card_trample {
     };
 }
 
+/// A card that prints both vigilance and trample (Rampaging Yao Guai). Two
+/// printed keywords on one card, so a dedicated macro keeps every other macro's
+/// single-keyword defaults honest instead of inventing a flags struct.
+macro_rules! card_vigilance_trample {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: true,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
 /// A green printable card whose colour a supported rule can observe. The pool
 /// records `colors` only where colour is reachable by an implemented rule, so
 /// the plain macros leave it empty; Beorn's Hospitality becomes a creature, so
@@ -275,7 +306,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 163] = [
+pub static CARDS: [CardDef; 164] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1302,6 +1333,18 @@ pub static CARDS: [CardDef; 163] = [
         RuxaPatientProfessor, "Ruxa, Patient Professor", cost: Some("{2}{G}{G}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Bear Druid", power: Some(4), toughness: Some(4),
         oracle: "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.\nCreatures you control with no abilities get +1/+1.\nFor each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
+        spell: None
+    ),
+    // Issue 17 slice 57: Rampaging Yao Guai (PIP 82). The pool's first `{X}`
+    // spell, its first "enters with X +1/+1 counters" entry replacement and its
+    // first aggregate "any number of target artifacts and/or enchantments with
+    // total mana value X or less" target set. Printed text copied verbatim from
+    // the PIP 82 printing fetched from Scryfall on 2026-10-28 and recorded in
+    // fixtures/starter-corpus/slice57-sourced.json.
+    card_vigilance_trample!(
+        RampagingYaoGuai, "Rampaging Yao Guai", cost: Some("{X}{G}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Mutant", power: Some(2), toughness: Some(2),
+        oracle: "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
         spell: None
     ),
 ];

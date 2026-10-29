@@ -250,13 +250,11 @@
       "deck_path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
       "missing_cards": [
         "D\u00fanedain Rangers",
-        "Evercoat Ursine",
-        "Rampaging Yao Guai"
+        "Evercoat Ursine"
       ],
       "missing_interactions": [
         "the Ring tempts you and the Ring-bearer (D\u00fanedain Rangers)",
-        "hideaway, and playing a card exiled with the same permanent (Evercoat Ursine)",
-        "an X-cost creature entry with a total-mana-value destruction cap (Rampaging Yao Guai)"
+        "hideaway, and playing a card exiled with the same permanent (Evercoat Ursine)"
       ]
     },
     {

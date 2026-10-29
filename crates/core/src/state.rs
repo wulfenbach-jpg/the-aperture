@@ -2,7 +2,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
 
-use crate::card::{CardId, Effect};
+use crate::action::Target;
+use crate::card::{CardId, Effect, TargetSpec};
 use crate::counters::Counters;
 use crate::error::EngineError;
 use crate::ids::{CommanderId, MAX_PLAYERS, MIN_PLAYERS, ObjectId, PlayerId, Zone};
@@ -198,6 +199,18 @@ pub enum Pending {
         /// First chosen target for a two-target fight mode.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         first: Option<crate::action::Target>,
+        /// CR 601.2c: the announced X of a set-targeting trigger ("destroy any
+        /// number of target artifacts and/or enchantments with total mana value
+        /// X or less", Rampaging Yao Guai). `Some` turns the choice into a set:
+        /// targets are added one at a time while the running total stays within
+        /// the budget and are committed by `Action::FinishTriggerTargets`. The
+        /// field is skipped when absent, so every pre-existing pending choice
+        /// serializes exactly as before.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        aggregate: Option<u8>,
+        /// Targets already added to the set, in the order they were chosen.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        chosen: Vec<crate::action::Target>,
     },
     /// Ayula's printed "choose one" is chosen before targets (CR 603.3c, 700.2b).
     /// Reuses the existing answer action: true selects counters, false selects
@@ -305,6 +318,12 @@ pub struct TriggerRef {
     /// Count captured by The Earth King's attack trigger.
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub search_amount: u8,
+    /// CR 107.3a + 202.3: the value announced for an `{X}` cost. Captured when
+    /// the trigger is queued (the entering spell's X) and read by the printed
+    /// instruction that names X. Zero is skipped, so every trigger queued by a
+    /// card without X serializes and hashes exactly as it did before.
+    #[serde(default, skip_serializing_if = "is_zero_u8")]
+    pub x_value: u8,
 }
 
 /// What one stack item is: a spell card, or an ability whose source never
@@ -504,12 +523,24 @@ impl Pending {
                 player,
                 trigger,
                 legal,
+                aggregate,
+                chosen,
                 ..
-            } => format!(
-                "P{player}: choose a target for {}'s triggered ability ({} legal target(s), CR 603.3d)",
-                trigger.card.name(),
-                legal.len()
-            ),
+            } => match aggregate {
+                Some(budget) => format!(
+                    "P{player}: choose any number of target artifacts and/or enchantments with \
+                     total mana value {budget} or less for {}'s triggered ability \
+                     ({} chosen, {} legal target(s), CR 601.2c)",
+                    trigger.card.name(),
+                    chosen.len(),
+                    legal.len()
+                ),
+                None => format!(
+                    "P{player}: choose a target for {}'s triggered ability ({} legal target(s), CR 603.3d)",
+                    trigger.card.name(),
+                    legal.len()
+                ),
+            },
             Pending::TriggerChoice { player, trigger } => format!(
                 "P{player}: choose whether to use {}'s optional triggered ability (CR 603.5)",
                 trigger.card.name()
@@ -752,6 +783,12 @@ pub struct StackItem {
     pub source_pt_lki: Option<(i32, i32)>,
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub search_amount: u8,
+    /// CR 107.3a + 202.3: X announced for this spell (0 for an ability and for
+    /// every spell without `{X}`). A resolving permanent spell reads it for the
+    /// entering permanent's counters and for the triggers its entry queues, so
+    /// the value survives a suspended resolution and a save/load round trip.
+    #[serde(default, skip_serializing_if = "is_zero_u8")]
+    pub x_value: u8,
 }
 
 /// `skip_serializing_if` helper for the slice-22 mana-value fields: a zero
@@ -1164,12 +1201,14 @@ impl GameState {
                     legal,
                     queued,
                     first,
+                    chosen,
                     ..
                 } => {
                     trigger_ref(trigger)
                         || legal.iter().any(target_ref)
                         || queued.iter().any(trigger_ref)
                         || first.as_ref().is_some_and(target_ref)
+                        || chosen.iter().any(target_ref)
                 }
                 Pending::TriggerChoice { trigger, .. } => trigger_ref(trigger),
                 Pending::TriggerMode {
@@ -1527,6 +1566,100 @@ impl GameState {
                             "APNAP reveal queue source/cursor is not a resolving Kamahl's Summons"
                                 .to_string(),
                     });
+                }
+            }
+            // CR 601.2c: a set-targeting trigger carries the announced X as its
+            // budget and the partial answer as `chosen`. A save can only be a
+            // reachable state if the ability really prints that specification,
+            // every chosen target is a battlefield artifact/enchantment that is
+            // still offered, none is repeated, the running total is within the
+            // budget, and the budget is the X the trigger recorded.
+            if let Pending::TriggerTarget {
+                trigger,
+                legal,
+                aggregate,
+                chosen,
+                ..
+            } = pending
+            {
+                let spec = crate::ability::abilities(trigger.card)
+                    .get(trigger.ability as usize)
+                    .map(crate::ability::Ability::target_spec);
+                match aggregate {
+                    None => {
+                        if !chosen.is_empty() {
+                            return Err(EngineError::InvalidState {
+                                reason: "single-target trigger choice carries chosen targets"
+                                    .to_string(),
+                            });
+                        }
+                    }
+                    Some(budget) => {
+                        if spec != Some(TargetSpec::ArtifactOrEnchantment) {
+                            return Err(EngineError::InvalidState {
+                                reason: "aggregate target choice is not bound to a printed \
+                                         \"any number of target artifacts and/or enchantments\" \
+                                         ability"
+                                    .to_string(),
+                            });
+                        }
+                        if *budget != trigger.x_value {
+                            return Err(EngineError::InvalidState {
+                                reason: format!(
+                                    "aggregate target budget {budget} is not the trigger's \
+                                     announced X {}",
+                                    trigger.x_value
+                                ),
+                            });
+                        }
+                        let mut total: u32 = 0;
+                        let mut seen: Vec<ObjectId> = Vec::new();
+                        for target in chosen {
+                            let Target::Permanent(id) = target else {
+                                return Err(EngineError::InvalidState {
+                                    reason: "aggregate target is not a permanent".to_string(),
+                                });
+                            };
+                            if seen.contains(id) {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!("aggregate target {id} was chosen twice"),
+                                });
+                            }
+                            seen.push(*id);
+                            if !legal.contains(target) {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!(
+                                        "aggregate target {id} is not one of the offered targets"
+                                    ),
+                                });
+                            }
+                            let Some(object) = self.objects.get(id) else {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!("aggregate target {id} is missing"),
+                                });
+                            };
+                            if object.zone != Zone::Battlefield
+                                || !(object.card.def().is_artifact()
+                                    || object.card.def().is_enchantment())
+                            {
+                                return Err(EngineError::InvalidState {
+                                    reason: format!(
+                                        "aggregate target {id} is not an artifact or enchantment \
+                                         on the battlefield"
+                                    ),
+                                });
+                            }
+                            total += u32::from(object.card.def().mana_value());
+                        }
+                        if total > u32::from(*budget) {
+                            return Err(EngineError::InvalidState {
+                                reason: format!(
+                                    "aggregate targets cost {total} mana value, over the \
+                                     announced budget {budget}"
+                                ),
+                            });
+                        }
+                    }
                 }
             }
         }

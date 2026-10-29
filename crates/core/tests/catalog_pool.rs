@@ -271,7 +271,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::ReplaceNextDrawWithBearToken
                 | Effect::PairSourceWithChosenCreature
                 | Effect::ReturnGraveyardCardToHand
-                | Effect::LookAtTopPutCreatureAttacking => {
+                | Effect::LookAtTopPutCreatureAttacking
+                | Effect::DestroyTargetArtifactsAndEnchantments => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name

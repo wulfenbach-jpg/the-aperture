@@ -127,6 +127,14 @@ pub enum TargetSpec {
     /// intrinsic mana ability is the whole answer). Targets are
     /// [`crate::action::Target::Card`], never `Target::Permanent`.
     NoAbilityCreatureCardInYourGraveyard,
+    /// CR 115.1 + 601.2c: "target artifacts and/or enchantments" — every
+    /// artifact and/or enchantment on the battlefield, either controller. A
+    /// single-target spec cannot express the printed aggregate restriction
+    /// ("total mana value X or less"), so the ability that prints it is answered
+    /// as a *set*: `Pending::TriggerTarget` carries the announced budget in
+    /// `aggregate` and the chosen set in `chosen`, and resolution destroys every
+    /// member still on the battlefield (Rampaging Yao Guai).
+    ArtifactOrEnchantment,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -398,6 +406,12 @@ pub enum Effect {
         minimum: u8,
         cards: u8,
     },
+    /// CR 701.7a + 601.2c: destroy every artifact and/or enchantment named by
+    /// the ability's targets. The set was chosen against an aggregate mana-value
+    /// budget (Rampaging Yao Guai), so the effect destroys exactly the recorded
+    /// targets that are still artifacts/enchantments on resolution; a target
+    /// that left the battlefield does nothing (CR 608.2b).
+    DestroyTargetArtifactsAndEnchantments,
 }
 
 const TITANIA_EXILE_GRAVE: &[Effect] = &[Effect::ExileTargetPlayersGraveyardAndGainLife];
@@ -517,6 +531,9 @@ impl Effect {
             }
             Effect::DestroyAllArtifactsAndEnchantments => {
                 "destroy all artifacts and enchantments".to_string()
+            }
+            Effect::DestroyTargetArtifactsAndEnchantments => {
+                "destroy the chosen artifacts and/or enchantments".to_string()
             }
             Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
             Effect::PutPlusOneCountersOnTarget(n) => {
@@ -796,6 +813,14 @@ impl CardDef {
         self.cost.map(crate::mana::parse_cost)
     }
 
+    /// CR 107.3a: the printed cost contains `{X}`, so its value is announced as
+    /// the spell is cast and is 0 anywhere else. Only a card that prints it can
+    /// be cast through [`crate::action::Action::CastSpellWithX`], and a spell that
+    /// prints it must be, so X is never silently 0.
+    pub fn has_x_cost(&self) -> bool {
+        self.cost.is_some_and(|cost| cost.contains("{X}"))
+    }
+
     /// CR 202.3: a card's mana value is the total amount of mana in its mana
     /// cost. Read from the printed cost string: a numeric generic symbol adds
     /// that number, `{X}` adds 0 (its value is fixed only while the spell is on
@@ -1024,6 +1049,11 @@ pub enum CardId {
     /// your hand" trigger, first no-abilities anthem and first combat-damage
     /// assignment choice.
     RuxaPatientProfessor,
+    /// Issue 17 slice 57: Rampaging Yao Guai (PIP 82), the pool's first `{X}`
+    /// spell, first "enters with X +1/+1 counters" replacement and first
+    /// "any number of target ... with total mana value X or less" aggregate
+    /// target set.
+    RampagingYaoGuai,
     /// Issue 17 slice 46: the Clue token card (never importable, CR 111.10,
     /// 701.16a).
     ClueToken,
@@ -1121,6 +1151,15 @@ impl CardId {
     }
 }
 
+/// `true` for a card that prints "this creature enters with X +1/+1 counters on
+/// it" (CR 614.1c: a replacement that modifies how the permanent enters). The
+/// counters are placed by the entry itself, before any enters-the-battlefield
+/// trigger is queued, with X read from the spell that is resolving — never from
+/// the board and never from a later re-computation.
+pub fn enters_with_x_counters(card: CardId) -> bool {
+    card == CardId::RampagingYaoGuai
+}
+
 impl std::fmt::Display for CardId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.name())
@@ -1134,8 +1173,8 @@ impl std::fmt::Display for CardId {
 ///
 /// Each symbol counts as:
 /// * a pure number — that number (`{3}` = 3);
-/// * `{X}` — 0, because an X outside the stack is 0 (and no X-cost spell in the
-///   pool is a creature, so no supported card reads this while X is chosen);
+/// * `{X}` — 0, because an X outside the stack is 0 (Rampaging Yao Guai is an
+///   X-cost creature, and its own mana value is 3 on the battlefield);
 /// * a hybrid/Phyrexian symbol with a numeric half — that number (`{2/W}` = 2);
 /// * any other hybrid or Phyrexian symbol — 1 (`{G/W}`, `{W/P}`);
 /// * any other single symbol — 1 (`{G}`, `{S}`, `{C}`).

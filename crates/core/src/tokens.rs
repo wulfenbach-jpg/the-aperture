@@ -87,6 +87,11 @@ pub fn keywords(card: CardId) -> &'static [Keyword] {
         // Lumra, Bellow of the Woods prints "Reach, vigilance": reach lets it
         // block a flyer, vigilance keeps it untapped when it attacks.
         CardId::LumraBellowOfTheWoods => &[Keyword::Reach, Keyword::Vigilance],
+        // Rampaging Yao Guai prints "Vigilance, trample": trample is the
+        // `CardDef` flag the damage assignment reads, and vigilance is here
+        // because the attack path asks this table before it taps an attacker
+        // (CR 702.20a).
+        CardId::RampagingYaoGuai => &[Keyword::Vigilance],
         _ => &[],
     }
 }

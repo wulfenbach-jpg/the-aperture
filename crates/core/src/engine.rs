@@ -1584,8 +1584,24 @@ impl Game {
     /// cast adds {2} per previous command-zone cast (CR 903.8); generic-mana
     /// overflow is a typed refusal, never a silent wrap.
     fn effective_cost(&self, card: ObjectId) -> Result<ManaCost, EngineError> {
+        self.effective_cost_parts(card, 0)
+    }
+
+    /// CR 107.3a + 601.2f: the total cost of casting `card` with `x` announced.
+    /// X is added to the generic part before the static cost reduction applies,
+    /// because the reduction applies to the *total* generic cost — an X of 2 is
+    /// reduced exactly like the printed generic mana is.
+    fn effective_cost_parts(&self, card: ObjectId, x: u8) -> Result<ManaCost, EngineError> {
         let object = self.state.object(card);
         let mut cost = object.card.mana_cost().unwrap_or_else(ManaCost::empty);
+        if x > 0 {
+            cost.generic = cost.generic.checked_add(x).ok_or_else(|| {
+                EngineError::illegal(
+                    "cast spell",
+                    "the announced X makes the generic cost overflow",
+                )
+            })?;
+        }
         if object.zone == Zone::Command
             && let Some(commander) = object.commander
         {
@@ -2210,7 +2226,13 @@ impl Game {
         None
     }
 
-    fn enter_battlefield(&mut self, id: ObjectId, controller: PlayerId, events: &mut Vec<Event>) {
+    fn enter_battlefield(
+        &mut self,
+        id: ObjectId,
+        controller: PlayerId,
+        events: &mut Vec<Event>,
+        entering_x: u8,
+    ) {
         let Some(mut object) = self.detach_object(id) else {
             return;
         };
@@ -2229,6 +2251,20 @@ impl Game {
         object.pump_power = 0;
         object.pump_toughness = 0;
         let new_id = self.insert_object(object, Zone::Battlefield);
+        // CR 122.2: `insert_object` clears counters that belonged to the previous
+        // zone (an object that leaves the battlefield takes its counters with
+        // it), so the counters a replacement puts on the *entering* permanent are
+        // added to the new battlefield object, after the zone change, and before
+        // the entry is announced.
+        if entering_x > 0
+            && crate::card::enters_with_x_counters(card)
+            && let Some(entered) = self.state.objects.get_mut(&new_id)
+        {
+            entered.counters.add(
+                crate::counters::CounterKind::PlusOnePlusOne,
+                u32::from(entering_x),
+            );
+        }
         events.push(Event::PermanentEntered {
             object: new_id,
             card,
@@ -2236,7 +2272,16 @@ impl Game {
         });
         // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
         // is on the battlefield.
+        let first_new = self.state.trigger_queue.len();
         self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
+        if entering_x > 0 {
+            // CR 107.3a: a printed "When this creature enters ... X" reads the X
+            // announced for the spell that became this permanent, so it travels
+            // with the queued trigger exactly like a cast trigger's mana value.
+            for trigger in &mut self.state.trigger_queue[first_new..] {
+                trigger.x_value = entering_x;
+            }
+        }
         if is_creature {
             self.queue_another_creature_enters(new_id);
         }
@@ -2575,6 +2620,7 @@ impl Game {
                 dead_object: Some(dead_object),
                 source_pt_lki: None,
                 search_amount: 0,
+                x_value: 0,
             });
         }
     }
@@ -2684,6 +2730,9 @@ impl Game {
             }
             Action::PlayLand { card } => self.validate_play_land(player, *card),
             Action::CastSpell { card, targets } => self.validate_cast(player, *card, targets),
+            Action::CastSpellWithX { card, x, targets } => {
+                self.validate_cast_with_x(player, *card, *x, targets)
+            }
             Action::ActivateManaAbility { land } => self.validate_mana_ability(player, *land),
             Action::ActivateColorManaAbility { source, color } => {
                 self.validate_color_mana_ability(player, *source, *color)
@@ -2757,7 +2806,11 @@ impl Game {
             ),
             Action::ChooseTriggerTarget { target } => match &state.pending {
                 Some(Pending::TriggerTarget {
-                    player: p, legal, ..
+                    player: p,
+                    legal,
+                    aggregate,
+                    chosen,
+                    ..
                 }) if *p == player => {
                     if !legal.contains(target) {
                         return Err(EngineError::illegal(
@@ -2767,6 +2820,31 @@ impl Game {
                                 self.describe_target(*target)
                             ),
                         ));
+                    }
+                    if let Some(budget) = aggregate {
+                        // CR 601.2c: adding a target to the set is legal only
+                        // while the running total stays within the announced X.
+                        if chosen.contains(target) {
+                            return Err(EngineError::illegal(
+                                "choose trigger target",
+                                format!(
+                                    "{} is already part of the chosen target set",
+                                    self.describe_target(*target)
+                                ),
+                            ));
+                        }
+                        let mut total: u32 = 0;
+                        for chosen_target in chosen.iter().chain(std::iter::once(target)) {
+                            total += self.target_mana_value(*chosen_target);
+                        }
+                        if total > u32::from(*budget) {
+                            return Err(EngineError::illegal(
+                                "choose trigger target",
+                                format!(
+                                    "that target set would cost {total} mana value, over the announced X of {budget} (CR 601.2c)"
+                                ),
+                            ));
+                        }
                     }
                     Ok(())
                 }
@@ -2786,6 +2864,19 @@ impl Game {
                 _ => Err(EngineError::illegal(
                     "decline trigger target",
                     "no triggered ability with an optional target is waiting for its controller (CR 115.6)",
+                )),
+            },
+            // CR 601.2c: committing a target *set* is legal only while a
+            // set-targeting trigger is waiting for its controller.
+            Action::FinishTriggerTargets => match &state.pending {
+                Some(Pending::TriggerTarget {
+                    player: p,
+                    aggregate: Some(_),
+                    ..
+                }) if *p == player => Ok(()),
+                _ => Err(EngineError::illegal(
+                    "finish trigger targets",
+                    "no triggered ability is waiting for a set of targets (CR 601.2c)",
                 )),
             },
             Action::AnswerTriggerChoice { use_ability } => match &state.pending {
@@ -3430,6 +3521,20 @@ impl Game {
                 })
                 .map(Target::Card)
                 .collect(),
+            // CR 115.1 + 601.2c: every artifact and/or enchantment on the
+            // battlefield, either controller. "Any number" is an aggregate
+            // restriction, not a per-target one, so the budget is applied when
+            // the set is chosen (see `Pending::TriggerTarget::aggregate`).
+            TargetSpec::ArtifactOrEnchantment => self
+                .state
+                .objects
+                .values()
+                .filter(|o| {
+                    o.zone == Zone::Battlefield
+                        && (o.card.def().is_artifact() || o.card.def().is_enchantment())
+                })
+                .map(|o| Target::Permanent(o.id))
+                .collect(),
             TargetSpec::NoncreatureSpell => self
                 .state
                 .stack
@@ -3528,6 +3633,29 @@ impl Game {
         card: ObjectId,
         targets: &[Target],
     ) -> Result<(), EngineError> {
+        self.validate_cast_common(player, card, None, targets)
+    }
+
+    /// CR 107.3a: a spell whose printed cost contains `{X}` is cast through
+    /// `CastSpellWithX`, which announces X explicitly; a spell that does not
+    /// print `{X}` cannot announce one. Everything else is the ordinary cast.
+    fn validate_cast_with_x(
+        &self,
+        player: PlayerId,
+        card: ObjectId,
+        x: u8,
+        targets: &[Target],
+    ) -> Result<(), EngineError> {
+        self.validate_cast_common(player, card, Some(x), targets)
+    }
+
+    fn validate_cast_common(
+        &self,
+        player: PlayerId,
+        card: ObjectId,
+        x: Option<u8>,
+        targets: &[Target],
+    ) -> Result<(), EngineError> {
         // A pending choice means no player has priority. Refuse at the action
         // validator even if a forged/unvalidated state still carries priority.
         if self.state.pending.is_some() {
@@ -3581,6 +3709,32 @@ impl Game {
                 format!("{} is not a spell", def.name),
             ));
         };
+        match x {
+            Some(_) if !def.has_x_cost() => {
+                return Err(EngineError::illegal(
+                    "cast spell",
+                    format!("{} does not print an {{X}} cost", def.name),
+                ));
+            }
+            Some(value) if value > MAX_X_VALUE => {
+                return Err(EngineError::illegal(
+                    "cast spell",
+                    format!(
+                        "the announced X of {value} exceeds the supported maximum of {MAX_X_VALUE}"
+                    ),
+                ));
+            }
+            None if def.has_x_cost() => {
+                return Err(EngineError::illegal(
+                    "cast spell",
+                    format!(
+                        "{} prints an {{X}} cost; announce X with CastSpellWithX (CR 107.3a)",
+                        def.name
+                    ),
+                ));
+            }
+            _ => {}
+        }
         self.check_timing(player, def, spec)?;
 
         let required = if spec.target == TargetSpec::None {
@@ -3605,7 +3759,7 @@ impl Game {
                 });
             }
         }
-        let cost = self.effective_cost(card)?;
+        let cost = self.effective_cost_parts(card, x.unwrap_or(0))?;
         self.plan_payment(player, &cost)?;
         Ok(())
     }
@@ -3895,13 +4049,16 @@ impl Game {
             Action::Pass => self.apply_pass(player, events),
             Action::PlayLand { card } => self.apply_play_land(player, *card, events),
             Action::CastSpell { card, targets } => {
-                self.apply_cast(player, *card, &[], targets, events)
+                self.apply_cast(player, *card, 0, &[], targets, events)
             }
             Action::CastSpellWithModes {
                 card,
                 modes,
                 targets,
-            } => self.apply_cast(player, *card, modes, targets, events),
+            } => self.apply_cast(player, *card, 0, modes, targets, events),
+            Action::CastSpellWithX { card, x, targets } => {
+                self.apply_cast(player, *card, *x, &[], targets, events)
+            }
             Action::ActivateManaAbility { land } => self.apply_mana_ability(player, *land, events),
             Action::ActivateColorManaAbility { source, color } => {
                 self.apply_color_mana_ability(player, *source, *color, events)
@@ -3981,6 +4138,7 @@ impl Game {
                 self.apply_trigger_target(player, *target, events)
             }
             Action::DeclineTriggerTarget => self.apply_trigger_target_none(player, events),
+            Action::FinishTriggerTargets => self.apply_finish_trigger_targets(player, events),
             Action::AnswerTriggerChoice { use_ability } => {
                 self.apply_trigger_choice(player, *use_ability, events)
             }
@@ -4310,7 +4468,7 @@ impl Game {
             match mode {
                 crate::state::LibrarySearchMode::BasicLandToBattlefield
                 | crate::state::LibrarySearchMode::AnyLandToBattlefield => {
-                    self.enter_battlefield(id, player, events);
+                    self.enter_battlefield(id, player, events, 0);
                     if let Some(object) = self.state.objects.get_mut(&id) {
                         object.tapped = true;
                     }
@@ -4368,7 +4526,7 @@ impl Game {
         if let Some(id) = chosen {
             let card = self.state.object(id).card;
             let defender = self.state.turn.defender;
-            self.enter_battlefield(id, player, events);
+            self.enter_battlefield(id, player, events, 0);
             if let Some(object) = self.state.objects.get_mut(&id) {
                 object.tapped = true;
             }
@@ -4454,6 +4612,7 @@ impl Game {
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
             spell_mana_value: 0,
+            x_value: 0,
         });
         self.state.turn.passed = 0;
         self.state.turn.priority = Some(player);
@@ -4816,6 +4975,7 @@ impl Game {
             entry: StackEntry::Activated { ability: index },
             trigger_answered: false,
             spell_mana_value: 0,
+            x_value: 0,
         });
         // CR 117.3c: activating is treated like casting for priority purposes.
         self.state.turn.passed = 0;
@@ -4871,6 +5031,7 @@ impl Game {
                 source_pt_lki: None,
                 search_amount: 0,
                 dead_object: None,
+                x_value: 0,
             });
             return;
         }
@@ -4894,6 +5055,7 @@ impl Game {
                 dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
+                x_value: 0,
             });
             return;
         }
@@ -4911,6 +5073,7 @@ impl Game {
                 dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
+                x_value: 0,
             });
         }
     }
@@ -4967,6 +5130,10 @@ impl Game {
                 });
                 continue;
             }
+            if spec == TargetSpec::ArtifactOrEnchantment {
+                self.stage_aggregate_trigger(trigger, queue, events);
+                return;
+            }
             if spec == TargetSpec::None {
                 self.push_trigger(trigger, Vec::new(), events);
                 continue;
@@ -4991,6 +5158,8 @@ impl Game {
                     legal,
                     queued: queue,
                     first: None,
+                    aggregate: None,
+                    chosen: Vec::new(),
                 });
                 self.state.turn.priority = None;
                 return;
@@ -5012,12 +5181,53 @@ impl Game {
                         legal,
                         queued: queue,
                         first: None,
+                        aggregate: None,
+                        chosen: Vec::new(),
                     });
                     self.state.turn.priority = None;
                     return;
                 }
             }
         }
+    }
+
+    /// CR 601.2c: a triggered ability printed as "destroy any number of target
+    /// artifacts and/or enchantments with total mana value X or less" chooses a
+    /// *set* of targets. The budget is the X the trigger recorded (CR 107.3a),
+    /// only targets that fit inside it are offered, and the empty set is a legal
+    /// answer — "any number" includes zero, so the trigger is never removed for
+    /// want of targets.
+    fn stage_aggregate_trigger(
+        &mut self,
+        trigger: TriggerRef,
+        queued: Vec<TriggerRef>,
+        events: &mut Vec<Event>,
+    ) {
+        let budget = trigger.x_value;
+        let legal: Vec<Target> = self
+            .legal_targets(
+                trigger.controller,
+                TargetSpec::ArtifactOrEnchantment,
+                trigger.source,
+            )
+            .into_iter()
+            .filter(|target| self.target_mana_value(*target) <= u32::from(budget))
+            .collect();
+        if legal.is_empty() {
+            self.push_trigger(trigger, Vec::new(), events);
+            self.stage_triggers(queued, events);
+            return;
+        }
+        self.state.pending = Some(Pending::TriggerTarget {
+            player: trigger.controller,
+            trigger,
+            legal,
+            queued,
+            first: None,
+            aggregate: Some(budget),
+            chosen: Vec::new(),
+        });
+        self.state.turn.priority = None;
     }
 
     fn stage_ayula_trigger(
@@ -5097,6 +5307,8 @@ impl Game {
                     legal,
                     queued,
                     first: None,
+                    aggregate: None,
+                    chosen: Vec::new(),
                 });
                 self.state.turn.priority = None;
             }
@@ -5130,6 +5342,8 @@ impl Game {
             legal,
             queued,
             first: Some(first),
+            aggregate: None,
+            chosen: Vec::new(),
         });
         self.state.turn.priority = None;
     }
@@ -5161,6 +5375,7 @@ impl Game {
             },
             trigger_answered: false,
             spell_mana_value: trigger.spell_mana_value,
+            x_value: trigger.x_value,
         });
         self.state.turn.passed = 0;
     }
@@ -5170,11 +5385,31 @@ impl Game {
             trigger,
             queued,
             first,
+            legal,
+            aggregate,
+            mut chosen,
             ..
         }) = self.state.pending.take()
         else {
             return;
         };
+        // CR 601.2c: a set-targeting trigger stays open after each addition so
+        // the controller can keep choosing; it is committed by
+        // `Action::FinishTriggerTargets`.
+        if let Some(budget) = aggregate {
+            chosen.push(target);
+            self.state.pending = Some(Pending::TriggerTarget {
+                player: trigger.controller,
+                trigger,
+                legal,
+                queued,
+                first: None,
+                aggregate: Some(budget),
+                chosen,
+            });
+            self.state.turn.priority = None;
+            return;
+        }
         if trigger.card == CardId::AyulaQueenAmongBears {
             if trigger.ability == 1 && first.is_none() {
                 self.ask_ayula_second(trigger, target, queued, events);
@@ -5189,6 +5424,49 @@ impl Game {
         }
         self.push_trigger(trigger, vec![target], events);
         self.stage_triggers(queued, events);
+    }
+
+    /// CR 601.2c: commit the chosen set for a set-targeting trigger and put the
+    /// ability on the stack with exactly those targets. An empty set is legal.
+    fn apply_finish_trigger_targets(&mut self, _player: PlayerId, events: &mut Vec<Event>) {
+        let Some(Pending::TriggerTarget {
+            trigger,
+            queued,
+            aggregate,
+            chosen,
+            ..
+        }) = self.state.pending.take()
+        else {
+            return;
+        };
+        if aggregate.is_none() {
+            self.state.pending = Some(Pending::TriggerTarget {
+                player: trigger.controller,
+                trigger,
+                legal: Vec::new(),
+                queued,
+                first: None,
+                aggregate: None,
+                chosen: Vec::new(),
+            });
+            return;
+        }
+        self.push_trigger(trigger, chosen, events);
+        self.stage_triggers(queued, events);
+    }
+
+    /// CR 202.3: the mana value a "total mana value X or less" restriction reads
+    /// for a target. Only a battlefield permanent is ever such a target, and its
+    /// mana value is the printed one with `{X}` read as 0.
+    fn target_mana_value(&self, target: Target) -> u32 {
+        match target {
+            Target::Permanent(id) => u32::from(
+                self.state
+                    .try_object(id)
+                    .map_or(0, |object| object.card.def().mana_value()),
+            ),
+            _ => 0,
+        }
     }
 
     /// CR 115.6: the controller of a triggered ability whose printed target is
@@ -5352,6 +5630,7 @@ impl Game {
         &mut self,
         player: PlayerId,
         card: ObjectId,
+        x: u8,
         modes: &[u8],
         targets: &[Target],
         events: &mut Vec<Event>,
@@ -5361,7 +5640,7 @@ impl Game {
             (obj.card, obj.zone == Zone::Command, obj.commander)
         };
         let cost = self
-            .effective_cost(card)
+            .effective_cost_parts(card, x)
             .expect("validated command-zone cost still computes");
         let payment = self
             .plan_payment(player, &cost)
@@ -5382,6 +5661,7 @@ impl Game {
             entry: StackEntry::Spell,
             trigger_answered: false,
             spell_mana_value: 0,
+            x_value: x,
         });
         // CR 603.6a: "you cast" triggers are queued as the spell is cast, and
         // reach the stack above it before priority. Only the caster's
@@ -5415,8 +5695,10 @@ impl Game {
                 self.queue_triggers(source, card, player, event);
                 if event == TriggerEvent::CreatureSpellCast {
                     // CR 202.3: the triggering spell's mana value is fixed now,
-                    // not at resolution, so it travels with the trigger.
-                    let mana_value = def.mana_value();
+                    // not at resolution, so it travels with the trigger. An
+                    // announced X is part of the mana value while the spell is
+                    // on the stack.
+                    let mana_value = def.mana_value().saturating_add(x);
                     for trigger in &mut self.state.trigger_queue[first_new..] {
                         trigger.spell_mana_value = mana_value;
                     }
@@ -5570,6 +5852,7 @@ impl Game {
                         dead_object: None,
                         source_pt_lki: None,
                         search_amount: qualifying,
+                        x_value: 0,
                     });
                 }
             }
@@ -6872,33 +7155,52 @@ impl Game {
     // ------------------------------------------------------------ resolution
 
     fn targets_legal(&self, item: &StackItem) -> bool {
-        for target in &item.targets {
-            let ok = match target {
-                Target::Player(p) => self.state.is_live(*p),
-                Target::Permanent(id) => self
-                    .state
-                    .try_object(*id)
-                    .is_some_and(|o| o.zone == Zone::Battlefield && self.is_creature(o)),
-                // CR 608.2b: the target is checked against the zone the printed
-                // instruction names. A card that left the graveyard (or that
-                // gained an ability in the meantime) is no longer legal.
-                Target::Card(id) => self.state.try_object(*id).is_some_and(|o| {
-                    o.zone == Zone::Graveyard
-                        && o.owner == item.controller
-                        && o.card.def().is_creature()
-                        && self.state.object_has_no_abilities(*id)
-                }),
-                Target::Spell(id) => self
-                    .state
-                    .stack
-                    .iter()
-                    .any(|s| s.object == *id && s.entry == StackEntry::Spell),
-            };
-            if !ok {
-                return false;
-            }
+        item.targets
+            .iter()
+            .all(|target| self.target_is_legal(*target, item))
+    }
+
+    /// CR 608.2b: an ability whose targets are *all* illegal does not resolve.
+    /// An ability with no targets at all is not "all illegal" — it resolves and
+    /// does nothing, which is how an empty "destroy any number" set behaves.
+    fn targets_all_illegal(&self, item: &StackItem) -> bool {
+        !item.targets.is_empty()
+            && item
+                .targets
+                .iter()
+                .all(|target| !self.target_is_legal(*target, item))
+    }
+
+    fn target_is_legal(&self, target: Target, item: &StackItem) -> bool {
+        match target {
+            Target::Player(p) => self.state.is_live(p),
+            Target::Permanent(id) => self.state.try_object(id).is_some_and(|o| {
+                // CR 115.1: a permanent target must still be a permanent this
+                // instruction can name. An artifact/enchantment target is not a
+                // creature, so the check is by the zone plus the printed card
+                // type the spec reads.
+                o.zone == Zone::Battlefield
+                    && if trigger_targets_a_set(item.card, ability_index(item.entry)) {
+                        o.card.def().is_artifact() || o.card.def().is_enchantment()
+                    } else {
+                        self.is_creature(o)
+                    }
+            }),
+            // CR 608.2b: the target is checked against the zone the printed
+            // instruction names. A card that left the graveyard (or that
+            // gained an ability in the meantime) is no longer legal.
+            Target::Card(id) => self.state.try_object(id).is_some_and(|o| {
+                o.zone == Zone::Graveyard
+                    && o.owner == item.controller
+                    && o.card.def().is_creature()
+                    && self.state.object_has_no_abilities(id)
+            }),
+            Target::Spell(id) => self
+                .state
+                .stack
+                .iter()
+                .any(|s| s.object == id && s.entry == StackEntry::Spell),
         }
-        true
     }
 
     fn advance_resolution(&mut self, events: &mut Vec<Event>) {
@@ -6976,7 +7278,7 @@ impl Game {
                 });
                 if def.is_permanent_spell() {
                     // CR 608.3: a resolving permanent spell enters the battlefield.
-                    self.enter_battlefield(item.object, item.controller, events);
+                    self.enter_battlefield(item.object, item.controller, events, item.x_value);
                 } else {
                     self.move_to_graveyard(item.object, events);
                 }
@@ -7042,6 +7344,7 @@ impl Game {
                     dead_object: None,
                     source_pt_lki: item.source_pt_lki,
                     search_amount: item.search_amount,
+                    x_value: item.x_value,
                 },
             });
             self.state.resolving = Some(item.object);
@@ -7050,7 +7353,17 @@ impl Game {
         }
 
         // CR 608.2b: legality is checked once, before instructions are followed.
-        if item.cursor == 0 && !self.targets_legal(&item) {
+        let all_illegal = self.targets_all_illegal(&item);
+        if item.cursor == 0
+            && if trigger_targets_a_set(item.card, ability_index(item.entry)) {
+                // CR 608.2b: a set-targeting ability resolves as long as at
+                // least one of its targets is still legal; each illegal target
+                // simply does nothing.
+                all_illegal
+            } else {
+                !self.targets_legal(&item)
+            }
+        {
             events.push(Event::AbilityFizzled {
                 controller: item.controller,
                 card: item.card,
@@ -7806,7 +8119,7 @@ impl Game {
                         .try_object(id)
                         .map(|object| object.card.def().name)
                         .unwrap_or("land");
-                    self.enter_battlefield(id, controller, events);
+                    self.enter_battlefield(id, controller, events, 0);
                     if let Some(object) = self.state.objects.get_mut(&id) {
                         object.tapped = true;
                     }
@@ -8132,6 +8445,54 @@ impl Game {
                     events.push(Event::StateBasedAction {
                         description: format!(
                             "{} artifact(s) and/or enchantment(s) were destroyed (CR 701.8a)",
+                            doomed.len()
+                        ),
+                    });
+                }
+                false
+            }
+            // CR 701.7a: destroy exactly the chosen artifacts/enchantments that
+            // are still on the battlefield. One destroy instruction, so the whole
+            // set is one simultaneous batch (CR 704.3) and the death watchers see
+            // every death before any of their triggers are dispatched.
+            Effect::DestroyTargetArtifactsAndEnchantments => {
+                let doomed: Vec<ObjectId> = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && item.targets.contains(&Target::Permanent(object.id))
+                            && (object.card.def().is_artifact()
+                                || object.card.def().is_enchantment())
+                    })
+                    .map(|object| object.id)
+                    .collect();
+                if !doomed.is_empty() {
+                    let watchers = death_watchers(self);
+                    let combat = self.capture_combat_alone();
+                    let mut deaths = Vec::new();
+                    for id in &doomed {
+                        if self.has_indestructible(*id) {
+                            events.push(Event::StateBasedAction {
+                                description: format!(
+                                    "{} is indestructible and is not destroyed (CR 702.12b)",
+                                    self.describe_object(*id)
+                                ),
+                            });
+                            continue;
+                        }
+                        if self.try_regenerate(*id, events) {
+                            continue;
+                        }
+                        if let Some(record) = self.move_to_graveyard_inner(*id, events, &combat) {
+                            deaths.push(record);
+                        }
+                    }
+                    self.queue_watchers_for_deaths(&watchers, &deaths);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "{} target artifact(s) and/or enchantment(s) were destroyed (CR 701.7a)",
                             doomed.len()
                         ),
                     });
@@ -9015,6 +9376,7 @@ impl Game {
                         dead_object: None,
                         source_pt_lki: None,
                         search_amount: 0,
+                        x_value: 0,
                     });
                 }
                 continue;
@@ -9563,6 +9925,40 @@ impl Game {
                             });
                         }
                     }
+                }
+                continue;
+            }
+            if self.state.object(id).card.def().has_x_cost() {
+                // CR 107.3a: an `{X}` spell is offered once per affordable X,
+                // lowest first, so the announced value is a real choice and not
+                // a silently-zero default. The printed cost only rises by one
+                // generic mana per step, so the first unaffordable X ends the
+                // scan.
+                let mut x: u8 = 0;
+                loop {
+                    let action = Action::CastSpellWithX {
+                        card: id,
+                        x,
+                        targets: Vec::new(),
+                    };
+                    if self.validate(player, &action).is_err() {
+                        break;
+                    }
+                    let name = self.state.object(id).card.name();
+                    let from_command = self.state.object(id).zone == Zone::Command;
+                    out.push(LegalAction {
+                        action,
+                        label: if from_command {
+                            format!("Cast commander {name} from the command zone with X={x}")
+                        } else {
+                            format!("Cast {name} with X={x}")
+                        },
+                        rules: vec!["107.3a", "601.2b"],
+                    });
+                    if x == MAX_X_VALUE {
+                        break;
+                    }
+                    x += 1;
                 }
                 continue;
             }
@@ -10149,7 +10545,47 @@ impl Game {
                     },
                 ]
             }
-            Pending::TriggerTarget { legal, trigger, .. } => {
+            Pending::TriggerTarget {
+                legal,
+                trigger,
+                aggregate,
+                chosen,
+                ..
+            } => {
+                if let Some(budget) = aggregate {
+                    // CR 601.2c: offer only the additions that still fit the
+                    // announced total, plus the commit that ends the choice.
+                    let spent: u32 = chosen
+                        .iter()
+                        .map(|target| self.target_mana_value(*target))
+                        .sum();
+                    let mut out: Vec<LegalAction> = legal
+                        .iter()
+                        .filter(|target| !chosen.contains(target))
+                        .filter(|target| {
+                            spent + self.target_mana_value(**target) <= u32::from(*budget)
+                        })
+                        .map(|target| LegalAction {
+                            action: Action::ChooseTriggerTarget { target: *target },
+                            label: format!(
+                                "Add {} to the targets ({} of {budget} mana value spent)",
+                                self.describe_target(*target),
+                                spent + self.target_mana_value(*target)
+                            ),
+                            rules: vec!["115.1", "601.2c"],
+                        })
+                        .collect();
+                    out.push(LegalAction {
+                        action: Action::FinishTriggerTargets,
+                        label: if chosen.is_empty() {
+                            "Destroy nothing".to_string()
+                        } else {
+                            format!("Destroy the {} chosen permanent(s)", chosen.len())
+                        },
+                        rules: vec!["601.2c"],
+                    });
+                    return out;
+                }
                 let mut out: Vec<LegalAction> = legal
                     .iter()
                     .map(|target| LegalAction {
@@ -10443,6 +10879,12 @@ fn collect_combinations(
     }
 }
 
+/// CR 107.3a: the largest announced X the engine accepts. A bound is needed
+/// because X is carried as a `u8` and an accept-anything value would let a
+/// forged action overflow the generic cost; 20 is far above any board this pool
+/// can produce, and every real cast is refused earlier by `plan_payment`.
+const MAX_X_VALUE: u8 = 20;
+
 fn target_spec_rule(spec: TargetSpec) -> &'static str {
     match spec {
         TargetSpec::None => "CR 601.2c",
@@ -10464,7 +10906,21 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::NoAbilityCreatureCardInYourGraveyard => {
             "target creature card with no abilities in your graveyard: CR 115.1, 110.1"
         }
+        TargetSpec::ArtifactOrEnchantment => {
+            "any number of target artifacts and/or enchantments: CR 115.1, 601.2c"
+        }
     }
+}
+
+/// `true` when this card/ability prints the aggregate "any number of target
+/// artifacts and/or enchantments" specification. Used by resolution legality
+/// (CR 608.2b resolves with one surviving target) and by the target check, so
+/// the two can never disagree about what kind of target this ability takes.
+fn trigger_targets_a_set(card: CardId, ability: u8) -> bool {
+    ability::abilities(card)
+        .get(ability as usize)
+        .map(Ability::target_spec)
+        == Some(TargetSpec::ArtifactOrEnchantment)
 }
 
 /// CR 115.6 + CR 702.94a: whether a triggered ability's choice may be declined.
@@ -10874,6 +11330,7 @@ mod slice17_cleanup_history_tests {
                     dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
+                    x_value: 0,
                 },
                 TriggerRef {
                     source: warden,
@@ -10886,6 +11343,7 @@ mod slice17_cleanup_history_tests {
                     dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
+                    x_value: 0,
                 },
             ],
             &mut events,

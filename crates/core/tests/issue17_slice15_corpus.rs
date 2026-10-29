@@ -142,6 +142,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // gap closes by six while the pool grows by six. Slice 48 registers Owlbear
     // Cub, which closes one more and grows the pool by one. Slice 53 registers
     // Ruxa, Patient Professor, so both numbers move together one more time.
-    assert_eq!(missing.len(), 3, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 163, "the compiled pool");
+    // Slice 57 registers Rampaging Yao Guai, so the gap closes by one and the
+    // pool grows by one again.
+    assert_eq!(missing.len(), 2, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 164, "the compiled pool");
 }
