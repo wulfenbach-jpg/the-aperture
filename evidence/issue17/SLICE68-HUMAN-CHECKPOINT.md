@@ -20,7 +20,7 @@ branch `aperture/issue-17`, draft PR46, base `2a4c8ff…`. No push/merge/closure
   **182 catalog / 459 union = 168 supported + 291 missing**.
 
 ## Verification
-- `issue17_slice68` 5/5; checkpoint 6; ordering; command_zone_setup 43;
+- `issue17_slice68` 11/11; checkpoint 6; ordering; command_zone_setup 44;
   printings 27; catalog 5; commander 43; slice15 2; replay_digest 6; import 3+1.
 - All focused gates/fmt/clippy/release exits 0; aggregate 0
   (`slice68/final-native/gates.log`).
@@ -33,6 +33,7 @@ branch `aperture/issue-17`, draft PR46, base `2a4c8ff…`. No push/merge/closure
 
 ## TDD / residual
 No pre-implementation compiling RED was retained for Skirk or Zo-Zu; tests were
-written after implementation, so this is **not** claimed as TDD. Krenko remains
-planned at 33 missing; **2/8 certified**, not 3/8. No full workspace rerun was
+written after implementation, so this is **not** claimed as TDD. The native
+Ruxa/no-abilities defect was a compiling RED before repair and is now covered. Mana abilities are supported at priority only; no mid-payment cost-window claim
+is made. Krenko remains planned at 33 missing; **2/8 certified**, not 3/8. No full workspace rerun was
 performed in this slice; the prior successful full-workspace receipt is retained.

@@ -2057,11 +2057,31 @@ impl GameState {
                     trigger, queued, ..
                 } => {
                     trigger.validate_x()?;
+                    self.validate_affected_player(
+                        trigger.card,
+                        trigger.ability,
+                        trigger.affected_player,
+                        "pending trigger",
+                    )?;
                     for next in queued {
                         next.validate_x()?;
+                        self.validate_affected_player(
+                            next.card,
+                            next.ability,
+                            next.affected_player,
+                            "queued sibling trigger",
+                        )?;
                     }
                 }
-                Pending::TriggerChoice { trigger, .. } => trigger.validate_x()?,
+                Pending::TriggerChoice { trigger, .. } => {
+                    trigger.validate_x()?;
+                    self.validate_affected_player(
+                        trigger.card,
+                        trigger.ability,
+                        trigger.affected_player,
+                        "pending trigger",
+                    )?;
+                }
                 _ => {}
             }
             // Use the same printed-mode and live-candidate guard as answer submission.
@@ -3433,6 +3453,12 @@ impl GameState {
         }
         for trigger in &self.trigger_queue {
             trigger.validate_x()?;
+            self.validate_affected_player(
+                trigger.card,
+                trigger.ability,
+                trigger.affected_player,
+                "queued trigger",
+            )?;
             if let Some(affected) = trigger.affected
                 && !self.objects.contains_key(&affected)
             {
@@ -3463,6 +3489,14 @@ impl GameState {
                 return Err(EngineError::InvalidState {
                     reason: "nonmodal stack item carries modal selections".to_string(),
                 });
+            }
+            if let StackEntry::Triggered { ability } = item.entry {
+                self.validate_affected_player(
+                    item.card,
+                    ability,
+                    item.affected_player,
+                    "stack trigger",
+                )?;
             }
             let Some(object) = self.objects.get(&item.object) else {
                 return Err(EngineError::InvalidState {
@@ -3682,6 +3716,34 @@ impl GameState {
             })
     }
 
+    fn validate_affected_player(
+        &self,
+        card: CardId,
+        ability: u8,
+        affected_player: Option<PlayerId>,
+        label: &str,
+    ) -> Result<(), EngineError> {
+        if let Some(seat) = affected_player
+            && (seat as usize) >= self.seat_count()
+        {
+            return Err(EngineError::InvalidState {
+                reason: format!("{label} affected player P{seat} is out of range"),
+            });
+        }
+        let required = card == CardId::ZoZuThePunisher && ability == 0;
+        if required && affected_player.is_none() {
+            return Err(EngineError::InvalidState {
+                reason: format!("{label} is missing Zo-Zu's captured affected player"),
+            });
+        }
+        if !required && affected_player.is_some() {
+            return Err(EngineError::InvalidState {
+                reason: format!("{label} carries an affected player without a consumer"),
+            });
+        }
+        Ok(())
+    }
+
     pub fn object_has_no_abilities(&self, id: ObjectId) -> bool {
         let Some(object) = self.objects.get(&id) else {
             return false;
@@ -3696,7 +3758,10 @@ impl GameState {
         }
         // CR 605.1a: an intrinsic mana ability is an ability even though it is
         // not in the printed rules text (every basic land, Sol Ring).
-        if def.basic_mana.is_some() || def.artifact_mana.is_some() || card.dynamic_mana().is_some()
+        if def.basic_mana.is_some()
+            || def.artifact_mana.is_some()
+            || card.dynamic_mana().is_some()
+            || card.sacrifice_mana().is_some()
         {
             return false;
         }

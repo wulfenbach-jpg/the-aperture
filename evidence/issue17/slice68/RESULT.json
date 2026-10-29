@@ -41,16 +41,17 @@
     "certified_lists": "2 of 8"
   },
   "tests": {
-    "issue17_slice68": "5 passed",
+    "issue17_slice68": "11 passed",
     "checkpoint": "6 passed",
     "ordering": "passed",
-    "command_zone_setup": "43 passed",
+    "command_zone_setup": "44 passed",
     "card_printings": "27 passed",
     "catalog_pool": "5 passed",
     "commander": "43 passed",
     "slice15": "2 passed",
     "replay_digest": "6 passed",
-    "import": "3+1 passed"
+    "import": "3+1 passed",
+    "ruxa_slice60": "passed"
   },
   "gates": {
     "script": "evidence/issue17/slice68/gates.sh",
@@ -87,10 +88,12 @@
   },
   "tdd": "No pre-implementation compiling RED was retained for the two new mechanics; tests were authored after implementation. This is disclosed and not claimed as TDD. Existing affected suites were retained.",
   "limitations": [
-    "No pre-implementation RED for Skirk/Zo-Zu mechanics.",
-    "Krenko list remains planned at 33 missing; 2/8 certified, not 3/8.",
-    "Demonstrator is 40 cards, not exact-100 certification.",
-    "No full workspace rerun; focused gates plus existing prior full-workspace receipt.",
-    "No product AI/search/UI/import behavior redesign."
-  ]
+    "No pre-implementation RED for Skirk/Zo-Zu mechanics; native Ruxa defect RED is retained.",
+    "Mana-ability activations are offered at priority only; no mid-payment cost-window claim.",
+    "No broad save/replay continuity claim for newly affected triggers.",
+    "Krenko remains planned at 33 missing; 2/8 certified.",
+    "40-card demonstrator is not exact-100 certification."
+  ],
+  "ruxa_repair": "object_has_no_abilities now recognizes sacrifice_mana; Skirk is not vanilla under Ruxa; graveyard predicate exclusion tested.",
+  "save_validation": "affected_player ranged and tied to Zo-Zu trigger; malformed missing/out-of-range sandbox saves refused; legitimate save loads."
 }

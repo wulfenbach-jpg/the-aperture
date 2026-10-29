@@ -6,6 +6,7 @@ fail=0
 run() { name=$1; shift; "$@" >>"$log" 2>&1; code=$?; echo "$name exit=$code" | tee -a "$log"; [ "$code" -eq 0 ] || fail=1; }
 run slice68 cargo test --locked -q -p aperture-core --test issue17_slice68
 run checkpoint cargo test --locked -q -p aperture-core --test issue17_slice67_checkpoint
+run ruxa cargo test --locked -q -p aperture-core --test issue17_slice53_ruxa --test issue17_slice60
 run ordering cargo test --locked -q -p aperture-core --test issue17_slice66
 run commander_setup cargo test --locked -q -p aperture-core --test command_zone_setup
 run printings cargo test --locked -q -p aperture-core --test card_printings

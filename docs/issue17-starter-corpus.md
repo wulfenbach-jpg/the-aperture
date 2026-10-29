@@ -1471,8 +1471,11 @@ enters, Zo-Zu deals 2 damage to that land's controller." A typed
 affected-player provenance; damage uses the existing replacement pipeline with
 the source's last-known controller, so it still works after Zo-Zu leaves. It
 watches all players, not only the controller, and does not fire for creatures.
-Existing own-only landfall watchers remain own-only. Tests cover opponent land,
-source-left damage and creature-entry control.
+Existing own-only landfall watchers remain own-only. Tests cover opponent and
+own land, source-left damage through a real Unsummon, creature-entry and malformed
+affected-player save controls. Mana abilities are offered at priority only; no
+mid-payment cost-window claim is made, and no broad save/replay continuity is
+claimed for newly affected triggers.
 
 **Corpus after this slice.** 182 catalog / 459 union = **168 supported + 291
 missing**, per-list `[55, 0, 51, 33, 0, 52, 52, 53]`, Krenko **33** missing;
