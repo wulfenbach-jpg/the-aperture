@@ -57,6 +57,10 @@ const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 /// Slice 62: Goblin Chieftain (JMP 324) and Searslicer Goblin (FDN 93), fetched
 /// 2026-10-29.
 const SLICE62_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice62-sourced.json");
+/// Slice 64: Goblin Sharpshooter (C13 111), Krenko, Tin Street Kingpin (MOC
+/// 287), Hobgoblin Bandit Lord (AFR 147) and Goblin Matron (PLST DMR-123),
+/// fetched 2026-10-29.
+const SLICE64_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice64-sourced.json");
 /// Slice 63: Goblin Warchief (DOM 130), Goblin King (10E 207) and Dragonlord's
 /// Servant (TDC 210), fetched 2026-10-29.
 const SLICE63_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice63-sourced.json");
@@ -510,6 +514,11 @@ fn slice63_cards() -> Vec<Value> {
     value["cards"].as_array().expect("cards").to_vec()
 }
 
+fn slice64_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE64_SOURCED).expect("sourced slice64 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
 fn slice62_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE62_SOURCED).expect("sourced slice62 JSON");
     value["cards"].as_array().expect("cards").to_vec()
@@ -567,6 +576,50 @@ const PRINTINGS: &[Printing] = &[
         retrieved: "2026-10-29",
         oracle_text: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
         power: Some("2"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Goblin Sharpshooter",
+        set: "c13",
+        collector_number: "111",
+        scryfall_uri: "https://scryfall.com/card/c13/111/goblin-sharpshooter",
+        printings_checked: 6,
+        retrieved: "2026-10-29",
+        oracle_text: "This creature doesn't untap during your untap step.\nWhenever a creature dies, untap this creature.\n{T}: This creature deals 1 damage to any target.",
+        power: Some("1"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Krenko, Tin Street Kingpin",
+        set: "moc",
+        collector_number: "287",
+        scryfall_uri: "https://scryfall.com/card/moc/287/krenko-tin-street-kingpin",
+        printings_checked: 9,
+        retrieved: "2026-10-29",
+        oracle_text: "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+        power: Some("1"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Hobgoblin Bandit Lord",
+        set: "afr",
+        collector_number: "147",
+        scryfall_uri: "https://scryfall.com/card/afr/147/hobgoblin-bandit-lord",
+        printings_checked: 6,
+        retrieved: "2026-10-29",
+        oracle_text: "Other Goblins you control get +1/+1.\n{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+        power: Some("2"),
+        toughness: Some("3"),
+    },
+    Printing {
+        name: "Goblin Matron",
+        set: "plst",
+        collector_number: "DMR-123",
+        scryfall_uri: "https://scryfall.com/card/plst/DMR-123/goblin-matron",
+        printings_checked: 17,
+        retrieved: "2026-10-29",
+        oracle_text: "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+        power: Some("1"),
         toughness: Some("1"),
     },
     Printing {
@@ -1453,6 +1506,115 @@ fn every_slice60_card_matches_its_recorded_printing() {
                 .all(|ability| def.oracle.contains(ability.text())),
             "{name} prints every typed ability it declares"
         );
+    }
+}
+
+/// Slice 64 adds four demanded Krenko cards that share primitives, so the
+/// catalog text must equal the recorded printing *and* the shared machinery must
+/// really be wired: the standing untap restriction, the creature-dies untap, the
+/// subtype anthem, Krenko's ordered counter-then-tokens instruction pair, and
+/// Goblin Matron's optional search.
+#[test]
+fn every_slice64_card_matches_its_recorded_printing_and_shared_abilities() {
+    use aperture_core::ability::{Ability, StaticAbility, abilities, static_abilities};
+
+    let cards = slice64_cards();
+    assert_eq!(cards.len(), 4, "slice 64 adds four sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        // Every card in this batch is a Goblin creature, which is what makes the
+        // batch a Goblin-payoff batch rather than four unrelated cards.
+        assert!(def.is_creature() && def.is_goblin(), "{name} is a Goblin");
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name}'s wording never changed between printings"
+        );
+    }
+
+    // Sharpshooter's first printed line is a standing restriction, and the
+    // second line is the direct untap instruction that ignores it.
+    assert!(
+        static_abilities(CardId::GoblinSharpshooter)
+            .iter()
+            .any(|ability| matches!(
+                ability,
+                StaticAbility::SelfDoesNotUntapDuringUntapStep { .. }
+            )),
+        "Goblin Sharpshooter prints a standing untap restriction"
+    );
+    assert!(abilities(CardId::GoblinSharpshooter).iter().any(|ability| {
+        matches!(
+            ability,
+            Ability::Triggered(triggered)
+                if triggered.event == aperture_core::ability::TriggerEvent::CreatureDies
+                    && triggered.effects == [aperture_core::card::Effect::UntapSource]
+        )
+    }));
+
+    // Bandit Lord's anthem is the shared subtype-filtered layer 7c static.
+    assert!(
+        static_abilities(CardId::HobgoblinBanditLord)
+            .iter()
+            .any(|ability| matches!(
+                ability,
+                StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { subtypes, .. }
+                    if *subtypes == ["Goblin"]
+            )),
+        "Hobgoblin Bandit Lord prints the shared Goblin anthem"
+    );
+
+    // Krenko's printed instructions are ordered: the counter, then the tokens.
+    let krenko = abilities(CardId::KrenkoTinStreetKingpin);
+    assert_eq!(krenko.len(), 1);
+    assert_eq!(
+        krenko[0].effects(),
+        &[
+            aperture_core::card::Effect::PutPlusOneCounterOnSource,
+            aperture_core::card::Effect::CreateGoblinTokensEqualToSourcePower,
+        ],
+        "the counter is placed before the token count is read"
+    );
+
+    // Matron's search is optional, so the "may" is answered before any search.
+    let matron = abilities(CardId::GoblinMatron);
+    assert_eq!(matron.len(), 1);
+    match matron[0] {
+        Ability::Triggered(triggered) => {
+            assert!(triggered.optional, "Goblin Matron's search is a \"may\"");
+            assert_eq!(
+                triggered.effects,
+                &[aperture_core::card::Effect::SearchGoblinCardToHand]
+            );
+        }
+        Ability::Activated(_) => panic!("Goblin Matron's ability is triggered"),
     }
 }
 

@@ -334,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 172] = [
+pub static CARDS: [CardDef; 176] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1433,6 +1433,37 @@ pub static CARDS: [CardDef; 172] = [
         RampagingYaoGuai, "Rampaging Yao Guai", cost: Some("{X}{G}{G}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear Mutant", power: Some(2), toughness: Some(2),
         oracle: "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+        spell: None
+    ),
+    // Issue 17 slice 64: four sourced Krenko demanded cards that share the
+    // Goblin payoff primitives introduced here — a standing untap-step
+    // restriction with a direct untap trigger, tokens scaled to the source's own
+    // power, a per-turn Goblin-entry history, and a subtype-filtered library
+    // search. Printed text copied verbatim from the C13 111 / MOC 287 / AFR 147 /
+    // PLST DMR-123 printings fetched from Scryfall on 2026-10-29 and recorded in
+    // fixtures/starter-corpus/slice64-sourced.json.
+    card!(
+        GoblinSharpshooter, "Goblin Sharpshooter", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
+        oracle: "This creature doesn't untap during your untap step.\nWhenever a creature dies, untap this creature.\n{T}: This creature deals 1 damage to any target.",
+        spell: None
+    ),
+    card!(
+        KrenkoTinStreetKingpin, "Krenko, Tin Street Kingpin", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin", power: Some(1), toughness: Some(2),
+        oracle: "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+        spell: None
+    ),
+    card!(
+        HobgoblinBanditLord, "Hobgoblin Bandit Lord", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Rogue", power: Some(2), toughness: Some(3),
+        oracle: "Other Goblins you control get +1/+1.\n{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+        spell: None
+    ),
+    card!(
+        GoblinMatron, "Goblin Matron", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
+        oracle: "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
         spell: None
     ),
 ];

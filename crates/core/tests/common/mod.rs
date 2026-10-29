@@ -57,6 +57,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             commanders: Vec::new(),
             rings: Vec::new(),
             attacked_this_turn: Vec::new(),
+            goblins_entered_this_turn: Vec::new(),
             hideaway: Vec::new(),
             face_down_exile: Default::default(),
             profile: Profile::Practice20,

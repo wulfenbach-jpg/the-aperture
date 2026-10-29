@@ -436,6 +436,27 @@ pub enum Effect {
     /// per the printed ruling, so normal timing restrictions do not apply, a
     /// land still needs an unused land play, and a printed {X} is 0.
     PlayCardExiledWithSource,
+    /// CR 701.26a: untap the ability's own source ("Whenever a creature dies,
+    /// untap this creature" — Goblin Sharpshooter). Untapping is not an unlock:
+    /// nothing else about the permanent changes, and an already-untapped source
+    /// is simply already untapped.
+    UntapSource,
+    /// "Create a number of 1/1 red Goblin creature tokens equal to this
+    /// creature's power" (Krenko, Tin Street Kingpin). The power is read at the
+    /// moment this instruction resolves, so a +1/+1 counter placed earlier in
+    /// the same resolution is already counted (CR 608.2c, 613.4c).
+    CreateGoblinTokensEqualToSourcePower,
+    /// "Deals damage equal to the number of Goblins that entered the battlefield
+    /// under your control this turn to any target" (Hobgoblin Bandit Lord). The
+    /// count is this turn's entry history, captured per seat as permanents
+    /// arrived, and it is read when the ability resolves.
+    DamageTargetForGoblinsEnteredThisTurn,
+    /// CR 701.23: "you may search your library for a Goblin card, reveal that
+    /// card, put it into your hand, then shuffle" (Goblin Matron). A real search
+    /// of the whole library, answered as a resumable pending choice with one
+    /// action per Goblin card in the library plus a "finish searching" action
+    /// that finds nothing.
+    SearchGoblinCardToHand,
 }
 
 const TITANIA_EXILE_GRAVE: &[Effect] = &[Effect::ExileTargetPlayersGraveyardAndGainLife];
@@ -571,6 +592,20 @@ impl Effect {
             ),
             Effect::PlayCardExiledWithSource => {
                 "you may play a card exiled with this creature without paying its mana cost"
+                    .to_string()
+            }
+            Effect::UntapSource => "untap this creature".to_string(),
+            Effect::CreateGoblinTokensEqualToSourcePower => {
+                "create a 1/1 red Goblin token for each point of this creature's power".to_string()
+            }
+            Effect::DamageTargetForGoblinsEnteredThisTurn => {
+                "deal damage to the target equal to the Goblins that entered under your control \
+                 this turn"
+                    .to_string()
+            }
+            Effect::SearchGoblinCardToHand => {
+                "search your library for a Goblin card, reveal it, put it into your hand, then \
+                 shuffle"
                     .to_string()
             }
             Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
@@ -1019,6 +1054,10 @@ pub enum CardId {
     GoblinKing,
     DragonlordsServant,
     VolcanicDragon,
+    GoblinSharpshooter,
+    KrenkoTinStreetKingpin,
+    HobgoblinBanditLord,
+    GoblinMatron,
     BeetlebackChief,
     GoblinToken,
     AlabornTrooper,

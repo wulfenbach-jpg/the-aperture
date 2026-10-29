@@ -288,6 +288,7 @@ impl Game {
             commanders: Vec::new(),
             rings: Vec::new(),
             attacked_this_turn: Vec::new(),
+            goblins_entered_this_turn: Vec::new(),
             hideaway: Vec::new(),
             face_down_exile: Default::default(),
             profile,
@@ -2405,6 +2406,7 @@ impl Game {
             card,
             controller,
         });
+        self.note_goblin_entered(controller, card);
         // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
         // is on the battlefield.
         let first_new = self.state.trigger_queue.len();
@@ -4981,6 +4983,20 @@ impl Game {
                         ),
                     });
                 }
+                // CR 701.23: a searched Goblin card is revealed as it is put into
+                // hand, so the whole table sees which card was found (Goblin
+                // Matron). The reveal is an event, not a zone change: the card
+                // moves through the ordinary library-to-hand path.
+                crate::state::LibrarySearchMode::GoblinCardToHand => {
+                    let card = self.state.object(id).card;
+                    self.move_to_hand(id, events);
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{player} reveals {} and puts it into their hand (CR 701.23)",
+                            card.def().name
+                        ),
+                    });
+                }
                 // Not reachable: the look mode returns above, before this loop,
                 // because it moves the looked-at cards rather than searching.
                 crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => {}
@@ -7133,6 +7149,7 @@ impl Game {
             self.state.creature_died_this_turn = false;
             self.state.nontoken_creature_deaths_this_turn.clear();
             self.state.attacked_this_turn.clear();
+            self.state.goblins_entered_this_turn.clear();
             // CR 800.4k: a departed player's turn does not begin; select the
             // next actual live seat. Seats are never renumbered.
             match self.state.next_live_seat_after(self.state.turn.active) {
@@ -7313,6 +7330,7 @@ impl Game {
         let pending = std::mem::take(&mut self.state.skip_next_untap);
         let mut kept = std::collections::BTreeSet::new();
         let mut skipped = Vec::new();
+        let mut skipped_by_static = Vec::new();
         for obj in self.state.objects.values_mut() {
             if obj.zone != Zone::Battlefield {
                 continue;
@@ -7331,6 +7349,26 @@ impl Game {
                 skipped.push(obj.id);
                 continue;
             }
+            // CR 502.3: a printed "this creature doesn't untap during your untap
+            // step" (Goblin Sharpshooter) is a standing restriction, not a
+            // one-shot marker, so it applies to every untap step its controller
+            // takes for as long as this exact object is on the battlefield. It
+            // never blocks a direct untap instruction ("whenever a creature
+            // dies, untap this creature"), which is a separate effect.
+            if obj.tapped
+                && crate::ability::static_abilities(obj.card)
+                    .iter()
+                    .any(|ability| {
+                        matches!(
+                            ability,
+                            crate::ability::StaticAbility::SelfDoesNotUntapDuringUntapStep { .. }
+                        )
+                    })
+            {
+                obj.summoning_sick = false;
+                skipped_by_static.push(obj.id);
+                continue;
+            }
             obj.tapped = false;
             // CR 302.6: the restriction ends for the permanent, whether or not
             // it is currently a creature (Stuffed Bear can be animated on a
@@ -7344,6 +7382,14 @@ impl Game {
             events.push(Event::StateBasedAction {
                 description: format!(
                     "{name} doesn't untap during this untap step (CR 502.3, Spectral Bears)"
+                ),
+            });
+        }
+        for id in skipped_by_static {
+            let name = self.state.object(id).name().to_string();
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "{name} doesn't untap during its controller's untap step (CR 502.3)"
                 ),
             });
         }
@@ -8637,54 +8683,23 @@ impl Game {
                 true
             }
             Effect::Damage(n) => {
-                for target in item.targets.clone() {
-                    match target {
-                        Target::Player(p) => {
-                            let dealt = self.deal_damage(
-                                Some(item.object),
-                                DamageTarget::Player(p),
-                                n as u32,
-                                false,
-                                events,
-                            );
-                            if dealt == 0 {
-                                continue;
-                            }
-                            let life = self.state.players[p as usize].life;
-                            events.push(Event::Damage {
-                                source: Some(item.object),
-                                target: format!("P{p}"),
-                                amount: dealt,
-                            });
-                            events.push(Event::LifeChange {
-                                player: p,
-                                delta: -(dealt as i32),
-                                life,
-                            });
-                        }
-                        Target::Permanent(id) => {
-                            let dealt = self.deal_damage(
-                                Some(item.object),
-                                DamageTarget::Permanent(id),
-                                n as u32,
-                                false,
-                                events,
-                            );
-                            if dealt == 0 {
-                                continue;
-                            }
-                            events.push(Event::Damage {
-                                source: Some(item.object),
-                                target: self.describe_object(id),
-                                amount: dealt,
-                            });
-                        }
-                        Target::Spell(_) => {}
-                        // A graveyard card is not a damage recipient; the arm
-                        // exists only for exhaustiveness (CR 115.4).
-                        Target::Card(_) => {}
-                    }
-                }
+                self.deal_effect_damage(item, u32::from(n), events);
+                false
+            }
+            // CR 608.2c: "deal damage equal to the number of Goblins that
+            // entered the battlefield under your control this turn" — the count
+            // is this turn's entry history for the ability's controller, read at
+            // resolution. Zero Goblins means zero damage, which is not a damage
+            // event at all (nothing was dealt, so nothing triggers).
+            Effect::DamageTargetForGoblinsEnteredThisTurn => {
+                let seat = usize::from(controller);
+                let count = self
+                    .state
+                    .goblins_entered_this_turn
+                    .get(seat)
+                    .copied()
+                    .unwrap_or(0);
+                self.deal_effect_damage(item, count, events);
                 false
             }
             Effect::Pump(power, toughness) => {
@@ -9007,6 +9022,39 @@ impl Game {
             Effect::CreateGoblinTokensForEachGoblin => {
                 let count = self.goblin_count(controller);
                 self.create_goblin_tokens(controller, count, events);
+                false
+            }
+            // CR 701.26a: "untap this creature" — a direct untap instruction,
+            // which a printed "doesn't untap during your untap step" restriction
+            // does not stop. An already-untapped source is simply untapped, and
+            // a source that left the battlefield has no tapped state to change.
+            Effect::UntapSource => {
+                if let Some(object) = self.state.objects.get_mut(&item.object)
+                    && object.zone == Zone::Battlefield
+                    && object.tapped
+                {
+                    object.tapped = false;
+                    let name = object.card.name().to_string();
+                    events.push(Event::StateBasedAction {
+                        description: format!("{name} untaps (CR 701.26a)"),
+                    });
+                }
+                false
+            }
+            // CR 608.2c + 613.4c: the token count is the source's *effective*
+            // power at the moment this instruction resolves, so a +1/+1 counter
+            // placed by the instruction immediately before it is already counted.
+            // A negative power creates no tokens (CR 107.1b: a negative number is
+            // treated as zero where a count is needed).
+            Effect::CreateGoblinTokensEqualToSourcePower => {
+                let count = self
+                    .state
+                    .try_object(item.object)
+                    .filter(|object| object.zone == Zone::Battlefield)
+                    .map(|object| object.power())
+                    .unwrap_or(0)
+                    .max(0);
+                self.create_goblin_tokens(controller, usize::try_from(count).unwrap_or(0), events);
                 false
             }
             Effect::CreateDrakeToken => {
@@ -9861,6 +9909,37 @@ impl Game {
                 });
                 false
             }
+            // CR 701.23: "you may search your library for a Goblin card, reveal
+            // that card, put it into your hand, then shuffle" (Goblin Matron).
+            // The eligible set is every Goblin card in the searching player's
+            // library, computed once when the search begins; the reveal, the
+            // hand move and the shuffle all happen when the search finishes, so
+            // a player who declines the "may" never exposes or reorders anything
+            // — the optional yes/no was already answered on the stack (CR 603.5).
+            Effect::SearchGoblinCardToHand => {
+                let eligible: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .library
+                    .iter()
+                    .copied()
+                    .filter(|id| {
+                        self.state.try_object(*id).is_some_and(|object| {
+                            object.zone == Zone::Library && object.card.def().is_goblin()
+                        })
+                    })
+                    .collect();
+                self.state.pending = Some(Pending::SearchLibrary {
+                    player: controller,
+                    remaining: 1,
+                    chosen: Vec::new(),
+                    eligible,
+                    mode: crate::state::LibrarySearchMode::GoblinCardToHand,
+                    looked: Vec::new(),
+                });
+                self.state.turn.priority = None;
+                true
+            }
             Effect::SearchSnowLandToHand => {
                 let eligible: Vec<ObjectId> = self
                     .state
@@ -10402,6 +10481,94 @@ impl Game {
         self.create_tokens(controller, CardId::GoblinToken, count, events);
     }
 
+    /// Apply one "deal N damage to the target" instruction to every target the
+    /// ability or spell already has (CR 608.2b: the targets were chosen when the
+    /// object was put on the stack). Shared by the fixed-amount `Effect::Damage`
+    /// and the computed-amount forms so the damage, life and event bookkeeping
+    /// cannot drift between them.
+    ///
+    /// A zero amount deals nothing: no damage event, no life change, and
+    /// therefore no damage trigger (CR 120.4a: damage is only dealt if the
+    /// amount is greater than zero).
+    fn deal_effect_damage(&mut self, item: &StackItem, amount: u32, events: &mut Vec<Event>) {
+        if amount == 0 {
+            return;
+        }
+        for target in item.targets.clone() {
+            match target {
+                Target::Player(p) => {
+                    let dealt = self.deal_damage(
+                        Some(item.object),
+                        DamageTarget::Player(p),
+                        amount,
+                        false,
+                        events,
+                    );
+                    if dealt == 0 {
+                        continue;
+                    }
+                    let life = self.state.players[p as usize].life;
+                    events.push(Event::Damage {
+                        source: Some(item.object),
+                        target: format!("P{p}"),
+                        amount: dealt,
+                    });
+                    events.push(Event::LifeChange {
+                        player: p,
+                        delta: -(dealt as i32),
+                        life,
+                    });
+                }
+                Target::Permanent(id) => {
+                    let dealt = self.deal_damage(
+                        Some(item.object),
+                        DamageTarget::Permanent(id),
+                        amount,
+                        false,
+                        events,
+                    );
+                    if dealt == 0 {
+                        continue;
+                    }
+                    events.push(Event::Damage {
+                        source: Some(item.object),
+                        target: self.describe_object(id),
+                        amount: dealt,
+                    });
+                }
+                Target::Spell(_) => {}
+                // A graveyard card is not a damage recipient; the arm exists
+                // only for exhaustiveness (CR 115.4).
+                Target::Card(_) => {}
+            }
+        }
+    }
+
+    /// Record one Goblin permanent entering under `controller` for the turn's
+    /// entry history ("the number of Goblins that entered the battlefield under
+    /// your control this turn" — Hobgoblin Bandit Lord).
+    ///
+    /// The predicate is the printed Goblin creature subtype, so a token counts
+    /// exactly like a Goblin card (CR 111.1: a token is a permanent) and a
+    /// non-Goblin permanent never does. The vector starts empty and grows to the
+    /// seat count on first use, so a turn with no Goblin entry keeps the state
+    /// JSON — and therefore every recorded digest — byte-identical to before
+    /// this field existed.
+    fn note_goblin_entered(&mut self, controller: PlayerId, card: CardId) {
+        if !card.def().is_goblin() {
+            return;
+        }
+        let seats = self.state.seat_count();
+        if seats == 0 {
+            return;
+        }
+        self.state.goblins_entered_this_turn.resize(seats, 0);
+        let index = usize::from(controller);
+        if let Some(slot) = self.state.goblins_entered_this_turn.get_mut(index) {
+            *slot += 1;
+        }
+    }
+
     fn create_tokens(
         &mut self,
         controller: PlayerId,
@@ -10425,6 +10592,7 @@ impl Game {
             events.push(Event::StateBasedAction {
                 description: format!("P{controller} creates {card} token ({id})"),
             });
+            self.note_goblin_entered(controller, card);
             self.queue_triggers(id, card, controller, TriggerEvent::EntersBattlefield);
             // CR 603.6a: a creature token entering is a creature entering for
             // every "another creature enters" trigger. Sharing the permanent
@@ -11874,6 +12042,7 @@ impl Game {
                     crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => {
                         "creature card from the look"
                     }
+                    crate::state::LibrarySearchMode::GoblinCardToHand => "Goblin card",
                 };
                 let mut out = vec![LegalAction {
                     action: Action::SearchLibraryDone,

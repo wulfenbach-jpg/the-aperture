@@ -344,6 +344,18 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 // declared (ability.rs), not here.
                 Effect::Hideaway(n) => assert!(*n > 0, "{} prints hideaway 0", card.name),
                 Effect::PlayCardExiledWithSource => {}
+                // Slice 64's ability-only effects: none of them can appear in a
+                // printed spell's text, so reaching them here is a card-authoring
+                // error rather than something to inspect.
+                Effect::UntapSource
+                | Effect::CreateGoblinTokensEqualToSourcePower
+                | Effect::DamageTargetForGoblinsEnteredThisTurn
+                | Effect::SearchGoblinCardToHand => {
+                    panic!(
+                        "{} uses an ability-only effect in its spell text",
+                        card.name
+                    )
+                }
                 Effect::MillTargetPlayer(_)
                 | Effect::LoseLife(_)
                 | Effect::LoseLifeEachOpponent(_) => {

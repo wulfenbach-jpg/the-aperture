@@ -1,0 +1,157 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-29T10:56:54Z",
+  "cards": [
+    {
+      "name": "Goblin Sharpshooter",
+      "set": "c13",
+      "collector_number": "111",
+      "oracle_id": "d81285b7-a718-411a-8be3-ecc0cfe0bcb0",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature \u2014 Goblin",
+      "power": "1",
+      "toughness": "1",
+      "oracle_text": "This creature doesn't untap during your untap step.\nWhenever a creature dies, untap this creature.\n{T}: This creature deals 1 damage to any target.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2013-11-01",
+      "scryfall_id": "4f72e9e2-ed47-40ff-bc2e-8446ef545022",
+      "legalities_commander": "legal",
+      "mana_value": 3.0,
+      "printings_checked": 6,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "c13/111",
+        "ons/207",
+        "pz1/62",
+        "sld/18",
+        "spg/136",
+        "wc03/we207"
+      ],
+      "retrieved_at_utc": "2026-10-29T10:56:54Z"
+    },
+    {
+      "name": "Krenko, Tin Street Kingpin",
+      "set": "moc",
+      "collector_number": "287",
+      "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0",
+      "mana_cost": "{2}{R}",
+      "type_line": "Legendary Creature \u2014 Goblin",
+      "power": "1",
+      "toughness": "2",
+      "oracle_text": "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2023-04-21",
+      "scryfall_id": "2f5689e2-d8a2-442b-8027-f89686adcb67",
+      "legalities_commander": "legal",
+      "mana_value": 3.0,
+      "printings_checked": 9,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "dmc/124",
+        "j25/572",
+        "moc/287",
+        "nec/107",
+        "plst/WAR-137",
+        "pwar/137p",
+        "pwar/137s",
+        "sld/1027",
+        "war/137"
+      ],
+      "retrieved_at_utc": "2026-10-29T10:56:55Z"
+    },
+    {
+      "name": "Hobgoblin Bandit Lord",
+      "set": "afr",
+      "collector_number": "147",
+      "oracle_id": "43fea418-db6f-4953-89d1-6873b2ca41a8",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Creature \u2014 Goblin Rogue",
+      "power": "2",
+      "toughness": "3",
+      "oracle_text": "Other Goblins you control get +1/+1.\n{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2021-07-23",
+      "scryfall_id": "09e9dc36-f2d8-4384-98cb-e44c00b02433",
+      "legalities_commander": "legal",
+      "mana_value": 3.0,
+      "printings_checked": 6,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "afr/147",
+        "afr/379",
+        "pafr/147a",
+        "pafr/147p",
+        "pafr/147s",
+        "prm/92734"
+      ],
+      "retrieved_at_utc": "2026-10-29T10:56:55Z"
+    },
+    {
+      "name": "Goblin Matron",
+      "set": "plst",
+      "collector_number": "DMR-123",
+      "oracle_id": "145737a7-c597-4dec-b752-207c2d0501e3",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature \u2014 Goblin",
+      "power": "1",
+      "toughness": "1",
+      "oracle_text": "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2026-05-18",
+      "scryfall_id": "8ee0fdd4-1fb5-4160-b408-2c51ef4f85d0",
+      "legalities_commander": "legal",
+      "mana_value": 3.0,
+      "printings_checked": 17,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "7ed/191",
+        "7ed/191\u2605",
+        "ath/35",
+        "dd1/39",
+        "dmr/123",
+        "dmr/323",
+        "evg/39",
+        "ha1/11",
+        "mh1/129",
+        "p02/100",
+        "plst/DMR-123",
+        "plst/MH1-129",
+        "plst/USG-191",
+        "sld/1312",
+        "sld/1312\u2605",
+        "usg/191",
+        "vma/168"
+      ],
+      "retrieved_at_utc": "2026-10-29T10:56:56Z"
+    }
+  ]
+}

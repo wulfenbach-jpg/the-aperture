@@ -917,6 +917,7 @@ fn reconstruct(
         commanders: real_state.commanders.clone(),
         rings,
         attacked_this_turn: real_state.attacked_this_turn.clone(),
+        goblins_entered_this_turn: real_state.goblins_entered_this_turn.clone(),
         hideaway: real_state.hideaway.clone(),
         face_down_exile: real_state.face_down_exile.clone(),
         profile: real_state.profile,

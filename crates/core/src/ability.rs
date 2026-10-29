@@ -1222,6 +1222,10 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::KrenkoMobBoss => KRENKO,
         CardId::GoblinInstigator => GOBLIN_INSTIGATOR,
         CardId::SearslicerGoblin => SEARSLICER_GOBLIN,
+        CardId::GoblinSharpshooter => GOBLIN_SHARPSHOOTER,
+        CardId::KrenkoTinStreetKingpin => KRENKO_TIN_STREET_KINGPIN,
+        CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD,
+        CardId::GoblinMatron => GOBLIN_MATRON,
         CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
@@ -1472,6 +1476,13 @@ pub enum StaticAbility {
     /// the combat-damage step reads it and asks the controller instead of
     /// assigning automatically.
     ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text: &'static str },
+    /// CR 502.3: "This creature doesn't untap during your untap step" (Goblin
+    /// Sharpshooter). A static restriction on the untap step, not a one-shot
+    /// marker: it applies to every untap step of the source's controller for as
+    /// long as that exact object is on the battlefield, and an effect that
+    /// untaps the permanent directly ("whenever a creature dies, untap this
+    /// creature") is unaffected by it.
+    SelfDoesNotUntapDuringUntapStep { text: &'static str },
 }
 
 impl StaticAbility {
@@ -1493,7 +1504,8 @@ impl StaticAbility {
             | StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk { text, .. }
             | StaticAbility::PairedEachGet { text, .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { text, .. }
-            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text } => text,
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text }
+            | StaticAbility::SelfDoesNotUntapDuringUntapStep { text } => text,
         }
     }
 
@@ -1520,7 +1532,8 @@ impl StaticAbility {
             | StaticAbility::SubtypeSpellsYouCastCostLess { .. }
             | StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste { .. }
             | StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk { .. }
-            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. }
+            | StaticAbility::SelfDoesNotUntapDuringUntapStep { .. } => None,
             StaticAbility::AllOtherCreaturesWithAnySubtypeGet { .. } => Some(Layer::Modifying),
         }
     }
@@ -1543,7 +1556,8 @@ impl StaticAbility {
             | StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk { .. }
             | StaticAbility::PairedEachGet { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { .. }
-            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
+            | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. }
+            | StaticAbility::SelfDoesNotUntapDuringUntapStep { .. } => None,
         }
     }
 }
@@ -1833,6 +1847,87 @@ const DRAGONLORDS_SERVANT_STATIC: &[StaticAbility] =
         text: "Dragon spells you cast cost {1} less to cast.",
     }];
 
+/// Goblin Sharpshooter (C13 111). Its first printed line is a *standing*
+/// untap-step restriction (not a one-shot "doesn't untap during your next untap
+/// step"), so it is a static ability rather than an effect; the second line
+/// untaps it directly and is therefore not stopped by the first; the third is
+/// the pool's second "{T}: deal 1 damage to any target" activated ability.
+const GOBLIN_SHARPSHOOTER: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever a creature dies, untap this creature.",
+        event: TriggerEvent::CreatureDies,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::UntapSource],
+    }),
+    Ability::Activated(ActivatedAbility {
+        text: "{T}: This creature deals 1 damage to any target.",
+        cost: AbilityCost::TAP,
+        target: TargetSpec::AnyTarget,
+        modes: SINGLE_MODE,
+        effects: &[Effect::Damage(1)],
+        once_per_turn: false,
+        sorcery_timing: false,
+    }),
+];
+
+const GOBLIN_SHARPSHOOTER_STATIC: &[StaticAbility] =
+    &[StaticAbility::SelfDoesNotUntapDuringUntapStep {
+        text: "This creature doesn't untap during your untap step.",
+    }];
+
+/// Krenko, Tin Street Kingpin (MOC 287). One attack trigger, two instructions in
+/// printed order: the counter lands first and the token count is Krenko's power
+/// *after* it, which is why the two cannot be merged into one effect.
+const KRENKO_TIN_STREET_KINGPIN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+    event: TriggerEvent::Attacks,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[
+        Effect::PutPlusOneCounterOnSource,
+        Effect::CreateGoblinTokensEqualToSourcePower,
+    ],
+})];
+
+/// Hobgoblin Bandit Lord (AFR 147). The anthem is the same layer 7c
+/// subtype-filtered static the Chieftain uses; the activated ability's damage is
+/// the turn's Goblin-entry history for its controller, not the current board, so
+/// a Goblin that entered and then died still counts and a Goblin that was
+/// already on the battlefield before the turn does not.
+const HOBGOBLIN_BANDIT_LORD: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+    cost: AbilityCost {
+        tap: true,
+        mana: Some("{R}"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::AnyTarget,
+    modes: SINGLE_MODE,
+    effects: &[Effect::DamageTargetForGoblinsEnteredThisTurn],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
+const HOBGOBLIN_BANDIT_LORD_STATIC: &[StaticAbility] =
+    &[StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
+        subtypes: GOBLIN_SUBTYPES,
+        power: 1,
+        toughness: 1,
+        text: "Other Goblins you control get +1/+1.",
+    }];
+
+/// Goblin Matron (PLST DMR-123). "You may" makes the enters trigger optional
+/// (CR 603.5), so declining it happens on the stack before anything is searched,
+/// revealed or shuffled.
+const GOBLIN_MATRON: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+    event: TriggerEvent::EntersBattlefield,
+    optional: true,
+    target: TargetSpec::None,
+    effects: &[Effect::SearchGoblinCardToHand],
+})];
+
 const SPIDER_HAM_STATIC: &[StaticAbility] = &[
     StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
         subtypes: SPIDER_HAM_SUBTYPES,
@@ -1846,6 +1941,8 @@ const SPIDER_HAM_STATIC: &[StaticAbility] = &[
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
         CardId::GoblinChieftain => GOBLIN_CHIEFTAIN_STATIC,
+        CardId::GoblinSharpshooter => GOBLIN_SHARPSHOOTER_STATIC,
+        CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD_STATIC,
         CardId::GoblinWarchief => GOBLIN_WARCHIEF_STATIC,
         CardId::GoblinKing => GOBLIN_KING_STATIC,
         CardId::DragonlordsServant => DRAGONLORDS_SERVANT_STATIC,

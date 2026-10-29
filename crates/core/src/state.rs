@@ -657,6 +657,10 @@ impl Pending {
                     "P{player}: look at the top eight cards — you may put a creature card from among them onto the battlefield tapped and attacking ({} put)",
                     chosen.len()
                 ),
+                LibrarySearchMode::GoblinCardToHand => format!(
+                    "P{player}: choose up to {remaining} Goblin card(s) to reveal and put into hand ({} chosen)",
+                    chosen.len()
+                ),
             },
             Pending::TopCardChoice {
                 player, can_take, ..
@@ -1014,6 +1018,13 @@ pub enum LibrarySearchMode {
     /// were not chosen to the bottom in a random order (CR 701.20e) without
     /// reordering the rest of the library.
     CreatureFromTopToBattlefieldAttacking,
+    /// Goblin Matron: "you may search your library for a Goblin card, reveal
+    /// that card, put it into your hand, then shuffle." A real search of the
+    /// whole library (CR 701.23), filtered by the Goblin creature subtype read
+    /// from the printed type line (CR 205.3m, `CardDef::has_subtype`), so a
+    /// Goblin card in any zone-independent sense — creature cards only in this
+    /// pool — is eligible and nothing else is.
+    GoblinCardToHand,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -1139,6 +1150,16 @@ pub struct GameState {
     /// cleared only when the turn number advances, not on cleanup.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub attacked_this_turn: Vec<PlayerId>,
+    /// Per-seat count of Goblin permanents that have entered the battlefield
+    /// under that seat's control this turn, indexed by seat ("the number of
+    /// Goblins that entered the battlefield under your control this turn" —
+    /// Hobgoblin Bandit Lord). Tokens count: a token entering is a permanent
+    /// entering (CR 111.1). Empty and skipped until the first Goblin entry of
+    /// the turn, so every earlier save and replay digest is byte-identical; the
+    /// whole vector is cleared when the turn number advances, exactly like the
+    /// attack history above.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub goblins_entered_this_turn: Vec<u32>,
     /// CR 702.75a + 400.7: hideaway's linked exile. One entry per card exiled
     /// face down by a hideaway ability, naming the exact battlefield object it
     /// was exiled *with*. Empty and skipped when nothing was ever exiled face
@@ -1490,6 +1511,16 @@ impl GameState {
                 }
                 seen.push(*seat);
             }
+        }
+        // CR 514/500.5: the Goblin-entry history is per seat and monotonic within
+        // a turn, so a saved vector longer than the table is not a state this
+        // engine can produce. A zero entry is legitimate: the vector is grown to
+        // the seat count by the first Goblin entry of the turn, and seats that
+        // have entered nothing so far simply hold zero.
+        if self.goblins_entered_this_turn.len() > self.seat_count() {
+            return Err(EngineError::InvalidState {
+                reason: "Goblin entry history has more seats than the table".to_string(),
+            });
         }
         if let Some(pending) = &self.pending {
             let ring_candidates = |player: PlayerId| -> Vec<ObjectId> {
@@ -2415,35 +2446,44 @@ impl GameState {
                         reason: "a land search cannot carry a private top-card look".to_string(),
                     });
                 }
-                if *mode == LibrarySearchMode::SnowLandToHand
-                    && chosen.len() + usize::from(*remaining) != 1
+                if matches!(
+                    mode,
+                    LibrarySearchMode::SnowLandToHand | LibrarySearchMode::GoblinCardToHand
+                ) && chosen.len() + usize::from(*remaining) != 1
                 {
                     return Err(EngineError::InvalidState {
-                        reason: "snow land search must select at most one card, with remaining capacity accounting for its choice".to_string(),
+                        reason: "a single-card search must select at most one card, with remaining capacity accounting for its choice".to_string(),
                     });
                 }
                 let library = &self.player(*player).library;
-                let is_search_land = |id: &ObjectId| {
+                let is_search_candidate = |id: &ObjectId| {
                     self.try_object(*id).is_some_and(|object| {
                         object.zone == Zone::Library
                             && object.owner == *player
-                            && object.card.def().is_land()
                             && match mode {
                                 LibrarySearchMode::BasicLandToBattlefield => {
-                                    object.card.def().basic_mana.is_some()
+                                    object.card.def().is_land()
+                                        && object.card.def().basic_mana.is_some()
                                 }
-                                LibrarySearchMode::SnowLandToHand => object.card.def().is_snow(),
-                                LibrarySearchMode::AnyLandToBattlefield => true,
+                                LibrarySearchMode::SnowLandToHand => {
+                                    object.card.def().is_land() && object.card.def().is_snow()
+                                }
+                                LibrarySearchMode::AnyLandToBattlefield => {
+                                    object.card.def().is_land()
+                                }
                                 LibrarySearchMode::CreatureFromTopToBattlefieldAttacking => false,
+                                LibrarySearchMode::GoblinCardToHand => {
+                                    object.card.def().is_goblin()
+                                }
                             }
                     }) && library.contains(id)
                 };
                 let mut seen_eligible: Vec<ObjectId> = Vec::new();
                 for id in eligible {
-                    if !is_search_land(id) {
+                    if !is_search_candidate(id) {
                         return Err(EngineError::InvalidState {
                             reason: format!(
-                                "library search references {id}, which is not a matching land in that player's library"
+                                "library search references {id}, which is not a matching card in that player's library"
                             ),
                         });
                     }
@@ -2456,10 +2496,10 @@ impl GameState {
                 }
                 let mut seen_chosen: Vec<ObjectId> = Vec::new();
                 for id in chosen {
-                    if !is_search_land(id) {
+                    if !is_search_candidate(id) {
                         return Err(EngineError::InvalidState {
                             reason: format!(
-                                "library search references {id}, which is not a matching land in that player's library"
+                                "library search references {id}, which is not a matching card in that player's library"
                             ),
                         });
                     }
