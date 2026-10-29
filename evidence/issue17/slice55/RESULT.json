@@ -11,7 +11,7 @@
   "record_items_closed": ["R354-1", "R354-2", "R354-3"],
   "product_defects_fixed": [
     "R354 N-1: the Ursine Monstrosity combat trigger emitted a 'gains indestructible/+1/+1 and must attack' event line even when its source had already left the battlefield, so the log narrated a grant that never happened. The grant is now created only while the source is a battlefield permanent and the event line reports the skipped grants; the mill still happens (CR 608.2b). The observable defect was the false event line: a stale effect would have been at most transient because recompute_layers drops effects whose target is not a battlefield permanent.",
-    "R354 N-4: the coach reported 'has lethal damage and will be destroyed' for indestructible permanents. CR 702.12b exempts them from the lethal-damage destroy; zero toughness still destroys (CR 704.5f). The report is split into a destroyed list and an indestructible-and-spared list, each with its own rules citation."
+    "R354 N-4: the coach reported 'has lethal damage and will be destroyed' for indestructible permanents. CR 702.12b exempts them from the lethal-damage destroy; a zero-toughness permanent is moved to its owner's graveyard by the CR 704.5f state-based action, which is not a destroy. The report is split into a destroyed list and an indestructible-and-spared list, each with its own rules citation."
   ],
   "local_gates": {
     "fmt": "cargo fmt --all --check exit 0 (slice55/fmt.log)",

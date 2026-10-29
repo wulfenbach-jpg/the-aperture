@@ -40,7 +40,10 @@ and the indestructible-and-spared list is unchanged.
 **The RED is real and was produced before the repair.** With `crates/core/src/coach.rs`
 restored from `4738a2b`, the two new tests fail on behaviour — `1 passed / 2 failed,
 exit 101` (`slice56/red-r355-1.log`) — and the pre-existing indestructible test still
-passes, so the new assertions discriminate. The restored file was written back and
+passes, so the new assertions discriminate. That receipt carries the `coach` filter
+(`cargo test -p aperture-core --test issue17_slice55 coach`), so it reports
+`2 filtered out`; the unfiltered file at the same pre-fix source is **3 passed /
+2 failed**. The restored file was written back and
 re-hashed: `71d6bc7b9c55e4c712771bf2ecad17f1c689e6e66c02962ea19960842256dc79`.
 
 ## 2. R355-2/3/4 — the three record items, in this slice's opening commit

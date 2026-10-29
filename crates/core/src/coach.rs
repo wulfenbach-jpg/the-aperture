@@ -475,10 +475,11 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
         }
     }
 
-    // CR 704.5f destroys a creature with zero toughness even when it is
-    // indestructible, while CR 704.5g's lethal-damage destruction does not apply
-    // to an indestructible permanent (CR 702.12b). Telling the player that an
-    // indestructible creature "will be destroyed" was a false statement.
+    // CR 704.5f moves a creature with zero toughness to its owner's graveyard as
+    // a state-based action — it never destroys it, and indestructible does not
+    // stop that move — while CR 704.5g's lethal-damage destruction does not apply
+    // to an indestructible permanent (CR 702.12b). Telling the player that such a
+    // creature "will be destroyed" was a false statement either way.
     let mut lethal: Vec<String> = Vec::new();
     let mut zero_toughness: Vec<String> = Vec::new();
     let mut spared: Vec<String> = Vec::new();
