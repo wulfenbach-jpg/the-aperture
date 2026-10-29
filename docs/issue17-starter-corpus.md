@@ -1068,3 +1068,27 @@ together while an unchosen permanent survives, the empty set destroying nothing,
 target costing only its own destruction, a mid-choice save/load continuing to the same
 result, and six forged pendings refused by both `GameState::validate` and a real
 `SessionSave::from_json` load.
+
+## Slice 58: saved aggregate-mode and announced-X validation repairs
+
+Review 348 found two structural sandbox-save holes in slice 57. The aggregate
+target mode is now derived from the printed ability **before** inspecting the saved
+mode. A missing aggregate discriminator cannot downgrade Yao Guai to a single-target
+trigger. The shared load/answer guard rechecks candidate eligibility through live
+targeting rules, individual mana values, duplicates and the chosen set's total;
+direct forged answers and commits are refused without changing the state.
+
+The announced-X bound `0..=20` is shared by casting and save validation. Nonzero X
+must belong to an X-cost spell or its supported X-reading triggered ability, never
+an unrelated spell, activated ability or trigger. Validation covers stack entries
+(including a resolving spell's retained entry), the trigger queue, pending triggers
+and their queued siblings. This is structural validation, **not** reconstruction of
+past mana payments from a sandbox edit; ordinary saves retain replay-integrity checks.
+
+`crates/core/tests/issue17_slice57.rs` adds eight review-348 regressions, including
+separate omission/candidate-injection refusals, independent duplicate/aggregate-total
+cases, nonzero-X stack and post-first-pick sandbox-load continuation with equal full
+states, and normal single-target load controls. No card is added: catalog 164,
+Ayula's remaining names Dúnedain Rangers and Evercoat Ursine, still one of eight
+lists certified. Ring, linked hideaway/free play and exact-list certification remain
+unfinished work, not implicit support from these save repairs.

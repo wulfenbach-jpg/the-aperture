@@ -30,8 +30,8 @@ use crate::mana::{self, ManaCost, ManaPool, Payment, Sources};
 use crate::rng::Pcg32;
 use crate::sandbox::{SandboxEdit, SandboxOp, SandboxOutcome};
 use crate::state::{
-    CombatDamageChoice, DrawResume, GameState, MulliganRound, Object, OrderMode, Outcome, Pending,
-    Player, Profile, StackEntry, StackItem, Step, TriggerRef, Turn,
+    CombatDamageChoice, DrawResume, GameState, MAX_X_VALUE, MulliganRound, Object, OrderMode,
+    Outcome, Pending, Player, Profile, StackEntry, StackItem, Step, TriggerRef, Turn,
 };
 
 /// Safety bound on scheduler iterations inside one submission. Reaching it is a
@@ -2812,6 +2812,7 @@ impl Game {
                     chosen,
                     ..
                 }) if *p == player => {
+                    self.validate_trigger_target_pending()?;
                     if !legal.contains(target) {
                         return Err(EngineError::illegal(
                             "choose trigger target",
@@ -2873,7 +2874,7 @@ impl Game {
                     player: p,
                     aggregate: Some(_),
                     ..
-                }) if *p == player => Ok(()),
+                }) if *p == player => self.validate_trigger_target_pending(),
                 _ => Err(EngineError::illegal(
                     "finish trigger targets",
                     "no triggered ability is waiting for a set of targets (CR 601.2c)",
@@ -5378,6 +5379,80 @@ impl Game {
             x_value: trigger.x_value,
         });
         self.state.turn.passed = 0;
+    }
+
+    /// Shared saved-state/answer guard. Reconstruct eligibility from the printed
+    /// instruction and live targeting rules, not from an untrusted saved offer.
+    pub(crate) fn validate_trigger_target_pending(&self) -> Result<(), EngineError> {
+        let Some(Pending::TriggerTarget {
+            player,
+            trigger,
+            legal,
+            first,
+            aggregate,
+            chosen,
+            ..
+        }) = &self.state.pending
+        else {
+            return Ok(());
+        };
+        let is_set = trigger_targets_a_set(trigger.card, trigger.ability);
+        trigger.validate_x()?;
+        if is_set != aggregate.is_some() {
+            return Err(EngineError::InvalidState {
+                reason: "trigger target mode does not match its printed ability".to_string(),
+            });
+        }
+        let Some(budget) = aggregate else {
+            if !chosen.is_empty() {
+                return Err(EngineError::InvalidState {
+                    reason: "single-target trigger choice carries chosen targets".to_string(),
+                });
+            }
+            return Ok(());
+        };
+        if *player != trigger.controller || first.is_some() || *budget != trigger.x_value {
+            return Err(EngineError::InvalidState {
+                reason: "aggregate choice has an invalid controller, first target or X budget"
+                    .to_string(),
+            });
+        }
+        let canonical = self.legal_targets(
+            trigger.controller,
+            TargetSpec::ArtifactOrEnchantment,
+            trigger.source,
+        );
+        let mut seen = Vec::new();
+        for target in legal {
+            if !canonical.contains(target)
+                || self.target_mana_value(*target) > u32::from(*budget)
+                || seen.contains(target)
+            {
+                return Err(EngineError::InvalidState {
+                    reason: "aggregate choice contains an ineligible or duplicate candidate"
+                        .to_string(),
+                });
+            }
+            seen.push(*target);
+        }
+        let mut seen = Vec::new();
+        let mut total = 0;
+        for target in chosen {
+            if !legal.contains(target) || seen.contains(target) {
+                return Err(EngineError::InvalidState {
+                    reason: "aggregate selection contains an unoffered or duplicate target"
+                        .to_string(),
+                });
+            }
+            seen.push(*target);
+            total += self.target_mana_value(*target);
+        }
+        if total > u32::from(*budget) {
+            return Err(EngineError::InvalidState {
+                reason: "aggregate selection exceeds its announced X budget".to_string(),
+            });
+        }
+        Ok(())
     }
 
     fn apply_trigger_target(&mut self, _player: PlayerId, target: Target, events: &mut Vec<Event>) {
@@ -10879,12 +10954,6 @@ fn collect_combinations(
         current.pop();
     }
 }
-
-/// CR 107.3a: the largest announced X the engine accepts. A bound is needed
-/// because X is carried as a `u8` and an accept-anything value would let a
-/// forged action overflow the generic cost; 20 is far above any board this pool
-/// can produce, and every real cast is refused earlier by `plan_payment`.
-const MAX_X_VALUE: u8 = 20;
 
 fn target_spec_rule(spec: TargetSpec) -> &'static str {
     match spec {

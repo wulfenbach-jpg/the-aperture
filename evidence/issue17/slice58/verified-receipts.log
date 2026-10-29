@@ -1,0 +1,61 @@
+focused_suites= 7 passed= 79 failed= 0
+gate_exits= {'fmt': '0', 'focused': '0', 'clippy': '0', 'corpus': '0', 'release': '0'}
+demo-save.json byte_identical=true sha256=8a3a33e2386c9c3ca4dc534bce555bae41e9cec2157457e94b07c7cdfcde695a
+demo-replay.json byte_identical=true sha256=2f79cb36e56a7e97fa2e521fa41b57edad14cb9eb999355896c796b5972776a8
+demo-journey.json byte_identical=true sha256=d15f328bc7753b96688e16ddd0eef6da85c369cf27e3fd6fc44da542c68a397a
+{
+  "aggregate_set_sizes": [
+    1,
+    2,
+    2,
+    2,
+    2,
+    4
+  ],
+  "aggregate_sets_committed": 6,
+  "announced_x": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    3,
+    4,
+    5,
+    3,
+    8
+  ],
+  "casts": {
+    "Arcane Signet": 9,
+    "Commander's Sphere": 10,
+    "Friendly Teddy": 9,
+    "Grizzly Bears": 4,
+    "Rampaging Yao Guai": 10,
+    "Sol Ring": 9
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice57.txt",
+  "destroy_instructions": 6,
+  "destroyed_permanents": 13,
+  "digest": "8a34da9bb066dd3ba18606043a65e0f4a39a32d60e3a181714f967c0ecb07253",
+  "driver": "evidence-only masked X/aggregate-target demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "max_plus_one_counters_on_a_yao_guai": 8,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 5052,
+  "seats": 4,
+  "seed": 5757,
+  "snapshot_sha256": "12ab766ed8be59ef74c0aaf7c222d735e269ab6b504c88d0281b31d5ef951004",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "static_measurement": "public battlefield at the final state; not policy input",
+  "status": "terminal",
+  "steps": 1960,
+  "turns": 47
+}

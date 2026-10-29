@@ -1,0 +1,195 @@
+base=e4308bc8c12296fd995e4187628f6b2d949a6121; working tree candidate (committed blob correspondence verified before publication)
+
+command=cargo fmt --all --check
+fmt_exit=0
+
+command=cargo test -p aperture-core --test issue17_slice57 --test issue17_slice54 --test issue17_slice53_ruxa --test card_printings --test catalog_pool --test starter_corpus --test replay_digest --locked
+warning: unused import: `crate::action::Target`
+ --> crates\core\src\state.rs:5:5
+  |
+5 | use crate::action::Target;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 1 warning (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.26s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 19 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test slice37_druids_familiar_matches_its_recorded_printing ... ok
+test slice38_spider_ham_matches_its_recorded_printing ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test slice43_lumra_matches_its_recorded_printing ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test slice46_thijarian_witness_matches_its_recorded_printing ... ok
+test slice48_owlbear_cub_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test slice53_ruxa_matches_its_recorded_printing ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice53_ruxa.rs (target\debug\deps\issue17_slice53_ruxa-06c8b90dabc425f5.exe)
+
+running 15 tests
+test ruxa_is_registered_with_its_printed_text_and_three_implemented_surfaces ... ok
+test the_anthem_pumps_only_your_creatures_with_no_abilities ... ok
+test a_creature_card_with_any_ability_is_never_offered ... ok
+test a_graveyard_card_cannot_be_named_as_a_permanent_or_from_an_opponent ... ok
+test the_attack_trigger_returns_a_card_without_touching_the_draw_path ... ok
+test an_unblocked_attacker_is_never_asked ... ok
+test assigning_as_though_unblocked_deals_all_damage_to_the_player ... ok
+test declining_keeps_the_ordinary_assignment ... ok
+test a_blocked_attacker_with_abilities_is_never_asked ... ok
+test battlefield_trample_grants_do_not_reach_graveyard_cards ... ok
+test the_enters_trigger_returns_the_chosen_no_ability_creature_card ... ok
+test a_commander_card_in_a_graveyard_is_offered_the_command_zone ... ok
+test a_forged_pending_for_a_creature_with_abilities_is_refused ... ok
+test two_eligible_attackers_are_asked_in_order_and_damage_is_dealt_once ... ok
+test forged_assignment_pendings_are_refused_by_validate_and_by_a_real_load ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice54.rs (target\debug\deps\issue17_slice54-3a6f637d49637047.exe)
+
+running 4 tests
+test ursine_monstrosity_is_sourced_and_supported ... ok
+test ursine_trigger_pump_is_fixed_and_affects_toughness ... ok
+test begin_combat_mills_forces_attack_and_sets_indestructible_body ... ok
+test ursine_effects_expire_and_state_loads_roundtrip ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice57.rs (target\debug\deps\issue17_slice57-d13ec969a6a8a450.exe)
+
+running 22 tests
+test an_unaffordable_or_out_of_range_x_is_refused ... ok
+test r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer ... ok
+test a_target_set_may_reach_but_never_exceed_the_budget ... ok
+test an_empty_set_resolves_and_destroys_nothing ... ok
+test the_card_matches_its_printed_text_and_its_mana_value_is_three ... ok
+test a_departed_target_costs_only_its_own_destruction ... ok
+test the_chosen_set_is_destroyed_together ... ok
+test the_offer_holds_every_artifact_and_enchantment_inside_the_budget ... ok
+test the_same_target_cannot_be_added_twice ... ok
+test x_counters_are_placed_on_entry_and_the_generic_is_paid ... ok
+test x_is_announced_only_through_the_x_cast_on_an_x_cost_card ... ok
+test x_zero_is_a_real_cast_with_no_counters_and_no_targets ... ok
+test r348_aggregate_mode_cannot_be_omitted ... ok
+test finishing_a_single_target_choice_is_refused_and_leaves_it_open ... ok
+test r348_non_x_spell_cannot_carry_saved_x ... ok
+test r348_duplicate_selection_and_aggregate_total_are_isolated ... ok
+test r348_saved_stack_x_must_respect_the_cast_bound ... ok
+test r348_injected_candidates_are_refused_even_before_selection ... ok
+test a_mid_choice_save_loads_and_continues ... ok
+test r348_honest_x_stack_and_post_pick_saves_continue_identically ... ok
+test forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load ... ok
+test r348_x_is_checked_in_pending_queued_and_stacked_triggers ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\starter_corpus.rs (target\debug\deps\starter_corpus-05f2cda4096c1ba4.exe)
+
+running 8 tests
+test jasmine_is_refused_in_every_ordinary_library ... ok
+test the_starter_manifest_names_eight_targets_and_claims_only_one ... ok
+test jasmine_boreal_is_a_typed_supported_commander ... ok
+test jasmine_commander_damage_uses_the_existing_ledger ... ok
+test jasmine_commander_cast_tax_and_return_use_the_existing_paths ... ok
+test every_sourced_vanilla_creature_matches_its_printing ... ok
+test the_first_starter_library_is_exact_and_fully_supported ... ok
+test every_sourced_vanilla_creature_casts_and_resolves ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+focused_exit=0
+
+command=cargo clippy --workspace --all-targets --locked -- -D warnings
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error: unused import: `crate::action::Target`
+ --> crates\core\src\state.rs:5:5
+  |
+5 | use crate::action::Target;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `-D unused-imports` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+error: could not compile `aperture-core` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `aperture-core` (lib test) due to 1 previous error
+clippy_exit=101
+
+command=python evidence/issue17/slice57/corpus-audit.py
+catalog_cards      = 164
+union_names        = 459
+supported_union    = 151
+missing_union      = 308
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=2
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 2, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+whole_field_supported_card_citations = []
+Ayula interaction citations equal both remaining missing card names
+AUDIT OK
+corpus_exit=0
+
+command=cargo build --workspace --release --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: unused import: `crate::action::Target`
+ --> crates\core\src\state.rs:5:5
+  |
+5 | use crate::action::Target;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+warning: `aperture-core` (lib) generated 1 warning (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 29.80s
+release_exit=0
+
+aggregate_failure=1

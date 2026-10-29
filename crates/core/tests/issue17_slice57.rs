@@ -604,7 +604,7 @@ fn forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load() {
         _ => unreachable!(),
     };
 
-    // (a) a chosen target over the announced budget
+    // (a) a chosen target never eligible because it is over the announced budget
     let mut over = g.state.clone();
     over.pending = Some(with(
         vec![Target::Permanent(sphere)],
@@ -621,7 +621,7 @@ fn forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load() {
     let mut unoffered = g.state.clone();
     unoffered.pending = Some(with(
         vec![Target::Permanent(sphere)],
-        Some(3),
+        Some(1),
         legal.clone(),
     ));
     assert!(
@@ -645,7 +645,7 @@ fn forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load() {
     let mut duplicate = g.state.clone();
     duplicate.pending = Some(with(
         vec![Target::Permanent(ring), Target::Permanent(ring)],
-        Some(3),
+        Some(1),
         legal.clone(),
     ));
     assert!(duplicate.validate().is_err(), "a set has no duplicates");
@@ -656,7 +656,7 @@ fn forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load() {
     let bear = 0;
     wrong_kind.pending = Some(with(
         vec![Target::Permanent(ObjectId(bear))],
-        Some(3),
+        Some(1),
         legal,
     ));
     assert!(
@@ -734,6 +734,10 @@ fn finishing_a_single_target_choice_is_refused_and_leaves_it_open() {
         "the single-target entry trigger is waiting"
     );
     let before = g.state.pending.clone();
+    assert!(
+        g.state.validate().is_ok() && loads(&g),
+        "honest single-target choice still loads"
+    );
     let err = submit_err(&mut g, P0, Action::FinishTriggerTargets);
     assert!(
         err.to_string()
@@ -741,4 +745,305 @@ fn finishing_a_single_target_choice_is_refused_and_leaves_it_open() {
         "a commit without an open set is refused, got {err}"
     );
     assert_eq!(g.state.pending, before, "the open choice is untouched");
+}
+
+// Review348 regressions: sandbox loads test structural validation, not bypass
+// of an ordinary replay's integrity check.
+#[test]
+fn r348_aggregate_mode_cannot_be_omitted() {
+    let mut g = board(58101, 4).battlefield(P1, &[CardId::SolRing]).build();
+    cast_yao_guai(&mut g, 1);
+    if let Some(Pending::TriggerTarget { aggregate, .. }) = &mut g.state.pending {
+        *aggregate = None;
+    }
+    let validates = g.state.validate().is_ok();
+    let loads = loads(&g);
+    assert!(
+        !validates && !loads,
+        "omitted aggregate: validates={validates}, sandbox_loads={loads}"
+    );
+}
+
+#[test]
+fn r348_injected_candidates_are_refused_even_before_selection() {
+    let mut g = board(58102, 4)
+        .battlefield(
+            P1,
+            &[CardId::SolRing, CardId::HedronArchive, CardId::GrizzlyBears],
+        )
+        .build();
+    cast_yao_guai(&mut g, 1);
+    let archive = battlefield_card(&g, P1, CardId::HedronArchive);
+    let bear = battlefield_card(&g, P1, CardId::GrizzlyBears);
+    for target in [
+        Target::Permanent(archive),
+        Target::Permanent(bear),
+        Target::Player(P1),
+    ] {
+        let mut forged = g.clone();
+        if let Some(Pending::TriggerTarget { legal, .. }) = &mut forged.state.pending {
+            legal.push(target);
+        }
+        let validates = forged.state.validate().is_ok();
+        let loads = loads(&forged);
+        assert!(
+            !validates && !loads,
+            "injected {target:?}: validates={validates}, sandbox_loads={loads}"
+        );
+    }
+}
+
+#[test]
+fn r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer() {
+    let mut g = board(58103, 4)
+        .battlefield(
+            P1,
+            &[CardId::SolRing, CardId::HedronArchive, CardId::Forest],
+        )
+        .build();
+    cast_yao_guai(&mut g, 1);
+    let archive = battlefield_card(&g, P1, CardId::HedronArchive);
+    let land = battlefield_card(&g, P1, CardId::Forest);
+    for (mode, target) in [(None, archive), (Some(1), land)] {
+        let mut forged = g.clone();
+        if let Some(Pending::TriggerTarget {
+            aggregate, legal, ..
+        }) = &mut forged.state.pending
+        {
+            *aggregate = mode;
+            legal.push(Target::Permanent(target));
+        }
+        let before = forged.state.clone();
+        assert!(
+            forged
+                .submit_action(
+                    P0,
+                    Action::ChooseTriggerTarget {
+                        target: Target::Permanent(target)
+                    }
+                )
+                .is_err()
+        );
+        assert_eq!(forged.state, before, "refusal is atomic");
+    }
+}
+
+#[test]
+fn r348_saved_stack_x_must_respect_the_cast_bound() {
+    let mut g = board(58104, 4).build();
+    let card = hand_card(&g, P0, CardId::RampagingYaoGuai);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpellWithX {
+            card,
+            x: 1,
+            targets: vec![],
+        },
+    );
+    assert!(
+        g.state.validate().is_ok() && loads(&g),
+        "honest X1 stack save"
+    );
+    g.state.stack.last_mut().unwrap().x_value = 21;
+    let validates = g.state.validate().is_ok();
+    let loads = loads(&g);
+    assert!(
+        !validates && !loads,
+        "saved X21: validates={validates}, sandbox_loads={loads}"
+    );
+}
+
+#[test]
+fn r348_non_x_spell_cannot_carry_saved_x() {
+    let mut g = board(58105, 4).hand(P0, &[CardId::GrizzlyBears]).build();
+    let card = hand_card(&g, P0, CardId::GrizzlyBears);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpell {
+            card,
+            targets: vec![],
+        },
+    );
+    assert!(g.state.validate().is_ok() && loads(&g));
+    g.state.stack.last_mut().unwrap().x_value = 1;
+    let validates = g.state.validate().is_ok();
+    let loads = loads(&g);
+    assert!(
+        !validates && !loads,
+        "unrelated spell X1: validates={validates}, sandbox_loads={loads}"
+    );
+}
+
+fn assert_sandbox_refused(g: &Game, label: &str) {
+    let validation = g.state.validate();
+    let loaded = SessionSave::from_json(&save(g).to_json());
+    assert!(
+        validation.is_err() && loaded.is_err(),
+        "{label}: validation={validation:?}, sandbox loaded={}",
+        loaded.is_ok()
+    );
+}
+
+#[test]
+fn r348_duplicate_selection_and_aggregate_total_are_isolated() {
+    let mut g = board(58106, 5)
+        .battlefield(P1, &[CardId::SolRing, CardId::ArcaneSignet])
+        .build();
+    cast_yao_guai(&mut g, 2);
+    let ring = Target::Permanent(battlefield_card(&g, P1, CardId::SolRing));
+    let signet = Target::Permanent(battlefield_card(&g, P1, CardId::ArcaneSignet));
+    for (selection, reason) in [
+        (vec![ring, ring], "duplicate target"),
+        (vec![ring, signet], "exceeds"),
+    ] {
+        let mut forged = g.clone();
+        if let Some(Pending::TriggerTarget { chosen, .. }) = &mut forged.state.pending {
+            *chosen = selection;
+        }
+        // Both candidates are genuinely offered, budget matches X2, and the
+        // duplicate's total is only 2. Neither case fails a different invariant.
+        let error = forged.state.validate().unwrap_err();
+        assert!(error.to_string().contains(reason), "{error}");
+        assert_sandbox_refused(&forged, reason);
+        let before = forged.state.clone();
+        assert!(
+            forged
+                .submit_action(P0, Action::FinishTriggerTargets)
+                .is_err()
+        );
+        assert_eq!(forged.state, before);
+    }
+}
+
+#[test]
+fn r348_x_is_checked_in_pending_queued_and_stacked_triggers() {
+    let mut g = board(58107, 4).battlefield(P1, &[CardId::SolRing]).build();
+    cast_yao_guai(&mut g, 1);
+    let honest_trigger = match g.state.pending.as_ref().unwrap() {
+        Pending::TriggerTarget { trigger, .. } => *trigger,
+        _ => unreachable!(),
+    };
+    for unrelated in [false, true] {
+        let mut bad = honest_trigger;
+        if unrelated {
+            bad.card = CardId::LittleBear;
+            bad.ability = 0;
+        } else {
+            bad.x_value = 21;
+        }
+
+        let mut pending = g.clone();
+        if let Some(Pending::TriggerTarget {
+            trigger, aggregate, ..
+        }) = &mut pending.state.pending
+        {
+            *trigger = bad;
+            // Preserve the correct mode and matching budget: X validation must
+            // discriminate, rather than a mismatched budget doing it by accident.
+            if !unrelated {
+                *aggregate = Some(21);
+            }
+        }
+        assert_sandbox_refused(&pending, "pending trigger X");
+
+        let mut siblings = g.clone();
+        if let Some(Pending::TriggerTarget { queued, .. }) = &mut siblings.state.pending {
+            queued.push(honest_trigger);
+        }
+        assert!(siblings.state.validate().is_ok() && loads(&siblings));
+        if let Some(Pending::TriggerTarget { queued, .. }) = &mut siblings.state.pending {
+            queued[0] = bad;
+        }
+        assert_sandbox_refused(&siblings, "pending queued sibling X");
+
+        let mut queued = g.clone();
+        queued.state.trigger_queue.push(honest_trigger);
+        assert!(queued.state.validate().is_ok() && loads(&queued));
+        queued.state.trigger_queue[0] = bad;
+        assert_sandbox_refused(&queued, "trigger queue X");
+
+        let mut stacked = g.clone();
+        submit_ok(&mut stacked, P0, Action::FinishTriggerTargets);
+        assert!(stacked.state.validate().is_ok() && loads(&stacked));
+        let top = stacked.state.stack.last_mut().unwrap();
+        if unrelated {
+            top.card = CardId::LittleBear;
+            top.entry = aperture_core::state::StackEntry::Triggered { ability: 0 };
+        } else {
+            top.x_value = 21;
+        }
+        assert_sandbox_refused(&stacked, "stacked trigger X");
+    }
+    let mut wrong_index = g.clone();
+    if let Some(Pending::TriggerTarget { queued, .. }) = &mut wrong_index.state.pending {
+        let mut bad = honest_trigger;
+        bad.ability = 1;
+        queued.push(bad);
+    }
+    assert_sandbox_refused(&wrong_index, "unrelated ability index carrying X1");
+}
+
+#[test]
+fn r348_honest_x_stack_and_post_pick_saves_continue_identically() {
+    let mut g = board(58108, 6)
+        .battlefield(P1, &[CardId::SolRing, CardId::ArcaneSignet])
+        .build();
+    let card = hand_card(&g, P0, CardId::RampagingYaoGuai);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpellWithX {
+            card,
+            x: 3,
+            targets: vec![],
+        },
+    );
+    assert!(g.state.validate().is_ok());
+    let mut restored = Game {
+        state: SessionSave::from_json(&save(&g).to_json()).unwrap().game,
+    };
+    let ring = Target::Permanent(battlefield_card(&g, P1, CardId::SolRing));
+    let signet = Target::Permanent(battlefield_card(&g, P1, CardId::ArcaneSignet));
+    for h in [&mut g, &mut restored] {
+        for _ in 0..64 {
+            if h.state.pending.is_some() {
+                break;
+            }
+            let p = h.decision_owner().unwrap();
+            submit_ok(h, p, Action::Pass);
+        }
+        aggregate_pending(h);
+        submit_ok(h, P0, Action::ChooseTriggerTarget { target: ring });
+        assert!(h.state.validate().is_ok());
+    }
+    assert_eq!(g.state, restored.state);
+    restored = Game {
+        state: SessionSave::from_json(&save(&g).to_json()).unwrap().game,
+    };
+    for h in [&mut g, &mut restored] {
+        submit_ok(h, P0, Action::ChooseTriggerTarget { target: signet });
+        submit_ok(h, P0, Action::FinishTriggerTargets);
+        for _ in 0..64 {
+            if h.state.stack.is_empty()
+                && h.state.trigger_queue.is_empty()
+                && h.state.resolving.is_none()
+                && h.state.pending.is_none()
+            {
+                break;
+            }
+            let p = h.decision_owner().unwrap();
+            submit_ok(h, p, Action::Pass);
+        }
+        assert!(
+            h.state.stack.is_empty()
+                && h.state.trigger_queue.is_empty()
+                && h.state.resolving.is_none()
+                && h.state.pending.is_none()
+        );
+        assert_eq!(counter_count(h, card), 3);
+        assert_eq!(h.state.object(card).power(), 5);
+    }
+    assert_eq!(g.state, restored.state);
 }

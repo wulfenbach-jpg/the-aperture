@@ -1,0 +1,41 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: unused import: `crate::action::Target`
+ --> crates\core\src\state.rs:5:5
+  |
+5 | use crate::action::Target;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 1 warning (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.36s
+     Running tests\issue17_slice57.rs (target\debug\deps\issue17_slice57-d13ec969a6a8a450.exe)
+
+running 22 tests
+test an_unaffordable_or_out_of_range_x_is_refused ... ok
+test r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer ... ok
+test a_target_set_may_reach_but_never_exceed_the_budget ... ok
+test an_empty_set_resolves_and_destroys_nothing ... ok
+test a_departed_target_costs_only_its_own_destruction ... ok
+test the_card_matches_its_printed_text_and_its_mana_value_is_three ... ok
+test the_chosen_set_is_destroyed_together ... ok
+test the_offer_holds_every_artifact_and_enchantment_inside_the_budget ... ok
+test x_counters_are_placed_on_entry_and_the_generic_is_paid ... ok
+test the_same_target_cannot_be_added_twice ... ok
+test x_is_announced_only_through_the_x_cast_on_an_x_cost_card ... ok
+test x_zero_is_a_real_cast_with_no_counters_and_no_targets ... ok
+test r348_aggregate_mode_cannot_be_omitted ... ok
+test finishing_a_single_target_choice_is_refused_and_leaves_it_open ... ok
+test r348_non_x_spell_cannot_carry_saved_x ... ok
+test r348_duplicate_selection_and_aggregate_total_are_isolated ... ok
+test r348_saved_stack_x_must_respect_the_cast_bound ... ok
+test r348_honest_x_stack_and_post_pick_saves_continue_identically ... ok
+test r348_injected_candidates_are_refused_even_before_selection ... ok
+test a_mid_choice_save_loads_and_continues ... ok
+test forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load ... ok
+test r348_x_is_checked_in_pending_queued_and_stacked_triggers ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+
+EXIT=0

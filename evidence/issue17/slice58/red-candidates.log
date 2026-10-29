@@ -1,0 +1,35 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+     Running tests\issue17_slice57.rs (target\debug\deps\issue17_slice57-d13ec969a6a8a450.exe)
+
+running 3 tests
+test r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer ... FAILED
+test r348_aggregate_mode_cannot_be_omitted ... ok
+test r348_injected_candidates_are_refused_even_before_selection ... FAILED
+
+failures:
+
+---- r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer stdout ----
+
+thread 'r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer' (5780) panicked at crates\core\tests\issue17_slice57.rs:794:9:
+assertion failed: forged.submit_action(P0,
+        Action::ChooseTriggerTarget {
+            target: Target::Permanent(target),
+        }).is_err()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- r348_injected_candidates_are_refused_even_before_selection stdout ----
+
+thread 'r348_injected_candidates_are_refused_even_before_selection' (36768) panicked at crates\core\tests\issue17_slice57.rs:775:9:
+injected Permanent(ObjectId(31)): validates=true, sandbox_loads=true
+
+
+failures:
+    r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer
+    r348_injected_candidates_are_refused_even_before_selection
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice57`
+
+EXIT=101

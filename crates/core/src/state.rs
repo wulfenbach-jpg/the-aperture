@@ -2,7 +2,6 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::{Deserialize, Serialize};
 
-use crate::action::Target;
 use crate::card::{CardId, Effect, TargetSpec};
 use crate::counters::Counters;
 use crate::error::EngineError;
@@ -324,6 +323,31 @@ pub struct TriggerRef {
     /// card without X serializes and hashes exactly as it did before.
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub x_value: u8,
+}
+
+/// Supported announced-X bound, shared by cast and serialized-state validation.
+/// This is an implementation limit, not a Magic rules limit.
+pub(crate) const MAX_X_VALUE: u8 = 20;
+
+fn validate_saved_x(value: u8, permits_x: bool) -> Result<(), EngineError> {
+    if value > MAX_X_VALUE || (value != 0 && !permits_x) {
+        return Err(EngineError::InvalidState {
+            reason: format!(
+                "saved X {value} exceeds the supported maximum {MAX_X_VALUE} or is not bound to an X instruction"
+            ),
+        });
+    }
+    Ok(())
+}
+
+impl TriggerRef {
+    pub(crate) fn validate_x(&self) -> Result<(), EngineError> {
+        let permits_x = crate::ability::abilities(self.card)
+            .get(self.ability as usize)
+            .is_some_and(|ability| ability.target_spec() == TargetSpec::ArtifactOrEnchantment)
+            && self.card.def().has_x_cost();
+        validate_saved_x(self.x_value, permits_x)
+    }
 }
 
 /// What one stack item is: a spell card, or an ability whose source never
@@ -783,10 +807,10 @@ pub struct StackItem {
     pub source_pt_lki: Option<(i32, i32)>,
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub search_amount: u8,
-    /// CR 107.3a + 202.3: X announced for this spell (0 for an ability and for
-    /// every spell without `{X}`). A resolving permanent spell reads it for the
-    /// entering permanent's counters and for the triggers its entry queues, so
-    /// the value survives a suspended resolution and a save/load round trip.
+    /// CR 107.3a + 202.3: X announced for this spell, or copied into its
+    /// printed X-reading triggered instruction (0 for unrelated abilities and
+    /// spells without `{X}`). A resolving permanent spell reads it for entry
+    /// counters and triggers, preserving it across save/load.
     #[serde(default, skip_serializing_if = "is_zero_u8")]
     pub x_value: u8,
 }
@@ -1568,99 +1592,28 @@ impl GameState {
                     });
                 }
             }
-            // CR 601.2c: a set-targeting trigger carries the announced X as its
-            // budget and the partial answer as `chosen`. A save can only be a
-            // reachable state if the ability really prints that specification,
-            // every chosen target is a battlefield artifact/enchantment that is
-            // still offered, none is repeated, the running total is within the
-            // budget, and the budget is the X the trigger recorded.
-            if let Pending::TriggerTarget {
-                trigger,
-                legal,
-                aggregate,
-                chosen,
-                ..
-            } = pending
-            {
-                let spec = crate::ability::abilities(trigger.card)
-                    .get(trigger.ability as usize)
-                    .map(crate::ability::Ability::target_spec);
-                match aggregate {
-                    None => {
-                        if !chosen.is_empty() {
-                            return Err(EngineError::InvalidState {
-                                reason: "single-target trigger choice carries chosen targets"
-                                    .to_string(),
-                            });
-                        }
-                    }
-                    Some(budget) => {
-                        if spec != Some(TargetSpec::ArtifactOrEnchantment) {
-                            return Err(EngineError::InvalidState {
-                                reason: "aggregate target choice is not bound to a printed \
-                                         \"any number of target artifacts and/or enchantments\" \
-                                         ability"
-                                    .to_string(),
-                            });
-                        }
-                        if *budget != trigger.x_value {
-                            return Err(EngineError::InvalidState {
-                                reason: format!(
-                                    "aggregate target budget {budget} is not the trigger's \
-                                     announced X {}",
-                                    trigger.x_value
-                                ),
-                            });
-                        }
-                        let mut total: u32 = 0;
-                        let mut seen: Vec<ObjectId> = Vec::new();
-                        for target in chosen {
-                            let Target::Permanent(id) = target else {
-                                return Err(EngineError::InvalidState {
-                                    reason: "aggregate target is not a permanent".to_string(),
-                                });
-                            };
-                            if seen.contains(id) {
-                                return Err(EngineError::InvalidState {
-                                    reason: format!("aggregate target {id} was chosen twice"),
-                                });
-                            }
-                            seen.push(*id);
-                            if !legal.contains(target) {
-                                return Err(EngineError::InvalidState {
-                                    reason: format!(
-                                        "aggregate target {id} is not one of the offered targets"
-                                    ),
-                                });
-                            }
-                            let Some(object) = self.objects.get(id) else {
-                                return Err(EngineError::InvalidState {
-                                    reason: format!("aggregate target {id} is missing"),
-                                });
-                            };
-                            if object.zone != Zone::Battlefield
-                                || !(object.card.def().is_artifact()
-                                    || object.card.def().is_enchantment())
-                            {
-                                return Err(EngineError::InvalidState {
-                                    reason: format!(
-                                        "aggregate target {id} is not an artifact or enchantment \
-                                         on the battlefield"
-                                    ),
-                                });
-                            }
-                            total += u32::from(object.card.def().mana_value());
-                        }
-                        if total > u32::from(*budget) {
-                            return Err(EngineError::InvalidState {
-                                reason: format!(
-                                    "aggregate targets cost {total} mana value, over the \
-                                     announced budget {budget}"
-                                ),
-                            });
-                        }
+            // Validate all serialized trigger references, including queued siblings.
+            match pending {
+                Pending::TriggerTarget {
+                    trigger, queued, ..
+                }
+                | Pending::TriggerMode {
+                    trigger, queued, ..
+                } => {
+                    trigger.validate_x()?;
+                    for next in queued {
+                        next.validate_x()?;
                     }
                 }
+                Pending::TriggerChoice { trigger, .. } => trigger.validate_x()?,
+                _ => {}
+            }
+            // Use the same printed-mode and live-candidate guard as answer submission.
+            if matches!(pending, Pending::TriggerTarget { .. }) {
+                crate::engine::Game {
+                    state: self.clone(),
+                }
+                .validate_trigger_target_pending()?;
             }
         }
         if let Some(mulligan) = &self.mulligan {
@@ -2713,6 +2666,31 @@ impl GameState {
         }
         let mut spell_counts: BTreeMap<ObjectId, u32> = BTreeMap::new();
         for item in &self.stack {
+            match item.entry {
+                StackEntry::Spell => {
+                    validate_saved_x(item.x_value, item.card.def().has_x_cost())?;
+                    if item.card.def().has_x_cost()
+                        && !self
+                            .objects
+                            .get(&item.object)
+                            .is_some_and(|object| object.card == item.card)
+                    {
+                        return Err(EngineError::InvalidState {
+                            reason: "X spell identity does not match its stack object".to_string(),
+                        });
+                    }
+                }
+                StackEntry::Triggered { ability } => {
+                    let permits_x = item.card.def().has_x_cost()
+                        && crate::ability::abilities(item.card)
+                            .get(ability as usize)
+                            .is_some_and(|spec| {
+                                spec.target_spec() == TargetSpec::ArtifactOrEnchantment
+                            });
+                    validate_saved_x(item.x_value, permits_x)?;
+                }
+                StackEntry::Activated { .. } => validate_saved_x(item.x_value, false)?,
+            }
             if item.entry == StackEntry::Spell {
                 *spell_counts.entry(item.object).or_insert(0) += 1;
             }
@@ -2989,6 +2967,7 @@ impl GameState {
             }
         }
         for trigger in &self.trigger_queue {
+            trigger.validate_x()?;
             if let Some(affected) = trigger.affected
                 && !self.objects.contains_key(&affected)
             {
