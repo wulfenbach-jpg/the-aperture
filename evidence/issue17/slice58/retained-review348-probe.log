@@ -1,0 +1,19 @@
+head=2d8d8b3b48ad5e767ffd2d642ee7c55135033010
+command=cargo test -p aperture-core --test review348_retained_probe --locked -- --nocapture
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running tests\review348_retained_probe.rs (target\debug\deps\review348_retained_probe-2b26165f6522510b.exe)
+
+running 4 tests
+REVIEW348 wrong-seat refusals atomic
+test review348_wrong_player_choice_is_atomic ... ok
+REVIEW348 downgraded mode validates=false, loads=false
+test review348_downgraded_aggregate_mode_must_be_refused ... ok
+REVIEW348 honest continuation identical
+test review348_honest_post_pick_continuation_is_identical ... ok
+REVIEW348 saved X21 validates=false, loads=false
+test review348_out_of_range_saved_x_must_be_refused ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+retained_probe_exit=0
