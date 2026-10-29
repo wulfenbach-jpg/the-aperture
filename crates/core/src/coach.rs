@@ -480,12 +480,19 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
     // to an indestructible permanent (CR 702.12b). Telling the player that an
     // indestructible creature "will be destroyed" was a false statement.
     let mut lethal: Vec<String> = Vec::new();
+    let mut zero_toughness: Vec<String> = Vec::new();
     let mut spared: Vec<String> = Vec::new();
     for o in state.objects.values() {
         if o.zone != crate::ids::Zone::Battlefield || !game.is_creature(o) {
             continue;
         }
-        if o.toughness() > 0 && (o.damage as i32) < o.toughness() {
+        // CR 704.5f: zero or less toughness is a graveyard move by state-based
+        // action — not a destroy, and not a consequence of damage.
+        if o.toughness() <= 0 {
+            zero_toughness.push(format!("{} ({} toughness)", o.name(), o.toughness()));
+            continue;
+        }
+        if (o.damage as i32) < o.toughness() {
             continue;
         }
         let text = format!(
@@ -494,7 +501,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             o.damage,
             o.toughness()
         );
-        if o.toughness() > 0 && game.has_indestructible(o.id) {
+        if game.has_indestructible(o.id) {
             spared.push(text);
         } else {
             lethal.push(text);
@@ -509,6 +516,17 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 lethal.join(", ")
             ),
             rules: vec!["117.5", "704.5g"],
+        });
+    }
+    if !zero_toughness.is_empty() {
+        out.push(Explanation {
+            topic: "state-based actions".to_string(),
+            kind: ExplanationKind::Rule,
+            text: format!(
+                "Waiting for state-based actions: {} has zero or less toughness and is put into its owner's graveyard (CR 704.5f). That is not a destroy, so indestructible does not prevent it (CR 702.12b).",
+                zero_toughness.join(", ")
+            ),
+            rules: vec!["117.5", "704.5f"],
         });
     }
     if !spared.is_empty() {

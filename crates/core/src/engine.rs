@@ -8534,12 +8534,14 @@ impl Game {
                 // CR 608.2b: the ability resolves even when its source has left
                 // the battlefield, so the mill still happens. Every grant below
                 // is about that creature as a *battlefield permanent*, so it is
-                // created only while the source is still one: an ordinary card
-                // keeps its ObjectId across a bounce, and a phantom
-                // until-end-of-turn indestructible effect left behind here would
-                // silently make a later recast incarnation of the same card
-                // indestructible. The event line reports what actually happened
-                // instead of narrating a grant that was skipped.
+                // created only while the source is still one. The observable
+                // defect this gate fixes was the event line: it narrated the
+                // indestructible/+1/+1 grant and the attack requirement for a
+                // source that no longer existed. A stale continuous effect
+                // created here would have been at most transient, because
+                // `recompute_layers` drops effects whose target is not a
+                // battlefield permanent, so no recast incarnation was ever at
+                // risk; the false narration is what the player actually saw.
                 let granted = item.affected == Some(item.object)
                     && self
                         .state

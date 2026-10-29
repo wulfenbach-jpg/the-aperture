@@ -952,20 +952,51 @@ inside the inherited single-defender combat model, so "maximum requirements" mea
 maximum this engine's declarations can express, not full multi-defender Commander combat.
 (b) Indestructible does not prevent a zero-toughness graveyard move. (c) The +N/+N counts
 only the card kinds this pool can actually place in a graveyard, and it is fixed at
-resolution rather than recomputed. (d) The exit path of the ability logs its grant line
-after the battlefield gate, so a bounced source still logs the grant attempt; the
-effects themselves are correctly skipped. (e) `ContinuousKind::MustAttackThisCombat`
+resolution rather than recomputed. (d) A source that has already left the battlefield
+when the ability resolves still mills (CR 608.2b) and now logs that its attack
+requirement, indestructible and +N/+N are skipped, instead of narrating a grant that
+never happened. (e) `ContinuousKind::MustAttackThisCombat`
 stores the required defender in the `controller` field, so no future consumer may read
 that field as a controller.
 
-Regression coverage is `crates/core/tests/issue17_slice54.rs` and
-`crates/core/tests/issue17_slice54_regressions.rs`: the printed trigger, random opponent
-choice, maximal-requirement refusal and acceptance, wrong-opponent evasion refused, the
-fixed +N/+N vs a later mill, indestructible through lethal damage and its own cleanup,
-zero toughness still dying, the bounced-source control, and the whole-field gap rewrite.
+Regression coverage is `crates/core/tests/issue17_slice54.rs`,
+`crates/core/tests/issue17_slice54_regressions.rs` and
+`crates/core/tests/issue17_slice55.rs`: the printed trigger, random opponent choice,
+maximal-requirement refusal and acceptance, wrong-opponent evasion refused, the fixed
++N/+N vs a later mill, indestructible through lethal damage and its own cleanup, zero
+toughness still dying, the bounced-source control, the whole-field gap rewrite, the
+departed-source mill line, and the coach wording for a zero-toughness permanent with and
+without indestructible.
 
 Whole-field discipline: Ursine Monstrosity left `missing_cards` **and** its
 `missing_interactions` entry in `decks/starter-corpus/manifest.json` in the same change;
 Ayula is now three missing names and the corpus is 163 catalog / 459 union = 150 supported
 + 309 missing, per-list `[55, 0, 51, 48, 3, 52, 52, 53]`, still one of eight lists
 certified.
+
+## Slice 56: zero toughness is a state-based graveyard move, not a destroy
+
+No card entered the pool in this slice; the count stays 163 catalog / 459 union = 150
+supported + 309 missing, per-list `[55, 0, 51, 48, 3, 52, 52, 53]`, one of eight
+certified.
+
+**The defect.** The coach's state-based-action paragraph filed every creature with
+`toughness <= 0` under "has lethal damage and will be destroyed". Both halves are wrong:
+CR 704.5f puts a creature with zero or less toughness into its owner's graveyard as a
+state-based action, which is **not** a destroy, and such a permanent has taken no lethal
+damage. The paragraph now has three lists with their own citations — the destroy list is
+restricted to `damage >= toughness > 0` (CR 704.5g, minus indestructible via CR 702.12b),
+a separate zero-toughness sentence cites CR 704.5f and states that indestructible does not
+prevent it, and the indestructible-and-spared list stays as before.
+
+**Deliberate limits recorded.** The paragraph is a projection over public state only: it
+names permanents and their damage/toughness, so it cannot distinguish a creature that will
+actually die to a replacement effect this pool does not implement. It describes what the
+state-based-action check is about to consider, in the same words the engine's own SBA path
+uses; it is not a rules engine of its own.
+
+**Regression coverage** is `crates/core/tests/issue17_slice55.rs`: the indestructible-with-
+lethal-damage wording, zero toughness without indestructible (CR 704.5f sentence, no
+destroy claim, no lethal-damage claim) and zero toughness **with** indestructible (the
+zero-toughness sentence still wins, because CR 704.5f has no destroy to excuse), plus the
+departed-source mill line from slice 55.

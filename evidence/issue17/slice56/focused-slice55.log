@@ -1,0 +1,13 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.29s
+     Running tests\issue17_slice55.rs (target\debug\deps\issue17_slice55-b41b86ba35644523.exe)
+
+running 5 tests
+test coach_still_reports_a_zero_toughness_indestructible_permanent ... ok
+test coach_does_not_promise_destruction_of_an_indestructible_creature ... ok
+test coach_reports_a_zero_toughness_permanent_as_a_graveyard_move ... ok
+test a_present_source_still_reports_its_grant ... ok
+test departed_source_trigger_reports_the_absence_of_its_grants ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

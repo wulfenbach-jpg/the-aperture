@@ -53,10 +53,14 @@ the approved Ursine increment instead of shipping half of one card.**
 until-end-of-turn indestructible continuous effect, and its "gains
 indestructible/+1/+1" event line, *before* checking whether the source was still a
 battlefield permanent. A trigger that resolved after its source was bounced or destroyed
-therefore still logged the full grant (and left an effect targeting a card that is no
-longer a permanent — ordinary cards keep their `ObjectId` across a bounce). The grant is
-now created only while the source is a battlefield permanent, the mill still happens
-(CR 608.2b), and the event line states which of the two happened.
+therefore still logged the full grant. **The observable defect was that false event
+line** (it claimed an attack requirement and an indestructible/+1/+1 grant that never
+happened), not a surviving effect: `recompute_layers` drops every effect whose target is
+not a battlefield permanent, so a stale effect would have been at most transient and no
+later recast incarnation was ever at risk. That earlier "left an effect behind" rationale
+was wrong and is corrected here. The grant is now created only while the source is a
+battlefield permanent, the mill still happens (CR 608.2b), and the event line states
+which of the two happened.
 
 **N-4 — the coach promised the death of an indestructible creature.** The state-based
 action paragraph listed every creature with `damage >= toughness` under "will be
@@ -81,7 +85,7 @@ caller is unchanged.
 | `cargo clippy -p aperture-core --all-targets --locked -- -D warnings` | exit 0 |
 | focused suites: `coach_trace`, `combat_teaching`, `issue17_slice54`, `issue17_slice54_regressions`, `issue17_slice55`, `review_regressions` | **6 suites / 32 passed / 0 failed** (7+2+4+6+3+10), exit 0 |
 | whole-field corpus audit | **AUDIT OK** 163 / 459 = 150 + 309, per-list `[55,0,51,48,3,52,52,53]`, Ayula 3, 1 certified, no `missing_interactions` entry cites a supported card |
-| exact-code-head CI | see `slice55/exact-head-ci-e4c5fcd.json` / §4 below |
+| CI at the code head `e4c5fcd` | **no green gate**: 10 runs = 2 success + 8 cancelled by this lane's own evidence push (`ci.yml` `cancel-in-progress`); the green gate is `4738a2b`'s 10/10 completed success on the identical Rust tree — see §4 |
 
 **Not run, and said plainly:** no four-seat journey was re-executed. The change is a log
 line and a coach projection; no serialized field, digest input, priority, legality, combat
@@ -94,6 +98,15 @@ this delta. The exact-head CI run's workspace test pass is the full-suite gate h
 Code head **`e4c5fcd`**; the evidence commit that publishes this checkpoint is evidence-only
 and claims no CI of its own. The receipt is `slice55/exact-head-ci-e4c5fcd.json`, captured
 from `gh api …/commits/e4c5fcd/check-runs`.
+
+**The code head has no green gate and is not reported as one.** `e4c5fcd`'s ten check runs
+are **2 success + 8 cancelled**: this lane pushed its evidence commit while the jobs were
+still running, and `ci.yml` cancels in-progress runs on the same ref. The green gate for
+the same Rust tree is **`4738a2b`'s 10/10 completed success** — the only delta between the
+two commits is `evidence/`, so that run compiled and tested exactly the code reviewed as
+`e4c5fcd`. `RESULT.json` carries the same statement in its `ci` object. Operating rule for
+later slices: wait for CI to complete before pushing evidence, and never report a cancelled
+job as green.
 
 ## 5. Next gate
 

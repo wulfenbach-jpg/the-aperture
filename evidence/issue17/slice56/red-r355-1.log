@@ -1,0 +1,40 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.64s
+     Running tests\issue17_slice55.rs (target\debug\deps\issue17_slice55-b41b86ba35644523.exe)
+
+running 3 tests
+test coach_does_not_promise_destruction_of_an_indestructible_creature ... ok
+test coach_reports_a_zero_toughness_permanent_as_a_graveyard_move ... FAILED
+test coach_still_reports_a_zero_toughness_indestructible_permanent ... FAILED
+
+failures:
+
+---- coach_reports_a_zero_toughness_permanent_as_a_graveyard_move stdout ----
+
+thread 'coach_reports_a_zero_toughness_permanent_as_a_graveyard_move' (6156) panicked at crates\core\tests\issue17_slice55.rs:195:5:
+the coach cites the real state-based action, got Turn 1 — P0 is the active player. P0 holds priority in the precombat main phase.
+No one has passed yet in the current priority round; P0 has the next response. If everyone passes without acting, the current step/phase ends next.
+Waiting for state-based actions: Ursine Monstrosity (0 damage, 0 toughness) has lethal damage and will be destroyed.
+Board (public counts): P0: 20 life, 1 permanent(s), 0 card(s) in hand, 16 in library; P1: 20 life, 0 permanent(s), 0 card(s) in hand, 16 in library.
+1 legal action(s) generated for the current decision point.
+No strategic suggestions are shown: this panel renders only engine-derived facts and pinned rule text. Any future strategy entry must carry the strategy label and is advice, not a rule or a win projection.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- coach_still_reports_a_zero_toughness_indestructible_permanent stdout ----
+
+thread 'coach_still_reports_a_zero_toughness_indestructible_permanent' (33208) panicked at crates\core\tests\issue17_slice55.rs:244:5:
+indestructible does not prevent the CR 704.5f graveyard move, got Turn 1 — P0 is the active player. P0 holds priority in the precombat main phase.
+No one has passed yet in the current priority round; P0 has the next response. If everyone passes without acting, the current step/phase ends next.
+Waiting for state-based actions: Ursine Monstrosity (0 damage, 0 toughness) has lethal damage and will be destroyed.
+Board (public counts): P0: 20 life, 1 permanent(s), 0 card(s) in hand, 16 in library; P1: 20 life, 0 permanent(s), 0 card(s) in hand, 16 in library.
+1 legal action(s) generated for the current decision point.
+No strategic suggestions are shown: this panel renders only engine-derived facts and pinned rule text. Any future strategy entry must carry the strategy label and is advice, not a rule or a win projection.
+
+
+failures:
+    coach_reports_a_zero_toughness_permanent_as_a_graveyard_move
+    coach_still_reports_a_zero_toughness_indestructible_permanent
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice55`

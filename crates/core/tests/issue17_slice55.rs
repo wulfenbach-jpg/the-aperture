@@ -4,6 +4,7 @@
 //! the resolving ability had skipped, and the coach told the viewer that an
 //! indestructible creature with lethal damage "will be destroyed".
 mod common;
+use aperture_core::counters::CounterKind;
 use aperture_core::layer::{ContinuousKind, EffectDuration, Layer};
 use aperture_core::*;
 use common::*;
@@ -169,4 +170,87 @@ fn coach_does_not_promise_destruction_of_an_indestructible_creature() {
         "the coach states the real outcome, got {after}"
     );
     assert_eq!(g.state.object(u).zone, Zone::Battlefield);
+}
+
+/// R355-1: a zero-toughness permanent is not "destroyed" and has no lethal
+/// damage. CR 704.5f is a graveyard move made by a state-based action.
+#[test]
+fn coach_reports_a_zero_toughness_permanent_as_a_graveyard_move() {
+    let mut g = fixture_n(55104, 2)
+        .battlefield(P0, &[CardId::UrsineMonstrosity])
+        .library(P0, &[CardId::Forest; 16])
+        .library(P1, &[CardId::Forest; 16])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let u = battlefield_card(&g, P0, CardId::UrsineMonstrosity);
+    // Fixture premise: three -1/-1 counters take the 3/3 to 0 toughness.
+    g.state
+        .objects
+        .get_mut(&u)
+        .unwrap()
+        .counters
+        .add(CounterKind::MinusOneMinusOne, 3);
+    assert_eq!(g.state.object(u).toughness(), 0);
+    let text = coach_text(&g, P0);
+    assert!(
+        text.contains("zero or less toughness") && text.contains("CR 704.5f"),
+        "the coach cites the real state-based action, got {text}"
+    );
+    assert!(
+        !text.contains("will be destroyed"),
+        "CR 704.5f is not a destroy, got {text}"
+    );
+    assert!(
+        !text.contains("has lethal damage"),
+        "a zero-toughness permanent has taken no lethal damage, got {text}"
+    );
+}
+
+/// R355-1: indestructible does not save a zero-toughness permanent (CR 704.5f),
+/// so the zero-toughness sentence must still be the one reported.
+#[test]
+fn coach_still_reports_a_zero_toughness_indestructible_permanent() {
+    let mut g = fixture_n(55105, 2)
+        .battlefield(P0, &[CardId::UrsineMonstrosity])
+        .library(P0, &[CardId::Forest; 16])
+        .library(P1, &[CardId::Forest; 16])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let u = battlefield_card(&g, P0, CardId::UrsineMonstrosity);
+    g.state
+        .objects
+        .get_mut(&u)
+        .unwrap()
+        .counters
+        .add(CounterKind::MinusOneMinusOne, 3);
+    let id = g.state.next_effect;
+    g.state.next_effect += 1;
+    let timestamp = g.state.next_timestamp;
+    g.state.next_timestamp += 1;
+    g.state
+        .effects
+        .push(aperture_core::layer::ContinuousEffect {
+            id,
+            timestamp,
+            source: Some(u),
+            card: CardId::UrsineMonstrosity,
+            controller: P0,
+            layer: Layer::Ability,
+            target: u,
+            kind: ContinuousKind::Indestructible,
+            duration: EffectDuration::UntilEndOfTurn,
+        });
+    let text = coach_text(&g, P0);
+    assert!(
+        text.contains("zero or less toughness") && text.contains("CR 704.5f"),
+        "indestructible does not prevent the CR 704.5f graveyard move, got {text}"
+    );
+    assert!(
+        !text.contains("so the destroy does not apply"),
+        "there is no destroy to excuse here, got {text}"
+    );
+    assert!(
+        !text.contains("will be destroyed"),
+        "CR 704.5f is not a destroy, got {text}"
+    );
 }
