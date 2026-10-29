@@ -51,6 +51,7 @@ pub fn fixture(seed: u64) -> Fixture {
             draw_replacements: Vec::new(),
             nontoken_creature_deaths_this_turn: Vec::new(),
             commanders: Vec::new(),
+            rings: Vec::new(),
             profile: Profile::Practice20,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
@@ -260,6 +261,17 @@ pub fn run_until(
                 Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
                     to_command_zone: true,
                 },
+                Pending::RingTemptation { .. } | Pending::LegendaryChoice { .. } => game
+                    .legal_actions()
+                    .into_iter()
+                    .find(|legal| {
+                        matches!(
+                            legal.action,
+                            Action::ChooseRingBearer { .. } | Action::ChooseLegendaryKeep { .. }
+                        )
+                    })
+                    .map(|legal| legal.action)
+                    .expect("a Ring/legend choice is offered"),
                 Pending::TriggerTarget { .. }
                 | Pending::TriggerChoice { .. }
                 | Pending::TriggerMode { .. }
