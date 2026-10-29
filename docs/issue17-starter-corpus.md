@@ -46,14 +46,14 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **158** are in the supported 172-card catalog and **301** are missing. Slice
-  25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
+* **163** are in the supported 177-card catalog and **296** are missing. Slice
+ 25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **172**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **177**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
-  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). The intervening per-slice list is
+  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). Slice 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit Lord and Goblin Matron (172→176, supported 158→162, missing 301→297, Krenko 43→39). Slice 65 adds Siege-Gang Commander (176→177, supported 162→163, missing 297→296, Krenko 39→38). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -180,7 +180,8 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    herself needs no token); the exact Krenko starter is still planned
    (43 missing as review 363 audited it, 39 after slice 64's Goblin
    Sharpshooter / Krenko, Tin Street Kingpin / Hobgoblin Bandit Lord / Goblin
-   Matron batch) and Talrand's desired list has 51 missing cards;
+   Matron batch, and 38 after slice 65's Siege-Gang Commander) and Talrand's
+   desired list has 51 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
    independent of counters), **bounded implemented** landfall for Tatyova and
@@ -344,7 +345,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 172 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 177 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the

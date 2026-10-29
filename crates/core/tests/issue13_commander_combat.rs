@@ -1393,7 +1393,7 @@ fn fog_is_a_sourced_catalog_card() {
     // 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit
     // Lord and Goblin Matron (170 -> 176 with the two slice-57/59 pieces already
     // counted above); the assertion's purpose is unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 176);
+    assert_eq!(aperture_core::catalog::pool_size(), 177);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

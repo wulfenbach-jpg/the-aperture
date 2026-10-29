@@ -1823,9 +1823,13 @@ impl Game {
                     ring.bearer = None;
                 }
             }
-            if object.card == CardId::ExuberantWolfbear
-                && let Some(pts) = lki
-            {
+            // CR 608.2h: any later instruction that reads a departed permanent's
+            // power/toughness uses its last known values, so the capture belongs
+            // to every battlefield departure rather than to one card. It used to
+            // be gated on Exuberant Wolfbear, which left every other effect that
+            // reads source stats at resolution (Krenko, Tin Street Kingpin's
+            // token count) with no captured value at all.
+            if let Some(pts) = lki {
                 for trigger in &mut self.state.trigger_queue {
                     if trigger.source == id && trigger.source_pt_lki.is_none() {
                         trigger.source_pt_lki = Some(pts);
@@ -5536,6 +5540,25 @@ impl Game {
                 ));
             }
         }
+        if let Some(subtype) = cost.sacrifice_creature_subtype {
+            let id = cost_cards[index];
+            index += 1;
+            let eligible = self.state.try_object(id).is_some_and(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && self.is_creature(object)
+                    && self.has_subtype(object, subtype)
+            });
+            if !eligible {
+                return Err(EngineError::illegal(
+                    "activate ability",
+                    format!(
+                        "{} must sacrifice a {subtype} creature that player controls, and the named permanent is not one (CR 118.3, 701.21a)",
+                        card.def().name
+                    ),
+                ));
+            }
+        }
         let graveyard_cards = cost.exile_graveyard_cards as usize;
         if graveyard_cards > 0 {
             let graveyard = &self.state.player(player).graveyard;
@@ -5593,6 +5616,27 @@ impl Game {
         let mut paid = 0usize;
         if activated.cost.discard_land {
             self.discard_as_cost(player, cost_cards[paid], events);
+            paid += 1;
+        }
+        // CR 701.21a + 118.3: "Sacrifice a Goblin" is paid with the named
+        // creature. Sacrificing is a real zone change, so its dies triggers are
+        // recorded before the ability is put on the stack; when the activator
+        // names the source itself the source is already gone at that point, and
+        // the stack entry below still carries the card id (like
+        // `sacrifice_source`).
+        if activated.cost.sacrifice_creature_subtype.is_some() {
+            let sacrificed = cost_cards[paid];
+            let name = self
+                .state
+                .try_object(sacrificed)
+                .map(|object| object.card.def().name)
+                .unwrap_or("creature");
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "P{player} sacrifices {name} to pay an activation cost (CR 701.21a)"
+                ),
+            });
+            self.move_to_graveyard(sacrificed, events);
             paid += 1;
         }
         let graveyard_cards = activated.cost.exile_graveyard_cards as usize;
@@ -9044,14 +9088,21 @@ impl Game {
             // CR 608.2c + 613.4c: the token count is the source's *effective*
             // power at the moment this instruction resolves, so a +1/+1 counter
             // placed by the instruction immediately before it is already counted.
+            // CR 608.2h: when the source has already left the battlefield (it was
+            // killed while its own attack trigger was on the stack), the count
+            // uses its last known power captured at that departure — the same
+            // `source_pt_lki` capture `Effect::SetBasePowerToughnessFromSource`
+            // reads — not zero.
             // A negative power creates no tokens (CR 107.1b: a negative number is
             // treated as zero where a count is needed).
             Effect::CreateGoblinTokensEqualToSourcePower => {
-                let count = self
+                let live = self
                     .state
                     .try_object(item.object)
                     .filter(|object| object.zone == Zone::Battlefield)
-                    .map(|object| object.power())
+                    .map(|object| object.power());
+                let count = live
+                    .or_else(|| item.source_pt_lki.map(|(power, _)| power))
                     .unwrap_or(0)
                     .max(0);
                 self.create_goblin_tokens(controller, usize::try_from(count).unwrap_or(0), events);
@@ -10497,8 +10548,9 @@ impl Game {
         for target in item.targets.clone() {
             match target {
                 Target::Player(p) => {
-                    let dealt = self.deal_damage(
+                    let dealt = self.deal_damage_from(
                         Some(item.object),
+                        Some(item.controller),
                         DamageTarget::Player(p),
                         amount,
                         false,
@@ -10520,8 +10572,9 @@ impl Game {
                     });
                 }
                 Target::Permanent(id) => {
-                    let dealt = self.deal_damage(
+                    let dealt = self.deal_damage_from(
                         Some(item.object),
+                        Some(item.controller),
                         DamageTarget::Permanent(id),
                         amount,
                         false,
@@ -11519,7 +11572,40 @@ impl Game {
                         .is_some_and(|object| object.card.def().is_land())
                 })
                 .collect();
+            if lands.is_empty() {
+                return Vec::new();
+            }
             prefix = lands.into_iter().map(|id| vec![id]).collect();
+        }
+        // CR 701.21a: every permanent the activator could sacrifice for a
+        // "Sacrifice a <subtype>" cost is its own offer, so a policy answering
+        // with a different legal Goblin is still an offered action rather than
+        // looking illegal to a by-equality consumer.
+        if let Some(subtype) = cost.sacrifice_creature_subtype {
+            let candidates: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == player
+                        && object.card.def().is_creature()
+                        && self.has_subtype(object, subtype)
+                })
+                .map(|object| object.id)
+                .collect();
+            if candidates.is_empty() {
+                return Vec::new();
+            }
+            let mut next: Vec<Vec<ObjectId>> = Vec::new();
+            for head in &prefix {
+                for id in &candidates {
+                    let mut set = head.clone();
+                    set.push(*id);
+                    next.push(set);
+                }
+            }
+            prefix = next;
         }
         let wanted = cost.exile_graveyard_cards as usize;
         if wanted == 0 {

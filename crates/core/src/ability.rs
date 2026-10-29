@@ -143,6 +143,12 @@ pub struct AbilityCost {
     /// Saddle N: tap any number of other untapped creatures you control with
     /// total effective power N or greater. 0 means not a saddle cost.
     pub saddle_power: Option<u8>,
+    /// "Sacrifice a Goblin" (CR 701.21a, 118.3): the activator sacrifices one
+    /// creature they control with this subtype as part of the cost. The
+    /// sacrificed creature is chosen by the activator and named in the action,
+    /// never by the engine, and it may be the ability's own source when the
+    /// source prints the subtype (Siege-Gang Commander is itself a Goblin).
+    pub sacrifice_creature_subtype: Option<&'static str>,
 }
 
 impl AbilityCost {
@@ -155,6 +161,7 @@ impl AbilityCost {
         exile_graveyard_cards: 0,
         exile_source_from_graveyard: false,
         saddle_power: None,
+        sacrifice_creature_subtype: None,
     };
     pub const TAP: AbilityCost = AbilityCost {
         tap: true,
@@ -175,7 +182,9 @@ impl AbilityCost {
     /// validates the named cards against the source's zone rules; it never
     /// picks them itself.
     pub fn card_cost_count(self) -> usize {
-        usize::from(self.discard_land) + self.exile_graveyard_cards as usize
+        usize::from(self.discard_land)
+            + usize::from(self.sacrifice_creature_subtype.is_some())
+            + self.exile_graveyard_cards as usize
     }
 
     pub fn is_free(self) -> bool {
@@ -198,6 +207,9 @@ impl AbilityCost {
         }
         if self.sacrifice_source {
             parts.push("Sacrifice this permanent".to_string());
+        }
+        if let Some(subtype) = self.sacrifice_creature_subtype {
+            parts.push(format!("Sacrifice a {subtype}"));
         }
         if self.discard_land {
             parts.push("Discard a land card".to_string());
@@ -1226,6 +1238,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::KrenkoTinStreetKingpin => KRENKO_TIN_STREET_KINGPIN,
         CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD,
         CardId::GoblinMatron => GOBLIN_MATRON,
+        CardId::SiegeGangCommander => SIEGE_GANG_COMMANDER,
         CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
@@ -1927,6 +1940,36 @@ const GOBLIN_MATRON: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     target: TargetSpec::None,
     effects: &[Effect::SearchGoblinCardToHand],
 })];
+
+/// Siege-Gang Commander (SCG 103 and seventeen later printings). The current
+/// printed text costs the throw at `{1}{R}`, not the `{2}{R}` of the original
+/// Scourge printing, so the catalog carries the current wording fetched from
+/// Scryfall on 2026-10-29. "Sacrifice a Goblin" is a real cost: the activator
+/// names the Goblin, the creature is sacrificed as the ability is activated
+/// (so its dies triggers fire before the damage), and the Commander may
+/// sacrifice itself because it prints the subtype.
+const SIEGE_GANG_COMMANDER: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "When this creature enters, create three 1/1 red Goblin creature tokens.",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::CreateGoblinTokens(3)],
+    }),
+    Ability::Activated(ActivatedAbility {
+        text: "{1}{R}, Sacrifice a Goblin: This creature deals 2 damage to any target.",
+        cost: AbilityCost {
+            mana: Some("{1}{R}"),
+            sacrifice_creature_subtype: Some("Goblin"),
+            ..AbilityCost::NONE
+        },
+        target: TargetSpec::AnyTarget,
+        modes: SINGLE_MODE,
+        effects: &[Effect::Damage(2)],
+        once_per_turn: false,
+        sorcery_timing: false,
+    }),
+];
 
 const SPIDER_HAM_STATIC: &[StaticAbility] = &[
     StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {

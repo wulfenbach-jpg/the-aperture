@@ -334,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 176] = [
+pub static CARDS: [CardDef; 177] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1464,6 +1464,17 @@ pub static CARDS: [CardDef; 176] = [
         GoblinMatron, "Goblin Matron", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
         oracle: "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+        spell: None
+    ),
+    // Issue 17 slice 65: the first demanded "Sacrifice a Goblin" card. Its
+    // printed text is the CURRENT wording — {1}{R}, not the original Scourge
+    // printing's {2}{R} — fetched from Scryfall on 2026-10-29 with all 18
+    // printings checked for one distinct oracle text, and recorded in
+    // fixtures/starter-corpus/slice65-sourced.json.
+    card!(
+        SiegeGangCommander, "Siege-Gang Commander", cost: Some("{3}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "When this creature enters, create three 1/1 red Goblin creature tokens.\n{1}{R}, Sacrifice a Goblin: This creature deals 2 damage to any target.",
         spell: None
     ),
 ];

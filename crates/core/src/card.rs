@@ -1058,6 +1058,7 @@ pub enum CardId {
     KrenkoTinStreetKingpin,
     HobgoblinBanditLord,
     GoblinMatron,
+    SiegeGangCommander,
     BeetlebackChief,
     GoblinToken,
     AlabornTrooper,

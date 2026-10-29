@@ -1,0 +1,53 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-29T13:05:00Z",
+  "cards": [
+    {
+      "name": "Siege-Gang Commander",
+      "set": "dmr",
+      "collector_number": "136",
+      "oracle_id": "ddc7f59a-bbb1-4ba1-82c8-6813fd191940",
+      "mana_cost": "{3}{R}{R}",
+      "type_line": "Creature — Goblin",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "When this creature enters, create three 1/1 red Goblin creature tokens.\n{1}{R}, Sacrifice a Goblin: This creature deals 2 damage to any target.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2023-01-13",
+      "scryfall_id": "5dd6a913-88df-4fbc-964e-a8fec3ad989f",
+      "legalities_commander": "legal",
+      "mana_value": 5.0,
+      "printings_checked": 18,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "10e/234",
+        "blc/202",
+        "dd1/32",
+        "dmr/136",
+        "dmr/330",
+        "dmr/436",
+        "dom/143",
+        "ema/147",
+        "evg/32",
+        "gnt/42",
+        "ltc/228",
+        "m10/157",
+        "onc/103",
+        "pdom/143p",
+        "pdom/143s",
+        "plst/DMR-136",
+        "scg/103",
+        "tdc/232"
+      ],
+      "retrieved_at_utc": "2026-10-29T13:05:00Z"
+    }
+  ]
+}

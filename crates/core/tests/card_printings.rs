@@ -57,6 +57,8 @@ const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 /// Slice 62: Goblin Chieftain (JMP 324) and Searslicer Goblin (FDN 93), fetched
 /// 2026-10-29.
 const SLICE62_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice62-sourced.json");
+/// Slice 65: Siege-Gang Commander (DMR 136), fetched 2026-10-29.
+const SLICE65_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice65-sourced.json");
 /// Slice 64: Goblin Sharpshooter (C13 111), Krenko, Tin Street Kingpin (MOC
 /// 287), Hobgoblin Bandit Lord (AFR 147) and Goblin Matron (PLST DMR-123),
 /// fetched 2026-10-29.
@@ -511,6 +513,11 @@ fn slice60_cards() -> Vec<Value> {
 
 fn slice63_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE63_SOURCED).expect("sourced slice63 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice65_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE65_SOURCED).expect("sourced slice65 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -1143,6 +1150,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice35_cards())
         .chain(slice37_cards())
         .chain(slice38_cards())
+        .chain(slice65_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()
@@ -1902,5 +1910,71 @@ fn every_slice63_card_matches_its_recorded_printing_and_shared_statics() {
                     .contains(&aperture_core::tokens::Keyword::Haste)
             );
         }
+    }
+}
+/// Slice 65: Siege-Gang Commander (DMR 136). The catalog text must equal the
+/// recorded printing verbatim — the current wording costs the throw at `{1}{R}`,
+/// not the original Scourge printing's `{2}{R}` — and both printed abilities must
+/// be typed, including the "Sacrifice a Goblin" cost that only this card carries.
+#[test]
+fn slice65_siege_gang_commander_matches_its_recorded_printing() {
+    use aperture_core::ability::{Ability, abilities};
+
+    let cards = slice65_cards();
+    assert_eq!(cards.len(), 1, "slice 65 adds one sourced card");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(def.is_creature() && def.is_goblin(), "{name} is a Goblin");
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name}'s wording never changed between printings"
+        );
+        assert_eq!(record["printings_checked"].as_u64(), Some(18));
+
+        let abilities = abilities(def.id);
+        assert_eq!(abilities.len(), 2, "{name} carries two typed abilities");
+        assert!(
+            abilities
+                .iter()
+                .all(|ability| def.oracle.contains(ability.text())),
+            "{name} prints every typed ability it declares"
+        );
+        let Ability::Activated(activated) = &abilities[1] else {
+            panic!("{name}'s second ability is the activated one");
+        };
+        assert_eq!(
+            activated.cost.sacrifice_creature_subtype,
+            Some("Goblin"),
+            "the cost is a chosen Goblin, not a fixed sacrifice"
+        );
+        assert_eq!(activated.cost.mana, Some("{1}{R}"));
     }
 }
