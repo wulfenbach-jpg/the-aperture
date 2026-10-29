@@ -421,7 +421,7 @@ impl Game {
         self.state.next_timestamp
     }
 
-    fn next_effect_id(&mut self) -> u32 {
+    fn next_effect(&mut self) -> u32 {
         let id = self.state.next_effect;
         self.state.next_effect += 1;
         id
@@ -850,7 +850,8 @@ impl Game {
                 | ContinuousKind::Saddled
                 | ContinuousKind::Equipped { .. }
                 | ContinuousKind::Indestructible
-                | ContinuousKind::MustAttackThisCombat => None,
+                | ContinuousKind::MustAttackThisCombat
+                | ContinuousKind::RingDelayedSacrifice => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -1180,7 +1181,7 @@ impl Game {
             _ => return,
         };
         let timestamp = self.next_timestamp();
-        let id = self.next_effect_id();
+        let id = self.next_effect();
         self.state.effects.push(ContinuousEffect {
             id,
             timestamp,
@@ -1204,7 +1205,7 @@ impl Game {
     fn add_haste_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
         let card = item.card;
         let timestamp = self.next_timestamp();
-        let id = self.next_effect_id();
+        let id = self.next_effect();
         self.state.effects.push(ContinuousEffect {
             id,
             timestamp,
@@ -1228,7 +1229,7 @@ impl Game {
     fn add_trample_grant(&mut self, item: &StackItem, target: ObjectId, events: &mut Vec<Event>) {
         let card = item.card;
         let timestamp = self.next_timestamp();
-        let id = self.next_effect_id();
+        let id = self.next_effect();
         self.state.effects.push(ContinuousEffect {
             id,
             timestamp,
@@ -1264,7 +1265,7 @@ impl Game {
     ) {
         let card = item.card;
         let timestamp = self.next_timestamp();
-        let id = self.next_effect_id();
+        let id = self.next_effect();
         self.state.effects.push(ContinuousEffect {
             id,
             timestamp,
@@ -1302,7 +1303,7 @@ impl Game {
         }
         let card = self.state.object(item.object).card;
         let timestamp = self.next_timestamp();
-        let id = self.next_effect_id();
+        let id = self.next_effect();
         self.state.effects.push(ContinuousEffect {
             id,
             timestamp,
@@ -1717,6 +1718,15 @@ impl Game {
             other.paired_with = None;
         }
         let object = self.state.objects.remove(&id)?;
+        if object.zone == Zone::Battlefield {
+            // CR 701.54a: the designation belongs to that battlefield
+            // incarnation. Every zone change funnels through this detach point.
+            for ring in &mut self.state.rings {
+                if ring.bearer == Some(id) {
+                    ring.bearer = None;
+                }
+            }
+        }
         // A regeneration shield belongs to one battlefield permanent, not to
         // the card identity that survives a zone change. Leaving the
         // battlefield ends it; this is not regeneration or shield consumption.
@@ -2747,6 +2757,17 @@ impl Game {
         if state.try_player(player).is_none() {
             return Err(EngineError::UnknownSeat { seat: player });
         }
+        // Ring/legend answers are checked against the same structural validator
+        // that a loaded save uses, so a forged offer cannot be submitted around
+        // the loader. Other historical pending kinds keep their narrower checks.
+        if matches!(
+            state.pending,
+            Some(Pending::RingTemptation { .. })
+                | Some(Pending::EffectDiscard { .. })
+                | Some(Pending::LegendaryChoice { .. })
+        ) {
+            state.validate()?;
+        }
         if let Some(pending) = &state.pending {
             if pending.player() != player {
                 return Err(EngineError::NotYourDecision {
@@ -3035,9 +3056,13 @@ impl Game {
                     let hand = &state.player(player).hand;
                     check_selection(cards, hand, *count as usize, "discard")
                 }
+                Some(Pending::EffectDiscard { player: p }) if *p == player => {
+                    let hand = &state.player(player).hand;
+                    check_selection(cards, hand, 1, "Ring discard")
+                }
                 _ => Err(EngineError::illegal(
                     "discard",
-                    "no cleanup discard is pending (CR 514.1)",
+                    "no cleanup or Ring effect discard is pending",
                 )),
             },
             Action::ChooseSacrifice { permanent } => match &state.pending {
@@ -4038,7 +4063,12 @@ impl Game {
                     defender_controls_island,
                 )
             {
-                let reason = if attacker
+                let reason = if ring_blocked {
+                    format!(
+                        "{} cannot block the Ring-bearer because its power is greater (CR 701.54a)",
+                        blocker.name()
+                    )
+                } else if attacker
                     .keywords()
                     .contains(&crate::tokens::Keyword::Islandwalk)
                     && defender_controls_island
@@ -5113,6 +5143,34 @@ impl Game {
     /// Record every triggered ability of `card` that fires for `event` on the
     /// object `source`. The trigger is only queued here; it reaches the stack
     /// when a player would receive priority (CR 603.2, 603.3).
+    /// Queue one of The Ring's four level-gated abilities. `source` is the
+    /// Ring-bearer incident that caused the trigger (provenance only); no
+    /// object with card `TheRing` exists. The normal APNAP/stage pipeline puts
+    /// the trigger on the stack.
+    fn queue_ring_trigger(
+        &mut self,
+        controller: PlayerId,
+        ability: u8,
+        source: ObjectId,
+        affected: Option<ObjectId>,
+    ) {
+        let seq = self.state.next_trigger_seq;
+        self.state.next_trigger_seq += 1;
+        self.state.trigger_queue.push(crate::state::TriggerRef {
+            source,
+            card: CardId::TheRing,
+            controller,
+            ability,
+            seq,
+            spell_mana_value: 0,
+            affected,
+            dead_object: None,
+            source_pt_lki: None,
+            search_amount: 0,
+            x_value: 0,
+        });
+    }
+
     fn queue_triggers(
         &mut self,
         source: ObjectId,
@@ -5212,6 +5270,10 @@ impl Game {
     fn stage_triggers(&mut self, mut queue: Vec<TriggerRef>, events: &mut Vec<Event>) {
         while !queue.is_empty() {
             let trigger = queue.remove(0);
+            if trigger.card == CardId::TheRing {
+                self.push_trigger(trigger, Vec::new(), events);
+                continue;
+            }
             if trigger.card == CardId::AyulaQueenAmongBears {
                 self.stage_ayula_trigger(trigger, queue, events);
                 return;
@@ -6006,15 +6068,8 @@ impl Game {
                     self.ring_bearer(*controller) == Some(*id) && self.ring_level(*controller) >= 2
                 })
                 .collect();
-            for (_, controller) in ring_attackers {
-                self.draw(controller, events);
-                if self.state.player(controller).hand_size() > 0 {
-                    self.state.pending = Some(Pending::Discard {
-                        player: controller,
-                        count: 1,
-                    });
-                    self.state.turn.priority = None;
-                }
+            for (bearer, controller) in ring_attackers {
+                self.queue_ring_trigger(controller, 0, bearer, None);
             }
             let qualifying = attackers
                 .iter()
@@ -6098,19 +6153,13 @@ impl Game {
                 self.queue_triggers(attacker, card, controller, TriggerEvent::BecomesBlocked);
             }
         }
-        self.ensure_rings();
         for block in blocks {
             let controller = self.state.try_object(block.attacker).map(|o| o.controller);
             if let Some(controller) = controller
                 && self.ring_bearer(controller) == Some(block.attacker)
                 && self.ring_level(controller) >= 3
-                && !self.state.rings[controller as usize]
-                    .sacrifice_at_end_of_combat
-                    .contains(&block.blocker)
             {
-                self.state.rings[controller as usize]
-                    .sacrifice_at_end_of_combat
-                    .push(block.blocker);
+                self.queue_ring_trigger(controller, 1, block.attacker, Some(block.blocker));
             }
         }
         self.put_triggers(events);
@@ -6364,6 +6413,7 @@ impl Game {
     }
 
     fn apply_discard(&mut self, player: PlayerId, cards: &[ObjectId], events: &mut Vec<Event>) {
+        let effect_discard = matches!(self.state.pending, Some(Pending::EffectDiscard { .. }));
         self.state.pending = None;
         for card in cards {
             let Some(mut object) = self.detach_object(*card) else {
@@ -6380,6 +6430,13 @@ impl Game {
                 player,
                 card: card_id,
             });
+        }
+        if effect_discard {
+            // The Ring's instruction is not the cleanup-step discard. Leave the
+            // resolving ability on the stack; the scheduler resumes its next
+            // effect/cursor and combat continues in the same turn.
+            self.state.turn.priority = None;
+            return;
         }
         self.finish_cleanup(events);
     }
@@ -6649,20 +6706,24 @@ impl Game {
                 self.grant_priority(active, events);
             }
             Step::EndCombat => {
-                let delayed: Vec<ObjectId> = self
+                let delayed: Vec<(ObjectId, PlayerId, ObjectId)> = self
                     .state
-                    .rings
-                    .iter_mut()
-                    .flat_map(|ring| std::mem::take(&mut ring.sacrifice_at_end_of_combat))
+                    .effects
+                    .iter()
+                    .filter(|effect| effect.kind == ContinuousKind::RingDelayedSacrifice)
+                    .map(|effect| {
+                        (
+                            effect.source.unwrap_or(effect.target),
+                            effect.controller,
+                            effect.target,
+                        )
+                    })
                     .collect();
-                for id in delayed {
-                    if self
-                        .state
-                        .try_object(id)
-                        .is_some_and(|o| o.zone == Zone::Battlefield)
-                    {
-                        self.move_to_graveyard(id, events);
-                    }
+                self.state
+                    .effects
+                    .retain(|effect| effect.kind != ContinuousKind::RingDelayedSacrifice);
+                for (source, controller, blocker) in delayed {
+                    self.queue_ring_trigger(controller, 3, source, Some(blocker));
                 }
                 self.state
                     .effects
@@ -6811,6 +6872,19 @@ impl Game {
         };
         self.state.players[p as usize].lost = true;
         self.state.turn.passed &= !(1u8 << p);
+        // Elimination removes the departing seat's battlefield permanents by a
+        // direct zone assignment (not `detach_object`), so clear any Ring link
+        // into that seat's board here as well.
+        for ring in &mut self.state.rings {
+            if ring.bearer.is_some_and(|id| {
+                self.state
+                    .objects
+                    .get(&id)
+                    .is_some_and(|object| object.owner == p || object.controller == p)
+            }) {
+                ring.bearer = None;
+            }
+        }
 
         let owned: Vec<ObjectId> = self
             .state
@@ -7072,15 +7146,22 @@ impl Game {
                 .values()
                 .filter(|o| o.zone == Zone::Battlefield)
             {
-                if self.is_legendary_effective(object) {
-                    groups
-                        .entry((object.controller, object.card.def().name))
-                        .or_default()
-                        .push(object.id);
-                }
+                // CR 704.5j groups every permanent with the same name; the
+                // legendary condition may come from one member (a Ring-bearer)
+                // while the others are ordinary same-name duplicates.
+                groups
+                    .entry((object.controller, object.card.def().name))
+                    .or_default()
+                    .push(object.id);
             }
-            if let Some(((player, _), options)) = groups.into_iter().find(|(_, ids)| ids.len() > 1)
-            {
+            if let Some(((player, _), options)) = groups.into_iter().find(|(_, ids)| {
+                ids.len() > 1
+                    && ids.iter().any(|id| {
+                        self.state
+                            .try_object(*id)
+                            .is_some_and(|object| self.is_legendary_effective(object))
+                    })
+            }) {
                 self.state.pending = Some(Pending::LegendaryChoice { player, options });
                 self.state.turn.priority = None;
                 return;
@@ -7626,6 +7707,28 @@ impl Game {
             return;
         }
 
+        // CR 603.4: the Rangers' "if you don't control a Ring-bearer"
+        // intervening-if is checked again on resolution using the controller
+        // captured at trigger time. The source object may already have left the
+        // battlefield; only the captured seat is read here.
+        if item.cursor == 0
+            && ability
+                .triggered()
+                .is_some_and(|triggered| triggered.event == ability::TriggerEvent::LandEnters)
+            && self.ring_bearer(item.controller).is_some()
+        {
+            events.push(Event::TriggerRemoved {
+                controller: item.controller,
+                card: item.card,
+                reason: "its intervening-if is false on resolution: that seat controls a Ring-bearer (CR 603.4)"
+                    .to_string(),
+            });
+            self.pop_ability(item.object, item.entry);
+            self.state.resolving = None;
+            self.finish_resolution(events);
+            return;
+        }
+
         let effects = ability.effects();
         if item.cursor as usize >= effects.len() {
             events.push(Event::AbilityResolved {
@@ -8038,7 +8141,7 @@ impl Game {
                     let card = self.state.object(item.object).card;
                     let label = shield_target.label(&self.state);
                     let timestamp = self.next_timestamp();
-                    let id = self.next_effect_id();
+                    let id = self.next_effect();
                     self.state.shields.push(DamageShield {
                         id,
                         timestamp,
@@ -8193,7 +8296,7 @@ impl Game {
                     .is_some_and(|object| object.zone == Zone::Battlefield)
                 {
                     let timestamp = self.next_timestamp();
-                    let id = self.next_effect_id();
+                    let id = self.next_effect();
                     self.state.effects.push(ContinuousEffect {
                         id,
                         timestamp,
@@ -8406,6 +8509,45 @@ impl Game {
                     if let Target::Player(p) = target {
                         self.lose_life(p, amount, events);
                     }
+                }
+                false
+            }
+            Effect::DiscardOne => {
+                if self.state.player(controller).hand.is_empty() {
+                    return false;
+                }
+                self.state.pending = Some(Pending::EffectDiscard { player: controller });
+                true
+            }
+            Effect::RingScheduleDelayedSacrifice => {
+                let Some(blocker) = item.affected else {
+                    return false;
+                };
+                self.state.effects.push(crate::layer::ContinuousEffect {
+                    id: self.state.next_effect,
+                    timestamp: self.state.next_timestamp,
+                    source: Some(item.object),
+                    card: CardId::TheRing,
+                    controller,
+                    layer: Layer::Ability,
+                    target: blocker,
+                    kind: ContinuousKind::RingDelayedSacrifice,
+                    duration: EffectDuration::UntilEndOfTurn,
+                });
+                self.state.next_effect += 1;
+                self.state.next_timestamp += 1;
+                false
+            }
+            Effect::RingDelayedSacrifice => {
+                let Some(blocker) = item.affected else {
+                    return false;
+                };
+                if self
+                    .state
+                    .try_object(blocker)
+                    .is_some_and(|object| object.zone == Zone::Battlefield)
+                {
+                    self.move_to_graveyard(blocker, events);
                 }
                 false
             }
@@ -9014,7 +9156,7 @@ impl Game {
                         && effect.source == Some(item.object))
                 });
                 let timestamp = self.next_timestamp();
-                let id = self.next_effect_id();
+                let id = self.next_effect();
                 self.state.effects.push(ContinuousEffect {
                     id,
                     timestamp,
@@ -9160,7 +9302,7 @@ impl Game {
                         .is_some_and(|object| object.zone == Zone::Battlefield);
                 if granted {
                     let timestamp = self.next_timestamp();
-                    let id = self.next_effect_id();
+                    let id = self.next_effect();
                     self.state.effects.push(ContinuousEffect {
                         id,
                         timestamp,
@@ -9173,7 +9315,7 @@ impl Game {
                         duration: EffectDuration::UntilEndOfTurn,
                     });
                     let types = self.graveyard_card_type_count(controller);
-                    let id = self.next_effect_id();
+                    let id = self.next_effect();
                     self.state.effects.push(ContinuousEffect {
                         id,
                         timestamp,
@@ -9188,7 +9330,7 @@ impl Game {
                         },
                         duration: EffectDuration::UntilEndOfTurn,
                     });
-                    let id = self.next_effect_id();
+                    let id = self.next_effect();
                     self.state.effects.push(ContinuousEffect {
                         id,
                         timestamp,
@@ -9254,7 +9396,7 @@ impl Game {
                         .is_some_and(|object| object.zone == Zone::Battlefield)
                 {
                     let timestamp = self.next_timestamp();
-                    let id = self.next_effect_id();
+                    let id = self.next_effect();
                     self.state.effects.push(ContinuousEffect {
                         id,
                         timestamp,
@@ -9387,7 +9529,7 @@ impl Game {
                     (source.power(), source.toughness())
                 });
                 let timestamp = self.next_timestamp();
-                let id = self.next_effect_id();
+                let id = self.next_effect();
                 self.state.effects.push(ContinuousEffect {
                     id,
                     timestamp,
@@ -10041,20 +10183,6 @@ impl Game {
                     let life = self.state.players[defender as usize].life;
                     let card = self.state.object(source).card;
                     let source_controller = self.state.object(source).controller;
-                    if self.ring_bearer(source_controller) == Some(source)
-                        && self.ring_level(source_controller) >= 4
-                    {
-                        for opponent in 0..self.state.seat_count() as PlayerId {
-                            if opponent != source_controller && self.state.is_live(opponent) {
-                                self.state.players[opponent as usize].life -= 3;
-                                events.push(Event::LifeChange {
-                                    player: opponent,
-                                    delta: -3,
-                                    life: self.state.player(opponent).life,
-                                });
-                            }
-                        }
-                    }
                     events.push(Event::CombatDamage {
                         attacker: source,
                         attacker_card: card,
@@ -10071,6 +10199,11 @@ impl Game {
                         delta: -(dealt as i32),
                         life,
                     });
+                    if self.ring_bearer(source_controller) == Some(source)
+                        && self.ring_level(source_controller) >= 4
+                    {
+                        self.queue_ring_trigger(source_controller, 2, source, None);
+                    }
                     // CR 903.10a: only combat damage actually dealt to a player
                     // by a commander credits the ledger, keyed by the stable
                     // CommanderId + recipient. Control changes and fresh zone
@@ -10566,6 +10699,13 @@ impl Game {
                 }
                 out
             }
+            Pending::EffectDiscard { player } => vec![LegalAction {
+                action: Action::Discard {
+                    cards: self.sample_discard(*player, 1),
+                },
+                label: "Discard a card (The Ring)".to_string(),
+                rules: vec!["701.54a"],
+            }],
             Pending::LegendaryChoice { options, .. } => options
                 .iter()
                 .map(|id| LegalAction {

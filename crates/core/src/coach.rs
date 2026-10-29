@@ -402,6 +402,7 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 OrderMode::Surveil => vec!["701.25a"],
             },
             Pending::Discard { .. } => vec!["514.1"],
+            Pending::EffectDiscard { .. } => vec!["701.54a"],
             Pending::CombatDamageAssignment { .. } => vec!["510.1", "509.1h"],
             Pending::ApnapSacrifice { .. } => vec!["101.4", "701.21a"],
             Pending::ApnapReveal { .. } => vec!["101.4", "701.9a"],

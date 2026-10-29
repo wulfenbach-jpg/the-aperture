@@ -176,6 +176,10 @@ pub enum ContinuousKind {
     Indestructible,
     /// CR 508.1a: this creature attacks the stored controller this combat if able.
     MustAttackThisCombat,
+    /// CR 603.7: the Ring's delayed sacrifice marker. It is not a
+    /// characteristic-changing continuous effect; EndCombat turns it into a
+    /// real The Ring triggered ability.
+    RingDelayedSacrifice,
     /// CR 613.1d: the creature's subtype line becomes this one, replacing the
     /// printed subtypes for as long as the effect applies. Type-changing
     /// effects apply before every power/toughness layer, so a pump in the same
@@ -229,6 +233,9 @@ impl ContinuousEffect {
             }
             ContinuousKind::Indestructible => "indestructible until end of turn".to_string(),
             ContinuousKind::MustAttackThisCombat => "must attack this combat".to_string(),
+            ContinuousKind::RingDelayedSacrifice => {
+                "Ring delayed sacrifice at end of combat".to_string()
+            }
             ContinuousKind::GrantsHaste => {
                 format!("haste until end of turn ({})", self.layer.rules())
             }

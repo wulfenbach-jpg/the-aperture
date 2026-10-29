@@ -935,6 +935,7 @@ fn pending_name(pending: Option<&Pending>) -> &'static str {
         Some(Pending::SearchLibrary { .. }) => "SearchLibrary",
         Some(Pending::RingTemptation { .. }) => "RingTemptation",
         Some(Pending::LegendaryChoice { .. }) => "LegendaryChoice",
+        Some(Pending::EffectDiscard { .. }) => "EffectDiscard",
         Some(Pending::CombatDamageAssignment { .. }) => "CombatDamageAssignment",
     }
 }

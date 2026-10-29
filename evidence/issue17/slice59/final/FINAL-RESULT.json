@@ -1,0 +1,72 @@
+{
+  "status": "PARTIAL #17 - Ring repairs complete in increment; full issue gate open",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "supersedes": [
+    "evidence/issue17/slice59/RESULT.json",
+    "evidence/issue17/SLICE59-HUMAN-CHECKPOINT.md",
+    "evidence/issue17/slice59/native/demo-journey.json"
+  ],
+  "base_commit": "c6b62eb+cc5cd00 initial local heads (not published)",
+  "repair_commit": "final local head in final receipt",
+  "ring_semantics": {
+    "level1": "effective legendary + cannot be blocked by greater power",
+    "level2": "attack trigger draws, then distinct resumable EffectDiscard",
+    "level3": "becomes-blocked trigger resolves to delayed EndCombat stack trigger",
+    "level4": "positive combat damage only; each live opponent loses 3 on trigger resolution after SBAs"
+  },
+  "counts": {
+    "catalog": 165,
+    "supported": 152,
+    "missing": 307,
+    "ayula_missing": 1
+  },
+  "tests": {
+    "native_repairs": "5 passed",
+    "ring_repairs": "9 passed",
+    "slice59": "3 passed",
+    "card_printings": "19 passed",
+    "catalog_pool": "5 passed",
+    "slice15": "2 passed",
+    "commander_combat": "43 passed",
+    "replay_digest": "6 passed"
+  },
+  "gates": {
+    "fmt": 0,
+    "clippy_workspace_all_targets_Dwarnings": 0,
+    "release_workspace_locked": 0,
+    "focused": 0
+  },
+  "journey": {
+    "path": "evidence/issue17/slice59/final/native/demo-journey.json",
+    "package": "decks/package-slice59.txt",
+    "seats": 4,
+    "life": 40,
+    "seed": 2323,
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1749,
+    "turns": 44,
+    "digest": "d335cb52958489a61eee88fc8eb7dc49068cc2b100319a4f184e371a8c8a321e",
+    "snapshot_sha256": "0607cfa72b425883ac636d44c511c9d63f781d677a08e02813b80c1c67c9f4c0",
+    "rangers_casts": 8,
+    "ring_choices": 3,
+    "ring_levels": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "combat_damage_events": 65,
+    "cli_replay_matches": true,
+    "non_sandbox_save_loads": true,
+    "save_roundtrip_digest": true
+  },
+  "limitations": [
+    "Emblem is not a physical zone object; RingState is the persisted emblem and trigger source is event provenance.",
+    "No full independent Ring control-change/replacement interaction set.",
+    "40-card journey is not 100-card starter certification.",
+    "No full workspace test matrix; focused suites plus fmt/clippy/release only.",
+    "Reporter pointer still targets old #20; ops files untouched."
+  ]
+}

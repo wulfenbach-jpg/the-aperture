@@ -184,6 +184,15 @@ pub enum Effect {
     CreateGoblinTokensForEachGoblin,
     /// Create one 2/2 blue Drake creature token with flying (Talrand).
     CreateDrakeToken,
+    /// CR 701.54a: the Ring's attack trigger draws a card and then its
+    /// controller discards one. The discard is a distinct resumable pending
+    /// choice, never the cleanup-step discard.
+    DiscardOne,
+    /// CR 701.54a: the Ring's becomes-blocked trigger creates a delayed
+    /// EndCombat sacrifice of the captured blocker.
+    RingScheduleDelayedSacrifice,
+    /// CR 603.7: execute the delayed sacrifice captured on The Ring trigger.
+    RingDelayedSacrifice,
     /// Deal N damage to each opponent of the ability's controller, excluding
     /// the controller and eliminated seats (Guttersnipe).
     DamageEachOpponent(u8),
@@ -452,6 +461,13 @@ impl Effect {
     pub fn describe(self) -> String {
         match self {
             Effect::Draw(n) => format!("draw {n}"),
+            Effect::DiscardOne => "discard a card".to_string(),
+            Effect::RingScheduleDelayedSacrifice => {
+                "sacrifice the blocking creature at end of combat".to_string()
+            }
+            Effect::RingDelayedSacrifice => {
+                "sacrifice the captured blocking creature at end of combat".to_string()
+            }
             Effect::Scry(n) => format!("scry {n}"),
             Effect::Surveil(n) => format!("surveil {n}"),
             Effect::Damage(n) => format!("deal {n} damage to the target"),
@@ -859,6 +875,10 @@ impl CardDef {
 /// Card identity inside the supported pool.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum CardId {
+    /// Engine-only The Ring emblem. It is not a catalog card, token, permanent
+    /// or importable card; its definition and four triggered abilities exist so
+    /// the Ring's abilities use the normal trigger/stack pipeline.
+    TheRing,
     Island,
     Mountain,
     Forest,

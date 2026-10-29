@@ -139,6 +139,12 @@ pub enum Pending {
         to_top: Vec<ObjectId>,
         mode: OrderMode,
     },
+    /// The Ring's own draw-then-discard instruction. Distinct from the
+    /// cleanup-step discard so its answer resumes the resolving ability instead
+    /// of ending the turn.
+    EffectDiscard {
+        player: PlayerId,
+    },
     Discard {
         player: PlayerId,
         count: u8,
@@ -458,6 +464,7 @@ impl Pending {
             | Pending::TriggerMode { player, .. }
             | Pending::RingTemptation { player, .. }
             | Pending::LegendaryChoice { player, .. }
+            | Pending::EffectDiscard { player }
             | Pending::TopCardChoice { player, .. }
             | Pending::SearchLibrary { player, .. } => *player,
         }
@@ -501,6 +508,9 @@ impl Pending {
                         OrderMode::Surveil => "701.25a",
                     }
                 )
+            }
+            Pending::EffectDiscard { player } => {
+                format!("P{player}: discard a card (The Ring's attack trigger)")
             }
             Pending::Discard { player, count } => {
                 format!("P{player}: discard {count} card(s) down to maximum hand size (CR 514.1)")
@@ -1283,7 +1293,8 @@ impl GameState {
                 | Pending::BottomCards { .. }
                 | Pending::DeclareAttackers { .. }
                 | Pending::DeclareBlockers { .. }
-                | Pending::Discard { .. } => false,
+                | Pending::Discard { .. }
+                | Pending::EffectDiscard { .. } => false,
             };
             if hit {
                 return true;
@@ -1352,7 +1363,144 @@ impl GameState {
                 ),
             });
         }
+        // A Ring projection is either absent (never materialized) or exactly one
+        // canonical slot per seat. Validate every stored reference before any
+        // decision code indexes it.
+        if !self.rings.is_empty() {
+            if self.rings.len() != n {
+                return Err(EngineError::InvalidState {
+                    reason: "Ring state must be empty or have exactly one slot per seat"
+                        .to_string(),
+                });
+            }
+            let mut bearers: Vec<ObjectId> = Vec::new();
+            for (seat, ring) in self.rings.iter().enumerate() {
+                if ring.temptations > 4 {
+                    return Err(EngineError::InvalidState {
+                        reason: format!("P{seat} Ring level exceeds 4"),
+                    });
+                }
+                if let Some(bearer) = ring.bearer {
+                    if ring.temptations == 0 {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("P{seat} has a Ring-bearer at level 0"),
+                        });
+                    }
+                    if bearers.contains(&bearer) {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("Ring-bearer {bearer} belongs to two seats"),
+                        });
+                    }
+                    let Some(object) = self.objects.get(&bearer) else {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("Ring-bearer {bearer} is missing"),
+                        });
+                    };
+                    if object.zone != Zone::Battlefield || object.controller != seat as PlayerId {
+                        return Err(EngineError::InvalidState {
+                            reason: format!("Ring-bearer {bearer} is not on P{seat}'s battlefield"),
+                        });
+                    }
+                    bearers.push(bearer);
+                }
+            }
+        }
         if let Some(pending) = &self.pending {
+            let ring_candidates = |player: PlayerId| -> Vec<ObjectId> {
+                let mut ids: Vec<ObjectId> = self
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == player
+                            && object.card.def().is_creature()
+                    })
+                    .map(|object| object.id)
+                    .collect();
+                ids.sort_unstable();
+                ids
+            };
+            match pending {
+                Pending::RingTemptation { player, eligible } => {
+                    let expected = ring_candidates(*player);
+                    let mut actual = eligible.clone();
+                    actual.sort_unstable();
+                    let unique = {
+                        let mut ids = actual.clone();
+                        ids.dedup();
+                        ids.len() == actual.len()
+                    };
+                    let top_ok = self.stack.last().is_some_and(|item| {
+                        item.card == CardId::DunedainRangers
+                            && matches!(item.entry, StackEntry::Triggered { .. })
+                            && item.controller == *player
+                    });
+                    if !unique || actual != expected || !top_ok {
+                        return Err(EngineError::InvalidState {
+                            reason: "Ring temptation candidates are not the resolving Rangers' full live controlled creature set"
+                                .to_string(),
+                        });
+                    }
+                }
+                Pending::EffectDiscard { player } => {
+                    let top_ok = self.stack.last().is_some_and(|item| {
+                        item.card == CardId::TheRing
+                            && matches!(item.entry, StackEntry::Triggered { .. })
+                            && item.controller == *player
+                    });
+                    if !top_ok {
+                        return Err(EngineError::InvalidState {
+                            reason: "effect discard is not bound to The Ring trigger".to_string(),
+                        });
+                    }
+                }
+                Pending::LegendaryChoice { player, options } => {
+                    let mut seen: Vec<ObjectId> = Vec::new();
+                    let mut names: Vec<&'static str> = Vec::new();
+                    for id in options {
+                        if seen.contains(id) {
+                            return Err(EngineError::InvalidState {
+                                reason: "legendary choice repeats an option".to_string(),
+                            });
+                        }
+                        let Some(object) = self.objects.get(id) else {
+                            return Err(EngineError::InvalidState {
+                                reason: "legendary choice references a missing object".to_string(),
+                            });
+                        };
+                        if object.zone != Zone::Battlefield || !self.is_live(object.controller) {
+                            return Err(EngineError::InvalidState {
+                                reason:
+                                    "legendary choice option is not a live battlefield permanent"
+                                        .to_string(),
+                            });
+                        }
+                        // The SBA owner may be the Ring-bearer's controller; every
+                        // option must share one card name. A Ring-bearer option is
+                        // effective-legendary through its own controller's Ring.
+                        if object.controller != *player
+                            && self
+                                .rings
+                                .get(object.controller as usize)
+                                .is_none_or(|ring| ring.bearer != Some(*id))
+                        {
+                            return Err(EngineError::InvalidState {
+                                reason: "legendary choice option is not controlled by the seat or its Ring-bearer"
+                                    .to_string(),
+                            });
+                        }
+                        seen.push(*id);
+                        names.push(object.card.def().name);
+                    }
+                    if names.len() < 2 || names.iter().any(|name| *name != names[0]) {
+                        return Err(EngineError::InvalidState {
+                            reason: "legendary choice is not a same-name legendary group"
+                                .to_string(),
+                        });
+                    }
+                }
+                _ => {}
+            }
             if self.turn.priority.is_some() {
                 return Err(EngineError::InvalidState {
                     reason: "a pending choice cannot coexist with a priority holder (CR 608.2d)"

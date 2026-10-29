@@ -706,6 +706,25 @@ fn reconstruct(
         defender: real_state.turn.defender,
     };
 
+    // Public Ring projection only: level and bearer are announced state, not
+    // hidden information. No policy, ranking or budget reads them. The search
+    // world can only carry object ids it copied into its public ledger; a bearer
+    // outside that ledger is not representable as a battlefield object, so the
+    // projection keeps the level and omits that link.
+    let rings: Vec<aperture_core::state::RingState> = view
+        .rings
+        .iter()
+        .map(|ring| aperture_core::state::RingState {
+            temptations: ring.temptations,
+            bearer: ring.bearer.filter(|id| {
+                objects
+                    .get(id)
+                    .is_some_and(|object| object.zone == Zone::Battlefield)
+            }),
+            sacrifice_at_end_of_combat: Vec::new(),
+        })
+        .collect();
+
     Ok(GameState {
         seed,
         first_player: real_state.first_player,
@@ -717,7 +736,7 @@ fn reconstruct(
         draw_replacements: real_state.draw_replacements.clone(),
         nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
         commanders: real_state.commanders.clone(),
-        rings: Vec::new(),
+        rings,
         profile: real_state.profile,
         commander_damage: real_state.commander_damage.clone(),
         retired_commanders: real_state.retired_commanders.clone(),

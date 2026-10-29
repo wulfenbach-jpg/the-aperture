@@ -75,6 +75,10 @@ pub enum TriggerEvent {
     /// property of the dying creature's combat state at that moment (CR 506.4,
     /// 508.1, 509.1) and not of this source.
     AnotherCreatureDies,
+    /// CR 603.6a: a Ring-bearer dealt combat damage to a player.
+    RingCombatDamage,
+    /// CR 603.7: the Ring's delayed sacrifice trigger at end of combat.
+    EndOfCombat,
 }
 
 impl TriggerEvent {
@@ -95,6 +99,8 @@ impl TriggerEvent {
             TriggerEvent::CreatureSpellCast => "you cast a creature spell",
             TriggerEvent::BeginningOfCombat => "at the beginning of combat on your turn",
             TriggerEvent::AnotherCreatureDies => "another creature dies",
+            TriggerEvent::RingCombatDamage => "your Ring-bearer deals combat damage to a player",
+            TriggerEvent::EndOfCombat => "at end of combat",
         }
     }
 }
@@ -238,6 +244,38 @@ pub struct TriggeredAbility {
     pub target: TargetSpec,
     pub effects: &'static [Effect],
 }
+
+/// The Ring emblem's four level-gated triggered abilities, in level order.
+static THE_RING: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever your Ring-bearer attacks, draw a card, then discard a card.",
+        event: TriggerEvent::Attacks,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::Draw(1), Effect::DiscardOne],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at end of combat.",
+        event: TriggerEvent::BecomesBlocked,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::RingScheduleDelayedSacrifice],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.",
+        event: TriggerEvent::RingCombatDamage,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::LoseLifeEachOpponent(3)],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "At end of combat, sacrifice the creature that blocked your Ring-bearer.",
+        event: TriggerEvent::EndOfCombat,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::RingDelayedSacrifice],
+    }),
+];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Ability {
@@ -1081,6 +1119,7 @@ const DRUIDS_FAMILIAR: &[Ability] = &[
 /// Every ability the rules layer knows for a card, in printed order.
 pub fn abilities(card: CardId) -> &'static [Ability] {
     match card {
+        CardId::TheRing => THE_RING,
         CardId::SpiderHamPeterPorker => SPIDER_HAM,
         CardId::FoodToken => FOOD_TOKEN,
         CardId::ClueToken => CLUE_TOKEN,

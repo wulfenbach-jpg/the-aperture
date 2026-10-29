@@ -1524,12 +1524,38 @@ pub static TOKENS: [CardDef; 8] = [
 ];
 
 pub fn def(id: CardId) -> &'static CardDef {
+    if id == CardId::TheRing {
+        return &THE_RING_DEF;
+    }
     CARDS
         .iter()
         .chain(TOKENS.iter())
         .find(|c| c.id == id)
         .unwrap_or_else(|| crate::tokens::def(id))
 }
+
+/// Engine-only The Ring emblem definition. Deliberately not in `CARDS`,
+/// `TOKENS`, `all`, `by_name` or `pool_size`; it can never be imported or enter
+/// a library, and no object with this card exists on the battlefield.
+pub const THE_RING_DEF: CardDef = CardDef {
+    id: CardId::TheRing,
+    name: "The Ring",
+    cost: None,
+    kinds: &[],
+    basic_mana: None,
+    artifact_mana: None,
+    type_line: "Emblem — Ring",
+    colors: &[],
+    flying: false,
+    defender: false,
+    flash: false,
+    trample: false,
+    islandwalk: false,
+    power: None,
+    toughness: None,
+    oracle: "Your Ring-bearer is legendary and can't be blocked by creatures with greater power.\nWhenever your Ring-bearer attacks, draw a card, then discard a card.\nWhenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at end of combat.\nWhenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.",
+    spell: None,
+};
 
 pub fn by_name(name: &str) -> Option<CardId> {
     let needle = name.trim();

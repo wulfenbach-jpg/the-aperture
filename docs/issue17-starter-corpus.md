@@ -1095,3 +1095,60 @@ unfinished work, not implicit support from these save repairs.
 
 ## Slice 59: Dúnedain Rangers and The Ring
 Dúnedain Rangers (`{3}{G}` Human Ranger 4/4) is sourced in `fixtures/starter-corpus/slice59-sourced.json` (LTR 159, immutable 630e1e36…, oracle 7de2a364…, retrieved 2026-10-29T04:29:30Z). Its landfall trigger checks at queue and resolution that the controller has no Ring-bearer. The Ring state tracks temptation count and bearer per seat: level 1 makes the bearer legendary and blocks greater-power blockers; level 2 adds attack draw-then-discard; level 3 schedules each blocker's sacrifice at end of combat; level 4 makes each opponent lose 3 when the bearer deals combat damage to a player. The bearer designation clears on battlefield departure/control loss; temptation with no creature still increments and creates no bearer. This is a bounded prototype of the official emblem abilities, not a claim of generic emblem support.
+
+## Slice 59: Dúnedain Rangers and a real trigger/stack Ring
+
+**Card.** Dúnedain Rangers, LTR 159, `{3}{G}`, Human Ranger 4/4. Source and oracle text
+were fetched from Scryfall and recorded in `fixtures/starter-corpus/slice59-sourced.json`.
+Its landfall instruction is represented by `Effect::RingTempts` behind a
+`NoRingBearer` intervening-if. The condition is evaluated when the landfall trigger is
+queued and again on resolution, using the controller captured on the trigger, so a source
+that has left the battlefield does not lose the trigger. Two landfall triggers queued with
+no Ring-bearer both reach the stack; after the first resolution assigns a bearer, the
+second fails its intervening-if and is removed.
+
+**The Ring representation.** `CardId::TheRing` is an engine-only emblem definition, not a
+token, permanent, importable card, commander, library card or member of `catalog::all` /
+`by_name` / `pool_size`. `catalog::def` serves its canonical metadata so the normal stack
+machinery can resolve its four typed triggered abilities:
+
+1. Ring level 1: the Ring-bearer is effectively legendary and cannot be blocked by a
+   creature with greater power. The legend SBA groups all same-name permanents when any
+   member is effectively legendary, and only the group's controller answers.
+2. Ring level 2: whenever the Ring-bearer attacks, the attack trigger draws a card, then
+   asks for a discard through the distinct `Pending::EffectDiscard`. That answer resumes
+   the resolving The Ring ability; it is not the cleanup-step discard and cannot end combat.
+3. Ring level 3: becoming blocked queues a The Ring trigger; its resolution records a
+   delayed marker for the captured blocker. EndCombat turns that marker into a real The
+   Ring delayed stack trigger. A bounced and recast blocker has a new ObjectId, so the old
+   marker cannot sacrifice the new incarnation.
+4. Ring level 4: only positive combat damage to a player queues the life-loss trigger.
+   Fog/prevention therefore does not trigger it. The three-life loss is applied when the
+   trigger resolves, after the combat-damage SBAs, to every live opponent.
+
+`RingState` remains the per-seat emblem state (`temptations` and `bearer`). Ordinary
+blocking no longer materializes an empty Ring vector; only an actual temptation creates
+the exactly-seat-count projection. Loader validation and both direct Ring/legend answer
+validators require either an empty vector or exactly one slot per seat, levels 0–4, a
+bearer on that controller's battlefield with level > 0, a unique bearer, and exact
+same-name legend options. The temptation offer must equal the resolving Rangers'
+full live controlled creature set; a foreign, short or duplicated offer is refused.
+The Ring's abilities are not abilities of the Ring-bearer, so the shared no-abilities
+predicate still treats a vanilla bearer as vanilla.
+
+**PlayerView** now carries the public `rings` projection (level and bearer id). AI search
+reconstruction copies that public projection; it does not read hidden state and does not
+change policy, ranking, model or budget. A bearer id that cannot be represented in the
+search world's copied public object ledger is omitted from the search projection only.
+
+**Limitations.** The emblem is not a distinct physical object in a zone: the bearer id on
+a trigger is combat-event provenance, and `RingState` is the persisted emblem. There is no
+full independent rules implementation of all Ring-bearer replacement/control-change
+interactions. The final evidence journey is a 40-card package, not a 100-card starter
+certification. The corpus remains 165 catalog / 459 union = 152 supported + 307 missing,
+Ayula one name short, and only the Jasmine list is certified (1 of 8).
+
+**Evidence.** `crates/core/tests/issue17_slice59_repairs.rs` (native five), 
+`crates/core/tests/issue17_slice59_ring_repairs.rs` and
+`crates/core/tests/issue17_slice59.rs`; final logs and journey under
+`evidence/issue17/slice59/final/`.

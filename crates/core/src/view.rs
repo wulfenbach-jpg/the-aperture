@@ -94,6 +94,13 @@ pub struct CommanderView {
     pub tax: u32,
 }
 
+/// Public per-seat Ring level and bearer (CR 701.54).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct RingView {
+    pub temptations: u8,
+    pub bearer: Option<ObjectId>,
+}
+
 /// Public cumulative commander-damage row (CR 903.10a); commander identities
 /// and damage totals are public information.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -138,6 +145,9 @@ pub struct PlayerView {
     pub commanders: Vec<CommanderView>,
     /// Public cumulative commander combat damage (CR 903.10a).
     pub commander_damage: Vec<CommanderDamageView>,
+    /// Public per-seat Ring level and bearer (CR 701.54). Empty until a Ring
+    /// temptation first materializes the state.
+    pub rings: Vec<RingView>,
     pub own_library_count: usize,
     pub own_life: i32,
     /// Whether the viewing seat has left the game.
@@ -755,6 +765,15 @@ impl Game {
                     amount: entry.amount,
                 })
                 .collect(),
+            rings: self
+                .state
+                .rings
+                .iter()
+                .map(|ring| RingView {
+                    temptations: ring.temptations,
+                    bearer: ring.bearer,
+                })
+                .collect(),
             own_library_count: me.library.len(),
             own_life: me.life,
             own_eliminated: me.lost,
@@ -833,7 +852,8 @@ impl Game {
                 | crate::state::Pending::TriggerMode { .. }
                 | crate::state::Pending::TopCardChoice { .. }
                 | crate::state::Pending::SearchLibrary { .. }
-                | crate::state::Pending::RingTemptation { .. } => PendingKind::TriggerChoice,
+                | crate::state::Pending::RingTemptation { .. }
+                | crate::state::Pending::EffectDiscard { .. } => PendingKind::TriggerChoice,
                 crate::state::Pending::LegendaryChoice { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {

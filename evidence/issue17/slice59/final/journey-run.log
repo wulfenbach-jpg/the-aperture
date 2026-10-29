@@ -1,0 +1,39 @@
+{
+  "casts": {
+    "Centaur Courser": 8,
+    "Craw Wurm": 3,
+    "Dúnedain Rangers": 8,
+    "Grizzly Bears": 6
+  },
+  "combat_damage_events": 65,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice59.txt",
+  "digest": "d335cb52958489a61eee88fc8eb7dc49068cc2b100319a4f184e371a8c8a321e",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 4458,
+  "ring_bearers": 0,
+  "ring_choices": 3,
+  "ring_levels": [
+    1,
+    1,
+    0,
+    1
+  ],
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "0607cfa72b425883ac636d44c511c9d63f781d677a08e02813b80c1c67c9f4c0",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+  "status": "terminal",
+  "steps": 1749,
+  "turns": 44
+}

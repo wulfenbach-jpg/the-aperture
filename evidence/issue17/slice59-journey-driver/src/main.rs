@@ -6,6 +6,7 @@
 //! It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
 use aperture_core::state::Step;
+use aperture_core::ids::ObjectId;
 use aperture_core::view::PendingKind;
 use aperture_core::{
     Action, AiSettings, CardId, CommanderSetup, DeckList, Event, Game, Replay, ReplayStep,
@@ -38,6 +39,7 @@ fn main() {
     .unwrap();
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
+    let mut ring_choices = 0usize;
 
     // Public-state instrumentation only; never fed to the projected policy.
     while !game.state.is_over() && steps < 20000 {
@@ -122,11 +124,23 @@ fn main() {
             }
         });
         let action = demo_action.unwrap_or_else(|| baseline.decide(&view).action);
+        if matches!(action, Action::ChooseRingBearer { .. }) {
+            ring_choices += 1;
+        }
         let revision = game.revision();
         let decision = game.decision();
-        let accepted = game
-            .submit_action(player, action.clone())
-            .expect("all actions must be accepted; no rejection fallback");
+        let accepted = match game.submit_action(player, action.clone()) {
+            Ok(events) => events,
+            Err(error) => {
+                eprintln!(
+                    "REJECT player={player} action={action:?} step={:?} rings={:?} objects={:?}",
+                    game.state.turn.step,
+                    game.state.rings,
+                    game.state.objects.iter().filter(|(id, _)| **id == ObjectId(1)).map(|(id, o)| (*id, o.card, o.zone, o.controller)).collect::<Vec<_>>()
+                );
+                panic!("all actions must be accepted; no rejection fallback: {error:?}");
+            }
+        };
         events.extend(accepted);
         replay.record(ReplayStep {
             player,
@@ -147,13 +161,17 @@ fn main() {
     let (replayed, replay_events) = replay.run().unwrap();
     assert_eq!(replayed.digest(), game.digest());
     let save = SessionSave::capture(&game, replay.clone(), Vec::new(), false);
+    assert!(!save.sandbox_modified, "journey save is not sandbox-modified");
     let save_text = save.to_json();
+    let loaded_save = SessionSave::from_json(&save_text).expect("journey save loads");
+    let loaded_game = Game::from_state(loaded_save.game).expect("journey state restores");
+    assert_eq!(loaded_game.digest(), game.digest(), "save roundtrip digest");
     let loaded = SessionSave::from_json(&save_text).expect("fresh save reloads");
     assert_eq!(
         loaded.game, game.state,
         "fresh save preserves the exact state"
     );
-    let out = root.join("evidence/issue17/slice59/native");
+    let out = root.join("evidence/issue17/slice59/final/native");
     std::fs::create_dir_all(&out).unwrap();
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 
@@ -162,7 +180,8 @@ fn main() {
     assert!(casts.get("Dúnedain Rangers").copied().unwrap_or(0) > 0, "Rangers must be cast");
     let combat = events.iter().filter(|e| matches!(e, Event::CombatDamage { .. })).count();
     let ring_bearers = game.state.rings.iter().filter(|r| r.bearer.is_some()).count();
-    assert!(ring_bearers > 0, "the Ring must have assigned a bearer");
+    let ring_levels: Vec<u8> = game.state.rings.iter().map(|r| r.temptations).collect();
+    assert!(ring_choices > 0, "the Ring temptation choice must be answered");
     assert!(combat > 0, "combat must occur");
     std::fs::write(
         out.join("demo-replay.json"),
@@ -180,6 +199,8 @@ fn main() {
         "replay_events": replay_events.len(), "replay_digest_matches": true,
         "casts": casts,
         "ring_bearers": ring_bearers,
+        "ring_choices": ring_choices,
+        "ring_levels": ring_levels,
         "combat_damage_events": combat,
         "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
         "outcome": game.state.outcome,

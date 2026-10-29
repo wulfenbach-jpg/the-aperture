@@ -287,7 +287,9 @@ pub fn run_until(
                     })
                     .map(|legal| legal.action)
                     .expect("a triggered-ability option is offered"),
-                Pending::BottomCards { .. } | Pending::Discard { .. } => game
+                Pending::BottomCards { .. }
+                | Pending::Discard { .. }
+                | Pending::EffectDiscard { .. } => game
                     .legal_actions()
                     .into_iter()
                     .find(|a| {

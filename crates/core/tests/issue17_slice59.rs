@@ -86,7 +86,7 @@ fn real_cast_landfall_tempts_and_chooses_ring_bearer() {
 }
 
 #[test]
-fn ring_level_two_and_four_apply_to_the_actual_bearer() {
+fn ring_level_two_draw_and_discard_resumes_without_ending_combat() {
     for level in [2u8] {
         let mut g = fixture(5900 + level as u64)
             .battlefield(P0, &[CardId::GrizzlyBears])
@@ -100,8 +100,8 @@ fn ring_level_two_and_four_apply_to_the_actual_bearer() {
                 temptations: level,
                 bearer: Some(bear),
                 ..Default::default()
-            };
-            2
+            },
+            aperture_core::state::RingState::default(),
         ];
         let mut log = Vec::new();
         assert!(run_until(
@@ -127,11 +127,21 @@ fn ring_level_two_and_four_apply_to_the_actual_bearer() {
                 submit_ok(&mut g, p, Action::Pass);
             }
             assert!(
-                matches!(g.state.pending, Some(Pending::Discard { count: 1, .. })),
-                "level 2 draws then discards"
+                matches!(g.state.pending, Some(Pending::EffectDiscard { player: P0 })),
+                "level 2 draws then discards through its own resumable pending"
             );
             let cards: Vec<_> = g.state.player(P0).hand.iter().copied().take(1).collect();
             submit_ok(&mut g, P0, Action::Discard { cards });
+            assert_eq!(
+                g.state.turn.step,
+                Step::DeclareAttackers,
+                "answering the Ring discard must not end combat or the turn"
+            );
+            assert!(
+                g.state.stack.is_empty(),
+                "the Ring trigger finished resolving"
+            );
+            assert_eq!(g.state.turn.number, 1, "still the same turn");
         }
     }
 }

@@ -311,6 +311,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::PutTwoCountersOnEachCreatureYouControl
                 | Effect::UrsineCombatTrigger
                 | Effect::RingTempts
+                | Effect::DiscardOne
+                | Effect::RingScheduleDelayedSacrifice
+                | Effect::RingDelayedSacrifice
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)
                 | Effect::DrawIfControlsBears { .. }
