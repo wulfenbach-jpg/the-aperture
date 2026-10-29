@@ -131,6 +131,12 @@ pub enum Action {
         card: ObjectId,
     },
     SearchLibraryDone,
+    ChooseRingBearer {
+        bearer: Option<ObjectId>,
+    },
+    ChooseLegendaryKeep {
+        permanent: ObjectId,
+    },
     SaddleMount {
         source: ObjectId,
         creatures: Vec<ObjectId>,
@@ -206,6 +212,8 @@ impl Action {
             Action::SaddleMount { .. } => "saddle mount",
             Action::SearchLibraryPick { .. } => "choose a basic land",
             Action::SearchLibraryDone => "finish searching",
+            Action::ChooseRingBearer { .. } => "choose Ring-bearer",
+            Action::ChooseLegendaryKeep { .. } => "choose legendary permanent",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::DeclineTriggerTarget => "decline trigger target",
             Action::FinishTriggerTargets => "finish trigger targets",

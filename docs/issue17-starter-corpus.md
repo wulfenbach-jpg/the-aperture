@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **151** are in the supported 164-card catalog and **308** are missing. Slice
+* **152** are in the supported 165-card catalog and **307** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
@@ -70,7 +70,7 @@ the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
 (slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
-`Stuffed Bear`. Ayula currently has **3** missing names.
+`Stuffed Bear`. Ayula currently has **1** missing name.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
@@ -970,14 +970,14 @@ without indestructible.
 
 Whole-field discipline: Ursine Monstrosity left `missing_cards` **and** its
 `missing_interactions` entry in `decks/starter-corpus/manifest.json` in the same change;
-Ayula is now three missing names and the corpus is 163 catalog / 459 union = 150 supported
-+ 309 missing, per-list `[55, 0, 51, 48, 3, 52, 52, 53]`, still one of eight lists
+Ayula is now one missing name and the corpus is 165 catalog / 459 union = 152 supported
++ 307 missing, per-list `[55, 0, 51, 48, 1, 52, 52, 53]`, still one of eight lists
 certified.
 
 ## Slice 56: zero toughness is a state-based graveyard move, not a destroy
 
-No card entered the pool in this slice; the count stays 163 catalog / 459 union = 150
-supported + 309 missing, per-list `[55, 0, 51, 48, 3, 52, 52, 53]`, one of eight
+No card entered the pool in that slice; the later Dúnedain Rangers entry moves the
+current count to 165 catalog / 459 union = 152 supported + 307 missing, one of eight
 certified.
 
 **The defect.** The coach's state-based-action paragraph filed every creature with
@@ -1092,3 +1092,6 @@ states, and normal single-target load controls. No card is added: catalog 164,
 Ayula's remaining names Dúnedain Rangers and Evercoat Ursine, still one of eight
 lists certified. Ring, linked hideaway/free play and exact-list certification remain
 unfinished work, not implicit support from these save repairs.
+
+## Slice 59: Dúnedain Rangers and The Ring
+Dúnedain Rangers (`{3}{G}` Human Ranger 4/4) is sourced in `fixtures/starter-corpus/slice59-sourced.json` (LTR 159, immutable 630e1e36…, oracle 7de2a364…, retrieved 2026-10-29T04:29:30Z). Its landfall trigger checks at queue and resolution that the controller has no Ring-bearer. The Ring state tracks temptation count and bearer per seat: level 1 makes the bearer legendary and blocks greater-power blockers; level 2 adds attack draw-then-discard; level 3 schedules each blocker's sacrifice at end of combat; level 4 makes each opponent lose 3 when the bearer deals combat damage to a player. The bearer designation clears on battlefield departure/control loss; temptation with no creature still increments and creates no bearer. This is a bounded prototype of the official emblem abilities, not a claim of generic emblem support.

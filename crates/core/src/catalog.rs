@@ -306,7 +306,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 164] = [
+pub static CARDS: [CardDef; 165] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -922,6 +922,12 @@ pub static CARDS: [CardDef; 164] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        DunedainRangers, "Dúnedain Rangers", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Ranger", power: Some(4), toughness: Some(4),
+        oracle: "Landfall — Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
+        spell: None
     ),
     card!(
         UrsineMonstrosity, "Ursine Monstrosity", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,

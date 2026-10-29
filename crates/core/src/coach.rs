@@ -412,6 +412,8 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             Pending::TriggerTarget { .. } => vec!["603.3d"],
             Pending::TriggerChoice { .. } => vec!["603.5"],
             Pending::TriggerMode { .. } => vec!["603.3c", "700.2b"],
+            Pending::RingTemptation { .. } => vec!["701.54a"],
+            Pending::LegendaryChoice { .. } => vec!["704.5j"],
             Pending::TopCardChoice { .. } => vec!["701.20e"],
             Pending::SearchLibrary { .. } => vec!["701.23"],
         };

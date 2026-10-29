@@ -55,6 +55,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
             commanders: Vec::new(),
+            rings: Vec::new(),
             profile: Profile::Practice20,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
@@ -277,6 +278,17 @@ pub fn auto_answer(game: &Game) -> Action {
                 to_command_zone: true,
             },
             Pending::SearchLibrary { .. } => Action::SearchLibraryDone,
+            Pending::RingTemptation { .. } | Pending::LegendaryChoice { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| {
+                    matches!(
+                        legal.action,
+                        Action::ChooseRingBearer { .. } | Action::ChooseLegendaryKeep { .. }
+                    )
+                })
+                .map(|legal| legal.action)
+                .expect("a Ring/legend choice is offered"),
             Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
                 to_command_zone: true,
             },

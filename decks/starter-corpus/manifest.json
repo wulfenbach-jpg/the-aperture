@@ -249,11 +249,9 @@
       "status": "planned",
       "deck_path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
       "missing_cards": [
-        "D\u00fanedain Rangers",
         "Evercoat Ursine"
       ],
       "missing_interactions": [
-        "the Ring tempts you and the Ring-bearer (D\u00fanedain Rangers)",
         "hideaway, and playing a card exiled with the same permanent (Evercoat Ursine)"
       ]
     },

@@ -219,6 +219,17 @@ pub enum Pending {
         trigger: TriggerRef,
         queued: Vec<TriggerRef>,
     },
+    /// CR 701.54a: choose a creature you control as Ring-bearer; None is legal
+    /// only when no creature exists.
+    RingTemptation {
+        player: PlayerId,
+        eligible: Vec<ObjectId>,
+    },
+    /// CR 704.5j: choose one legendary permanent to keep.
+    LegendaryChoice {
+        player: PlayerId,
+        options: Vec<ObjectId>,
+    },
     /// CR 603.5: a "you may" trigger is put on the stack regardless of the
     /// controller's intention; the choice is made when it resolves.
     TriggerChoice {
@@ -445,6 +456,8 @@ impl Pending {
             Pending::TriggerTarget { player, .. }
             | Pending::TriggerChoice { player, .. }
             | Pending::TriggerMode { player, .. }
+            | Pending::RingTemptation { player, .. }
+            | Pending::LegendaryChoice { player, .. }
             | Pending::TopCardChoice { player, .. }
             | Pending::SearchLibrary { player, .. } => *player,
         }
@@ -571,6 +584,17 @@ impl Pending {
             ),
             Pending::TriggerMode { player, .. } => {
                 format!("P{player}: choose Ayula's counter or fight mode (CR 603.3c, 700.2b)")
+            }
+            Pending::RingTemptation { player, .. } => {
+                format!(
+                    "P{player}: choose a creature you control to become your Ring-bearer (CR 701.54a)"
+                )
+            }
+            Pending::LegendaryChoice { player, options } => {
+                format!(
+                    "P{player}: keep one of {} legendary permanents (CR 704.5j)",
+                    options.len()
+                )
             }
             Pending::SearchLibrary {
                 player,
@@ -921,6 +945,14 @@ pub enum Outcome {
     },
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+pub struct RingState {
+    pub temptations: u8,
+    pub bearer: Option<ObjectId>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub sacrifice_at_end_of_combat: Vec<ObjectId>,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub enum LibrarySearchMode {
     #[default]
@@ -1033,6 +1065,9 @@ pub struct GameState {
     /// CR 701.19 regeneration shields, keyed to the object that created them.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub regeneration_shields: Vec<RegenerationShield>,
+    /// Per-seat The Ring state; empty/skipped when untouched.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub rings: Vec<RingState>,
     /// Next rule-visible effect id.
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     pub next_effect: u32,
@@ -1238,6 +1273,8 @@ impl GameState {
                 Pending::TriggerMode {
                     trigger, queued, ..
                 } => trigger_ref(trigger) || queued.iter().any(trigger_ref),
+                Pending::RingTemptation { eligible, .. } => eligible.contains(&id),
+                Pending::LegendaryChoice { options, .. } => options.contains(&id),
                 Pending::TopCardChoice { card, .. } => *card == id,
                 Pending::SearchLibrary {
                     chosen, eligible, ..

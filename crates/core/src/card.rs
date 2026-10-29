@@ -402,6 +402,7 @@ pub enum Effect {
     SearchAnyLandUpToTwo,
     PutTwoCountersOnEachCreatureYouControl,
     UrsineCombatTrigger,
+    RingTempts,
     DrawIfControlsBears {
         minimum: u8,
         cards: u8,
@@ -568,6 +569,7 @@ impl Effect {
             Effect::PutTwoCountersOnEachCreatureYouControl => {
                 "put two +1/+1 counters on each creature you control".to_string()
             }
+            Effect::RingTempts => "the Ring tempts you".to_string(),
             Effect::UrsineCombatTrigger => {
                 "mill a card, choose an opponent at random, attack them if able, gain indestructible and +1/+1 per graveyard card type".to_string()
             }
@@ -926,6 +928,7 @@ pub enum CardId {
     SnowCoveredForest,
     TitaniasCommand,
     UrsineMonstrosity,
+    DunedainRangers,
     AyulasInfluence,
     Bearscape,
     MotherBear,

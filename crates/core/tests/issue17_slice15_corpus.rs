@@ -144,6 +144,6 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Ruxa, Patient Professor, so both numbers move together one more time.
     // Slice 57 registers Rampaging Yao Guai, so the gap closes by one and the
     // pool grows by one again.
-    assert_eq!(missing.len(), 2, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 164, "the compiled pool");
+    assert_eq!(missing.len(), 1, "Ayula's remaining sourced gap");
+    assert_eq!(catalog::all().len(), 165, "the compiled pool");
 }

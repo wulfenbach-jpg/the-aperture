@@ -473,6 +473,14 @@ pub fn equipment_grants(card: CardId) -> Option<EquipmentGrants> {
     }
 }
 
+const DUNEDAIN_RANGERS: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Landfall — Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
+    event: TriggerEvent::LandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::RingTempts],
+})];
+
 const URSINE_MONSTROSITY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "At the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
     event: TriggerEvent::BeginningOfCombat,
@@ -1109,6 +1117,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::LumraBellowOfTheWoods => LUMRA,
         CardId::SpiritOfTheAldergard => SPIRIT_OF_THE_ALDERGARD,
         CardId::UrsineMonstrosity => URSINE_MONSTROSITY,
+        CardId::DunedainRangers => DUNEDAIN_RANGERS,
         CardId::LightningGreaves => LIGHTNING_GREAVES,
         CardId::SwiftfootBoots => SWIFTFOOT_BOOTS,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,
@@ -1182,6 +1191,8 @@ pub fn can_become_creature(card: CardId) -> bool {
 /// without a second consumer would be speculative structure.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TriggerCondition {
+    /// CR 701.54a: controller does not control their Ring-bearer.
+    NoRingBearer,
     /// Source permanent is currently saddled (CR 702.171a).
     SourceIsSaddled,
     /// No printed clause: the trigger fires whenever its event happens.
@@ -1196,6 +1207,7 @@ pub enum TriggerCondition {
 pub fn trigger_condition(card: CardId) -> TriggerCondition {
     match card {
         CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
+        CardId::DunedainRangers => TriggerCondition::NoRingBearer,
         CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
         _ => TriggerCondition::Always,
     }

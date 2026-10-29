@@ -271,6 +271,7 @@ impl Game {
             rng: Pcg32::new(seed),
             objects: BTreeMap::new(),
             commanders: Vec::new(),
+            rings: Vec::new(),
             profile,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
@@ -1077,6 +1078,39 @@ impl Game {
         })
     }
 
+    fn ensure_rings(&mut self) {
+        let seats = self.state.seat_count();
+        self.state
+            .rings
+            .resize_with(seats, crate::state::RingState::default);
+    }
+
+    fn ring_bearer(&self, player: PlayerId) -> Option<ObjectId> {
+        self.state
+            .rings
+            .get(player as usize)
+            .and_then(|ring| ring.bearer)
+            .filter(|id| {
+                self.state.try_object(*id).is_some_and(|object| {
+                    object.zone == Zone::Battlefield && object.controller == player
+                })
+            })
+    }
+
+    fn is_legendary_effective(&self, object: &Object) -> bool {
+        object.card.def().type_line.contains("Legendary")
+            || (self.ring_level(object.controller) >= 1
+                && self.ring_bearer(object.controller) == Some(object.id))
+    }
+
+    fn ring_level(&self, player: PlayerId) -> u8 {
+        self.state
+            .rings
+            .get(player as usize)
+            .map(|ring| ring.temptations)
+            .unwrap_or(0)
+    }
+
     fn has_shroud(&self, id: ObjectId) -> bool {
         self.state.effects.iter().any(|effect| {
             matches!(effect.kind, ContinuousKind::Equipped { shroud: true, .. })
@@ -1687,6 +1721,11 @@ impl Game {
         // the card identity that survives a zone change. Leaving the
         // battlefield ends it; this is not regeneration or shield consumption.
         if object.zone == Zone::Battlefield {
+            for ring in &mut self.state.rings {
+                if ring.bearer == Some(id) {
+                    ring.bearer = None;
+                }
+            }
             if object.card == CardId::ExuberantWolfbear
                 && let Some(pts) = lki
             {
@@ -2719,6 +2758,41 @@ impl Game {
             return Err(EngineError::NoDecisionPoint);
         }
         match action {
+            Action::ChooseRingBearer { bearer } => match &state.pending {
+                Some(Pending::RingTemptation { eligible, .. }) => {
+                    if bearer.is_none() {
+                        if !eligible.is_empty() {
+                            return Err(EngineError::illegal(
+                                "choose Ring-bearer",
+                                "a creature is available",
+                            ));
+                        }
+                    } else if !eligible.contains(&bearer.unwrap()) {
+                        return Err(EngineError::illegal(
+                            "choose Ring-bearer",
+                            "not an eligible creature",
+                        ));
+                    }
+                    Ok(())
+                }
+                _ => Err(EngineError::illegal(
+                    "choose Ring-bearer",
+                    "no Ring temptation is waiting",
+                )),
+            },
+            Action::ChooseLegendaryKeep { permanent } => match &state.pending {
+                Some(Pending::LegendaryChoice { options, .. }) if options.contains(permanent) => {
+                    Ok(())
+                }
+                Some(Pending::LegendaryChoice { .. }) => Err(EngineError::illegal(
+                    "legend rule",
+                    "not an offered legendary permanent",
+                )),
+                _ => Err(EngineError::illegal(
+                    "legend rule",
+                    "no legend choice is waiting",
+                )),
+            },
             Action::Pass => {
                 if state.pending.is_some() {
                     return Err(EngineError::illegal(
@@ -3952,11 +4026,18 @@ impl Game {
             let attacker = self.state.object(block.attacker);
             let blocker = self.state.object(block.blocker);
             let defender_controls_island = self.controls_island(player);
-            if !crate::tokens::can_block(
-                attacker.keywords(),
-                blocker.keywords(),
-                defender_controls_island,
-            ) {
+            let ring_blocked = self
+                .ring_bearer(attacker.controller)
+                .is_some_and(|bearer| bearer == block.attacker)
+                && self.ring_level(attacker.controller) >= 1
+                && blocker.power() > attacker.power();
+            if ring_blocked
+                || !crate::tokens::can_block(
+                    attacker.keywords(),
+                    blocker.keywords(),
+                    defender_controls_island,
+                )
+            {
                 let reason = if attacker
                     .keywords()
                     .contains(&crate::tokens::Keyword::Islandwalk)
@@ -4027,6 +4108,10 @@ impl Game {
         match ability::trigger_condition(card) {
             ability::TriggerCondition::Always => true,
             ability::TriggerCondition::SourceIsSaddled => self.has_saddled(source),
+            ability::TriggerCondition::NoRingBearer => self
+                .state
+                .try_object(source)
+                .is_some_and(|object| self.ring_bearer(object.controller).is_none()),
             ability::TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent => {
                 !self.state.objects.values().any(|object| {
                     object.zone == Zone::Battlefield
@@ -4047,6 +4132,23 @@ impl Game {
 
     fn apply(&mut self, player: PlayerId, action: &Action, events: &mut Vec<Event>) {
         match action {
+            Action::ChooseRingBearer { bearer } => {
+                if let Some(Pending::RingTemptation { player, .. }) = self.state.pending.take() {
+                    self.ensure_rings();
+                    if let Some(slot) = self.state.rings.get_mut(player as usize) {
+                        slot.bearer = *bearer;
+                    }
+                }
+            }
+            Action::ChooseLegendaryKeep { permanent } => {
+                if let Some(Pending::LegendaryChoice { options, .. }) = self.state.pending.take() {
+                    for id in options {
+                        if id != *permanent {
+                            self.move_to_graveyard(id, events);
+                        }
+                    }
+                }
+            }
             Action::Pass => self.apply_pass(player, events),
             Action::PlayLand { card } => self.apply_play_land(player, *card, events),
             Action::CastSpell { card, targets } => {
@@ -5893,6 +5995,27 @@ impl Game {
                 }
                 self.queue_triggers(*id, card, controller, TriggerEvent::Attacks);
             }
+            let ring_attackers: Vec<(ObjectId, PlayerId)> = attackers
+                .iter()
+                .filter_map(|id| {
+                    self.state
+                        .try_object(*id)
+                        .map(|object| (*id, object.controller))
+                })
+                .filter(|(id, controller)| {
+                    self.ring_bearer(*controller) == Some(*id) && self.ring_level(*controller) >= 2
+                })
+                .collect();
+            for (_, controller) in ring_attackers {
+                self.draw(controller, events);
+                if self.state.player(controller).hand_size() > 0 {
+                    self.state.pending = Some(Pending::Discard {
+                        player: controller,
+                        count: 1,
+                    });
+                    self.state.turn.priority = None;
+                }
+            }
             let qualifying = attackers
                 .iter()
                 .filter_map(|id| self.state.try_object(*id))
@@ -5973,6 +6096,21 @@ impl Game {
                 let card = object.card;
                 let controller = object.controller;
                 self.queue_triggers(attacker, card, controller, TriggerEvent::BecomesBlocked);
+            }
+        }
+        self.ensure_rings();
+        for block in blocks {
+            let controller = self.state.try_object(block.attacker).map(|o| o.controller);
+            if let Some(controller) = controller
+                && self.ring_bearer(controller) == Some(block.attacker)
+                && self.ring_level(controller) >= 3
+                && !self.state.rings[controller as usize]
+                    .sacrifice_at_end_of_combat
+                    .contains(&block.blocker)
+            {
+                self.state.rings[controller as usize]
+                    .sacrifice_at_end_of_combat
+                    .push(block.blocker);
             }
         }
         self.put_triggers(events);
@@ -6511,6 +6649,21 @@ impl Game {
                 self.grant_priority(active, events);
             }
             Step::EndCombat => {
+                let delayed: Vec<ObjectId> = self
+                    .state
+                    .rings
+                    .iter_mut()
+                    .flat_map(|ring| std::mem::take(&mut ring.sacrifice_at_end_of_combat))
+                    .collect();
+                for id in delayed {
+                    if self
+                        .state
+                        .try_object(id)
+                        .is_some_and(|o| o.zone == Zone::Battlefield)
+                    {
+                        self.move_to_graveyard(id, events);
+                    }
+                }
                 self.state
                     .effects
                     .retain(|effect| effect.kind != ContinuousKind::MustAttackThisCombat);
@@ -6909,6 +7062,29 @@ impl Game {
     fn check_sbas(&mut self, events: &mut Vec<Event>) {
         if self.state.is_over() {
             return;
+        }
+        if self.state.pending.is_none() {
+            let mut groups: std::collections::BTreeMap<(PlayerId, &'static str), Vec<ObjectId>> =
+                std::collections::BTreeMap::new();
+            for object in self
+                .state
+                .objects
+                .values()
+                .filter(|o| o.zone == Zone::Battlefield)
+            {
+                if self.is_legendary_effective(object) {
+                    groups
+                        .entry((object.controller, object.card.def().name))
+                        .or_default()
+                        .push(object.id);
+                }
+            }
+            if let Some(((player, _), options)) = groups.into_iter().find(|(_, ids)| ids.len() > 1)
+            {
+                self.state.pending = Some(Pending::LegendaryChoice { player, options });
+                self.state.turn.priority = None;
+                return;
+            }
         }
         loop {
             let mut changed = false;
@@ -9036,6 +9212,40 @@ impl Game {
                 events.push(Event::StateBasedAction { description });
                 false
             }
+            Effect::RingTempts => {
+                self.ensure_rings();
+                if let Some(slot) = self.state.rings.get_mut(controller as usize) {
+                    slot.temptations = (slot.temptations + 1).min(4);
+                    if slot.temptations == 1 && slot.bearer.is_none() {
+                        // first temptation may still leave no bearer if no creature
+                    }
+                }
+                let eligible: Vec<ObjectId> = self
+                    .state
+                    .battlefield(controller)
+                    .into_iter()
+                    .filter(|o| self.is_creature(o))
+                    .map(|o| o.id)
+                    .collect();
+                if eligible.is_empty() {
+                    if let Some(slot) = self.state.rings.get_mut(controller as usize) {
+                        slot.bearer = None;
+                    }
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} is tempted by the Ring but controls no creature"
+                        ),
+                    });
+                } else {
+                    self.state.pending = Some(Pending::RingTemptation {
+                        player: controller,
+                        eligible,
+                    });
+                    self.state.turn.priority = None;
+                    return true;
+                }
+                false
+            }
             Effect::SaddleSource => {
                 if item.affected == Some(item.object)
                     && self
@@ -9830,6 +10040,21 @@ impl Game {
                     }
                     let life = self.state.players[defender as usize].life;
                     let card = self.state.object(source).card;
+                    let source_controller = self.state.object(source).controller;
+                    if self.ring_bearer(source_controller) == Some(source)
+                        && self.ring_level(source_controller) >= 4
+                    {
+                        for opponent in 0..self.state.seat_count() as PlayerId {
+                            if opponent != source_controller && self.state.is_live(opponent) {
+                                self.state.players[opponent as usize].life -= 3;
+                                events.push(Event::LifeChange {
+                                    player: opponent,
+                                    delta: -3,
+                                    life: self.state.player(opponent).life,
+                                });
+                            }
+                        }
+                    }
                     events.push(Event::CombatDamage {
                         attacker: source,
                         attacker_card: card,
@@ -10320,6 +10545,35 @@ impl Game {
 
     fn pending_actions(&self, pending: &Pending) -> Vec<LegalAction> {
         match pending {
+            Pending::RingTemptation { eligible, .. } => {
+                let mut out: Vec<LegalAction> = eligible
+                    .iter()
+                    .map(|id| LegalAction {
+                        action: Action::ChooseRingBearer { bearer: Some(*id) },
+                        label: format!(
+                            "Make {} your Ring-bearer",
+                            self.state.object(*id).card.def().name
+                        ),
+                        rules: vec!["701.54a"],
+                    })
+                    .collect();
+                if eligible.is_empty() {
+                    out.push(LegalAction {
+                        action: Action::ChooseRingBearer { bearer: None },
+                        label: "The Ring tempts you (no creature)".to_string(),
+                        rules: vec!["701.54a"],
+                    });
+                }
+                out
+            }
+            Pending::LegendaryChoice { options, .. } => options
+                .iter()
+                .map(|id| LegalAction {
+                    action: Action::ChooseLegendaryKeep { permanent: *id },
+                    label: format!("Keep {}", self.describe_object(*id)),
+                    rules: vec!["704.5j"],
+                })
+                .collect(),
             Pending::Mulligan { player } => {
                 let mut out = vec![LegalAction {
                     action: Action::Mulligan { keep: true },
@@ -10815,7 +11069,11 @@ impl Game {
                         a.keywords(),
                         blocker_object.keywords(),
                         defender_controls_island,
-                    )
+                    ) && !(self
+                        .ring_bearer(a.controller)
+                        .is_some_and(|bearer| bearer == *id)
+                        && self.ring_level(a.controller) >= 1
+                        && blocker_object.power() > a.power())
                 })
             }) else {
                 continue;
