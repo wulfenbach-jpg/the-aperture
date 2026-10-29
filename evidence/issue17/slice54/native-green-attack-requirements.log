@@ -1,0 +1,14 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.04s
+     Running tests\issue17_slice54_regressions.rs (target\debug\deps\issue17_slice54_regressions-d962a1f2704b0712.exe)
+
+running 4 tests
+test wrong_opponent_cannot_evade_one_able_ursine_requirement ... ok
+test pump_is_fixed_after_a_genuinely_new_graveyard_type ... ok
+test requirement_ends_at_end_combat_but_pump_and_indestructible_do_not ... ok
+test conflicting_requirements_offer_only_maximum_satisfiable_groups ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+
+EXIT=0

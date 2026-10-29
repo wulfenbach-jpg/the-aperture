@@ -1,0 +1,21 @@
+catalog_cards      = 163
+union_names        = 459
+supported_union    = 150
+missing_union      = 309
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=3
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 3, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+Traceback (most recent call last):
+  File "C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice54\corpus-audit.py", line 73, in <module>
+    assert not stale, stale
+           ^^^^^^^^^
+AssertionError: [('ayula-bear-counters', 'Ursine Monstrosity', 'mill-driven attack restriction and card types in a graveyard (Ursine Monstrosity)')]
+
+EXIT=1

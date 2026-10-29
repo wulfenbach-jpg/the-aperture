@@ -1,0 +1,11 @@
+command=aperture-cli selfplay --seed 2323 --deck decks/package-slice54.txt (four copies) --commander-combat-practice --commander SEAT:Jasmine Boreal (all seats) --max-steps 10000
+selfplay seed=2323 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 1752 steps (38 turns)
+  digest 2bd43d639ed5 | replay verified | casts 26 attacks 21 blocks 6 counters 0
+  replay written to evidence/issue17/slice54/native/default-replay.json
+  report written to evidence/issue17/slice54/native/default-report.json
+EXIT=0 (selfplay)
+
+command=aperture-cli replay --file evidence/issue17/slice54/native/default-replay.json
+replay seed 2323 — 4 seat(s), 1752 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 2bd43d639ed5 | matches recorded | events 4463
+EXIT=0 (replay)

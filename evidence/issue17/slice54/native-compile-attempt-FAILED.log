@@ -1,0 +1,39 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0425]: cannot find value `P2` in this scope
+  --> crates\core\tests\issue17_slice54_regressions.rs:13:18
+   |
+13 |         .library(P2, &[CardId::Forest; 24])
+   |                  ^^
+   |
+  ::: crates\core\src\ids.rs:7:1
+   |
+ 7 | pub const P0: PlayerId = 0;
+   | ---------------------- similarly named constant `P0` defined here
+   |
+help: a constant with a similar name exists
+   |
+13 -         .library(P2, &[CardId::Forest; 24])
+13 +         .library(P0, &[CardId::Forest; 24])
+   |
+
+error[E0425]: cannot find value `P3` in this scope
+  --> crates\core\tests\issue17_slice54_regressions.rs:14:18
+   |
+14 |         .library(P3, &[CardId::Forest; 24])
+   |                  ^^
+   |
+  ::: crates\core\src\ids.rs:7:1
+   |
+ 7 | pub const P0: PlayerId = 0;
+   | ---------------------- similarly named constant `P0` defined here
+   |
+help: a constant with a similar name exists
+   |
+14 -         .library(P3, &[CardId::Forest; 24])
+14 +         .library(P0, &[CardId::Forest; 24])
+   |
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `aperture-core` (test "issue17_slice54_regressions") due to 2 previous errors
+
+EXIT=101

@@ -1,0 +1,32 @@
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.15s
+     Running tests\heuristic.rs (target\debug\deps\heuristic-41ca0377a14c08c9.exe)
+
+running 15 tests
+test available_mana_counts_untapped_basics_and_pool ... ok
+test heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice ... ok
+test does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it ... ok
+test bottoms_a_surplus_land_when_scrying ... ok
+test counterspells_the_opponents_creature_spell ... ok
+test attacks_for_lethal_when_the_defender_cannot_block ... ok
+test casts_a_creature_with_its_available_mana ... ok
+test heuristic_casts_crack_the_earth_through_its_legal_option ... ok
+test blocks_when_the_trade_is_good ... ok
+test keeps_a_three_land_hand_and_mulligans_a_land_flood ... ok
+test heuristic_uses_legal_command_zone_casts_instead_of_passing ... ok
+test passes_when_it_has_nothing_useful_to_do ... ok
+test plays_a_land_in_its_own_main_phase ... ok
+test the_policy_only_sees_masked_information ... ok
+test heuristic_observes_the_acting_seat_and_returns_a_legal_action ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests\issue17_ursine_policy.rs (target\debug\deps\issue17_ursine_policy-fa4ab158c6679351.exe)
+
+running 1 test
+test heuristic_obeys_ursine_attack_requirement_from_public_offer ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.91s
+
+
+EXIT=0
