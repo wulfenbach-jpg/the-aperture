@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Native independent corpus audit (slice 41: The Earth King).
+"""Slice54 implementer corpus recount and whole-field gap audit (not review).
 
 Reads the real sources of truth -- catalog.rs for supported names and the
 desired deck files -- and recomputes the eight-list union. Fails loudly on any
@@ -19,7 +19,7 @@ names = set()
 for macro in ("card", "card_artifact", "card_defender", "card_flash", "card_green", "card_islandwalk", "card_trample"):
     for m in re.finditer(rf"\b{macro}!\(\s*\w+,\s*\"([^\"]+)\"", CATALOG):
         names.add(m.group(1).lower())
-assert len(names) == 163, f"catalog parse found {len(names)} names, expected 153"
+assert len(names) == 163, f"catalog parse found {len(names)} names, expected 163"
 
 union = set()
 report = []
@@ -64,4 +64,17 @@ print("certified_lists    =", len(certified), certified)
 assert union_size == 459, union_size
 assert supported == 150 and missing_union == 309, (supported, missing_union)
 assert [m for _, _, m in report] == [55, 0, 51, 48, 3, 52, 52, 53]
+stale = []
+for starter in MANIFEST["starters"]:
+    for entry in starter["missing_interactions"]:
+        for cited in re.findall(r"\(([^()]*)\)", entry):
+            if cited.lower() in names:
+                stale.append((starter["id"], cited, entry))
+assert not stale, stale
+ayula = next(s for s in MANIFEST["starters"] if s["id"] == "ayula-bear-counters")
+citations = [cited for entry in ayula["missing_interactions"] for cited in re.findall(r"\(([^()]*)\)", entry)]
+assert sorted(citations) == sorted(ayula["missing_cards"]), citations
+assert len(ayula["missing_interactions"]) == len(ayula["missing_cards"]) == 3
+print("whole_field_supported_card_citations =", stale)
+print("Ayula interaction citations equal all three missing card names")
 print("AUDIT OK")
