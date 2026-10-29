@@ -141,3 +141,47 @@ fn ordinary_blocking_does_not_materialize_empty_ring_state() {
         "an ordinary combat must not insert serialized Ring bookkeeping"
     );
 }
+
+#[test]
+fn one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary() {
+    let mut g = fixture(59112)
+        .battlefield(P0, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let bearer = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    ring(&mut g, 1, bearer);
+    submit_ok(&mut g, P0, Action::Pass);
+    assert!(
+        !matches!(g.state.pending, Some(Pending::LegendaryChoice { .. })),
+        "CR704.5j requires two legendary permanents, not one legend plus an ordinary same-name permanent"
+    );
+}
+
+#[test]
+fn forged_legend_choice_must_not_remove_a_nonlegendary_same_name() {
+    let mut g = fixture(59113)
+        .battlefield(P0, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let options: Vec<_> = g.state.battlefield(P0).into_iter().map(|o| o.id).collect();
+    ring(&mut g, 1, options[0]);
+    g.state.pending = Some(Pending::LegendaryChoice {
+        player: P0,
+        options: options.clone(),
+    });
+    g.state.turn.priority = None;
+    let valid = g.state.validate().is_ok();
+    let loads = sandbox_loads(&g);
+    let accepted = g
+        .submit_action(
+            P0,
+            Action::ChooseLegendaryKeep {
+                permanent: options[0],
+            },
+        )
+        .is_ok();
+    assert!(
+        !valid && !loads && !accepted,
+        "one legend is not a legendary group: validates={valid}, sandbox_loads={loads}, accepted={accepted}"
+    );
+}

@@ -1468,24 +1468,21 @@ impl GameState {
                                 reason: "legendary choice references a missing object".to_string(),
                             });
                         };
-                        if object.zone != Zone::Battlefield || !self.is_live(object.controller) {
-                            return Err(EngineError::InvalidState {
-                                reason:
-                                    "legendary choice option is not a live battlefield permanent"
-                                        .to_string(),
-                            });
-                        }
-                        // The SBA owner may be the Ring-bearer's controller; every
-                        // option must share one card name. A Ring-bearer option is
-                        // effective-legendary through its own controller's Ring.
-                        if object.controller != *player
-                            && self
-                                .rings
-                                .get(object.controller as usize)
-                                .is_none_or(|ring| ring.bearer != Some(*id))
+                        // Every option is a permanent the SBA owner controls, and
+                        // CR 704.5j applies to legendary permanents: an ordinary
+                        // same-name card is not a legend-rule choice.
+                        if object.zone != Zone::Battlefield
+                            || object.controller != *player
+                            || !self.is_live(object.controller)
                         {
                             return Err(EngineError::InvalidState {
-                                reason: "legendary choice option is not controlled by the seat or its Ring-bearer"
+                                reason: "legendary choice option is not a live permanent the deciding seat controls"
+                                    .to_string(),
+                            });
+                        }
+                        if !self.is_legendary_effective(object) {
+                            return Err(EngineError::InvalidState {
+                                reason: "legendary choice option is not a legendary permanent"
                                     .to_string(),
                             });
                         }
@@ -1495,6 +1492,28 @@ impl GameState {
                     if names.len() < 2 || names.iter().any(|name| *name != names[0]) {
                         return Err(EngineError::InvalidState {
                             reason: "legendary choice is not a same-name legendary group"
+                                .to_string(),
+                        });
+                    }
+                    // The offer must be the complete group: a save cannot hide a
+                    // third legend or offer a truncated choice.
+                    let mut group: Vec<ObjectId> = self
+                        .objects
+                        .values()
+                        .filter(|object| {
+                            object.zone == Zone::Battlefield
+                                && object.controller == *player
+                                && object.card.def().name == names[0]
+                                && self.is_legendary_effective(object)
+                        })
+                        .map(|object| object.id)
+                        .collect();
+                    group.sort_unstable();
+                    let mut offered = seen.clone();
+                    offered.sort_unstable();
+                    if offered != group {
+                        return Err(EngineError::InvalidState {
+                            reason: "legendary choice does not list the whole legendary group"
                                 .to_string(),
                         });
                     }
@@ -3415,6 +3434,18 @@ impl GameState {
                     })
         });
         !granted_by_static
+    }
+
+    /// CR 704.5j + CR 701.54c: a permanent is legendary when its printed type
+    /// line says so, or when it is its controller's Ring-bearer at Ring level 1+.
+    /// One predicate so the SBA, the loader and the direct-answer guard agree.
+    pub(crate) fn is_legendary_effective(&self, object: &Object) -> bool {
+        object.card.def().type_line.contains("Legendary")
+            || (object.zone == Zone::Battlefield
+                && self
+                    .rings
+                    .get(object.controller as usize)
+                    .is_some_and(|ring| ring.temptations >= 1 && ring.bearer == Some(object.id)))
     }
 
     pub fn battlefield(&self, p: PlayerId) -> Vec<&Object> {

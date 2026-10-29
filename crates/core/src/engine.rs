@@ -1098,10 +1098,8 @@ impl Game {
             })
     }
 
-    fn is_legendary_effective(&self, object: &Object) -> bool {
-        object.card.def().type_line.contains("Legendary")
-            || (self.ring_level(object.controller) >= 1
-                && self.ring_bearer(object.controller) == Some(object.id))
+    pub(crate) fn is_legendary_effective(&self, object: &Object) -> bool {
+        self.state.is_legendary_effective(object)
     }
 
     fn ring_level(&self, player: PlayerId) -> u8 {
@@ -7146,22 +7144,17 @@ impl Game {
                 .values()
                 .filter(|o| o.zone == Zone::Battlefield)
             {
-                // CR 704.5j groups every permanent with the same name; the
-                // legendary condition may come from one member (a Ring-bearer)
-                // while the others are ordinary same-name duplicates.
-                groups
-                    .entry((object.controller, object.card.def().name))
-                    .or_default()
-                    .push(object.id);
+                // CR 704.5j counts legendary permanents only. One Ring-bearer
+                // does not make ordinary same-name permanents legendary.
+                if self.is_legendary_effective(object) {
+                    groups
+                        .entry((object.controller, object.card.def().name))
+                        .or_default()
+                        .push(object.id);
+                }
             }
-            if let Some(((player, _), options)) = groups.into_iter().find(|(_, ids)| {
-                ids.len() > 1
-                    && ids.iter().any(|id| {
-                        self.state
-                            .try_object(*id)
-                            .is_some_and(|object| self.is_legendary_effective(object))
-                    })
-            }) {
+            if let Some(((player, _), options)) = groups.into_iter().find(|(_, ids)| ids.len() > 1)
+            {
                 self.state.pending = Some(Pending::LegendaryChoice { player, options });
                 self.state.turn.priority = None;
                 return;

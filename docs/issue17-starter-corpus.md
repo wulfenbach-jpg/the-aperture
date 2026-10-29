@@ -337,7 +337,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 164 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 165 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1093,9 +1093,6 @@ Ayula's remaining names Dúnedain Rangers and Evercoat Ursine, still one of eigh
 lists certified. Ring, linked hideaway/free play and exact-list certification remain
 unfinished work, not implicit support from these save repairs.
 
-## Slice 59: Dúnedain Rangers and The Ring
-Dúnedain Rangers (`{3}{G}` Human Ranger 4/4) is sourced in `fixtures/starter-corpus/slice59-sourced.json` (LTR 159, immutable 630e1e36…, oracle 7de2a364…, retrieved 2026-10-29T04:29:30Z). Its landfall trigger checks at queue and resolution that the controller has no Ring-bearer. The Ring state tracks temptation count and bearer per seat: level 1 makes the bearer legendary and blocks greater-power blockers; level 2 adds attack draw-then-discard; level 3 schedules each blocker's sacrifice at end of combat; level 4 makes each opponent lose 3 when the bearer deals combat damage to a player. The bearer designation clears on battlefield departure/control loss; temptation with no creature still increments and creates no bearer. This is a bounded prototype of the official emblem abilities, not a claim of generic emblem support.
-
 ## Slice 59: Dúnedain Rangers and a real trigger/stack Ring
 
 **Card.** Dúnedain Rangers, LTR 159, `{3}{G}`, Human Ranger 4/4. Source and oracle text
@@ -1113,8 +1110,9 @@ token, permanent, importable card, commander, library card or member of `catalog
 machinery can resolve its four typed triggered abilities:
 
 1. Ring level 1: the Ring-bearer is effectively legendary and cannot be blocked by a
-   creature with greater power. The legend SBA groups all same-name permanents when any
-   member is effectively legendary, and only the group's controller answers.
+   creature with greater power. The legend SBA counts only legendary permanents with the
+   same name (printed legendary, or the controller's Ring-bearer), so one legend beside an
+   ordinary same-name card is not a legend-rule choice; only that group's controller answers.
 2. Ring level 2: whenever the Ring-bearer attacks, the attack trigger draws a card, then
    asks for a discard through the distinct `Pending::EffectDiscard`. That answer resumes
    the resolving The Ring ability; it is not the cleanup-step discard and cannot end combat.
@@ -1144,11 +1142,21 @@ search world's copied public object ledger is omitted from the search projection
 **Limitations.** The emblem is not a distinct physical object in a zone: the bearer id on
 a trigger is combat-event provenance, and `RingState` is the persisted emblem. There is no
 full independent rules implementation of all Ring-bearer replacement/control-change
-interactions. The final evidence journey is a 40-card package, not a 100-card starter
-certification. The corpus remains 165 catalog / 459 union = 152 supported + 307 missing,
-Ayula one name short, and only the Jasmine list is certified (1 of 8).
+interactions. The evidence journey reaches Ring level 2 for one seat (a standing Ring-bearer
+stops further Rangers temptations by its own intervening-if), so levels 3-4 are exercised by
+the focused trigger tests and not by that journey. The final evidence journey is a 40-card
+package, not a 100-card starter certification. The corpus remains 165 catalog / 459 union =
+152 supported + 307 missing, Ayula one name short, and only the Jasmine list is certified
+(1 of 8).
 
-**Evidence.** `crates/core/tests/issue17_slice59_repairs.rs` (native five), 
+**Legend-rule correction.** The first implementation treated a Ring-bearer's whole
+same-name group as legendary, which would have sacrificed an ordinary second Grizzly Bears.
+CR 704.5j applies to legendary permanents, so the SBA now groups only printed legendary
+permanents or their controller's level-1+ Ring-bearer, and a compiled regression proves one
+legend beside an ordinary same-name card is not a legend choice (and that a forged truncated
+choice is refused by both `GameState::validate` and a real save load).
+
+**Evidence.** `crates/core/tests/issue17_slice59_repairs.rs` (native seven), 
 `crates/core/tests/issue17_slice59_ring_repairs.rs` and
 `crates/core/tests/issue17_slice59.rs`; final logs and journey under
 `evidence/issue17/slice59/final/`.

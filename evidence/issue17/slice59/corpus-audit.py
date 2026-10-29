@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Slice54 implementer corpus recount and whole-field gap audit (not review).
+"""Slice59 implementer corpus recount and whole-field gap audit (not review).
 
 Reads the real sources of truth -- catalog.rs for supported names and the
 desired deck files -- and recomputes the eight-list union. Fails loudly on any
@@ -19,7 +19,7 @@ names = set()
 for macro in ("card", "card_artifact", "card_defender", "card_flash", "card_green", "card_islandwalk", "card_trample", "card_vigilance_trample"):
     for m in re.finditer(rf"\b{macro}!\(\s*\w+,\s*\"([^\"]+)\"", CATALOG):
         names.add(m.group(1).lower())
-assert len(names) == 165, f"catalog parse found {len(names)} names, expected 164"
+assert len(names) == 165, f"catalog parse found {len(names)} names, expected 165"
 
 union = set()
 report = []
@@ -76,5 +76,5 @@ citations = [cited for entry in ayula["missing_interactions"] for cited in re.fi
 assert sorted(citations) == sorted(ayula["missing_cards"]), citations
 assert len(ayula["missing_interactions"]) == len(ayula["missing_cards"]) == 1
 print("whole_field_supported_card_citations =", stale)
-print("Ayula interaction citations equal all three missing card names")
+print("Ayula interaction citations equal all remaining missing card names")
 print("AUDIT OK")

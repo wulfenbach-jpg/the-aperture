@@ -1,0 +1,36 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.86s
+     Running tests\issue17_slice59_repairs.rs (target\debug\deps\issue17_slice59_repairs-5a49eccf2de1cb81.exe)
+
+running 7 tests
+test ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect ... ok
+test ordinary_blocking_does_not_materialize_empty_ring_state ... ok
+test ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice ... ok
+test one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary ... FAILED
+test forged_legend_choice_must_not_remove_a_nonlegendary_same_name ... FAILED
+test forged_ring_pending_cannot_select_an_opponents_permanent ... ok
+test ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load ... ok
+
+failures:
+
+---- one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary stdout ----
+
+thread 'one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary' (26668) panicked at crates\core\tests\issue17_slice59_repairs.rs:153:5:
+CR704.5j requires two legendary permanents, not one legend plus an ordinary same-name permanent
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- forged_legend_choice_must_not_remove_a_nonlegendary_same_name stdout ----
+
+thread 'forged_legend_choice_must_not_remove_a_nonlegendary_same_name' (41996) panicked at crates\core\tests\issue17_slice59_repairs.rs:169:5:
+one legend is not a legendary group: validates=true, sandbox_loads=true, accepted=true
+
+
+failures:
+    forged_legend_choice_must_not_remove_a_nonlegendary_same_name
+    one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary
+
+test result: FAILED. 5 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice59_repairs`
+
+native_legend_red_exit=101

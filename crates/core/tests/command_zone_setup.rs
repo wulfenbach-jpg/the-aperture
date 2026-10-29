@@ -1738,7 +1738,10 @@ fn ordinary_practice_parser_refuses_the_commander_only_card_with_reason() {
         text.contains("commander-only") || text.contains("commander only"),
         "{err}"
     );
-    assert!(text.contains("legend"), "{err}");
+    // The refusal is the named command-zone profile's ownership of this card, not
+    // a missing legend rule: CR 704.5j is implemented independently (slice 59).
+    assert!(text.contains("command-zone"), "{err}");
+    assert!(!text.contains("legend rule is not"), "{err}");
 }
 
 #[test]

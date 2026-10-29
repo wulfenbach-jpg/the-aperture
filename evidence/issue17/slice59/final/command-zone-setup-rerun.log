@@ -1,0 +1,53 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.47s
+     Running tests\command_zone_setup.rs (target\debug\deps\command_zone_setup-fafea5652c3dc234.exe)
+
+running 44 tests
+test a_supported_single_commander_per_seat_constructs_a_game ... ok
+test an_unpayable_or_unauthorized_command_zone_cast_does_not_increment_or_mutate ... ok
+test a_commander_cast_from_hand_does_not_add_tax ... ok
+test a_commander_is_castable_from_the_command_zone_and_counts_the_cast ... ok
+test a_departing_commander_owner_is_purged_without_touching_other_seats ... ok
+test a_dying_commander_gets_one_owner_return_choice_and_declining_is_final ... ok
+test a_declined_commander_draw_emits_one_real_draw_event ... ok
+test ayula_commander_cast_then_counter_mode_targets_any_bear ... ok
+test ayula_omits_fight_mode_when_no_opposing_creature_exists ... ok
+test ayula_fight_mode_requires_both_printed_targets_and_deals_simultaneous_damage ... ok
+test ayula_fight_fizzles_cleanly_if_a_target_leaves_before_resolution ... ok
+test ayula_pending_rejects_wrong_action_kind_and_unoffered_target_without_mutation ... ok
+test commander_tax_is_two_per_previous_command_zone_cast ... ok
+test ayula_fight_uses_prevention_in_both_directions_independently ... ok
+test commanders_start_independently_in_the_command_zone ... ok
+test commander_zone_transitions_reset_controller_and_object_state ... ok
+test ayula_trigger_still_resolves_after_its_source_leaves ... ok
+test divination_draw_two_continues_after_a_commander_draw_replacement ... ok
+test draw_step_suspends_before_a_commander_moves_from_library_to_hand ... ok
+test ayula_ignores_opposing_bears_and_token_entry_chooses_any_bear_for_counters ... ok
+test final_commander_return_answer_restores_priority_without_advancing_the_step ... ok
+test commander_view_redacts_hidden_zones_for_every_viewer ... ok
+test forged_replacement_source_and_cursor_are_rejected ... ok
+test ordinary_practice_games_refuse_a_commander_in_the_library ... ok
+test malformed_commander_return_bounds_are_typed_not_panics ... ok
+test ordinary_practice_parser_refuses_the_commander_only_card_with_reason ... ok
+test injected_departure_retains_the_unanswered_commander_return_tail ... ok
+test malformed_commander_return_queues_are_rejected_not_repaired ... ok
+test repeat_command_zone_casts_stack_tax_and_a_countered_cast_still_counts ... ok
+test swords_exiles_then_offers_return_with_controller_life_gain ... ok
+test simultaneous_commander_returns_wait_for_every_owner_then_apply_apnap_batch ... ok
+test terminal_sba_wins_immediately_without_an_irrelevant_return_choice ... ok
+test unsummon_suspends_before_the_move_and_declining_proceeds_to_hand ... ok
+test time_ebb_suspends_before_the_library_move_and_declining_puts_it_on_top ... ok
+test unsupported_commander_and_multi_commander_setups_are_refused ... ok
+test opt_and_consider_commander_draws_validate_after_the_first_instruction ... ok
+test all_lost_command_zone_save_preserves_its_original_profile ... ok
+test each_player_draw_continues_every_live_seat_after_a_commander_replacement ... ok
+test ayula_fight_first_target_save_reload_finishes_identically ... ok
+test a_draw_step_save_cannot_claim_additional_effect_draws ... ok
+test ayula_trigger_mode_save_reload_finishes_identically_and_refuses_wrong_seat ... ok
+test command_zone_replay_and_save_round_trip_the_explicit_setup ... ok
+test replacement_save_is_bound_to_the_producer_destination_and_target ... ok
+test sandbox_save_container_and_identity_corruption_is_rejected ... ok
+
+test result: ok. 44 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+COMMAND_ZONE_EXIT=0

@@ -22,7 +22,9 @@ implementation and it says so everywhere it matters.
   discard, damage removal, state-based actions, the CR 508.1d maximal attack
   requirement, indestructible in the state-based-action path, announced `{X}` costs
   with X carried through resolution, aggregate "total mana value X or less" target
-  sets, bounded combat with
+  sets, the CR 704.5j legend rule, The Ring emblem with its four level-gated
+  triggered abilities (including Ring-bearer designation and landfall temptation),
+  bounded combat with
   attack/block declarations and simultaneous damage, empty-library loss, game
   win/loss.
 * **Supported branch-candidate pool (165 real cards)**: the 16-card practice
@@ -45,9 +47,10 @@ implementation and it says so everywhere it matters.
   `crates/core/tests/card_printings.rs`; see
   [docs/issue15-effects.md](docs/issue15-effects.md).
   Isamaru, **Jasmine Boreal**, **Krenko, Mob Boss** and **Talrand, Sky Summoner**
-  are commander-only; they
-  are refused in every ordinary starting library because the legend rule is not
-  implemented.
+  are commander-only; they are refused in every ordinary starting library because
+  the named command-zone profile owns their setup. The legend rule itself
+  (CR 704.5j, same-name legendary permanents controlled by one player) is
+  implemented as a state-based action.
   The issue-17 starter package adds **47 sourced vanilla green/white creatures**
   (Savannah Lions, Elite Vanguard, Balduvian Bears, Watchwolf and 43 more) and
   the vanilla commander **Jasmine Boreal** (`{3}{G}{W}`, legendary 4/5 Human),
@@ -75,6 +78,12 @@ implementation and it says so everywhere it matters.
   and the red rituals **Pyretic Ritual**/**Seething Song** (add mana to the pool).
   Milling, scry-then-draw and mana addition are real rules actions now;
   target-player milling and tutoring are still not implemented.
+  Slice 59 adds **Dúnedain Rangers** (`{3}{G}` Human Ranger 4/4, LTR 159) with its
+  printed landfall Ring-temptation trigger, and the engine-only **The Ring** emblem
+  (never importable): Ring-bearer designation, CR 704.5j legendary status, the
+  greater-power block restriction, attack draw-then-discard, end-of-combat blocker
+  sacrifice and combat-damage life loss at levels 1-4. See
+  [docs/issue17-starter-corpus.md](docs/issue17-starter-corpus.md) §Slice 59.
   Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
@@ -278,7 +287,8 @@ owner's one-time CR 903.9a return choice, and a commander moving to hand/library
 is suspended for the owner's CR 903.9b replacement choice. This named profile
 stays at 20 life. It is **not** Commander legality or full Commander: Isamaru and Jasmine
 Boreal are the supported commanders, there is no color-identity/100-card profile, no
-commander damage, no legend rule, no partner/multi-commander; the native table
+commander damage and no partner/multi-commander (the CR 704.5j legend rule is
+implemented separately); the native table
 supports loading/saving the two named command profiles in addition to starting
 the bounded 40-life table, but this is still practice, not Commander.
 
@@ -289,7 +299,8 @@ behavior.
 The per-commander combat-damage ledger and the CR 903.10a 21-damage loss are
 implemented for this explicit profile (stable `CommanderId` + recipient,
 combat-only credit). It is still **not the Commander format** (no 100-card
-construction, partners, legend rule or full elimination/APNAP cleanup). The
+construction, partners or full elimination/APNAP cleanup; the legend rule is
+implemented as its own state-based action). The
 native setup offers this as the explicit **bounded 40 life** option with one
 supported commander per seat; its games save/load natively. It remains headless-capable and
 is not the Commander format.
@@ -303,8 +314,9 @@ prevention, damage redirection and replacement effects are not modelled.
 
 Full Commander legality and gameplay — the bounded command-zone and
 Commander-combat practice profiles above are not Commander: color identity,
-100-card singleton construction, the legend rule and partners/multi-commander
-are absent. The native table exposes these explicit profiles for local practice,
+100-card singleton construction and partners/multi-commander are absent. (The
+CR 704.5j legend rule is implemented as a state-based action; it is not a
+Commander-construction feature.) The native table exposes these explicit profiles for local practice,
 which does not make them Commander. The Commander-combat profile implements 40
 starting life, the per-commander combat-damage ledger and the CR 903.10a 21-damage
 loss and full combat-damage prevention for one turn (Fog); partial prevention,

@@ -185,27 +185,27 @@ fn ring_one_blocks_only_greater_power_and_evil_legend_choice_is_controlled() {
 
 #[test]
 fn effective_legend_group_is_owned_and_answered_only_by_its_controller() {
+    // CR 704.5j: two printed legendary permanents with the same name controlled
+    // by one player. A Ring-bearer is legendary too (CR 701.54c) but a single
+    // legend beside an ordinary same-name permanent is not a legend group.
     let mut g = fixture(59509)
-        .battlefield(P1, &[CardId::GrizzlyBears, CardId::GrizzlyBears])
+        .battlefield(
+            P1,
+            &[CardId::IsamaruHoundOfKonda, CardId::IsamaruHoundOfKonda],
+        )
         .main(P1, Step::PrecombatMain)
         .build();
     let ids: Vec<_> = g
         .state
         .battlefield(P1)
         .into_iter()
-        .filter(|object| object.card == CardId::GrizzlyBears)
+        .filter(|object| object.card == CardId::IsamaruHoundOfKonda)
         .map(|object| object.id)
         .collect();
-    g.state.rings = vec![RingState::default(); 2];
-    g.state.rings[P1 as usize] = RingState {
-        temptations: 1,
-        bearer: Some(ids[0]),
-        ..Default::default()
-    };
     g.submit_action(P1, Action::Pass)
-        .expect("passing with two effective legends is a legal action");
+        .expect("passing with two legends is a legal action");
     let Some(Pending::LegendaryChoice { player, options }) = &g.state.pending else {
-        panic!("two effective legends must produce a legend choice");
+        panic!("two same-name legendary permanents must produce a legend choice");
     };
     assert_eq!(*player, P1);
     assert_eq!(options.len(), 2);

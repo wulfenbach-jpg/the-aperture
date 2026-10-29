@@ -1083,11 +1083,10 @@ pub enum CardId {
 }
 
 /// Explicit command-zone practice allow-list. This is deliberately narrower
-/// than CR 903.3: no general legendary/Vehicle/Spacecraft support exists in
-/// this slice. Every entry is a genuine printed vanilla legendary creature; new
-/// commanders are added here and to the catalog, never inferred from a type
-/// line. Commander-only cards are refused in ordinary starting libraries
-/// because the legend rule is not modelled.
+/// than CR 903.3: every entry is a genuine printed legendary creature added here
+/// and to the catalog, never inferred from a type line. Commander-only cards are
+/// refused in ordinary starting libraries because the named command-zone profile
+/// owns their setup; the CR 704.5j legend rule itself is implemented separately.
 pub const SUPPORTED_COMMANDERS: &[CardId] = &[
     CardId::IsamaruHoundOfKonda,
     CardId::JasmineBoreal,

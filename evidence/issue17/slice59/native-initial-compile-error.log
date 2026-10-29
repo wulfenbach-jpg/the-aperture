@@ -1,0 +1,11 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0422]: cannot find struct, variant or union type `BlockPair` in this scope
+  --> crates\core\tests\issue17_slice59_repairs.rs:49:66
+   |
+49 |     submit_ok(&mut g, P1, Action::DeclareBlockers { blocks: vec![BlockPair { attacker: bearer, blocker }] });
+   |                                                                  ^^^^^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0422`.
+error: could not compile `aperture-core` (test "issue17_slice59_repairs") due to 1 previous error
+
+native_initial_red_exit=101

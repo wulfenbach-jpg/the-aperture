@@ -100,7 +100,7 @@ impl DeckList {
             })?;
             if card.is_supported_commander() {
                 return Err(format!(
-                    "line {}: '{card_name}' is commander-only in the command-zone practice profile; it cannot be in an ordinary starting library because the legend rule is not modeled",
+                    "line {}: '{card_name}' is commander-only in the command-zone practice profile; it cannot be in an ordinary starting library (the named command-zone profile owns its setup)",
                     lineno + 1
                 ));
             }

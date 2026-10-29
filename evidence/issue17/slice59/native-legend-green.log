@@ -1,0 +1,17 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.71s
+     Running tests\issue17_slice59_repairs.rs (target\debug\deps\issue17_slice59_repairs-5a49eccf2de1cb81.exe)
+
+running 7 tests
+test ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect ... ok
+test one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary ... ok
+test ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice ... ok
+test ordinary_blocking_does_not_materialize_empty_ring_state ... ok
+test forged_legend_choice_must_not_remove_a_nonlegendary_same_name ... ok
+test ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load ... ok
+test forged_ring_pending_cannot_select_an_opponents_permanent ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+native_legend_green_exit=0
