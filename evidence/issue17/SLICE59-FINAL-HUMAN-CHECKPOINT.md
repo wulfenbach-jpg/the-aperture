@@ -60,8 +60,8 @@
 - **Exact-head CI, recorded only after both workflows finished:** at `0e7ee70`
   `gh api commits/0e7ee70/check-runs` returns **10 runs, every `head_sha` =
   `0e7ee70b449e20e620a04f22ddbbd9d3b9104497`, 10 completed `success`, 0 cancelled,
-  0 failed** — the push run `40825533912` and the `pull_request` merge-ref run
-  `40825526651` (receipt
+  0 failed** — the push run `40825526651` and the `pull_request` merge-ref run
+  `40825533912` (receipt
   `evidence/issue17/slice59/exact-head-ci-0e7ee70.json`). The green merge-ref run clears
   the supervisor's defect 1 by execution: that tree contains `hand_choice_offers(..., HandChoice::Discard)`
   and no `sample_discard` reference at all. No evidence commit was pushed before these
