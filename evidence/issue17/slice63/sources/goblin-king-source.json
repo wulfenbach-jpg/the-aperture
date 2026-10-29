@@ -1,0 +1,25 @@
+{
+  "name": "Goblin King",
+  "set": "10e",
+  "collector_number": "207",
+  "oracle_id": "d236b3fc-0d3f-4d99-875d-e32a33fe5767",
+  "mana_cost": "{1}{R}{R}",
+  "type_line": "Creature — Goblin",
+  "power": "2",
+  "toughness": "2",
+  "oracle_text": "Other Goblins get +1/+1 and have mountainwalk.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2007-07-13",
+  "scryfall_id": "4b266935-25ea-49c5-a1da-57c22a4362fd",
+  "retrieved_at_utc": "2026-10-29T09:40:01Z",
+  "provider": "scryfall",
+  "url": "https://api.scryfall.com/cards/named?exact=Goblin%20King",
+  "legalities_commander": "legal"
+}

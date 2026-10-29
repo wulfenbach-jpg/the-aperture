@@ -818,6 +818,46 @@ impl Game {
                 }
             }
         }
+        // Printed layer 7c all-controller subtype anthem: "Other Goblins get
+        // +1/+1 and have mountainwalk" (Goblin King). No controller restriction:
+        // every other matching creature in every seat is a recipient; the source
+        // never pumps itself.
+        for (id, card) in &battlefield {
+            let listed = ability::static_abilities(*card)
+                .iter()
+                .find_map(|static_ability| match static_ability {
+                    ability::StaticAbility::AllOtherCreaturesWithAnySubtypeGet {
+                        subtypes,
+                        power,
+                        toughness,
+                        ..
+                    } => Some((*subtypes, *power, *toughness)),
+                    _ => None,
+                });
+            let Some((subtypes, power, toughness)) = listed else {
+                continue;
+            };
+            let recipients: Vec<ObjectId> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield
+                        && object.id != *id
+                        && self.is_creature(object)
+                        && subtypes
+                            .iter()
+                            .any(|subtype| self.has_subtype(object, subtype))
+                })
+                .map(|object| object.id)
+                .collect();
+            for recipient in recipients {
+                if let Some(object) = self.state.objects.get_mut(&recipient) {
+                    object.pump_power += power;
+                    object.pump_toughness += toughness;
+                }
+            }
+        }
         // Printed layer 7c pair static: "As long as this creature is paired with
         // another creature, each of those creatures gets +2/+2" (Druid's
         // Familiar, CR 702.94a). Like every other 7c modifier it is additive, and
@@ -1136,6 +1176,28 @@ impl Game {
         }) {
             return true;
         }
+        // Printed subtype haste static that includes the source: "Goblins you
+        // control have haste" (Goblin Warchief).
+        if self.state.objects.values().any(|source| {
+            source.zone == Zone::Battlefield
+                && source.controller == object.controller
+                && ability::static_abilities(source.card)
+                    .iter()
+                    .any(|ability| {
+                        let ability::StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste {
+                            subtypes,
+                            ..
+                        } = ability
+                        else {
+                            return false;
+                        };
+                        subtypes
+                            .iter()
+                            .any(|subtype| self.has_subtype(object, subtype))
+                    })
+        }) {
+            return true;
+        }
         // Printed subtype haste static: "Other Goblin creatures you control
         // have haste" (Goblin Chieftain). The source itself never qualifies,
         // and the subtype is read effectively (CR 613.1d).
@@ -1156,6 +1218,29 @@ impl Game {
                         .any(|subtype| self.has_subtype(object, subtype))
                 })
         })
+    }
+
+    /// CR 702.14c: mountainwalk from a printed keyword or from any printed
+    /// static on the battlefield. Goblin King's wording has no controller
+    /// restriction, so an opposing King can grant it to this creature.
+    fn has_mountainwalk(&self, object: &Object) -> bool {
+        object.has_keyword(crate::tokens::Keyword::Mountainwalk)
+            || self.state.objects.values().any(|source| {
+                source.zone == Zone::Battlefield
+                    && source.id != object.id
+                    && ability::static_abilities(source.card).iter().any(|ability| {
+                        let ability::StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk {
+                            subtypes,
+                            ..
+                        } = ability
+                        else {
+                            return false;
+                        };
+                        subtypes
+                            .iter()
+                            .any(|subtype| self.has_subtype(object, subtype))
+                    })
+            })
     }
 
     /// Start one continuous effect on the ability's own source, for a printed
@@ -1585,9 +1670,6 @@ impl Game {
     /// reduction only while it is on the battlefield under the caster's control.
     fn cost_reduction(&self, caster: PlayerId, card: CardId) -> u8 {
         let def = card.def();
-        if !def.is_creature() {
-            return 0;
-        }
         // A card's power outside the battlefield is its printed power: no effect
         // in this pool changes a card's characteristics in a hidden zone.
         let power = def.power.unwrap_or(0);
@@ -1597,14 +1679,22 @@ impl Game {
                 continue;
             }
             for static_ability in ability::static_abilities(object.card) {
-                if let ability::StaticAbility::CreatureSpellsYouCastWithPowerCostLess {
-                    minimum_power,
-                    generic,
-                    ..
-                } = static_ability
-                    && power >= *minimum_power
-                {
-                    reduction = reduction.saturating_add(*generic);
+                match static_ability {
+                    ability::StaticAbility::CreatureSpellsYouCastWithPowerCostLess {
+                        minimum_power,
+                        generic,
+                        ..
+                    } if def.is_creature() && power >= *minimum_power => {
+                        reduction = reduction.saturating_add(*generic);
+                    }
+                    ability::StaticAbility::SubtypeSpellsYouCastCostLess {
+                        subtype,
+                        generic,
+                        ..
+                    } if def.has_subtype(subtype) => {
+                        reduction = reduction.saturating_add(*generic);
+                    }
+                    _ => {}
                 }
             }
         }
@@ -4234,6 +4324,8 @@ impl Game {
             let attacker = self.state.object(block.attacker);
             let blocker = self.state.object(block.blocker);
             let defender_controls_island = self.controls_island(player);
+            let defender_controls_mountain = self.controls_mountain(player);
+            let attacker_has_mountainwalk = self.has_mountainwalk(attacker);
             let ring_blocked = self
                 .ring_bearer(attacker.controller)
                 .is_some_and(|bearer| bearer == block.attacker)
@@ -4244,12 +4336,24 @@ impl Game {
                     attacker.keywords(),
                     blocker.keywords(),
                     defender_controls_island,
+                    defender_controls_mountain,
+                    attacker_has_mountainwalk,
                 )
             {
                 let reason = if ring_blocked {
                     format!(
                         "{} cannot block the Ring-bearer because its power is greater (CR 701.54a)",
                         blocker.name()
+                    )
+                } else if (attacker_has_mountainwalk && defender_controls_mountain)
+                    || (attacker
+                        .keywords()
+                        .contains(&crate::tokens::Keyword::Mountainwalk)
+                        && defender_controls_mountain)
+                {
+                    format!(
+                        "{} has mountainwalk and you control a Mountain, so it can't be blocked (CR 702.14c)",
+                        attacker.name()
                     )
                 } else if attacker
                     .keywords()
@@ -4302,6 +4406,14 @@ impl Game {
             })
             .map(|o| o.id)
             .collect()
+    }
+
+    /// CR 702.14c: whether `player` controls an effective Mountain land.
+    /// Mountainwalk reads the defending player's board only.
+    fn controls_mountain(&self, player: PlayerId) -> bool {
+        self.state.objects.values().any(|o| {
+            o.zone == Zone::Battlefield && o.controller == player && self.has_subtype(o, "Mountain")
+        })
     }
 
     /// CR 702.14c: whether `player` controls an Island land. Islandwalk reads
@@ -11943,12 +12055,15 @@ impl Game {
             };
             // Only offer a pair the rules actually allow (CR 509.1b).
             let defender_controls_island = self.controls_island(player);
+            let defender_controls_mountain = self.controls_mountain(player);
             let Some((attacker, _)) = attackers.iter().find(|(id, _)| {
                 self.state.try_object(*id).is_some_and(|a| {
                     crate::tokens::can_block(
                         a.keywords(),
                         blocker_object.keywords(),
                         defender_controls_island,
+                        defender_controls_mountain,
+                        self.has_mountainwalk(a),
                     ) && !(self
                         .ring_bearer(a.controller)
                         .is_some_and(|bearer| bearer == *id)

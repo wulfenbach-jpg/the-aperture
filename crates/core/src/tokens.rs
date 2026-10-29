@@ -31,6 +31,8 @@ pub enum Keyword {
     /// controls an Island." Modelled as a blocking restriction only; nothing
     /// grants or removes it, and no other landwalk variant is supported.
     Islandwalk,
+    /// CR 702.14a: can't be blocked while defending player controls a Mountain.
+    Mountainwalk,
     /// CR 702.10a: a creature with haste ignores the summoning-sickness
     /// attack/tap restriction.
     Haste,
@@ -50,6 +52,7 @@ impl Keyword {
             Keyword::Islandwalk => "islandwalk",
             Keyword::Vigilance => "vigilance",
             Keyword::Haste => "haste",
+            Keyword::Mountainwalk => "mountainwalk",
         }
     }
 }
@@ -65,10 +68,17 @@ pub fn can_block(
     attacker: &[Keyword],
     blocker: &[Keyword],
     defender_controls_island: bool,
+    defender_controls_mountain: bool,
+    attacker_has_mountainwalk: bool,
 ) -> bool {
-    // Islandwalk is checked first: it forbids every blocker, whatever keywords
+    // Landwalk is checked first: it forbids every blocker, whatever keywords
     // that blocker has, so no finite keyword list can answer it.
     if attacker.contains(&Keyword::Islandwalk) && defender_controls_island {
+        return false;
+    }
+    if (attacker_has_mountainwalk || attacker.contains(&Keyword::Mountainwalk))
+        && defender_controls_mountain
+    {
         return false;
     }
     if !attacker.contains(&Keyword::Flying) {
@@ -233,28 +243,54 @@ mod tests {
 
     #[test]
     fn flying_is_blocked_only_by_flying_or_reach() {
-        assert!(can_block(&[], &[], false));
-        assert!(can_block(&[Keyword::Defender], &[], false));
-        assert!(!can_block(&[Keyword::Flying], &[], false));
-        assert!(!can_block(&[Keyword::Flying], &[Keyword::Defender], false));
-        assert!(can_block(&[Keyword::Flying], &[Keyword::Flying], false));
-        assert!(can_block(&[Keyword::Flying], &[Keyword::Reach], false));
+        assert!(can_block(&[], &[], false, false, false));
+        assert!(can_block(&[Keyword::Defender], &[], false, false, false));
+        assert!(!can_block(&[Keyword::Flying], &[], false, false, false));
+        assert!(!can_block(
+            &[Keyword::Flying],
+            &[Keyword::Defender],
+            false,
+            false,
+            false
+        ));
+        assert!(can_block(
+            &[Keyword::Flying],
+            &[Keyword::Flying],
+            false,
+            false,
+            false
+        ));
+        assert!(can_block(
+            &[Keyword::Flying],
+            &[Keyword::Reach],
+            false,
+            false,
+            false
+        ));
     }
 
     #[test]
     fn islandwalk_forbids_every_blocker_while_the_defender_controls_an_island() {
         // CR 702.14c: no blocker is legal, whatever its keywords.
-        assert!(!can_block(&[Keyword::Islandwalk], &[], true));
-        assert!(!can_block(&[Keyword::Islandwalk], &[Keyword::Reach], true));
+        assert!(!can_block(&[Keyword::Islandwalk], &[], true, false, false));
+        assert!(!can_block(
+            &[Keyword::Islandwalk],
+            &[Keyword::Reach],
+            true,
+            false,
+            false
+        ));
         // Without an Island on the defending board the restriction is inert.
-        assert!(can_block(&[Keyword::Islandwalk], &[], false));
+        assert!(can_block(&[Keyword::Islandwalk], &[], false, false, false));
         assert!(can_block(
             &[Keyword::Islandwalk],
             &[Keyword::Defender],
+            false,
+            false,
             false
         ));
         // It is not a grant: a plain creature is unaffected either way.
-        assert!(can_block(&[], &[Keyword::Islandwalk], true));
+        assert!(can_block(&[], &[Keyword::Islandwalk], true, false, false));
     }
 
     #[test]

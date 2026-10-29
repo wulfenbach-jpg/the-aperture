@@ -1,0 +1,122 @@
+{
+  "slice": 63,
+  "status": "PRODUCT BATCH COMPLETE; original #17 gate open",
+  "self_check": true,
+  "independent_review": false,
+  "base_commit": "a4ac11ca9813d6ba8327c658e8f793673755dc27",
+  "cards": [
+    {
+      "name": "Goblin Warchief",
+      "set": "dom",
+      "collector_number": "130",
+      "scryfall_id": "5bac033c-dc4e-40a0-b103-4892e4b50249",
+      "retrieved_at_utc": "2026-10-29T09:40:01Z",
+      "printings_checked": 13,
+      "implemented": [
+        "Goblin spells cost {1} less generic",
+        "Goblins you control have haste, including itself"
+      ]
+    },
+    {
+      "name": "Goblin King",
+      "set": "10e",
+      "collector_number": "207",
+      "scryfall_id": "4b266935-25ea-49c5-a1da-57c22a4362fd",
+      "retrieved_at_utc": "2026-10-29T09:40:01Z",
+      "printings_checked": 23,
+      "implemented": [
+        "Other Goblins get +1/+1 across all controllers",
+        "Other Goblins have mountainwalk across all controllers",
+        "source self-excluded"
+      ]
+    },
+    {
+      "name": "Dragonlord's Servant",
+      "set": "tdc",
+      "collector_number": "210",
+      "scryfall_id": "be6fa0dc-74e7-4fad-9bdd-8e986612577a",
+      "retrieved_at_utc": "2026-10-29T09:40:02Z",
+      "printings_checked": 14,
+      "implemented": [
+        "Dragon spells cost {1} less generic",
+        "does not reduce Goblin spells"
+      ]
+    }
+  ],
+  "shared_machinery": [
+    "SubtypeSpellsYouCastCostLess (generic only, stacking)",
+    "ControlledCreaturesWithAnySubtypeHaveHaste includes source",
+    "AllOtherCreaturesWithAnySubtypeGet all controllers self-excluded",
+    "AllOtherCreaturesWithAnySubtypeHaveMountainwalk all controllers",
+    "defending player's effective Mountain subtype + landwalk plumbing",
+    "no-abilities predicate shares effective subtype/creature queries for granted haste/mountainwalk"
+  ],
+  "counts": {
+    "catalog": 171,
+    "union": 459,
+    "supported_union": 158,
+    "missing_union": 301,
+    "krenko_missing": 43,
+    "certified_lists": "2 of 8"
+  },
+  "tests": {
+    "issue17_slice63": "8 passed",
+    "core_lib": "passed",
+    "card_printings": "22 passed",
+    "catalog_pool": "5 passed",
+    "commander_combat": "43 passed",
+    "slice15_corpus": "2 passed",
+    "replay_digest": "6 passed",
+    "import_planned": "3 passed",
+    "import_analyzer": "1 passed"
+  },
+  "gates": {
+    "script": "evidence/issue17/slice63/gates.sh",
+    "log": "evidence/issue17/slice63/final-native/gates.log",
+    "aggregate_failure_propagates": true,
+    "lib": 0,
+    "slice63": 0,
+    "card_printings": 0,
+    "catalog_pool": 0,
+    "corpus_pins": 0,
+    "import_planned": 0,
+    "fmt": 0,
+    "clippy": 0,
+    "release": 0,
+    "aggregate": 0
+  },
+  "journey": {
+    "path": "evidence/issue17/slice63/final-native/demo-journey.json",
+    "driver": "evidence/issue17/slice63-journey-driver",
+    "driver_label": "projected legal-offer evidence driver; explicitly not product AI, strength or GUI evidence",
+    "package": "decks/package-slice63.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2323,
+    "steps": 959,
+    "turns": 23,
+    "status": "terminal",
+    "winner": 3,
+    "digest": "9d9a923865a99af2a6679d391eb6b1d322cd4fd92e5f6461ee96b8d18e2f4a88",
+    "snapshot_sha256": "18fd35fb0e03250d20cc25ee743c24a4d4790a374be431275c34631473d2df33",
+    "casts": {
+      "Goblin Warchief": 6,
+      "Goblin King": 6,
+      "Dragonlord's Servant": 3,
+      "Goblin Instigator": 2,
+      "Beetleback Chief": 1
+    },
+    "attack_declarations": 14,
+    "combat_damage_events": 51,
+    "cli_replay_matches": true
+  },
+  "limitations": [
+    "Supported pool has no castable Dragon spell; Dragonlord's positive Dragon payment is not exercised end-to-end. Typed static and shared generic-reduction machinery are tested, and the Goblin-negative path is tested.",
+    "None of the three cards is a legal commander, so commander tax is not applicable.",
+    "Whole Krenko list remains planned with 43 missing names; this is not 3/8.",
+    "Focused affected suites only; no unrelated full acceptance matrix.",
+    "No product AI/policy/search redesign."
+  ],
+  "sources": "evidence/issue17/slice63/sources",
+  "fixture": "fixtures/starter-corpus/slice63-sourced.json"
+}

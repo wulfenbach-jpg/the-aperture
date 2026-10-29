@@ -57,6 +57,9 @@ const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 /// Slice 62: Goblin Chieftain (JMP 324) and Searslicer Goblin (FDN 93), fetched
 /// 2026-10-29.
 const SLICE62_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice62-sourced.json");
+/// Slice 63: Goblin Warchief (DOM 130), Goblin King (10E 207) and Dragonlord's
+/// Servant (TDC 210), fetched 2026-10-29.
+const SLICE63_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice63-sourced.json");
 /// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
@@ -502,6 +505,11 @@ fn slice60_cards() -> Vec<Value> {
     value["cards"].as_array().expect("cards").to_vec()
 }
 
+fn slice63_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE63_SOURCED).expect("sourced slice63 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
 fn slice62_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE62_SOURCED).expect("sourced slice62 JSON");
     value["cards"].as_array().expect("cards").to_vec()
@@ -560,6 +568,39 @@ const PRINTINGS: &[Printing] = &[
         oracle_text: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
         power: Some("2"),
         toughness: Some("1"),
+    },
+    Printing {
+        name: "Goblin Warchief",
+        set: "dom",
+        collector_number: "130",
+        scryfall_uri: "https://scryfall.com/card/dom/130/goblin-warchief",
+        printings_checked: 13,
+        retrieved: "2026-10-29",
+        oracle_text: "Goblin spells you cast cost {1} less to cast.\nGoblins you control have haste.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Goblin King",
+        set: "10e",
+        collector_number: "207",
+        scryfall_uri: "https://scryfall.com/card/10e/207/goblin-king",
+        printings_checked: 23,
+        retrieved: "2026-10-29",
+        oracle_text: "Other Goblins get +1/+1 and have mountainwalk.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Dragonlord's Servant",
+        set: "tdc",
+        collector_number: "210",
+        scryfall_uri: "https://scryfall.com/card/tdc/210/dragonlords-servant",
+        printings_checked: 14,
+        retrieved: "2026-10-29",
+        oracle_text: "Dragon spells you cast cost {1} less to cast.",
+        power: Some("1"),
+        toughness: Some("3"),
     },
     Printing {
         name: "Angrath's Marauders",
@@ -1631,5 +1672,42 @@ fn every_slice62_card_matches_its_recorded_printing_and_keywords() {
                 .is_some()
             );
         }
+    }
+}
+
+#[test]
+fn every_slice63_card_matches_its_recorded_printing_and_shared_statics() {
+    let cards = slice63_cards();
+    assert_eq!(cards.len(), 3, "slice 63 adds three sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
     }
 }

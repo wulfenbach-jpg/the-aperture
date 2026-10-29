@@ -1387,7 +1387,7 @@ fn fog_is_a_sourced_catalog_card() {
     // of slices 41-46 (the last being Thijarian Witness).
     // Slice 48 adds Owlbear Cub (160 -> 161) and slice 53 adds Ruxa, Patient
     // Professor (161 -> 162); the assertion's purpose is unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 168);
+    assert_eq!(aperture_core::catalog::pool_size(), 171);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

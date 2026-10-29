@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **155** are in the supported 168-card catalog and **304** are missing. Slice
+* **158** are in the supported 171-card catalog and **301** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
@@ -338,7 +338,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 168 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 171 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1304,3 +1304,48 @@ driver is explicitly not product AI and the shipped CLI replay reproduces digest
 **Corpus after this slice.** 168 catalog / 459 union = **155 supported + 304
 missing**, per-list `[55, 0, 51, 46, 0, 52, 52, 53]`; Krenko has **46** missing
 names so **two of eight** lists remain certified. This slice does not claim 3/8.
+
+
+## Slice 63: shared Goblin/Dragon lords and reducers
+
+All three cards were fetched by exact Scryfall named-card requests on 2026-10-29
+with normal user agent and ≥120 ms spacing. Raw responses, source records and
+printings sweeps are in `evidence/issue17/slice63/sources/`; the fixture is
+`fixtures/starter-corpus/slice63-sourced.json`.
+
+**Goblin Warchief** (DOM 130, `{1}{R}{R}`, Goblin Warrior 2/2) prints "Goblin
+spells you cast cost {1} less to cast. Goblins you control have haste." The cost
+static is the shared `SubtypeSpellsYouCastCostLess` type: it matches effective
+printed Goblin subtype, reduces only the generic component, stacks across
+Warchiefs, applies to any Goblin spell type, and leaves colored pips required.
+The haste static is `ControlledCreaturesWithAnySubtypeHaveHaste`, whose printed
+wording includes its source. Tests exercise real hand→cast→stack→resolve,
+stacked reductions, a one-Warchief insufficient-generic control, colored-pip
+refusal, self/other haste, non-Goblin/opponent exclusion and departure.
+
+**Goblin King** (10E 207, `{1}{R}{R}`, Goblin 2/2) prints "Other Goblins get
++1/+1 and have mountainwalk." Both statics are deliberately all-controller and
+self-excluding: `AllOtherCreaturesWithAnySubtypeGet` and
+`AllOtherCreaturesWithAnySubtypeHaveMountainwalk`. A second King boosts the
+first, opponents' Goblins get the anthem and mountainwalk, and the source does
+not grant itself mountainwalk. Blocking reads the defending player's effective
+Mountain subtype through the shared landwalk path; a Mountain refuses the block
+and no-Mountain control permits it. The no-abilities predicate treats granted
+mountainwalk as an ability and preserves non-Goblin/graveyard controls.
+
+**Dragonlord's Servant** (TDC 210, `{1}{R}`, Goblin Shaman 1/3) prints "Dragon
+spells you cast cost {1} less to cast." It uses the same subtype-reduction
+static with subtype **Dragon**, and tests require that it never reduces Goblin
+spells. The supported pool has no castable Dragon spell, so the positive
+Dragon-payment path is not exercised end-to-end; the typed static and the
+shared reduction machinery are, and this is recorded as a test limitation rather
+than hidden. None of these three cards is a legal commander, so commander tax is
+not applicable to this package.
+
+**Corpus after this slice.** 171 catalog / 459 union = **158 supported + 301
+missing**, per-list `[55, 0, 51, 43, 0, 52, 52, 53]`, Krenko **43** missing;
+**two of eight** lists certified. This is not a 3/8 claim.
+
+**Evidence.** `crates/core/tests/issue17_slice63.rs`, the printing chain in
+`crates/core/tests/card_printings.rs`, and the 40-card four-seat journey under
+`evidence/issue17/slice63/final-native/` with a separate shipped CLI replay.

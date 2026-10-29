@@ -1393,6 +1393,35 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 601.2f + 118.7a: "Goblin spells you cast cost {1} less to cast"
+    /// (Goblin Warchief) or "Dragon spells ..." (Dragonlord's Servant). The
+    /// static reduces only the generic part of a matching spell cost.
+    SubtypeSpellsYouCastCostLess {
+        subtype: &'static str,
+        generic: u8,
+        text: &'static str,
+    },
+    /// CR 613.4d + 205.3: "Goblins you control have haste" (Goblin Warchief).
+    /// Unlike the "Other" variants, the printed wording includes the source.
+    ControlledCreaturesWithAnySubtypeHaveHaste {
+        subtypes: &'static [&'static str],
+        text: &'static str,
+    },
+    /// CR 613.4c: "Other Goblins get +P/+T" with no controller restriction
+    /// (Goblin King). Every other matching creature in every seat is affected;
+    /// the source itself is not.
+    AllOtherCreaturesWithAnySubtypeGet {
+        subtypes: &'static [&'static str],
+        power: i32,
+        toughness: i32,
+        text: &'static str,
+    },
+    /// CR 702.14c: "Other Goblins ... have mountainwalk" with no controller
+    /// restriction (Goblin King). The source itself is excluded.
+    AllOtherCreaturesWithAnySubtypeHaveMountainwalk {
+        subtypes: &'static [&'static str],
+        text: &'static str,
+    },
     /// CR 613.4d + 205.3: "Other Goblin creatures you control have haste"
     /// (Goblin Chieftain). The source never grants itself haste; the recipient
     /// must be another creature controlled by the same seat and have any listed
@@ -1458,6 +1487,10 @@ impl StaticAbility {
             | StaticAbility::OtherBearsYouControlGet { text, .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { text, .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste { text, .. }
+            | StaticAbility::SubtypeSpellsYouCastCostLess { text, .. }
+            | StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste { text, .. }
+            | StaticAbility::AllOtherCreaturesWithAnySubtypeGet { text, .. }
+            | StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk { text, .. }
             | StaticAbility::PairedEachGet { text, .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { text, .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text } => text,
@@ -1484,7 +1517,11 @@ impl StaticAbility {
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
             | StaticAbility::OtherControlledCreaturesHaveTrample { .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste { .. }
+            | StaticAbility::SubtypeSpellsYouCastCostLess { .. }
+            | StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste { .. }
+            | StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
+            StaticAbility::AllOtherCreaturesWithAnySubtypeGet { .. } => Some(Layer::Modifying),
         }
     }
 
@@ -1500,6 +1537,10 @@ impl StaticAbility {
             | StaticAbility::OtherBearsYouControlGet { .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste { .. }
+            | StaticAbility::SubtypeSpellsYouCastCostLess { .. }
+            | StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste { .. }
+            | StaticAbility::AllOtherCreaturesWithAnySubtypeGet { .. }
+            | StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk { .. }
             | StaticAbility::PairedEachGet { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
@@ -1760,6 +1801,38 @@ const GOBLIN_CHIEFTAIN_STATIC: &[StaticAbility] = &[
     },
 ];
 
+const GOBLIN_WARCHIEF_STATIC: &[StaticAbility] = &[
+    StaticAbility::SubtypeSpellsYouCastCostLess {
+        subtype: "Goblin",
+        generic: 1,
+        text: "Goblin spells you cast cost {1} less to cast.",
+    },
+    StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste {
+        subtypes: GOBLIN_SUBTYPES,
+        text: "Goblins you control have haste.",
+    },
+];
+
+const GOBLIN_KING_STATIC: &[StaticAbility] = &[
+    StaticAbility::AllOtherCreaturesWithAnySubtypeGet {
+        subtypes: GOBLIN_SUBTYPES,
+        power: 1,
+        toughness: 1,
+        text: "Other Goblins get +1/+1 and have mountainwalk.",
+    },
+    StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk {
+        subtypes: GOBLIN_SUBTYPES,
+        text: "Other Goblins get +1/+1 and have mountainwalk.",
+    },
+];
+
+const DRAGONLORDS_SERVANT_STATIC: &[StaticAbility] =
+    &[StaticAbility::SubtypeSpellsYouCastCostLess {
+        subtype: "Dragon",
+        generic: 1,
+        text: "Dragon spells you cast cost {1} less to cast.",
+    }];
+
 const SPIDER_HAM_STATIC: &[StaticAbility] = &[
     StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
         subtypes: SPIDER_HAM_SUBTYPES,
@@ -1773,6 +1846,9 @@ const SPIDER_HAM_STATIC: &[StaticAbility] = &[
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
         CardId::GoblinChieftain => GOBLIN_CHIEFTAIN_STATIC,
+        CardId::GoblinWarchief => GOBLIN_WARCHIEF_STATIC,
+        CardId::GoblinKing => GOBLIN_KING_STATIC,
+        CardId::DragonlordsServant => DRAGONLORDS_SERVANT_STATIC,
         CardId::SpiderHamPeterPorker => SPIDER_HAM_STATIC,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR_STATIC,
         CardId::BeornTheFierce => BEORN_STATIC,

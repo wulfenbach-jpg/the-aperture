@@ -3679,16 +3679,34 @@ impl GameState {
         let granted_by_static = object.zone == Zone::Battlefield && self.objects.values().any(|source| {
             source.zone == Zone::Battlefield
                 && source.id != object.id
-                && source.controller == object.controller
                 && crate::ability::static_abilities(source.card)
                     .iter()
                     .any(|ability| {
                         matches!(
                             ability,
                             crate::ability::StaticAbility::OtherControlledCreaturesHaveTrample { .. }
-                        ) || matches!(
+                        ) && source.controller == object.controller || matches!(
                             ability,
                             crate::ability::StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste {
+                                subtypes,
+                                ..
+                            } if self.object_is_creature(object)
+                                && subtypes
+                                    .iter()
+                                    .any(|subtype| self.object_has_subtype(object, subtype))
+                        ) || matches!(
+                            ability,
+                            crate::ability::StaticAbility::ControlledCreaturesWithAnySubtypeHaveHaste {
+                                subtypes,
+                                ..
+                            } if source.controller == object.controller
+                                && self.object_is_creature(object)
+                                && subtypes
+                                    .iter()
+                                    .any(|subtype| self.object_has_subtype(object, subtype))
+                        ) || matches!(
+                            ability,
+                            crate::ability::StaticAbility::AllOtherCreaturesWithAnySubtypeHaveMountainwalk {
                                 subtypes,
                                 ..
                             } if self.object_is_creature(object)

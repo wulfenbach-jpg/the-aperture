@@ -188,12 +188,10 @@
         "Breeches, Eager Pillager",
         "Conspicuous Snoop",
         "Crime Novelist",
-        "Dragonlord's Servant",
         "Empty the Warrens",
         "General Kreat, the Boltbringer",
         "Goblin Chirurgeon",
         "Goblin Engineer",
-        "Goblin King",
         "Goblin Lackey",
         "Goblin Matron",
         "Goblin Recruiter",
@@ -202,7 +200,6 @@
         "Goblin Traprunner",
         "Goblin Trashmaster",
         "Goblin War Party",
-        "Goblin Warchief",
         "Goblin Welder",
         "Goro-Goro, Disciple of Ryusei",
         "Grenzo, Havoc Raiser",
@@ -232,8 +229,8 @@
         "Zo-Zu the Punisher"
       ],
       "missing_interactions": [
-        "remaining 46 desired-list cards are not in the supported pool",
-        "goblin tribal static/triggered payoffs beyond the implemented Goblin Chieftain anthem/haste and six-card token package",
+        "remaining 43 desired-list cards are not in the supported pool",
+        "goblin tribal static/triggered payoffs beyond the implemented Chieftain/Warchief haste, Warchief/King static package, Dragonlord reducer and six-card token package",
         "tokens outside the typed 1/1 red Goblin package"
       ]
     },

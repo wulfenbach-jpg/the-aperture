@@ -1,0 +1,25 @@
+{
+  "name": "Dragonlord's Servant",
+  "set": "tdc",
+  "collector_number": "210",
+  "oracle_id": "faf81ae0-0b35-45ef-a50d-6cecf0c0eeeb",
+  "mana_cost": "{1}{R}",
+  "type_line": "Creature — Goblin Shaman",
+  "power": "1",
+  "toughness": "3",
+  "oracle_text": "Dragon spells you cast cost {1} less to cast.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2025-04-11",
+  "scryfall_id": "be6fa0dc-74e7-4fad-9bdd-8e986612577a",
+  "retrieved_at_utc": "2026-10-29T09:40:02Z",
+  "provider": "scryfall",
+  "url": "https://api.scryfall.com/cards/named?exact=Dragonlord%27s%20Servant",
+  "legalities_commander": "legal"
+}
