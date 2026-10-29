@@ -77,10 +77,10 @@ fn interaction_exclusions(deck: &DeckList) -> Vec<String> {
     }
     let list = |names: &[&'static str]| names.join(", ");
     let mut out = vec![
-        "legend rule (CR 704.5j): a general legend-rule SBA with its controller choice is not \
-         modelled for this certificate; the list supplies exactly one copy of its commander per \
-         seat and contains no copy effects, so no player can control two same-named legends in \
-         these games"
+        "legend rule (CR 704.5j): the state-based action and its controller choice are implemented \
+         and covered by the engine conformance suites; these certified games never reach a choice, \
+         because each seat supplies exactly one copy of its commander and the list contains no \
+         copy effects"
             .to_string(),
     ];
     if equipment.is_empty()

@@ -65,7 +65,6 @@
         "Weathered Wayfarer"
       ],
       "missing_interactions": [
-        "legend rule",
         "equipment/aura permanents",
         "enough supported white aggressive permanents"
       ]
@@ -104,7 +103,7 @@
           "crates/cli/tests/certify.rs"
         ],
         "interaction_exclusions": [
-          "legend rule (CR 704.5j): unmodelled; unreachable in this list because every seat supplies exactly one copy of its commander and the list contains no copy effects",
+          "legend rule (CR 704.5j): implemented, including its controller's choice of which same-named legend to keep; these games never reach a choice because every seat supplies exactly one copy of its commander and the list contains no copy effects",
           "equipment, Auras, planeswalkers and nonbasic lands: none are in the list, so their rules are neither exercised nor claimed",
           "native Commander table, trainer, measured playing strength and arbitrary Archidekt compatibility: out of scope for this certificate"
         ],
@@ -238,7 +237,6 @@
         "remaining 48 desired-list cards are not in the supported pool",
         "goblin tribal static/triggered payoffs beyond the six-card token package",
         "haste keyword semantics",
-        "legend rule (Krenko remains commander-only)",
         "tokens outside the typed 1/1 red Goblin package"
       ]
     },
@@ -276,7 +274,7 @@
           "crates/cli/tests/certify.rs"
         ],
         "interaction_exclusions": [
-          "legend rule (CR 704.5j): a general legend-rule SBA with its controller choice is not modelled for this certificate; the list supplies exactly one copy of its commander per seat and contains no copy effects, so no player can control two same-named legends in these games",
+          "legend rule (CR 704.5j): implemented, including its controller's choice of which same-named legend to keep; these certified games never reach a choice, because the list supplies exactly one copy of its commander per seat and contains no copy effects",
           "the list does contain artifacts (Friendly Teddy, Stuffed Bear, Sol Ring, Arcane Signet, Swiftfoot Boots, Lightning Greaves, Fellwar Stone), Equipment (Swiftfoot Boots, Lightning Greaves) and enchantments (Dancing from Dark to Dawn, Beorn's Hospitality, Ayula's Influence, Bearscape, Words of Wilding): each such card is implemented and is covered by the engine conformance suites, but these three games only exercise the ones named in coverage.cast_names / coverage.land_played_names",
           "native Commander table, trainer, measured playing strength and arbitrary Archidekt compatibility: out of scope for this certificate",
           "hideaway's look permission is recorded only for the player who controlled the exiling permanent; control changes of that permanent are not tracked, and additional costs on a free-cast card are not modelled because no pool card prints one"

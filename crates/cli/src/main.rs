@@ -68,11 +68,12 @@ pub enum Command {
         /// One `SEAT:CARD` commander spec per seat; requires an explicit
         /// command-zone profile (`--command-zone-practice` or
         /// `--commander-combat-practice`). Example:
-        /// `0:Krenko, Mob Boss`. Supported commanders: Isamaru, Hound of
-        /// Konda; Jasmine Boreal; Krenko, Mob Boss; Talrand, Sky Summoner;
-        /// Tatyova, Benthic Druid.
+        /// `0:Krenko, Mob Boss`. Supported commanders — exactly the entries of
+        /// `CardId::SUPPORTED_COMMANDERS` — are: Isamaru, Hound of Konda;
+        /// Jasmine Boreal; Ayula, Queen Among Bears; Krenko, Mob Boss;
+        /// Talrand, Sky Summoner; Tatyova, Benthic Druid.
         /// Both explicit profiles are bounded practice, not the Commander
-        /// format (no legend rule, no full 100-card construction).
+        /// format (one supported commander per seat, 20 or 40 life).
         #[arg(long = "commander")]
         commander: Vec<String>,
     },

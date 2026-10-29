@@ -204,7 +204,9 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    `TargetSpec::BearYouControl` modes with a typed fight effect (CR 701.14a/b).
    Other counters-matter and tribal statics in these lists remain unimplemented;
 6. single-target spell copying and go-wide pump (Zada);
-7. legend rule, equipment and Aura permanents (Isamaru and any future legend);
+7. equipment and Aura permanents beyond the slice-42 shared attachment package
+   (Lightning Greaves and Swiftfoot Boots). The CR 704.5j legend rule with its
+   controller's choice is **implemented** (slice 59), so it is no longer a gap;
 8. black basic land support (Elas): **implemented** as the sourced Swamp basic;
 9. graveyard filling (all four lists): **bounded implemented package** — mill
    from the top of a library as a real zone move (Stitcher's Supplier mills its
@@ -245,9 +247,9 @@ None of these planned lists is called supported, legal-for-play or certified.
     already-tested typed abilities);
   * **41 basic lands**: 20 Plains and 21 Forest.
 * Total with the commander: 100 cards. No card in the library is legendary, so
-  the unimplemented legend rule is never exercised. No nonbasic singleton card
-  is duplicated. There is no snow, artifact, enchantment creature, token,
-  counter, keyword or unsupported rules text in the package.
+  the implemented legend rule (CR 704.5j) is never exercised by these games. No
+  nonbasic singleton card is duplicated. There is no snow, artifact, enchantment
+  creature, token, counter, keyword or unsupported rules text in the package.
 * Sourced printings: `fixtures/starter-corpus/sourced-cards.json` records the
   concrete Scryfall printing, printing URL, Oracle fields and retrieval time for
   every referenced card. Raw provider responses are in
@@ -319,11 +321,10 @@ Recorded certificate (`evidence/issue17/slice10/certification.json`, schema
 Documented interaction exclusions for this list (also machine-readable in the
 manifest `certification.interaction_exclusions`):
 
-* **Legend rule (CR 704.5j)** is not modelled. It is unreachable in this list —
-  each seat supplies exactly one copy of its commander and no copy effect exists
-  — so no certified game depends on it. Any list that could put two same-named
-  legends under one player stays uncertifiable until the SBA and its controller
-  choice exist.
+* **Legend rule (CR 704.5j)** is implemented, including its controller's choice
+  of which same-named legend to keep. These games never reach a choice — each
+  seat supplies exactly one copy of its commander and no copy effect exists — so
+  no certified game depends on it.
 * Equipment, Auras, planeswalkers and nonbasic lands are absent from the list,
   so none of their rules are exercised or claimed.
 * The native Commander table, trainer, measured playing strength and arbitrary
@@ -373,9 +374,13 @@ plays it well.
   approximated.
 * Genuine vanilla creatures are preferred for volume: they add no hidden
   keyword, token, counter or replacement semantics.
-* Legendary cards are commander-only. The legend rule is not modelled, so a
-  supported commander is refused in ordinary starting libraries and no other
-  legend may enter a starter library.
+* Only the registered commanders are commander-only: `DeckList::parse_practice`
+  refuses a `SUPPORTED_COMMANDERS` entry in an ordinary starting library, because
+  the command-zone profile owns its setup. Other legendary cards are ordinary
+  pool cards and may appear in a starter library (the certified
+  `ayula-bear-counters` list contains five). The CR 704.5j legend rule is
+  implemented, so two same-named legendary permanents under one player are a
+  real state-based choice with its controller's answer, not an unmodelled gap.
 * Nonbasic singleton cards may appear once per list. Basic lands are the only
   repeatable cards.
 * Source data must come from an authoritative printing (Scryfall printing
@@ -710,7 +715,9 @@ list: Ayula has 13 missing names and the eight-list gate remains 1 of 8.
 ## Slice 41: The Earth King
 The Earth King (`{3}{G}`, 2/2 Legendary Human Noble Ally) is sourced in `fixtures/starter-corpus/slice41-sourced.json` (TLA 172, immutable a8d5dca6, retrieved 2026-10-28T07:02:29Z). Its ETB creates a distinct 4/4 green Bear token (CR 111.4 name, nonimportable). Its attack trigger fires once when one or more of its controller's current 4+ power creatures attack and opens an incremental private basic-land search with a captured count; any number up to that count may be chosen, chosen lands enter tapped through the canonical land-entry path, and the library shuffles even for zero choices. Search choices are owner-only in projections. A land put onto the battlefield by any effect now fires existing landfall watchers once per land (CR 603.6a) without spending the land play.
 
-**Exclusion, not a convention.** The legend rule (CR 704.5j) is not implemented. Until this slice every legendary card in the pool was gated as commander-only by `DeckList::parse_practice`, so no legendary permanent could reach a library and the state-based action had no reachable input. The Earth King is not in `SUPPORTED_COMMANDERS`, so it *is* admitted into practice libraries, and its 40-card evidence package carries four copies: two copies of the same legendary permanent can legally coexist on this engine's battlefield. A real Commander list is singleton, so the Ayula certification path cannot reach that state, but the gap is real for ordinary practice decks and is recorded here rather than papered over as an existing convention. Fixing it means implementing the CR 704.5j controller choice, which is its own slice.
+**Exclusion, not a convention.** *(Historical: superseded by slice 59 — the CR 704.5j
+legend rule, including the controller's choice, is now implemented; see the slice-59
+section below.)* The legend rule (CR 704.5j) is not implemented. Until this slice every legendary card in the pool was gated as commander-only by `DeckList::parse_practice`, so no legendary permanent could reach a library and the state-based action had no reachable input. The Earth King is not in `SUPPORTED_COMMANDERS`, so it *is* admitted into practice libraries, and its 40-card evidence package carries four copies: two copies of the same legendary permanent can legally coexist on this engine's battlefield. A real Commander list is singleton, so the Ayula certification path cannot reach that state, but the gap is real for ordinary practice decks and is recorded here rather than papered over as an existing convention. Fixing it means implementing the CR 704.5j controller choice, which is its own slice.
 
 ## Slice 42: shared Equipment — Lightning Greaves and Swiftfoot Boots
 Lightning Greaves and Swiftfoot Boots are ordinary artifact Equipment with typed attachment effects. Equip is a targeted activated ability with its printed mana cost, sorcery timing, source-controller restriction and target creature you control; attachment changes only when the equip ability resolves, and the previous attachment persists while the new equip is on the stack. Greaves grants haste/shroud; Boots grants haste/hexproof. Shroud blocks all targeting, hexproof blocks only opponents; player targets and nontarget effects are unaffected. Attachments end when either object leaves the battlefield, when the creature ceases to be a creature, or on a later incantation of the same ObjectId. No broader Equipment/Aura/protection support is claimed.
@@ -720,7 +727,7 @@ Lumra (`{4}{G}{G}` Legendary Creature — Elemental Bear) is sourced in `fixture
 
 Two rule surfaces arrive with it. **Reach** is a blocking permission (`tokens::keywords`), so Lumra can block a flyer a ground creature cannot. **Vigilance** (CR 702.20a) is read at the single place an attacker is tapped (CR 508.1f): attacking leaves Lumra untapped and nothing else about the attack changes. The enters trigger mills four cards (`Effect::MillSelf`, already supported) and then returns **every** land card from its controller's graveyard to the battlefield tapped (`Effect::ReturnLandCardsFromGraveyardTapped`): the set is taken at resolution (CR 608.2c) and each land enters through the canonical entry path, so landfall watchers fire once per returning land although no land play is spent.
 
-Exclusions, unchanged from slice 41 and still true here: the legend rule (CR 704.5j) is not implemented, so two copies of the same legendary permanent can coexist on this engine's battlefield; a singleton Commander list cannot reach that state, and Lumra is the pool's second legendary card admitted into a practice library. Nothing about lands' own abilities is inferred from text: a returned land is a permanent with its printed mana ability, nothing more.
+Exclusions, unchanged from slice 41 and still true here: the legend rule (CR 704.5j) is not implemented, so two copies of the same legendary permanent can coexist on this engine's battlefield; a singleton Commander list cannot reach that state, and Lumra is the pool's second legendary card admitted into a practice library. *(Historical: superseded by slice 59 — the legend rule, including the controller's choice, is implemented.)* Nothing about lands' own abilities is inferred from text: a returned land is a permanent with its printed mana ability, nothing more.
 
 
 ## Slice 44: Spirit of the Aldergard
@@ -1155,6 +1162,13 @@ CR 704.5j applies to legendary permanents, so the SBA now groups only printed le
 permanents or their controller's level-1+ Ring-bearer, and a compiled regression proves one
 legend beside an ordinary same-name card is not a legend choice (and that a forged truncated
 choice is refused by both `GameState::validate` and a real save load).
+
+**Supersedes the slice-41 and slice-43 exclusions.** Those sections record, at
+their own time, that the CR 704.5j legend rule was unimplemented. It is
+implemented now, so that statement is historical: two same-named legendary
+permanents under one player raise `Pending::LegendaryChoice` and its controller
+answers. The remaining legend-rule limit is that nothing in the pool copies a
+permanent, so a certified four-seat game cannot manufacture the choice.
 
 **Evidence.** `crates/core/tests/issue17_slice59_repairs.rs` (native seven), 
 `crates/core/tests/issue17_slice59_ring_repairs.rs` and

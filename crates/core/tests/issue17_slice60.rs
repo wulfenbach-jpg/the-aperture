@@ -157,8 +157,8 @@ fn entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest() {
                 CardId::RuneclawBear,
                 CardId::Mountain,
                 CardId::Forest,
-                CardId::Forest,
-                CardId::Forest,
+                CardId::Plains,
+                CardId::Plains,
             ],
         )
         .library(P1, &[CardId::Forest; 8])
@@ -198,6 +198,56 @@ fn entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest() {
     assert!(
         g.state.player(P0).hand.is_empty(),
         "hideaway exiles, never draws"
+    );
+    // R360-3: the observable library order, not only the counts. The cards below
+    // the two looks are untouched and stay on top in their original order; the
+    // looked-at cards that were not exiled go to the bottom in random order, so
+    // only their multiset is asserted. Leaving the looked-at rest on top (the
+    // `library.splice(0..0, rest)` mutation) puts a looked card above the
+    // untouched tail and fails the first assertion.
+    let looked = [
+        CardId::GrizzlyBears,
+        CardId::Forest,
+        CardId::Island,
+        CardId::RuneclawBear,
+        CardId::Mountain,
+        CardId::Forest,
+    ];
+    let exiled: Vec<CardId> = g
+        .state
+        .hideaway
+        .iter()
+        .map(|link| g.state.object(link.card).card)
+        .collect();
+    let mut expected_bottom: Vec<CardId> = looked.to_vec();
+    for card in &exiled {
+        let pos = expected_bottom
+            .iter()
+            .position(|c| c == card)
+            .expect("each exiled card was one of the looked-at cards");
+        expected_bottom.remove(pos);
+    }
+    let library = &g.state.player(P0).library;
+    assert_eq!(library.len(), 6, "two exiled, six left in the library");
+    let top: Vec<CardId> = library[..2]
+        .iter()
+        .map(|id| g.state.object(*id).card)
+        .collect();
+    assert_eq!(
+        top,
+        vec![CardId::Plains, CardId::Plains],
+        "the untouched tail stays on top, in its original order"
+    );
+    let mut bottom: Vec<&str> = library[2..]
+        .iter()
+        .map(|id| g.state.object(*id).card.name())
+        .collect();
+    let mut expected: Vec<&str> = expected_bottom.iter().map(|c| c.name()).collect();
+    bottom.sort_unstable();
+    expected.sort_unstable();
+    assert_eq!(
+        bottom, expected,
+        "every looked-at card that was not exiled went to the bottom"
     );
 }
 

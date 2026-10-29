@@ -422,3 +422,33 @@ fn pregame_chosen_color_commander_exits_2_without_false_color_illegal() {
     });
     assert!(!color_illegal, "{report}");
 }
+
+/// R360-4: the `--commander` help is the human's allow-list for reproducing a
+/// certified list, so it must name every entry of `CardId::SUPPORTED_COMMANDERS`
+/// (Ayula, Queen Among Bears was missing) and must not repeat the retired
+/// "no legend rule" claim — CR 704.5j is implemented.
+#[test]
+fn selfplay_commander_help_lists_every_supported_commander() {
+    let out = run(&["selfplay", "--help"]);
+    assert!(
+        out.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let help = String::from_utf8_lossy(&out.stdout);
+    assert!(
+        !help.contains("no legend rule"),
+        "retired legend-rule claim is still in `selfplay --help`: {help}"
+    );
+    assert!(
+        help.contains("CardId::SUPPORTED_COMMANDERS"),
+        "the help no longer names the registry it must track: {help}"
+    );
+    for id in aperture_core::card::SUPPORTED_COMMANDERS {
+        let name = aperture_core::catalog::def(*id).name;
+        assert!(
+            help.contains(name),
+            "`selfplay --help` omits supported commander {name}: {help}"
+        );
+    }
+}
