@@ -1283,7 +1283,13 @@ leaving combat; it is cleared only when the turn number advances. `TriggerEvent:
 queues the trigger only for the active seat's battlefield sources, and
 `TriggerCondition::RaidAttackedThisTurn` rechecks the captured controller on
 resolution. Token creation reuses the typed 1/1 red Goblin package. The empty
-field is omitted on serialization, preserving old saves and default digests.
+field is omitted on serialization, so old states that never gain attack history
+serialize unchanged. This is not broad digest continuity: a historical
+mid/post-attack save or replay run under the new engine now materializes
+`attacked_this_turn` and redigests. The Ruxa no-abilities predicate shares the
+effective subtype/creature queries, so a vanilla Goblin token granted haste by
+Chieftain is not treated as ability-less; noncreatures, opposing Goblins and
+graveyard cards remain outside the static.
 
 Coverage is `crates/core/tests/issue17_slice62.rs`: cast-to-stack-to-resolution,
 anthem/haste with self/other/opponent/non-Goblin controls, actual attack
@@ -1291,7 +1297,7 @@ declaration while sick, Raid active seat/end step/attacked/did-not-attack, sourc
 departure after the trigger is on the stack, turn-transition reset, intervening-if,
 and real `SessionSave` persistence plus refusal of fabricated non-sandbox
 history. The 40-card four-seat journey is
-`evidence/issue17/slice62/final/native/`; its projected legal-offer evidence
+`evidence/issue17/slice62/final-native/`; its projected legal-offer evidence
 driver is explicitly not product AI and the shipped CLI replay reproduces digest
 `8753aeb5…35ae`.
 

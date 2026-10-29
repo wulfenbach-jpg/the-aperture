@@ -183,7 +183,7 @@ fn main() {
         loaded.game, game.state,
         "fresh save preserves the exact state"
     );
-    let out = root.join("evidence/issue17/slice62/final/native");
+    let out = root.join("evidence/issue17/slice62/final-native");
     std::fs::create_dir_all(&out).unwrap();
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 

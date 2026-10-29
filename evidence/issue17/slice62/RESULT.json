@@ -47,11 +47,11 @@
   "persistence": {
     "field": "GameState.attacked_this_turn",
     "serde_default_skip_empty": true,
-    "old_default_digest_preserved_by_empty_omission": true,
+    "old_default_digest_preserved_by_empty_omission": "only states that never gain attack history; historical mid/post-attack saves/replays redigest",
     "session_save_roundtrip": "sandbox history preserved; fabricated non-sandbox history refused by embedded-replay invariant"
   },
   "tests": {
-    "issue17_slice62": "5 passed",
+    "issue17_slice62": "7 passed",
     "card_printings": "21 passed",
     "catalog_pool": "5 passed",
     "commander_combat": "43 passed",
@@ -62,10 +62,11 @@
   },
   "gates": {
     "script": "evidence/issue17/slice62/gates.sh",
-    "log": "evidence/issue17/slice62/gates.log",
+    "log": "evidence/issue17/slice62/final-native/gates.log",
     "fmt": 0,
     "clippy_workspace_all_targets_Dwarnings": 0,
-    "release_workspace_locked": 0
+    "release_workspace_locked": 0,
+    "aggregate_failure_propagates": true
   },
   "journey": {
     "driver": "evidence/issue17/slice62-journey-driver",
@@ -89,7 +90,8 @@
     "raid_goblin_tokens": 15,
     "attack_declarations": 15,
     "combat_damage_events": 74,
-    "cli_replay_matches": true
+    "cli_replay_matches": true,
+    "path": "evidence/issue17/slice62/final-native/demo-journey.json"
   },
   "artifacts": {
     "manifest": "decks/starter-corpus/manifest.json",
@@ -103,5 +105,18 @@
     "No product AI or model changes; journey driver uses projected legal offers only.",
     "No historical full test matrix; focused affected suites only.",
     "Independent review/publication/CI are native-owner steps and not claimed."
-  ]
+  ],
+  "ai_compatibility": "crates/ai/src/search.rs copies public attack declaration history; crates/ai/tests/common.rs initializes the field. No policy/search behavior redesign.",
+  "ruxa_predicate": "object_has_no_abilities shares effective subtype/creature queries; Chieftain-granted vanilla Goblin token is not ability-less; noncreature/opponent/graveyard guards tested.",
+  "commit": "final repair commit recorded in receipt",
+  "supersedes": [
+    "evidence/issue17/slice62/final/native/",
+    "initial RESULT/TDD wording that overclaimed digest continuity"
+  ],
+  "evidence_paths": {
+    "journey": "evidence/issue17/slice62/final-native/demo-journey.json",
+    "replay": "evidence/issue17/slice62/final-native/demo-replay.json",
+    "gates": "evidence/issue17/slice62/final-native/gates.log",
+    "audit": "evidence/issue17/slice62/final-native/corpus-audit.log"
+  }
 }

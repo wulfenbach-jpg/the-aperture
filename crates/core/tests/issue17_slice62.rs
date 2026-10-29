@@ -183,30 +183,120 @@ fn searslicer_casts_and_raid_end_step_makes_a_real_token_after_attackers_leave()
 }
 
 #[test]
-fn raid_does_not_trigger_without_an_attack_this_turn() {
+fn raid_does_not_trigger_when_entering_end_step_without_an_attack() {
     let mut g = fixture(6203)
         .battlefield(P0, &[CardId::SearslicerGoblin])
         .library(P0, &[CardId::Mountain; 8])
         .library(P1, &[CardId::Forest; 8])
-        .main(P0, Step::EndStep)
+        .main(P0, Step::PostcombatMain)
         .build();
-    let prior = g.state.turn.number;
-    for _ in 0..10 {
-        if g.state.pending.is_none() && g.state.stack.is_empty() {
-            if g.state.turn.step == Step::EndStep {
-                let p = g.decision_owner().unwrap();
-                submit_ok(&mut g, p, Action::Pass);
-            } else {
-                break;
-            }
-        } else if let Some(p) = g.decision_owner() {
+    let mut reached_end_step = false;
+    for _ in 0..8 {
+        if g.state.turn.step == Step::EndStep {
+            reached_end_step = true;
+            break;
+        }
+        let Some(p) = g.decision_owner() else {
+            break;
+        };
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert!(
+        reached_end_step,
+        "the test must actually enter the end step"
+    );
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .all(|item| item.card != CardId::SearslicerGoblin),
+        "no Raid trigger is queued"
+    );
+    assert!(
+        !matches!(
+            g.state.pending,
+            Some(Pending::TriggerTarget { .. })
+                | Some(Pending::TriggerChoice { .. })
+                | Some(Pending::TriggerMode { .. })
+        ),
+        "no Raid trigger decision is pending"
+    );
+    assert_eq!(goblin_token_count(&g, P0), 0);
+    for _ in 0..12 {
+        if g.state.turn.number > 1 || g.state.turn.step != Step::EndStep {
+            break;
+        }
+        if let Some(p) = g.decision_owner() {
             submit_ok(&mut g, p, Action::Pass);
         } else {
             break;
         }
     }
-    assert_eq!(goblin_token_count(&g, P0), 0);
-    assert!(g.state.turn.number > prior || g.state.turn.step != Step::EndStep);
+    assert_eq!(
+        goblin_token_count(&g, P0),
+        0,
+        "still no token after draining"
+    );
+}
+
+#[test]
+fn real_attack_history_save_loads_and_both_games_finish_identically() {
+    let mut original = fixture(6207)
+        .battlefield(P0, &[CardId::SearslicerGoblin, CardId::GrizzlyBears])
+        .library(P0, &[CardId::Mountain; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::DeclareAttackers)
+        .build();
+    let attacker = battlefield_card(&original, P0, CardId::GrizzlyBears);
+    original.state.pending = Some(Pending::DeclareAttackers { player: P0 });
+    original.state.turn.priority = None;
+    submit_ok(
+        &mut original,
+        P0,
+        Action::DeclareAttackers {
+            attackers: vec![attacker],
+            defender: Some(P1),
+        },
+    );
+    assert_eq!(original.state.attacked_this_turn, vec![P0]);
+    let replay = Replay::new(
+        original.state.seed,
+        original.state.first_player,
+        vec![
+            DeckList::parse_practice("fixture", "40 Forest\n").unwrap(),
+            DeckList::parse_practice("fixture", "40 Forest\n").unwrap(),
+        ],
+        AiSettings::default(),
+    )
+    .unwrap();
+    let save = SessionSave::capture(&original, replay, Vec::new(), true);
+    let mut loaded = SessionSave::from_json(&save.to_json())
+        .expect("real declaration history save loads")
+        .game();
+    assert_eq!(loaded.state.attacked_this_turn, vec![P0]);
+    assert_eq!(
+        loaded.digest(),
+        original.digest(),
+        "loaded start is identical"
+    );
+    fn finish_turn(g: &mut Game) -> u32 {
+        let target = g.state.turn.number + 1;
+        for _ in 0..80 {
+            if g.state.turn.number >= target {
+                break;
+            }
+            let Some(p) = g.decision_owner() else {
+                break;
+            };
+            let action = auto_answer(g);
+            let _ = g.submit_action(p, action);
+        }
+        g.state.turn.number
+    }
+    assert_eq!(finish_turn(&mut original), finish_turn(&mut loaded));
+    assert_eq!(original.digest(), loaded.digest());
+    assert_eq!(goblin_token_count(&original, P0), 1);
+    assert_eq!(goblin_token_count(&loaded, P0), 1);
 }
 
 #[test]
@@ -284,5 +374,67 @@ fn actual_attack_declaration_records_the_turn_fact_after_the_attacker_leaves() {
         g.state.attacked_this_turn,
         vec![P0],
         "Raid reads the declaration fact, not current attackers"
+    );
+}
+
+#[test]
+fn chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate() {
+    let mut g = fixture(6206)
+        .battlefield(
+            P0,
+            &[
+                CardId::RuxaPatientProfessor,
+                CardId::GoblinChieftain,
+                CardId::GoblinToken,
+                CardId::GoblinToken,
+                CardId::GrizzlyBears,
+            ],
+        )
+        .battlefield(P1, &[CardId::GoblinToken])
+        .main(P0, Step::PrecombatMain)
+        .build();
+    // Slice 62 fixture setup: only battlefield GoblinInstigator stays in hand
+    // for the graveyard-zone control below.
+    let own_tokens: Vec<ObjectId> = g
+        .state
+        .battlefield(P0)
+        .into_iter()
+        .filter(|object| object.card == CardId::GoblinToken)
+        .map(|object| object.id)
+        .collect();
+    let own_token = own_tokens[0];
+    let graveyard_goblin = own_tokens[1];
+    let enemy_token = battlefield_card(&g, P1, CardId::GoblinToken);
+    let non_goblin = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    if let Some(object) = g.state.objects.get_mut(&graveyard_goblin) {
+        object.zone = Zone::Graveyard;
+    }
+    g.state.players[P0 as usize]
+        .graveyard
+        .push(graveyard_goblin);
+    assert!(
+        !g.state.object_has_no_abilities(own_token),
+        "Chieftain's static grants the vanilla Goblin token haste"
+    );
+    assert!(
+        g.state.object_has_no_abilities(enemy_token),
+        "an opposing Chieftain does not grant abilities"
+    );
+    assert!(
+        g.state.object_has_no_abilities(non_goblin),
+        "a non-Goblin receives neither haste nor the anthem"
+    );
+    assert!(
+        g.state.object_has_no_abilities(graveyard_goblin),
+        "a creature card in the graveyard receives no battlefield static"
+    );
+    let chief = battlefield_card(&g, P0, CardId::GoblinChieftain);
+    if let Some(object) = g.state.objects.get_mut(&chief) {
+        object.zone = Zone::Graveyard;
+    }
+    g.state.players[P0 as usize].graveyard.push(chief);
+    assert!(
+        g.state.object_has_no_abilities(own_token),
+        "with the Chieftain gone the vanilla token has no abilities again"
     );
 }

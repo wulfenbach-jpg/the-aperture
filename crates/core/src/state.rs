@@ -3572,6 +3572,58 @@ impl GameState {
     /// Ruxa's graveyard target set, its layer 7c anthem and its combat-damage
     /// permission, so the three printed clauses of one card can never disagree
     /// about which creatures qualify. A missing object is never eligible.
+    /// CR 613.1d + CR 205.3: effective subtype, shared by the engine's public
+    /// subtype query and the no-abilities predicate. Layer 4 replacement wins in
+    /// timestamp order; an additive layer 4 line counts as well.
+    pub fn object_has_subtype(&self, object: &Object, subtype: &str) -> bool {
+        let mut effective: Option<crate::layer::SubtypeLine> = None;
+        let mut added = false;
+        if object.zone == Zone::Battlefield && self.turn.active == object.controller {
+            for static_ability in crate::ability::static_abilities(object.card) {
+                if let crate::ability::StaticAbility::SelfBecomesSubtypeDuringYourTurn {
+                    line,
+                    ..
+                } = static_ability
+                {
+                    effective = Some(*line);
+                }
+            }
+        }
+        for effect in self.effects.iter().filter(|effect| {
+            effect.layer == crate::layer::Layer::Type && effect.target == object.id
+        }) {
+            match effect.kind {
+                crate::layer::ContinuousKind::SetCreatureSubtypes(line) => effective = Some(line),
+                crate::layer::ContinuousKind::AddCreatureSubtypes(line) if line.has(subtype) => {
+                    added = true;
+                }
+                _ => {}
+            }
+        }
+        if added {
+            return true;
+        }
+        match effective {
+            Some(line) => line.has(subtype),
+            None => object.card.def().has_subtype(subtype),
+        }
+    }
+
+    /// CR 613.1d + CR 110.1: effective creature status as shared by the engine
+    /// and the no-abilities predicate. An additive layer 4 type grant animates a
+    /// noncreature permanent; ending the effect reverts it.
+    pub fn object_is_creature(&self, object: &Object) -> bool {
+        object.card.def().is_creature()
+            || self.effects.iter().any(|effect| {
+                effect.layer == crate::layer::Layer::Type
+                    && effect.target == object.id
+                    && matches!(
+                        effect.kind,
+                        crate::layer::ContinuousKind::AddCreatureSubtypes(_)
+                    )
+            })
+    }
+
     pub fn object_has_no_abilities(&self, id: ObjectId) -> bool {
         let Some(object) = self.objects.get(&id) else {
             return false;
@@ -3634,6 +3686,15 @@ impl GameState {
                         matches!(
                             ability,
                             crate::ability::StaticAbility::OtherControlledCreaturesHaveTrample { .. }
+                        ) || matches!(
+                            ability,
+                            crate::ability::StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste {
+                                subtypes,
+                                ..
+                            } if self.object_is_creature(object)
+                                && subtypes
+                                    .iter()
+                                    .any(|subtype| self.object_has_subtype(object, subtype))
                         )
                     })
         });

@@ -79,7 +79,7 @@ pub enum TriggerEvent {
     RingCombatDamage,
     /// CR 603.7: the Ring's delayed sacrifice trigger at end of combat.
     EndOfCombat,
-    /// CR 503.1 + 603.6a: "At the beginning of your end step".
+    /// CR 513.1 + 603.6a: "At the beginning of your end step".
     EndStep,
     /// CR 603.6c + 509.3 + 510.2: this creature dealt combat damage to a player.
     /// The trigger's controller is the creature's controller, and the damage

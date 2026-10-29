@@ -939,61 +939,16 @@ impl Game {
     /// line directly. Successive layer 4 effects apply in timestamp order
     /// (CR 613.7), so the last one wins.
     pub fn has_subtype(&self, object: &Object, subtype: &str) -> bool {
-        let mut effective: Option<crate::layer::SubtypeLine> = None;
-        // CR 613.1d: an *additive* layer 4 effect (Stuffed Bear's animation)
-        // adds its subtype line to the printed one instead of replacing it, so
-        // it is tracked separately from the replacement line above.
-        let mut added = false;
-        // CR 611.3a + 613.1d: a *printed* layer 4 line can be conditional on
-        // whose turn it is ("During your turn, this creature is a Bear ...").
-        // Its timestamp is the permanent's arrival, so it is answered first and
-        // any effect created afterwards in the same layer still wins below.
-        if object.zone == Zone::Battlefield && self.state.turn.active == object.controller {
-            for static_ability in crate::ability::static_abilities(object.card) {
-                if let crate::ability::StaticAbility::SelfBecomesSubtypeDuringYourTurn {
-                    line,
-                    ..
-                } = static_ability
-                {
-                    effective = Some(*line);
-                }
-            }
-        }
-        for effect in self
-            .state
-            .effects
-            .iter()
-            .filter(|effect| effect.layer == Layer::Type && effect.target == object.id)
-        {
-            match effect.kind {
-                ContinuousKind::SetCreatureSubtypes(line) => effective = Some(line),
-                ContinuousKind::AddCreatureSubtypes(line) if line.has(subtype) => added = true,
-                _ => {}
-            }
-        }
-        if added {
-            return true;
-        }
-        match effective {
-            Some(line) => line.has(subtype),
-            None => object.card.def().has_subtype(subtype),
-        }
+        self.state.object_has_subtype(object, subtype)
     }
 
     /// CR 613.1d + CR 110.1: whether the object is a creature *right now*. A
     /// printed creature card is one; a noncreature permanent is one while a
     /// layer 4 effect has added the creature card type to it (Stuffed Bear's
     /// animation). Every rules question about "is this a creature" asks this
-    /// instead of reading the printed card type, so an animated artifact can
-    /// attack, block, be targeted, deal and receive damage and die like any
-    /// other creature, and reverts the moment the effect ends.
+    /// instead of reading the printed card type.
     pub fn is_creature(&self, object: &Object) -> bool {
-        object.card.def().is_creature()
-            || self.state.effects.iter().any(|effect| {
-                effect.layer == Layer::Type
-                    && effect.target == object.id
-                    && matches!(effect.kind, ContinuousKind::AddCreatureSubtypes(_))
-            })
+        self.state.object_is_creature(object)
     }
 
     /// CR 613.1e + CR 202.2: the object's *effective* colour. A layer 5 effect

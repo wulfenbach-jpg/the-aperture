@@ -12,16 +12,24 @@
   end-step trigger with intervening-if and the real typed 1/1 red Goblin token.
   `attacked_this_turn` is declaration history, set from an actual nonempty attack,
   survives attackers leaving, resets only at the turn transition, and is rechecked
-  on resolution. Empty state is omitted so old saves/default digests are unchanged.
+  on resolution. Empty state is omitted: old states that never gain history
+  serialize unchanged. This is not broad digest continuity; a historical
+  mid/post-attack save or replay run now materializes the field and redigests.
 - Whole Krenko manifest gaps moved together: 48→46 `missing_cards`; interaction
   prose refreshed for the two implemented payoffs.
 - Sources, printings sweeps, fixture chain, README/docs, audit and focused tests.
+- AI compatibility is exactly two mechanical lines: `crates/ai/src/search.rs`
+  copies the public declaration history into its reconstructed phase, and
+  `crates/ai/tests/common.rs` initializes the new GameState field. No search,
+  policy, ranking, model or budget behavior was redesigned.
+- The Ruxa no-abilities predicate now shares effective subtype/creature queries
+  and treats a Chieftain-granted vanilla Goblin token as having an ability.
 
 ## Verification
-- `issue17_slice62`: 5/5; card_printings 21; catalog_pool 5; commander 43;
+- `issue17_slice62`: 7/7; card_printings 21; catalog_pool 5; commander 43;
   slice15 2; replay_digest 6; import planned 3; analyzer 1.
 - fmt, workspace all-target clippy `-D warnings`, locked workspace release: 0
-  (`evidence/issue17/slice62/gates.log`, script exit 0).
+  (`evidence/issue17/slice62/final-native/gates.log`, aggregate exit 0).
 - Fresh slice-local audit: **168 catalog / 459 union = 155 supported + 304 missing**,
   per-list `[55, 0, 51, 46, 0, 52, 52, 53]`, Krenko **46**, **2/8 certified**.
 - Four-seat/40-life package journey: 1030 steps, 25 turns, terminal P3; Chieftain
