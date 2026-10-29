@@ -1,0 +1,2 @@
+replay seed 1 — 4 seat(s), 1499 action(s), recorded outcome Some(Win { winner: 1, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 78b301cbef68 | matches recorded | events 3793

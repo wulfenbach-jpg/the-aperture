@@ -1,0 +1,4 @@
+selfplay seed=1 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P1 in 1499 steps (31 turns)
+  digest 78b301cbef68 | replay verified | casts 31 attacks 15 blocks 10 counters 0
+  replay written to evidence/issue17/slice61/replay-1.json
+  report written to evidence/issue17/slice61/selfplay-1.json
