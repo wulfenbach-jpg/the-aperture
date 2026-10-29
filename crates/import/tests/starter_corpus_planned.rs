@@ -72,7 +72,7 @@ fn eight_targets_have_exact_desired_lists_and_honest_missing_cards() {
         let id = starter["id"].as_str().unwrap();
         let status = starter["status"].as_str().unwrap();
         assert!(matches!(status, "planned" | "implemented" | "certified"));
-        if id != "jasmine-vanilla-stompy" {
+        if !matches!(id, "jasmine-vanilla-stompy" | "ayula-bear-counters") {
             assert_ne!(status, "certified", "{id} is not certified");
         }
         let deck_path = starter["deck_path"]
@@ -119,9 +119,10 @@ fn eight_targets_have_exact_desired_lists_and_honest_missing_cards() {
             "{id}: missing_cards must match the current catalog"
         );
 
-        if id == "jasmine-vanilla-stompy" {
-            // Slice 10: the one list whose every card is supported is certified
-            // by an exact-snapshot four-seat certificate, not by catalog count.
+        if matches!(id, "jasmine-vanilla-stompy" | "ayula-bear-counters") {
+            // Slice 10 certified Jasmine and slice 60 certified Ayula: each is
+            // certified by an exact-snapshot four-seat certificate, not by a
+            // catalog count, and neither carries a planned analyzer fixture.
             assert_eq!(status, "certified");
             let certification = &starter["certification"];
             assert_eq!(certification["verdict"], "certified");
@@ -153,5 +154,8 @@ fn eight_targets_have_exact_desired_lists_and_honest_missing_cards() {
         assert!(!report.engine_support.unsupported_cards.is_empty());
         assert!(!report.gameplay.available);
     }
-    assert_eq!(planned, 7);
+    assert_eq!(
+        planned, 6,
+        "six lists remain planned; Ayula joined Jasmine as certified"
+    );
 }
