@@ -4512,6 +4512,9 @@ impl Game {
             ability::TriggerCondition::RaidAttackedThisTurn => {
                 self.state.attacked_this_turn.contains(&controller)
             }
+            ability::TriggerCondition::ControlsYourCommander => {
+                self.controls_own_commander(controller)
+            }
             ability::TriggerCondition::CardsExiledWithSource => {
                 // "if there are cards exiled with it": the source must still be
                 // the same battlefield object and must still have at least one
@@ -5732,21 +5735,17 @@ impl Game {
             spell_mana_value: 0,
             x_value: 0,
         });
-        // CR 603.3 + 602.2b (which applies 601.2h–i to activation): a triggered
-        // ability that triggers *while* an ability is being activated is put on
-        // the stack above that ability, so it resolves first and the table gets
-        // a response window. Every cost payment above can perform a zone
-        // change — the subtype sacrifice and self-sacrifice move a permanent to
-        // its owner's graveyard (queuing dies triggers), discarding and
-        // exiling from a graveyard are zone changes too — so the queue is
-        // drained once here, exactly like the cast path (`engine.rs:5221`) and
-        // the land-play path (`engine.rs:4692`). Staging before the push would
-        // put the trigger below the ability and resolve it after (R365-1).
-        self.put_triggers(events);
-        // CR 117.3c: activating is treated like casting for priority purposes.
+        // CR 117.5: the activation checkpoint is not a bare "put triggers now"
+        // step. Cost payments can change characteristics and create mandatory
+        // SBAs (the sacrificed source's anthem leaving a damaged token lethal),
+        // while cost-triggered abilities wait to be staged. Leave priority
+        // unset and let the canonical settle loop recompute/SBA to stability,
+        // then stage all waiting triggers above this activated ability. Priority
+        // and Event::Priority are emitted only if no pending/resolving item
+        // remains. This also keeps the CR 117.3c reset without inventing a
+        // priority holder while a TriggerTarget choice is suspended.
         self.state.turn.passed = 0;
-        self.state.turn.priority = Some(player);
-        events.push(Event::Priority { player });
+        self.state.turn.priority = None;
     }
 
     // --------------------------------------------------- triggered abilities
@@ -5774,6 +5773,18 @@ impl Game {
         }
     }
 
+    fn controls_own_commander(&self, player: PlayerId) -> bool {
+        self.state.commanders.iter().any(|commander| {
+            commander.owner == player
+                && self
+                    .state
+                    .try_object(commander.object)
+                    .is_some_and(|object| {
+                        object.zone == Zone::Battlefield && object.controller == player
+                    })
+        })
+    }
+
     fn queue_beginning_of_combat_triggers(&mut self, active: PlayerId, _events: &mut Vec<Event>) {
         let sources: Vec<(ObjectId, CardId, PlayerId)> = self
             .state
@@ -5785,6 +5796,7 @@ impl Game {
                     && crate::ability::triggers_on(object.card, TriggerEvent::BeginningOfCombat)
                         .next()
                         .is_some()
+                    && self.trigger_condition_holds(object.card, active, active, object.id)
             })
             .map(|object| (object.id, object.card, object.controller))
             .collect();
@@ -8412,6 +8424,27 @@ impl Game {
             return;
         }
 
+        // CR 603.4: Lieutenant's "if you control your commander" is rechecked
+        // on resolution using the captured controller.
+        if item.cursor == 0
+            && matches!(
+                ability::trigger_condition(item.card),
+                ability::TriggerCondition::ControlsYourCommander
+            )
+            && !self.controls_own_commander(item.controller)
+        {
+            events.push(Event::TriggerRemoved {
+                controller: item.controller,
+                card: item.card,
+                reason: "its Lieutenant intervening-if is false on resolution (CR 603.4)"
+                    .to_string(),
+            });
+            self.pop_ability(item.object, item.entry);
+            self.state.resolving = None;
+            self.finish_resolution(events);
+            return;
+        }
+
         // CR 603.4: Raid's "if you attacked this turn" is rechecked on
         // resolution using the captured controller and the whole-turn history.
         if item.cursor == 0
@@ -9118,6 +9151,21 @@ impl Game {
             }
             Effect::CreateGoblinTokens(count) => {
                 self.create_goblin_tokens(controller, usize::from(count), events);
+                false
+            }
+            Effect::CreateHasteGoblinTokens(count) => {
+                let first = self.state.next_object;
+                self.create_goblin_tokens(controller, usize::from(count), events);
+                for raw in first..self.state.next_object {
+                    let id = ObjectId(raw);
+                    if self
+                        .state
+                        .try_object(id)
+                        .is_some_and(|object| object.card == CardId::GoblinToken)
+                    {
+                        self.add_haste_grant(item, id, events);
+                    }
+                }
                 false
             }
             Effect::CreateGoblinTokensForEachGoblin => {

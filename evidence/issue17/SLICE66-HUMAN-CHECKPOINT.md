@@ -124,3 +124,14 @@ itself and layer-4 subtypes; `target artifact` refusing enchantments and the
 abolished "assume creature" legality default) are the places where a plausible
 implementation passes its own test and is still wrong. Then the same writer,
 history, card, branch and draft PR 46 continues Krenko's remaining 36 names.
+
+
+## Slice 67 erratum (historical logs not rewritten)
+
+The in-engine journey's opening prose claimed every action came from projected
+legal offers with no mid-game state edits. Its combat section directly installs
+DeclareAttackers/priority/pending and submits a handcrafted declaration. That
+portion is a fixture-driven integration scenario with an injected combat
+transition, not an all-offers game. The cast/activation assertions and historical
+logs remain unchanged; `crates/core/tests/issue17_slice66_journey.rs` now labels
+this truthfully.

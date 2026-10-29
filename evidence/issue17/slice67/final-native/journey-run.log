@@ -1,0 +1,35 @@
+{
+  "all_goblin_tokens": 157,
+  "attack_declarations": 15,
+  "casts": {
+    "Beetleback Chief": 3,
+    "Goblin Instigator": 5,
+    "Krenko, Mob Boss": 4,
+    "Pashalik Mons": 3,
+    "Siege-Gang Lieutenant": 4
+  },
+  "combat_damage_events": 147,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice67.txt",
+  "digest": "e9bc716d5964acf4242136582671238e10e70b74fb4bec09c43707849ddabdb3",
+  "driver": "projected legal-offer evidence driver; explicitly not product AI",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3765,
+  "seats": 4,
+  "seed": 2323,
+  "siege_goblin_tokens": 14,
+  "snapshot_sha256": "2522cd7e997052a95124c6666b5bf410d77acc76ed2e94905f2198981e7e0732",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+  "status": "terminal",
+  "steps": 1233,
+  "turns": 26
+}

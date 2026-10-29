@@ -1,9 +1,10 @@
 //! Slice 66 journey: one real four-seat, 40-life game that casts both newly
 //! enabled cards and uses every printed instruction they carry.
 //!
-//! Everything is driven from `Game::legal_actions` — the engine's own projected
-//! offers — never by editing state mid-game, so the trace is a real executable
-//! journey rather than a fixture assertion. It is a bounded Commander-combat
+//! Casts and activations are driven from `Game::legal_actions`, but the combat
+//! section is an explicit fixture-driven integration scenario: it installs
+//! DeclareAttackers/priority and submits a handcrafted declaration, so the whole
+//! trace is NOT an all-offers game. It is a bounded Commander-combat
 //! practice profile (40 life, one supported commander per seat), not the
 //! Commander format and not a strength claim.
 mod common;

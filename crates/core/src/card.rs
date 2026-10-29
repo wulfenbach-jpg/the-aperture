@@ -191,6 +191,9 @@ pub enum Effect {
     CreateGoblinTokensForEachGoblin,
     /// Create one 2/2 blue Drake creature token with flying (Talrand).
     CreateDrakeToken,
+    /// Lieutenant: create N 1/1 red Goblin tokens and grant each haste until
+    /// end of turn.
+    CreateHasteGoblinTokens(u8),
     /// CR 701.54a: the Ring's attack trigger draws a card and then its
     /// controller discards one. The discard is a distinct resumable pending
     /// choice, never the cleanup-step discard.
@@ -543,6 +546,9 @@ impl Effect {
                 format!("prevent the next {n} damage that would be dealt to the target this turn")
             }
             Effect::CreateGoblinTokens(n) => format!("create {n} 1/1 red Goblin tokens"),
+            Effect::CreateHasteGoblinTokens(n) => {
+                format!("create {n} 1/1 red Goblin tokens with haste until end of turn")
+            }
             Effect::CreateGoblinTokensForEachGoblin => {
                 "create a 1/1 red Goblin token for each Goblin you control".to_string()
             }
@@ -1067,6 +1073,7 @@ pub enum CardId {
     GoblinKing,
     DragonlordsServant,
     VolcanicDragon,
+    SiegeGangLieutenant,
     GoblinSharpshooter,
     KrenkoTinStreetKingpin,
     HobgoblinBanditLord,

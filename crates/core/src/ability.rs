@@ -1244,6 +1244,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::KrenkoMobBoss => KRENKO,
         CardId::GoblinInstigator => GOBLIN_INSTIGATOR,
         CardId::SearslicerGoblin => SEARSLICER_GOBLIN,
+        CardId::SiegeGangLieutenant => SIEGE_GANG_LIEUTENANT,
         CardId::GoblinSharpshooter => GOBLIN_SHARPSHOOTER,
         CardId::KrenkoTinStreetKingpin => KRENKO_TIN_STREET_KINGPIN,
         CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD,
@@ -1315,6 +1316,8 @@ pub enum TriggerCondition {
     /// CR 508.1 + 603.4: "Raid — if you attacked this turn". The declaration
     /// history is read from the captured controller, not current attackers.
     RaidAttackedThisTurn,
+    /// Lieutenant: "if you control your commander" (Siege-Gang Lieutenant).
+    ControlsYourCommander,
     /// "if there are cards exiled with it" (Evercoat Ursine). Read from the
     /// live battlefield source: the cards are the face-down exile cards whose
     /// `hideaway_source` is that exact permanent object, so the clause is false
@@ -1331,6 +1334,7 @@ pub fn trigger_condition(card: CardId) -> TriggerCondition {
         CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
         CardId::EvercoatUrsine => TriggerCondition::CardsExiledWithSource,
         CardId::SearslicerGoblin => TriggerCondition::RaidAttackedThisTurn,
+        CardId::SiegeGangLieutenant => TriggerCondition::ControlsYourCommander,
         _ => TriggerCondition::Always,
     }
 }
@@ -1818,6 +1822,29 @@ const SPIDER_HAM_SUBTYPES: &[&str] = &[
 ];
 
 const GOBLIN_SUBTYPES: &[&str] = &["Goblin"];
+
+const SIEGE_GANG_LIEUTENANT: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Lieutenant — At the beginning of combat on your turn, if you control your commander, create two 1/1 red Goblin creature tokens. Those tokens gain haste until end of turn.",
+        event: TriggerEvent::BeginningOfCombat,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::CreateHasteGoblinTokens(2)],
+    }),
+    Ability::Activated(ActivatedAbility {
+        text: "{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.",
+        cost: AbilityCost {
+            mana: Some("{2}"),
+            sacrifice_creature_subtype: Some("Goblin"),
+            ..AbilityCost::NONE
+        },
+        target: TargetSpec::AnyTarget,
+        modes: SINGLE_MODE,
+        effects: &[Effect::Damage(1)],
+        once_per_turn: false,
+        sorcery_timing: false,
+    }),
+];
 
 const SEARSLICER_GOBLIN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",

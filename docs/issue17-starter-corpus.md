@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **165** are in the supported 179-card catalog and **294** are missing. Slice
+* **166** are in the supported 180-card catalog and **293** are missing. Slice
  25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
@@ -345,7 +345,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 179 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 180 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1400,14 +1400,50 @@ recorded in `fixtures/starter-corpus/slice66-sourced.json`):
   target spec, so a target that stopped being an artifact makes the ability
   fizzle instead of resolving against a legal-looking object.
 
-**Corpus after this slice.** 179 catalog / 459 union = **165 supported + 294
+**Corpus after slice 66.** 179 catalog / 459 union = **165 supported + 294
 missing**, per-list `[55, 0, 51, 36, 0, 52, 52, 53]`, Krenko **36** missing;
-**still two of eight** lists certified. The two cards still outside this family
-are Skirk Prospector (a nonland *mana* ability, which must not use the stack,
-CR 605.1a) and Siege-Gang Lieutenant (the Lieutenant ability word plus a haste
-grant to its own tokens); both remain listed as missing rather than approximated.
+two of eight lists certified. Skirk Prospector remained missing because a
+nonland mana ability must not use the stack (CR 605.1a); Siege-Gang Lieutenant
+was still missing at that slice.
 
 **Evidence.** `crates/core/tests/issue17_slice66.rs` (ordering regressions),
 `issue17_slice66_cards.rs` (the two cards), `issue17_slice66_journey.rs` (a real
 four-seat 40-life game), the printing chain in `crates/core/tests/card_printings.rs`,
 and `evidence/issue17/slice66/` for the audit, the journey and the CI receipt.
+
+
+## Slice 67: complete CR 117.5 activation checkpoint and Siege-Gang Lieutenant
+
+**Activation checkpoint repair.** `apply_activate_ability` no longer calls
+`put_triggers` and then installs priority unconditionally. The activated ability
+is placed on the stack, cost payments and cost-triggered queues remain, and the
+canonical settle path recomputes continuous effects, runs SBAs to stability,
+stages all waiting triggers above the activated ability, and emits priority only
+when no pending/resolving item remains. R367-1 (pending target plus false
+priority / unloadable save) and R367-2 (doomed damaged token still offered as a
+target before SBAs) are covered in
+`crates/core/tests/issue17_slice67_checkpoint.rs`, including actual
+sandbox-labelled save/load continuation and the exact two-death trigger count.
+Both R365-1 ordering regressions remain unchanged.
+
+**R367-3 erratum.** The slice-66 in-engine journey prose incorrectly described
+its injected DeclareAttackers/priority/pending block as entirely driven by
+`Game::legal_actions`. That block is a fixture-driven integration scenario with
+an injected combat transition; the historical logs are unchanged and the
+mislabel is corrected here. Its cast/activation assertions remain useful.
+
+**Siege-Gang Lieutenant** (PLST M3C-113, `{3}{R}`, Goblin 2/2, fetched
+2026-10-29T15:00:20Z, three printings, one text) is fully implemented:
+Lieutenant at beginning of combat only if the controller controls their own
+commander, creating two real 1/1 red Goblin tokens with haste until end of turn;
+and `{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.` The
+trigger rechecks commander control at resolution, survives source departure as
+LKI, and the activated cost uses the existing sacrifice-subtype path. Tests
+cover actual cast/resolve, commander present vs absent/opponent, token stats and
+haste, source departure, and the real activation/damage. Skirk Prospector
+remains missing because its nonland mana ability is not approximated as a stack
+ability.
+
+**Corpus after this slice.** 180 catalog / 459 union = **166 supported + 293
+missing**, per-list `[55, 0, 51, 35, 0, 52, 52, 53]`, Krenko **35** missing;
+**two of eight** lists certified. No 3/8 claim.

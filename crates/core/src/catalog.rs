@@ -334,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 179] = [
+pub static CARDS: [CardDef; 180] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -742,6 +742,12 @@ pub static CARDS: [CardDef; 179] = [
     ),
     // Native-authorized real Dragon positive control for the Servant's reducer;
     // out-of-list, entire text is Flying, haste.
+    card!(
+        SiegeGangLieutenant, "Siege-Gang Lieutenant", cost: Some("{3}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "Lieutenant — At the beginning of combat on your turn, if you control your commander, create two 1/1 red Goblin creature tokens. Those tokens gain haste until end of turn.\n{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.",
+        spell: None
+    ),
     card_flying_haste!(
         VolcanicDragon, "Volcanic Dragon", cost: Some("{4}{R}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Dragon", power: Some(4), toughness: Some(4),

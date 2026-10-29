@@ -1,0 +1,91 @@
+{
+  "slice": 67,
+  "status": "PRODUCT BATCH: R367 repair + Siege-Gang Lieutenant; original #17 gate open",
+  "self_check": true,
+  "independent_review": false,
+  "base_commit": "7b99fcba7522aa5101c2ba5cb03c03c647c30f68",
+  "activation_checkpoint": {
+    "R367-1": "pending target no longer coexists with priority; real sandbox SessionSave loads and continues identically",
+    "R367-2": "canonical settle recomputes/SBAs before staging; doomed token absent, both deaths trigger once, triggered abilities remain above paid ability",
+    "R367-3": "slice66 in-engine journey mislabel corrected as fixture-driven injected combat; historical logs unchanged"
+  },
+  "card": {
+    "name": "Siege-Gang Lieutenant",
+    "set": "plst",
+    "collector_number": "M3C-113",
+    "scryfall_id": "76049160-69f7-4114-81f3-dfab8242ac15",
+    "oracle_id": null,
+    "retrieved_at_utc": "2026-10-29T15:00:20Z",
+    "printings_checked": 3,
+    "distinct_oracle_texts": 1,
+    "implemented": [
+      "Lieutenant beginning-combat trigger requiring own commander at trigger and resolution",
+      "two real 1/1 red Goblin tokens with haste until end of turn",
+      "{2}, Sacrifice a Goblin: 1 damage to any target"
+    ]
+  },
+  "counts": {
+    "catalog": 180,
+    "union": 459,
+    "supported_union": 166,
+    "missing_union": 293,
+    "krenko_missing": 35,
+    "certified_lists": "2 of 8"
+  },
+  "tests": {
+    "checkpoint": "5 passed",
+    "cards": "3 passed",
+    "ordering_slice66": "passed",
+    "slice62": "7 passed",
+    "slice63": "10 passed",
+    "card_printings": "26 passed",
+    "catalog_pool": "5 passed",
+    "commander": "43 passed",
+    "slice15": "2 passed",
+    "replay_digest": "6 passed",
+    "import": "3+1 passed"
+  },
+  "gates": {
+    "script": "evidence/issue17/slice67/gates.sh",
+    "log": "evidence/issue17/slice67/final-native/gates.log",
+    "aggregate_failure_propagates": true,
+    "all_exit": 0
+  },
+  "journey": {
+    "path": "evidence/issue17/slice67/final-native/demo-journey.json",
+    "driver": "evidence/issue17/slice67-journey-driver",
+    "driver_label": "explicit 40-card four-seat evidence driver with projected offers; injected fixture-driven combat is disclosed, not product AI/strength/GUI/100-card certification",
+    "package": "decks/package-slice67.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2323,
+    "steps": 1233,
+    "turns": 26,
+    "status": "terminal",
+    "winner": 2,
+    "digest": "e9bc716d5964acf4242136582671238e10e70b74fb4bec09c43707849ddabdb3",
+    "snapshot_sha256": "2522cd7e997052a95124c6666b5bf410d77acc76ed2e94905f2198981e7e0732",
+    "casts": {
+      "Krenko, Mob Boss": 4,
+      "Siege-Gang Lieutenant": 4,
+      "Pashalik Mons": 3,
+      "Goblin Instigator": 5,
+      "Beetleback Chief": 3
+    },
+    "siege_goblin_tokens": 14,
+    "attack_declarations": 15,
+    "combat_damage_events": 147,
+    "cli_replay_matches": true
+  },
+  "tdd": {
+    "R367": "two compiling REDs retained and now green",
+    "SiegeGang": "no pretest RED retained for the Lieutenant effect/activated implementation; honestly not claimed as TDD"
+  },
+  "limitations": [
+    "Skirk Prospector remains missing because its nonland mana ability is not approximated as a stack ability.",
+    "The in-engine slice66 journey is a fixture-driven scenario with an injected combat transition; historical logs preserved.",
+    "Demonstrator is 40 cards, not exact-100 certification.",
+    "No product AI/policy/search edits.",
+    "2 of 8 certified, not a 3/8 claim."
+  ]
+}

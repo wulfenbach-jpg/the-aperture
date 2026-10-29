@@ -1,0 +1,27 @@
+{
+  "name": "Siege-Gang Lieutenant",
+  "set": "plst",
+  "collector_number": "M3C-113",
+  "oracle_id": "9e9d538b-a9e5-4d59-b7c1-208fe18110e3",
+  "mana_cost": "{3}{R}",
+  "type_line": "Creature — Goblin",
+  "power": "2",
+  "toughness": "2",
+  "oracle_text": "Lieutenant — At the beginning of combat on your turn, if you control your commander, create two 1/1 red Goblin creature tokens. Those tokens gain haste until end of turn.\n{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.",
+  "keywords": [
+    "Lieutenant"
+  ],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2026-05-18",
+  "scryfall_id": "76049160-69f7-4114-81f3-dfab8242ac15",
+  "retrieved_at_utc": "2026-10-29T15:00:20Z",
+  "provider": "scryfall",
+  "url": "https://api.scryfall.com/cards/named?exact=Siege-Gang%20Lieutenant",
+  "legalities_commander": "legal"
+}
