@@ -5429,28 +5429,27 @@ impl Game {
     /// CR 601.2c: commit the chosen set for a set-targeting trigger and put the
     /// ability on the stack with exactly those targets. An empty set is legal.
     fn apply_finish_trigger_targets(&mut self, _player: PlayerId, events: &mut Vec<Event>) {
+        // The action is validated before it is applied, but the guard is on the
+        // state itself: a commit is meaningful only while a *set* choice is open,
+        // and anything else leaves the pending untouched.
+        if !matches!(
+            self.state.pending,
+            Some(Pending::TriggerTarget {
+                aggregate: Some(_),
+                ..
+            })
+        ) {
+            return;
+        }
         let Some(Pending::TriggerTarget {
             trigger,
             queued,
-            aggregate,
             chosen,
             ..
         }) = self.state.pending.take()
         else {
             return;
         };
-        if aggregate.is_none() {
-            self.state.pending = Some(Pending::TriggerTarget {
-                player: trigger.controller,
-                trigger,
-                legal: Vec::new(),
-                queued,
-                first: None,
-                aggregate: None,
-                chosen: Vec::new(),
-            });
-            return;
-        }
         self.push_trigger(trigger, chosen, events);
         self.stage_triggers(queued, events);
     }
@@ -9934,31 +9933,33 @@ impl Game {
                 // a silently-zero default. The printed cost only rises by one
                 // generic mana per step, so the first unaffordable X ends the
                 // scan.
-                let mut x: u8 = 0;
-                loop {
-                    let action = Action::CastSpellWithX {
-                        card: id,
-                        x,
-                        targets: Vec::new(),
-                    };
-                    if self.validate(player, &action).is_err() {
-                        break;
+                for targets in self.target_combinations(player, id) {
+                    let mut x: u8 = 0;
+                    loop {
+                        let action = Action::CastSpellWithX {
+                            card: id,
+                            x,
+                            targets: targets.clone(),
+                        };
+                        if self.validate(player, &action).is_err() {
+                            break;
+                        }
+                        let name = self.state.object(id).card.name();
+                        let from_command = self.state.object(id).zone == Zone::Command;
+                        out.push(LegalAction {
+                            action,
+                            label: if from_command {
+                                format!("Cast commander {name} from the command zone with X={x}")
+                            } else {
+                                format!("Cast {name} with X={x}")
+                            },
+                            rules: vec!["107.3a", "601.2b"],
+                        });
+                        if x == MAX_X_VALUE {
+                            break;
+                        }
+                        x += 1;
                     }
-                    let name = self.state.object(id).card.name();
-                    let from_command = self.state.object(id).zone == Zone::Command;
-                    out.push(LegalAction {
-                        action,
-                        label: if from_command {
-                            format!("Cast commander {name} from the command zone with X={x}")
-                        } else {
-                            format!("Cast {name} with X={x}")
-                        },
-                        rules: vec!["107.3a", "601.2b"],
-                    });
-                    if x == MAX_X_VALUE {
-                        break;
-                    }
-                    x += 1;
                 }
                 continue;
             }

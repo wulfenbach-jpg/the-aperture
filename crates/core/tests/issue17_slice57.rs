@@ -696,3 +696,49 @@ fn forged_aggregate_pendings_are_refused_by_validate_and_by_a_real_load() {
     assert!(g.state.validate().is_ok());
     assert!(loads(&g));
 }
+
+/// The commit action belongs only to a set choice. With an ordinary single-target
+/// trigger waiting ("untap another target creature you control", Little Bear), the
+/// commit is refused by the validator and the open choice is untouched, so a caller
+/// can never close a choice that is not a set.
+#[test]
+fn finishing_a_single_target_choice_is_refused_and_leaves_it_open() {
+    let mut g = board(57113, 4)
+        .battlefield(P0, &[CardId::GrizzlyBears, CardId::RuneclawBear])
+        .hand(P0, &[CardId::LittleBear])
+        .build();
+    let bear = hand_card(&g, P0, CardId::LittleBear);
+    submit_ok(
+        &mut g,
+        P0,
+        Action::CastSpell {
+            card: bear,
+            targets: Vec::new(),
+        },
+    );
+    for _ in 0..64 {
+        if g.state.pending.is_some() || g.state.stack.is_empty() {
+            break;
+        }
+        let p = g.decision_owner().expect("decision owner");
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert!(
+        matches!(
+            g.state.pending,
+            Some(Pending::TriggerTarget {
+                aggregate: None,
+                ..
+            })
+        ),
+        "the single-target entry trigger is waiting"
+    );
+    let before = g.state.pending.clone();
+    let err = submit_err(&mut g, P0, Action::FinishTriggerTargets);
+    assert!(
+        err.to_string()
+            .contains("no triggered ability is waiting for a set"),
+        "a commit without an open set is refused, got {err}"
+    );
+    assert_eq!(g.state.pending, before, "the open choice is untouched");
+}
