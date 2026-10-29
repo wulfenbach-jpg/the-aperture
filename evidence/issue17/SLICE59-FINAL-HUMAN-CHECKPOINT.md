@@ -65,7 +65,13 @@
   `evidence/issue17/slice59/exact-head-ci-0e7ee70.json`). The green merge-ref run clears
   the supervisor's defect 1 by execution: that tree contains `hand_choice_offers(..., HandChoice::Discard)`
   and no `sample_discard` reference at all. No evidence commit was pushed before these
-  runs completed, and the evidence-only tip after it claims no CI of its own.
+  runs completed.
+- **Evidence-tip CI, observed rather than claimed:** the first evidence tip `7367d42`
+  finished **10/10 completed `success`, every run keyed to `7367d42`** (push
+  `40826725232`, `pull_request` merge-ref `40826731646`; receipt
+  `evidence/issue17/slice59/exact-head-ci-7367d42-evidence-tip.json`). The evidence commit
+  that carries this paragraph is later still and claims no CI of its own; the gate for the
+  code is `0e7ee70`.
 - **Correction to the earlier conservative claim — a full green local workspace total does
   exist at the final code:** the first whole-workspace run failed one stale reason assertion
   (`slice59/final/workspace-post-merge.log`: `jasmine_is_refused_in_every_ordinary_library`,
