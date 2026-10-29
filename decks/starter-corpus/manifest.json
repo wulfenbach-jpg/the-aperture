@@ -246,10 +246,47 @@
       "id": "ayula-bear-counters",
       "commander": "Ayula, Queen Among Bears",
       "style": "green bear tribal +1/+1 counters",
-      "status": "implemented",
-      "deck_path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
+      "status": "certified",
+      "deck_path": "decks/starter-corpus/ayula-bear-counters.txt",
       "missing_cards": [],
-      "missing_interactions": []
+      "missing_interactions": [],
+      "certification": {
+        "verdict": "certified",
+        "certified_on": "2026-10-29",
+        "snapshot_sha256": "7a1b3f9c745967bdaae018c20d9ba479dd1b4f14e8a24081c3efe10fd14c19c4",
+        "snapshot_hash_basis": "sha256 over the deck file UTF-8 text with CRLF normalized to LF, so the digest is identical on an LF or CRLF checkout",
+        "library_cards": 99,
+        "total_cards": 100,
+        "commander_supported": true,
+        "seats": 4,
+        "seeds": [
+          1,
+          2,
+          3
+        ],
+        "games_terminal": 3,
+        "games_replay_verified": 3,
+        "unique_names_observed_in_play": 31,
+        "unique_names_total": 59,
+        "evidence": "evidence/issue17/slice60/ayula-certificate.json",
+        "reproduce": "cargo run --release -p aperture-cli -- certify --starter ayula-bear-counters --seats 4 --seeds 1,2,3 --out evidence/issue17/slice60/ayula-certificate.json",
+        "conformance_suites": [
+          "crates/core/tests/starter_corpus.rs",
+          "crates/core/tests/issue17_slice60.rs",
+          "crates/cli/tests/certify.rs"
+        ],
+        "interaction_exclusions": [
+          "legend rule (CR 704.5j): a general legend-rule SBA with its controller choice is not modelled for this certificate; the list supplies exactly one copy of its commander per seat and contains no copy effects, so no player can control two same-named legends in these games",
+          "the list does contain artifacts (Friendly Teddy, Stuffed Bear, Sol Ring, Arcane Signet, Swiftfoot Boots, Lightning Greaves, Fellwar Stone), Equipment (Swiftfoot Boots, Lightning Greaves) and enchantments (Dancing from Dark to Dawn, Beorn's Hospitality, Ayula's Influence, Bearscape, Words of Wilding): each such card is implemented and is covered by the engine conformance suites, but these three games only exercise the ones named in coverage.cast_names / coverage.land_played_names",
+          "native Commander table, trainer, measured playing strength and arbitrary Archidekt compatibility: out of scope for this certificate",
+          "hideaway's look permission is recorded only for the player who controlled the exiling permanent; control changes of that permanent are not tracked, and additional costs on a free-cast card are not modelled because no pool card prints one"
+        ],
+        "limitations": [
+          "bounded commander-combat practice profile (40 life, one supported commander per seat, 21 commander damage), not the full Commander format",
+          "the certified games use the built-in heuristic; the certificate proves the list plays to a terminal, replay-verified game, not that any policy plays it well",
+          "28 of the 59 distinct card names were not drawn or cast in those three games; they are covered by engine conformance suites, not by this trace"
+        ]
+      }
     },
     {
       "id": "elas-sacrifice",

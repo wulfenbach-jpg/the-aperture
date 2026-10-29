@@ -43,11 +43,89 @@ struct Plays {
 
 /// Per-card interactive exclusions that a certificate must state rather than
 /// imply. They are keyed by the interaction name the corpus manifest uses.
-const INTERACTION_EXCLUSIONS: &[&str] = &[
-    "legend rule (CR 704.5j): not reachable in this list — every seat supplies exactly one copy of its commander and the list contains no copy effects, so no player can control two same-named legends; a general legend-rule SBA with its controller choice is still unmodelled and no list may rely on it",
-    "equipment, Auras, planeswalkers and nonbasic lands: the list contains none, so none of their rules are exercised or claimed",
-    "native table, trainer and measured playing strength: out of scope for this certificate",
-];
+///
+/// These sentences must describe the list being certified, not a previous one:
+/// an earlier fixed set claimed "the list contains none" for equipment and
+/// enchantments, which is true for the Jasmine list and false for the Ayula
+/// list. Everything here is computed from the snapshot actually hashed.
+fn interaction_exclusions(deck: &DeckList) -> Vec<String> {
+    let mut equipment: Vec<&'static str> = Vec::new();
+    let mut auras: Vec<&'static str> = Vec::new();
+    let mut artifacts: Vec<&'static str> = Vec::new();
+    let mut enchantments: Vec<&'static str> = Vec::new();
+    let mut nonbasic_lands: Vec<&'static str> = Vec::new();
+    for (card, _) in &deck.cards {
+        let def = card.def();
+        let name = def.name;
+        if def.is_land() {
+            if def.basic_mana.is_none() {
+                nonbasic_lands.push(name);
+            }
+            continue;
+        }
+        if def.type_line.contains("Equipment") {
+            equipment.push(name);
+        } else if def.type_line.contains("Aura") {
+            auras.push(name);
+        }
+        if def.is_artifact() {
+            artifacts.push(name);
+        }
+        if def.is_enchantment() {
+            enchantments.push(name);
+        }
+    }
+    let list = |names: &[&'static str]| names.join(", ");
+    let mut out = vec![
+        "legend rule (CR 704.5j): a general legend-rule SBA with its controller choice is not \
+         modelled for this certificate; the list supplies exactly one copy of its commander per \
+         seat and contains no copy effects, so no player can control two same-named legends in \
+         these games"
+            .to_string(),
+    ];
+    if equipment.is_empty()
+        && auras.is_empty()
+        && artifacts.is_empty()
+        && enchantments.is_empty()
+        && nonbasic_lands.is_empty()
+    {
+        out.push(
+            "equipment, Auras, planeswalkers and nonbasic lands: none are in this list, so their \
+             rules are neither exercised nor claimed"
+                .to_string(),
+        );
+    } else {
+        let mut present: Vec<String> = Vec::new();
+        if !artifacts.is_empty() {
+            present.push(format!("artifacts ({})", list(&artifacts)));
+        }
+        if !equipment.is_empty() {
+            present.push(format!("Equipment ({})", list(&equipment)));
+        }
+        if !auras.is_empty() {
+            present.push(format!("Auras ({})", list(&auras)));
+        }
+        if !enchantments.is_empty() {
+            present.push(format!("enchantments ({})", list(&enchantments)));
+        }
+        if !nonbasic_lands.is_empty() {
+            present.push(format!("nonbasic lands ({})", list(&nonbasic_lands)));
+        }
+        out.push(format!(
+            "the list does contain {}: each such card is implemented and is covered by the engine \
+             conformance suites, but these three games only exercise the ones named in \
+             coverage.cast_names / coverage.land_played_names — an uncast Equipment, Aura, \
+             artifact, enchantment or nonbasic land is not proved by this trace",
+            present.join("; ")
+        ));
+    }
+    out.push(
+        "native Commander table, trainer, measured playing strength and arbitrary Archidekt \
+         compatibility: out of scope for this certificate"
+            .to_string(),
+    );
+    out
+}
 
 fn manifest_entry(manifest: &Value, starter: &str) -> anyhow::Result<Value> {
     let starters = manifest["starters"]
@@ -385,7 +463,7 @@ pub fn run(args: Args) -> anyhow::Result<i32> {
             "not_observed": not_observed,
             "note": "observed counts come from these exact-snapshot games only. Cards not observed are covered by engine conformance suites, not by this trace; the certificate never infers behavior from a catalog entry."
         },
-        "interaction_exclusions": INTERACTION_EXCLUSIONS,
+        "interaction_exclusions": interaction_exclusions(&deck),
         "evidence_note": "the snapshot hash is over the deck file bytes actually parsed; rerun this command with the same seeds to reproduce every digest",
     });
 

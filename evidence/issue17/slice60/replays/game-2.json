@@ -1,0 +1,137 @@
+{
+  "commander_damage": [
+    {
+      "amount": 2,
+      "commander": 3,
+      "recipient": 3
+    }
+  ],
+  "commander_damage_totals": [
+    {
+      "commander": 2,
+      "recipient": 2,
+      "total": 2
+    },
+    {
+      "commander": 3,
+      "recipient": 0,
+      "total": 2
+    },
+    {
+      "commander": 3,
+      "recipient": 1,
+      "total": 2
+    },
+    {
+      "commander": 3,
+      "recipient": 3,
+      "total": 2
+    },
+    {
+      "commander": 4,
+      "recipient": 0,
+      "total": 6
+    },
+    {
+      "commander": 4,
+      "recipient": 1,
+      "total": 4
+    },
+    {
+      "commander": 4,
+      "recipient": 2,
+      "total": 2
+    }
+  ],
+  "commanders": [
+    {
+      "card": "Ayula, Queen Among Bears",
+      "seat": 0
+    },
+    {
+      "card": "Ayula, Queen Among Bears",
+      "seat": 1
+    },
+    {
+      "card": "Ayula, Queen Among Bears",
+      "seat": 2
+    },
+    {
+      "card": "Ayula, Queen Among Bears",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 28,
+    "ability_activations": 1,
+    "attacks": 19,
+    "blocks": 8,
+    "casts": 25,
+    "commander_damage_events": 10,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 54,
+    "events": 3508,
+    "triggered_abilities": 27
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1373
+  },
+  "final_digest": "8ccf4bc4a753fe7f7bba174b48917002da1af16faa18f18e6b0dc2e367ca72aa",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 166,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1373,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 99,
+      "library": 0,
+      "life": -13,
+      "name": "ayula-bear-counters",
+      "seat": 0,
+      "source": "decks/starter-corpus/ayula-bear-counters.txt"
+    },
+    {
+      "cards": 99,
+      "library": 0,
+      "life": -6,
+      "name": "ayula-bear-counters",
+      "seat": 1,
+      "source": "decks/starter-corpus/ayula-bear-counters.txt"
+    },
+    {
+      "cards": 99,
+      "library": 0,
+      "life": -10,
+      "name": "ayula-bear-counters",
+      "seat": 2,
+      "source": "decks/starter-corpus/ayula-bear-counters.txt"
+    },
+    {
+      "cards": 99,
+      "library": 82,
+      "life": 14,
+      "name": "ayula-bear-counters",
+      "seat": 3,
+      "source": "decks/starter-corpus/ayula-bear-counters.txt"
+    }
+  ],
+  "seed": 2,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1373,
+  "truncated": null,
+  "turns": 30,
+  "winner": 3,
+  "winner_label": "P3"
+}

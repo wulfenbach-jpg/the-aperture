@@ -1209,12 +1209,36 @@ regression `ursine_monstrosity_now_really_has_its_printed_trample` keeps it that
 way.
 
 **Corpus after this slice.** 166 catalog / 459 union = **153 supported + 306
-missing**, per-list `[55, 0, 51, 48, 0, 52, 52, 53]`, one of eight lists
-certified. The Ayula list is now `implemented`: every card of the exact 100-card
-snapshot is supported and both gap fields are empty. It is **not** certified —
-certification needs the exact 100-card four-seat games and separate replays,
-which have not been run.
+missing**, per-list `[55, 0, 51, 48, 0, 52, 52, 53]`, and **two of eight lists
+certified**. The Ayula list is `implemented` and then `certified`: every card of
+the exact 100-card snapshot is supported, both gap fields are empty, and the
+exact snapshot was played.
+
+**Certification (2 of 8).** `aperture-cli certify --starter ayula-bear-counters
+--seats 4 --seeds 1,2,3` reads the declared snapshot
+`decks/starter-corpus/ayula-bear-counters.txt` (99 library cards, sha256
+`7a1b3f9c…19c4` over the LF-normalised file), puts that exact list in every
+seat with Ayula as the commander, and plays three four-seat 40-life
+Commander-combat games with the heuristic. All three reach a terminal outcome
+(seeds 1/2/3: winners P1/P3/P2, 1499/1373/1233 actions, digests
+`78b301cbef68…`, `8ccf4bc4a753…`, `0adc5f3097ea…`) and every recorded replay
+reproduces its digest. The same three games were replayed separately through
+`selfplay --replay-out` and `replay --file`, which report `matches recorded` and
+exit 0 (`evidence/issue17/slice60/replays/`). 31 of the 59 distinct names were
+cast or played in those games; the other 28 are covered by engine conformance
+suites, never inferred from the catalog.
+
+The certificate's exclusions are computed from the list itself: this one really
+does contain artifacts and Equipment (Sol Ring, Arcane Signet, Fellwar Stone,
+Swiftfoot Boots, Lightning Greaves, Stuffed Bear, Friendly Teddy) and
+enchantments (Ayula's Influence, Bearscape, Words of Wilding, Beorn's
+Hospitality, Dancing from Dark to Dawn), so the certificate states that they are
+implemented and covered by suites while these three games only exercise the ones
+actually cast. It also records the hideaway look-permission and free-cast
+additional-cost limits above.
 
 **Evidence.** `crates/core/tests/issue17_slice60.rs` (nine regressions, including
-the two real `SessionSave` probes) and the printing chain in
-`crates/core/tests/card_printings.rs`.
+the two real `SessionSave` probes), the printing chain in
+`crates/core/tests/card_printings.rs`, the certificate
+`evidence/issue17/slice60/ayula-certificate.json` and the separate replay
+verification under `evidence/issue17/slice60/replays/`.

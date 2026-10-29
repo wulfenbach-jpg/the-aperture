@@ -1,5 +1,6 @@
-// ayula-bear-counters — DESIRED, NOT SUPPORTED. 99 library cards; commander: Ayula, Queen Among Bears
-// Metadata-only planned list; do not load as a supported/default deck.
+// ayula-bear-counters — 99-card library; commander supplied separately: Ayula, Queen Among Bears
+// Green bear tribal +1/+1 counters. Every card is supported by the compiled pool;
+// this file is the exact snapshot the certificate hashes.
 1 Goreclaw, Terror of Qal Sisma
 1 Lumra, Bellow of the Woods
 1 Surrak and Goreclaw

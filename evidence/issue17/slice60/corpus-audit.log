@@ -6,12 +6,12 @@ missing_union      = 306
   jasmine-vanilla-stompy     status=certified missing=0
   talrand-draw-go            status=planned   missing=51
   krenko-goblin-tokens       status=planned   missing=48
-  ayula-bear-counters        status=implemented missing=0
+  ayula-bear-counters        status=certified missing=0
   elas-sacrifice             status=planned   missing=52
   tatyova-landfall           status=planned   missing=52
   zada-spells                status=planned   missing=53
 per_list_missing   = [55, 0, 51, 48, 0, 52, 52, 53]
-certified_lists    = 1 ['jasmine-vanilla-stompy']
+certified_lists    = 2 ['jasmine-vanilla-stompy', 'ayula-bear-counters']
 whole_field_supported_card_citations = []
 Ayula interaction citations equal all remaining missing card names (both empty: the gap is closed)
 AUDIT OK

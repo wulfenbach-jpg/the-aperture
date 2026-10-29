@@ -397,7 +397,7 @@ fn a_forged_offer_is_refused_by_validate_and_by_a_real_save_load() {
         .pointer_mut("/game/pending/PlayExiled/options")
         .expect("serialized options");
     let array = pending.as_array_mut().expect("array");
-    array.push(serde_json::Value::from(u32::from(stranger.0)));
+    array.push(serde_json::Value::from(stranger.0));
     let text = serde_json::to_string(&value).expect("re-serialize");
     assert!(
         SessionSave::from_json(&text).is_err(),

@@ -439,7 +439,7 @@ fn the_first_starter_library_is_exact_and_fully_supported() {
 }
 
 #[test]
-fn the_starter_manifest_names_eight_targets_and_claims_only_one() {
+fn the_starter_manifest_names_eight_targets_and_claims_only_certified_lists() {
     let manifest: Value = serde_json::from_str(MANIFEST).expect("manifest parses");
     assert_eq!(manifest["version"], 1);
     let starters = manifest["starters"].as_array().expect("starters");
@@ -485,13 +485,44 @@ fn the_starter_manifest_names_eight_targets_and_claims_only_one() {
             );
             assert_eq!(starter["missing_cards"].as_array().unwrap().len(), 0);
             assert_eq!(starter["missing_interactions"].as_array().unwrap().len(), 0);
-        } else if status == "implemented" {
-            // Slice 60 closed Ayula's sourced gap: every card of the exact list is
-            // implemented, so both gap fields are empty, but the list is not
-            // certified until the exact 100-card snapshot has been played.
-            assert_eq!(starter["id"], "ayula-bear-counters");
+        } else if starter["id"] == "ayula-bear-counters" {
+            // Slice 60 closed the gap and certified the exact 100-card list with
+            // three real four-seat games whose replays all reproduce the digest.
+            assert_eq!(status, "certified");
+            let certification = &starter["certification"];
+            assert_eq!(certification["verdict"], "certified");
+            assert_eq!(certification["library_cards"], 99);
+            assert_eq!(certification["total_cards"], 100);
+            assert_eq!(certification["seats"], 4);
+            assert_eq!(certification["games_terminal"], 3);
+            assert_eq!(certification["games_replay_verified"], 3);
+            assert_eq!(
+                certification["snapshot_sha256"],
+                "7a1b3f9c745967bdaae018c20d9ba479dd1b4f14e8a24081c3efe10fd14c19c4"
+            );
+            assert!(
+                certification["interaction_exclusions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|entry| entry.as_str().unwrap_or("").contains("Equipment")),
+                "the Ayula list really contains Equipment, so the certificate must say so"
+            );
+            assert_eq!(starter["commander"], "Ayula, Queen Among Bears");
+            assert_eq!(
+                starter["deck_path"],
+                "decks/starter-corpus/ayula-bear-counters.txt"
+            );
             assert_eq!(starter["missing_cards"].as_array().unwrap().len(), 0);
             assert_eq!(starter["missing_interactions"].as_array().unwrap().len(), 0);
+        } else if status == "implemented" {
+            assert_eq!(starter["missing_cards"].as_array().unwrap().len(), 0);
+            assert_eq!(starter["missing_interactions"].as_array().unwrap().len(), 0);
+            let path = starter["deck_path"].as_str().expect("snapshot path");
+            assert!(
+                path.starts_with("decks/starter-corpus/") && !path.contains("/planned/"),
+                "{path} must be the exact supported snapshot once the gap is closed"
+            );
         } else {
             assert_eq!(status, "planned", "only Jasmine is certified now");
             let path = starter["deck_path"]
