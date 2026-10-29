@@ -475,23 +475,31 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
         }
     }
 
-    let lethal: Vec<String> = state
-        .objects
-        .values()
-        .filter(|o| {
-            o.zone == crate::ids::Zone::Battlefield
-                && game.is_creature(o)
-                && (o.toughness() <= 0 || o.damage as i32 >= o.toughness())
-        })
-        .map(|o| {
-            format!(
-                "{} ({} damage, {} toughness)",
-                o.name(),
-                o.damage,
-                o.toughness()
-            )
-        })
-        .collect();
+    // CR 704.5f destroys a creature with zero toughness even when it is
+    // indestructible, while CR 704.5g's lethal-damage destruction does not apply
+    // to an indestructible permanent (CR 702.12b). Telling the player that an
+    // indestructible creature "will be destroyed" was a false statement.
+    let mut lethal: Vec<String> = Vec::new();
+    let mut spared: Vec<String> = Vec::new();
+    for o in state.objects.values() {
+        if o.zone != crate::ids::Zone::Battlefield || !game.is_creature(o) {
+            continue;
+        }
+        if o.toughness() > 0 && (o.damage as i32) < o.toughness() {
+            continue;
+        }
+        let text = format!(
+            "{} ({} damage, {} toughness)",
+            o.name(),
+            o.damage,
+            o.toughness()
+        );
+        if o.toughness() > 0 && game.has_indestructible(o.id) {
+            spared.push(text);
+        } else {
+            lethal.push(text);
+        }
+    }
     if !lethal.is_empty() {
         out.push(Explanation {
             topic: "state-based actions".to_string(),
@@ -501,6 +509,17 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 lethal.join(", ")
             ),
             rules: vec!["117.5", "704.5g"],
+        });
+    }
+    if !spared.is_empty() {
+        out.push(Explanation {
+            topic: "state-based actions".to_string(),
+            kind: ExplanationKind::Rule,
+            text: format!(
+                "Waiting for state-based actions: {} has lethal damage but is indestructible, so the destroy does not apply (CR 702.12b).",
+                spared.join(", ")
+            ),
+            rules: vec!["704.5g", "702.12b"],
         });
     }
 

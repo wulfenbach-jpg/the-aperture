@@ -1052,7 +1052,10 @@ impl Game {
         mask.count_ones() as i32
     }
 
-    fn has_indestructible(&self, id: ObjectId) -> bool {
+    /// CR 702.12b: the destroy half of the lethal-damage state-based action does
+    /// not apply to an indestructible permanent. `pub(crate)` so the coach can
+    /// avoid telling the player an indestructible creature will be destroyed.
+    pub(crate) fn has_indestructible(&self, id: ObjectId) -> bool {
         self.state
             .effects
             .iter()
@@ -8528,25 +8531,34 @@ impl Game {
                 else {
                     return false;
                 };
-                let timestamp = self.next_timestamp();
-                let id = self.next_effect_id();
-                self.state.effects.push(ContinuousEffect {
-                    id,
-                    timestamp,
-                    source: Some(item.object),
-                    card: item.card,
-                    controller,
-                    layer: Layer::Ability,
-                    target: item.object,
-                    kind: ContinuousKind::Indestructible,
-                    duration: EffectDuration::UntilEndOfTurn,
-                });
-                if item.affected == Some(item.object)
+                // CR 608.2b: the ability resolves even when its source has left
+                // the battlefield, so the mill still happens. Every grant below
+                // is about that creature as a *battlefield permanent*, so it is
+                // created only while the source is still one: an ordinary card
+                // keeps its ObjectId across a bounce, and a phantom
+                // until-end-of-turn indestructible effect left behind here would
+                // silently make a later recast incarnation of the same card
+                // indestructible. The event line reports what actually happened
+                // instead of narrating a grant that was skipped.
+                let granted = item.affected == Some(item.object)
                     && self
                         .state
                         .try_object(item.object)
-                        .is_some_and(|object| object.zone == Zone::Battlefield)
-                {
+                        .is_some_and(|object| object.zone == Zone::Battlefield);
+                if granted {
+                    let timestamp = self.next_timestamp();
+                    let id = self.next_effect_id();
+                    self.state.effects.push(ContinuousEffect {
+                        id,
+                        timestamp,
+                        source: Some(item.object),
+                        card: item.card,
+                        controller,
+                        layer: Layer::Ability,
+                        target: item.object,
+                        kind: ContinuousKind::Indestructible,
+                        duration: EffectDuration::UntilEndOfTurn,
+                    });
                     let types = self.graveyard_card_type_count(controller);
                     let id = self.next_effect_id();
                     self.state.effects.push(ContinuousEffect {
@@ -8577,9 +8589,14 @@ impl Game {
                     });
                     self.recompute_layers();
                 }
-                events.push(Event::StateBasedAction {
-                    description: format!("Ursine Monstrosity mills a card, must attack P{defender} if able, and gains indestructible/+1/+1 per graveyard card type"),
-                });
+                let description = if granted {
+                    format!(
+                        "Ursine Monstrosity mills a card, must attack P{defender} if able, and gains indestructible/+1/+1 per graveyard card type"
+                    )
+                } else {
+                    "Ursine Monstrosity mills a card; its source has left the battlefield, so no attack requirement, indestructible or +1/+1 applies".to_string()
+                };
+                events.push(Event::StateBasedAction { description });
                 false
             }
             Effect::SaddleSource => {
