@@ -138,12 +138,27 @@ Local, at `15c0e60` (logs under `evidence/issue17/slice60/`):
 
 * `cargo fmt --all --check` — clean;
 * `cargo clippy --workspace --all-targets --locked -- -D warnings` — exit 0;
-* focused suites: `issue17_slice60` 9, `card_printings` 20, `catalog_pool` 5,
-  `starter_corpus` 8, `issue17_slice15_corpus` 2, `issue13_commander_combat` 43,
-  `starter_corpus_planned` 1, `certify` (CLI) — see the exact-head CI for the CLI
-  suite, which cannot share `target/` while the workspace run holds it;
-* the exact-head CI on the code+evidence head is recorded in the `ci` object of
-  the handoff metadata and in `evidence/issue17/slice60/exact-head-ci-<sha>.json`.
+* `cargo test --workspace --all-targets --locked` — **149 result lines / 1114
+  passed / 0 failed / 2 ignored, exit 0** (`workspace-all-targets.log`);
+* focused suites inside that run: `issue17_slice60` 9, `card_printings` 20,
+  `catalog_pool` 5, `starter_corpus` 8, `issue17_slice15_corpus` 2,
+  `issue13_commander_combat` 43, `starter_corpus_planned` 1, CLI `certify`.
+
+**Exact-head CI at `15c0e60` (receipt
+`evidence/issue17/slice60/exact-head-ci-15c0e60.json`):** 10 runs, every
+`head_sha` = `15c0e60…`, **10 completed `success`, 0 cancelled, 0 failed**,
+across the push run `40835481853` and the `pull_request` merge-ref run
+`40835490560`.
+
+Disclosed rather than glossed: the first `rust (ubuntu-latest)` attempt of the
+push run failed on
+`aperture_ui::app::viewport_tests::the_opt_in_performance_probe_reports_bounded_native_samples`
+with `report["inter_callback_interval_us"]["samples"] > 0`. It is a
+wall-clock/frame-sampling probe in the UI crate, unrelated to this lane's files
+(no `crates/ui` path is touched by this slice), it passes in the local workspace
+run at the same commit, and the job was **re-run on the same SHA**
+(`gh run rerun … --failed`) and completed green. The merge-ref run of the same
+SHA was green on its first attempt.
 
 ## 7. What is NOT done
 

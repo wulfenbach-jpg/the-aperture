@@ -1,0 +1,56 @@
+{
+  "slice": 60,
+  "card_enabled": "Evercoat Ursine (BLC 30)",
+  "record_items_closed": ["R359-1"],
+  "product_defects_fixed": [
+    "Ursine Monstrosity printed Trample but was registered through the plain catalog macro, so its own printed keyword was never implemented; it is now card_trample! with a named regression"
+  ],
+  "certification": {
+    "starter": "ayula-bear-counters",
+    "verdict": "certified",
+    "snapshot_sha256": "7a1b3f9c745967bdaae018c20d9ba479dd1b4f14e8a24081c3efe10fd14c19c4",
+    "library_cards": 99,
+    "seats": 4,
+    "seeds": [1, 2, 3],
+    "games": [
+      {"seed": 1, "status": "terminal", "steps": 1499, "turns": 31, "events": 3793, "winner": 1, "digest": "78b301cbef68f364e0047157b991c2f7016007b38613a12c4caf109750008703", "replay_digest_matches": true},
+      {"seed": 2, "status": "terminal", "steps": 1373, "turns": 30, "events": 3508, "winner": 3, "digest": "8ccf4bc4a753fe7f7bba174b48917002da1af16faa18f18e6b0dc2e367ca72aa", "replay_digest_matches": true},
+      {"seed": 3, "status": "terminal", "steps": 1233, "turns": 26, "events": 3127, "winner": 2, "digest": "0adc5f3097ea3f9c5cf39505c88a9fa5e69e8e3555267b96e7ffdefd410f315d", "replay_digest_matches": true}
+    ],
+    "separate_replays": "selfplay --replay-out and replay --file reproduce all three digests, 'matches recorded', exit 0",
+    "unique_names_observed_in_play": 31,
+    "unique_names_total": 59,
+    "certificate_generator_defect_fixed": "certify's exclusion text was a fixed sentence claiming the list contains no equipment/enchantments; it is now computed from the list, and the Ayula certificate names the artifacts, Equipment and enchantments it really holds"
+  },
+  "corpus": {
+    "catalog": 166,
+    "union": 459,
+    "supported": 153,
+    "missing": 306,
+    "per_list": [55, 0, 51, 48, 0, 52, 52, 53],
+    "certified": 2,
+    "certified_lists": ["jasmine-vanilla-stompy", "ayula-bear-counters"],
+    "ayula_missing_cards": [],
+    "ayula_missing_interactions": []
+  },
+  "gates": {
+    "fmt": 0,
+    "clippy_workspace_all_targets_deny_warnings": 0,
+    "workspace_all_targets": "149 result lines / 1114 passed / 0 failed / 2 ignored, exit 0",
+    "focused": "issue17_slice60 9, card_printings 20, catalog_pool 5, starter_corpus 8, issue17_slice15_corpus 2, issue13_commander_combat 43, starter_corpus_planned 1"
+  },
+  "ci": {
+    "head": "15c0e60",
+    "total": 10,
+    "completed_success": 10,
+    "cancelled": 0,
+    "failed_final": 0,
+    "all_keyed": true,
+    "push_run": 40835481853,
+    "pull_request_merge_ref_run": 40835490560,
+    "receipt": "evidence/issue17/slice60/exact-head-ci-15c0e60.json",
+    "disclosure": "the first ubuntu attempt of the push run failed an unrelated UI frame-sampling probe (the_opt_in_performance_probe_reports_bounded_native_samples); that job was re-run on the same SHA and completed green, and the merge-ref run was green first time"
+  },
+  "original_issue17_accepted": false,
+  "next_action": "Independent concise increment review of f60958f..this tip with code head 15c0e60. Then the same writer resumes the remaining six planned lists, starting with the list whose gap is smallest (krenko-goblin-tokens, 48 names) or the shared primitives with the widest reuse."
+}
