@@ -1,0 +1,25 @@
+{
+  "name": "Hobgoblin Bandit Lord",
+  "set": "afr",
+  "collector_number": "147",
+  "oracle_id": "43fea418-db6f-4953-89d1-6873b2ca41a8",
+  "mana_cost": "{1}{R}{R}",
+  "type_line": "Creature \u2014 Goblin Rogue",
+  "power": "2",
+  "toughness": "3",
+  "oracle_text": "Other Goblins you control get +1/+1.\n{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2021-07-23",
+  "scryfall_id": "09e9dc36-f2d8-4384-98cb-e44c00b02433",
+  "retrieved_at_utc": "2026-10-29T10:56:55Z",
+  "provider": "scryfall",
+  "url": "https://scryfall.com/card/afr/147/hobgoblin-bandit-lord",
+  "legalities_commander": "legal"
+}
