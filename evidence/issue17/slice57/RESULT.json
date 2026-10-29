@@ -29,7 +29,18 @@
     "separate_ai_search_suite": "9 passed / 0 failed (253.36 s), not counted in the 64",
     "corpus": "AUDIT OK 164 / 459 = 151 + 308, per-list [55,0,51,48,2,52,52,53], 1 certified",
     "locked_release_build": 0,
-    "workspace_all_targets": "139 result lines / 992 passed / 0 failed / 1 ignored, exit 0 (recorded at the 58a14e5 tree; the re-run at 68fc8f1 is receipt of record when present in this file's directory)"
+    "workspace_all_targets": "139 result lines / 993 passed / 0 failed / 1 ignored, exit 0 at the 68fc8f1 tree",
+    "ci": {
+      "head": "68fc8f18ed49d494152c25ef841ac62bb0fdb708",
+      "total": 10,
+      "completed_success": 10,
+      "cancelled": 0,
+      "failure": 0,
+      "all_keyed_to_head": true,
+      "receipt": "evidence/issue17/slice57/exact-head-ci-68fc8f1.json",
+      "runs": "evidence/issue17/slice57/exact-head-runs-68fc8f1.json",
+      "disclosure": "The first attempt at these runs was 4 success / 6 cancelled by the lane's own evidence push under the repository concurrency group; the six cancelled jobs were re-run on the same SHA and completed green, so this is a real 10/10 on the code head. The evidence-only tip claims none."
+    }
   },
   "journey": {
     "kind": "evidence-only masked X/target-set demonstrator, 40-card package, NOT a 100-card certificate or strength/GUI claim",

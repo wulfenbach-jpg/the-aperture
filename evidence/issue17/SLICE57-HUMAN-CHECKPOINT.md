@@ -107,7 +107,7 @@ same forged state, with the honest pending validating, loading and continuing.
 | separate AI search suite | `cargo test -p aperture-ai --test search --locked` | 9 passed / 0 failed (253.36 s) | `gates.log` (`ai_search_exit=0`) |
 | corpus | `python evidence/issue17/slice57/corpus-audit.py` | `AUDIT OK` 164 / 459 = 151 + 308 | `corpus-audit.log` |
 | locked release | `cargo build --workspace --release --locked` | 0 | `gates.log` (`release_build_exit=0`) |
-| whole workspace | `cargo test --workspace --all-targets --locked` | 139 result lines / 992 passed / 0 failed / 1 ignored, exit 0 | `workspace-all-targets.log` |
+| whole workspace | `cargo test --workspace --all-targets --locked` | 139 result lines / 993 passed / 0 failed / 1 ignored, exit 0 | `workspace-all-targets.log` |
 
 The focused/corpus totals above are the slice's own changed-behaviour gates; the
 workspace line is the full local gate at the same tree.
@@ -172,3 +172,24 @@ exile and free play). The other six lists are untouched. The exact 100-card
 four-seat certification and its separate replays are still blocked on those two
 cards, so the counter stays **1 of 8** and must be reported as such until the
 certification actually passes.
+
+## 10. Exact-head CI, stated exactly
+
+`gh api .../commits/68fc8f1/check-runs` → **10 runs, every `head_sha` =
+`68fc8f18ed49d494152c25ef841ac62bb0fdb708`, 10 completed `success`, 0 cancelled,
+0 failure** (receipt `slice57/exact-head-ci-68fc8f1.json`, runs
+`slice57/exact-head-runs-68fc8f1.json`).
+
+Disclosed rather than glossed: the **first** attempt at those runs ended with 4
+success and 6 cancelled, because the evidence push `5812114` started a second
+workflow run for the new head and the repository's concurrency group cancelled
+the in-flight jobs of the older head — the same operational mistake review 355
+named, made again. The six cancelled jobs were re-run on the **same** `68fc8f1`
+SHA (`gh api -X POST .../actions/runs/<id>/rerun-failed-jobs` for both Rust
+quality runs) and completed green, so the number above is a real 10/10 on the
+code head and not an inherited one. The evidence-only tip `5812114` claims no CI
+of its own.
+
+The green gate therefore rests on: the ten checks above, the local gates in §5,
+and the journey in §6 — no claim depends on a cancelled job, a different SHA, or
+the evidence tip.
