@@ -84,9 +84,13 @@ journey would reproduce the slice-54 recordings (`Win{P3}`, 1801 actions, 4596 e
 
 Single push: the code, docs, records and evidence of this slice travel together, so the CI
 run is keyed to the same commit tree that contains the product change — no evidence-tip
-green is inherited and no cancelled job is reported as green. Receipt:
-`slice56/exact-head-ci-<head>.json`, captured from
-`gh api …/commits/<head>/check-runs`.
+green is inherited and no cancelled job is reported as green.
+
+**Result: `2ede45a` → 10 check runs, all `head_sha` keyed to `2ede45a`, 10 completed
+success, 0 cancelled, 0 failed** (receipt `slice56/exact-head-ci-2ede45a.json`, captured
+from `gh api …/commits/2ede45a/check-runs` after waiting for completion). The evidence
+commit that follows it only rewrites this paragraph and the receipt; it claims no CI of its
+own.
 
 ## 5. Next gate
 
