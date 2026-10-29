@@ -59,5 +59,8 @@ The emblem is persisted per seat as `RingState`, not a physical zone object; the
 on a trigger is combat-event provenance. No complete Ring control-change/replacement
 interaction set. 40-card journey is not a starter certificate. Original #17 remains open.
 
-Exact-head CI for the code commit is recorded separately from this evidence tip; the PR body
-comment will name it once both workflows complete.
+Exact-head CI at code commit `0e7ee70` is **10/10 completed `success`, every run keyed to
+that SHA, 0 cancelled / 0 failed** — push run `40825533912` and `pull_request` merge-ref run
+`40825526651` (receipt `evidence/issue17/slice59/exact-head-ci-0e7ee70.json`). The green
+merge-ref run is the by-execution clearance of the supervisor's merge-ref defect. Any later
+evidence-only tip claims no CI of its own.

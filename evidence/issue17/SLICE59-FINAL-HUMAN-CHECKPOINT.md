@@ -57,3 +57,21 @@
   persisted emblem; the bearer id on a trigger is event provenance); no full
   control-change/replacement Ring interaction set; 40-card journey is not a starter
   certificate. Original #17 remains **1 of 8 certified** and unfinished.
+- **Exact-head CI, recorded only after both workflows finished:** at `0e7ee70`
+  `gh api commits/0e7ee70/check-runs` returns **10 runs, every `head_sha` =
+  `0e7ee70b449e20e620a04f22ddbbd9d3b9104497`, 10 completed `success`, 0 cancelled,
+  0 failed** — the push run `40825533912` and the `pull_request` merge-ref run
+  `40825526651` (receipt
+  `evidence/issue17/slice59/exact-head-ci-0e7ee70.json`). The green merge-ref run clears
+  the supervisor's defect 1 by execution: that tree contains `hand_choice_offers(..., HandChoice::Discard)`
+  and no `sample_discard` reference at all. No evidence commit was pushed before these
+  runs completed, and the evidence-only tip after it claims no CI of its own.
+- **Correction to the earlier conservative claim — a full green local workspace total does
+  exist at the final code:** the first whole-workspace run failed one stale reason assertion
+  (`slice59/final/workspace-post-merge.log`: `jasmine_is_refused_in_every_ordinary_library`,
+  1 failed, exit 101). After `0e7ee70` corrected that assertion, the workspace run was
+  repeated: `slice59/final/workspace-final.log` was created 22:48:48 and finished 22:56:06
+  local (both after the 22:45:32 commit) and reports **148 result lines / 1104 passed /
+  0 failed / 2 ignored, `WORKSPACE_EXIT=0`**. No crate source changed after it; the failing
+  run is retained rather than overwritten. `FINAL-RESULT.json` keeps its earlier
+  "no full green workspace total claimed" wording as own-time history.
