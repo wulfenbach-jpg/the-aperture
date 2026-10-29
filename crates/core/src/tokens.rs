@@ -31,6 +31,9 @@ pub enum Keyword {
     /// controls an Island." Modelled as a blocking restriction only; nothing
     /// grants or removes it, and no other landwalk variant is supported.
     Islandwalk,
+    /// CR 702.10a: a creature with haste ignores the summoning-sickness
+    /// attack/tap restriction.
+    Haste,
     /// CR 702.20a: "Attacking doesn't cause this creature to tap." The combat
     /// engine reads it at the only place an attacker is tapped (CR 508.1f); it
     /// changes nothing else, so a vigilant creature can block in the following
@@ -46,6 +49,7 @@ impl Keyword {
             Keyword::Defender => "defender",
             Keyword::Islandwalk => "islandwalk",
             Keyword::Vigilance => "vigilance",
+            Keyword::Haste => "haste",
         }
     }
 }
@@ -92,6 +96,9 @@ pub fn keywords(card: CardId) -> &'static [Keyword] {
         // because the attack path asks this table before it taps an attacker
         // (CR 702.20a).
         CardId::RampagingYaoGuai => &[Keyword::Vigilance],
+        // Goblin Chieftain prints Haste; its other-Goblin haste grant is a
+        // separate static ability.
+        CardId::GoblinChieftain => &[Keyword::Haste],
         _ => &[],
     }
 }

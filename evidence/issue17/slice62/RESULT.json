@@ -1,0 +1,107 @@
+{
+  "slice": 62,
+  "status": "PRODUCT BATCH COMPLETE; original #17 gate open",
+  "self_check": true,
+  "independent_review": false,
+  "base_commit": "f5e36dc3cffd8c4752c823d5b441ffebc2f8c316",
+  "cards": [
+    {
+      "name": "Goblin Chieftain",
+      "set": "jmp",
+      "collector_number": "324",
+      "scryfall_id": "89fcc35b-76fa-4408-8620-a1e11b2caf1f",
+      "oracle_id": "368b4052-174e-4458-a6e6-eaf8093aa0fe",
+      "retrieved_at_utc": "2026-10-29T08:48:15Z",
+      "printings_checked": 10,
+      "distinct_oracle_texts": 1,
+      "implemented": [
+        "printed Haste",
+        "other Goblin creatures you control get +1/+1",
+        "other Goblin creatures you control have haste"
+      ]
+    },
+    {
+      "name": "Searslicer Goblin",
+      "set": "fdn",
+      "collector_number": "93",
+      "scryfall_id": "94ad0b97-a318-4e76-ac79-b3e83417c333",
+      "oracle_id": "86ec0b56-497f-481c-a03a-c4e64e8e7404",
+      "retrieved_at_utc": "2026-10-29T08:48:16Z",
+      "printings_checked": 6,
+      "distinct_oracle_texts": 1,
+      "implemented": [
+        "Raid intervening-if on the active seat's end step",
+        "real 1/1 red Goblin token",
+        "whole-turn attack declaration history reset only on turn transition"
+      ]
+    }
+  ],
+  "counts": {
+    "catalog": 168,
+    "union": 459,
+    "supported_union": 155,
+    "missing_union": 304,
+    "krenko_missing": 46,
+    "certified_lists": "2 of 8"
+  },
+  "persistence": {
+    "field": "GameState.attacked_this_turn",
+    "serde_default_skip_empty": true,
+    "old_default_digest_preserved_by_empty_omission": true,
+    "session_save_roundtrip": "sandbox history preserved; fabricated non-sandbox history refused by embedded-replay invariant"
+  },
+  "tests": {
+    "issue17_slice62": "5 passed",
+    "card_printings": "21 passed",
+    "catalog_pool": "5 passed",
+    "commander_combat": "43 passed",
+    "slice15_corpus": "2 passed",
+    "replay_digest": "6 passed",
+    "import_planned": "3 passed",
+    "import_analyzer": "1 passed"
+  },
+  "gates": {
+    "script": "evidence/issue17/slice62/gates.sh",
+    "log": "evidence/issue17/slice62/gates.log",
+    "fmt": 0,
+    "clippy_workspace_all_targets_Dwarnings": 0,
+    "release_workspace_locked": 0
+  },
+  "journey": {
+    "driver": "evidence/issue17/slice62-journey-driver",
+    "driver_label": "projected legal-offer evidence driver; explicitly not product AI",
+    "package": "decks/package-slice62.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2323,
+    "steps": 1030,
+    "turns": 25,
+    "status": "terminal",
+    "winner": 3,
+    "digest": "8753aeb5d5471c25e10bc67e803dc019988fb09fb7f7fe9a14caaddc101435ae",
+    "snapshot_sha256": "e7f1a198b630bae6ca0133f3a100b553c4a544db2c5f715e44ee056e6c4fb735",
+    "casts": {
+      "Goblin Chieftain": 5,
+      "Searslicer Goblin": 6,
+      "Beetleback Chief": 3,
+      "Goblin Instigator": 2
+    },
+    "raid_goblin_tokens": 15,
+    "attack_declarations": 15,
+    "combat_damage_events": 74,
+    "cli_replay_matches": true
+  },
+  "artifacts": {
+    "manifest": "decks/starter-corpus/manifest.json",
+    "audit": "evidence/issue17/slice62/corpus-audit.log",
+    "sources": "evidence/issue17/slice62/sources",
+    "fixture": "fixtures/starter-corpus/slice62-sourced.json",
+    "tdd": "evidence/issue17/slice62/TDD.md"
+  },
+  "limitations": [
+    "Whole exact Krenko list is not certified: 46 names remain.",
+    "No product AI or model changes; journey driver uses projected legal offers only.",
+    "No historical full test matrix; focused affected suites only.",
+    "Independent review/publication/CI are native-owner steps and not claimed."
+  ]
+}

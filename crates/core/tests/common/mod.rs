@@ -56,6 +56,7 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             objects: BTreeMap::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            attacked_this_turn: Vec::new(),
             hideaway: Vec::new(),
             face_down_exile: Default::default(),
             profile: Profile::Practice20,

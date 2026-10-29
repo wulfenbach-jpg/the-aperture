@@ -1134,6 +1134,11 @@ pub struct GameState {
     /// Per-seat The Ring state; empty/skipped when untouched.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub rings: Vec<RingState>,
+    /// Seats that declared at least one attacker this turn ("Raid — if you
+    /// attacked this turn"). Empty and skipped until an attack is declared;
+    /// cleared only when the turn number advances, not on cleanup.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub attacked_this_turn: Vec<PlayerId>,
     /// CR 702.75a + 400.7: hideaway's linked exile. One entry per card exiled
     /// face down by a hideaway ability, naming the exact battlefield object it
     /// was exiled *with*. Empty and skipped when nothing was ever exiled face
@@ -1473,6 +1478,17 @@ impl GameState {
                     }
                     bearers.push(bearer);
                 }
+            }
+        }
+        {
+            let mut seen: Vec<PlayerId> = Vec::new();
+            for seat in &self.attacked_this_turn {
+                if !in_range(*seat) || seen.contains(seat) {
+                    return Err(EngineError::InvalidState {
+                        reason: "attack history contains an invalid or duplicate seat".to_string(),
+                    });
+                }
+                seen.push(*seat);
             }
         }
         if let Some(pending) = &self.pending {
@@ -3564,6 +3580,7 @@ impl GameState {
         let def = card.def();
         if !crate::ability::abilities(card).is_empty()
             || !crate::ability::static_abilities(card).is_empty()
+            || !crate::tokens::keywords(card).is_empty()
         {
             return false;
         }

@@ -306,7 +306,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 166] = [
+pub static CARDS: [CardDef; 168] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -675,6 +675,21 @@ pub static CARDS: [CardDef; 166] = [
         BeetlebackChief, "Beetleback Chief", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
         oracle: "When this creature enters, create two 1/1 red Goblin creature tokens.",
+        spell: None
+    ),
+    // Issue 17 slice 62: complete printed Goblin Chieftain and Searslicer
+    // Goblin from Scryfall named-card requests on 2026-10-29 (sources under
+    // evidence/issue17/slice62/sources/).
+    card!(
+        GoblinChieftain, "Goblin Chieftain", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "Haste (This creature can attack and {T} as soon as it comes under your control.)\nOther Goblin creatures you control get +1/+1 and have haste.",
+        spell: None
+    ),
+    card!(
+        SearslicerGoblin, "Searslicer Goblin", cost: Some("{1}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(2), toughness: Some(1),
+        oracle: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
         spell: None
     ),
     // Issue 17 starter corpus: sourced vanilla green/white creatures. Every

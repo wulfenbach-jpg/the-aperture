@@ -1013,6 +1013,8 @@ pub enum CardId {
     KrenkosCommand,
     HordelingOutburst,
     GoblinInstigator,
+    GoblinChieftain,
+    SearslicerGoblin,
     BeetlebackChief,
     GoblinToken,
     AlabornTrooper,

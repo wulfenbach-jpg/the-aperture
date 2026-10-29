@@ -54,6 +54,9 @@ const SLICE54_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE59_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice59-sourced.json");
 /// Slice 60: Evercoat Ursine (BLC 30), fetched 2026-10-29.
 const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice60-sourced.json");
+/// Slice 62: Goblin Chieftain (JMP 324) and Searslicer Goblin (FDN 93), fetched
+/// 2026-10-29.
+const SLICE62_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice62-sourced.json");
 /// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
@@ -499,6 +502,11 @@ fn slice60_cards() -> Vec<Value> {
     value["cards"].as_array().expect("cards").to_vec()
 }
 
+fn slice62_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE62_SOURCED).expect("sourced slice62 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
 fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
     card[key].as_str().unwrap_or_else(|| panic!("{key}"))
 }
@@ -530,6 +538,28 @@ const PRINTINGS: &[Printing] = &[
         oracle_text: "Prevent the next 4 damage that would be dealt to any target this turn.",
         power: None,
         toughness: None,
+    },
+    Printing {
+        name: "Goblin Chieftain",
+        set: "jmp",
+        collector_number: "324",
+        scryfall_uri: "https://scryfall.com/card/jmp/324/goblin-chieftain",
+        printings_checked: 10,
+        retrieved: "2026-10-29",
+        oracle_text: "Haste (This creature can attack and {T} as soon as it comes under your control.)\nOther Goblin creatures you control get +1/+1 and have haste.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Searslicer Goblin",
+        set: "fdn",
+        collector_number: "93",
+        scryfall_uri: "https://scryfall.com/card/fdn/93/searslicer-goblin",
+        printings_checked: 6,
+        retrieved: "2026-10-29",
+        oracle_text: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+        power: Some("2"),
+        toughness: Some("1"),
     },
     Printing {
         name: "Angrath's Marauders",
@@ -1541,5 +1571,65 @@ fn slice43_lumra_matches_its_recorded_printing() {
                     .any(|static_ability| static_ability.text() == line),
             "the printed line {line:?} has no typed implementation"
         );
+    }
+}
+
+#[test]
+fn every_slice62_card_matches_its_recorded_printing_and_keywords() {
+    let cards = slice62_cards();
+    assert_eq!(cards.len(), 2, "slice 62 adds two sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        let keywords: Vec<&str> = record["keywords"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(Value::as_str)
+            .collect();
+        if name == "Goblin Chieftain" {
+            assert!(keywords.contains(&"Haste"));
+            assert!(
+                aperture_core::tokens::keywords(def.id)
+                    .contains(&aperture_core::tokens::Keyword::Haste)
+            );
+            assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+        } else {
+            assert!(keywords.contains(&"Raid"));
+            assert!(
+                aperture_core::ability::triggers_on(
+                    def.id,
+                    aperture_core::ability::TriggerEvent::EndStep
+                )
+                .next()
+                .is_some()
+            );
+        }
     }
 }

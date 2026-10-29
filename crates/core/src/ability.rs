@@ -79,6 +79,8 @@ pub enum TriggerEvent {
     RingCombatDamage,
     /// CR 603.7: the Ring's delayed sacrifice trigger at end of combat.
     EndOfCombat,
+    /// CR 503.1 + 603.6a: "At the beginning of your end step".
+    EndStep,
     /// CR 603.6c + 509.3 + 510.2: this creature dealt combat damage to a player.
     /// The trigger's controller is the creature's controller, and the damage
     /// must have been actually dealt (a prevented instance does not trigger).
@@ -105,6 +107,7 @@ impl TriggerEvent {
             TriggerEvent::AnotherCreatureDies => "another creature dies",
             TriggerEvent::RingCombatDamage => "your Ring-bearer deals combat damage to a player",
             TriggerEvent::EndOfCombat => "at end of combat",
+            TriggerEvent::EndStep => "at the beginning of your end step",
             TriggerEvent::ThisDealsCombatDamageToPlayer => {
                 "this creature deals combat damage to a player"
             }
@@ -1218,6 +1221,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::TalrandSkySummoner => TALRAND,
         CardId::KrenkoMobBoss => KRENKO,
         CardId::GoblinInstigator => GOBLIN_INSTIGATOR,
+        CardId::SearslicerGoblin => SEARSLICER_GOBLIN,
         CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
@@ -1279,6 +1283,9 @@ pub enum TriggerCondition {
     /// read from printed color (CR 202.2a, `CardDef::is_black`), and a token is
     /// excluded by CR 111.6 even though it can have a color.
     DefendingPlayerControlsNoBlackNontokenPermanent,
+    /// CR 508.1 + 603.4: "Raid — if you attacked this turn". The declaration
+    /// history is read from the captured controller, not current attackers.
+    RaidAttackedThisTurn,
     /// "if there are cards exiled with it" (Evercoat Ursine). Read from the
     /// live battlefield source: the cards are the face-down exile cards whose
     /// `hideaway_source` is that exact permanent object, so the clause is false
@@ -1294,6 +1301,7 @@ pub fn trigger_condition(card: CardId) -> TriggerCondition {
         CardId::DunedainRangers => TriggerCondition::NoRingBearer,
         CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
         CardId::EvercoatUrsine => TriggerCondition::CardsExiledWithSource,
+        CardId::SearslicerGoblin => TriggerCondition::RaidAttackedThisTurn,
         _ => TriggerCondition::Always,
     }
 }
@@ -1385,6 +1393,14 @@ pub enum StaticAbility {
         toughness: i32,
         text: &'static str,
     },
+    /// CR 613.4d + 205.3: "Other Goblin creatures you control have haste"
+    /// (Goblin Chieftain). The source never grants itself haste; the recipient
+    /// must be another creature controlled by the same seat and have any listed
+    /// effective subtype (CR 613.1d).
+    OtherControlledCreaturesWithAnySubtypeHaveHaste {
+        subtypes: &'static [&'static str],
+        text: &'static str,
+    },
     /// CR 613.4c + 205.3: "Other Spiders, Boars, ... you control get +P/+T"
     /// (Spider-Ham, Peter Porker). The same layer 7c additive static as the Bear
     /// anthem above, but the recipient set is the printed *list* of creature
@@ -1441,6 +1457,7 @@ impl StaticAbility {
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { text, .. }
             | StaticAbility::OtherBearsYouControlGet { text, .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { text, .. }
+            | StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste { text, .. }
             | StaticAbility::PairedEachGet { text, .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { text, .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { text } => text,
@@ -1466,6 +1483,7 @@ impl StaticAbility {
             | StaticAbility::ThresholdPowerToughness { .. }
             | StaticAbility::CreatureSpellsYouCastWithPowerCostLess { .. }
             | StaticAbility::OtherControlledCreaturesHaveTrample { .. }
+            | StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
         }
     }
@@ -1481,6 +1499,7 @@ impl StaticAbility {
             | StaticAbility::SelfBasePowerToughnessDuringYourTurn { .. }
             | StaticAbility::OtherBearsYouControlGet { .. }
             | StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. }
+            | StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste { .. }
             | StaticAbility::PairedEachGet { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesGet { .. }
             | StaticAbility::ControlledCreaturesWithNoAbilitiesAssignAsUnblocked { .. } => None,
@@ -1718,6 +1737,29 @@ const SPIDER_HAM_SUBTYPES: &[&str] = &[
     "Otter", "Rabbit", "Raccoon", "Rat", "Squirrel", "Turtle", "Wolf",
 ];
 
+const GOBLIN_SUBTYPES: &[&str] = &["Goblin"];
+
+const SEARSLICER_GOBLIN: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+    event: TriggerEvent::EndStep,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::CreateGoblinTokens(1)],
+})];
+
+const GOBLIN_CHIEFTAIN_STATIC: &[StaticAbility] = &[
+    StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
+        subtypes: GOBLIN_SUBTYPES,
+        power: 1,
+        toughness: 1,
+        text: "Other Goblin creatures you control get +1/+1 and have haste.",
+    },
+    StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste {
+        subtypes: GOBLIN_SUBTYPES,
+        text: "Other Goblin creatures you control get +1/+1 and have haste.",
+    },
+];
+
 const SPIDER_HAM_STATIC: &[StaticAbility] = &[
     StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
         subtypes: SPIDER_HAM_SUBTYPES,
@@ -1730,6 +1772,7 @@ const SPIDER_HAM_STATIC: &[StaticAbility] = &[
 /// Every static ability the rules layer knows for a card, in printed order.
 pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
+        CardId::GoblinChieftain => GOBLIN_CHIEFTAIN_STATIC,
         CardId::SpiderHamPeterPorker => SPIDER_HAM_STATIC,
         CardId::DruidSFamiliar => DRUIDS_FAMILIAR_STATIC,
         CardId::BeornTheFierce => BEORN_STATIC,

@@ -191,7 +191,6 @@
         "Dragonlord's Servant",
         "Empty the Warrens",
         "General Kreat, the Boltbringer",
-        "Goblin Chieftain",
         "Goblin Chirurgeon",
         "Goblin Engineer",
         "Goblin King",
@@ -221,7 +220,6 @@
         "Redcap Gutter-Dweller",
         "Rundvelt Hordemaster",
         "Scuzzback Scrounger",
-        "Searslicer Goblin",
         "Siege-Gang Commander",
         "Siege-Gang Lieutenant",
         "Skirk Prospector",
@@ -234,9 +232,8 @@
         "Zo-Zu the Punisher"
       ],
       "missing_interactions": [
-        "remaining 48 desired-list cards are not in the supported pool",
-        "goblin tribal static/triggered payoffs beyond the six-card token package",
-        "haste keyword semantics",
+        "remaining 46 desired-list cards are not in the supported pool",
+        "goblin tribal static/triggered payoffs beyond the implemented Goblin Chieftain anthem/haste and six-card token package",
         "tokens outside the typed 1/1 red Goblin package"
       ]
     },

@@ -287,6 +287,7 @@ impl Game {
             objects: BTreeMap::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            attacked_this_turn: Vec::new(),
             hideaway: Vec::new(),
             face_down_exile: Default::default(),
             profile,
@@ -1170,10 +1171,35 @@ impl Game {
     }
 
     fn has_haste(&self, object: &Object) -> bool {
-        self.state.effects.iter().any(|effect| {
+        if object.has_keyword(crate::tokens::Keyword::Haste) {
+            return true;
+        }
+        if self.state.effects.iter().any(|effect| {
             (effect.kind == ContinuousKind::GrantsHaste
                 || matches!(effect.kind, ContinuousKind::Equipped { haste: true, .. }))
                 && effect.target == object.id
+        }) {
+            return true;
+        }
+        // Printed subtype haste static: "Other Goblin creatures you control
+        // have haste" (Goblin Chieftain). The source itself never qualifies,
+        // and the subtype is read effectively (CR 613.1d).
+        self.state.objects.values().any(|source| {
+            source.zone == Zone::Battlefield
+                && source.id != object.id
+                && source.controller == object.controller
+                && ability::static_abilities(source.card).iter().any(|ability| {
+                    let ability::StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste {
+                        subtypes,
+                        ..
+                    } = ability
+                    else {
+                        return false;
+                    };
+                    subtypes
+                        .iter()
+                        .any(|subtype| self.has_subtype(object, subtype))
+                })
         })
     }
 
@@ -4361,10 +4387,19 @@ impl Game {
         out
     }
 
-    fn trigger_condition_holds(&self, card: CardId, defender: PlayerId, source: ObjectId) -> bool {
+    fn trigger_condition_holds(
+        &self,
+        card: CardId,
+        controller: PlayerId,
+        defender: PlayerId,
+        source: ObjectId,
+    ) -> bool {
         match ability::trigger_condition(card) {
             ability::TriggerCondition::Always => true,
             ability::TriggerCondition::SourceIsSaddled => self.has_saddled(source),
+            ability::TriggerCondition::RaidAttackedThisTurn => {
+                self.state.attacked_this_turn.contains(&controller)
+            }
             ability::TriggerCondition::CardsExiledWithSource => {
                 // "if there are cards exiled with it": the source must still be
                 // the same battlefield object and must still have at least one
@@ -5542,6 +5577,26 @@ impl Game {
     /// CR 507.1: queue every "at the beginning of combat on your turn" trigger
     /// of the active player's battlefield permanents. The step exists once per
     /// turn, so each such permanent triggers exactly once per turn.
+    fn queue_end_step_triggers(&mut self, active: PlayerId) {
+        let sources: Vec<(ObjectId, CardId, PlayerId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == active
+                    && crate::ability::triggers_on(object.card, TriggerEvent::EndStep)
+                        .next()
+                        .is_some()
+                    && self.trigger_condition_holds(object.card, active, active, object.id)
+            })
+            .map(|object| (object.id, object.card, object.controller))
+            .collect();
+        for (id, card, controller) in sources {
+            self.queue_triggers(id, card, controller, TriggerEvent::EndStep);
+        }
+    }
+
     fn queue_beginning_of_combat_triggers(&mut self, active: PlayerId, _events: &mut Vec<Event>) {
         let sources: Vec<(ObjectId, CardId, PlayerId)> = self
             .state
@@ -6428,6 +6483,11 @@ impl Game {
             }
         }
         self.state.turn.attackers = attackers.to_vec();
+        if !attackers.is_empty() && !self.state.attacked_this_turn.contains(&player) {
+            // Raid is a whole-turn declaration fact, not current combat state.
+            self.state.attacked_this_turn.push(player);
+            self.state.attacked_this_turn.sort_unstable();
+        }
         // CR 506.5: the declaration record. Unlike `attackers`, this list is not
         // pruned when a creature leaves combat, so "attacks alone" keeps meaning
         // "was the only creature declared" for the rest of the combat.
@@ -6473,7 +6533,7 @@ impl Game {
                 {
                     continue;
                 }
-                if !self.trigger_condition_holds(card, defender, *id) {
+                if !self.trigger_condition_holds(card, controller, defender, *id) {
                     events.push(Event::TriggerRemoved {
                         controller,
                         card,
@@ -7005,6 +7065,7 @@ impl Game {
             // only when the turn number actually advances.
             self.state.creature_died_this_turn = false;
             self.state.nontoken_creature_deaths_this_turn.clear();
+            self.state.attacked_this_turn.clear();
             // CR 800.4k: a departed player's turn does not begin; select the
             // next actual live seat. Seats are never renumbered.
             match self.state.next_live_seat_after(self.state.turn.active) {
@@ -7088,8 +7149,15 @@ impl Game {
                     self.grant_priority(active, events);
                 }
             }
-            Step::PrecombatMain | Step::PostcombatMain | Step::EndStep => {
+            Step::PrecombatMain | Step::PostcombatMain => {
                 self.grant_priority(active, events);
+            }
+            Step::EndStep => {
+                self.queue_end_step_triggers(active);
+                self.put_triggers(events);
+                if self.state.pending.is_none() && !self.state.is_over() {
+                    self.grant_priority(active, events);
+                }
             }
             Step::DeclareAttackers => {
                 if self.legal_attackers(active).is_empty() {
@@ -8123,6 +8191,26 @@ impl Game {
                 card: item.card,
                 reason: "all of its targets are illegal, so it does not resolve (CR 608.2b)"
                     .to_string(),
+            });
+            self.pop_ability(item.object, item.entry);
+            self.state.resolving = None;
+            self.finish_resolution(events);
+            return;
+        }
+
+        // CR 603.4: Raid's "if you attacked this turn" is rechecked on
+        // resolution using the captured controller and the whole-turn history.
+        if item.cursor == 0
+            && matches!(
+                ability::trigger_condition(item.card),
+                ability::TriggerCondition::RaidAttackedThisTurn
+            )
+            && !self.state.attacked_this_turn.contains(&item.controller)
+        {
+            events.push(Event::TriggerRemoved {
+                controller: item.controller,
+                card: item.card,
+                reason: "its Raid intervening-if is false on resolution (CR 603.4)".to_string(),
             });
             self.pop_ability(item.object, item.entry);
             self.state.resolving = None;
@@ -9563,7 +9651,9 @@ impl Game {
                     .state
                     .turn
                     .defender
-                    .map(|defender| self.trigger_condition_holds(card, defender, item.object))
+                    .map(|defender| {
+                        self.trigger_condition_holds(card, item.controller, defender, item.object)
+                    })
                     .unwrap_or(true);
                 if on_battlefield && condition_met {
                     self.state.skip_next_untap.insert(item.object);
@@ -10733,7 +10823,7 @@ impl Game {
                     if ability::triggers_on(card, TriggerEvent::ThisDealsCombatDamageToPlayer)
                         .next()
                         .is_some()
-                        && self.trigger_condition_holds(card, defender, source)
+                        && self.trigger_condition_holds(card, source_controller, defender, source)
                     {
                         self.queue_triggers(
                             source,

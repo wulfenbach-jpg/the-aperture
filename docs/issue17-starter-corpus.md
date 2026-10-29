@@ -46,12 +46,12 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **153** are in the supported 166-card catalog and **306** are missing. Slice
+* **155** are in the supported 168-card catalog and **304** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **164**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **168**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
   Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
@@ -174,7 +174,7 @@ Staged interaction roadmap (derived from the manifest `missing_interactions`):
    blue Drake with functional flying for Talrand, Sky Summoner. Zada and the
    remaining Ayula-list Bear makers still need their own token types (Ayula
    herself needs no token); the exact Krenko starter is still planned
-   (48 missing) and Talrand's desired list has 51 missing cards;
+   (46 missing) and Talrand's desired list has 51 missing cards;
 2. triggered abilities: **bounded implemented package** for Talrand's
    controller-only instant/sorcery cast trigger (staged above the spell,
    independent of counters), **bounded implemented** landfall for Tatyova and
@@ -338,7 +338,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 166 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 168 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1222,8 +1222,8 @@ so its own keyword was not implemented. It is now a `card_trample!` row and the
 regression `ursine_monstrosity_now_really_has_its_printed_trample` keeps it that
 way.
 
-**Corpus after this slice.** 166 catalog / 459 union = **153 supported + 306
-missing**, per-list `[55, 0, 51, 48, 0, 52, 52, 53]`, and **two of eight lists
+**Corpus after this slice.** 168 catalog / 459 union = **155 supported + 304
+missing**, per-list `[55, 0, 51, 46, 0, 52, 52, 53]`, and **two of eight lists
 certified**. The Ayula list is `implemented` and then `certified`: every card of
 the exact 100-card snapshot is supported, both gap fields are empty, and the
 exact snapshot was played.
@@ -1256,3 +1256,45 @@ the two real `SessionSave` probes), the printing chain in
 `crates/core/tests/card_printings.rs`, the certificate
 `evidence/issue17/slice60/ayula-certificate.json` and the separate replay
 verification under `evidence/issue17/slice60/replays/`.
+
+
+## Slice 62: Goblin Chieftain and Searslicer Goblin
+
+Both cards were fetched by exact Scryfall named-card requests on 2026-10-29 with
+a normal user agent and ≥120 ms spacing; raw responses, source records and
+printings sweeps are under `evidence/issue17/slice62/sources/`, and the immutable
+fixture is `fixtures/starter-corpus/slice62-sourced.json`.
+
+**Goblin Chieftain** (JMP 324, `{1}{R}{R}`, Creature — Goblin 2/2) prints Haste
+and "Other Goblin creatures you control get +1/+1 and have haste." The printed
+Haste keyword is in the shared keyword table, so the Chieftain itself attacks
+while summoning sick. The anthem reuses the existing list-filtered subtype
+static (`OtherControlledCreaturesWithAnySubtypeGet`, `+1/+1`, Goblin); a new
+typed haste static (`OtherControlledCreaturesWithAnySubtypeHaveHaste`) grants
+haste to other effective Goblins controlled by the same seat. The source never
+pumps or hastes itself, non-Goblins and opponents' Goblins are unaffected.
+
+**Searslicer Goblin** (FDN 93, `{1}{R}`, Creature — Goblin Warrior 2/1) prints
+"Raid — At the beginning of your end step, if you attacked this turn, create a
+1/1 red Goblin creature token." `GameState::attacked_this_turn` is a persisted,
+default-empty per-seat declaration history. It is set when a nonempty attack is
+declared and is not derived from current attackers, so it survives attackers
+leaving combat; it is cleared only when the turn number advances. `TriggerEvent::EndStep`
+queues the trigger only for the active seat's battlefield sources, and
+`TriggerCondition::RaidAttackedThisTurn` rechecks the captured controller on
+resolution. Token creation reuses the typed 1/1 red Goblin package. The empty
+field is omitted on serialization, preserving old saves and default digests.
+
+Coverage is `crates/core/tests/issue17_slice62.rs`: cast-to-stack-to-resolution,
+anthem/haste with self/other/opponent/non-Goblin controls, actual attack
+declaration while sick, Raid active seat/end step/attacked/did-not-attack, source
+departure after the trigger is on the stack, turn-transition reset, intervening-if,
+and real `SessionSave` persistence plus refusal of fabricated non-sandbox
+history. The 40-card four-seat journey is
+`evidence/issue17/slice62/final/native/`; its projected legal-offer evidence
+driver is explicitly not product AI and the shipped CLI replay reproduces digest
+`8753aeb5…35ae`.
+
+**Corpus after this slice.** 168 catalog / 459 union = **155 supported + 304
+missing**, per-list `[55, 0, 51, 46, 0, 52, 52, 53]`; Krenko has **46** missing
+names so **two of eight** lists remain certified. This slice does not claim 3/8.
