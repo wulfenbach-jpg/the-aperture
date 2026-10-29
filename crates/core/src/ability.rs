@@ -473,6 +473,14 @@ pub fn equipment_grants(card: CardId) -> Option<EquipmentGrants> {
     }
 }
 
+const URSINE_MONSTROSITY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "At the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+    event: TriggerEvent::BeginningOfCombat,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::UrsineCombatTrigger],
+})];
+
 const SPIRIT_OF_THE_ALDERGARD: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.",
     event: TriggerEvent::EntersBattlefield,
@@ -1099,6 +1107,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::TheEarthKing => THE_EARTH_KING,
         CardId::LumraBellowOfTheWoods => LUMRA,
         CardId::SpiritOfTheAldergard => SPIRIT_OF_THE_ALDERGARD,
+        CardId::UrsineMonstrosity => URSINE_MONSTROSITY,
         CardId::LightningGreaves => LIGHTNING_GREAVES,
         CardId::SwiftfootBoots => SWIFTFOOT_BOOTS,
         CardId::AyulaQueenAmongBears => AYULA_QUEEN_AMONG_BEARS,

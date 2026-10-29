@@ -50,6 +50,7 @@ const SLICE41_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE42_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice42-sourced.json");
 const SLICE44_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice44-sourced.json");
 const SLICE45_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice45-sourced.json");
+const SLICE54_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice54-sourced.json");
 /// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
@@ -471,6 +472,11 @@ fn slice48_cards() -> Vec<Value> {
 
 fn slice53_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE53_SOURCED).expect("sourced slice53 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice54_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE54_SOURCED).expect("sourced slice54 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -970,6 +976,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice43_cards())
         .chain(slice44_cards())
         .chain(slice45_cards())
+        .chain(slice54_cards())
         .chain(slice46_cards())
         .chain(slice48_cards())
         .chain(slice53_cards())

@@ -308,6 +308,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::ExileTargetPlayersGraveyardAndGainLife
                 | Effect::SearchAnyLandUpToTwo
                 | Effect::PutTwoCountersOnEachCreatureYouControl
+                | Effect::UrsineCombatTrigger
                 | Effect::PutTrampleCounterOnTarget
                 | Effect::AddTargetCreatureType(_)
                 | Effect::DrawIfControlsBears { .. }

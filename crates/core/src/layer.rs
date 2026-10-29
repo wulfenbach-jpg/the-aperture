@@ -149,7 +149,10 @@ pub enum EffectDuration {
 pub enum ContinuousKind {
     /// CR 613.4c: add to power and toughness. Both values are stored so a
     /// -1/-1 effect is never confused with a +1/+1 counter.
-    ModifyPowerToughness { power: i32, toughness: i32 },
+    ModifyPowerToughness {
+        power: i32,
+        toughness: i32,
+    },
     /// CR 613.4d + 702.19a: the target permanent has trample for as long as this
     /// effect applies. Combat damage assignment asks the engine, not the printed
     /// card, so a granted trample is indistinguishable from printed trample at
@@ -158,7 +161,10 @@ pub enum ContinuousKind {
     /// CR 613.4d + 702.10a: the object has haste until end of turn.
     GrantsHaste,
     /// CR 613.4b: set base power/toughness to the captured values.
-    SetBasePowerToughness { power: i32, toughness: i32 },
+    SetBasePowerToughness {
+        power: i32,
+        toughness: i32,
+    },
     /// CR 702.171: this Mount is saddled until end of turn.
     Saddled,
     /// Attachment relation and keywords granted by an Equipment source.
@@ -167,6 +173,9 @@ pub enum ContinuousKind {
         shroud: bool,
         hexproof: bool,
     },
+    Indestructible,
+    /// CR 508.1a: this creature attacks the stored controller this combat if able.
+    MustAttackThisCombat,
     /// CR 613.1d: the creature's subtype line becomes this one, replacing the
     /// printed subtypes for as long as the effect applies. Type-changing
     /// effects apply before every power/toughness layer, so a pump in the same
@@ -218,6 +227,8 @@ impl ContinuousEffect {
             ContinuousKind::GrantsTrample => {
                 format!("trample until end of turn ({})", self.layer.rules())
             }
+            ContinuousKind::Indestructible => "indestructible until end of turn".to_string(),
+            ContinuousKind::MustAttackThisCombat => "must attack this combat".to_string(),
             ContinuousKind::GrantsHaste => {
                 format!("haste until end of turn ({})", self.layer.rules())
             }

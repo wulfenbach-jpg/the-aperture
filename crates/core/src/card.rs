@@ -393,6 +393,7 @@ pub enum Effect {
     ExileTargetPlayersGraveyardAndGainLife,
     SearchAnyLandUpToTwo,
     PutTwoCountersOnEachCreatureYouControl,
+    UrsineCombatTrigger,
     DrawIfControlsBears {
         minimum: u8,
         cards: u8,
@@ -549,6 +550,9 @@ impl Effect {
             }
             Effect::PutTwoCountersOnEachCreatureYouControl => {
                 "put two +1/+1 counters on each creature you control".to_string()
+            }
+            Effect::UrsineCombatTrigger => {
+                "mill a card, choose an opponent at random, attack them if able, gain indestructible and +1/+1 per graveyard card type".to_string()
             }
             Effect::PutTrampleCounterOnTarget => {
                 "put a trample counter on the target creature".to_string()
@@ -896,6 +900,7 @@ pub enum CardId {
     SpiritOfTheAldergard,
     SnowCoveredForest,
     TitaniasCommand,
+    UrsineMonstrosity,
     AyulasInfluence,
     Bearscape,
     MotherBear,

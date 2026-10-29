@@ -847,7 +847,9 @@ impl Game {
                 | ContinuousKind::SetColor(_)
                 | ContinuousKind::PowerToughnessEqualToLands
                 | ContinuousKind::Saddled
-                | ContinuousKind::Equipped { .. } => None,
+                | ContinuousKind::Equipped { .. }
+                | ContinuousKind::Indestructible
+                | ContinuousKind::MustAttackThisCombat => None,
             })
             .collect();
         modifying.sort_unstable_by_key(|(timestamp, ..)| *timestamp);
@@ -1026,6 +1028,50 @@ impl Game {
                         )
                     })
             })
+    }
+
+    fn graveyard_card_type_count(&self, player: PlayerId) -> i32 {
+        let mut mask = 0u8;
+        for id in &self.state.player(player).graveyard {
+            let Some(object) = self.state.try_object(*id) else {
+                continue;
+            };
+            for (bit, kind) in [
+                (1u8, crate::card::Kind::Artifact),
+                (2, crate::card::Kind::Creature),
+                (4, crate::card::Kind::Enchantment),
+                (8, crate::card::Kind::Instant),
+                (16, crate::card::Kind::Land),
+                (32, crate::card::Kind::Sorcery),
+            ] {
+                if object.card.def().kinds.contains(&kind) {
+                    mask |= bit;
+                }
+            }
+        }
+        mask.count_ones() as i32
+    }
+
+    fn has_indestructible(&self, id: ObjectId) -> bool {
+        self.state
+            .effects
+            .iter()
+            .any(|effect| effect.kind == ContinuousKind::Indestructible && effect.target == id)
+    }
+
+    fn forced_attack_defender(&self, id: ObjectId) -> Option<PlayerId> {
+        // The engine permits one defending player per combat. Requirements with
+        // different defenders are maximized by choosing one group; they cannot
+        // all be satisfied simultaneously (CR 508.1d).
+        self.forced_attack_defender_single(id)
+    }
+
+    fn forced_attack_defender_single(&self, id: ObjectId) -> Option<PlayerId> {
+        self.state.effects.iter().find_map(|effect| {
+            (effect.kind == ContinuousKind::MustAttackThisCombat && effect.target == id)
+                .then_some(effect.controller)
+                .filter(|p| self.state.is_live(*p))
+        })
     }
 
     fn has_shroud(&self, id: ObjectId) -> bool {
@@ -3640,6 +3686,33 @@ impl Game {
             }
         }
         let legal = self.legal_attackers(player);
+        let forced: Vec<(ObjectId, PlayerId)> = legal
+            .iter()
+            .filter_map(|id| {
+                self.forced_attack_defender(*id)
+                    .map(|defender| (*id, defender))
+            })
+            .collect();
+        if forced.is_empty() {
+            // Nothing is required; any legal declaration is allowed.
+        } else if let Some(chosen) = defender {
+            for (attacker, required_defender) in &forced {
+                if *required_defender == chosen && !attackers.contains(attacker) {
+                    return Err(EngineError::illegal(
+                        "declare attackers",
+                        format!(
+                            "{} must attack P{chosen} this combat if able (CR 508.1d)",
+                            self.describe_object(*attacker)
+                        ),
+                    ));
+                }
+            }
+        } else {
+            return Err(EngineError::illegal(
+                "declare attackers",
+                "at least one forced attacker is able to attack this combat (CR 508.1d)",
+            ));
+        }
         let mut seen = Vec::new();
         for a in attackers {
             if seen.contains(a) {
@@ -4779,6 +4852,23 @@ impl Game {
         controller: PlayerId,
         event: TriggerEvent,
     ) {
+        if card == CardId::UrsineMonstrosity && event == TriggerEvent::BeginningOfCombat {
+            let seq = self.state.next_trigger_seq;
+            self.state.next_trigger_seq += 1;
+            self.state.trigger_queue.push(TriggerRef {
+                source,
+                card,
+                controller,
+                ability: 0,
+                seq,
+                spell_mana_value: 0,
+                affected: Some(source),
+                source_pt_lki: None,
+                search_amount: 0,
+                dead_object: None,
+            });
+            return;
+        }
         if event == TriggerEvent::EntersBattlefield
             && card == CardId::UlvenwaldBear
             && !self.state.creature_died_this_turn
@@ -6059,6 +6149,9 @@ impl Game {
                 self.grant_priority(active, events);
             }
             Step::EndCombat => {
+                self.state
+                    .effects
+                    .retain(|effect| effect.kind != ContinuousKind::MustAttackThisCombat);
                 self.state.turn.attackers.clear();
                 self.state.turn.blocked.clear();
                 self.state.turn.blockers.clear();
@@ -6539,7 +6632,10 @@ impl Game {
                 .objects
                 .values()
                 .filter(|o| o.zone == Zone::Battlefield && self.is_creature(o))
-                .filter(|o| o.toughness() <= 0 || o.damage as i32 >= o.toughness())
+                .filter(|o| {
+                    o.toughness() <= 0
+                        || (o.damage as i32 >= o.toughness() && !self.has_indestructible(o.id))
+                })
                 .map(|o| o.id)
                 .collect();
             if !dying.is_empty() {
@@ -6557,6 +6653,7 @@ impl Game {
                             && self.is_creature(o)
                             && o.toughness() > 0
                             && o.damage as i32 >= o.toughness()
+                            && !self.has_indestructible(*id)
                     });
                     if lethal_now && self.try_regenerate(*id, events) {
                         regenerated += 1;
@@ -8016,6 +8113,9 @@ impl Game {
                     let combat = self.capture_combat_alone();
                     let mut deaths = Vec::new();
                     for id in &doomed {
+                        if self.has_indestructible(*id) {
+                            continue;
+                        }
                         if self.try_regenerate(*id, events) {
                             continue;
                         }
@@ -8413,6 +8513,71 @@ impl Game {
                         });
                     }
                 }
+                false
+            }
+            Effect::UrsineCombatTrigger => {
+                self.mill_cards(controller, 1, events);
+                let opponents: Vec<PlayerId> = (0..self.state.seat_count() as PlayerId)
+                    .filter(|p| *p != controller && self.state.is_live(*p))
+                    .collect();
+                let Some(defender) = opponents
+                    .get(self.state.rng.below(opponents.len() as u32) as usize)
+                    .copied()
+                else {
+                    return false;
+                };
+                let timestamp = self.next_timestamp();
+                let id = self.next_effect_id();
+                self.state.effects.push(ContinuousEffect {
+                    id,
+                    timestamp,
+                    source: Some(item.object),
+                    card: item.card,
+                    controller,
+                    layer: Layer::Ability,
+                    target: item.object,
+                    kind: ContinuousKind::Indestructible,
+                    duration: EffectDuration::UntilEndOfTurn,
+                });
+                if item.affected == Some(item.object)
+                    && self
+                        .state
+                        .try_object(item.object)
+                        .is_some_and(|object| object.zone == Zone::Battlefield)
+                {
+                    let types = self.graveyard_card_type_count(controller);
+                    let id = self.next_effect_id();
+                    self.state.effects.push(ContinuousEffect {
+                        id,
+                        timestamp,
+                        source: Some(item.object),
+                        card: item.card,
+                        controller,
+                        layer: Layer::Modifying,
+                        target: item.object,
+                        kind: ContinuousKind::ModifyPowerToughness {
+                            power: types,
+                            toughness: types,
+                        },
+                        duration: EffectDuration::UntilEndOfTurn,
+                    });
+                    let id = self.next_effect_id();
+                    self.state.effects.push(ContinuousEffect {
+                        id,
+                        timestamp,
+                        source: Some(item.object),
+                        card: item.card,
+                        controller: defender,
+                        layer: Layer::Ability,
+                        target: item.object,
+                        kind: ContinuousKind::MustAttackThisCombat,
+                        duration: EffectDuration::UntilEndOfTurn,
+                    });
+                    self.recompute_layers();
+                }
+                events.push(Event::StateBasedAction {
+                    description: format!("Ursine Monstrosity mills a card, must attack P{defender} if able, and gains indestructible/+1/+1 per graveyard card type"),
+                });
                 false
             }
             Effect::SaddleSource => {
@@ -9696,35 +9861,60 @@ impl Game {
             }],
             Pending::DeclareAttackers { player } => {
                 let legal = self.legal_attackers(*player);
-                let mut out = vec![LegalAction {
-                    action: Action::DeclareAttackers {
-                        attackers: Vec::new(),
-                        defender: None,
-                    },
-                    label: "Declare no attackers".to_string(),
-                    rules: vec!["508.1a"],
-                }];
-                if !legal.is_empty() {
-                    let names: Vec<&str> = legal
+                let forced: Vec<(ObjectId, PlayerId)> = legal
+                    .iter()
+                    .filter_map(|id| {
+                        self.forced_attack_defender(*id)
+                            .map(|defender| (*id, defender))
+                    })
+                    .collect();
+                let mut out = Vec::new();
+                if forced.is_empty() {
+                    out.push(LegalAction {
+                        action: Action::DeclareAttackers {
+                            attackers: Vec::new(),
+                            defender: None,
+                        },
+                        label: "Declare no attackers".to_string(),
+                        rules: vec!["508.1a"],
+                    });
+                }
+                for defender in 0..self.state.seat_count() as PlayerId {
+                    if defender == *player || !self.state.is_live(defender) {
+                        continue;
+                    }
+                    let attackers: Vec<ObjectId> = legal
+                        .iter()
+                        .copied()
+                        .filter(|id| {
+                            forced
+                                .iter()
+                                .find(|(forced_id, _)| forced_id == id)
+                                .is_none_or(|(_, required)| *required == defender)
+                        })
+                        .collect();
+                    if attackers.is_empty() {
+                        continue;
+                    }
+                    let names: Vec<&str> = attackers
                         .iter()
                         .map(|id| self.state.object(*id).card.name())
                         .collect();
-                    for defender in 0..self.state.seat_count() as PlayerId {
-                        if defender == *player || !self.state.is_live(defender) {
-                            continue;
-                        }
-                        out.push(LegalAction {
-                            action: Action::DeclareAttackers {
-                                attackers: legal.clone(),
-                                defender: Some(defender),
-                            },
-                            label: format!(
-                                "Attack P{defender} with all eligible creatures ({})",
-                                names.join(", ")
-                            ),
-                            rules: vec!["508.1a", "508.1f"],
-                        });
+                    let action = Action::DeclareAttackers {
+                        attackers,
+                        defender: Some(defender),
+                    };
+                    if self.validate(*player, &action).is_err() {
+                        continue;
                     }
+                    out.push(LegalAction {
+                        action,
+                        label: format!(
+                            "Attack P{defender} with all eligible creatures ({})",
+                            names.join(", ")
+                        ),
+                        rules: vec!["508.1a", "508.1d", "508.1f"],
+                    });
                 }
                 out
             }

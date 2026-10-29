@@ -275,7 +275,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 162] = [
+pub static CARDS: [CardDef; 163] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -891,6 +891,12 @@ pub static CARDS: [CardDef; 162] = [
         JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
         type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
         oracle: "", spell: None
+    ),
+    card!(
+        UrsineMonstrosity, "Ursine Monstrosity", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Mutant", power: Some(3), toughness: Some(3),
+        oracle: "Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+        spell: None
     ),
     card!(
         TitaniasCommand, "Titania's Command", cost: Some("{4}{G}{G}"), kinds: SORCERY, basic: None,

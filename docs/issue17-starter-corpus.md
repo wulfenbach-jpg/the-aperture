@@ -46,14 +46,14 @@ basic lands (coordinator evidence
 `evidence/issue17/slice44/corpus-audit.py` + `corpus-audit.log`; earlier slice-25 audit retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **149** are in the supported 162-card catalog and **310** are missing. Slice
+* **150** are in the supported 163-card catalog and **309** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **162**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **163**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
-  Ruxa leaves the Ayula gap 5→4). The intervening per-slice list is
+  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -70,7 +70,7 @@ the defending player's board. Slices 14–17 add the dynamic mana stones,
 Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
 (slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
 (slice 17). Slice 28 adds `Circle of the Moon Druid` and slice 29 adds
-`Stuffed Bear`. Ayula currently has **6** missing names.
+`Stuffed Bear`. Ayula currently has **3** missing names.
 
 Slice 16 is the first time "each player who controls ..." creates the token
 (the token's controller is the permanent's controller, not the spell's), and
