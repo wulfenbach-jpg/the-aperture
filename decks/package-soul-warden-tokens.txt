@@ -1,0 +1,10 @@
+// package-soul-warden-tokens — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises the slice-4 "another creature enters" trigger against creature
+// tokens: every Soul Warden gains life for each Goblin token its controller's
+// spells create (R211-1).
+4 Soul Warden
+8 Goblin Instigator
+8 Dragon Fodder
+8 Krenko's Command
+6 Plains
+6 Mountain

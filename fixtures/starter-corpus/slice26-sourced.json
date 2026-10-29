@@ -1,0 +1,27 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T09:59:58.187134+00:00",
+ "cards": [
+  {
+   "name": "Ursine Champion",
+   "oracle_id": "4f142d99-8146-4b16-a2cc-ac03da19b960",
+   "scryfall_id": "e60b6c02-c1f1-4ab9-bd62-ae3b447a898f",
+   "set": "m19",
+   "collector_number": "304",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Creature — Human Berserker",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://scryfall.com/card/m19/304/ursine-champion?utm_source=api",
+   "retrieved_at": "2026-10-27T09:59:58.187134+00:00"
+  }
+ ]
+}

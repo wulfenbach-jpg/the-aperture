@@ -1,0 +1,68 @@
+{
+  "receipt": "aperture.issue17.slice3.increment-approval.v1",
+  "generated_at": "2026-10-26T00:50:00-07:00",
+  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "pr_state": "OPEN draft, MERGEABLE",
+  "base_commit": "8a72cc607ea25f203be672c0007ad5e798be7145",
+  "section_base": "e16185c81c66e11e5bef686f03c2a3977a791301",
+  "reviewed_head": "9cecd62ddb56d44e6853f9f9098fd3a473635b66",
+  "review_outcome": "approve_increment",
+  "scope": "Bounded slice 3 only: Tatyova landfall + Jaddi Offshoot defender package (approved at 3661353) and the five-card cross-list package Swamp/Lightning Bolt/Forest Bear/Striped Bears/Guttersnipe plus source-left damage repair and documentation truthfulness repair.",
+  "full_issue17_accepted": false,
+  "issue16_integration_approved": false,
+  "desired_lists": 8,
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "catalog_cards": 93,
+  "exact_union_names": 459,
+  "supported_union_names": 81,
+  "missing_union_names": 378,
+  "desired_list_contents_unchanged": true,
+  "representative_journeys": [
+    {
+      "fixture": "decks/package-tatyova-landfall.txt",
+      "seats": 4,
+      "starting_life": 40,
+      "status": "terminal",
+      "actions": 2993,
+      "turns": 65,
+      "digest": "b31adfd97c3123696a0a614a0bb91f434d344acba3796ec064f4054cb37f9d77",
+      "replay_matches": true,
+      "save_replay_matches": true,
+      "note": "40-card supported package fixture, NOT a desired 100-card starter"
+    },
+    {
+      "fixture": "decks/package-cross-corpus.txt",
+      "seats": 4,
+      "starting_life": 20,
+      "status": "terminal",
+      "actions": 1112,
+      "turns": 25,
+      "digest": "4572cd11e8933e629e21e57ac4e59646d100b4c9397bb88b94d78e47ad843456",
+      "guttersnipe_triggers": 8,
+      "replay_matches": true,
+      "note": "40-card supported package fixture, NOT a desired 100-card starter"
+    }
+  ],
+  "review_history": [
+    {"review": 1, "head": "3661353aad1c3d628827e28faf187e23ca5b4cb9", "outcome": "approve_increment", "report": "evidence/issue17/slice3-review-1.json"},
+    {"review": 2, "head": "0d8a1ee7dfccef39aacaff482b00255e86ff6399", "outcome": "request_changes", "report": "evidence/issue17/slice3-review-2.json", "findings": ["Krenko 52->51 stale count in manifest/docs", "obsolete Elas no-black-Swamp claim", "false changed-file mention of docs/issue15-effects.md"]},
+    {"review": 3, "head": "9cecd62ddb56d44e6853f9f9098fd3a473635b66", "outcome": "approve_increment", "report": "evidence/issue17/slice3-review-3.json", "prior_findings_all_fixed": true}
+  ],
+  "exact_head_ci": {
+    "total_checks": 10,
+    "success": 10,
+    "failed": 0,
+    "windows_package_jobs_success": 2,
+    "required_checks_pass": true,
+    "receipt": "evidence/issue17/slice3-final-ci-check-runs.json"
+  },
+  "retained_limitations": [
+    "Seven desired 100-card starters remain planned/unsupported and 378 exact names remain missing; zero lists are certified.",
+    "Landfall only for Tatyova/Jaddi land drops; broader ramp/extra land drops unsupported.",
+    "Defender is one typed static; Guttersnipe support is its printed trigger plus a bounded each-opponent damage primitive. Old-card last-known-information debt outside that bounded effect is not claimed fixed.",
+    "Legend rule still absent; commanders remain commander-only and one supported commander per seat in the bounded 40-life profile.",
+    "Shared core hooks remain a separate #16 integration hotspot; this approval is not #16 integration.",
+    "No full Commander, arbitrary Archidekt, AI-strength, release or v1 claim; no merge/master push/issue closure/successor activation by this worker."
+  ]
+}

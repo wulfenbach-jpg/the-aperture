@@ -1,0 +1,112 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T08:11:26Z",
+ "note": "Four records read from live Scryfall this run (named+exact and unique=prints); every printing of each card carries the same oracle text.",
+ "cards": [
+  {
+   "name": "Ordinary Bear",
+   "role": "vanilla",
+   "oracle_id": "89a2fab8-b074-42aa-a871-d9c5de2d0895",
+   "scryfall_id": "0feb9817-56e1-465a-851c-b2fe202aa8ae",
+   "set": "hob",
+   "collector_number": "133",
+   "set_name": "The Hobbit",
+   "released_at": "2026-08-14",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Creature \u2014 Bear",
+   "power": "4",
+   "toughness": "5",
+   "oracle_text": "",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/hob/133",
+   "printings_checked": 1,
+   "distinct_printing_texts": 1,
+   "retrieved_at": "2026-10-26T08:11:26Z"
+  },
+  {
+   "name": "Ashcoat Bear",
+   "role": "flash",
+   "oracle_id": "e6d13c0d-23ed-41f5-a726-f18d4bb44c9a",
+   "scryfall_id": "9b7a6ab5-8a8f-492c-8484-3089354ce8cf",
+   "set": "tsp",
+   "collector_number": "190",
+   "set_name": "Time Spiral",
+   "released_at": "2006-10-06",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Creature \u2014 Bear",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Flash"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tsp/190",
+   "printings_checked": 1,
+   "distinct_printing_texts": 1,
+   "retrieved_at": "2026-10-26T08:11:26Z"
+  },
+  {
+   "name": "Owlbear",
+   "role": "trample",
+   "oracle_id": "0fab815f-bccf-40ef-95e9-ba64b137fb8c",
+   "scryfall_id": "30e8a00f-8131-470d-8072-4c23b812281a",
+   "set": "afr",
+   "collector_number": "198",
+   "set_name": "Adventures in the Forgotten Realms",
+   "released_at": "2021-07-23",
+   "layout": "normal",
+   "mana_cost": "{3}{G}{G}",
+   "type_line": "Creature \u2014 Bird Bear",
+   "power": "4",
+   "toughness": "4",
+   "oracle_text": "Trample\nKeen Senses \u2014 When this creature enters, draw a card.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Trample"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/afr/198",
+   "printings_checked": 3,
+   "distinct_printing_texts": 1,
+   "retrieved_at": "2026-10-26T08:11:26Z"
+  },
+  {
+   "name": "Soul Warden",
+   "role": "another_creature_enters",
+   "oracle_id": "f3fad295-1af2-4ecc-8546-b121ad6be27b",
+   "scryfall_id": "d96266b3-a7cb-40ce-a328-ac13719fe5f0",
+   "set": "mm3",
+   "collector_number": "24",
+   "set_name": "Modern Masters 2017",
+   "released_at": "2017-03-17",
+   "layout": "normal",
+   "mana_cost": "{W}",
+   "type_line": "Creature \u2014 Human Cleric",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "Whenever another creature enters, you gain 1 life.",
+   "color_identity": [
+    "W"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/mm3/24",
+   "printings_checked": 16,
+   "distinct_printing_texts": 1,
+   "retrieved_at": "2026-10-26T08:11:26Z"
+  }
+ ]
+}

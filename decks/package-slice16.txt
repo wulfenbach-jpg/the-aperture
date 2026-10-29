@@ -1,0 +1,9 @@
+// 40-card slice-16 evidence package: mass destruction and a targeted untap.
+// Practice package, NOT one of the eight desired 100-card starters.
+14 Forest
+4 Fade from History
+4 Little Bear
+4 Bearscape
+4 Sol Ring
+4 Grizzly Bears
+6 Werebear

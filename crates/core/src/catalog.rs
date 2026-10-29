@@ -1,5 +1,27 @@
-//! The supported card pool. Twenty-eight real cards; every printed ability is
-//! implemented. Card text is the short functional Oracle wording.
+//! The supported card pool; every printed ability is implemented. The current
+//! cardinality is asserted by `crates/core/tests/catalog_pool.rs` and stated in
+//! `README.md`, so this header does not carry a number that drifts every slice.
+//! Card text is the short functional Oracle wording (vanilla
+//! creatures print no text at all).
+//!
+//! The issue-17 starter package adds 47 sourced vanilla green/white creatures
+//! and the vanilla commander Jasmine Boreal. Slice 2 adds the Krenko goblin
+//! package: six sourced cards plus an engine-only 1/1 red Goblin token card.
+//! Token creation is typed; tokens are never importable catalog cards.
+//!
+//! Slice 5 adds the sourced mill / counter / ritual package: Stitcher's Supplier
+//! (mill on enters and on dies), Ruin Crab (landfall mill for each opponent),
+//! Negate ("counter target noncreature spell"), Preordain (scry 2 then draw),
+//! Pyretic Ritual and Seething Song (add red mana to the pool).
+//!
+//! Slice 6 adds the sourced death-watcher package: Blood Artist (any creature
+//! dies → target player loses 1 life, you gain 1), Zulaport Cutthroat (a
+//! creature you control dies → each opponent loses 1 life, you gain 1) and
+//! Hedron Crab (landfall → target player mills three). It introduces
+//! `TargetSpec::Player`, life loss as distinct from damage, and the "creature
+//! dies" watcher family. `Effect::LoseLifeEachOpponent` and
+//! `Effect::MillTargetPlayer` are ability-only for now; no printed spell text in
+//! the pool uses them.
 //!
 //! Activated and triggered abilities are declared in [`crate::ability`] and
 //! executed by the engine; a card with an ability this crate cannot execute is
@@ -32,11 +54,23 @@ const TOP_LIBRARY: &[Effect] = &[Effect::PutOnTopOfLibrary];
 const SWORDS: &[Effect] = &[Effect::ExileAndGainLife];
 const PREVENT_COMBAT: &[Effect] = &[Effect::PreventAllCombatDamageThisTurn];
 const PREVENT_FOUR: &[Effect] = &[Effect::PreventNextDamage(4)];
+const PREORDAIN_SCRY_TWO_DRAW: &[Effect] = &[Effect::Scry(2), Effect::Draw(1)];
+const ADD_THREE_RED: &[Effect] = &[Effect::AddMana {
+    color: ManaColor::Red,
+    amount: 3,
+}];
+const ADD_FIVE_RED: &[Effect] = &[Effect::AddMana {
+    color: ManaColor::Red,
+    amount: 5,
+}];
 
 const LAND: &[Kind] = &[Kind::Land];
 const CREATURE: &[Kind] = &[Kind::Creature];
 const INSTANT: &[Kind] = &[Kind::Instant];
 const SORCERY: &[Kind] = &[Kind::Sorcery];
+const ARTIFACT: &[Kind] = &[Kind::Artifact];
+const ARTIFACT_CREATURE: &[Kind] = &[Kind::Artifact, Kind::Creature];
+const ENCHANTMENT: &[Kind] = &[Kind::Enchantment];
 
 macro_rules! card {
     (
@@ -50,7 +84,247 @@ macro_rules! card {
             cost: $cost,
             kinds: $kinds,
             basic_mana: $basic,
+            artifact_mana: None,
             type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+macro_rules! card_artifact {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, type_line: $tl:literal,
+        oracle: $oracle:literal, mana: $mana:expr, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: &[Kind::Artifact],
+            basic_mana: None,
+            artifact_mana: $mana,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: None,
+            toughness: None,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+macro_rules! card_defender {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: true,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+/// A creature whose only printed rules text is the Flash keyword (CR 702.8a).
+macro_rules! card_flash {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: true,
+            trample: false,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+/// A creature whose only printed rules text is Islandwalk (CR 702.14a).
+macro_rules! card_islandwalk {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: true,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+macro_rules! card_trample {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: true,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+/// A card that prints both vigilance and trample (Rampaging Yao Guai). Two
+/// printed keywords on one card, so a dedicated macro keeps every other macro's
+/// single-keyword defaults honest instead of inventing a flags struct.
+macro_rules! card_flying_haste {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: true,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+macro_rules! card_vigilance_trample {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: true,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
+/// A green printable card whose colour a supported rule can observe. The pool
+/// records `colors` only where colour is reachable by an implemented rule, so
+/// the plain macros leave it empty; Beorn's Hospitality becomes a creature, so
+/// its colour is one of its characteristics from that moment on and is recorded
+/// here (CR 202.2a).
+macro_rules! card_green {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[ManaColor::Green],
+            flying: false,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
             power: $power,
             toughness: $toughness,
             oracle: $oracle,
@@ -60,7 +334,7 @@ macro_rules! card {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 31] = [
+pub static CARDS: [CardDef; 183] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -233,18 +507,1226 @@ pub static CARDS: [CardDef; 31] = [
         oracle: "This creature gets +1/+1 for each creature card in your opponents' graveyards.",
         spell: None
     ),
+    card!(
+        SoulsAttendant, "Soul's Attendant", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Cleric", power: Some(1), toughness: Some(1),
+        oracle: "Whenever another creature enters, you may gain 1 life.", spell: None
+    ),
+    card!(
+        RazorclawBear, "Razorclaw Bear", cost: Some("{2}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(3),
+        oracle: "Whenever this creature becomes blocked, it gets +2/+2 until end of turn.", spell: None
+    ),
+    card!(
+        VolleyVeteran, "Volley Veteran", cost: Some("{3}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(4), toughness: Some(2),
+        oracle: "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.", spell: None
+    ),
+    card!(
+        DramaticReversal, "Dramatic Reversal", cost: Some("{1}{U}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Untap all nonland permanents you control.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::UntapAllNonlandsYouControl] })
+    ),
+    card!(
+        GoblinWarStrike, "Goblin War Strike", cost: Some("{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.",
+        spell: Some(SpellSpec { target: TargetSpec::Player, instant: false, effects: &[Effect::DamageTargetPlayerForEachGoblin] })
+    ),
+    card!(
+        SazhsChocobo, "Sazh's Chocobo", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bird", power: Some(0), toughness: Some(1),
+        oracle: "Landfall — Whenever a land you control enters, put a +1/+1 counter on this creature.",
+        spell: None
+    ),
+    card_trample!(
+        RampagingBaloths, "Rampaging Baloths", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(6), toughness: Some(6),
+        oracle: "Trample\nLandfall — Whenever a land you control enters, create a 4/4 green Beast creature token.",
+        spell: None
+    ),
+    card!(
+        ProfessorOfZoomancy, "Professor of Zoomancy", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Druid", power: Some(4), toughness: Some(3),
+        oracle: "When this creature enters, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+        spell: None
+    ),
+    card_artifact!(
+        ArcaneSignet, "Arcane Signet", cost: Some("{2}"), type_line: "Artifact",
+        oracle: "{T}: Add one mana of any color in your commander's color identity.",
+        mana: None, spell: None
+    ),
+    card_artifact!(
+        FellwarStone, "Fellwar Stone", cost: Some("{2}"), type_line: "Artifact",
+        oracle: "{T}: Add one mana of any color that a land an opponent controls could produce.",
+        mana: None, spell: None
+    ),
+    card!(
+        FriendlyTeddy, "Friendly Teddy", cost: Some("{2}"), kinds: ARTIFACT_CREATURE, basic: None,
+        type_line: "Artifact Creature — Bear Toy", power: Some(2), toughness: Some(2),
+        oracle: "When this creature dies, each player draws a card.", spell: None
+    ),
+    card!(
+        UlvenwaldBear, "Ulvenwald Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
+        spell: None
+    ),
+    card_flash!(
+        CallerOfTheClaw, "Caller of the Claw", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf", power: Some(2), toughness: Some(2),
+        oracle: "Flash\nWhen this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
+        spell: None
+    ),
+    card_artifact!(
+        CommandersSphere, "Commander's Sphere", cost: Some("{3}"), type_line: "Artifact",
+        oracle: "{T}: Add one mana of any color in your commander's color identity.\nSacrifice this artifact: Draw a card.",
+        mana: None, spell: None
+    ),
+    card!(
+        Werebear, "Werebear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Bear Druid", power: Some(1), toughness: Some(1),
+        oracle: "{T}: Add {G}.\nThreshold — This creature gets +3/+3 as long as there are seven or more cards in your graveyard.",
+        spell: None
+    ),
+    card_artifact!(
+        SolRing, "Sol Ring", cost: Some("{1}"), type_line: "Artifact",
+        oracle: "{T}: Add {C}{C}.", mana: Some((ManaColor::Colorless, 2)), spell: None
+    ),
+    card_artifact!(
+        MindStone, "Mind Stone", cost: Some("{2}"), type_line: "Artifact",
+        oracle: "{T}: Add {C}.\n{1}, {T}, Sacrifice this artifact: Draw a card.",
+        mana: Some((ManaColor::Colorless, 1)), spell: None
+    ),
+    card_artifact!(
+        HedronArchive, "Hedron Archive", cost: Some("{4}"), type_line: "Artifact",
+        oracle: "{T}: Add {C}{C}.\n{2}, {T}, Sacrifice this artifact: Draw two cards.",
+        mana: Some((ManaColor::Colorless, 2)), spell: None
+    ),
+    card!(
+        BrightstoneRitual, "Brightstone Ritual", cost: Some("{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R} for each Goblin on the battlefield.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: true, effects: &[Effect::AddManaForEachGoblin] })
+    ),
+    card!(
+        ManaGeyser, "Mana Geyser", cost: Some("{3}{R}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Add {R} for each tapped land your opponents control.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::AddManaForEachTappedOpponentLand] })
+    ),
+    card!(
+        RiteOfFlame, "Rite of Flame", cost: Some("{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Add {R}{R}, then add {R} for each card named Rite of Flame in each graveyard.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::AddManaForRiteOfFlame] })
+    ),
+    card!(
+        Swamp, "Swamp", cost: None, kinds: LAND, basic: Some(ManaColor::Black),
+        type_line: "Basic Land — Swamp", power: None, toughness: None,
+        oracle: "({T}: Add {B}.)", spell: None
+    ),
+    card!(
+        LightningBolt, "Lightning Bolt", cost: Some("{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Lightning Bolt deals 3 damage to any target.",
+        spell: Some(SpellSpec { target: TargetSpec::AnyTarget, instant: true, effects: STRIKE })
+    ),
+    card!(
+        ForestBear, "Forest Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        StripedBears, "Striped Bears", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "When this creature enters, draw a card.", spell: None
+    ),
+    card!(
+        Guttersnipe, "Guttersnipe", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Shaman", power: Some(2), toughness: Some(2),
+        oracle: "Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent.",
+        spell: None
+    ),
+    card!(
+        TatyovaBenthicDruid, "Tatyova, Benthic Druid", cost: Some("{3}{G}{U}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Merfolk Druid", power: Some(3), toughness: Some(3),
+        oracle: "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
+        spell: None
+    ),
+    card_defender!(
+        JaddiOffshoot, "Jaddi Offshoot", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Plant", power: Some(0), toughness: Some(3),
+        oracle: "Defender\nLandfall — Whenever a land you control enters, you gain 1 life.",
+        spell: None
+    ),
+    card!(
+        TalrandSkySummoner, "Talrand, Sky Summoner", cost: Some("{2}{U}{U}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Merfolk Wizard", power: Some(2), toughness: Some(2),
+        oracle: "Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.",
+        spell: None
+    ),
+    // Issue 17 slice 2: Krenko goblin-token package. All text is recorded from
+    // the stored Scryfall printings in fixtures/starter-corpus/planned/.
+    card!(
+        KrenkoMobBoss, "Krenko, Mob Boss", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin Warrior", power: Some(3), toughness: Some(3),
+        oracle: "{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.",
+        spell: None
+    ),
+    card!(
+        DragonFodder, "Dragon Fodder", cost: Some("{1}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Create two 1/1 red Goblin creature tokens.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::CreateGoblinTokens(2)] })
+    ),
+    card!(
+        KrenkosCommand, "Krenko's Command", cost: Some("{1}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Create two 1/1 red Goblin creature tokens.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::CreateGoblinTokens(2)] })
+    ),
+    card!(
+        HordelingOutburst, "Hordeling Outburst", cost: Some("{1}{R}{R}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Create three 1/1 red Goblin creature tokens.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::CreateGoblinTokens(3)] })
+    ),
+    card!(
+        GoblinInstigator, "Goblin Instigator", cost: Some("{1}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Rogue", power: Some(1), toughness: Some(1),
+        oracle: "When this creature enters, create a 1/1 red Goblin creature token.",
+        spell: None
+    ),
+    card!(
+        BeetlebackChief, "Beetleback Chief", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "When this creature enters, create two 1/1 red Goblin creature tokens.",
+        spell: None
+    ),
+    // Issue 17 slice 62: complete printed Goblin Chieftain and Searslicer
+    // Goblin from Scryfall named-card requests on 2026-10-29 (sources under
+    // evidence/issue17/slice62/sources/).
+    card!(
+        GoblinChieftain, "Goblin Chieftain", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "Haste (This creature can attack and {T} as soon as it comes under your control.)\nOther Goblin creatures you control get +1/+1 and have haste.",
+        spell: None
+    ),
+    card!(
+        SearslicerGoblin, "Searslicer Goblin", cost: Some("{1}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(2), toughness: Some(1),
+        oracle: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+        spell: None
+    ),
+    // Issue 17 slice 63: complete printed subtype lords/reducers from Scryfall
+    // named-card requests on 2026-10-29.
+    card!(
+        GoblinWarchief, "Goblin Warchief", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "Goblin spells you cast cost {1} less to cast.\nGoblins you control have haste.",
+        spell: None
+    ),
+    card!(
+        GoblinKing, "Goblin King", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "Other Goblins get +1/+1 and have mountainwalk.",
+        spell: None
+    ),
+    card!(
+        DragonlordsServant, "Dragonlord's Servant", cost: Some("{1}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Shaman", power: Some(1), toughness: Some(3),
+        oracle: "Dragon spells you cast cost {1} less to cast.",
+        spell: None
+    ),
+    // Native-authorized real Dragon positive control for the Servant's reducer;
+    // out-of-list, entire text is Flying, haste.
+    card!(
+        SkirkProspector, "Skirk Prospector", cost: Some("{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
+        oracle: "Sacrifice a Goblin: Add {R}.",
+        spell: None
+    ),
+    card!(
+        ZoZuThePunisher, "Zo-Zu the Punisher", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "Whenever a land enters, Zo-Zu deals 2 damage to that land's controller.",
+        spell: None
+    ),
+    card!(
+        SiegeGangLieutenant, "Siege-Gang Lieutenant", cost: Some("{3}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "Lieutenant — At the beginning of combat on your turn, if you control your commander, create two 1/1 red Goblin creature tokens. Those tokens gain haste until end of turn.\n{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.",
+        spell: None
+    ),
+    card_flying_haste!(
+        VolcanicDragon, "Volcanic Dragon", cost: Some("{4}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dragon", power: Some(4), toughness: Some(4),
+        oracle: "Flying, haste",
+        spell: None
+    ),
+    // Issue 17 starter corpus: sourced vanilla green/white creatures. Every
+    // entry below prints no rules text, so the plain permanent-spell path is the
+    // whole implementation.
+    card!(
+        AlabornTrooper, "Alaborn Trooper", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(2), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        ArmoredWarhorse, "Armored Warhorse", cost: Some("{W}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Horse", power: Some(2), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        BastionEnforcer, "Bastion Enforcer", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dwarf Soldier", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        BladeOfTheSixthPride, "Blade of the Sixth Pride", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat Rebel", power: Some(3), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        DevotedHero, "Devoted Hero", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Soldier", power: Some(1), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        EagerCadet, "Eager Cadet", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(1), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        EliteVanguard, "Elite Vanguard", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(2), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        GlorySeeker, "Glory Seeker", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        IndomitableAncients, "Indomitable Ancients", cost: Some("{2}{W}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Treefolk Warrior", power: Some(2), toughness: Some(10),
+        oracle: "", spell: None
+    ),
+    card!(
+        KnightErrant, "Knight Errant", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Knight", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        LoomingAltisaur, "Looming Altisaur", cost: Some("{3}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dinosaur", power: Some(1), toughness: Some(7),
+        oracle: "", spell: None
+    ),
+    card!(
+        LoxodonLineBreaker, "Loxodon Line Breaker", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elephant Soldier", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        OreskosSwiftclaw, "Oreskos Swiftclaw", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat Warrior", power: Some(3), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        PearledUnicorn, "Pearled Unicorn", cost: Some("{2}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Unicorn", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        PillarfieldOx, "Pillarfield Ox", cost: Some("{3}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Ox", power: Some(2), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        RaptorCompanion, "Raptor Companion", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dinosaur", power: Some(3), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        SavannahLions, "Savannah Lions", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat", power: Some(2), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        SiegeMastodon, "Siege Mastodon", cost: Some("{4}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elephant", power: Some(3), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        SilentArtisan, "Silent Artisan", cost: Some("{3}{W}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Giant", power: Some(3), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        SilvercoatLion, "Silvercoat Lion", cost: Some("{1}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        StaunchShieldmate, "Staunch Shieldmate", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dwarf Soldier", power: Some(1), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        ValiantGuard, "Valiant Guard", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Soldier", power: Some(0), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        YokedOx, "Yoked Ox", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Ox", power: Some(0), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        AlphaTyrranax, "Alpha Tyrranax", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dinosaur Beast", power: Some(6), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        AlpineGrizzly, "Alpine Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(4), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        AxebaneBeast, "Axebane Beast", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(3), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        BalduvianBears, "Balduvian Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        BearCub, "Bear Cub", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        BlanchwoodTreefolk, "Blanchwood Treefolk", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Treefolk", power: Some(4), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        CylianElf, "Cylian Elf", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Scout", power: Some(2), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        DurkwoodBoars, "Durkwood Boars", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Boar", power: Some(4), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        EnormousBaloth, "Enormous Baloth", cost: Some("{6}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(7), toughness: Some(7),
+        oracle: "", spell: None
+    ),
+    card!(
+        FeralKrushok, "Feral Krushok", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(5), toughness: Some(4),
+        oracle: "", spell: None
+    ),
+    card!(
+        GoldenBear, "Golden Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(4), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        HollowhengeBeast, "Hollowhenge Beast", cost: Some("{3}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(5), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        KalonianTusker, "Kalonian Tusker", cost: Some("{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Beast", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        NessianCourser, "Nessian Courser", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Centaur Warrior", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        NorwoodRanger, "Norwood Ranger", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Scout Ranger", power: Some(1), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        SwordwiseCentaur, "Swordwise Centaur", cost: Some("{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Centaur Warrior", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        TerrainElemental, "Terrain Elemental", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elemental", power: Some(3), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        TrainedArmodon, "Trained Armodon", cost: Some("{1}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elephant", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    card!(
+        TrainedJackal, "Trained Jackal", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Jackal", power: Some(1), toughness: Some(2),
+        oracle: "", spell: None
+    ),
+    card!(
+        VastwoodGorger, "Vastwood Gorger", cost: Some("{5}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Wurm", power: Some(5), toughness: Some(6),
+        oracle: "", spell: None
+    ),
+    card!(
+        WillowElf, "Willow Elf", cost: Some("{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf", power: Some(1), toughness: Some(1),
+        oracle: "", spell: None
+    ),
+    card!(
+        ArmoredWolfRider, "Armored Wolf-Rider", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elf Knight", power: Some(4), toughness: Some(6),
+        oracle: "", spell: None
+    ),
+    card!(
+        GrizzledLeotau, "Grizzled Leotau", cost: Some("{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Cat", power: Some(1), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        Watchwolf, "Watchwolf", cost: Some("{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Wolf", power: Some(3), toughness: Some(3),
+        oracle: "", spell: None
+    ),
+    // Issue 17 first supported commander: a genuine printed vanilla legendary
+    // creature. It is registered in `CardId::SUPPORTED_COMMANDERS`, never as an
+    // ordinary library card.
+    card!(
+        JasmineBoreal, "Jasmine Boreal", cost: Some("{3}{G}{W}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Human", power: Some(4), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card!(
+        DunedainRangers, "Dúnedain Rangers", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Ranger", power: Some(4), toughness: Some(4),
+        oracle: "Landfall — Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
+        spell: None
+    ),
+    card_trample!(
+        UrsineMonstrosity, "Ursine Monstrosity", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Mutant", power: Some(3), toughness: Some(3),
+        oracle: "Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+        spell: None
+    ),
+    // Issue 17 slice 60: Evercoat Ursine (BLC 30). Text copied verbatim from the
+    // printing recorded in fixtures/starter-corpus/slice60-sourced.json. Trample
+    // is a real keyword flag, and the two hideaway 3 abilities are separate
+    // triggered abilities, so entering exiles two cards face down, each linked to
+    // this permanent (CR 702.75a).
+    card_trample!(
+        EvercoatUrsine, "Evercoat Ursine", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elemental Bear", power: Some(6), toughness: Some(5),
+        oracle: "Trample\nHideaway 3, hideaway 3 (When this creature enters, look at the top three cards of your library, exile one face down, then put the rest on the bottom in a random order. Then do it again.)\nWhenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
+        spell: None
+    ),
+    card!(
+        TitaniasCommand, "Titania's Command", cost: Some("{4}{G}{G}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Choose two —\n• Exile target player's graveyard. You gain 1 life for each card exiled this way.\n• Search your library for up to two land cards, put them onto the battlefield tapped, then shuffle.\n• Create two 2/2 green Bear creature tokens.\n• Put two +1/+1 counters on each creature you control.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[] })
+    ),
+    card!(
+        SpiritOfTheAldergard, "Spirit of the Aldergard", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Snow Creature — Bear Spirit", power: Some(0), toughness: Some(4),
+        oracle: "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.\nThis creature gets +1/+0 for each other snow permanent you control.",
+        spell: None
+    ),
+    card!(
+        SnowCoveredForest, "Snow-Covered Forest", cost: None, kinds: LAND, basic: Some(ManaColor::Green),
+        type_line: "Basic Snow Land — Forest", power: None, toughness: None,
+        oracle: "({T}: Add {G}.)", spell: None
+    ),
+    card!(
+        LightningGreaves, "Lightning Greaves", cost: Some("{2}"), kinds: ARTIFACT, basic: None,
+        type_line: "Artifact — Equipment", power: None, toughness: None,
+        oracle: "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
+        spell: None
+    ),
+    card!(
+        SwiftfootBoots, "Swiftfoot Boots", cost: Some("{2}"), kinds: ARTIFACT, basic: None,
+        type_line: "Artifact — Equipment", power: None, toughness: None,
+        oracle: "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+        spell: None
+    ),
+    card!(
+        TheEarthKing, "The Earth King", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Human Noble Ally", power: Some(2), toughness: Some(2),
+        oracle: "When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+        spell: None
+    ),
+    card!(
+        LumraBellowOfTheWoods, "Lumra, Bellow of the Woods", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Elemental Bear", power: None, toughness: None,
+        oracle: "Reach, vigilance\nLumra's power and toughness are each equal to the number of lands you control.\nWhen Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped.",
+        spell: None
+    ),
+    card!(
+        DroverGrizzly, "Drover Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Mount", power: Some(4), toughness: Some(2),
+        oracle: "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+        spell: None
+    ),
+    card!(
+        ExuberantWolfbear, "Exuberant Wolfbear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Wolf Bear", power: Some(4), toughness: Some(4),
+        oracle: "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
+        spell: None
+    ),
+    // Issue 17 slice 32: Surrak and Goreclaw prints Trample itself. Until this
+    // slice its row was a plain `card!` (trample false) and only its static
+    // granted trample to other creatures, so the card's own printed keyword was
+    // unmodelled. CR 702.19b: lethal damage is assigned to the blocker and the
+    // remainder tramples over to the defending player.
+    card_trample!(
+        SurrakAndGoreclaw, "Surrak and Goreclaw", cost: Some("{4}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Human Bear", power: Some(6), toughness: Some(5),
+        oracle: "Trample\nOther creatures you control have trample.\nWhenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
+        spell: None
+    ),
+    card!(
+        DragonScarredBear, "Dragon-Scarred Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(2),
+        oracle: "Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+        spell: None
+    ),
+    card!(
+        ViviensGrizzly, "Vivien's Grizzly", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Spirit", power: Some(2), toughness: Some(3),
+        oracle: "{3}{G}: Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.",
+        spell: None
+    ),
+    card!(
+        AyulaQueenAmongBears, "Ayula, Queen Among Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
+        spell: None
+    ),
+    // Issue 17 slice 4: sourced Ayula/Isamaru package. Ordinary Bear is the
+    // last printed vanilla creature left in the eight desired lists; Ashcoat
+    // Bear and Owlbear are the only two cards those lists print with nothing
+    // but Flash or Trample plus an already-modelled effect; Soul Warden is the
+    // first card in the pool with an "another creature enters" trigger.
+    card!(
+        OrdinaryBear, "Ordinary Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(4), toughness: Some(5),
+        oracle: "", spell: None
+    ),
+    card_flash!(
+        AshcoatBear, "Ashcoat Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Flash (You may cast this spell any time you could cast an instant.)",
+        spell: None
+    ),
+    card_trample!(
+        Owlbear, "Owlbear", cost: Some("{3}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bird Bear", power: Some(4), toughness: Some(4),
+        oracle: "Trample\nKeen Senses — When this creature enters, draw a card.",
+        spell: None
+    ),
+    card!(
+        SoulWarden, "Soul Warden", cost: Some("{W}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Cleric", power: Some(1), toughness: Some(1),
+        oracle: "Whenever another creature enters, you gain 1 life.", spell: None
+    ),
+    card!(
+        StitchersSupplier, "Stitcher's Supplier", cost: Some("{B}"), kinds: CREATURE,
+        basic: None,
+        type_line: "Creature — Zombie", power: Some(1), toughness: Some(1),
+        oracle: "When this creature enters or dies, mill three cards. (Put the top three cards of your library into your graveyard.)",
+        spell: None
+    ),
+    card!(
+        RuinCrab, "Ruin Crab", cost: Some("{U}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Crab", power: Some(0), toughness: Some(3),
+        oracle: "Landfall — Whenever a land you control enters, each opponent mills three cards. (To mill a card, a player puts the top card of their library into their graveyard.)",
+        spell: None
+    ),
+    card!(
+        Negate, "Negate", cost: Some("{1}{U}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Counter target noncreature spell.",
+        spell: Some(SpellSpec {
+            target: TargetSpec::NoncreatureSpell, instant: true, effects: COUNTER
+        })
+    ),
+    card!(
+        Preordain, "Preordain", cost: Some("{U}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Scry 2, then draw a card. (To scry 2, look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+        spell: Some(SpellSpec {
+            target: TargetSpec::None, instant: false, effects: PREORDAIN_SCRY_TWO_DRAW
+        })
+    ),
+    card!(
+        PyreticRitual, "Pyretic Ritual", cost: Some("{1}{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R}{R}{R}.",
+        spell: Some(SpellSpec {
+            target: TargetSpec::None, instant: true, effects: ADD_THREE_RED
+        })
+    ),
+    card!(
+        SeethingSong, "Seething Song", cost: Some("{2}{R}"), kinds: INSTANT, basic: None,
+        type_line: "Instant", power: None, toughness: None,
+        oracle: "Add {R}{R}{R}{R}{R}.",
+        spell: Some(SpellSpec {
+            target: TargetSpec::None, instant: true, effects: ADD_FIVE_RED
+        })
+    ),
+    // Issue 17 slice 6: sourced death-trigger and target-player package. All
+    // three creatures print nothing but already-modelled behaviour, so no new
+    // keyword is claimed: Blood Artist and Zulaport Cutthroat use the new
+    // "creature dies" watchers plus life loss (which is not damage), and
+    // Hedron Crab is the first "target player" mill.
+    card!(
+        BloodArtist, "Blood Artist", cost: Some("{1}{B}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Vampire", power: Some(0), toughness: Some(1),
+        oracle: "Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.",
+        spell: None
+    ),
+    card!(
+        ZulaportCutthroat, "Zulaport Cutthroat", cost: Some("{1}{B}"), kinds: CREATURE,
+        basic: None,
+        type_line: "Creature — Human Rogue Ally", power: Some(1), toughness: Some(1),
+        oracle: "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+        spell: None
+    ),
+    card!(
+        HedronCrab, "Hedron Crab", cost: Some("{U}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Crab", power: Some(0), toughness: Some(2),
+        oracle: "Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)",
+        spell: None
+    ),
+    card_islandwalk!(
+        PaleBears, "Pale Bears", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+        spell: None
+    ),
+    card_islandwalk!(
+        RiverBear, "River Bear", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(3),
+        oracle: "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+        spell: None
+    ),
+    // Issue 17 slice 19: the pool's first attack trigger. Spectral Bears prints
+    // an intervening-if ("if defending player controls no black nontoken
+    // permanents") whose payoff is "it doesn't untap during your next untap
+    // step". No keyword, layer, targeting or cost change is involved.
+    card!(
+        SpectralBears, "Spectral Bears", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Spirit", power: Some(3), toughness: Some(3),
+        oracle: "Whenever this creature attacks, if defending player controls no black nontoken permanents, it doesn't untap during your next untap step.",
+        spell: None
+    ),
+    // Issue 17 slice 15: sourced Bear-token package. Each card prints one
+    // activated ability whose cost is paid with a card (a land from hand, two
+    // cards from the graveyard, or the card itself from the graveyard) and
+    // which creates 2/2 green Bear tokens. Ayula's Influence and Bearscape are
+    // the pool's first enchantment permanents (CR 303); they are noncreature
+    // permanents with no continuous effect, so the layer system never applies
+    // to them.
+    card!(
+        AyulasInfluence, "Ayula's Influence", cost: Some("{G}{G}{G}"), kinds: ENCHANTMENT,
+        basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "Discard a land card: Create a 2/2 green Bear creature token.",
+        spell: None
+    ),
+    card!(
+        Bearscape, "Bearscape", cost: Some("{1}{G}{G}"), kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "{1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.",
+        spell: None
+    ),
+    card!(
+        MotherBear, "Mother Bear", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.",
+        spell: None
+    ),
+    // Issue 17 slice 16: two more sourced Ayula-list cards. Fade from History
+    // needs one mass destruction and a per-controller token; Little Bear needs
+    // a targeted untap whose counter is conditional on the target's subtype.
+    // Both printed texts are copied verbatim from the printings recorded in
+    // fixtures/starter-corpus/slice16-sourced.json.
+    card!(
+        FadeFromHistory, "Fade from History", cost: Some("{2}{G}{G}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Each player who controls an artifact or enchantment creates a 2/2 green Bear creature token. Then destroy all artifacts and enchantments.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::BearTokenForEachPlayerWithPermanent, Effect::DestroyAllArtifactsAndEnchantments] })
+    ),
+    // Issue 17 slice 32: Kamahl's Summons (ONS 269). The pool's first "each
+    // player may reveal any number of creature cards from their hand" spell:
+    // the choice is a per-seat arbitrary hand subset, answered in APNAP order,
+    // and the Bear tokens are created only after every live seat has answered.
+    // Printed text copied verbatim from the ONS 269 printing recorded in
+    // fixtures/starter-corpus/slice32-sourced.json.
+    card!(
+        KamahlsSummons, "Kamahl's Summons", cost: Some("{3}{G}"), kinds: SORCERY, basic: None,
+        type_line: "Sorcery", power: None, toughness: None,
+        oracle: "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way.",
+        spell: Some(SpellSpec { target: TargetSpec::None, instant: false, effects: &[Effect::EachPlayerMayRevealCreatureCardsForBears] })
+    ),
+    card_green!(
+        BeornsHospitality, "Beorn's Hospitality", cost: Some("{1}{G}"), kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+        spell: None
+    ),
+    // Issue 17 slice 35: Words of Wilding (ONS 305). The pool's first draw
+    // replacement: an activated ability arms a one-shot "instead create a 2/2
+    // green Bear token" that the next draw this controller would perform
+    // consumes (CR 614.1a), cleared in cleanup if unspent (CR 514.2). Printed
+    // text copied verbatim from the ONS 305 printing recorded in
+    // fixtures/starter-corpus/slice35-sourced.json.
+    card!(
+        WordsOfWilding, "Words of Wilding", cost: Some("{2}{G}"), kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
+        spell: None
+    ),
+    // Issue 17 slice 37: Druid's Familiar (AVR 175). The pool's first Soulbond
+    // card (CR 702.94a): a "you may pair" trigger when either this creature or
+    // another creature enters, and a layer 7c static that gives both members of
+    // the pair +2/+2 for as long as one player controls both. Printed text
+    // copied verbatim from the AVR 175 printing recorded in
+    // fixtures/starter-corpus/slice37-sourced.json (both printings carry one
+    // identical text).
+    card!(
+        DruidSFamiliar, "Druid's Familiar", cost: Some("{3}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(2), toughness: Some(2),
+        oracle: "Soulbond (You may pair this creature with another unpaired creature when either enters. They remain paired for as long as you control both of them.)\nAs long as this creature is paired with another creature, each of those creatures gets +2/+2.",
+        spell: None
+    ),
+    card_flash!(
+        LittleBear, "Little Bear", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear", power: Some(3), toughness: Some(2),
+        oracle: "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
+        spell: None
+    ),
+    // Issue 17 slice 22: one more sourced Ayula-list card. Dancing from Dark to
+    // Dawn is the pool's first "you cast a creature spell" trigger and the first
+    // effect whose size is derived from the triggering spell's mana value; its
+    // landfall half reuses the existing Bear-token effect. The printed text is
+    // copied verbatim from the printing recorded in
+    // fixtures/starter-corpus/slice22-sourced.json.
+    card!(
+        DancingFromDarkToDawn, "Dancing from Dark to Dawn", cost: Some("{3}{G}{G}"),
+        kinds: ENCHANTMENT, basic: None,
+        type_line: "Enchantment", power: None, toughness: None,
+        oracle: "Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.\nLandfall — Whenever a land you control enters, create a 2/2 green Bear creature token.",
+        spell: None
+    ),
+    // Issue 17 slice 23: Goreclaw, Terror of Qal Sisma. The pool's first
+    // cost-reduction static (creature spells with power 4 or greater cost {2}
+    // less) and its first layer 6 ability grant (trample until end of turn).
+    // Printed text copied verbatim from the CMM 293 printing recorded in
+    // fixtures/starter-corpus/slice23-sourced.json.
+    card!(
+        GoreclawTerrorOfQalSisma, "Goreclaw, Terror of Qal Sisma", cost: Some("{3}{G}"),
+        kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear", power: Some(4), toughness: Some(3),
+        oracle: "Creature spells you cast with power 4 or greater cost {2} less to cast.\nWhenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
+        spell: None
+    ),
+    // Issue 17 slice 26: Ursine Champion. The pool's first layer 4 type-changing
+    // effect ("becomes a Bear Berserker until end of turn"). Its once-each-turn
+    // limit is the already-supported restriction Rootwalla also prints, not a
+    // new rule. Printed text copied verbatim from the M19 304 printing recorded
+    // in fixtures/starter-corpus/slice26-sourced.json.
+    card!(
+        UrsineChampion, "Ursine Champion", cost: Some("{1}{G}"),
+        kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Berserker", power: Some(2), toughness: Some(2),
+        oracle: "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
+        spell: None
+    ),
+    // Issue 17 slice 28: Circle of the Moon Druid. The pool's first printed
+    // static ability that is conditioned on whose turn it is: during its
+    // controller's turn it is a Bear (layer 4, replacing the printed subtype
+    // line) with base power and toughness 4/2 (layer 7b), and neither half
+    // needs an effect object because the condition is answered at the moment
+    // the characteristics are read. Printed text copied verbatim from the
+    // AFR 177 printing recorded in fixtures/starter-corpus/slice28-sourced.json.
+    card!(
+        CircleOfTheMoonDruid, "Circle of the Moon Druid", cost: Some("{2}{G}"),
+        kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Elf Druid", power: Some(2), toughness: Some(4),
+        oracle: "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
+        spell: None
+    ),
+    // Issue 17 slice 29: Stuffed Bear. The pool's first permanent that is not a
+    // creature until an ability animates it: an artifact whose printed text
+    // turns it into a 4/4 green Bear artifact creature until end of turn
+    // (layer 4 creature type addition, layer 5 colour set, layer 7b base P/T).
+    // Printed text copied verbatim from the MID 259 printing recorded in
+    // fixtures/starter-corpus/slice29-sourced.json.
+    card_artifact!(
+        StuffedBear, "Stuffed Bear", cost: Some("{2}"),
+        type_line: "Artifact",
+        oracle: "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
+        mana: None, spell: None
+    ),
+    // Issue 17 slice 31: Beorn the Fierce. The pool's first printed anthem that
+    // keys off a subtype ("Other Bears you control get +2/+2"), its first
+    // keyword counter (trample, CR 122.1b) and its first "at the beginning of
+    // combat on your turn" trigger with an "up to one" target. Printed text
+    // copied verbatim from the HOB 119 printing recorded in
+    // fixtures/starter-corpus/slice31-sourced.json.
+    card_trample!(
+        BeornTheFierce, "Beorn the Fierce", cost: Some("{3}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear Shapeshifter Warrior", power: Some(6), toughness: Some(6),
+        oracle: "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+        spell: None
+    ),
+    // Issue 17 slice 38: Spider-Ham, Peter Porker. The pool's first *artifact*
+    // token (Food) and its first activated ability that combines a mana cost,
+    // {T} and "Sacrifice this token"; also the first anthem filtered by a
+    // printed *list* of creature subtypes rather than one. Printed text copied
+    // verbatim from the SPM 114 printing recorded in
+    // fixtures/starter-corpus/slice38-sourced.json.
+    card!(
+        SpiderHamPeterPorker, "Spider-Ham, Peter Porker", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Spider Boar Hero", power: Some(2), toughness: Some(2),
+        oracle: "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+        spell: None
+    ),
+    // Issue 17 slice 46: Thijarian Witness (WHO 111). The pool's first watcher
+    // for "another creature dies, if it was attacking or blocking alone" and its
+    // first `investigate` (CR 701.16a). Printed text copied verbatim from the
+    // WHO 111 printing recorded in
+    // fixtures/starter-corpus/slice46-sourced.json.
+    card_flash!(
+        ThijarianWitness, "Thijarian Witness", cost: Some("{1}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Alien Cleric", power: Some(0), toughness: Some(4),
+        oracle: "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+        spell: None
+    ),
+    // Issue 17 slice 48: Owlbear Cub (CLB 246). The pool's first "look at the top
+    // N, may put a creature card onto the battlefield tapped and attacking"
+    // trigger. Printed text copied verbatim from the CLB 246 printing recorded in
+    // fixtures/starter-corpus/slice48-sourced.json.
+    card!(
+        OwlbearCub, "Owlbear Cub", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bird Bear", power: Some(3), toughness: Some(3),
+        oracle: "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+        spell: None
+    ),
+    // Issue 17 slice 53: Ruxa, Patient Professor (C21 66). The pool's first
+    // graveyard-card target ("target creature card with no abilities from your
+    // graveyard"), its first no-abilities anthem and its first combat-damage
+    // assignment choice. Printed text copied verbatim from the C21 66 printing
+    // fetched from Scryfall on 2026-10-28 and recorded in
+    // fixtures/starter-corpus/slice53-sourced.json.
+    card!(
+        RuxaPatientProfessor, "Ruxa, Patient Professor", cost: Some("{2}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Bear Druid", power: Some(4), toughness: Some(4),
+        oracle: "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.\nCreatures you control with no abilities get +1/+1.\nFor each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
+        spell: None
+    ),
+    // Issue 17 slice 57: Rampaging Yao Guai (PIP 82). The pool's first `{X}`
+    // spell, its first "enters with X +1/+1 counters" entry replacement and its
+    // first aggregate "any number of target artifacts and/or enchantments with
+    // total mana value X or less" target set. Printed text copied verbatim from
+    // the PIP 82 printing fetched from Scryfall on 2026-10-28 and recorded in
+    // fixtures/starter-corpus/slice57-sourced.json.
+    card_vigilance_trample!(
+        RampagingYaoGuai, "Rampaging Yao Guai", cost: Some("{X}{G}{G}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Bear Mutant", power: Some(2), toughness: Some(2),
+        oracle: "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+        spell: None
+    ),
+    // Issue 17 slice 64: four sourced Krenko demanded cards that share the
+    // Goblin payoff primitives introduced here — a standing untap-step
+    // restriction with a direct untap trigger, tokens scaled to the source's own
+    // power, a per-turn Goblin-entry history, and a subtype-filtered library
+    // search. Printed text copied verbatim from the C13 111 / MOC 287 / AFR 147 /
+    // PLST DMR-123 printings fetched from Scryfall on 2026-10-29 and recorded in
+    // fixtures/starter-corpus/slice64-sourced.json.
+    card!(
+        GoblinSharpshooter, "Goblin Sharpshooter", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
+        oracle: "This creature doesn't untap during your untap step.\nWhenever a creature dies, untap this creature.\n{T}: This creature deals 1 damage to any target.",
+        spell: None
+    ),
+    card!(
+        KrenkoTinStreetKingpin, "Krenko, Tin Street Kingpin", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin", power: Some(1), toughness: Some(2),
+        oracle: "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+        spell: None
+    ),
+    card!(
+        HobgoblinBanditLord, "Hobgoblin Bandit Lord", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Rogue", power: Some(2), toughness: Some(3),
+        oracle: "Other Goblins you control get +1/+1.\n{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+        spell: None
+    ),
+    card!(
+        GoblinMatron, "Goblin Matron", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
+        oracle: "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+        spell: None
+    ),
+    // Issue 17 slice 65: the first demanded "Sacrifice a Goblin" card. Its
+    // printed text is the CURRENT wording — {1}{R}, not the original Scourge
+    // printing's {2}{R} — fetched from Scryfall on 2026-10-29 with all 18
+    // printings checked for one distinct oracle text, and recorded in
+    // fixtures/starter-corpus/slice65-sourced.json.
+    card!(
+        SiegeGangCommander, "Siege-Gang Commander", cost: Some("{3}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
+        oracle: "When this creature enters, create three 1/1 red Goblin creature tokens.\n{1}{R}, Sacrifice a Goblin: This creature deals 2 damage to any target.",
+        spell: None
+    ),
+    // Slice 66. Pashalik Mons (DMR 133) and Goblin Trashmaster (M19 144) are the
+    // next two demanded "Sacrifice a Goblin" cards. Both printings were fetched
+    // live from Scryfall on 2026-10-29 and every printing was checked for one
+    // distinct oracle text; the records live in
+    // fixtures/starter-corpus/slice66-sourced.json.
+    card!(
+        PashalikMons, "Pashalik Mons", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.\n{3}{R}, Sacrifice a Goblin: Create two 1/1 red Goblin creature tokens.",
+        spell: None
+    ),
+    card!(
+        GoblinTrashmaster, "Goblin Trashmaster", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(3), toughness: Some(3),
+        oracle: "Other Goblins you control get +1/+1.\nSacrifice a Goblin: Destroy target artifact.",
+        spell: None
+    ),
+    // Slice 69. Moggcatcher (NEM 96) fetched live from Scryfall on 2026-10-29;
+    // every printing was checked for one distinct oracle text. Its printed
+    // ability searches a *Goblin permanent card* onto the battlefield, so the
+    // search filter accepts any Goblin permanent card (CR 110.4a) and the found
+    // card enters through the ordinary entry path. Record:
+    // fixtures/starter-corpus/slice69-sourced.json.
+    card!(
+        Moggcatcher, "Moggcatcher", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Human Mercenary", power: Some(2), toughness: Some(2),
+        oracle: "{3}, {T}: Search your library for a Goblin permanent card, put it onto the battlefield, then shuffle.",
+        spell: None
+    ),
 ];
 
 pub fn all() -> &'static [CardDef] {
     &CARDS
 }
 
+/// Token definitions. Deliberately separate from `CARDS`: tokens are engine
+/// objects, never importable or analyzer-supported cards.
+pub static TOKENS: [CardDef; 8] = [
+    // Issue 17 slice 38: the Food token (CR 111.10, 205.3). An *artifact* token
+    // with no power or toughness and one real activated ability; created only by
+    // Spider-Ham, Peter Porker, never importable and never a catalog card.
+    CardDef {
+        id: CardId::FoodToken,
+        name: "Food Token",
+        cost: None,
+        kinds: &[Kind::Artifact],
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Artifact — Food",
+        colors: &[],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: None,
+        toughness: None,
+        oracle: "{2}, {T}, Sacrifice this token: You gain 3 life.",
+        spell: None,
+    },
+    // Issue 17 slice 46: the Clue token (CR 111.10, 701.16a). An artifact token
+    // with no power or toughness and one real activated ability that sacrifices
+    // itself to draw; created only by Thijarian Witness' investigate, never
+    // importable and never a catalog card.
+    CardDef {
+        id: CardId::ClueToken,
+        name: "Clue Token",
+        cost: None,
+        kinds: &[Kind::Artifact],
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Artifact — Clue",
+        colors: &[],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: None,
+        toughness: None,
+        oracle: "{2}, Sacrifice this token: Draw a card.",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::GoblinToken,
+        name: "Goblin Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Goblin",
+        colors: &[ManaColor::Red],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(1),
+        toughness: Some(1),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::DrakeToken,
+        name: "Drake Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Drake",
+        colors: &[ManaColor::Blue],
+        flying: true,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(2),
+        toughness: Some(2),
+        oracle: "Flying",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::BeastToken,
+        name: "Beast Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Beast",
+        colors: &[ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(4),
+        toughness: Some(4),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::PestToken,
+        name: "Pest Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Pest",
+        colors: &[ManaColor::Black, ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(1),
+        toughness: Some(1),
+        oracle: "When this token dies, you gain 1 life.",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::BearToken,
+        name: "Bear Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Bear",
+        colors: &[ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(2),
+        toughness: Some(2),
+        oracle: "",
+        spell: None,
+    },
+    CardDef {
+        id: CardId::EarthKingBearToken,
+        name: "Bear Token",
+        cost: None,
+        kinds: CREATURE,
+        basic_mana: None,
+        artifact_mana: None,
+        type_line: "Token Creature — Bear",
+        colors: &[ManaColor::Green],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
+        power: Some(4),
+        toughness: Some(4),
+        oracle: "",
+        spell: None,
+    },
+];
+
 pub fn def(id: CardId) -> &'static CardDef {
+    if id == CardId::TheRing {
+        return &THE_RING_DEF;
+    }
     CARDS
         .iter()
+        .chain(TOKENS.iter())
         .find(|c| c.id == id)
         .unwrap_or_else(|| crate::tokens::def(id))
 }
+
+/// Engine-only The Ring emblem definition. Deliberately not in `CARDS`,
+/// `TOKENS`, `all`, `by_name` or `pool_size`; it can never be imported or enter
+/// a library, and no object with this card exists on the battlefield.
+pub const THE_RING_DEF: CardDef = CardDef {
+    id: CardId::TheRing,
+    name: "The Ring",
+    cost: None,
+    kinds: &[],
+    basic_mana: None,
+    artifact_mana: None,
+    type_line: "Emblem — Ring",
+    colors: &[],
+    flying: false,
+    defender: false,
+    flash: false,
+    trample: false,
+    islandwalk: false,
+    power: None,
+    toughness: None,
+    oracle: "Your Ring-bearer is legendary and can't be blocked by creatures with greater power.\nWhenever your Ring-bearer attacks, draw a card, then discard a card.\nWhenever your Ring-bearer becomes blocked by a creature, that creature's controller sacrifices it at end of combat.\nWhenever your Ring-bearer deals combat damage to a player, each opponent loses 3 life.",
+    spell: None,
+};
 
 pub fn by_name(name: &str) -> Option<CardId> {
     let needle = name.trim();

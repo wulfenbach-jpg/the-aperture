@@ -1,0 +1,76 @@
+mutation: red-mutation-characteristic-defining-value-snapshotted.log
+file: crates\core\src\engine.rs
+sha256_before: 14554dec9b5d7e4b1a6bb2ee68b04fea70948ff39b3971c79acf9d5f717438f1
+sha256_after_restore: 14554dec9b5d7e4b1a6bb2ee68b04fea70948ff39b3971c79acf9d5f717438f1
+cargo_exit: 101
+expected_failures: ['the_animation_adds_the_bear_type_and_reads_the_land_count_live']
+observed_failures: ['a_pump_applies_on_top_of_the_characteristic_defining_value', 'the_animation_adds_the_bear_type_and_reads_the_land_count_live', 'the_animation_outlives_cleanup_and_ends_with_the_permanent']
+discriminating: True
+note: the expectation is that every named test fails; a mutation may
+also fail neighbouring tests that share the animated-permanent
+precondition, which is reported here rather than hidden.
+
+
+running 7 tests
+test beorns_hospitality_is_sourced_and_supported ... ok
+test the_animation_is_not_offered_without_its_mana_cost ... ok
+test an_opponents_land_does_not_trigger_it ... ok
+test landfall_targets_a_creature_you_control_and_puts_one_counter ... ok
+test a_pump_applies_on_top_of_the_characteristic_defining_value ... FAILED
+test the_animation_adds_the_bear_type_and_reads_the_land_count_live ... FAILED
+test the_animation_outlives_cleanup_and_ends_with_the_permanent ... FAILED
+
+failures:
+
+---- a_pump_applies_on_top_of_the_characteristic_defining_value stdout ----
+
+thread 'a_pump_applies_on_top_of_the_characteristic_defining_value' (20840) panicked at crates\core\tests\issue17_slice33.rs:260:5:
+assertion `left == right` failed
+  left: (0, 0)
+ right: (3, 3)
+
+---- the_animation_adds_the_bear_type_and_reads_the_land_count_live stdout ----
+
+thread 'the_animation_adds_the_bear_type_and_reads_the_land_count_live' (47068) panicked at crates\core\tests\issue17_slice33.rs:189:5:
+CR 613.1d: the animation added the creature card type
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_animation_outlives_cleanup_and_ends_with_the_permanent stdout ----
+
+thread 'the_animation_outlives_cleanup_and_ends_with_the_permanent' (9688) panicked at crates\core\tests\issue17_slice33.rs:287:5:
+assertion `left == right` failed
+  left: (0, 0)
+ right: (3, 3)
+
+
+failures:
+    a_pump_applies_on_top_of_the_characteristic_defining_value
+    the_animation_adds_the_bear_type_and_reads_the_land_count_live
+    the_animation_outlives_cleanup_and_ends_with_the_permanent
+
+test result: FAILED. 4 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: unused variable: `controller`
+   --> crates\core\src\engine.rs:552:22
+    |
+552 |             let Some(controller) = self
+    |                      ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_controller`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `lands_controlled_by` is never used
+   --> crates\core\src\engine.rs:461:8
+    |
+ 93 | impl Game {
+    | --------- method in this implementation
+...
+461 |     fn lands_controlled_by(&self, player: PlayerId) -> i32 {
+    |        ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 2 warnings (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.05s
+     Running tests\issue17_slice33.rs (target\debug\deps\issue17_slice33-c01c6e9d985be65a.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice33`

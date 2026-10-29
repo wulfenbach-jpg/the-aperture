@@ -1,0 +1,32 @@
+
+running 5 tests
+test spectral_bears_is_registered_from_its_printed_text ... ok
+test a_nonattacking_bear_never_gets_the_restriction ... ok
+test a_black_nontoken_permanent_on_defense_stops_the_trigger ... ok
+test attacking_triggers_and_skips_exactly_one_untap_step ... FAILED
+test a_black_token_does_not_stop_the_trigger ... FAILED
+
+failures:
+
+---- attacking_triggers_and_skips_exactly_one_untap_step stdout ----
+
+thread 'attacking_triggers_and_skips_exactly_one_untap_step' (35660) panicked at crates\core\tests\issue17_slice19.rs:145:5:
+Spectral Bears must not untap during its controller's next untap step
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_black_token_does_not_stop_the_trigger stdout ----
+
+thread 'a_black_token_does_not_stop_the_trigger' (35224) panicked at crates\core\tests\issue17_slice19.rs:232:5:
+a black token must not satisfy the nontoken condition
+
+
+failures:
+    a_black_token_does_not_stop_the_trigger
+    attacking_triggers_and_skips_exactly_one_untap_step
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.75s
+     Running tests\issue17_slice19.rs (target\debug\deps\issue17_slice19-96fd29cc72abed04.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice19`

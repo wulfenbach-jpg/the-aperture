@@ -55,8 +55,8 @@ pub use replay::{
 pub use sandbox::{SandboxEdit, SandboxKind, SandboxOp, SandboxOutcome, SandboxRecord};
 pub use settings::AiSettings;
 pub use state::{
-    Commander, CommanderDamageEntry, DrawResume, GameState, OrderMode, Outcome, Pending, Profile,
-    StackEntry, Step, TriggerRef,
+    Commander, CommanderDamageEntry, DrawResume, GameState, LibrarySearchMode, OrderMode, Outcome,
+    Pending, Profile, StackEntry, Step, TriggerRef,
 };
 pub use tokens::{Keyword, TokenKind};
 pub use view::{OpponentView, PlayerView};

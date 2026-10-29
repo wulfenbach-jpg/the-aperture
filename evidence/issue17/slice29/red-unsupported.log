@@ -1,0 +1,29 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.62s
+     Running tests\issue17_slice29.rs (target\debug\deps\issue17_slice29-5a9819d21baab889.exe)
+
+running 2 tests
+test a_practice_deck_can_import_a_stuffed_bear ... FAILED
+test stuffed_bear_is_a_supported_catalog_card ... FAILED
+
+failures:
+
+---- a_practice_deck_can_import_a_stuffed_bear stdout ----
+
+thread 'a_practice_deck_can_import_a_stuffed_bear' (25552) panicked at crates\core\tests\issue17_slice29.rs:23:10:
+a deck naming Stuffed Bear must import once the card is supported: "line 1: 'Stuffed Bear' is not in the supported pool"
+
+---- stuffed_bear_is_a_supported_catalog_card stdout ----
+
+thread 'stuffed_bear_is_a_supported_catalog_card' (47604) panicked at crates\core\tests\issue17_slice29.rs:14:5:
+Stuffed Bear (MID 259) must be a supported catalog card
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    a_practice_deck_can_import_a_stuffed_bear
+    stuffed_bear_is_a_supported_catalog_card
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice29`

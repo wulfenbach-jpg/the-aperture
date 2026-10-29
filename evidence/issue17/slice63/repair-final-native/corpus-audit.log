@@ -1,0 +1,17 @@
+catalog_cards      = 172
+union_names        = 459
+supported_union    = 158
+missing_union      = 301
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=43
+  ayula-bear-counters        status=certified missing=0
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 43, 0, 52, 52, 53]
+certified_lists    = 2 ['jasmine-vanilla-stompy', 'ayula-bear-counters']
+whole_field_supported_card_citations = []
+Ayula interaction citations equal all remaining missing card names (both empty: the gap is closed)
+AUDIT OK

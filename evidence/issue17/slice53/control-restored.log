@@ -1,0 +1,22 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.15s
+     Running tests\issue17_slice53_ruxa.rs (target\debug\deps\issue17_slice53_ruxa-06c8b90dabc425f5.exe)
+
+running 14 tests
+test ruxa_is_registered_with_its_printed_text_and_three_implemented_surfaces ... ok
+test the_anthem_pumps_only_your_creatures_with_no_abilities ... ok
+test a_creature_card_with_any_ability_is_never_offered ... ok
+test a_graveyard_card_cannot_be_named_as_a_permanent_or_from_an_opponent ... ok
+test the_attack_trigger_returns_a_card_without_touching_the_draw_path ... ok
+test an_unblocked_attacker_is_never_asked ... ok
+test assigning_as_though_unblocked_deals_all_damage_to_the_player ... ok
+test the_enters_trigger_returns_the_chosen_no_ability_creature_card ... ok
+test a_blocked_attacker_with_abilities_is_never_asked ... ok
+test declining_keeps_the_ordinary_assignment ... ok
+test two_eligible_attackers_are_asked_in_order_and_damage_is_dealt_once ... ok
+test a_commander_card_in_a_graveyard_is_offered_the_command_zone ... ok
+test a_forged_pending_for_a_creature_with_abilities_is_refused ... ok
+test forged_assignment_pendings_are_refused_by_validate_and_by_a_real_load ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

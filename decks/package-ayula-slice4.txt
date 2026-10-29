@@ -1,0 +1,13 @@
+// package-ayula-slice4 — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises the slice-4 Ayula package: Ordinary Bear (vanilla), Ashcoat Bear
+// (Flash), Owlbear (Trample + enters draw) alongside already-supported bears.
+3 Owlbear
+4 Ashcoat Bear
+4 Ordinary Bear
+4 Forest Bear
+3 Striped Bears
+4 Grizzly Bears
+4 Centaur Courser
+3 Rootwalla
+3 Giant Growth
+8 Forest

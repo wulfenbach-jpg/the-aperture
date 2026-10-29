@@ -1,0 +1,29 @@
+bfaa7827b5ffe40f9de8926efeed718dac5f6715
+ M evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+?? .starter-run.yml
+?? evidence/issue17/review255-probe/
+?? evidence/issue17/review255/
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/285.bash-original.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/288.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/330.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/347.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/349.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/374.bash-original.log
+?? evidence/issue17/slice12-review-probe/target/
+?? evidence/issue17/slice17-backup/
+?? evidence/issue17/slice17/ASSIGN-IMPLEMENT.md
+?? evidence/issue17/slice17/ASSIGN-REPAIR.md
+?? evidence/issue17/slice17/ASSIGN-REVIEW.md
+?? evidence/issue17/slice17/NATIVE-INSPECTION.md
+?? evidence/issue17/slice17/repair-worker.log
+?? evidence/issue17/slice17/reviewer.log
+?? evidence/issue17/slice17/worker.log
+?? review-sessions/
+bfaa782 docs(evidence): record slice17 repair result and human checkpoint
+7e4a013 fix(core): keep death history through cleanup and resume all-player draws
+6f294cf test(issue17): satisfy clippy in the slice-16 suite
+b39189f docs(issue17): record slice 16 evidence, journey and corpus audit
+8013a38 feat(core): destroy all artifacts and untap a chosen Bear
+d2f9c9c chore(issue17): drop an earlier review probe's build output from the index
+1167e18 docs(issue17): record slice15 evidence, journey and corpus audit
+52786aa feat(core): pay abilities with cards and add the first enchantments

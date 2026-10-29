@@ -1,0 +1,13 @@
+// package-slice66 — evidence-only 40-card package, NOT a certified starter.
+//
+// Exactly what the slice-66 CLI journey runs: three Pashalik Mons, three Goblin
+// Trashmaster, two Sol Ring (the artifacts the Trashmaster can destroy) and 32
+// Mountains, one deck list copied into all four seats. It exists so a real
+// four-seat game can reach the two newly enabled cards; it does NOT promise the
+// built-in heuristic casts them (the changed-behaviour journey is the in-engine
+// driver in crates/core/tests/issue17_slice66_journey.rs, which casts and
+// resolves every printed instruction).
+3 Pashalik Mons
+3 Goblin Trashmaster
+2 Sol Ring
+32 Mountain

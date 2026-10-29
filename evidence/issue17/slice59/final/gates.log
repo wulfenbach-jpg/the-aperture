@@ -1,0 +1,596 @@
+head=333fe761b04f4f107425efd701913f471bf385a8
+working_tree_candidate=1
+
+command=cargo fmt --all --check
+fmt_exit=0
+
+command=cargo test -p aperture-core --test issue17_slice59_repairs --test issue17_slice59_ring_repairs --test issue17_slice59 --test card_printings --test catalog_pool --test issue17_slice15_corpus --test issue13_commander_combat --test replay_digest --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.01s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 19 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test slice37_druids_familiar_matches_its_recorded_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test slice38_spider_ham_matches_its_recorded_printing ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test slice43_lumra_matches_its_recorded_printing ... ok
+test slice46_thijarian_witness_matches_its_recorded_printing ... ok
+test slice48_owlbear_cub_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test slice53_ruxa_matches_its_recorded_printing ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+
+running 43 tests
+test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+test departing_controller_battlefield_permanent_is_exiled ... ok
+test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+test commander_damage_to_a_creature_never_credits_a_player ... ok
+test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+test discard_pending_then_active_departure_settles_once ... ok
+test fog_is_a_sourced_catalog_card ... ok
+test fog_does_not_prevent_noncombat_damage ... ok
+test commander_combat_damage_is_publicly_credited ... ok
+test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+test fog_prevents_combat_damage_to_creatures ... ok
+test departed_identity_omitted_from_retired_is_refused ... ok
+test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+test fabricated_retired_commander_identity_is_refused ... ok
+test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+test commander_damage_identity_survives_a_modeled_control_change ... ok
+test named_20_life_profiles_are_unchanged ... ok
+test fog_shield_expires_after_cleanup ... ok
+test noncombat_damage_never_credits_the_ledger ... ok
+test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+test previous_replay_schema_version_is_rejected ... ok
+test independent_commanders_do_not_pool ... ok
+test live_commander_cannot_be_listed_as_retired ... ok
+test real_departure_retires_identity_and_keeps_historic_row ... ok
+test commander_draw_answer_then_owner_departure_is_atomic ... ok
+test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+test serialized_commander_combat_profile_reconstructs_40_life ... ok
+test survivor_owned_source_exiled_but_queue_continues ... ok
+test exact_commander_damage_boundaries ... ok
+test simultaneous_losses_settle_once_in_seat_order ... ok
+test malformed_commander_damage_ledgers_are_refused ... ok
+test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+test commander_return_queue_survives_a_departing_owner ... ok
+test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+test twenty_two_commander_damage_is_a_loss ... ok
+test previous_save_schema_version_is_rejected ... ok
+test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+test accepted_action_midledger_save_and_replay_roundtrip ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.88s
+
+     Running tests\issue17_slice15_corpus.rs (target\debug\deps\issue17_slice15_corpus-2520fcad538eaf2c.exe)
+
+running 2 tests
+test the_three_slice15_cards_leave_the_ayula_gap ... ok
+test every_desired_list_missing_cards_equals_pool_membership ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice59.rs (target\debug\deps\issue17_slice59-020fbfad37ac7803.exe)
+
+running 3 tests
+test dunedain_rangers_sourced ... ok
+test ring_level_two_draw_and_discard_resumes_without_ending_combat ... ok
+test real_cast_landfall_tempts_and_chooses_ring_bearer ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice59_repairs.rs (target\debug\deps\issue17_slice59_repairs-5a49eccf2de1cb81.exe)
+
+running 7 tests
+test one_ring_bearer_does_not_make_ordinary_same_named_creatures_legendary ... ok
+test ordinary_blocking_does_not_materialize_empty_ring_state ... ok
+test ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice ... ok
+test ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect ... ok
+test forged_legend_choice_must_not_remove_a_nonlegendary_same_name ... ok
+test forged_ring_pending_cannot_select_an_opponents_permanent ... ok
+test ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice59_ring_repairs.rs (target\debug\deps\issue17_slice59_ring_repairs-bdbae684990eb678.exe)
+
+running 9 tests
+test emblem_abilities_are_not_abilities_of_the_ring_bearer ... ok
+test ring_one_blocks_only_greater_power_and_evil_legend_choice_is_controlled ... ok
+test effective_legend_group_is_owned_and_answered_only_by_its_controller ... ok
+test two_queued_rangers_and_a_source_left_trigger_use_captured_controller_and_intervening_if ... ok
+test positive_ring_discard_save_roundtrips_and_resumes_the_same_trigger ... ok
+test ring_four_triggers_only_after_positive_combat_damage_and_hits_each_live_opponent ... ok
+test ring_three_delays_sacrifice_until_an_end_combat_stack_trigger ... ok
+test ring_four_does_not_trigger_when_fog_prevents_combat_damage ... ok
+test ring_three_delayed_sacrifice_does_not_hit_a_bounced_and_recast_incarnation ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+focused_exit=0
+
+command=python evidence/issue17/slice59/corpus-audit.py
+catalog_cards      = 165
+union_names        = 459
+supported_union    = 152
+missing_union      = 307
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=1
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 1, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+whole_field_supported_card_citations = []
+Ayula interaction citations equal all remaining missing card names
+AUDIT OK
+corpus_exit=0
+
+command=cargo clippy --workspace --all-targets --locked -- -D warnings
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+    Checking aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.63s
+clippy_exit=0
+
+command=cargo build --workspace --release --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 35.68s
+release_exit=0
+
+command=cargo test --workspace --all-targets --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 41.92s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ai-594ce2f0c95264a7.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\common.rs (target\debug\deps\common-d13190e88c8bb3e8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\decider.rs (target\debug\deps\decider-dea0d5c051cfe121.exe)
+
+running 4 tests
+test a_single_legal_option_is_forced_and_never_asked_of_the_model ... ok
+test only_loopback_http_endpoints_are_accepted ... ok
+test the_request_uses_the_documented_endpoint_shape_and_masks_hidden_cards ... ok
+test an_unreachable_service_falls_back_to_the_heuristic_with_a_visible_reason ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.72s
+
+     Running tests\decider_boundary.rs (target\debug\deps\decider_boundary-29282819896adbb7.exe)
+
+running 7 tests
+test reason_codes_are_stable_for_offline_and_protocol_failures ... ok
+test the_envelope_binds_the_viewer_revision_decision_generation_and_offers ... ok
+test a_stale_forced_view_keeps_the_stale_reason_instead_of_reporting_forced ... ok
+test a_stale_envelope_falls_back_to_the_current_masked_heuristic ... ok
+test a_valid_protocol_fixture_answer_is_accepted_from_the_offered_snapshot ... ok
+test a_truncated_protocol_fixture_answer_falls_back_with_the_stable_reason_code ... ok
+test a_key_outside_the_current_engine_offer_is_refused_even_when_the_binding_matches ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\decider_observation.rs (target\debug\deps\decider_observation-0ad8817a1d19d473.exe)
+
+running 2 tests
+test the_request_exposes_public_exile_command_and_card_details ... ok
+test the_observation_does_not_hardcode_a_twenty_life_game ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\decider_redirect.rs (target\debug\deps\decider_redirect-2bd174564f80f3c0.exe)
+
+running 1 test
+test the_decider_client_does_not_follow_a_redirect ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.01s
+
+     Running tests\decider_schema.rs (target\debug\deps\decider_schema-4a4b3abc0d7119f9.exe)
+
+running 5 tests
+test choose_enforces_cardinality_and_unique_keys_for_directly_built_requests ... ok
+test an_oversized_protocol_response_body_is_refused ... ok
+test a_non_choice_decision_type_is_refused_as_malformed ... ok
+test invalid_confidence_is_refused_instead_of_defaulted_to_zero ... ok
+test missing_or_malformed_usage_is_never_treated_as_clean ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\decider_usage.rs (target\debug\deps\decider_usage-4ee4ab0b3265f7ff.exe)
+
+running 5 tests
+test the_default_state_budget_is_large_enough_for_the_masked_projection ... ok
+test the_life_object_is_keyed_by_absolute_seat_for_a_p1_viewer ... ok
+test a_truncated_response_makes_the_policy_fall_back_visibly ... ok
+test a_truncated_response_is_refused_with_a_truncated_error ... ok
+test a_healthy_response_is_used_by_the_client_and_the_policy ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\heuristic.rs (target\debug\deps\heuristic-7123c7ddf328e83d.exe)
+
+running 15 tests
+test attacks_for_lethal_when_the_defender_cannot_block ... ok
+test available_mana_counts_untapped_basics_and_pool ... ok
+test casts_a_creature_with_its_available_mana ... ok
+test heuristic_answers_an_apnap_sacrifice_with_an_engine_legal_choice ... ok
+test does_not_attack_into_a_lethal_blocker_when_it_can_avoid_it ... ok
+test heuristic_casts_crack_the_earth_through_its_legal_option ... ok
+test blocks_when_the_trade_is_good ... ok
+test bottoms_a_surplus_land_when_scrying ... ok
+test counterspells_the_opponents_creature_spell ... ok
+test keeps_a_three_land_hand_and_mulligans_a_land_flood ... ok
+test heuristic_uses_legal_command_zone_casts_instead_of_passing ... ok
+test passes_when_it_has_nothing_useful_to_do ... ok
+test plays_a_land_in_its_own_main_phase ... ok
+test the_policy_only_sees_masked_information ... ok
+test heuristic_observes_the_acting_seat_and_returns_a_legal_action ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests\issue17_ursine_policy.rs (target\debug\deps\issue17_ursine_policy-72e88968caa3be2e.exe)
+
+running 1 test
+test heuristic_obeys_ursine_attack_requirement_from_public_offer ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.97s
+
+     Running tests\search.rs (target\debug\deps\search-62d1d8f31df35135.exe)
+
+running 9 tests
+test pending_decisions_are_refused_with_a_typed_reason ... ok
+test cancellation_reports_the_labelled_fallback ... ok
+test budget_exhaustion_labels_the_fallback ... ok
+test candidates_are_only_offered_actions ... ok
+test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+test reconstruction_is_reproducible_determinization ... ok
+test declared_own_deck_is_used_for_own_draws_only ... ok
+test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
+test small_paired_trial_against_the_frozen_heuristic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 249.70s
+
+     Running tests\selfplay.rs (target\debug\deps\selfplay-50cebe0cc189a967.exe)
+
+running 3 tests
+test a_run_cap_is_reported_as_truncation_not_a_result ... ok
+test heuristic_selfplay_reaches_a_terminal_result_and_replays ... ok
+test identical_seeds_produce_identical_games_and_ai_digests ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.51s
+
+     Running unittests examples\model_decide.rs (target\debug\examples\model_decide-254e7961ebcbb4d6.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests examples\search_decide.rs (target\debug\examples\search_decide-a4d43089ebf55ea4.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (target\debug\deps\aperture_cli-47b094485fcaa182.exe)
+
+running 7 tests
+test harness_cmd::tests::classifier_and_exit_code_are_explicit ... ok
+test decks::tests::an_explicit_missing_deck_path_is_not_replaced_by_the_bundle ... ok
+test decks::tests::an_explicit_starter_file_keeps_its_own_identity ... ok
+test decks::tests::non_explicit_default_loads_keep_the_human_fallback_names ... ok
+test tests::selfplay_help_lists_every_supported_commander_and_the_bounded_scope ... ok
+test harness_cmd::tests::capped_harness_emits_paired_rows_and_exit_2 ... ok
+test harness_cmd::tests::terminal_harness_emits_rows_and_exit_0 ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 23.45s
+
+     Running tests\certify.rs (target\debug\deps\certify-d2af9d2f2506ce3d.exe)
+
+running 4 tests
+test a_missing_snapshot_is_refused_rather_than_replaced_by_a_bundled_deck ... ok
+test an_edited_snapshot_stops_certifying ... ok
+test a_crlf_checkout_of_the_same_list_certifies_to_the_same_snapshot_hash ... ok
+test certify_proves_one_starter_from_its_exact_snapshot ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 25.25s
+
+     Running tests\commander_check.rs (target\debug\deps\commander_check-7a0cee12f670090e.exe)
+
+running 8 tests
+test a_commander_section_in_a_practice_file_is_refused_by_real_consumers ... ok
+test commander_check_returns_0_for_a_legal_but_unplayable_deck ... ok
+test parenthesized_section_headers_are_refused_by_real_consumers ... ok
+test pregame_chosen_color_commander_exits_2_without_false_color_illegal ... ok
+test a_valid_mainboard_prefixed_practice_file_still_loads_and_plays ... ok
+test commander_check_returns_2_for_malformed_input_and_out_matches_stdout ... ok
+test commander_check_returns_1_for_illegal_and_2_for_not_certified ... ok
+test commander_check_returns_2_for_duplicates_with_incomplete_oracle_text ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+
+     Running tests\explicit_decks.rs (target\debug\deps\explicit_decks-0376d421ea68398b.exe)
+
+running 1 test
+test coach_refuses_both_explicit_missing_deck_paths ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src\lib.rs (target\debug\deps\aperture_core-29e16a8f2b07a51b.exe)
+
+running 14 tests
+test layer::tests::finite_shield_absorbs_only_its_remaining_amount ... ok
+test layer::tests::modifier_effects_describe_themselves_in_layer_7c ... ok
+test layer::tests::unlimited_shield_prevents_every_applicable_instance ... ok
+test tokens::tests::flying_is_blocked_only_by_flying_or_reach ... ok
+test counters::tests::removing_more_counters_than_held_clamps_and_never_goes_negative ... ok
+test counters::tests::serde_round_trip_is_canonical ... ok
+test counters::tests::paired_power_counters_annihilate_equally ... ok
+test counters::tests::counters_store_only_nonzero_kinds_and_sum_canonically ... ok
+test counters::tests::deserialization_refuses_non_canonical_counters ... ok
+test tokens::tests::islandwalk_forbids_every_blocker_while_the_defender_controls_an_island ... ok
+test tokens::tests::token_cards_are_creatures_outside_the_importable_pool ... ok
+test engine::slice17_cleanup_history_tests::repeated_cleanup_keeps_earlier_deaths_until_the_turn_number_advances ... ok
+test engine::slice17_cleanup_history_tests::cleanup_expires_regeneration_shields ... ok
+test engine::slice17_cleanup_history_tests::ayula_removed_trigger_does_not_drop_the_rest_of_the_batch ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\abilities.rs (target\debug\deps\abilities-314807ebe6fc0a07.exe)
+
+running 13 tests
+test tap_ability_is_refused_while_summoning_sick_and_when_tapped ... ok
+test activated_ability_needs_its_controller_and_a_legal_target ... ok
+test an_ability_on_the_stack_is_not_a_spell ... ok
+test tap_ability_goes_on_the_stack_and_deals_damage ... ok
+test sacrifice_cost_ability_moves_the_source_and_gains_life ... ok
+test activated_ability_effect_comes_before_ability_resolved_and_priority ... ok
+test enters_the_battlefield_trigger_draws_before_priority ... ok
+test trigger_without_a_legal_target_is_removed ... ok
+test trigger_target_lost_before_resolution_makes_the_ability_fizzle ... ok
+test triggered_ability_effect_comes_before_ability_resolved_and_priority ... ok
+test optional_trigger_is_declined_or_used_by_its_controller ... ok
+test simultaneous_dies_triggers_use_apnap_order_and_lki ... ok
+test mana_cost_ability_and_once_each_turn_limit ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\abilities_game.rs (target\debug\deps\abilities_game-e7847f7db845a5e3.exe)
+
+running 1 test
+test real_game_activates_and_triggers_abilities_and_replays_identically ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests\apnap.rs (target\debug\deps\apnap-c739c2de7ea2ac11.exe)
+
+running 17 tests
+test crack_the_earth_is_a_supported_normal_cast_card ... ok
+test apnap_order_anchors_at_nonzero_active_and_wraps ... ok
+test apnap_skips_an_already_lost_seat ... ok
+test last_live_seat_outcome_discards_the_pending_queue ... ok
+test counterspell_prevents_the_apnap_queue ... ok
+test apnap_validation_rejects_rewound_source_and_nonprefix_answers ... ok
+test departing_participant_is_purged_and_remaining_answers_resume ... ok
+test departing_active_current_chooser_purges_its_answer_and_resumes ... ok
+test malformed_apnap_queue_is_rejected_by_state_validation ... ok
+test coach_does_not_print_an_unentitled_apnap_choice_label ... ok
+test real_crack_the_earth_cast_defers_all_sacrifices_until_the_last_answer ... ok
+test apnap_rejections_leave_the_queue_unchanged ... ok
+test apnap_pending_label_and_kind_are_owner_only ... ok
+test malformed_apnap_save_with_missing_source_returns_typed_error_not_panic ... ok
+test malformed_apnap_pending_save_is_rejected ... ok
+test apnap_pending_view_keeps_choices_public_and_hidden_state_masked ... ok
+test intermediate_apnap_queue_save_and_replay_round_trip ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests\card_printings.rs (target\debug\deps\card_printings-da6d3d70662ff2ff.exe)
+
+running 19 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test slice37_druids_familiar_matches_its_recorded_printing ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test slice38_spider_ham_matches_its_recorded_printing ... ok
+test slice43_lumra_matches_its_recorded_printing ... ok
+test slice46_thijarian_witness_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test slice48_owlbear_cub_matches_its_recorded_printing ... ok
+test slice53_ruxa_matches_its_recorded_printing ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-6d012ced97540f37.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\coach_trace.rs (target\debug\deps\coach_trace-011a0d171a1f86c3.exe)
+
+running 7 tests
+test the_1014_note_states_apnap_order ... ok
+test walkthrough_new_game_pass_round_states_the_next_resolution ... ok
+test coaching_of_a_non_decision_seat_never_describes_anothers_hand ... ok
+test walkthrough_categories_are_separate_and_strategy_is_absent_by_design ... ok
+test walkthrough_cast_opens_a_response_window_and_names_what_resolves ... ok
+test walkthrough_consecutive_passes_are_listed_seat_by_seat ... ok
+test walkthrough_apnap_pending_teaches_apnap_order_and_keeps_private_choices_private ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\combat.rs (target\debug\deps\combat-74c83c8e33c0530e.exe)
+
+running 8 tests
+test attackers_are_declared_only_during_the_declare_attackers_step ... ok
+test summoning_sick_creature_cannot_attack ... ok
+test a_blocker_can_only_block_one_attacker_and_must_be_untapped ... ok
+test unblocked_attacker_damages_the_defending_player ... ok
+test combat_damage_happens_once ... ok
+test two_blockers_split_damage_lethal_first_and_all_die ... ok
+test blocking_creatures_trade_and_lethal_damage_is_a_state_based_action ... ok
+test giant_growth_pumps_until_end_of_turn ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\combat_teaching.rs (target\debug\deps\combat_teaching-d648b31f11426445.exe)
+
+running 2 tests
+test the_5101c_note_does_not_teach_lethal_first_as_the_rule ... ok
+test combat_coaching_identifies_the_automatic_assignment_as_a_simplification ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\command_zone_catalog.rs (target\debug\deps\command_zone_catalog-915693554fb443ed.exe)
+
+running 5 tests
+test sourced_isamaru_is_in_the_supported_pool ... ok
+test sourced_plains_is_in_the_supported_pool ... ok
+test sourced_swords_to_plowshares_is_in_the_supported_pool ... ok
+test sourced_time_ebb_is_in_the_supported_pool ... ok
+test sourced_unsummon_is_in_the_supported_pool ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\command_zone_setup.rs (target\debug\deps\command_zone_setup-25477473b21e140d.exe)
+
+running 44 tests
+test a_supported_single_commander_per_seat_constructs_a_game ... ok
+test an_unpayable_or_unauthorized_command_zone_cast_does_not_increment_or_mutate ... ok
+test a_commander_cast_from_hand_does_not_add_tax ... ok
+test a_commander_is_castable_from_the_command_zone_and_counts_the_cast ... ok
+test a_departing_commander_owner_is_purged_without_touching_other_seats ... ok
+test a_dying_commander_gets_one_owner_return_choice_and_declining_is_final ... ok
+test a_declined_commander_draw_emits_one_real_draw_event ... ok
+test ayula_commander_cast_then_counter_mode_targets_any_bear ... ok
+test ayula_omits_fight_mode_when_no_opposing_creature_exists ... ok
+test ayula_fight_fizzles_cleanly_if_a_target_leaves_before_resolution ... ok
+test ayula_fight_mode_requires_both_printed_targets_and_deals_simultaneous_damage ... ok
+test ayula_pending_rejects_wrong_action_kind_and_unoffered_target_without_mutation ... ok
+test ayula_fight_uses_prevention_in_both_directions_independently ... ok
+test commander_tax_is_two_per_previous_command_zone_cast ... ok
+test commander_zone_transitions_reset_controller_and_object_state ... ok
+test commanders_start_independently_in_the_command_zone ... ok
+test ayula_trigger_still_resolves_after_its_source_leaves ... ok
+test divination_draw_two_continues_after_a_commander_draw_replacement ... ok
+test final_commander_return_answer_restores_priority_without_advancing_the_step ... ok
+test draw_step_suspends_before_a_commander_moves_from_library_to_hand ... ok
+test ayula_ignores_opposing_bears_and_token_entry_chooses_any_bear_for_counters ... ok
+test malformed_commander_return_bounds_are_typed_not_panics ... ok
+test commander_view_redacts_hidden_zones_for_every_viewer ... ok
+test ordinary_practice_games_refuse_a_commander_in_the_library ... ok
+test injected_departure_retains_the_unanswered_commander_return_tail ... ok
+test forged_replacement_source_and_cursor_are_rejected ... ok
+test malformed_commander_return_queues_are_rejected_not_repaired ... ok
+test simultaneous_commander_returns_wait_for_every_owner_then_apply_apnap_batch ... ok
+test repeat_command_zone_casts_stack_tax_and_a_countered_cast_still_counts ... ok
+test ordinary_practice_parser_refuses_the_commander_only_card_with_reason ... FAILED
+test terminal_sba_wins_immediately_without_an_irrelevant_return_choice ... ok
+test swords_exiles_then_offers_return_with_controller_life_gain ... ok
+test time_ebb_suspends_before_the_library_move_and_declining_puts_it_on_top ... ok
+test unsummon_suspends_before_the_move_and_declining_proceeds_to_hand ... ok
+test unsupported_commander_and_multi_commander_setups_are_refused ... ok
+test all_lost_command_zone_save_preserves_its_original_profile ... ok
+test opt_and_consider_commander_draws_validate_after_the_first_instruction ... ok
+test each_player_draw_continues_every_live_seat_after_a_commander_replacement ... ok
+test ayula_fight_first_target_save_reload_finishes_identically ... ok
+test a_draw_step_save_cannot_claim_additional_effect_draws ... ok
+test ayula_trigger_mode_save_reload_finishes_identically_and_refuses_wrong_seat ... ok
+test command_zone_replay_and_save_round_trip_the_explicit_setup ... ok
+test replacement_save_is_bound_to_the_producer_destination_and_target ... ok
+test sandbox_save_container_and_identity_corruption_is_rejected ... ok
+
+failures:
+
+---- ordinary_practice_parser_refuses_the_commander_only_card_with_reason stdout ----
+
+thread 'ordinary_practice_parser_refuses_the_commander_only_card_with_reason' (44340) panicked at crates\core\tests\command_zone_setup.rs:1741:5:
+line 1: 'Isamaru, Hound of Konda' is commander-only in the command-zone practice profile; it cannot be in an ordinary starting library (the named command-zone profile owns its setup)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    ordinary_practice_parser_refuses_the_commander_only_card_with_reason
+
+test result: FAILED. 43 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `-p aperture-core --test command_zone_setup`
+workspace_exit=101
+
+aggregate_failure=1

@@ -1,0 +1,16 @@
+SOURCE: evidence\issue17\sessions\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+TOOL_CALL: call_00_39c8kjhbzyk2st34u1pzitcf
+TIMESTAMP: 1793177874627
+a legal post-pick search must validate: InvalidState { reason: "library search chose #4 twice" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    midsearch_after_one_pick_save_reload_continues_identically
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice41`
+
+
+Wall time: 2.96 seconds

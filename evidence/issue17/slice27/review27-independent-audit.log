@@ -1,0 +1,15 @@
+runtime catalog names: 143 unique: 143
+union: 459 supported: 131 missing: 328
+per list (id, library, computed_missing, manifest_missing, sets_match):
+   ('isamaru-white-aggro', 99, 55, 55, True)
+   ('jasmine-vanilla-stompy', 99, 0, 0, True)
+   ('talrand-draw-go', 99, 51, 51, True)
+   ('krenko-goblin-tokens', 99, 48, 48, True)
+   ('ayula-bear-counters', 99, 22, 22, True)
+   ('elas-sacrifice', 99, 52, 52, True)
+   ('tatyova-landfall', 99, 52, 52, True)
+   ('zada-spells', 99, 53, 53, True)
+missing list: [55, 0, 51, 48, 22, 52, 52, 53]
+certified: ['jasmine-vanilla-stompy']
+non-99 decks: []
+ayula missing: ['Beorn the Fierce', "Beorn's Hospitality", 'Circle of the Moon Druid', 'Drover Grizzly', "Druid's Familiar", 'Dúnedain Rangers', 'Evercoat Ursine', "Kamahl's Summons", 'Lightning Greaves', 'Lumra, Bellow of the Woods', 'Owlbear Cub', 'Rampaging Yao Guai', 'Ruxa, Patient Professor', 'Spider-Ham, Peter Porker', 'Spirit of the Aldergard', 'Stuffed Bear', 'Swiftfoot Boots', 'The Earth King', 'Thijarian Witness', "Titania's Command", 'Ursine Monstrosity', 'Words of Wilding']

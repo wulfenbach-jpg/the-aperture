@@ -1,0 +1,54 @@
+{
+  "catalog_cards": 103,
+  "catalog_unique_names": 103,
+  "exact_union_names": 459,
+  "supported_union_names": 91,
+  "missing_union_names": 368,
+  "manifest_missing_names": 368,
+  "manifest_matches_catalog": true,
+  "changed_lists": {
+    "talrand-draw-go": [
+      54,
+      52
+    ],
+    "elas-sacrifice": [
+      58,
+      57
+    ],
+    "tatyova-landfall": [
+      56,
+      55
+    ],
+    "zada-spells": [
+      57,
+      55
+    ]
+  },
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "newly_supported": [
+    "Negate",
+    "Preordain",
+    "Pyretic Ritual",
+    "Ruin Crab",
+    "Seething Song",
+    "Stitcher's Supplier"
+  ],
+  "slice5_cards_per_list": {
+    "talrand-draw-go": [
+      "Negate",
+      "Preordain"
+    ],
+    "elas-sacrifice": [
+      "Stitcher's Supplier"
+    ],
+    "tatyova-landfall": [
+      "Ruin Crab"
+    ],
+    "zada-spells": [
+      "Pyretic Ritual",
+      "Seething Song"
+    ]
+  },
+  "slice5_cards_not_in_any_desired_list": []
+}

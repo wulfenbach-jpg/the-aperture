@@ -1,20 +1,17 @@
 //! Creature tokens (CR 111) and the keyword set the practice slice enforces.
 //!
-//! A token is not a card: it has no mana cost, never exists in a library or
-//! hand, is owned by the player who created it (CR 111.2), is controlled by that
-//! player (CR 111.3) and ceases to exist the instant it leaves the battlefield
-//! (CR 111.7) instead of moving to the graveyard/hand/library.
+//! A token is not a card: it is never importable or cast from a deck. It is
+//! owned by its creator (CR 111.2) and controlled by that player (CR 111.3).
+//! A departing token reaches its destination and applicable abilities trigger;
+//! it then ceases to exist at the next state-based-action check (CR 111.7).
 //!
-//! Token characteristics are compiled in [`TOKEN_CARDS`], which is deliberately
-//! *not* part of [`crate::catalog::CARDS`]: the deck importer can name pool
-//! cards only, so a token can never be imported, put in a deck, or cast. The
-//! 28-card playable pool is unchanged.
+//! Soldier/Spirit characteristics are compiled in [`TOKEN_CARDS`]; corpus
+//! Goblin/Drake characteristics live in the catalog's separate token table.
+//! Neither table is part of the importable [`crate::catalog::CARDS`] pool.
 //!
-//! Keywords are typed and enforced at the two places the engine can observe
-//! them: attacking (CR 508.1) and blocking (CR 509.1b, 702.9b/c, 702.17b). The
-//! certified 28-card pool contains no keyword creatures, so today the only
-//! source of a keyword is a token; a card keyword lands by adding a `card` arm
-//! to [`keywords`], never by trusting card text at runtime.
+//! Typed flying/reach/defender keywords are enforced by attacking and blocking
+//! rules (CR 508.1, 509.1b, 702.9b/c, 702.17b). The keyword lookup is explicit;
+//! it never infers mechanics by interpreting card text at runtime.
 
 use crate::card::{CardDef, CardId, Kind};
 use crate::counters::Counters;
@@ -30,6 +27,20 @@ pub enum Keyword {
     Reach,
     /// CR 702.3: can't attack.
     Defender,
+    /// CR 702.14a: "This creature can't be blocked as long as defending player
+    /// controls an Island." Modelled as a blocking restriction only; nothing
+    /// grants or removes it, and no other landwalk variant is supported.
+    Islandwalk,
+    /// CR 702.14a: can't be blocked while defending player controls a Mountain.
+    Mountainwalk,
+    /// CR 702.10a: a creature with haste ignores the summoning-sickness
+    /// attack/tap restriction.
+    Haste,
+    /// CR 702.20a: "Attacking doesn't cause this creature to tap." The combat
+    /// engine reads it at the only place an attacker is tapped (CR 508.1f); it
+    /// changes nothing else, so a vigilant creature can block in the following
+    /// turn's combat just as it can attack again.
+    Vigilance,
 }
 
 impl Keyword {
@@ -38,13 +49,38 @@ impl Keyword {
             Keyword::Flying => "flying",
             Keyword::Reach => "reach",
             Keyword::Defender => "defender",
+            Keyword::Islandwalk => "islandwalk",
+            Keyword::Vigilance => "vigilance",
+            Keyword::Haste => "haste",
+            Keyword::Mountainwalk => "mountainwalk",
         }
     }
 }
 
 /// CR 509.1b: a blocking creature must be able to block the attacker.
-/// Evasion is the only restriction this slice models.
-pub fn can_block(attacker: &[Keyword], blocker: &[Keyword]) -> bool {
+/// Evasion is the only restriction this slice models: flying (CR 702.9b) and
+/// islandwalk (CR 702.14c).
+///
+/// `defender_controls_island` is read from the battlefield of the player being
+/// attacked, never from the attacker's own lands, because landwalk is a
+/// property of the defending player's board (CR 702.14c).
+pub fn can_block(
+    attacker: &[Keyword],
+    blocker: &[Keyword],
+    defender_controls_island: bool,
+    defender_controls_mountain: bool,
+    attacker_has_mountainwalk: bool,
+) -> bool {
+    // Landwalk is checked first: it forbids every blocker, whatever keywords
+    // that blocker has, so no finite keyword list can answer it.
+    if attacker.contains(&Keyword::Islandwalk) && defender_controls_island {
+        return false;
+    }
+    if (attacker_has_mountainwalk || attacker.contains(&Keyword::Mountainwalk))
+        && defender_controls_mountain
+    {
+        return false;
+    }
     if !attacker.contains(&Keyword::Flying) {
         return true;
     }
@@ -53,10 +89,27 @@ pub fn can_block(attacker: &[Keyword], blocker: &[Keyword]) -> bool {
     blocker.contains(&Keyword::Flying) || blocker.contains(&Keyword::Reach)
 }
 
-/// The keyword list for a card. Pool cards have none; token cards carry theirs.
+/// The keyword list for a card. Token cards carry theirs here, and so do pool
+/// cards whose printed keyword changes blocking legality: this table is the one
+/// source the blocking path reads, so an islandwalk card is declared here rather
+/// than in a `CardDef` flag that no pair check consults.
 pub fn keywords(card: CardId) -> &'static [Keyword] {
     match card {
-        CardId::SpiritToken => &[Keyword::Flying],
+        CardId::SpiritToken | CardId::DrakeToken => &[Keyword::Flying],
+        CardId::JaddiOffshoot => &[Keyword::Defender],
+        CardId::PaleBears | CardId::RiverBear => &[Keyword::Islandwalk],
+        // Lumra, Bellow of the Woods prints "Reach, vigilance": reach lets it
+        // block a flyer, vigilance keeps it untapped when it attacks.
+        CardId::LumraBellowOfTheWoods => &[Keyword::Reach, Keyword::Vigilance],
+        // Rampaging Yao Guai prints "Vigilance, trample": trample is the
+        // `CardDef` flag the damage assignment reads, and vigilance is here
+        // because the attack path asks this table before it taps an attacker
+        // (CR 702.20a).
+        CardId::RampagingYaoGuai => &[Keyword::Vigilance],
+        // Goblin Chieftain prints Haste; its other-Goblin haste grant is a
+        // separate static ability.
+        CardId::GoblinChieftain => &[Keyword::Haste],
+        CardId::VolcanicDragon => &[Keyword::Flying, Keyword::Haste],
         _ => &[],
     }
 }
@@ -71,7 +124,14 @@ pub static TOKEN_CARDS: [CardDef; 2] = [
         cost: None,
         kinds: CREATURE,
         basic_mana: None,
+        artifact_mana: None,
         type_line: "Token Creature — Soldier",
+        colors: &[],
+        flying: false,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
         power: Some(1),
         toughness: Some(1),
         oracle: "",
@@ -83,7 +143,14 @@ pub static TOKEN_CARDS: [CardDef; 2] = [
         cost: None,
         kinds: CREATURE,
         basic_mana: None,
+        artifact_mana: None,
         type_line: "Token Creature — Spirit",
+        colors: &[crate::card::ManaColor::White],
+        flying: true,
+        defender: false,
+        flash: false,
+        trample: false,
+        islandwalk: false,
         power: Some(1),
         toughness: Some(1),
         oracle: "Flying",
@@ -164,6 +231,7 @@ impl GameState {
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: Counters::default(),
+                paired_with: None,
             },
         );
         id
@@ -176,12 +244,54 @@ mod tests {
 
     #[test]
     fn flying_is_blocked_only_by_flying_or_reach() {
-        assert!(can_block(&[], &[]));
-        assert!(can_block(&[Keyword::Defender], &[]));
-        assert!(!can_block(&[Keyword::Flying], &[]));
-        assert!(!can_block(&[Keyword::Flying], &[Keyword::Defender]));
-        assert!(can_block(&[Keyword::Flying], &[Keyword::Flying]));
-        assert!(can_block(&[Keyword::Flying], &[Keyword::Reach]));
+        assert!(can_block(&[], &[], false, false, false));
+        assert!(can_block(&[Keyword::Defender], &[], false, false, false));
+        assert!(!can_block(&[Keyword::Flying], &[], false, false, false));
+        assert!(!can_block(
+            &[Keyword::Flying],
+            &[Keyword::Defender],
+            false,
+            false,
+            false
+        ));
+        assert!(can_block(
+            &[Keyword::Flying],
+            &[Keyword::Flying],
+            false,
+            false,
+            false
+        ));
+        assert!(can_block(
+            &[Keyword::Flying],
+            &[Keyword::Reach],
+            false,
+            false,
+            false
+        ));
+    }
+
+    #[test]
+    fn islandwalk_forbids_every_blocker_while_the_defender_controls_an_island() {
+        // CR 702.14c: no blocker is legal, whatever its keywords.
+        assert!(!can_block(&[Keyword::Islandwalk], &[], true, false, false));
+        assert!(!can_block(
+            &[Keyword::Islandwalk],
+            &[Keyword::Reach],
+            true,
+            false,
+            false
+        ));
+        // Without an Island on the defending board the restriction is inert.
+        assert!(can_block(&[Keyword::Islandwalk], &[], false, false, false));
+        assert!(can_block(
+            &[Keyword::Islandwalk],
+            &[Keyword::Defender],
+            false,
+            false,
+            false
+        ));
+        // It is not a grant: a plain creature is unaffected either way.
+        assert!(can_block(&[], &[Keyword::Islandwalk], true, false, false));
     }
 
     #[test]

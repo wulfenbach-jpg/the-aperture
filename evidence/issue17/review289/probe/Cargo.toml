@@ -1,0 +1,12 @@
+[package]
+name = "r289probe"
+version = "0.0.0"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+aperture-core = { path = "C:/AI/aperture-worktrees/issue-17/crates/core" }
+
+[profile.dev]
+debug = 0

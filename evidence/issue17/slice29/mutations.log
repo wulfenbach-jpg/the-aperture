@@ -1,0 +1,27 @@
+mutation-layer4-addition-ignored: exit=101 restored=True log=red-mutation-layer4-addition-ignored.log
+  test an_animated_bear_dies_as_a_creature ... FAILED
+  test the_animation_expires_at_cleanup_and_the_artifact_reverts ... FAILED
+  test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... FAILED
+  test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... FAILED
+  test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... FAILED
+  test a_save_and_reload_preserves_the_animation_and_its_layers ... FAILED
+  test result: FAILED. 3 passed; 6 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mutation-layer5-ignored: exit=101 restored=True log=red-mutation-layer5-ignored.log
+  test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... FAILED
+  test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... FAILED
+  test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... FAILED
+  test a_save_and_reload_preserves_the_animation_and_its_layers ... FAILED
+  test result: FAILED. 5 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mutation-layer7b-ignored: exit=101 restored=True log=red-mutation-layer7b-ignored.log
+  test an_animated_bear_dies_as_a_creature ... FAILED
+  test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... FAILED
+  test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... FAILED
+  test the_animation_expires_at_cleanup_and_the_artifact_reverts ... FAILED
+  test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... FAILED
+  test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... FAILED
+  test a_save_and_reload_preserves_the_animation_and_its_layers ... FAILED
+  test result: FAILED. 2 passed; 7 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+mutation-entry-sickness-dropped: exit=101 restored=True log=red-mutation-entry-sickness-dropped.log
+  test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... FAILED
+  test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+all mutations produced a RED and every file was restored byte-for-byte

@@ -1,0 +1,25 @@
+{
+  "name": "Skirk Prospector",
+  "set": "dmr",
+  "collector_number": "137",
+  "oracle_id": "c18013e4-0b99-44e3-a2b2-027ace68723a",
+  "mana_cost": "{R}",
+  "type_line": "Creature — Goblin",
+  "power": "1",
+  "toughness": "1",
+  "oracle_text": "Sacrifice a Goblin: Add {R}.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2023-01-13",
+  "scryfall_id": "7bc508b3-8b38-4cf0-89a7-a2cb247ed083",
+  "retrieved_at_utc": "2026-10-29T19:26:17Z",
+  "provider": "scryfall",
+  "url": "https://api.scryfall.com/cards/named?exact=Skirk%20Prospector",
+  "legalities_commander": "legal"
+}

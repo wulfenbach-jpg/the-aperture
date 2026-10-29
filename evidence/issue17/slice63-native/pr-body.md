@@ -1,0 +1,18 @@
+## Slice63 — three demanded Krenko cards + real Dragon control; original #17 remains2of8
+
+Candidate for independent practical increment review, not self-approved or original-issue acceptance. Same draft PR/branch; approved slices1–62 preserved.
+
+### Product
+Goblin Warchief (DOM130): generic Goblin-spell reduction and self-inclusive controlled haste. Goblin King (10E207): other-Goblin +1/+1 and mountainwalk across ALL controllers. Dragonlord's Servant (TDC210): generic Dragon-spell reduction. Native-authorized out-of-list Volcanic Dragon (CMR207, full Flying/haste) makes that positive payment path genuinely reachable/tested. Full current source texts/printings/retrieval dates retained.
+
+Both Krenko gap fields46→43. **172catalog/459union=158supported+301missing**, gaps`[55, 0, 51, 43, 0, 52, 52, 53]`, **2of8certified**. No3of8 claim; Volcanic Dragon not demanded-union progress.
+
+### Verification
+Writer focused139/0 across12 result lines, fmt/lockedworkspaceClippy-Dwarnings/release0. Native affected17/0 overlaps. New tests11 (10core+1printing), not suite totals. Native actual4seat40life journey954actions/23turns/2455events, terminalP3/digest43bbcce4…8848; Warchief6casts/King6/Servant3/Dragon1,14attacks/44combatdamage. Non-sandbox save/load, separate release CLI replay match,3artifacts byte-identical. Native trace audit all954actions exactlyoffered; Dragon actually paid4mana with2Servants,printed6. Forty-card projected-offer Jasmine demonstrator, NOT exact100-card certification/productAI/strength/GUI evidence.
+
+**10/10exact-head CI all keyed`150435b94f2e5282eaf6c5dbc782ffe1c148680e`**, push40854628109/PR40854642665, both complete BEFORE evidence push. Evidence successor claims no ownCI.
+
+### Disclosures / next gate
+Native coauthored, not independent reviewer. Native caught/fixed real prepublication Chieftain/Ruxa opposing-controller regression; existing assertion unchanged. Added real Dragon control and Krenko-tax fixture rather than accepting 'inapplicable' gaps. Standalone driver formatting fixed; historical receipts retained, no retroactiveTDD. No new serialized state fields/AI/UI/import code/globalconfig changes.
+
+Read `evidence/issue17/SLICE63-FINAL-HUMAN-CHECKPOINT.md` and `evidence/issue17/slice63-native/RESULT.json`. Next ONE independent practical delta review, then same task/history/branch/PR continues grouped sourced Krenko demanded mechanics. Six lists planned. Original#17/fullCommander/arbitraryArchidekt/strength/v1 unaccepted. No completion/merge/masterpush/closure/dependentunlock/newteam.

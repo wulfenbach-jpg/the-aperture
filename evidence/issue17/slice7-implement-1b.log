@@ -1,0 +1,22 @@
+Working...
+**Slice 7 delivered — S6-R2-F1 fixed and master integrated.** No push.
+
+## Repair
+- Root cause: self-death trigger queued at zone change, then dispatched a second time by the watcher batch.
+- Fix: death records carry the original battlefield `ObjectId`; the batch skips the dying watcher’s own death. Surviving watchers still see all other deaths.
+- Probe RED preserved (`[23,17,17,17]` etc.), GREEN now 3/3. Three probe tests ported into `issue17_slice6.rs` with full-drain guards and exact totals.
+- Commit `f1b7ab6`.
+
+## Integration
+- Fetched `origin/master` = `8de0961` (#16 counters/tokens/keywords/library) with scoped credential override.
+- Backup `issue17-pre-slice7-rebase` at `f1b7ab6`; merge fallback used instead of forbidden force-push rebase.
+- Merge commit `edd8008`. Conflicts resolved in `card.rs`, `catalog.rs`, `engine.rs`, `state.rs`, `HANDOFF.md`, `README.md`: retained corpus cards and #16’s typed counter/token/keyword engine; extended keywords for Drake/Jaddi; added `counters` to corpus test objects.
+- Token death/bounce/exile tests adapted to the merged #16 immediate-cessation architecture — disclosed in the handoff, not silently rewritten.
+
+## Verification
+- Focused suites pass: slice6 13, cross 6, Tatyova 5, tokens 10, Talrand 7, starter 8, catalog 5, printings 8; external probe 3/3.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat package journey (`package-slice6-dies.txt`, seed 610): terminal, P3 wins, 2952 steps, digest `8e0ab4b00e7f…`; separate replay matches 7239 events. Digest differs from pre-integration `7864e4e9…` and is recorded honestly.
+- Corpus audit: catalog 93, union 459, supported 81, missing 378, manifest matches.
+
+Handoff: `evidence/issue17/SLICE7-IMPLEMENT-HANDOFF.md`. Full #17 remains unfinished; CI/review coordinator-owned.

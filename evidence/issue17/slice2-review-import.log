@@ -1,0 +1,19 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.50s
+     Running tests\starter_corpus_analyzer.rs (target\debug\deps\starter_corpus_analyzer-d311d7d6601c70d1.exe)
+
+running 3 tests
+test the_deck_snapshot_binds_the_exact_text_library ... ok
+test analyzer_gameplay_refusal_is_preserved ... ok
+test the_exact_starter_list_is_format_legal_and_engine_supported ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests\starter_corpus_planned.rs (target\debug\deps\starter_corpus_planned-ccd2b2343f57fa39.exe)
+
+running 1 test
+test eight_targets_have_exact_desired_lists_and_honest_missing_cards ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.30s
+

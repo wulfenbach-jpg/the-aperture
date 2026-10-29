@@ -1,0 +1,12 @@
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.09s
+     Running tests\certify.rs (target\debug\deps\certify-94d1a149835aa163.exe)
+
+running 4 tests
+test a_crlf_checkout_of_the_same_list_certifies_to_the_same_snapshot_hash ... ok
+test a_missing_snapshot_is_refused_rather_than_replaced_by_a_bundled_deck ... ok
+test an_edited_snapshot_stops_certifying ... ok
+test certify_proves_one_starter_from_its_exact_snapshot ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 50.40s
+

@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 0
+    },
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 1
+    },
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 2
+    },
+    {
+      "card": "Krenko, Mob Boss",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 28,
+    "ability_activations": 12,
+    "attacks": 15,
+    "blocks": 3,
+    "casts": 22,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 248,
+    "events": 5018,
+    "triggered_abilities": 16
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1568
+  },
+  "final_digest": "4cbaa34f0de1235d4eda92bff5f34b68599c8687499b778324e36588f916046f",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 122,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1568,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -4,
+      "name": "package-slice13",
+      "seat": 0,
+      "source": "decks/package-slice13.txt"
+    },
+    {
+      "cards": 40,
+      "library": 23,
+      "life": 37,
+      "name": "package-slice13",
+      "seat": 1,
+      "source": "decks/package-slice13.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -42,
+      "name": "package-slice13",
+      "seat": 2,
+      "source": "decks/package-slice13.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -51,
+      "name": "package-slice13",
+      "seat": 3,
+      "source": "decks/package-slice13.txt"
+    }
+  ],
+  "seed": 1301,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1568,
+  "truncated": null,
+  "turns": 34,
+  "winner": 1,
+  "winner_label": "P1"
+}

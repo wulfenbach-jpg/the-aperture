@@ -1,0 +1,16 @@
+137 459 125 334 334 True
+[('isamaru-white-aggro', 55), ('jasmine-vanilla-stompy', 0), ('talrand-draw-go', 51), ('krenko-goblin-tokens', 48), ('ayula-bear-counters', 28), ('elas-sacrifice', 52), ('tatyova-landfall', 52), ('zada-spells', 53)]
+25:| `ayula-bear-counters` | Ayula, Queen Among Bears | green bear tribal +1/+1 counters | planned |
+34:137-card pool. Isamaru itself is supported, and the slice-4 package implemented
+49:* **125** are in the supported 137-card catalog and **334** are missing. Slice
+62:and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
+66:(slice 17). Ayula currently has **28** missing names.
+112:* **Ayula's Influence** (`{G}{G}{G}` enchantment) — "Discard a land card: Create
+156:   remaining Ayula-list Bear makers still need their own token types (Ayula
+170:   unimplemented (Ayula, Syr Konrad);
+180:5. typed counters exist in the core (issue #16); slice 18 implements Ayula's
+324:   Isamaru, Jasmine, Krenko, Talrand, Tatyova and (slice 18) Ayula have named
+376:Slice 17 implements three real sourced cards: Friendly Teddy, Ulvenwald Bear and Caller of the Claw. Death history is tracked only while a morbid/count card is present, so pre-slice-17 saves and replays keep their digest. Ayula remains planned with 29 of its 34 desired nonland cards still missing; the eight-list gate is open.
+378:## Slice 18: Ayula, Queen Among Bears
+379:Ayula is a supported commander (`{1}{G}`, 2/2 Legendary Bear) with sourced printing data in `fixtures/starter-corpus/slice18-sourced.json`. Her trigger fires only for another Bear its controller controls; token entries count and opposing Bear entries do not. The controller chooses counters or fight before targets. Counters may target any Bear (including an opponent's). Fight requires a Bear you control and a creature you don't control, revalidates both at resolution, and deals damage simultaneously through the existing prevention/replacement pipeline. Ayula has 29 missing desired-list cards after slice 19; the eight-list gate remains open.
+382:`Spectral Bears` (`{1}{G}` Creature — Bear Spirit 3/3, me1 131, sourced in `fixtures/starter-corpus/slice19-sourced.json`) is the pool's first attack trigger. Its printed intervening-if — "if defending player controls no black nontoken permanents" — is evaluated in the declare attackers step before the trigger is queued and again at resolution, so an attack into a black nontoken permanent never reaches the stack, while a black *token* does not satisfy the exclusion. The payoff marks the attacker so that its controller's next untap step leaves it tapped exactly once (CR 502.3); the marker is serde-skipped when empty, so every previously recorded digest is unchanged. Black is read from the printed mana cost (CR 202.2a) or the token's own colors. Attack triggers are now infrastructure rather than a card patch: `TriggerEvent::Attacks` plus `TriggerCondition`, the latter evaluated before queueing and re-checked at resolution. Ayula has 29 missing names; the eight-list gate remains open and no list is certified by this slice.

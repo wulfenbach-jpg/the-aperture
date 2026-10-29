@@ -1,0 +1,76 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.24s
+     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+
+running 43 tests
+test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+test departing_controller_battlefield_permanent_is_exiled ... ok
+test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+test commander_damage_to_a_creature_never_credits_a_player ... ok
+test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+test discard_pending_then_active_departure_settles_once ... ok
+test fog_is_a_sourced_catalog_card ... ok
+test fog_does_not_prevent_noncombat_damage ... ok
+test commander_combat_damage_is_publicly_credited ... ok
+test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+test fog_prevents_combat_damage_to_creatures ... ok
+test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+test departed_identity_omitted_from_retired_is_refused ... ok
+test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+test fabricated_retired_commander_identity_is_refused ... ok
+test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+test commander_damage_identity_survives_a_modeled_control_change ... ok
+test fog_shield_expires_after_cleanup ... ok
+test named_20_life_profiles_are_unchanged ... ok
+test noncombat_damage_never_credits_the_ledger ... ok
+test live_commander_cannot_be_listed_as_retired ... ok
+test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+test previous_replay_schema_version_is_rejected ... ok
+test independent_commanders_do_not_pool ... ok
+test real_departure_retires_identity_and_keeps_historic_row ... ok
+test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+test commander_draw_answer_then_owner_departure_is_atomic ... ok
+test survivor_owned_source_exiled_but_queue_continues ... ok
+test exact_commander_damage_boundaries ... ok
+test serialized_commander_combat_profile_reconstructs_40_life ... ok
+test simultaneous_losses_settle_once_in_seat_order ... ok
+test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+test twenty_two_commander_damage_is_a_loss ... ok
+test commander_return_queue_survives_a_departing_owner ... ok
+test malformed_commander_damage_ledgers_are_refused ... ok
+test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+test previous_save_schema_version_is_rejected ... ok
+test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+test accepted_action_midledger_save_and_replay_roundtrip ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.92s
+
+     Running tests\issue17_slice21.rs (target\debug\deps\issue17_slice21-2b5fe474e2edc982.exe)
+
+running 8 tests
+test formidable_exact_eight_includes_current_power_and_survives_threshold_fall ... ok
+test source_and_offered_cast_activation_and_formidable_refusal ... ok
+test regeneration_removes_a_blocked_attacker_from_combat_without_player_damage ... ok
+test lethal_hit_consumes_shield_taps_and_prevents_death ... ok
+test zero_toughness_and_sacrifice_are_not_regeneration ... ok
+test multiple_shields_are_consumed_one_per_destruction ... ok
+test exile_and_bounce_are_not_destruction_and_do_not_transfer_shields ... ok
+test save_reload_with_live_shield_has_parity ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

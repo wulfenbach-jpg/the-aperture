@@ -1,0 +1,27 @@
+Working...
+**PARTIAL #17** — slice 17 implemented and verified; eight-list gate remains open.
+
+### Delivered
+- **Friendly Teddy** `{2}` Artifact Creature — Bear Toy 2/2; dies → each live player draws (APNAP).
+- **Ulvenwald Bear** `{2}{G}` 2/2; intervening-if morbid ETB → two +1/+1 counters on target creature.
+- **Caller of the Claw** `{2}{G}` 2/2 flash; ETB → Bear per nontoken creature its controller **owned** that moved battlefield→graveyard this turn.
+- Death history: any-death flag + per-owner nontoken counts; tokens excluded from Caller count; mill/discard not counted; cleanup reset.
+- Compatibility: new state fields are serde-default/skip-empty and only maintained while a card that reads them exists, preserving pre-slice-17 replay digests.
+
+### Evidence
+| gate | result |
+|---|---|
+| Sources | Scryfall exact printings, retrieved `2026-10-26T22:48:41Z`; audit PASS |
+| Focused slice tests | 5 passed, including exact Ulvenwald counters and cleanup reset |
+| Core suite | passed |
+| Workspace suite | exit 0, 628 s |
+| Clippy workspace | `-D warnings` clean |
+| Release CLI | built; `--help` inspected |
+| Journey | seed 1616, 4 seats, exact 40-card package, terminal win seat 3, 1866 decisions, 42 turns, replay digest matched, 4 Bears created; all three cards cast |
+| Legacy replay | `replay_digest` 6, `ordering_persistence` 2 passed |
+
+Counts updated truthfully: **134 catalog / 122 supported / 337 missing**; Ayula remains **3 of 34 sourced, 31 missing**. Jasmine starter unchanged.
+
+Handoff: `evidence/issue17/IMPLEMENTATION-HANDOFF.md`; result: `evidence/issue17/IMPLEMENTATION-RESULT-slice17.json`; TDD: `evidence/issue17/TDD-slice17.md`; audit: `evidence/issue17/AUDIT-slice17.json`.
+
+No commit, push, PR, merge, or review launch. Reporter still points at old #20; ops files untouched. Remaining blockers: Ayula’s 31 unsupported desired cards and the eight-list certification gate.

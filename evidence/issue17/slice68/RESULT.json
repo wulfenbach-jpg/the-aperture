@@ -1,0 +1,99 @@
+{
+  "slice": 68,
+  "status": "PRODUCT BATCH COMPLETE; original #17 gate open",
+  "self_check": true,
+  "independent_review": false,
+  "base_commit": "2a4c8ff94a8472bfc265b85aad8f1a6bc8715f39",
+  "cards": [
+    {
+      "name": "Skirk Prospector",
+      "set": "dmr",
+      "collector_number": "137",
+      "scryfall_id": "7bc508b3-8b38-4cf0-89a7-a2cb247ed083",
+      "retrieved_at_utc": "2026-10-29T19:26:17Z",
+      "printings_checked": 9,
+      "implemented": [
+        "CR605.1a nonstack sacrifice-a-Goblin mana ability",
+        "immediate Add {R}, no tap, no summoning restriction, no response window",
+        "all legal controlled Goblins offered including source; wrong subtype/opponent refused"
+      ]
+    },
+    {
+      "name": "Zo-Zu the Punisher",
+      "set": "dds",
+      "collector_number": "41",
+      "scryfall_id": "e7c927d6-911d-4a37-89a2-6c500edf4dd7",
+      "retrieved_at_utc": "2026-10-29T19:26:18Z",
+      "printings_checked": 4,
+      "implemented": [
+        "AnyLandEnters trigger watches all players",
+        "2 damage to entering land's captured controller",
+        "last-known source controller after source departure"
+      ]
+    }
+  ],
+  "counts": {
+    "catalog": 182,
+    "union": 459,
+    "supported_union": 168,
+    "missing_union": 291,
+    "krenko_missing": 33,
+    "certified_lists": "2 of 8"
+  },
+  "tests": {
+    "issue17_slice68": "11 passed",
+    "checkpoint": "6 passed",
+    "ordering": "passed",
+    "command_zone_setup": "44 passed",
+    "card_printings": "27 passed",
+    "catalog_pool": "5 passed",
+    "commander": "43 passed",
+    "slice15": "2 passed",
+    "replay_digest": "6 passed",
+    "import": "3+1 passed",
+    "ruxa_slice60": "passed"
+  },
+  "gates": {
+    "script": "evidence/issue17/slice68/gates.sh",
+    "log": "evidence/issue17/slice68/final-native/gates.log",
+    "all_exit": 0,
+    "aggregate": 0
+  },
+  "journey": {
+    "path": "evidence/issue17/slice68/final-native/demo-journey.json",
+    "driver": "evidence/issue17/slice68-journey-driver",
+    "driver_label": "explicit 40-card evidence driver using projected offers; not product AI/strength/GUI/100-card certification",
+    "package": "decks/package-slice68.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2323,
+    "steps": 1326,
+    "turns": 26,
+    "status": "terminal",
+    "winner": 2,
+    "digest": "e4603396f670eb4acae2df80d85dbd85009846913d42ec537a90b6d927e7d612",
+    "snapshot_sha256": "6d34434dc4257421e935d5fdf8b3a61a158a5d9376b2b3c73467093f3a6ff32b",
+    "casts": {
+      "Skirk Prospector": 7,
+      "Zo-Zu the Punisher": 3,
+      "Goblin War Strike": 7,
+      "Krenko, Mob Boss": 4,
+      "Goblin Instigator": 4
+    },
+    "mana_sacrifices": 7,
+    "zozu_triggers": 31,
+    "attack_declarations": 13,
+    "combat_damage_events": 79,
+    "cli_replay_matches": true
+  },
+  "tdd": "No pre-implementation compiling RED was retained for the two new mechanics; tests were authored after implementation. This is disclosed and not claimed as TDD. Existing affected suites were retained.",
+  "limitations": [
+    "No pre-implementation RED for Skirk/Zo-Zu mechanics; native Ruxa defect RED is retained.",
+    "Mana-ability activations are offered at priority only; no mid-payment cost-window claim.",
+    "No broad save/replay continuity claim for newly affected triggers.",
+    "Krenko remains planned at 33 missing; 2/8 certified.",
+    "40-card demonstrator is not exact-100 certification."
+  ],
+  "ruxa_repair": "object_has_no_abilities now recognizes sacrifice_mana; Skirk is not vanilla under Ruxa; graveyard predicate exclusion tested.",
+  "save_validation": "affected_player ranged and tied to Zo-Zu trigger; malformed missing/out-of-range sandbox saves refused; legitimate save loads."
+}

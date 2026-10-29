@@ -1,0 +1,10 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s
+     Running tests\issue17_slice22.rs (target\debug\deps\issue17_slice22-1be942bdc603fc37.exe)
+
+running 3 tests
+test the_slice22_card_is_in_the_supported_pool ... ok
+test the_slice22_card_prints_its_token_landfall_trigger ... ok
+test the_slice22_card_prints_two_triggered_abilities ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

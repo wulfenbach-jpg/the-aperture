@@ -1,0 +1,3735 @@
+replay seed 2626 — 4 seat(s), 1373 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 70d147dbdac0 | matches recorded | events 3733
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P1 draws a card
+    P1 draws a card
+    P1 draws a card
+    P1 draws a card
+    P1 draws a card
+    P1 draws a card
+    P1 draws a card
+    P2 draws a card
+    P2 draws a card
+    P2 draws a card
+    P2 draws a card
+    P2 draws a card
+    P2 draws a card
+    P2 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    Game start — P2 plays first
+    — Turn 1: P2 —
+    P2 keeps a hand of 7
+    P1 keeps a hand of 7
+    P3 mulligans (mulligan count 1)
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P0 mulligans (mulligan count 1)
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Mountain
+    P0 draws Sol Ring
+    P0 draws Mountain
+    P0 draws Pashalik Mons
+    P0 keeps a hand of 7
+    P3 mulligans (mulligan count 2)
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 draws a card
+    P3 puts 1 card(s) on the bottom of their library
+    P3 keeps a hand of 6
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [upkeep step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 2: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 3: P0 —
+    [untap step]
+    [upkeep step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P0 draws Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P0 receives priority
+    P0 plays Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 4: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare attackers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [combat damage step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [cleanup step]
+    — Turn 5: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 6: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 7: P0 —
+    [untap step]
+    [upkeep step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P0 draws Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P0 receives priority
+    P0 plays Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 8: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare attackers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [combat damage step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [cleanup step]
+    — Turn 9: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 casts Pashalik Mons
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Pashalik Mons resolves (controlled by P2)
+    Pashalik Mons enters the battlefield under P2
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 10: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 casts Pashalik Mons
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Pashalik Mons resolves (controlled by P3)
+    Pashalik Mons enters the battlefield under P3
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 11: P0 —
+    [untap step]
+    [upkeep step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P0 draws Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P0 receives priority
+    P0 plays Mountain
+    P0 receives priority
+    P0 casts Pashalik Mons
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    Pashalik Mons resolves (controlled by P0)
+    Pashalik Mons enters the battlefield under P0
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 12: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 casts Pashalik Mons
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Pashalik Mons resolves (controlled by P1)
+    Pashalik Mons enters the battlefield under P1
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare attackers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [combat damage step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [cleanup step]
+    — Turn 13: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 casts Krenko, Mob Boss
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Krenko, Mob Boss resolves (controlled by P2)
+    Krenko, Mob Boss enters the battlefield under P2
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 attacks with Pashalik Mons
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P0 declares 1 blocker(s)
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    2 damage to Pashalik Mons (#1)
+    2 combat damage to Pashalik Mons
+    2 damage to Pashalik Mons (#82)
+    2 combat damage to Pashalik Mons
+    Pashalik Mons is put into a graveyard
+    Pashalik Mons is put into a graveyard
+    state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+    P2's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P0's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    1 damage to P0
+    P0 loses 1 life (now 39)
+    P0's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    1 damage to P0
+    P0 loses 1 life (now 38)
+    P2's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 14: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 casts Krenko, Mob Boss
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Krenko, Mob Boss resolves (controlled by P3)
+    Krenko, Mob Boss enters the battlefield under P3
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 attacks with Pashalik Mons
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    2 combat damage to a player
+    2 damage to P0
+    P0 loses 2 life (now 36)
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 15: P0 —
+    [untap step]
+    [upkeep step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P0 draws Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P0 receives priority
+    P0 plays Mountain
+    P0 receives priority
+    P0 casts Krenko, Mob Boss
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    Krenko, Mob Boss resolves (controlled by P0)
+    Krenko, Mob Boss enters the battlefield under P0
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 16: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 casts Krenko, Mob Boss
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Krenko, Mob Boss resolves (controlled by P1)
+    Krenko, Mob Boss enters the battlefield under P1
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare attackers step]
+    P1 declares no attackers
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [combat damage step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [cleanup step]
+    — Turn 17: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#173)
+    P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 casts Goblin Trashmaster
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Goblin Trashmaster resolves (controlled by P2)
+    Goblin Trashmaster enters the battlefield under P2
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 18: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#174)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#175)
+    P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 casts Goblin Trashmaster
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 taps Mountain for {R}
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Goblin Trashmaster resolves (controlled by P3)
+    Goblin Trashmaster enters the battlefield under P3
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 attacks with Pashalik Mons
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P0 declares 1 blocker(s)
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    3 damage to Krenko, Mob Boss (#170)
+    3 combat damage to Krenko, Mob Boss
+    3 damage to Pashalik Mons (#122)
+    3 combat damage to Pashalik Mons
+    Pashalik Mons is put into a graveyard
+    Krenko, Mob Boss is put into a graveyard
+    state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+    state-based action: P0 puts commander #177 into the command zone from the graveyard (CR 903.9a)
+    P3's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    1 damage to P0
+    P0 loses 1 life (now 35)
+    P3's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 19: P0 —
+    [untap step]
+    [upkeep step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P0 draws Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P0 receives priority
+    P0 plays Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 20: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#178)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#179)
+    P1's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 casts Goblin Trashmaster
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Goblin Trashmaster resolves (controlled by P1)
+    Goblin Trashmaster enters the battlefield under P1
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare attackers step]
+    P1 attacks with Pashalik Mons
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [combat damage step]
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now 32)
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [cleanup step]
+    — Turn 21: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#180)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#181)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#182)
+    P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 casts Goblin Trashmaster
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Goblin Trashmaster resolves (controlled by P2)
+    Goblin Trashmaster enters the battlefield under P2
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 attacks with Goblin Trashmaster, Goblin Token
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    4 combat damage to a player
+    4 damage to P0
+    P0 loses 4 life (now 28)
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now 25)
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 22: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#183)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#184)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#185)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#186)
+    P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 attacks with Goblin Trashmaster, Goblin Token
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now 22)
+    2 combat damage to a player
+    2 damage to P0
+    P0 loses 2 life (now 20)
+    2 combat damage to a player
+    2 damage to P0
+    P0 loses 2 life (now 18)
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 23: P0 —
+    [untap step]
+    [upkeep step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P0 draws Mountain
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P0 receives priority
+    P0 plays Mountain
+    P0 receives priority
+    P0 casts Krenko, Mob Boss
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 taps Mountain for {R}
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    Krenko, Mob Boss resolves (controlled by P0)
+    Krenko, Mob Boss enters the battlefield under P0
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 24: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#189)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#190)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#191)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#192)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#193)
+    P1's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 casts Pashalik Mons
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Pashalik Mons resolves (controlled by P1)
+    Pashalik Mons enters the battlefield under P1
+    Pashalik Mons is put into a graveyard
+    P1's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    1 damage to P0
+    P0 loses 1 life (now 17)
+    P1's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    1 damage to P0
+    P0 loses 1 life (now 16)
+    P1's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 casts Pashalik Mons
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 taps Mountain for {R}
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    Pashalik Mons resolves (controlled by P1)
+    Pashalik Mons enters the battlefield under P1
+    Pashalik Mons is put into a graveyard
+    P1's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    1 damage to P0
+    P0 loses 1 life (now 15)
+    P1's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    1 damage to P0
+    P0 loses 1 life (now 14)
+    P1's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare attackers step]
+    P1 attacks with Goblin Trashmaster
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [declare blockers step]
+    P0 declares 1 blocker(s)
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [combat damage step]
+    3 damage to Krenko, Mob Boss (#188)
+    3 combat damage to Krenko, Mob Boss
+    3 damage to Goblin Trashmaster (#45)
+    3 combat damage to Goblin Trashmaster
+    Goblin Trashmaster is put into a graveyard
+    Krenko, Mob Boss is put into a graveyard
+    state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+    state-based action: P0 puts commander #195 into the command zone from the graveyard (CR 903.9a)
+    P1's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    1 damage to P0
+    P0 loses 1 life (now 13)
+    P1's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    [cleanup step]
+    — Turn 25: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#196)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#197)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#198)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#199)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#200)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#201)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#202)
+    P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 casts Pashalik Mons
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Pashalik Mons resolves (controlled by P2)
+    Pashalik Mons enters the battlefield under P2
+    P2 receives priority
+    P2 casts Pashalik Mons
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 taps Mountain for {R}
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    Pashalik Mons resolves (controlled by P2)
+    Pashalik Mons enters the battlefield under P2
+    Pashalik Mons is put into a graveyard
+    P2's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    1 damage to P0
+    P0 loses 1 life (now 12)
+    P2's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    1 damage to P0
+    P0 loses 1 life (now 11)
+    P2's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 attacks with Goblin Trashmaster, Goblin Trashmaster, Goblin Token, Goblin Token, Goblin Token, Goblin Token
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P0 receives priority
+    P0 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    4 combat damage to a player
+    4 damage to P0
+    P0 loses 4 life (now 7)
+    4 combat damage to a player
+    4 damage to P0
+    P0 loses 4 life (now 3)
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now 0)
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now -3)
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now -6)
+    3 combat damage to a player
+    3 damage to P0
+    P0 loses 3 life (now -9)
+    state-based action: P0 loses: life total is -9 (CR 704.5a)
+    state-based action: P0 leaves the game; all objects owned by P0 leave the game (CR 800.4a)
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 26: P3 —
+    [untap step]
+    [upkeep step]
+    P3 receives priority
+    P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#203)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#204)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#205)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#206)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#207)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#208)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#209)
+    Goblin Token enters the battlefield under P3
+    state-based action: P3 creates Goblin Token token (#210)
+    P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P3 draws a card
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P3 receives priority
+    P3 plays Mountain
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P3 attacks with Goblin Trashmaster, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P1 declares 1 blocker(s)
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now 37)
+    2 damage to Pashalik Mons (#41)
+    2 combat damage to Pashalik Mons
+    2 damage to Goblin Token (#174)
+    2 combat damage to Goblin Token
+    2 combat damage to a player
+    2 damage to P1
+    P1 loses 2 life (now 35)
+    2 combat damage to a player
+    2 damage to P1
+    P1 loses 2 life (now 33)
+    2 combat damage to a player
+    2 damage to P1
+    P1 loses 2 life (now 31)
+    2 combat damage to a player
+    2 damage to P1
+    P1 loses 2 life (now 29)
+    2 combat damage to a player
+    2 damage to P1
+    P1 loses 2 life (now 27)
+    Pashalik Mons is put into a graveyard
+    Goblin Token is put into a graveyard
+    state-based action: token Goblin Token is put into the graveyard and will cease to exist (CR 111.7)
+    state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+    state-based action: Goblin Token token ceases to exist (CR 111.7)
+    P1's triggered ability from Pashalik Mons goes on the stack: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    1 damage to P1
+    P1 loses 1 life (now 26)
+    P1's ability from Pashalik Mons resolves: Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 27: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#211)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#212)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#213)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#214)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#215)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#216)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#217)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#218)
+    P1's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare attackers step]
+    P1 declares no attackers
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [combat damage step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    [cleanup step]
+    — Turn 28: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#219)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#220)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#221)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#222)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#223)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#224)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#225)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#226)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#227)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#228)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#229)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#230)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#231)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#232)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#233)
+    P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 attacks with Pashalik Mons, Goblin Trashmaster, Goblin Trashmaster, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P3 declares no blockers
+    P2 receives priority
+    P2 passes
+    P3 receives priority
+    P3 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    4 combat damage to a player
+    4 damage to P3
+    P3 loses 4 life (now 36)
+    4 combat damage to a player
+    4 damage to P3
+    P3 loses 4 life (now 32)
+    4 combat damage to a player
+    4 damage to P3
+    P3 loses 4 life (now 28)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 25)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 22)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 19)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 16)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 13)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 10)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 7)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 4)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now 1)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now -2)
+    3 combat damage to a player
+    3 damage to P3
+    P3 loses 3 life (now -5)
+    state-based action: P3 loses: life total is -5 (CR 704.5a)
+    state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [end of combat step]
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [postcombat main phase]
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [end step]
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [cleanup step]
+    — Turn 29: P1 —
+    [untap step]
+    [upkeep step]
+    P1 receives priority
+    P1 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#234)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#235)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#236)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#237)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#238)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#239)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#240)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#241)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#242)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#243)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#244)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#245)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#246)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#247)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#248)
+    Goblin Token enters the battlefield under P1
+    state-based action: P1 creates Goblin Token token (#249)
+    P1's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [draw step]
+    P1 draws a card
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [precombat main phase]
+    P1 receives priority
+    P1 plays Mountain
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [beginning of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare attackers step]
+    P1 declares no attackers
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [declare blockers step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [combat damage step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end of combat step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [postcombat main phase]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [end step]
+    P1 receives priority
+    P1 passes
+    P2 receives priority
+    P2 passes
+    [cleanup step]
+    — Turn 30: P2 —
+    [untap step]
+    [upkeep step]
+    P2 receives priority
+    P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#250)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#251)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#252)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#253)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#254)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#255)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#256)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#257)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#258)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#259)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#260)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#261)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#262)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#263)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#264)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#265)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#266)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#267)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#268)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#269)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#270)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#271)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#272)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#273)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#274)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#275)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#276)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#277)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#278)
+    Goblin Token enters the battlefield under P2
+    state-based action: P2 creates Goblin Token token (#279)
+    P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [draw step]
+    P2 draws a card
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [precombat main phase]
+    P2 receives priority
+    P2 plays Mountain
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [beginning of combat step]
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [declare attackers step]
+    P2 attacks with Pashalik Mons, Goblin Trashmaster, Goblin Trashmaster, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token, Goblin Token
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [declare blockers step]
+    P1 declares no blockers
+    P2 receives priority
+    P2 passes
+    P1 receives priority
+    P1 passes
+    [combat damage step]
+    4 combat damage to a player
+    4 damage to P1
+    P1 loses 4 life (now 22)
+    4 combat damage to a player
+    4 damage to P1
+    P1 loses 4 life (now 18)
+    4 combat damage to a player
+    4 damage to P1
+    P1 loses 4 life (now 14)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now 11)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now 8)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now 5)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now 2)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -1)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -4)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -7)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -10)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -13)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -16)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -19)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -22)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -25)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -28)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -31)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -34)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -37)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -40)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -43)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -46)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -49)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -52)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -55)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -58)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -61)
+    3 combat damage to a player
+    3 damage to P1
+    P1 loses 3 life (now -64)
+    state-based action: P1 loses: life total is -64 (CR 704.5a)
+    state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
+    Game over — P2 wins: opponents' life totals reached 0 or less (CR 704.5a)

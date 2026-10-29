@@ -1,0 +1,63 @@
+mutation: red-mutation-cost-reduction-disabled.log
+file: crates/core/src/engine.rs
+test command: cargo test -p aperture-core --test issue17_slice23 --locked
+exit code: 101
+
+
+running 11 tests
+test goreclaw_is_registered_with_its_printed_characteristics ... ok
+test an_opponents_goreclaw_does_not_reduce_your_cost ... ok
+test a_creature_below_the_power_threshold_is_not_reduced ... ok
+test a_qualifying_creature_spell_costs_two_less_generic ... FAILED
+test the_attack_trigger_boosts_and_tramples_only_qualifying_creatures ... ok
+test the_same_combat_without_goreclaw_deals_no_damage_to_the_player ... ok
+test the_reduction_stops_at_the_colored_pips ... FAILED
+test the_reduction_never_applies_to_a_noncreature_spell ... ok
+test the_trigger_fires_only_when_goreclaw_itself_attacks ... ok
+test the_granted_trample_expires_in_cleanup ... ok
+test granted_trample_carries_excess_damage_to_the_defending_player ... ok
+
+failures:
+
+---- a_qualifying_creature_spell_costs_two_less_generic stdout ----
+
+thread 'a_qualifying_creature_spell_costs_two_less_generic' (38168) panicked at crates\core\tests\issue17_slice23.rs:132:37:
+the reduced cost is payable: CannotPay { cost: "{4}{G}{G}", available: "{C}{C}{G}{G}" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_reduction_stops_at_the_colored_pips stdout ----
+
+thread 'the_reduction_stops_at_the_colored_pips' (13640) panicked at crates\core\tests\issue17_slice23.rs:154:30:
+generic is fully reduced: CannotPay { cost: "{2}{G}", available: "{G}" }
+
+
+failures:
+    a_qualifying_creature_spell_costs_two_less_generic
+    the_reduction_stops_at_the_colored_pips
+
+test result: FAILED. 9 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: unreachable statement
+   --> crates\core\src\engine.rs:931:9
+    |
+928 |         return 0;
+    |         -------- any code following this expression is unreachable
+...
+931 |         let power = def.power.unwrap_or(0);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unreachable statement
+    |
+    = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `caster`
+   --> crates\core\src\engine.rs:922:30
+    |
+922 |     fn cost_reduction(&self, caster: PlayerId, card: CardId) -> u8 {
+    |                              ^^^^^^ help: if this is intentional, prefix it with an underscore: `_caster`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 2 warnings (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.26s
+     Running tests\issue17_slice23.rs (target\debug\deps\issue17_slice23-163652698716f021.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice23`

@@ -1,0 +1,23 @@
+Working...
+**Slice 8 delivered — eight sourced missing cards across exact desired lists.** No push.
+
+## Cards implemented
+- **Soul's Attendant** (`{W}`) — optional another-creature-enters gain 1.
+- **Razorclaw Bear** (`{2}{G}{G}`) — becomes blocked → +2/+2 until end of turn.
+- **Volley Veteran** (`{3}{R}`) — ETB damage to target opponent creature = Goblins you control.
+- **Brightstone Ritual** (`{R}`) — add `{R}` per Goblin on battlefield.
+- **Aetherize** (`{3}{U}`) — return all attacking creatures to owner’s hand.
+- **Dramatic Reversal** (`{1}{U}`) — untap all nonland permanents you control.
+- **Friendly Teddy** (`{2}` artifact creature) — dies → each player draws.
+- **Goblin War Strike** (`{R}`) — target player damage = Goblins you control.
+
+Live Scryfall printings recorded with URI/actual UTC in `fixtures/starter-corpus/slice8-sourced.json`. Refute/Snap/Rewind/Sol Ring/Skirk Prospector were deliberately excluded as not fully implementable.
+
+## Verification
+- Genuine RED: all cards absent initially; after scaffold, each new trigger/effect failed until implemented.
+- `issue17_slice8` **8/8**, tokens 10/10, slice6 13/13, counters_tokens_library 16/16, catalog 5/5, printings 5/5, commander 43/43; reviewer224 probe 3/3.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat package journey (`decks/package-slice8.txt`, 40-card package, seed 801): terminal, P1 wins, 1600 steps, digest `6fea3673e366…`; verbose log shows all eight new cards; separate replay matches 4087 events.
+- Corpus recomputed: catalog **114**, union 459, supported **102**, missing **357**, manifest matches; desired lists unchanged.
+
+Commits: `7f57b4b` (implementation), `6747185` (journey evidence). Handoff: `evidence/issue17/SLICE8-IMPLEMENT-HANDOFF.md`. Full #17 unfinished; zero certified lists.

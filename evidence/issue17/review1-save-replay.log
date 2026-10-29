@@ -1,0 +1,5 @@
+save evidence/issue17/review1-save.json — 4 seat(s): P0 'jasmine-vanilla-stompy' vs P1 'jasmine-vanilla-stompy' vs P2 'jasmine-vanilla-stompy' vs P3 'jasmine-vanilla-stompy'
+  stored digest d7f8c2adaa17 | recomputed d7f8c2adaa17 | matches
+  turn 53 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P0, P1, P2, P3 = deterministic baseline heuristic; autoplay off
+  replay of 2364 action(s) -> digest d7f8c2adaa17 | events 6061 | reproduces the save

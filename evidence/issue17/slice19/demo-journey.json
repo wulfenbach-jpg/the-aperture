@@ -1,0 +1,33 @@
+{
+  "casts": {
+    "Ayula, Queen Among Bears": 8,
+    "Caller of the Claw": 7,
+    "Friendly Teddy": 4,
+    "Grizzly Bears": 5,
+    "Spectral Bears": 5,
+    "Ulvenwald Bear": 11
+  },
+  "commanders": "Ayula, Queen Among Bears injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice19.txt",
+  "digest": "5fd841b21c885ceabc065ff3a52d97041b64615b84aa73e6518ec14fb7a19f5d",
+  "driver": "evidence-only masked attack/cast-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 4709,
+  "seats": 4,
+  "seed": 1919,
+  "skip_untap_events": 13,
+  "snapshot_sha256": "b5d6561987f9c2d9ed5cf0ff9a0273558b581dddc55d559bd02208f80240c1b1",
+  "snapshots_exact": true,
+  "spectral_bears_triggers_staged": 14,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1773,
+  "turns": 42
+}

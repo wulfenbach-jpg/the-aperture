@@ -1,0 +1,64 @@
+{
+  "push": [
+    "push",
+    "success",
+    [
+      [
+        "board and roadmap",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "rust (macos-latest)",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "windows package",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "rust (ubuntu-latest)",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "rust (windows-latest)",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ]
+    ]
+  ],
+  "pr": [
+    "pull_request",
+    "failure",
+    [
+      [
+        "windows package",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "board and roadmap",
+        "success",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "rust (windows-latest)",
+        "failure",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "rust (ubuntu-latest)",
+        "failure",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ],
+      [
+        "rust (macos-latest)",
+        "failure",
+        "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      ]
+    ]
+  ]
+}

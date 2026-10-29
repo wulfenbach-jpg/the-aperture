@@ -1,0 +1,29 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T23:16:27.110944+00:00",
+ "cards": [
+  {
+   "name": "Druid's Familiar",
+   "oracle_id": "6a5b1cd4-e597-4122-8fc7-4dce241d7c01",
+   "scryfall_id": "1d8c794a-7964-41f0-bc9c-27af7cf87aaa",
+   "set": "avr",
+   "collector_number": "175",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Creature — Bear",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "Soulbond (You may pair this creature with another unpaired creature when either enters. They remain paired for as long as you control both of them.)\nAs long as this creature is paired with another creature, each of those creatures gets +2/+2.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Soulbond"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/1d8c794a-7964-41f0-bc9c-27af7cf87aaa",
+   "retrieved_at": "2026-10-27T23:16:27.110944+00:00"
+  }
+ ]
+}

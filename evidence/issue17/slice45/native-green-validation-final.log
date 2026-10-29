@@ -1,0 +1,60 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.58s
+     Running tests\issue17_slice41.rs (target\debug\deps\issue17_slice41-c6fbb863586e85a0.exe)
+
+running 11 tests
+test earth_king_is_sourced_and_supported ... ok
+test earth_king_really_casts_and_creates_distinct_four_four_bear ... ok
+test attack_search_resolves_from_the_captured_count_after_its_source_leaves ... ok
+test searched_lands_fire_existing_landfall_once_each_without_spending_land_play ... ok
+test carved_bear_token_ceases_to_exist_after_leaving_the_battlefield ... ok
+test zero_pick_search_still_shuffles_and_forged_or_duplicate_picks_are_atomic_refusals ... ok
+test attack_search_is_one_trigger_for_two_qualifiers_and_puts_basic_lands_tapped ... ok
+test full_opponent_projection_is_independent_of_hidden_search_candidates ... ok
+test midsearch_save_reload_keeps_private_progress_and_finishes_identically ... ok
+test midsearch_after_one_pick_save_reload_continues_identically ... ok
+test forged_search_pending_duplicates_and_subset_are_rejected_by_validate_and_save ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice44_search_controls.rs (target\debug\deps\issue17_slice44_search_controls-ddddfb3532fc8026.exe)
+
+running 4 tests
+test snow_search_prompts_describe_reveal_to_hand_not_battlefield ... ok
+test snow_search_direct_refusals_are_atomic_and_pick_remains_private_until_done ... ok
+test snow_search_validator_rejects_two_picks_even_when_both_are_snow ... ok
+test snow_search_validator_rejects_non_snow_basic_land_and_real_load_refuses_it ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice45.rs (target\debug\deps\issue17_slice45-82c814dbea110dbe.exe)
+
+running 2 tests
+test pairs_complete_printed_modes_independently ... ok
+test modal_refusals_and_postpick_search_save_continue_identically ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice45_native.rs (target\debug\deps\issue17_slice45_native-dca8c409be5a9cbc.exe)
+
+running 5 tests
+test bears_created_by_earlier_mode_receive_counters_later_in_printed_order ... ok
+test search_pending_filter_cannot_be_swapped_on_save ... ok
+test any_land_pending_is_bound_to_selected_search_instruction ... ok
+test search_capacity_is_exactly_two_in_validation_and_load ... ok
+test duplicate_and_unknown_saved_modes_are_refused ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

@@ -1,0 +1,10 @@
+[package]
+name = "r293-behavior-probe"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aperture-core = { path = "../../../../crates/core" }
+serde_json = "1"
+
+[workspace]

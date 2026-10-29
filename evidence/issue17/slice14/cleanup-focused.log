@@ -1,0 +1,54 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice13.rs (target\debug\deps\issue17_slice13-6e1e3977b14e53f6.exe)
+
+running 4 tests
+test sourced_slice13_cards_match_their_printings ... ok
+test sazh_chocobo_landfall_adds_a_real_counter_only_for_its_controller ... ok
+test rampaging_baloths_creates_beast_token_and_survives_source_left ... ok
+test professor_pest_token_dies_gaining_life_once_after_full_drain ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice14.rs (target\debug\deps\issue17_slice14-665a70fbc8de5e4c.exe)
+
+running 10 tests
+test sourced_slice14_cards_match_printings ... ok
+test fellwar_ignores_eliminated_opponent_and_own_lands ... ok
+test arcane_signet_without_a_commander_has_no_color_options ... ok
+test ready_werebear_is_offered_but_sick_or_tapped_is_not ... ok
+test werebear_obeys_sickness_and_threshold_both_ways_with_layers ... ok
+test signets_cast_from_hand_and_identity_survives_commander_leaving_command_zone ... ok
+test fellwar_stone_uses_opponent_lands_even_tapped_and_excludes_own ... ok
+test each_offered_dynamic_mana_action_validates_and_tapped_sources_offer_none ... ok
+test commanders_sphere_casts_chooses_color_and_sacrifices_while_tapped_for_draw ... ok
+test arcane_signet_uses_commander_identity_and_refuses_forged_colors ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_tokens.rs (target\debug\deps\issue17_tokens-4c5073e334830261.exe)
+
+running 10 tests
+test sourced_token_package_matches_its_recorded_printings ... ok
+test token_cards_are_not_importable ... ok
+test a_token_ceases_to_exist_instead_of_going_to_the_graveyard ... ok
+test goblin_instigator_and_beetleback_chief_trigger_on_entry_in_apnap_order ... ok
+test token_death_is_a_real_graveyard_change_then_cessation ... ok
+test token_bounce_and_exile_record_the_destination_before_cessation ... ok
+test krenko_counts_goblins_including_tokens_and_needs_untapped_untaunted_source ... ok
+test token_sorceries_create_the_printed_count_with_unique_objects ... ok
+test token_state_round_trips_through_serialization_with_an_equal_digest ... ok
+test krenko_never_silently_truncates_a_goblin_count_above_255 ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

@@ -1,0 +1,77 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-29T08:53:55Z",
+  "cards": [
+    {
+      "name": "Goblin Chieftain",
+      "oracle_id": "368b4052-174e-4458-a6e6-eaf8093aa0fe",
+      "scryfall_id": "89fcc35b-76fa-4408-8620-a1e11b2caf1f",
+      "set": "jmp",
+      "collector_number": "324",
+      "layout": "normal",
+      "released_at": "2020-07-17",
+      "mana_cost": "{1}{R}{R}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Goblin",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Haste (This creature can attack and {T} as soon as it comes under your control.)\nOther Goblin creatures you control get +1/+1 and have haste.",
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [
+        "Haste"
+      ],
+      "legalities_commander": "legal",
+      "printings_checked": 10,
+      "printings": [
+        "ddt/41",
+        "jmp/324",
+        "m10/139",
+        "m11/141",
+        "m12/138",
+        "plst/DDT-41",
+        "pm11/141★",
+        "sld/1615",
+        "sld/2424",
+        "spg/135"
+      ],
+      "printings_distinct_oracle_texts": 1,
+      "retrieved_at_utc": "2026-10-29T08:48:15Z"
+    },
+    {
+      "name": "Searslicer Goblin",
+      "oracle_id": "86ec0b56-497f-481c-a03a-c4e64e8e7404",
+      "scryfall_id": "94ad0b97-a318-4e76-ac79-b3e83417c333",
+      "set": "fdn",
+      "collector_number": "93",
+      "layout": "normal",
+      "released_at": "2024-11-15",
+      "mana_cost": "{1}{R}",
+      "mana_value": 2.0,
+      "type_line": "Creature — Goblin Warrior",
+      "power": "2",
+      "toughness": "1",
+      "oracle_text": "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [
+        "Raid"
+      ],
+      "legalities_commander": "legal",
+      "printings_checked": 6,
+      "printings": [
+        "fdn/332",
+        "fdn/394",
+        "fdn/468",
+        "fdn/93",
+        "pfdn/93s",
+        "plst/FDN-93"
+      ],
+      "printings_distinct_oracle_texts": 1,
+      "retrieved_at_utc": "2026-10-29T08:48:16Z"
+    }
+  ]
+}

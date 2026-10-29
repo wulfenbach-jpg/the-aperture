@@ -1,0 +1,75 @@
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "632c5e7",
+  "commit": "slice24 local head in final receipt",
+  "card": {
+    "name": "Surrak and Goreclaw",
+    "mana_cost": "{4}{G}{G}",
+    "type_line": "Legendary Creature \u2014 Human Bear",
+    "power": "6",
+    "toughness": "5",
+    "oracle_id": "95be5f72-1f81-4ec6-9bd9-f0b07bfc874b",
+    "scryfall_id": "9c10934d-9016-43c4-a7ab-56cc7d8f671f",
+    "printing": "mom 337",
+    "retrieved_at": "2026-10-27T08:44:35.433520+00:00",
+    "source": "fixtures/starter-corpus/slice24-sourced.json"
+  },
+  "counts": {
+    "catalog": 141,
+    "union": 459,
+    "supported": 129,
+    "missing": 330,
+    "ayula_missing": 24
+  },
+  "red": "issue17_slice24 surrak_goreclaw_is_sourced_and_supported failed before implementation",
+  "focused": {
+    "issue17_slice24": "10 passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "replay_digest": "6 passed",
+    "fmt": "exit 0",
+    "clippy": "workspace -D warnings exit 0",
+    "release": "exit 0",
+    "gates_log": "evidence/issue17/slice24/gates.log"
+  },
+  "journey": {
+    "package": "decks/package-slice24.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2323,
+    "commander": "Jasmine Boreal injected each seat (evidence only)",
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1602,
+    "turns": 37,
+    "snapshot_sha256": "feb9033b925198a0eae49b117c858b626e968a4e7691c8e70c7e93bffc4d7455",
+    "digest": "a41bbfd2760034f791a3616bd5d6faa0fd79ad8e9cee300eb69cc38c5a1ec631",
+    "replay_digest_matches": true,
+    "fresh_save_roundtrip": true,
+    "surrak_casts": 6,
+    "entry_buff_events": 11,
+    "haste_grant_events": 11,
+    "blocked_trample_damage_events": 20
+  },
+  "gaps": [
+    "token/opponent entry filtering not separately tested",
+    "source-left Surrak and tap-cost haste activation not directly tested",
+    "no full workspace matrix rerun"
+  ],
+  "note": "trigger/stack affected fields are serde default; no new GameState field or AI policy change",
+  "repair": {
+    "native_red": "evidence/issue17/slice24/native-behavior-red.log",
+    "fixed": [
+      "mana_sources honors has_haste so hasty Werebear is actually offered",
+      "affected binding invalidated (None) on battlefield departure while mandatory trigger remains queued/stacked/pending",
+      "add_haste_grant uses captured item.card",
+      "narrative wording says gets counter; trigger queue affected refs validated",
+      "source-left and token controls added"
+    ],
+    "gates": "evidence/issue17/slice24/repair-gates.log"
+  }
+}

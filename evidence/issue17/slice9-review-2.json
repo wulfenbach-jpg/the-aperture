@@ -1,0 +1,46 @@
+{
+  "review_outcome": "APPROVED_INCREMENT",
+  "reviewed_head": "ab9d4f50c1cd8b77ad8b358976fcf89a9a000864",
+  "base": "ea17c272d61d0644ab2ce378870a50643c3db1e0",
+  "full_issue17_accepted": false,
+  "findings": [],
+  "prior_findings": [
+    {
+      "id": "stale-corpus-counts",
+      "disposition": "fixed",
+      "evidence": "docs/issue17-starter-corpus.md now says 102 supported / 357 missing (line 48), Krenko 48 (line 71), and cites the slice9 audit/state; manifest arrays and interaction strings agree: 55/0/51/48/46/55/54/53."
+    },
+    {
+      "id": "incomplete-gate-receipts",
+      "disposition": "fixed",
+      "evidence": "The handoff now states gates.log contains only the release build, repair-gates.log is empty and is not evidence, and cites the reviewer's actual slice9 focused/clippy logs plus the review JSON. Those logs exist and contain the independently rerun results."
+    }
+  ],
+  "checks": [
+    {
+      "command": "git diff --name-status ea17c27..HEAD",
+      "result": "Only docs/issue17-starter-corpus.md, evidence/issue17/SLICE9-IMPLEMENT-HANDOFF.md and newly retained evidence/source/RED/review logs. No production, test, dependency or package change."
+    },
+    {
+      "command": "read docs/issue17-starter-corpus.md diff and current manifest/corpus-state",
+      "result": "Counts now 114 catalog, 459 union, 102 supported, 357 missing; per-list 55/0/51/48/46/55/54/53; audit reference is slice9, not slice5. Rite of Flame graveyard-count note is truthful; tutors/reanimation remain unimplemented."
+    },
+    {
+      "command": "read handoff diff and retained logs",
+      "result": "Handoff acknowledges gates.log build-only and empty repair-gates.log, cites actual slice9-review-focused.log/slice9-review-clippy.log and review-1, and adds the native source check plus retained RED results. No fabricated output."
+    },
+    {
+      "command": "reused review-1 actual checks",
+      "result": "101 focused tests passed; release build/clippy/fmt passed; seed-901 journey terminal P0, 1339 actions/32 turns, 4379 events, digest 5d20bb4a35e2…, exact 40-card seats and separate replay; old slice8 replay matched ffbeaee0db38…/6087 events; source/corpus audit verified."
+    }
+  ],
+  "reuse": [
+    "Review-1 core/mana focused tests, fmt, core clippy, release build, exact four-seat package journey/replay, old slice8 replay, live source check and corpus audit were reused; no test/build/game was rerun here.",
+    "The current report is bound to ab9d4f5; the added native source-check JSON has no commit field of its own, so it is treated as unchanged source-field evidence only."
+  ],
+  "remaining_gaps": [
+    "Full issue-17 remains unfinished: 114 catalog, 459 union = 102 supported + 357 missing, 1 implemented / 0 certified of eight desired lists.",
+    "Friendly Teddy and Aetherize remain excluded; broader legend/equipment/tutor/reanimation and Ayula tribal/counter text remain unsupported.",
+    "No full acceptance, merge/closure, #16 product acceptance, certified list or release/#26/#32 unlock follows from this increment."
+  ]
+}

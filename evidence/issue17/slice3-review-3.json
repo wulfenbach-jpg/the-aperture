@@ -1,0 +1,49 @@
+{
+  "verdict": "approve_increment",
+  "reviewed_head": "9cecd62ddb56d44e6853f9f9098fd3a473635b66",
+  "base": "0d8a1ee7dfccef39aacaff482b00255e86ff6399",
+  "full_issue17_accepted": false,
+  "issue16_integration_approved": false,
+  "prior_findings": [
+    {
+      "finding": "Krenko manifest/docs still said 52 missing after Guttersnipe.",
+      "disposition": "fixed",
+      "evidence": "manifest.json:211 says 'remaining 51 desired-list cards'; docs/issue17-starter-corpus.md:58 says '(51 missing)'; verified missing count is 51."
+    },
+    {
+      "finding": "Elas manifest/docs still claimed Swamp unsupported and 'no black basic land'.",
+      "disposition": "fixed",
+      "evidence": "Manifest Elas now names 58 unsupported desired-list nonland names plus sacrifice/death-drain/tutor-reanimation gaps; Swamp is absent from missing_cards. Docs paragraph now says the Swamp requirement is met and identifies the real nonland/interaction gaps."
+    },
+    {
+      "finding": "Cross-package handoff falsely listed docs/issue15-effects.md as changed.",
+      "disposition": "fixed",
+      "evidence": "The handoff 'Changed' list no longer includes docs/issue15-effects.md; the added repair-2 note explicitly records removal. No 0d8a1ee..9cecd62 code/test changes."
+    }
+  ],
+  "findings": [],
+  "checks": [
+    {
+      "command": "git rev-parse HEAD; git diff --name-status 0d8a1ee..HEAD; git diff --name-only 0d8a1ee..HEAD -- crates",
+      "result": "HEAD 9cecd62ddb56d44e6853f9f9098fd3a473635b66. Delta is manifest.json, docs/issue17-starter-corpus.md and the cross-package handoff only; no code or test changes."
+    },
+    {
+      "command": "git diff --check",
+      "result": "exit 0."
+    },
+    {
+      "command": "python evidence/issue17/slice3-native-corpus.py",
+      "result": "catalog 93, union 459, supported 81, missing 378, manifest_missing 378, matches true; Krenko 51, Elas 58, desired_contents_unchanged true; one implemented, seven planned."
+    },
+    {
+      "command": "python manifest read of Krenko/Elas missing sets",
+      "result": "Krenko missing 51 and Elas missing 58; Swamp is not in Elas missing_cards; Elas interactions now describe 58 unsupported nonland names plus sacrifice, death/drain and tutor/reanimation gaps."
+    }
+  ],
+  "retained_limitations": [
+    "Bounded cross-package increment only. full_issue17_accepted is false; seven desired starters remain planned/unsupported and the 378-name gap remains.",
+    "Shared core hooks remain a separate #16 integration hotspot; issue16 integration is not approved.",
+    "Prior real checks and the seed-5 cross-package journey/replay remain valid because this repair changes no engine/tests; no full suite, historical matrix, network refresh, GUI/import/search audit or playing-strength claim.",
+    "Guttersnipe support remains bounded to its printed trigger/damage primitive; old-card LKI debt outside that effect is not claimed fixed."
+  ]
+}

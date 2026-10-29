@@ -1,0 +1,43 @@
+diff --git a/crates/core/tests/issue13_commander_combat.rs b/crates/core/tests/issue13_commander_combat.rs
+index fa29a5a..5c3fc12 100644
+--- a/crates/core/tests/issue13_commander_combat.rs
++++ b/crates/core/tests/issue13_commander_combat.rs
+@@ -1370,9 +1370,9 @@ fn fog_is_a_sourced_catalog_card() {
+     // creatures plus Jasmine Boreal, to 85 with the Krenko token package, to 86 with Talrand, to 88 with Tatyova/Jaddi Offshoot, to 93 with the cross-corpus package, to 97 with the slice-4 Ayula/Isamaru package (Ordinary Bear, Ashcoat Bear, Owlbear, Soul Warden), to 103 with the slice-5 mill/counter/ritual package, and to 106 with the slice-6 death-watcher package (Blood Artist, Zulaport Cutthroat, Hedron Crab);
+     // Fog's own sourced semantics are unchanged.
+     // ... and to 129 with the slice-15 Bear-token package (Ayula's Influence,
+-    // Bearscape, Mother Bear), and to 131 with the slice-16 pair (Fade from
+-    // History, Little Bear).
+-    assert_eq!(aperture_core::catalog::pool_size(), 131);
++    // Bearscape, Mother Bear), to 131 with the slice-16 pair (Fade from
++    // History, Little Bear), and to 134 with the slice-17 death-history trio.
++    assert_eq!(aperture_core::catalog::pool_size(), 134);
+     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
+     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
+ }
+diff --git a/crates/ai/tests/common.rs b/crates/ai/tests/common.rs
+index 43b9505..e43a22a 100644
+--- a/crates/ai/tests/common.rs
++++ b/crates/ai/tests/common.rs
+@@ -47,6 +47,8 @@ pub fn fixture(seed: u64) -> Fixture {
+             first_player: P0,
+             rng: aperture_core::rng::Pcg32::new(seed),
+             objects: BTreeMap::new(),
++            creature_died_this_turn: false,
++            nontoken_creature_deaths_this_turn: Vec::new(),
+             commanders: Vec::new(),
+             profile: Profile::Practice20,
+             commander_damage: Vec::new(),
+diff --git a/crates/core/tests/common/mod.rs b/crates/core/tests/common/mod.rs
+index 525d203..537b2b8 100644
+--- a/crates/core/tests/common/mod.rs
++++ b/crates/core/tests/common/mod.rs
+@@ -83,6 +83,8 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
+             trigger_queue: Vec::new(),
+             next_trigger_seq: 0,
+             revealed: Vec::new(),
++            creature_died_this_turn: false,
++            nontoken_creature_deaths_this_turn: Vec::new(),
+             activation_uses: BTreeMap::new(),
+             effects: Vec::new(),
+             shields: Vec::new(),

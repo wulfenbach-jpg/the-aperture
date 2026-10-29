@@ -435,11 +435,23 @@ fn a_destroyed_token_ceases_to_exist_and_never_enters_a_graveyard() {
         "a token never stays in a graveyard (CR 111.7)"
     );
     assert!(
-        all.iter().any(|event| matches!(
+        all.iter().any(
+            |event| matches!(event, Event::Destroyed { card, .. } if *card == CardId::SpiritToken)
+        ),
+        "the token really reaches the graveyard before ceasing: {all:?}"
+    );
+    let destroyed = all.iter().position(
+        |event| matches!(event, Event::Destroyed { card, .. } if *card == CardId::SpiritToken),
+    );
+    let ceased = all.iter().position(|event| {
+        matches!(
             event,
             Event::StateBasedAction { description } if description.contains("ceases to exist")
-        )),
-        "the log states the token ceased to exist: {all:?}"
+        )
+    });
+    assert!(
+        destroyed < ceased,
+        "destination precedes CR 111.7 cessation: {all:?}"
     );
     game.state
         .validate()
@@ -465,13 +477,27 @@ fn a_bounced_token_ceases_to_exist_and_never_reaches_a_hand() {
             targets: vec![Target::Permanent(soldier)],
         },
     );
-    submit_ok(&mut game, P1, Action::Pass);
-    submit_ok(&mut game, P0, Action::Pass);
+    let mut events = submit_ok(&mut game, P1, Action::Pass);
+    events.extend(submit_ok(&mut game, P0, Action::Pass));
 
+    let returned = events.iter().position(|event| matches!(
+        event,
+        Event::StateBasedAction { description } if description.contains("returned to its owner's hand")
+    ));
+    let ceased = events.iter().position(|event| {
+        matches!(
+            event,
+            Event::StateBasedAction { description } if description.contains("ceases to exist")
+        )
+    });
+    assert!(
+        returned.is_some() && ceased.is_some() && returned < ceased,
+        "hand destination precedes cessation"
+    );
     assert!(game.state.try_object(soldier).is_none());
     assert!(
         game.state.player(P0).hand.is_empty(),
-        "the token does not become a card in hand"
+        "the token ceases instead of remaining a card in hand"
     );
     game.state
         .validate()
@@ -807,19 +833,20 @@ fn swords_to_plowshares_reports_a_token_truthfully() {
         21,
         "P1 gained its power as life"
     );
-    assert!(
-        !events.iter().any(|event| matches!(
+    let exiled = events.iter().position(|event| {
+        matches!(
             event,
             Event::StateBasedAction { description } if description.contains("is exiled")
-        )),
-        "nothing claims the token was exiled: {events:?}"
-    );
-    assert!(
-        events.iter().any(|event| matches!(
+        )
+    });
+    let ceased = events.iter().position(|event| {
+        matches!(
             event,
-            Event::StateBasedAction { description }
-                if description.contains("ceases to exist") && description.contains("gains 1 life")
-        )),
-        "the effect line states the cessation and the life gain: {events:?}"
+            Event::StateBasedAction { description } if description.contains("ceases to exist")
+        )
+    });
+    assert!(
+        exiled.is_some() && ceased.is_some() && exiled < ceased,
+        "exile destination precedes cessation: {events:?}"
     );
 }

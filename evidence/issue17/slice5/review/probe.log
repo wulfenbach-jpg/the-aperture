@@ -1,0 +1,80 @@
+PASS short_library_mill (milled 1 of 3, no loss)
+PASS empty_library_mill (0 milled, game continues)
+PASS mill_fires_no_battlefield_triggers (3 milled, 0 dies, 1 legit ETB gain)
+PASS supplier_mills_again_when_it_dies (dies trigger mills 3, once)
+PASS ruin_crab_ignores_opponent_landfall
+  mill event order (active = P1): [0, 0, 0, 2, 2, 2]
+PASS ruin_crab_mills_each_live_opponent_only
+PASS ruin_crab_stacks
+PASS ruin_crab_mill_short_libraries_are_harmless
+PASS negate_forged_creature_spell_changes_nothing
+PASS negate_refuses_an_ability_on_the_stack
+PASS ritual_mana_spendable_then_empties_at_step_end
+---- preordain event sequence (61) ----
+  [0] Pass { player: 0 }
+  [1] Priority { player: 1 }
+  [2] Pass { player: 1 }
+  [3] Scried { player: 0, count: 2 }
+  [4] OrderedCard { player: 0, card: Island, to_top: false, mode: Scry }
+  [5] OrderedCard { player: 0, card: Forest, to_top: true, mode: Scry }
+  [6] Draw { player: 0, object: ObjectId(3), card: Forest }
+  [7] Resolve { controller: 0, object: ObjectId(1), card: Preordain }
+  [8] Destroyed { object: ObjectId(1), card: Preordain }
+  [9] Priority { player: 0 }
+  [10] Pass { player: 0 }
+  [11] Priority { player: 1 }
+  [12] Pass { player: 1 }
+  [13] StepBegin { step: BeginCombat }
+  [14] Priority { player: 0 }
+  [15] Pass { player: 0 }
+  [16] Priority { player: 1 }
+  [17] Pass { player: 1 }
+  [18] StepBegin { step: DeclareAttackers }
+  [19] Priority { player: 0 }
+  [20] Pass { player: 0 }
+  [21] Priority { player: 1 }
+  [22] Pass { player: 1 }
+  [23] StepBegin { step: DeclareBlockers }
+  [24] Priority { player: 0 }
+  [25] Pass { player: 0 }
+  [26] Priority { player: 1 }
+  [27] Pass { player: 1 }
+  [28] StepBegin { step: CombatDamage }
+  [29] Priority { player: 0 }
+  [30] Pass { player: 0 }
+  [31] Priority { player: 1 }
+  [32] Pass { player: 1 }
+  [33] StepBegin { step: EndCombat }
+  [34] Priority { player: 0 }
+  [35] Pass { player: 0 }
+  [36] Priority { player: 1 }
+  [37] Pass { player: 1 }
+  [38] StepBegin { step: PostcombatMain }
+  [39] Priority { player: 0 }
+  [40] Pass { player: 0 }
+  [41] Priority { player: 1 }
+  [42] Pass { player: 1 }
+  [43] StepBegin { step: EndStep }
+  [44] Priority { player: 0 }
+  [45] Pass { player: 0 }
+  [46] Priority { player: 1 }
+  [47] Pass { player: 1 }
+  [48] StepBegin { step: Cleanup }
+  [49] TurnBegin { turn: 2, active: 1 }
+  [50] StepBegin { step: Untap }
+  [51] StepBegin { step: Upkeep }
+  [52] Priority { player: 1 }
+  [53] Pass { player: 1 }
+  [54] Priority { player: 0 }
+  [55] Pass { player: 0 }
+  [56] StepBegin { step: Draw }
+  [57] DrewFromEmpty { player: 1 }
+  [58] StateBasedAction { description: "P1 loses: attempted to draw from an empty library (CR 704.5b)" }
+  [59] StateBasedAction { description: "P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)" }
+  [60] GameOver { winner: 0, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" }
+---- library after: [Mountain, Island] ----
+PASS preordain_orders_then_draws
+PASS milled_commander_is_offered_the_command_zone
+PASS pool_statements (103 cards, Hedron Crab refused)
+
+all probes passed

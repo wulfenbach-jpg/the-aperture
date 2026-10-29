@@ -3,8 +3,74 @@
 
 mod common;
 
+use aperture_core::card::CardDef;
 use aperture_core::*;
 use common::*;
+
+/// A card that prints `*` for its power/toughness carries no fixed numbers; the
+/// value must come from a characteristic-defining static the engine executes
+/// (Lumra's land count), never from a hand-written constant.
+fn prints_star_power_and_toughness(card: &CardDef) -> bool {
+    aperture_core::ability::static_abilities(card.id)
+        .iter()
+        .any(|static_ability| {
+            matches!(
+                static_ability,
+                aperture_core::ability::StaticAbility::PowerToughnessPerCount { .. }
+            )
+        })
+}
+
+/// True only when the card's whole printed rules text is keywords this slice
+/// models with a `CardDef` flag. The reminder text Scryfall prints in
+/// parentheses is allowed; anything else, including any keyword the engine does
+/// not execute, returns false so the caller keeps asserting on typed abilities.
+fn rules_text_is_modelled_keywords(card: &CardDef) -> bool {
+    let mut modelled: Vec<&str> = Vec::new();
+    if card.has_flash() {
+        modelled.push("Flash");
+    }
+    if card.has_trample() {
+        modelled.push("Trample");
+    }
+    if card.has_flying() {
+        modelled.push("Flying");
+    }
+    if card.has_defender() {
+        modelled.push("Defender");
+    }
+    if card.has_islandwalk() {
+        modelled.push("Islandwalk");
+    }
+    if aperture_core::tokens::keywords(card.id).contains(&aperture_core::tokens::Keyword::Haste) {
+        modelled.push("Haste");
+    }
+    if modelled.is_empty() {
+        return false;
+    }
+    let mut saw_keyword = false;
+    for line in card.oracle.lines() {
+        let line = line.trim();
+        if line.is_empty() {
+            continue;
+        }
+        let line = match line.split_once(" (") {
+            Some((keyword, reminder)) if reminder.ends_with(')') => keyword,
+            _ => line.trim_end_matches('.'),
+        };
+        for keyword in line.split(',').map(str::trim) {
+            if keyword.is_empty()
+                || !modelled
+                    .iter()
+                    .any(|modelled| modelled.eq_ignore_ascii_case(keyword))
+            {
+                return false;
+            }
+            saw_keyword = true;
+        }
+    }
+    saw_keyword
+}
 
 #[test]
 fn pool_size_is_bounded_and_names_are_unique() {
@@ -60,9 +126,18 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                         "{} has abilities but prints no text",
                         card.name
                     );
+                } else if rules_text_is_modelled_keywords(card) {
+                    // Text that is only printed keywords is covered by the
+                    // keyword fields the engine actually executes; the helper
+                    // refuses any keyword this slice does not model, so a new
+                    // unsupported keyword cannot hide behind this branch.
                 } else {
                     assert!(
-                        !abilities.is_empty() || !statics.is_empty(),
+                        !abilities.is_empty()
+                            || !statics.is_empty()
+                            || card.artifact_mana.is_some()
+                            || card.id.dynamic_mana().is_some()
+                            || card.id.sacrifice_mana().is_some(),
                         "{} prints text but has no implementation",
                         card.name
                     );
@@ -88,16 +163,42 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                         );
                     }
                 }
-                assert!(card.is_creature(), "{} has no rules text at all", card.name);
-                assert!(card.power.is_some() && card.toughness.is_some());
+                assert!(
+                    card.is_creature()
+                        || card.artifact_mana.is_some()
+                        || card.id.dynamic_mana().is_some()
+                        // A noncreature permanent whose printed text is fully
+                        // covered by typed activated abilities is supported
+                        // (slice 15's two enchantments); a textless one is not.
+                        || (!aperture_core::abilities(card.id).is_empty()
+                            && !card.oracle.trim().is_empty()),
+                    "{} has no rules text at all",
+                    card.name
+                );
+                if card.is_creature() {
+                    assert!(
+                        card.power.is_some() && card.toughness.is_some()
+                            || prints_star_power_and_toughness(card),
+                        "{} is a creature with no printed power/toughness and no \
+                         characteristic-defining static to supply them",
+                        card.name
+                    );
+                }
                 continue;
             }
         };
-        assert!(!spec.effects.is_empty(), "{} does nothing", card.name);
+        assert!(
+            !spec.effects.is_empty()
+                || aperture_core::card::modal_spell_effects(card.id)
+                    .is_some_and(|modes| modes.iter().all(|effects| !effects.is_empty())),
+            "{} does nothing",
+            card.name
+        );
         assert!(card.cost.is_some(), "{} has no cost", card.name);
         if card.is_creature() {
             assert!(
-                card.power.is_some() && card.toughness.is_some(),
+                card.power.is_some() && card.toughness.is_some()
+                    || prints_star_power_and_toughness(card),
                 "{}",
                 card.name
             );
@@ -117,7 +218,17 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 }
                 Effect::Pump(p, t) => assert!(*p != 0 || *t != 0),
                 Effect::CounterTargetSpell => {
-                    assert_eq!(spec.target, TargetSpec::Spell, "{}", card.name)
+                    // "counter target spell" vs "counter target noncreature
+                    // spell": both are the same resolution, and the printed
+                    // wording fixes which spells may be chosen.
+                    assert!(
+                        matches!(
+                            spec.target,
+                            TargetSpec::Spell | TargetSpec::NoncreatureSpell
+                        ),
+                        "{}",
+                        card.name
+                    )
                 }
                 Effect::EachPlayerSacrifice => {
                     assert_eq!(spec.target, TargetSpec::None, "{}", card.name)
@@ -140,6 +251,122 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 Effect::PreventNextDamage(n) => {
                     assert!(*n > 0, "{} has a no-op prevention effect", card.name);
                     assert_eq!(spec.target, TargetSpec::AnyTarget, "{}", card.name);
+                }
+                Effect::CreateGoblinTokens(n) | Effect::CreateHasteGoblinTokens(n) => {
+                    assert!(*n > 0, "{} has a no-op token effect", card.name);
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                Effect::CreateGoblinTokensForEachGoblin
+                | Effect::CreateDrakeToken
+                | Effect::DamageEachOpponent(_)
+                | Effect::UntapAllNonlandsYouControl
+                | Effect::AddManaForEachGoblin
+                | Effect::AddManaForEachTappedOpponentLand
+                | Effect::AddManaForRiteOfFlame
+                | Effect::PutPlusOneCounterOnSource
+                | Effect::CreateBeastToken
+                | Effect::CreateBearTokens(_)
+                | Effect::CreatePestToken
+                | Effect::CreateFoodToken
+                | Effect::BearTokenForEachPlayerWithPermanent
+                | Effect::EachPlayerMayRevealCreatureCardsForBears
+                | Effect::DestroyAllArtifactsAndEnchantments => {
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                // Little Bear's untap/counter instruction and Spectral Bears'
+                // untap restriction are triggered-ability effects, never a
+                // spell's.
+                Effect::UntapTargetAndCounterIfBear
+                | Effect::SkipNextUntapStep
+                | Effect::ReplaceNextDrawWithBearToken
+                | Effect::PairSourceWithChosenCreature
+                | Effect::ReturnGraveyardCardToHand
+                | Effect::LookAtTopPutCreatureAttacking
+                | Effect::DestroyTargetArtifactsAndEnchantments
+                | Effect::DestroyTargetArtifact => {
+                    panic!(
+                        "{} uses an ability-only effect in its spell text",
+                        card.name
+                    )
+                }
+                Effect::DamageTargetCreatureForEachGoblin => {
+                    assert_eq!(spec.target, TargetSpec::OpponentCreature, "{}", card.name);
+                }
+                Effect::DamageTargetPlayerForEachGoblin => {
+                    assert_eq!(spec.target, TargetSpec::Player, "{}", card.name);
+                }
+                Effect::MillSelf(n) | Effect::MillEachOpponent(n) => {
+                    assert!(*n > 0, "{} has a no-op mill effect", card.name);
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                Effect::AddMana { amount, .. } => {
+                    assert!(*amount > 0, "{} adds no mana", card.name);
+                    assert_eq!(spec.target, TargetSpec::None, "{}", card.name);
+                }
+                // Target-player effects (slice 6) are exercised by the ability
+                // tests: none of them appears in printed spell text yet.
+                Effect::EachPlayerDraws(_)
+                | Effect::LookTopTakeOrBottom
+                | Effect::RegenerateSource
+                | Effect::PutCounterAndHasteOnEntered
+                | Effect::SetBasePowerToughnessFromSource
+                | Effect::GrantTrampleToControlledCreatures
+                | Effect::SaddleSource
+                | Effect::CreateEarthKingBearToken
+                | Effect::SearchBasicLandsUpToTriggerAmount
+                | Effect::ReturnLandCardsFromGraveyardTapped
+                | Effect::AttachSourceToTarget
+                | Effect::SearchSnowLandToHand
+                | Effect::ExileTargetPlayersGraveyardAndGainLife
+                | Effect::SearchAnyLandUpToTwo
+                | Effect::PutTwoCountersOnEachCreatureYouControl
+                | Effect::UrsineCombatTrigger
+                | Effect::RingTempts
+                | Effect::DamageAffectedPlayer(_)
+                | Effect::DiscardOne
+                | Effect::RingScheduleDelayedSacrifice
+                | Effect::RingDelayedSacrifice
+                | Effect::PutTrampleCounterOnTarget
+                | Effect::AddTargetCreatureType(_)
+                | Effect::DrawIfControlsBears { .. }
+                | Effect::SetSourceCreatureSubtypes(_)
+                | Effect::AddSourceCreatureType(_)
+                | Effect::AddSourceCreatureTypeWhileOnBattlefield(_)
+                | Effect::SetSourcePowerToughnessEqualToLands
+                | Effect::SetSourceColor(_)
+                | Effect::SetSourceBasePowerToughness(_, _)
+                | Effect::FightTargets
+                | Effect::PutPlusOneCountersOnTarget(_)
+                | Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue
+                | Effect::BoostAndTrampleEachCreatureYouControlWithPowerAtLeast { .. }
+                | Effect::CreateBearTokensForEachDeathThisTurn
+                | Effect::CreateClueToken
+                | Effect::ExileDeadCreatureAndInvestigate => {}
+                // Ability-only effects never appear in a printed spell's text;
+                // the two hideaway instructions are checked where they are
+                // declared (ability.rs), not here.
+                Effect::Hideaway(n) => assert!(*n > 0, "{} prints hideaway 0", card.name),
+                Effect::PlayCardExiledWithSource => {}
+                // Slice 64's ability-only effects: none of them can appear in a
+                // printed spell's text, so reaching them here is a card-authoring
+                // error rather than something to inspect.
+                Effect::UntapSource
+                | Effect::CreateGoblinTokensEqualToSourcePower
+                | Effect::DamageTargetForGoblinsEnteredThisTurn
+                | Effect::SearchGoblinCardToHand
+                | Effect::SearchGoblinPermanentToBattlefield => {
+                    panic!(
+                        "{} uses an ability-only effect in its spell text",
+                        card.name
+                    )
+                }
+                Effect::MillTargetPlayer(_)
+                | Effect::LoseLife(_)
+                | Effect::LoseLifeEachOpponent(_) => {
+                    panic!(
+                        "{} uses a target-player ability effect in its spell text",
+                        card.name
+                    )
                 }
             }
         }

@@ -1,0 +1,23 @@
+Working...
+**Repair committed: `dea6fab`.** Product diff clean; no push/merge/closure.
+
+### Fixed
+1. **Layered creature checks** — all new saddle/helper/grant rules now use live `Game::is_creature`:
+   - An animated Stuffed Bear is an eligible helper and trample recipient.
+   - A plain artifact is not.
+   - Added real offered-helper and actual trample-grant coverage.
+2. **Source-incarnation binding** — saddle stack items now carry `affected: Some(source)` through the existing invalidation path. If the source leaves while saddle is on the stack, the ability remains but resolves without marking any permanent; a later same-ID incarnation cannot receive saddled.
+3. **Actual multi-helper saddle** — tested with an offered two-helper subset and distinct labels (card name + source ID per helper).
+4. **Cleanup/source-left coverage** — saddled designation expires at cleanup; source-left saddle resolves without effect or panic.
+5. Narrowed departure effect pruning to the saddle designation; removed the misleading dead-code allowance and result claim about new stack fields.
+
+### Verification
+- `issue17_slice30`: **6 passed**
+- `issue17_slice29`: 6; replay_digest 6; card_printings 8; catalog_pool 5; slice15 corpus 2; commander 43.
+- fmt, workspace clippy `-D warnings`, release CLI: exit 0.
+- Receipts: `evidence/issue17/slice30/repair-gates.log`.
+
+### Residual limitation (disclosed)
+- Saddle offer enumeration is capped at **10 eligible helpers**; above the cap it silently emits no saddle offers while direct validation remains general. This is a bounded-offer limitation, **not** whole-card conformance; full-list certification remains a gap.
+- No same-ID legal reentry control beyond source-left no-effect (normal Drover cannot be recast before its old sorcery-speed saddle resolves without another deployment card).
+- Journey not regenerated after this mechanics change; native owner will rebuild if needed. Full #17 remains **1 of 8 certified**.

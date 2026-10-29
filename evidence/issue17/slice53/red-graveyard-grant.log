@@ -1,0 +1,24 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.28s
+     Running tests\issue17_slice53_ruxa.rs (target\debug\deps\issue17_slice53_ruxa-06c8b90dabc425f5.exe)
+
+running 1 test
+test battlefield_trample_grants_do_not_reach_graveyard_cards ... FAILED
+
+failures:
+
+---- battlefield_trample_grants_do_not_reach_graveyard_cards stdout ----
+
+thread 'battlefield_trample_grants_do_not_reach_graveyard_cards' (20308) panicked at crates\core\tests\issue17_slice53_ruxa.rs:368:5:
+a graveyard card is not a creature controlled on the battlefield
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    battlefield_trample_grants_do_not_reach_graveyard_cards
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice53_ruxa`
+
+EXIT=101

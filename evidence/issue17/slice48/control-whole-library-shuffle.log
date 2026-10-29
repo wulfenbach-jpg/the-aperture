@@ -1,0 +1,46 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: unused variable: `looked`
+    --> crates\core\src\engine.rs:4205:9
+     |
+4205 |         looked: &[ObjectId],
+     |         ^^^^^^ help: if this is intentional, prefix it with an underscore: `_looked`
+     |
+     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 1 warning (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.65s
+     Running tests\issue17_slice48.rs (target\debug\deps\issue17_slice48-05f096c1faa3d463.exe)
+
+running 6 tests
+test owlbear_cub_is_registered_with_its_printed_text ... ok
+test a_defender_with_seven_lands_never_triggers_the_look ... ok
+test eight_lands_looks_at_the_top_eight_and_offers_only_creature_cards ... ok
+test a_look_with_no_creature_card_puts_everything_on_the_bottom ... FAILED
+test declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order ... FAILED
+test the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage ... ok
+
+failures:
+
+---- a_look_with_no_creature_card_puts_everything_on_the_bottom stdout ----
+
+thread 'a_look_with_no_creature_card_puts_everything_on_the_bottom' (31172) panicked at crates\core\tests\issue17_slice48.rs:406:5:
+assertion `left == right` failed: the ninth card is now on top
+  left: ObjectId(17)
+ right: ObjectId(18)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order stdout ----
+
+thread 'declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order' (35152) panicked at crates\core\tests\issue17_slice48.rs:284:5:
+assertion `left == right` failed: the first card below the looked-at pile becomes the top card
+  left: ObjectId(13)
+ right: ObjectId(18)
+
+
+failures:
+    a_look_with_no_creature_card_puts_everything_on_the_bottom
+    declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order
+
+test result: FAILED. 4 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice48`

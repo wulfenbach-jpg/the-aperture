@@ -1,0 +1,24 @@
+crates/core/src/catalog.rs:993:    // Issue 17 slice 16: two more sourced Ayula-list cards. Fade from History
+crates/core/src/catalog.rs:999:        FadeFromHistory, "Fade from History", cost: Some("{2}{G}{G}"), kinds: SORCERY, basic: None,
+ M evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+?? .starter-run.yml
+?? evidence/issue17/review255-probe/
+?? evidence/issue17/review255/
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/285.bash-original.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/288.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/330.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/347.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/349.bash.log
+?? evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/374.bash-original.log
+?? evidence/issue17/slice12-review-probe/target/
+?? evidence/issue17/slice17-backup/
+?? evidence/issue17/slice17/ASSIGN-IMPLEMENT.md
+?? evidence/issue17/slice17/ASSIGN-REPAIR.md
+?? evidence/issue17/slice17/ASSIGN-REVIEW.md
+?? evidence/issue17/slice17/NATIVE-INSPECTION.md
+?? evidence/issue17/slice17/NATIVE-TEST-GAP.md
+?? evidence/issue17/slice17/exact-head-ci.json
+?? evidence/issue17/slice17/repair-worker.log
+?? evidence/issue17/slice17/reviewer.log
+?? evidence/issue17/slice17/worker.log
+?? review-sessions/

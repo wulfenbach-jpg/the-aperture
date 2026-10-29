@@ -1,0 +1,107 @@
+{
+  "head": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+  "total": 10,
+  "completed": 10,
+  "success": 9,
+  "failed_or_other": [
+    {
+      "name": "rust (macos-latest)",
+      "conclusion": "cancelled"
+    }
+  ],
+  "pending": [],
+  "all_keyed": true,
+  "runs": [
+    {
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:22:43Z",
+      "completed_at": "2026-10-28T21:35:53Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770725440/job/123106861460"
+    },
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:39Z",
+      "completed_at": "2026-10-28T21:25:28Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770725440/job/123106861452"
+    },
+    {
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:39Z",
+      "completed_at": "2026-10-28T21:26:11Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770725440/job/123106861441"
+    },
+    {
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:39Z",
+      "completed_at": "2026-10-28T21:28:44Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770725440/job/123106861323"
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:39Z",
+      "completed_at": "2026-10-28T21:17:50Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770725440/job/123106861168"
+    },
+    {
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:36Z",
+      "completed_at": "2026-10-28T21:24:19Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770718159/job/123106836772"
+    },
+    {
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:34Z",
+      "completed_at": "2026-10-28T21:32:35Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770718159/job/123106836407"
+    },
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:36Z",
+      "completed_at": "2026-10-28T21:25:05Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770718159/job/123106836354"
+    },
+    {
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:36Z",
+      "completed_at": "2026-10-28T21:28:06Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770718159/job/123106836353"
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "cd19beff70c2c7ffeb648f00ca26e94c30b29fd6",
+      "started_at": "2026-10-28T21:17:36Z",
+      "completed_at": "2026-10-28T21:17:45Z",
+      "details_url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40770718159/job/123106835965"
+    }
+  ],
+  "read_at_utc": "2026-10-28T21:36:17Z"
+}

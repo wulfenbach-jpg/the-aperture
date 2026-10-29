@@ -1,0 +1,7553 @@
+P0 draws Forest
+P0 draws Forest
+P0 draws Consider
+P0 draws Giant Growth
+P0 draws Jaddi Offshoot
+P0 draws Opt
+P0 draws Island
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+Game start — P2 plays first
+— Turn 1: P2 —
+P2 keeps a hand of 7
+P3 keeps a hand of 7
+P0 keeps a hand of 7
+P1 keeps a hand of 7
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 2: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 3: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Consider
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0 receives priority
+P0 casts Jaddi Offshoot
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Jaddi Offshoot resolves (controlled by P0)
+Jaddi Offshoot enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 4: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 5: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Elvish Visionary
+P2 taps Forest for {G}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Elvish Visionary resolves (controlled by P2)
+Elvish Visionary enters the battlefield under P2
+P2's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 draws a card
+P2's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 6: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 7: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 41)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 8: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 9: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2 casts Grizzly Bears
+P2 taps Forest for {G}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Grizzly Bears resolves (controlled by P2)
+Grizzly Bears enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Elvish Visionary
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 39)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 casts Opt
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 scries 1
+P2 keeps a card it looked at (contents hidden)
+P2 draws a card
+Opt resolves (controlled by P2)
+Opt is put into a graveyard
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 10: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 11: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Jaddi Offshoot
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 42)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 casts Jaddi Offshoot
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Jaddi Offshoot resolves (controlled by P0)
+Jaddi Offshoot enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 casts Consider
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 surveils 1
+Forest is put on top of the library
+P0 draws Forest
+Consider resolves (controlled by P0)
+Consider is put into a graveyard
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 12: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1 receives priority
+P1 casts Jaddi Offshoot
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Jaddi Offshoot resolves (controlled by P1)
+Jaddi Offshoot enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 37)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 casts Consider
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 surveils 1
+P1 keeps a card it looked at (contents hidden)
+P1 draws a card
+Consider resolves (controlled by P1)
+Consider is put into a graveyard
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 13: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Elvish Visionary, Grizzly Bears
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 36)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 34)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 14: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+P3 discards a card
+— Turn 15: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Divination
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 43)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 44)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 casts Consider
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 surveils 1
+Giant Growth is put on top of the library
+P0 draws Giant Growth
+Consider resolves (controlled by P0)
+Consider is put into a graveyard
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 16: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 41)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 casts Elvish Visionary
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Elvish Visionary resolves (controlled by P1)
+Elvish Visionary enters the battlefield under P1
+P1's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 draws a card
+P1's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 32)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 casts Opt
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 scries 1
+P1 keeps a card it looked at (contents hidden)
+P1 draws a card
+Opt resolves (controlled by P1)
+Opt is put into a graveyard
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 17: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2 receives priority
+P2 casts Tatyova, Benthic Druid
+P2 taps Forest for {G}
+P2 taps Island for {U}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Tatyova, Benthic Druid resolves (controlled by P2)
+Tatyova, Benthic Druid enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Elvish Visionary, Grizzly Bears
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 31)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 29)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 18: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Grizzly Bears
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Grizzly Bears resolves (controlled by P3)
+Grizzly Bears enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 casts Consider
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 surveils 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Consider resolves (controlled by P3)
+Consider is put into a graveyard
+P3 receives priority
+P3 casts Consider
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 surveils 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Consider resolves (controlled by P3)
+Consider is put into a graveyard
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 19: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Fog
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 45)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 46)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 casts Tatyova, Benthic Druid
+P0 taps Forest for {G}
+P0 taps Island for {U}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Tatyova, Benthic Druid resolves (controlled by P0)
+Tatyova, Benthic Druid enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 20: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 42)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 casts Tatyova, Benthic Druid
+P1 taps Forest for {G}
+P1 taps Island for {U}
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Tatyova, Benthic Druid resolves (controlled by P1)
+Tatyova, Benthic Druid enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Grizzly Bears (#128)
+2 combat damage to Grizzly Bears
+2 damage to Grizzly Bears (#49)
+2 combat damage to Grizzly Bears
+Grizzly Bears is put into a graveyard
+Grizzly Bears is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 21: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 41)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Elvish Visionary, Grizzly Bears
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 28)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 26)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 23)
+3 commander combat damage from commander#3 to P3 (cumulative 3, CR 903.10a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 22: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Tatyova, Benthic Druid
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Tatyova, Benthic Druid resolves (controlled by P3)
+Tatyova, Benthic Druid enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 23: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Fog
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with 
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 38)
+3 commander combat damage from commander#1 to P2 (cumulative 3, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 casts Opt
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 scries 1
+Jaddi Offshoot is put on top of the library
+P0 draws Jaddi Offshoot
+Opt resolves (controlled by P0)
+Opt is put into a graveyard
+P0 receives priority
+P0 casts Jaddi Offshoot
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Jaddi Offshoot resolves (controlled by P0)
+Jaddi Offshoot enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 24: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Elvish Visionary
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Elvish Visionary resolves (controlled by P1)
+Elvish Visionary enters the battlefield under P1
+P1's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 draws a card
+P1's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P1 receives priority
+P1 casts Jaddi Offshoot
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Jaddi Offshoot resolves (controlled by P1)
+Jaddi Offshoot enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Elvish Visionary, Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 37)
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 34)
+3 commander combat damage from commander#2 to P2 (cumulative 3, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 casts Consider
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 surveils 1
+P1 keeps a card it looked at (contents hidden)
+P1 draws a card
+Consider resolves (controlled by P1)
+Consider is put into a graveyard
+P1 receives priority
+P1 casts Opt
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 scries 1
+P1 keeps a card it looked at (contents hidden)
+P1 draws a card
+Opt resolves (controlled by P1)
+Opt is put into a graveyard
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 25: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 35)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 casts Jaddi Offshoot
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Jaddi Offshoot resolves (controlled by P2)
+Jaddi Offshoot enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with 
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 damage to Tatyova, Benthic Druid (#172)
+3 combat damage to Tatyova, Benthic Druid
+3 damage to Tatyova, Benthic Druid (#166)
+3 combat damage to Tatyova, Benthic Druid
+Tatyova, Benthic Druid is put into a graveyard
+Tatyova, Benthic Druid is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P2 puts commander #175 into the command zone from the graveyard (CR 903.9a)
+state-based action: P3 puts commander #176 into the command zone from the graveyard (CR 903.9a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 26: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Elvish Visionary
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Elvish Visionary resolves (controlled by P3)
+Elvish Visionary enters the battlefield under P3
+P3's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 draws a card
+P3's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P3 receives priority
+P3 plays Forest
+P3 receives priority
+P3 casts Jaddi Offshoot
+P3 taps Forest for {G}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Jaddi Offshoot resolves (controlled by P3)
+Jaddi Offshoot enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 casts Opt
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 scries 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Opt resolves (controlled by P3)
+Opt is put into a graveyard
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 27: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 47)
+P0 draws Forest
+P0's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 48)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 49)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 50)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with 
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 20)
+3 commander combat damage from commander#1 to P3 (cumulative 3, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 28: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 43)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 44)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 45)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 17)
+3 commander combat damage from commander#2 to P3 (cumulative 3, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 29: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 36)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 casts Tatyova, Benthic Druid
+P2 taps Forest for {G}
+P2 taps Island for {U}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Tatyova, Benthic Druid resolves (controlled by P2)
+Tatyova, Benthic Druid enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Jaddi Offshoot (#122)
+2 combat damage to Jaddi Offshoot
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 30: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 gains 1 life (now 18)
+P3's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P3 receives priority
+P3 casts Tatyova, Benthic Druid
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Tatyova, Benthic Druid resolves (controlled by P3)
+Tatyova, Benthic Druid enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 31: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Elvish Visionary
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 51)
+P0 draws Elvish Visionary
+P0's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 52)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 53)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 54)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 casts Elvish Visionary
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Elvish Visionary resolves (controlled by P0)
+Elvish Visionary enters the battlefield under P0
+P0's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 draws Divination
+P0's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P0 receives priority
+P0 casts Elvish Visionary
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Elvish Visionary resolves (controlled by P0)
+Elvish Visionary enters the battlefield under P0
+P0's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 draws Island
+P0's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with 
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 damage to Tatyova, Benthic Druid (#180)
+3 combat damage to Tatyova, Benthic Druid
+3 damage to Tatyova, Benthic Druid (#168)
+3 combat damage to Tatyova, Benthic Druid
+Tatyova, Benthic Druid is put into a graveyard
+Tatyova, Benthic Druid is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P0 puts commander #183 into the command zone from the graveyard (CR 903.9a)
+state-based action: P3 puts commander #184 into the command zone from the graveyard (CR 903.9a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 32: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 46)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 47)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 48)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 15)
+3 commander combat damage from commander#2 to P3 (cumulative 6, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 33: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 37)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 38)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Jaddi Offshoot (#122)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 12)
+3 commander combat damage from commander#3 to P3 (cumulative 6, CR 903.10a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 34: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 gains 1 life (now 13)
+P3's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 35: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Giant Growth
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 55)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 56)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 57)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 casts Tatyova, Benthic Druid
+P0 taps Forest for {G}
+P0 taps Island for {U}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Tatyova, Benthic Druid resolves (controlled by P0)
+Tatyova, Benthic Druid enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 declares no attackers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 36: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 49)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 50)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 51)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 10)
+3 commander combat damage from commander#2 to P3 (cumulative 9, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 37: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 39)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 40)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 casts Jaddi Offshoot
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Jaddi Offshoot resolves (controlled by P2)
+Jaddi Offshoot enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Jaddi Offshoot (#122)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 7)
+3 commander combat damage from commander#3 to P3 (cumulative 9, CR 903.10a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 38: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 gains 1 life (now 8)
+P3's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P3 receives priority
+P3 casts Tatyova, Benthic Druid
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 taps Forest for {G}
+P3 taps Forest for {G}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Tatyova, Benthic Druid resolves (controlled by P3)
+Tatyova, Benthic Druid enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 39: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with 
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 damage to Tatyova, Benthic Druid (#188)
+3 combat damage to Tatyova, Benthic Druid
+3 damage to Tatyova, Benthic Druid (#186)
+3 combat damage to Tatyova, Benthic Druid
+Tatyova, Benthic Druid is put into a graveyard
+Tatyova, Benthic Druid is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P0 puts commander #191 into the command zone from the graveyard (CR 903.9a)
+state-based action: P3 puts commander #192 into the command zone from the graveyard (CR 903.9a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 40: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 52)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 53)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 54)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Grizzly Bears, Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 damage to Jaddi Offshoot (#122)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 5)
+3 commander combat damage from commander#2 to P3 (cumulative 12, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 41: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Elvish Visionary, Grizzly Bears, Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P3 declares 2 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 damage to Elvish Visionary (#124)
+1 combat damage to Elvish Visionary
+1 damage to Elvish Visionary (#84)
+1 combat damage to Elvish Visionary
+2 damage to Jaddi Offshoot (#122)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 2)
+3 commander combat damage from commander#3 to P3 (cumulative 12, CR 903.10a)
+Elvish Visionary is put into a graveyard
+Elvish Visionary is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 42: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 43: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 58)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 59)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 gains 1 life (now 60)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 casts Tatyova, Benthic Druid
+P0 taps Forest for {G}
+P0 taps Island for {U}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Tatyova, Benthic Druid resolves (controlled by P0)
+Tatyova, Benthic Druid enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Elvish Visionary, Elvish Visionary, Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 0)
+2 damage to Jaddi Offshoot (#122)
+2 combat damage to Jaddi Offshoot
+state-based action: P3 loses: life total is 0 (CR 704.5a)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 44: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Elvish Visionary, Elvish Visionary, Grizzly Bears, Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares 2 blocker(s)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 damage to Jaddi Offshoot (#83)
+1 combat damage to Jaddi Offshoot
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 39)
+2 damage to Jaddi Offshoot (#82)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 36)
+3 commander combat damage from commander#2 to P2 (cumulative 6, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 45: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Forest
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 37)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 38)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 39)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 casts Grizzly Bears
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Grizzly Bears resolves (controlled by P2)
+Grizzly Bears enters the battlefield under P2
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Grizzly Bears, Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 damage to Jaddi Offshoot (#41)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 51)
+3 commander combat damage from commander#3 to P1 (cumulative 3, CR 903.10a)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 46: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P0 draws Grizzly Bears
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Grizzly Bears
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Grizzly Bears resolves (controlled by P0)
+Grizzly Bears enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P0 attacks with Elvish Visionary, Elvish Visionary, Grizzly Bears, Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 declares 2 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 damage to Jaddi Offshoot (#43)
+1 combat damage to Jaddi Offshoot
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 50)
+2 damage to Jaddi Offshoot (#41)
+2 combat damage to Jaddi Offshoot
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 47)
+3 commander combat damage from commander#1 to P1 (cumulative 3, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+state-based action: cleanup: all damage removed and until-end-of-turn effects ended (CR 514.2)
+— Turn 47: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 48)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 49)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 50)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 36)
+3 commander combat damage from commander#2 to P2 (cumulative 9, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+— Turn 48: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 37)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 38)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 39)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 casts Jaddi Offshoot
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Jaddi Offshoot resolves (controlled by P2)
+Jaddi Offshoot enters the battlefield under P2
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P0 declares no blockers
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 57)
+3 commander combat damage from commander#3 to P0 (cumulative 3, CR 903.10a)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 49: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P0 draws Elvish Visionary
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Elvish Visionary
+P0 taps Forest for {G}
+P0 taps Forest for {G}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Elvish Visionary resolves (controlled by P0)
+Elvish Visionary enters the battlefield under P0
+P0's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 draws Opt
+P0's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P2 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 36)
+3 commander combat damage from commander#1 to P2 (cumulative 6, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+P0 discards Divination
+— Turn 50: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Forest
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 51)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 52)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 53)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 33)
+3 commander combat damage from commander#2 to P2 (cumulative 12, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+— Turn 51: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Grizzly Bears
+P2 taps Forest for {G}
+P2 taps Forest for {G}
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Grizzly Bears resolves (controlled by P2)
+Grizzly Bears enters the battlefield under P2
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 50)
+3 commander combat damage from commander#3 to P1 (cumulative 6, CR 903.10a)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 52: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P0 draws Divination
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 47)
+3 commander combat damage from commander#1 to P1 (cumulative 6, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+P0 discards Divination
+— Turn 53: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 30)
+3 commander combat damage from commander#2 to P2 (cumulative 15, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+— Turn 54: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 44)
+3 commander combat damage from commander#3 to P1 (cumulative 9, CR 903.10a)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+— Turn 55: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P0 draws Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 gains 1 life (now 58)
+P0 draws Island
+P0's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 gains 1 life (now 59)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 gains 1 life (now 60)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 gains 1 life (now 61)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 41)
+3 commander combat damage from commander#1 to P1 (cumulative 9, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+P0 discards Island
+— Turn 56: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Jaddi Offshoot
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+Jaddi Offshoot resolves (controlled by P1)
+Jaddi Offshoot enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 27)
+3 commander combat damage from commander#2 to P2 (cumulative 18, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 57: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P2's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 28)
+P2 draws a card
+P2's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 29)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 30)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 gains 1 life (now 31)
+P2's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Tatyova, Benthic Druid
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 38)
+3 commander combat damage from commander#3 to P1 (cumulative 12, CR 903.10a)
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P2 discards a card
+— Turn 58: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P0 draws Consider
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P2 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 28)
+3 commander combat damage from commander#1 to P2 (cumulative 9, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+P0 discards Divination
+— Turn 59: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 39)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 40)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 41)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 42)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P2 declares no blockers
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 25)
+3 commander combat damage from commander#2 to P2 (cumulative 21, CR 903.10a)
+state-based action: P2 loses: was dealt 21 combat damage by commander#2 (CR 903.10a)
+state-based action: P2 leaves the game; all objects owned by P2 leave the game (CR 800.4a)
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+— Turn 60: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P0 draws Opt
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 39)
+3 commander combat damage from commander#1 to P1 (cumulative 12, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P0 discards Consider
+— Turn 61: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Grizzly Bears
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+Grizzly Bears resolves (controlled by P1)
+Grizzly Bears enters the battlefield under P1
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares no blockers
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 58)
+3 commander combat damage from commander#2 to P0 (cumulative 3, CR 903.10a)
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 62: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P0 draws Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 59)
+P0 draws Island
+P0's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 60)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 61)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 62)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 36)
+3 commander combat damage from commander#1 to P1 (cumulative 15, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P0 discards Island
+— Turn 63: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Elvish Visionary
+P1 taps Forest for {G}
+P1 taps Forest for {G}
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+Elvish Visionary resolves (controlled by P1)
+Elvish Visionary enters the battlefield under P1
+P1's triggered ability from Elvish Visionary goes on the stack: When Elvish Visionary enters the battlefield, draw a card.
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+P1 draws a card
+P1's ability from Elvish Visionary resolves: When Elvish Visionary enters the battlefield, draw a card.
+P1 receives priority
+P1 plays Island
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P1's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 37)
+P1 draws a card
+P1's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 38)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 39)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+P1 gains 1 life (now 40)
+P1's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Tatyova, Benthic Druid
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares no blockers
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P0
+P0 loses 3 life (now 59)
+3 commander combat damage from commander#2 to P0 (cumulative 6, CR 903.10a)
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+— Turn 64: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P0 draws Forest
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Forest
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Jaddi Offshoot goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life.
+P0's triggered ability from Tatyova, Benthic Druid goes on the stack: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 60)
+P0 draws Fog
+P0's ability from Tatyova, Benthic Druid resolves: Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 61)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 62)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P0 gains 1 life (now 63)
+P0's ability from Jaddi Offshoot resolves: Landfall — Whenever a land you control enters, you gain 1 life.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P0 attacks with Tatyova, Benthic Druid
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares no blockers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 37)
+3 commander combat damage from commander#1 to P1 (cumulative 18, CR 903.10a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+P0 discards Opt
+— Turn 65: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 attempted to draw from an empty library (CR 704.5b)
+state-based action: P1 loses: attempted to draw from an empty library (CR 704.5b)
+state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
+Game over — P0 wins: opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)
+selfplay seed=21 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P0 in 2993 steps (65 turns)
+  digest b31adfd97c31 | replay verified | casts 47 attacks 43 blocks 13 counters 0
+  replay written to evidence/issue17/slice3-review-tatyova.replay.json
+  report written to evidence/issue17/slice3-review-tatyova.json

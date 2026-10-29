@@ -1,0 +1,240 @@
+FMT_EXIT=0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 8 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice24.rs (target\debug\deps\issue17_slice24-315e8ddde41a5133.exe)
+
+running 10 tests
+test surrak_goreclaw_is_sourced_and_supported ... ok
+test native_hasty_werebear_mana_ability_is_actually_offered ... ok
+test token_and_opponent_entries_do_not_trigger_surrak ... ok
+test static_other_creature_trample_changes_real_combat ... ok
+test native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves ... ok
+test surrak_trigger_gives_counter_and_haste_only_to_entered_nontoken_creature ... ok
+test source_left_trigger_still_buffs_the_original_entered_creature ... ok
+test older_creature_does_not_get_haste_and_cleanup_expires_it ... ok
+test bounced_entered_creature_loses_old_trigger_and_recast_triggers_once ... ok
+test midtrigger_save_reload_finishes_identically ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice28.rs (target\debug\deps\issue17_slice28-cfb9f7bf614b3534.exe)
+
+running 5 tests
+test the_catalog_string_is_the_recorded_printing_and_both_layers_are_typed ... ok
+test a_non_bear_creature_still_gets_no_counter_so_the_check_is_discriminating ... ok
+test the_condition_is_its_controllers_turn_not_seat_zero ... ok
+test the_base_setting_sits_under_layer_7c_and_under_counters ... ok
+test it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice29.rs (target\debug\deps\issue17_slice29-5a9819d21baab889.exe)
+
+running 9 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_ability_offer_requires_two_mana_and_the_card_is_not_a_creature_spell ... ok
+test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... ok
+test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... ok
+test an_animated_bear_dies_as_a_creature ... ok
+test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... ok
+test the_animation_expires_at_cleanup_and_the_artifact_reverts ... ok
+test a_save_and_reload_preserves_the_animation_and_its_layers ... ok
+test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice30.rs (target\debug\deps\issue17_slice30-cf14312d5cdae756.exe)
+
+running 6 tests
+test drover_grizzly_is_sourced_and_supported ... ok
+test unsaddled_attack_does_not_grant_and_invalid_saddles_are_refused ... ok
+test saddle_uses_other_untapped_creatures_and_grants_trample_on_attack ... ok
+test animated_stuffed_bear_is_a_helper_and_trample_recipient ... ok
+test saddle_cleanup_and_source_left_activation_do_not_persist ... ok
+test saddle_refusals_and_save_reload_preserve_state ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests\timing_mana.rs (target\debug\deps\timing_mana-e7fe47c4a09c074d.exe)
+
+running 12 tests
+test stale_submissions_are_rejected ... ok
+test sorcery_requires_your_main_phase_with_an_empty_stack ... ok
+test land_cannot_be_played_outside_your_main_phase_or_turn ... ok
+test mana_ability_is_only_for_untapped_basic_lands ... ok
+test land_can_be_played_once_in_your_own_main_phase ... ok
+test spell_target_that_is_not_on_the_stack_is_rejected ... ok
+test mana_pool_empties_when_the_step_or_phase_ends ... ok
+test land_cannot_be_played_with_a_nonempty_stack ... ok
+test cost_is_paid_on_cast_by_tapping_lands ... ok
+test casting_a_creature_puts_it_onto_the_battlefield_with_summoning_sickness ... ok
+test unaffordable_spell_is_rejected_and_state_is_identical ... ok
+test illegal_action_attempts_leave_the_state_unchanged ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+FOCUSED_EXIT=0
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.64s
+CLIPPY_EXIT=0
+    Finished `release` profile [optimized] target(s) in 0.37s
+RELEASE_EXIT=0
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling http v1.5.0
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling hybrid-array v0.4.15
+   Compiling futures-util v0.3.34
+   Compiling httparse v1.10.1
+   Compiling serde_core v1.0.229
+   Compiling rustversion v1.0.23
+   Compiling schannel v0.1.30
+   Compiling serde v1.0.229
+   Compiling tracing v0.1.44
+   Compiling futures-channel v0.3.34
+   Compiling tokio v1.54.1
+   Compiling block-buffer v0.12.1
+   Compiling encoding_rs v0.8.42
+   Compiling syn v3.0.9
+   Compiling http-body v1.1.0
+   Compiling crypto-common v0.2.2
+   Compiling native-tls v0.2.18
+   Compiling form_urlencoded v1.2.2
+   Compiling http-body-util v0.1.5
+   Compiling rustls-pki-types v1.15.1
+   Compiling digest v0.11.3
+   Compiling sha2 v0.11.1
+   Compiling serde_json v1.0.154
+   Compiling synstructure v0.14.0
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.7
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.4
+   Compiling hyper v1.12.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling zerotrie v0.2.5
+   Compiling tower v0.5.3
+   Compiling zerovec v0.11.9
+   Compiling thiserror v2.0.21
+   Compiling hyper-util v0.1.21
+   Compiling tinystr v0.8.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_locale_core v2.4.0
+   Compiling icu_collections v2.4.0
+   Compiling hyper-tls v0.6.0
+   Compiling icu_provider v2.4.0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling icu_properties v2.4.0
+   Compiling icu_normalizer v2.4.0
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling tower-http v0.6.11
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice30-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice30-journey-driver)
+warning: unused import: `aperture_core::layer::ContinuousKind`
+ --> src\main.rs:8:5
+  |
+8 | use aperture_core::layer::ContinuousKind;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `issue17-slice30-journey` (bin "issue17-slice30-journey") generated 1 warning (run `cargo fix --bin "issue17-slice30-journey" -p issue17-slice30-journey` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 35.61s
+     Running `evidence\issue17\slice30-journey-driver\target\release\issue17-slice30-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 10,
+    "Craw Wurm": 7,
+    "Drover Grizzly": 9,
+    "Elite Vanguard": 5,
+    "Grizzly Bears": 7,
+    "Jasmine Boreal": 4
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice30.txt",
+  "digest": "b711d966f9bd2e60187d4eafc5be852eea01b5f141fcc253813b1c38c8a85677",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 1
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 6968,
+  "saddle_activations": 116,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "69497ca2f6c8ac51c44726e78652bde1ad1903ee677af8d00b7cc0d324369471",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2653,
+  "trample_grant_events": 22,
+  "turns": 55
+}
+JOURNEY_EXIT=0
+replay seed 2323 — 4 seat(s), 2653 action(s), recorded outcome Some(Win { winner: 1, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest b711d966f9bd | matches recorded | events 6968
+REPLAY_EXIT=0
+catalog_cards      = 146
+union_names        = 459
+supported_union    = 134
+missing_union      = 325
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=19
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 19, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+AUDIT OK
+AUDIT_EXIT=0

@@ -1,0 +1,28 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.32s
+     Running tests\start_flow.rs (target\debug\deps\start_flow-35aa6a9ba0efbd89.exe)
+
+running 21 tests
+test a_wrong_deck_size_is_a_seat_fit_refusal_with_the_numbers ... ok
+test a_missing_provider_identity_is_not_certified_rather_than_assumed_legal ... ok
+test multiple_commanders_are_refused_instead_of_silently_picking_one ... ok
+test a_text_repeat_without_a_type_line_is_not_certified_rather_than_legal ... ok
+test a_commander_outside_the_supported_pool_is_refused_with_its_own_reason ... ok
+test format_legality_and_engine_support_are_reported_as_separate_outcomes ... ok
+test a_duplicated_unsupported_nonbasic_is_refused_by_the_singleton_check ... ok
+test command_seat_certifies_and_plans_the_exact_list_with_its_commander ... ok
+test practice_profile_refuses_a_commander_deck_instead_of_dropping_the_commander ... ok
+test a_colorless_provider_identity_is_known_and_passes_the_identity_check ... ok
+test a_supported_legal_hundred_card_list_stays_startable_after_the_singleton_repair ... ok
+test commander_eligibility_is_judged_from_the_provider_type_line_only ... ok
+test practice_profile_still_certifies_a_plain_40_card_list ... ok
+test split_text_lines_of_one_card_are_counted_together ... ok
+test sidelined_and_excluded_cards_never_reach_the_seat_list ... ok
+test provider_color_identity_is_normalized_and_checked_against_the_commander ... ok
+test the_unsupported_sentinel_remains_outside_the_catalog ... ok
+test url_guard_still_runs_before_any_network_work ... ok
+test the_basic_exception_and_supported_duplicates_keep_their_verdicts ... ok
+test unsupported_card_is_named_with_its_reason_and_start_is_refused ... ok
+test split_provider_entries_of_one_card_are_counted_together ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

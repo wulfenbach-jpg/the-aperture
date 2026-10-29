@@ -1,0 +1,152 @@
+{
+  "commander_damage": [
+    {
+      "amount": 6,
+      "commander": 2,
+      "recipient": 0
+    },
+    {
+      "amount": 3,
+      "commander": 3,
+      "recipient": 0
+    }
+  ],
+  "commander_damage_totals": [
+    {
+      "commander": 1,
+      "recipient": 1,
+      "total": 18
+    },
+    {
+      "commander": 1,
+      "recipient": 2,
+      "total": 9
+    },
+    {
+      "commander": 1,
+      "recipient": 3,
+      "total": 3
+    },
+    {
+      "commander": 2,
+      "recipient": 0,
+      "total": 6
+    },
+    {
+      "commander": 2,
+      "recipient": 2,
+      "total": 21
+    },
+    {
+      "commander": 2,
+      "recipient": 3,
+      "total": 12
+    },
+    {
+      "commander": 3,
+      "recipient": 0,
+      "total": 3
+    },
+    {
+      "commander": 3,
+      "recipient": 1,
+      "total": 12
+    },
+    {
+      "commander": 3,
+      "recipient": 3,
+      "total": 12
+    }
+  ],
+  "commanders": [
+    {
+      "card": "Tatyova, Benthic Druid",
+      "seat": 0
+    },
+    {
+      "card": "Tatyova, Benthic Druid",
+      "seat": 1
+    },
+    {
+      "card": "Tatyova, Benthic Druid",
+      "seat": 2
+    },
+    {
+      "card": "Tatyova, Benthic Druid",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 88,
+    "ability_activations": 0,
+    "attacks": 43,
+    "blocks": 13,
+    "casts": 47,
+    "commander_damage_events": 32,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 67,
+    "events": 7549,
+    "triggered_abilities": 88
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 2993
+  },
+  "final_digest": "b31adfd97c3123696a0a614a0bb91f434d344acba3796ec064f4054cb37f9d77",
+  "first_player": 2,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 88,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 2993,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 3,
+      "life": 63,
+      "name": "package-tatyova-landfall",
+      "seat": 0,
+      "source": "decks/package-tatyova-landfall.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 37,
+      "name": "package-tatyova-landfall",
+      "seat": 1,
+      "source": "decks/package-tatyova-landfall.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 25,
+      "name": "package-tatyova-landfall",
+      "seat": 2,
+      "source": "decks/package-tatyova-landfall.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-tatyova-landfall",
+      "seat": 3,
+      "source": "decks/package-tatyova-landfall.txt"
+    }
+  ],
+  "seed": 21,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2993,
+  "truncated": null,
+  "turns": 65,
+  "winner": 0,
+  "winner_label": "P0"
+}

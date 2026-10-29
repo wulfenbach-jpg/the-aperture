@@ -1,0 +1,8 @@
+board and roadmap	pass	9s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520325182/job/122245342279	
+board and roadmap	pass	11s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520335272/job/122245377547	
+rust (macos-latest)	pass	7m24s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520325182/job/122245341666	
+rust (macos-latest)	pass	9m47s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520335272/job/122245377469	
+rust (ubuntu-latest)	pass	7m27s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520325182/job/122245342029	
+rust (ubuntu-latest)	pass	7m58s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520335272/job/122245377370	
+rust (windows-latest)	pass	10m16s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520325182/job/122245342052	
+rust (windows-latest)	pass	10m19s	https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40520335272/job/122245377539	

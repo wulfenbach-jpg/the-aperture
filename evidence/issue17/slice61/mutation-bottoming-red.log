@@ -1,0 +1,33 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.67s
+     Running tests\issue17_slice60.rs (target\debug\deps\issue17_slice60-62bce2923320a41b.exe)
+
+running 9 tests
+test evercoat_ursine_is_printed_with_trample_and_three_typed_abilities ... ok
+test ursine_monstrosity_now_really_has_its_printed_trample ... ok
+test a_link_whose_permanent_left_the_battlefield_no_longer_matches ... ok
+test combat_damage_offers_a_free_play_and_casting_it_costs_no_mana ... ok
+test declining_keeps_the_cards_exiled_and_no_trigger_fires_without_a_linked_card ... ok
+test face_down_exile_is_hidden_from_the_opponent_and_readable_by_the_controller ... ok
+test a_linked_land_is_played_as_the_turn_land_play_and_not_offered_once_used ... ok
+test entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest ... FAILED
+test a_forged_offer_is_refused_by_validate_and_by_a_real_save_load ... ok
+
+failures:
+
+---- entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest stdout ----
+
+thread 'entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest' (43584) panicked at crates\core\tests\issue17_slice60.rs:236:5:
+assertion `left == right` failed: the untouched tail stays on top, in its original order
+  left: [RuneclawBear, Island]
+ right: [Plains, Plains]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest
+
+test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice60`
+EXIT=101

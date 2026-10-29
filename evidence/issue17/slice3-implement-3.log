@@ -1,0 +1,33 @@
+Working...
+**Cross-corpus package delivered — PARTIAL #17.** No commit/push.
+
+## Implemented
+- **Swamp** (`{T}: Add {B}`) — closes black basic gap.
+- **Lightning Bolt** — 3 damage to any target.
+- **Forest Bear** — `{1}{G}` 2/2 vanilla Bear.
+- **Striped Bears** — `{3}{G}` 2/2 Bear with ETB draw.
+- **Guttersnipe** — `{2}{R}` 2/2 Goblin Shaman; controller-only instant/sorcery cast trigger deals 2 to each **live opponent**, excludes controller/eliminated seats, resolves after source leaves.
+
+Pool 88 → **93**.
+
+## Genuine RED
+- Cards absent (catalog lookup failures) before scaffolding.
+- After scaffold: Striped Bears draw `0` vs `1`; Guttersnipe trigger damage P2 `17` vs `15`; source-left test failed until effect existed.
+- Green: 5/5 cross-package tests, including 4-seat each-opponent damage and source-left Unsummon still dealing damage.
+
+## Journey
+`decks/package-cross-corpus.txt` (40-card supported package, not a desired starter), four seats, seed 5:
+- terminal, P2 wins, 1112 steps, digest `4572cd11e893…`
+- **8 actual Guttersnipe triggers**, damage to live opponents only
+- replay and `--save-out` save both reproduce the digest
+- Tatyova legacy replay still matches `b31adfd97c31…`
+
+## Accounting
+Audit rerun after extending the regex for `card_defender!`: catalog **93**, union **459**, supported **81**, missing **378**, manifest matches exactly. Desired lists unchanged.
+
+## Gaps
+- No full desired starter; seven lists remain planned/unsupported.
+- Ayula additions beyond Forest Bear/Striped Bears not added.
+- Legend rule, broader landfall/ramp, other token types, counters, tribal payoffs remain.
+
+Handoff: `evidence/issue17/slice3-cross-package-implementation.md`; logs `slice3-cross-*`.

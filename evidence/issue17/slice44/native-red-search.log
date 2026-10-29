@@ -1,0 +1,37 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.98s
+     Running tests\issue17_slice44_search_controls.rs (target\debug\deps\issue17_slice44_search_controls-ddddfb3532fc8026.exe)
+
+running 4 tests
+test snow_search_prompts_describe_reveal_to_hand_not_battlefield ... FAILED
+test snow_search_validator_rejects_two_picks_even_when_both_are_snow ... FAILED
+test snow_search_validator_rejects_non_snow_basic_land_and_real_load_refuses_it ... FAILED
+test snow_search_direct_refusals_are_atomic_and_pick_remains_private_until_done ... ok
+
+failures:
+
+---- snow_search_prompts_describe_reveal_to_hand_not_battlefield stdout ----
+
+thread 'snow_search_prompts_describe_reveal_to_hand_not_battlefield' (9096) panicked at crates\core\tests\issue17_slice44_search_controls.rs:60:5:
+P0: choose up to 1 basic land(s) to put onto the battlefield tapped (0 chosen)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- snow_search_validator_rejects_two_picks_even_when_both_are_snow stdout ----
+
+thread 'snow_search_validator_rejects_two_picks_even_when_both_are_snow' (26808) panicked at crates\core\tests\issue17_slice44_search_controls.rs:52:5:
+the one-card snow search cannot serialize two chosen cards
+
+---- snow_search_validator_rejects_non_snow_basic_land_and_real_load_refuses_it stdout ----
+
+thread 'snow_search_validator_rejects_non_snow_basic_land_and_real_load_refuses_it' (45776) panicked at crates\core\tests\issue17_slice44_search_controls.rs:40:5:
+snow search must reject an eligible ordinary Forest, not silently reuse basic-land validation
+
+
+failures:
+    snow_search_prompts_describe_reveal_to_hand_not_battlefield
+    snow_search_validator_rejects_non_snow_basic_land_and_real_load_refuses_it
+    snow_search_validator_rejects_two_picks_even_when_both_are_snow
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice44_search_controls`

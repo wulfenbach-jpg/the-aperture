@@ -1,0 +1,93 @@
+{
+ "ayula-bear-counters": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 52,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 59
+  },
+  "gameplay_available": false
+ },
+ "elas-sacrifice": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 59,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 60
+  },
+  "gameplay_available": false
+ },
+ "isamaru-white-aggro": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 57,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 59
+  },
+  "gameplay_available": false
+ },
+ "krenko-goblin-tokens": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 58,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 59
+  },
+  "gameplay_available": false
+ },
+ "talrand-draw-go": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 55,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 59
+  },
+  "gameplay_available": false
+ },
+ "tatyova-landfall": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 58,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 60
+  },
+  "gameplay_available": false
+ },
+ "zada-spells": {
+  "status": "legal",
+  "format_legality": "legal",
+  "engine_support": "unsupported",
+  "unsupported_cards": 58,
+  "deck": {
+   "commanders": 1,
+   "library": 99,
+   "total": 100,
+   "unique_canonical_names": 59
+  },
+  "gameplay_available": false
+ }
+}

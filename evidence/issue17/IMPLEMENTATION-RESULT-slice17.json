@@ -1,0 +1,89 @@
+{
+  "status": "PARTIAL #17",
+  "slice": 17,
+  "base": "6f294cf",
+  "branch": "aperture/issue-17",
+  "changed_files": [
+    "README.md",
+    "crates/ai/src/search.rs",
+    "crates/ai/tests/common.rs",
+    "crates/core/src/ability.rs",
+    "crates/core/src/card.rs",
+    "crates/core/src/catalog.rs",
+    "crates/core/src/engine.rs",
+    "crates/core/src/state.rs",
+    "crates/core/tests/card_printings.rs",
+    "crates/core/tests/catalog_pool.rs",
+    "crates/core/tests/common/mod.rs",
+    "crates/core/tests/issue13_commander_combat.rs",
+    "crates/core/tests/issue17_slice15_corpus.rs",
+    "crates/core/tests/issue17_slice17.rs",
+    "decks/package-slice17.txt",
+    "decks/starter-corpus/manifest.json",
+    "docs/issue17-starter-corpus.md",
+    "evidence/issue17/AUDIT-slice17.json",
+    "evidence/issue17/TDD-slice17.md",
+    "evidence/issue17/slice17/journey-driver/Cargo.lock",
+    "evidence/issue17/slice17/journey-driver/Cargo.toml",
+    "evidence/issue17/slice17/journey-driver/src/main.rs",
+    "fixtures/starter-corpus/slice17-sourced.json"
+  ],
+  "focused_tests": "slice17 5 passed; cleanup-history lib 1; command_zone_setup 34; replay_digest 6; ordering_persistence 2",
+  "gates": {
+    "fmt": "cargo fmt --all applied",
+    "focused_tests": "issue17_slice17 4 passed, card_printings 8 passed, catalog_pool 5 passed",
+    "core_suite": "passed subject to Windows antivirus transient execute denials; failed binaries rerun individually and passed",
+    "clippy": "cargo clippy -p aperture-core --all-targets -D warnings clean",
+    "legacy_replay": "replay_digest 6 passed; ordering_persistence 2 passed",
+    "release": "cargo build --release -p aperture-cli succeeded; --help inspected",
+    "workspace_tests": "cargo test -q --workspace: exit 0, 628 s; tail shards 0 failed"
+  },
+  "sourced": {
+    "Friendly Teddy": "{2} Artifact Creature \u2014 Bear Toy 2/2, dies each player draws",
+    "Ulvenwald Bear": "{2}{G} Creature \u2014 Bear 2/2, morbid ETB two +1/+1 counters on target creature",
+    "Caller of the Claw": "{2}{G} Creature \u2014 Elf 2/2 flash, ETB Bear per nontoken owned battlefield death this turn"
+  },
+  "corpus": {
+    "catalog": 134,
+    "supported": 122,
+    "missing": 337,
+    "jasmine_missing": 0,
+    "ayula_missing": 31
+  },
+  "journey": {
+    "seed": 1616,
+    "seats": 4,
+    "deck": "decks/package-slice17.txt",
+    "cards_per_seat": 40,
+    "starting_life": 40,
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1866,
+    "turns": 42,
+    "digest": "85fabffc9aa16a0f9ba53a5f64a751c43bb9ae66a3ce96f3e7402f1c633c7027",
+    "replay_digest_matches": true,
+    "casts": {
+      "Caller of the Claw": 8,
+      "Friendly Teddy": 12,
+      "Grizzly Bears": 6,
+      "Runeclaw Bear": 9,
+      "Shock": 12,
+      "Ulvenwald Bear": 8
+    },
+    "bear_tokens_created": 4,
+    "note": "All three new cards cast; Caller created four Bears; exact snapshots and replay digest match.",
+    "fresh_save": "evidence/issue17/slice17/demo-save.json round-trips; digest 85fabffc9aa16a0f9ba53a5f64a751c43bb9ae66a3ce96f3e7402f1c633c7027"
+  },
+  "legacy_replay": "Fields are serde-default/skip-empty and only maintained while Ulvenwald/Caller is in the game, preserving old digests unless those new cards are present.",
+  "unresolved": [
+    "Ayula desired list remains 3/34 sourced (31 missing).",
+    "Eight-list gate remains open.",
+    "No four-seat 100-card Commander snapshot in this slice."
+  ],
+  "repair": {
+    "cleanup_reset": "actual turn.number transition only; repeated cleanup retains history",
+    "each_player_draw": "serialized DrawResume::EachPlayer progress; save/load tested; later seats draw",
+    "counter_event": "state event with resulting total",
+    "ai_exception": "initialization/copy only in search.rs and tests/common.rs"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "review": "issue 17 slice 5 — narrow delta re-review of the three repairs in 4c03673",
+  "candidate": "4c03673 (aperture/issue-17), parent of the reviewed head eb0a6f5",
+  "reviewer": "independent review worker 2 (delta)",
+  "scope": "only the three findings of evidence/issue17/slice5/review/slice5-review-1.json (S5-R1-F1, S5-R1-F2, S5-R1-F3); every claim below re-executed, none taken from the commit message",
+  "verdict": "request_changes",
+  "tallies": "focused 10/10 pass; apnap 17/17 pass; fmt exit 0; clippy -D warnings exit 0; release selfplay (seed 501, 4x package-slice5-mill, commander-combat-practice) terminal P2 / 1880 steps / 45 turns / digest d0c888f680d7 and its report is byte-identical to the shipped slice5-journey.json; shipped replay verifies (1880 actions, 4654 events, digest matches); deck 40 cards (all 7 decks/package-*.txt are 40); scratch build with Preordain effects flipped to draw-then-scry fails the test (1 failed / 0 passed); tracked tree unmodified by this review (HEAD still 4c03673, crates/core/src/catalog.rs content hash equals HEAD blob)",
+  "findings": [
+    {
+      "id": "S5-R1-F1",
+      "severity": "low",
+      "status": "repaired",
+      "result": "confirmed",
+      "claim": "package-slice5-mill.txt is exactly 40 cards, its header claim is true, and the shipped journey evidence corresponds to that 40-card deck",
+      "evidence": [
+        "awk '/^[0-9]+ /{s+=$1} END{print s}' decks/package-slice5-mill.txt -> 40; per-file loop -> ayula 40, cross-corpus 40, krenko-tokens 40, slice5-mill 40, soul-warden-tokens 40, talrand-drakes 40, tatyova-landfall 40",
+        "line 1 header: 'supported 40-card package fixture, NOT a desired 100-card starter' — true; the six named primitives (Stitcher's Supplier, Ruin Crab, Negate, Preordain, Pyretic Ritual, Seething Song) are all in the list",
+        "./target/release/aperture-cli.exe selfplay --seed 501 --deck decks/package-slice5-mill.txt (x4) --commander-combat-practice --commander 0..3:'Jasmine Boreal' -> 'selfplay seed=501 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 1880 steps (45 turns)'; 'digest d0c888f680d7 | replay verified | casts 14 attacks 25 blocks 17 counters 0'",
+        "diff of my fresh report against the shipped evidence/issue17/slice5/slice5-journey.json -> 'JSON IDENTICAL' (cards: 40 per seat x4, status terminal, steps 1880, turns 45, winner 2, events 4654, final_digest d0c888f680d7024189e41848f15d99220bb32edb142a13fee64bf3ba0487cb79, replay_digest_matches true, seed 501, seat_count 4, first_player 3, profile commander-combat-practice-40)",
+        "aperture-cli replay --file evidence/issue17/slice5/slice5-journey.replay.json -> 'replay seed 501 — 4 seat(s), 1880 action(s), recorded outcome Some(Win { winner: 2, ... })' + 'replayed digest d0c888f680d7 | matches recorded | events 4654', exit 0; my regenerated replay file is byte-identical to the shipped one (diff empty)"
+      ]
+    },
+    {
+      "id": "S5-R1-F2",
+      "severity": "low",
+      "status": "repaired",
+      "result": "confirmed",
+      "claim": "the preordain test now discriminates scry-then-draw from draw-then-scry",
+      "evidence": [
+        "test body (crates/core/tests/issue17_slice5.rs:372-462) answers Pending::OrderCard with to_top = (second decision), i.e. sends the first looked-at card to the bottom, and asserts last OrderedCard index < first Draw index, then library == [Mountain, Island] and hand == [Forest]",
+        "cargo test -p aperture-core --test issue17_slice5 -> 'test result: ok. 10 passed; 0 failed'",
+        "independent scratch build (copy of Cargo.toml/Cargo.lock/crates/decks under %TEMP%/r2-scratch-56878, worktree untouched): catalog line 43 changed to &[Effect::Draw(1), Effect::Scry(2)]; 'cargo test -p aperture-core --test issue17_slice5 preordain --offline --locked' -> 'test preordain_scries_two_then_draws_one ... FAILED ... panicked at crates\\core\\tests\\issue17_slice5.rs:440:5: both scry decisions precede the draw (scry then draw, not draw then scry)' — 'test result: FAILED. 0 passed; 1 failed'",
+        "recorded RED evidence/issue17/slice5/slice5-red-F2-order.log shows the same assertion text and message from the flipped order (its line number 438:5 predates two comment lines added before commit; message and failure identical)"
+      ],
+      "note": "the RED log was captured from a slightly earlier revision of the test (line 438 vs 440); content of the failing assertion is the same, so this is provenance trivia, not a behaviour gap"
+    },
+    {
+      "id": "S5-R1-F3",
+      "severity": "low",
+      "status": "partially repaired",
+      "result": "not confirmed",
+      "claim": "HANDOFF.md limitations now document the APNAP deviation truthfully and the statement matches how the code iterates",
+      "evidence": [
+        "HANDOFF.md:317-321 (added by 4c03673) says: 'Effects that act on \"each opponent\"/\"each player\" (Effect::MillEachOpponent, Effect::DamageEachOpponent, Crack the Earth's sacrifice) iterate seats in seat order, not in APNAP order (CR 101.4).'",
+        "TRUE for the two each-opponent effects: crates/core/src/engine.rs:4435 and :4457 both loop 'for opponent in 0..self.state.seat_count()', skipping the controller and dead seats — seat order starting at seat 0",
+        "FALSE for Crack the Earth: Effect::EachPlayerSacrifice -> engine.rs:4335 begin_apnap_sacrifice, which builds the queue with apnap_order_from(turn.active) (engine.rs:4032-4057), and apply_apnap_choices (engine.rs:4180-4197) applies the batch in that same APNAP order",
+        "executed proof: cargo test -p aperture-core --test apnap -> 'test result: ok. 17 passed; 0 failed', including apnap_order_anchors_at_nonzero_active_and_wraps, which asserts an active seat 2 queue of order == vec![2, 3, 0, 1] (crates/core/tests/apnap.rs:141-152) — i.e. APNAP, not seat order; apnap_skips_an_already_lost_seat asserts vec![P0, 2]",
+        "engine.rs is not touched by 4c03673 (git diff eb0a6f5 4c03673 --stat lists only HANDOFF.md, the focused test, the deck and evidence/), so the pre-existing APNAP behaviour and its 17 tests describe the shipped code"
+      ],
+      "impact": "documentation only: the note overstates the limitation, telling a reader that CR 101.4 sacrifice ordering is unimplemented when it is implemented and covered by 17 tests; no rules or gameplay defect",
+      "fix": "In HANDOFF.md:317-321 drop \", Crack the Earth's sacrifice\" (and the 'each player' half if nothing else uses it), or state that Crack the Earth's EachPlayerSacrifice does use APNAP order from the active seat while the two each-opponent effects use seat order"
+    }
+  ],
+  "gates": {
+    "focused": "cargo test -p aperture-core --test issue17_slice5 -> ok. 10 passed; 0 failed; 0 ignored; finished in 0.00s",
+    "fmt": "cargo fmt --all --check -> exit 0, no diff",
+    "clippy": "cargo clippy --workspace --all-targets --locked -- -D warnings -> 'Finished `dev` profile ... in 0.87s', exit 0",
+    "apnap_suite": "cargo test -p aperture-core --test apnap -> 17 passed / 0 failed"
+  },
+  "worktree_integrity": {
+    "head": "4c03673 (unchanged, not fetched/committed/merged)",
+    "tracked_changes_by_reviewer": "none",
+    "pre_existing_dirty_entry": "git status --porcelain shows ' M crates/core/src/catalog.rs'; git diff is empty and the worktree sha256 of that file (73b58649c90c9424a0904131dbd4534845e367b88c2682d7971f08295f15a4c8) equals 'git cat-file blob HEAD:crates/core/src/catalog.rs' — it is a stat/mtime-dirty index entry, not a content change, and was present before this review",
+    "experiment_location": "%TEMP%/r2-scratch-56878 (throwaway copy outside the repository) with CARGO_TARGET_DIR %TEMP%/r2-target; nothing in the worktree was edited for the F2 experiment"
+  },
+  "report_paths": [
+    "evidence/issue17/slice5/review/slice5-review-2.json",
+    "evidence/issue17/slice5/review/slice5-review-2.md"
+  ],
+  "round3": {
+    "review": "issue 17 slice 5 - round 3 re-review of finding S5-R2-F1 only, against the repair commit a8f10a2",
+    "reviewed_head": "a8f10a2c82513c910125b5854da5eadbde5f587a",
+    "scope": "S5-R2-F1 only (HANDOFF.md each-opponent/each-player ordering note); nothing else re-reviewed, nothing edited",
+    "verdict": "approve_increment",
+    "findings": [
+      {
+        "id": "S5-R2-F1",
+        "severity": "low",
+        "status": "repaired",
+        "result": "confirmed",
+        "claim": "HANDOFF.md now states the ordering deviation exactly: only the two each-opponent effects iterate seat order, while Crack the Earth's each-player sacrifice uses APNAP order from the active seat",
+        "evidence": [
+          "git diff a8f10a2^ a8f10a2 -- HANDOFF.md: the old bullet 'Effects that act on \"each opponent\"/\"each player\" (Effect::MillEachOpponent, Effect::DamageEachOpponent, Crack the Earth's sacrifice) iterate seats in seat order' is replaced by HANDOFF.md:317-323: 'Effects that act on \"each opponent\" (Effect::MillEachOpponent, Effect::DamageEachOpponent) iterate seats in seat order, not in APNAP order (CR 101.4) ... Crack the Earth's \"each player sacrifices\" does **not** share this deviation: it walks APNAP order from the active seat (apnap_order_from) and is covered by crates/core/tests/apnap.rs.'",
+          "each-opponent half is TRUE: engine.rs:4434-4442 (Effect::MillEachOpponent) and :4456-4460 (Effect::DamageEachOpponent) both loop 'for opponent in 0..self.state.seat_count()', skipping the controller and non-live seats - seat order from seat 0, not APNAP",
+          "each-player half is TRUE: engine.rs:4334-4337 Effect::EachPlayerSacrifice -> begin_apnap_sacrifice (engine.rs:4043-4058), which sets anchor = state.turn.active and builds order with apnap_order_from (engine.rs:4032-4041, circular from the anchor seat restricted to live seats); apply_apnap_choices (engine.rs:4180-4197) applies the batch in that same APNAP order",
+          "test-coverage claim TRUE: crates/core/tests/apnap.rs exercises this exact path with CardId::CrackTheEarth, including apnap_order_anchors_at_nonzero_active_and_wraps (active seat 2 -> [2,3,0,1]) and apnap_skips_an_already_lost_seat",
+          "no other implementation of the deviation was left undocumented: Effect::EachPlayerSacrifice is produced only by catalog SACRIFICE_ALL (Crack the Earth); grep over crates/ and decks/ shows no other each-player ordering path"
+        ]
+      }
+    ],
+    "gates": {
+      "apnap_suite": "cargo test -p aperture-core --test apnap -> test result: ok. 17 passed; 0 failed; 0 ignored",
+      "slice5_suite": "cargo test -p aperture-core --test issue17_slice5 -> test result: ok. 10 passed; 0 failed; 0 ignored",
+      "behaviour_change": "none; identical pass counts to round 2 (17/17 and 10/10)"
+    },
+    "worktree_integrity": {
+      "head": "a8f10a2 (unchanged; no commit, push or merge performed)",
+      "repair_commit_scope": "git show --stat a8f10a2 -> 'HANDOFF.md | 12 +++++++----- 1 file changed, 7 insertions(+), 5 deletions(-)'; git diff --name-only a8f10a2^ a8f10a2 -> HANDOFF.md only (documentation only, no code touched)",
+      "tracked_changes_left_behind": "git status --porcelain (non-untracked) shows only ' M crates/core/src/catalog.rs'; 'git diff -- crates/core/src/catalog.rs' is 0 bytes and sha256 of the worktree file (73b58649c90c9424a0904131dbd4534845e367b88c2682d7971f08295f15a4c8) equals 'git cat-file blob HEAD:crates/core/src/catalog.rs' - a CRLF/stat-dirty index entry with no content change, pre-existing",
+      "edits_by_this_review": "evidence/issue17/slice5/review/slice5-review-2.json (untracked; round3 key appended with earlier content preserved) and new untracked evidence/issue17/slice5/review/slice5-review-3.md"
+    },
+    "report_paths": [
+      "evidence/issue17/slice5/review/slice5-review-2.json (round3)",
+      "evidence/issue17/slice5/review/slice5-review-3.md"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+Working...
+**APPROVED_INCREMENT** at `bfbbceb6e023644d080d980e91d922babaaca60c` (base `b74815d`).
+
+The correction is evidence/docs only; no product, deck, or fixture bytes moved.
+
+**Verified**
+
+- `pre-mutation-sha256.txt` and `post-mutation-sha256.txt` both match committed `engine.rs`: `08988a74…`.
+- `pre-`/`post-mutation-ability-sha256.txt` both match committed `ability.rs`: `dff6b60d…`.
+- GNU `sha256sum -c` exits 0 for both corrected receipts; the local shell builtin has a false-negative on the ability receipt despite matching hashes.
+- RED logs still show exactly **4** failures for the source-exclusion mutation and **1** for the Little Bear spec mutation.
+- `SLICE34-HUMAN-CHECKPOINT.md` now honestly records that the earlier engine receipt was stale because it predated `cargo fmt`, with the regenerated hashes.
+- `issue17_slice33`: **12/12 passed**; no product behavior moved.
+
+**CI:** at `bfbbceb`, **2 completed success** (`board and roadmap`) and **8 in progress** (rust ubuntu/windows/macos and windows package). These in-flight runs are not passes; `b74815d` retains the completed 10/10 capture.
+
+Full #17 remains **1/8 certified**, **322 missing**, Ayula 16. Report: `evidence/issue17/review295/REVIEW295.md`. No full acceptance or downstream unlock.
+OMP_EXIT=0

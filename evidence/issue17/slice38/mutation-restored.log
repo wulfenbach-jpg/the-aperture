@@ -1,0 +1,15 @@
+   Compiling aperture-core v0.1.0 (C:\AI\r300\1793150546\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.30s
+     Running tests\issue17_slice38.rs (target\debug\deps\issue17_slice38-9b9c752a333479d7.exe)
+
+running 6 tests
+test spider_ham_is_sourced_and_supported ... ok
+test the_anthem_pumps_listed_subtypes_only_and_never_the_source ... ok
+test entering_creates_one_food_token_that_is_an_artifact_and_not_a_creature ... ok
+test the_food_ability_is_refused_without_its_printed_cost ... ok
+test activating_the_food_gains_three_life_and_sacrifices_the_token ... ok
+test the_anthem_reads_the_effective_subtype_and_stacks_in_layer_7c ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+restored_test_exit=0

@@ -1,0 +1,8 @@
+replay seed 11 — 4 seat(s), 1830 action(s), recorded outcome Some(Win { winner: 2, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  certified session save of the finished game written to evidence/issue17/slice2-native-talrand-save.json (digest c9fb97c6fc08)
+  replayed digest c9fb97c6fc08 | matches recorded | events 4740
+save evidence/issue17/slice2-native-talrand-save.json — 4 seat(s): P0 'package-talrand-drakes' vs P1 'package-talrand-drakes' vs P2 'package-talrand-drakes' vs P3 'package-talrand-drakes'
+  stored digest c9fb97c6fc08 | recomputed c9fb97c6fc08 | matches
+  turn 39 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P0, P1, P2, P3 = deterministic baseline heuristic; autoplay off
+  replay of 1830 action(s) -> digest c9fb97c6fc08 | events 4740 | reproduces the save

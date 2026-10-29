@@ -1,0 +1,48 @@
+{
+  "review_outcome": "approve_increment",
+  "reviewed_head": "eea8f9dea34ae9b5f65c4bda3a1f50797449a118",
+  "base": "86aebf9b1acf298a8dd9e0f0c908d2a62bfe63bc",
+  "full_issue17_accepted": false,
+  "scope": "R211-1 repair only: shared another-creature-enters hook for token entry, new token/trample regressions, two journeys and no-collateral checks. Not full issue-17 or #16 integration.",
+  "prior_finding": {
+    "id": "R211-1",
+    "disposition": "fixed",
+    "evidence": "engine.rs now has one queue_another_creature_enters(entering) used by enter_battlefield (creatures only) and create_tokens (creature tokens only), excluding the entering object. Probe seed 1 with Soul Warden + Goblin Instigator now logs a Soul Warden trigger immediately after 'creates Goblin Token token (#81)' as well as after the Instigator entry."
+  },
+  "findings": [],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice4 --locked",
+      "result": "exit 0; 13/13 including soul_warden_triggers_for_creature_tokens_too, trample_carries_surplus_across_two_blockers, trample_counts_damage_already_marked_on_the_blocker, self/opponent/noncreature Soul Warden controls (evidence/issue17/slice4/slice4-review-2-focused.log)."
+    },
+    {
+      "command": "re-run evidence/issue17/slice4/slice4-probe-warden.txt with aperture-cli selfplay seed 1 --verbose",
+      "result": "Goblin Instigator enters and triggers Soul Warden; 'creates Goblin Token token (#81)' is immediately followed by a Soul Warden trigger. Before the repair the same probe had no token trigger."
+    },
+    {
+      "command": "genuineness review of new regressions",
+      "result": "RED log slice4-red-R211-1-token.log shows the token test fails when the hook is disabled. Two-blocker trample asserts P1 life 18 plus a 2-damage player event; marked-damage trample asserts life 17 plus a 3-damage player event. Either regression (no trample surplus or ignoring marked damage) changes those values/events and fails the tests."
+    },
+    {
+      "command": "cargo test --workspace --locked; cargo fmt --all -- --check; git diff --check; cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "result": "all exit 0 (evidence/issue17/slice4/slice4-review-2-workspace.log and -clippy.log)."
+    },
+    {
+      "command": "first journey: package-ayula-slice4 seed 17, four commander-combat seats, Jasmine commanders",
+      "result": "exit 0; terminal P1, 1567 steps / 43 turns, digest 5e905fdc0399…; separate replay matches. Digest unchanged from the prior approved run."
+    },
+    {
+      "command": "second journey: package-soul-warden-tokens seed 23, four seats",
+      "result": "exit 0; terminal P2, 1207 steps / 30 turns, 20 life, digest 11fd9618f1e9…; separate replay matches; log shows Soul Warden triggers for Goblin tokens created by Goblin Instigator."
+    },
+    {
+      "command": "source/flags and corpus read-only audit",
+      "result": "catalog 97; union 459 = 85 supported + 374 missing; manifest 374 and matches; four slice4 source records/flags unchanged (no catalog/source delta in this commit); desired-list files unedited. Soul Warden itself test passes and non-creature entries remain excluded by the is_creature guards in both entry paths."
+    }
+  ],
+  "limitations": [
+    "Approves only the bounded slice-4 increment after R211-1; seven desired starters remain unsupported and full issue-17 remains open.",
+    "No #16 integration, release, merge, GUI/import/search, full historical matrix or playing-strength claim.",
+    "Trample multi-blocker and marked-damage behavior is now covered by the new focused tests; no broader combat keyword matrix is claimed."
+  ]
+}

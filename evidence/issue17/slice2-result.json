@@ -1,0 +1,123 @@
+{
+  "issue": 17,
+  "slice": "slice2 assignment1 \u2014 Krenko goblin-token package",
+  "status": "PARTIAL",
+  "head": "86db7d316edd6200f7f598849018e428d11b69eb",
+  "eight_list_gate": "open",
+  "package": {
+    "name": "krenko-goblin-tokens package",
+    "commander": "Krenko, Mob Boss",
+    "cards_added": [
+      "Krenko, Mob Boss",
+      "Dragon Fodder",
+      "Krenko's Command",
+      "Hordeling Outburst",
+      "Goblin Instigator",
+      "Beetleback Chief"
+    ],
+    "engine_only_token": "1/1 red Goblin",
+    "pool_size_before": 79,
+    "pool_size_after": 85,
+    "token_importable": false,
+    "exact_100_card_krenko_list_status": "planned; 52 missing names"
+  },
+  "source": {
+    "fixture": "fixtures/starter-corpus/krenko-tokens-sourced.json",
+    "provider": "scryfall",
+    "planned_response_retrieved_at": "2026-10-25T08:32:00Z",
+    "token_retrieved_at": "same session live API record",
+    "no_invented_metadata": true
+  },
+  "mechanics": {
+    "unique_token_object_ids": true,
+    "controller_color_type_power_toughness": true,
+    "krenko_dynamic_goblin_count_includes_tokens": true,
+    "krenko_summoning_sickness_and_tap_cost": true,
+    "etb_trigger_ordering_apnap": "existing trigger queue",
+    "no_priority_during_resolution": true,
+    "token_cessation_zone_removed": true,
+    "replay_save_digest_round_trip": true
+  },
+  "red_green": {
+    "honest_note": "Implementation-first; no retrospective RED claimed for each mechanic. The token test file was written alongside engine work. First run had test-harness type errors, then 6/7; the remaining failure was a wrong test expectation about Zone::Removed, not a production defect.",
+    "focused_command": "cargo test -q -p aperture-core --test issue17_tokens --test catalog_pool --test card_printings --test command_zone_setup --test starter_corpus -p aperture-import --test starter_corpus_planned --test starter_corpus_analyzer",
+    "focused_exit": 0,
+    "focused_log": "evidence/issue17/slice2-focused-tests.log"
+  },
+  "verification": {
+    "fmt_check": 0,
+    "clippy_all_targets_deny_warnings": 0,
+    "release_cli_build": 0,
+    "gates_log": "evidence/issue17/slice2-gates.log"
+  },
+  "journey": {
+    "fixture": "decks/package-krenko-tokens.txt",
+    "fixture_note": "clearly named 40-card supported package fixture, not the desired 100-card starter",
+    "command": "target/release/aperture-cli.exe selfplay --seed 7 --max-steps 4000 --deck decks/package-krenko-tokens.txt (x4) --commander-combat-practice --commander 0..3:'Krenko, Mob Boss' --verbose",
+    "status": "terminal",
+    "winner": 0,
+    "steps": 1805,
+    "turns": 40,
+    "starting_life": 40,
+    "token_creations_logged": 317,
+    "casts": 25,
+    "ability_activations": 20,
+    "digest": "f4768c8a3bd2972f56613bc6072ac9f67b1d6de04ecb16653a9b2854cea368f8",
+    "report": "evidence/issue17/slice2-krenko-game.json",
+    "log": "evidence/issue17/slice2-krenko-game.log"
+  },
+  "replay": {
+    "direct": "target/release/aperture-cli.exe replay --file evidence/issue17/slice2-krenko-game.replay.json --save-out evidence/issue17/slice2-krenko-save.json",
+    "direct_result": "digest f4768c8a3bd2 matches recorded, 5930 events",
+    "save_replay": "target/release/aperture-cli.exe replay --file evidence/issue17/slice2-krenko-save.json",
+    "save_result": "stored and recomputed digest match; reproduces the save",
+    "direct_log": "evidence/issue17/slice2-replay.log",
+    "save_log": "evidence/issue17/slice2-save-replay.log"
+  },
+  "manifest": {
+    "missing_cards_recomputed": true,
+    "krenko_missing_cards": 52,
+    "other_counts": {
+      "isamaru-white-aggro": 57,
+      "talrand-draw-go": 55,
+      "ayula-bear-counters": 52,
+      "elas-sacrifice": 59,
+      "tatyova-landfall": 58,
+      "zada-spells": 58
+    }
+  },
+  "unfinished": [
+    "Exact 100-card Krenko starter remains planned, not supported or playable.",
+    "Talrand not registered: complete spell-cast trigger + flying semantics are absent.",
+    "Token support is only the 1/1 red Goblin type; no generic token definitions or tribal statics.",
+    "Legend rule remains absent; Krenko is commander-only.",
+    "No fake flying, spell copying or broad inert catalog entries were added."
+  ],
+  "changed_files": [
+    "crates/core/src/card.rs",
+    "crates/core/src/catalog.rs",
+    "crates/core/src/ability.rs",
+    "crates/core/src/engine.rs",
+    "crates/core/tests/issue17_tokens.rs",
+    "crates/core/tests/card_printings.rs",
+    "crates/core/tests/catalog_pool.rs",
+    "crates/core/tests/issue13_commander_combat.rs",
+    "crates/cli/src/main.rs",
+    "decks/package-krenko-tokens.txt",
+    "decks/starter-corpus/manifest.json",
+    "fixtures/starter-corpus/krenko-tokens-sourced.json",
+    "docs/issue17-starter-corpus.md",
+    "README.md",
+    "evidence/issue17/SLICE2-IMPLEMENTATION-HANDOFF.md",
+    "evidence/issue17/slice2-result.json",
+    "evidence/issue17/slice2-gates.log",
+    "evidence/issue17/slice2-focused-tests.log",
+    "evidence/issue17/slice2-krenko-game.json",
+    "evidence/issue17/slice2-krenko-game.replay.json",
+    "evidence/issue17/slice2-krenko-game.log",
+    "evidence/issue17/slice2-krenko-save.json",
+    "evidence/issue17/slice2-replay.log",
+    "evidence/issue17/slice2-save-replay.log"
+  ],
+  "commit_or_push": "none"
+}

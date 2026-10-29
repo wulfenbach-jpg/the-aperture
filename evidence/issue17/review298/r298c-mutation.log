@@ -1,0 +1,11 @@
+   Compiling aperture-core v0.1.0 (C:\AI\r298c\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\r298c\crates\ai)
+   Compiling issue17-slice35-journey v0.1.0 (C:\AI\r298c\evidence\issue17\slice35-journey-driver)
+    Finished `release` profile [optimized] target(s) in 23.63s
+     Running `target\release\issue17-slice35-journey.exe`
+
+thread 'main' (21156) panicked at src\main.rs:207:17:
+CR 614.1a/614.6: a replaced draw is never performed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+error: process didn't exit successfully: `target\release\issue17-slice35-journey.exe` (exit code: 101)
+mut_exit=101

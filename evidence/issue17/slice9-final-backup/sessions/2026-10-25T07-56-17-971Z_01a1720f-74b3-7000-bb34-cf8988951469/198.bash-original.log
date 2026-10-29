@@ -1,0 +1,134 @@
+1846:    fn validate_declare_attackers(
+1847-        &self,
+1848-        player: PlayerId,
+1849-        attackers: &[ObjectId],
+1850-        defender: Option<PlayerId>,
+1851-    ) -> Result<(), EngineError> {
+1852-        match &self.state.pending {
+1853-            Some(Pending::DeclareAttackers { player: p }) if *p == player => {}
+1854-            _ => {
+1855-                return Err(EngineError::illegal(
+1856-                    "declare attackers",
+1857-                    "it is not that player's declaration (CR 508.1a)",
+1858-                ));
+1859-            }
+1860-        }
+1861-        if attackers.is_empty() {
+1862-            if defender.is_some() {
+1863-                return Err(EngineError::illegal(
+1864-                    "declare attackers",
+1865-                    "a defending player cannot be chosen when no attackers are declared",
+1866-                ));
+1867-            }
+1868-        } else {
+1869-            let Some(defender) = defender else {
+1870-                return Err(EngineError::illegal(
+1871-                    "declare attackers",
+1872-                    "an attacking declaration must choose one defending player (CR 508.1a)",
+1873-                ));
+1874-            };
+1875-            if defender == player || !self.state.is_live(defender) {
+1876-                return Err(EngineError::illegal(
+1877-                    "declare attackers",
+1878-                    format!("P{defender} is not a legal defending player"),
+1879-                ));
+1880-            }
+1881-        }
+1882-        let legal = self.legal_attackers(player);
+1883-        let mut seen = Vec::new();
+1884-        for a in attackers {
+1885-            if seen.contains(a) {
+1886-                return Err(EngineError::illegal(
+1887-                    "declare attackers",
+1888-                    "the same creature was declared twice",
+1889-                ));
+1890-            }
+1891-            seen.push(*a);
+1892-            if !legal.contains(a) {
+1893-                return Err(EngineError::illegal(
+1894-                    "declare attackers",
+1895-                    format!(
+1896-                        "{} cannot attack: it must be an untapped creature controlled since the turn began (CR 302.6, 508.1a)",
+1897-                        self.describe_object(*a)
+1898-                    ),
+1899-                ));
+1900-            }
+1901-        }
+1902-        Ok(())
+1903-    }
+1904-
+1905-    fn validate_declare_blockers(
+1906-        &self,
+1907-        player: PlayerId,
+1908-        blocks: &[BlockDecl],
+1909-    ) -> Result<(), EngineError> {
+1910-        match &self.state.pending {
+1911-            Some(Pending::DeclareBlockers { player: p }) if *p == player => {}
+1912-            _ => {
+1913-                return Err(EngineError::illegal(
+1914-                    "declare blockers",
+1915-                    "it is not that player's declaration (CR 509.1a)",
+1916-                ));
+2003:            Action::PlayLand { card } => self.apply_play_land(player, *card, events),
+2004-            Action::CastSpell { card, targets } => self.apply_cast(player, *card, targets, events),
+2005-            Action::ActivateManaAbility { land } => self.apply_mana_ability(player, *land, events),
+2006-            Action::DeclareAttackers {
+2007-                attackers,
+2008-                defender,
+2009-            } => self.apply_declare_attackers(player, attackers, *defender, events),
+2010-            Action::DeclareBlockers { blocks } => {
+2011-                self.apply_declare_blockers(player, blocks, events)
+2012-            }
+2013-            Action::Mulligan { keep } => self.apply_mulligan(player, *keep, events),
+2014-            Action::BottomCards { cards } => self.apply_bottom(player, cards, events),
+2015-            Action::OrderCard { to_top } => self.apply_order_card(player, *to_top, events),
+2016-            Action::Discard { cards } => self.apply_discard(player, cards, events),
+2017-            Action::ChooseSacrifice { permanent } => {
+2018-                self.apply_apnap_sacrifice(player, *permanent, events)
+2019-            }
+2020-            Action::AnswerCommanderReturn { to_command_zone } => {
+2021-                self.apply_commander_return(player, *to_command_zone, events)
+2022-            }
+2023-            Action::AnswerCommanderReplacement { to_command_zone } => {
+2024-                self.apply_commander_replacement(player, *to_command_zone, events)
+2025-            }
+2026-            Action::AnswerCommanderDraw { to_command_zone } => {
+2027-                self.apply_commander_draw(player, *to_command_zone, events)
+2028-            }
+2029-            Action::ActivateAbility {
+2030-                source,
+2031-                ability,
+2032-                mode,
+2033-                targets,
+--
+2070:    fn apply_play_land(&mut self, player: PlayerId, card: ObjectId, events: &mut Vec<Event>) {
+2071-        let card_id = self.state.object(card).card;
+2072-        self.state.players[player as usize]
+2073-            .hand
+2074-            .retain(|c| *c != card);
+2075-        if let Some(obj) = self.objects_mut(card) {
+2076-            obj.zone = Zone::Battlefield;
+2077-            obj.controller = player;
+2078-            obj.tapped = false;
+2079-            obj.summoning_sick = false;
+2080-        }
+2081-        self.state.turn.lands_played += 1;
+2082-        self.state.turn.passed = 0;
+2083-        events.push(Event::LandPlayed {
+2084-            player,
+2085-            object: card,
+2086-            card: card_id,
+2087-        });
+2088-        events.push(Event::Priority { player });
+2089-    }
+2090-
+2091-    fn apply_mana_ability(&mut self, player: PlayerId, land: ObjectId, events: &mut Vec<Event>) {
+2092-        let color = self.state.object(land).card.def().basic_mana;
+2093-        if let (Some(color), Some(obj)) = (color, self.objects_mut(land)) {
+2094-            obj.tapped = true;
+2095-            self.state.players[player as usize].mana.add(color, 1);
+2096-        }
+2097-        self.state.turn.passed = 0;
+2098-        events.push(Event::ManaTapped {
+2099-            player,
+2100-            land,

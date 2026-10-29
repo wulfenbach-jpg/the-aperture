@@ -1,0 +1,31 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-28T10:55:27.500548+00:00",
+  "cards": [
+    {
+      "name": "Lumra, Bellow of the Woods",
+      "oracle_id": "97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb",
+      "set": "blb",
+      "collector_number": "183",
+      "layout": "normal",
+      "mana_cost": "{4}{G}{G}",
+      "type_line": "Legendary Creature — Elemental Bear",
+      "oracle_text": "Reach, vigilance\nLumra's power and toughness are each equal to the number of lands you control.\nWhen Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped.",
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [
+        "Reach",
+        "Vigilance",
+        "Mill"
+      ],
+      "power": "*",
+      "toughness": "*",
+      "scryfall_id": "ae4f3aaf-3960-48cd-b34b-32e4ae5ae088",
+      "legalities_commander": "legal",
+      "printing_url": "https://api.scryfall.com/cards/ae4f3aaf-3960-48cd-b34b-32e4ae5ae088",
+      "retrieved_at": "2026-10-28T10:55:27.500548+00:00"
+    }
+  ]
+}

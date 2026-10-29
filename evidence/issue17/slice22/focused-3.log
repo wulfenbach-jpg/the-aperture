@@ -1,0 +1,16 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.45s
+     Running tests\issue17_slice22.rs (target\debug\deps\issue17_slice22-1be942bdc603fc37.exe)
+
+running 8 tests
+test mana_value_reads_the_printed_cost ... ok
+test an_opponents_land_does_not_trigger_the_landfall_half ... ok
+test a_noncreature_permanent_spell_does_not_trigger_it ... ok
+test casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature ... ok
+test an_opponents_creature_spell_does_not_trigger_it ... ok
+test landfall_creates_one_bear_token_and_adds_no_counters ... ok
+test the_counter_count_tracks_a_six_mana_creature ... ok
+test the_captured_mana_value_survives_a_save_and_reload_while_targeting ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

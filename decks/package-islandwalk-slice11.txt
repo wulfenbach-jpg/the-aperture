@@ -1,0 +1,16 @@
+// package-islandwalk-slice11 — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises CR 702.14b with both seats supplied the same list: every seat controls
+// Islands, so the two islandwalk bears are unblockable in every combat where the
+// defending seat has one, while the plain bears stay blockable.
+4 Pale Bears
+4 River Bear
+3 Grizzly Bears
+3 Runeclaw Bear
+3 Soul Warden
+3 Shock
+3 Counterspell
+3 Divination
+3 Preordain
+4 Island
+4 Forest
+3 Mountain

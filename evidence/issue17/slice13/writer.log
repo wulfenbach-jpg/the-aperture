@@ -1,0 +1,27 @@
+Working...
+**Slice 13 delivered and pushed.** Head `1d99b74` on `aperture/issue-17`; no merge/master push.
+
+## Implemented
+- **Sazh’s Chocobo** — `{G}` 0/1 Bird; landfall puts a real typed +1/+1 counter on itself.
+- **Rampaging Baloths** — `{4}{G}{G}` 6/6 Beast with Trample; landfall creates a 4/4 green **Beast Token**.
+- **Professor of Zoomancy** — `{3}{G}` 4/3 Bear Druid; ETB creates a 1/1 black-and-green **Pest Token** with its own dies → gain 1 life trigger.
+
+Source records extracted from the coordinator’s immutable `/cards/collection` capture into `fixtures/starter-corpus/slice13-sourced.json`; token names follow CR 111.4 (`Beast Token`/`Pest Token`), not Scryfall labels, and remain non-importable.
+
+## Behavior
+- Typed counters, not EOT pump/legacy display; persist through cleanup and alter actual P/T.
+- Landfall is controller-scoped; repeated/opponent landfall controls covered.
+- Queued Baloths landfall still creates its token after the source is bounced; source-left counter effect is a normal no-op.
+- Pest death gains 1 life exactly once after full drain, causes no opponent drain, then the token ceases.
+- Fixed an over-broad repair-3 validator predicate found by tests: archival Removed-reference rejection now applies only to tokens, preserving legitimate non-token APNAP source-left provenance.
+
+## Verification
+- slice13 4/4, catalog 5/5, printings 7/7, commander 43/43, tokens 10/10, slice6 13/13.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat `package-slice13.txt` (40-card package, seed 1301): terminal P1, 1568 steps, digest `4cbaa34f0de1…`; replay and fresh save-out/replay match 5018 events.
+- Actual events: Sazh cast 2, Baloths 3, Professor 4, 18 counter events, 1 Beast and 4 Pest creations. No Pest death occurred in the heuristic trace; focused test proves it.
+
+## Corpus
+Catalog **122**, union 459 = **110 supported + 349 missing**, manifest matches; eight desired snapshots unchanged. Docs current counts corrected.
+
+Handoff: `evidence/issue17/slice13/WRITER-HANDOFF.md`. Full #17 unfinished; no certification claim.

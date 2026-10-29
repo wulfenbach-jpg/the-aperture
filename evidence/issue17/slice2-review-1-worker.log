@@ -1,0 +1,21 @@
+Working...
+Verdict: **request_changes** for the bounded slice-2 increment. `full_issue17_accepted: false`.
+
+Reviewed `095362b7eebbc58f57116db3f7899bd58e3b08be` against `86db7d3`. Core token/Talrand behavior is sound; three concrete metadata/docs defects remain:
+
+1. **Medium — `crates/cli/src/main.rs:70`**: `--commander` help lists Isamaru, Jasmine and Krenko but omits **Talrand**, which is in `SUPPORTED_COMMANDERS` and works at runtime. Repro: `aperture-cli selfplay --help`.
+2. **Low — `crates/core/src/catalog.rs:555`**: engine token named `"Drake Token"` while the sourced token record is `"Drake"` (`fixtures/starter-corpus/talrand-sourced.json:29`). Logs say “Drake Token enters”; type/body/color/flying/import exclusion are correct.
+3. **Low — stale docs**: `docs/issue17-starter-corpus.md:57-59` still lists Talrand spell-cast and Krenko non-mana activation as pending without partial status; `HANDOFF.md:306` still says tokens are not implemented.
+
+**Verified behavior**
+
+- Focused tests with `--locked`: tokens 10/10, Talrand 6/6, catalog_pool 5/5, card_printings 4/4, issue13 43/43, starter 8/8; import planned 1/1, analyzer 3/3; fmt/diff-check and release build clean.
+- Four-seat exact `package-krenko-tokens.txt` game: terminal P0, 1528 steps, 40 life, digest `69487135f53f…`; all four replay seat libraries exactly the 40-card package; replay + save roundtrip matched; real log shows token creation under correct controllers and graveyard changes before CR 111.7 cessation.
+- Four-seat exact `package-talrand-drakes.txt` game: terminal P3, 2861 steps, digest `cd6e07d238f7…`; Talrand triggers above spells, Drakes under controller, counters and blocks normalized.
+- Old Jasmine replay still matches `d7f8c2adaa17…`.
+- Manifest/pool: 86 cards; 447 union = 66 supported + 381 missing; Krenko/Talrand remain planned with 52/54 missing; package decks are 40 cards, not substitutes for the 100-card starters.
+- Original eight desired lists unchanged.
+
+No behavioral defect found in Krenko >255, summoning-sickness/tap restrictions, token identity/controller/count/nonimportability, token zone-change ordering, Swords last-known power, Talrand trigger ordering/counter survival, flying block legality, or resolving-priority boundaries. No #16/UI/playing-strength claim.
+
+Deliverables: `evidence/issue17/slice2-review-1.md`, `evidence/issue17/slice2-review-1.json`, plus `slice2-review-*` run logs.

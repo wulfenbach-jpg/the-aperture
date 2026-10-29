@@ -12,7 +12,7 @@ use common::*;
 
 fn green(n: u8) -> ManaPool {
     ManaPool {
-        green: n,
+        green: u32::from(n),
         ..Default::default()
     }
 }

@@ -1,0 +1,13 @@
+### X casting surface
+crates/core/src/card.rs:1149:            } else if symbol.eq_ignore_ascii_case("X") {
+exit=0
+
+### parse_cost X handling
+
+### aggregate mana-value target spec
+
+### multi-target specs (any-number)
+
+### Pending variants
+23
+119:pub enum Pending {

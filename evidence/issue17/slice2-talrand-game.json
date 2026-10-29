@@ -1,0 +1,126 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [
+    {
+      "commander": 2,
+      "recipient": 3,
+      "total": 4
+    },
+    {
+      "commander": 3,
+      "recipient": 0,
+      "total": 4
+    },
+    {
+      "commander": 3,
+      "recipient": 1,
+      "total": 6
+    },
+    {
+      "commander": 3,
+      "recipient": 3,
+      "total": 2
+    },
+    {
+      "commander": 4,
+      "recipient": 0,
+      "total": 4
+    },
+    {
+      "commander": 4,
+      "recipient": 1,
+      "total": 2
+    }
+  ],
+  "commanders": [
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 0
+    },
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 1
+    },
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 2
+    },
+    {
+      "card": "Talrand, Sky Summoner",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 59,
+    "ability_activations": 50,
+    "attacks": 17,
+    "blocks": 3,
+    "casts": 29,
+    "commander_damage_events": 11,
+    "commander_damage_losses": 0,
+    "counterspells": 3,
+    "damage_events": 106,
+    "events": 4758,
+    "triggered_abilities": 11
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1830
+  },
+  "final_digest": "c9fb97c6fc084660108f41b0a4b870bb68240c43e8ebc73f5080cf71a80dcf11",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 86,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1830,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-talrand-drakes",
+      "seat": 0,
+      "source": "decks/package-talrand-drakes.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -9,
+      "name": "package-talrand-drakes",
+      "seat": 1,
+      "source": "decks/package-talrand-drakes.txt"
+    },
+    {
+      "cards": 40,
+      "library": 17,
+      "life": 22,
+      "name": "package-talrand-drakes",
+      "seat": 2,
+      "source": "decks/package-talrand-drakes.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -1,
+      "name": "package-talrand-drakes",
+      "seat": 3,
+      "source": "decks/package-talrand-drakes.txt"
+    }
+  ],
+  "seed": 11,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1830,
+  "truncated": null,
+  "turns": 39,
+  "winner": 2,
+  "winner_label": "P2"
+}

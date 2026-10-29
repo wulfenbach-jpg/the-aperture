@@ -1,0 +1,74 @@
+{
+ "sha": "108df741852df08c062ec69fecf746bb7bf3870c",
+ "total": 10,
+ "states": {
+  "completed/success": 10
+ },
+ "head_shas": [
+  "108df741852df08c062ec69fecf746bb7bf3870c"
+ ],
+ "all_keyed": true,
+ "all_completed_success": true,
+ "checks": [
+  {
+   "name": "board and roadmap",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "board and roadmap",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "rust (macos-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "rust (macos-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "rust (windows-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "rust (windows-latest)",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "windows package",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  },
+  {
+   "name": "windows package",
+   "status": "completed",
+   "conclusion": "success",
+   "head_sha": "108df741852df08c062ec69fecf746bb7bf3870c"
+  }
+ ]
+}

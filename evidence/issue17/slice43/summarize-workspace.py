@@ -1,0 +1,11 @@
+import re
+t = open('evidence/issue17/slice43/workspace-full.log', encoding='utf-8', errors='replace').read()
+suites = re.findall(r'^test result: (\w+)\. (\d+) passed; (\d+) failed; (\d+) ignored', t, re.M)
+binaries = len(re.findall(r'^\s+Running .*\.exe', t, re.M)) or len(suites)
+print('suites', len(suites))
+print('binaries', binaries)
+print('passed', sum(int(s[1]) for s in suites))
+print('failed', sum(int(s[2]) for s in suites))
+print('ignored', sum(int(s[3]) for s in suites))
+print('non_ok', [s for s in suites if s[0] != 'ok'])
+print('exit_line', [l for l in t.splitlines() if l.startswith('exit=')])

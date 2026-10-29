@@ -1,0 +1,18 @@
+warning: unused imports: `TriggerEvent` and `triggers_on`
+  --> evidence/issue17/slice5/review/probe_slice5.rs:17:30
+   |
+17 | use aperture_core::ability::{TriggerEvent, triggers_on};
+   |                              ^^^^^^^^^^^^  ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `drama` is never used
+  --> evidence/issue17/slice5/review/probe_slice5.rs:53:4
+   |
+53 | fn drama(log: &[Event]) -> usize {
+   |    ^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: 2 warnings emitted
+

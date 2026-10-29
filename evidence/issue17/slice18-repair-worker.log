@@ -1,0 +1,32 @@
+Working...
+**Repair committed: `79d976d` on `aperture/issue-17`. No push.**
+
+### Fixed
+- **BLOCKING optional-trigger regression** — `apply_trigger_choice` now single `match` on `pending.take()`. Ordinary `TriggerChoice` accept/decline behavior restored. Existing accept test already proves its effect applies (draw).
+- **Queued trigger loss** — every no-mode/target path drains `queued`; added Ayula + Soul’s Attendant same-batch regression.
+- **Citations** — fight `701.14a`, illegal/no-fight `701.14b`; modal triggered choice `603.3c` + `700.2b`.
+- **Archived references** — `TriggerTarget.first` and `TriggerMode.queued` now traversed.
+
+### RED evidence retained
+- At `9c3a594`: `cargo test -p aperture-core --test abilities optional_trigger_is_declined_or_used_by_its_controller` → **12 passed, 1 failed**, “declining is a typed event”.
+- Scratch-revert of queued-trigger drain: engine regression failed **“the second trigger must still be placed”**; restored and GREEN.
+
+### Added coverage
+- Source-left Ayula resolution.
+- Fight prevention with Mending Hands: Ayula’s incoming damage prevented while the opposing Grizzly still dies.
+- Fight target departure fizzle.
+- Unavailable fight mode.
+- Token vs opposing trigger distinction.
+- Queued-batch preservation.
+
+### Final verification
+`command_zone_setup` 41, `abilities` 13, `rules_conformance` 5, `issue17_slice17` 6, `card_printings` 8, `catalog_pool` 5, slice15 corpus 2, issue13 commander 43, lib 13 — all passed. `fmt --check`, workspace clippy `-D warnings`, release CLI all exit 0.
+
+Repaired journey: terminal P2, 1961 decisions, 43 turns, digest `09e6bb25c505c1c090759e379fc442626c9ac04bc5dffbbe6548b5f8dcc3ba24`, replay matched, fresh save round-trip.
+
+### Still missing
+- Ayula `TriggerMode` save/load+replay and two-target half-answered save/replay tests.
+- Forged archived-state refusal and forged pending-action refusal regressions.
+- Eight-list gate open; Ayula 30 missing cards; no 100-card certificate.
+
+Handoff: `evidence/issue17/slice18/HANDOFF.md`; machine result: `evidence/issue17/IMPLEMENTATION-RESULT-slice18.json`.

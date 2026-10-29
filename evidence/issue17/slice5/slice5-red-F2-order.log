@@ -1,0 +1,12 @@
+
+thread 'preordain_scries_two_then_draws_one' (16096) panicked at crates\core\tests\issue17_slice5.rs:438:5:
+both scry decisions precede the draw (scry then draw, not draw then scry)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    preordain_scries_two_then_draws_one
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice5`

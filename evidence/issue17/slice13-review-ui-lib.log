@@ -1,0 +1,13 @@
+    Blocking waiting for file lock on package cache
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.63s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
+
+running 1 test
+test app::viewport_tests::the_import_panel_reports_both_axes_and_every_unsupported_card_before_start ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 35 filtered out; finished in 0.32s
+

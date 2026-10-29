@@ -1,0 +1,4 @@
+# Slice3 assignment8 — adjudicate repair-2 only
+SAME reviewer,8minute hardcap, exact head9cecd62ddb56d44e6853f9f9098fd3a473635b66. Only re-test your two requested findings and false changed-file mention; reuse your own prior real checks/journey (unchanged engine/tests). No new production edits, commit, push or broad audit.
+
+Confirm manifest Krenko now51 matching actual count, Elas no stale Swamp-unavailable claim and real58 nonland plus interaction gaps, docs line updated, handoff no longer lists docs/issue15-effects.md without delta. Check no code/test change between0d8a1ee and this head (git diff --name-only). Run git diff --check and python evidence/issue17/slice3-native-corpus.py once. Write FINAL verdict evidence/issue17/slice3-review-3.json/.md with exact head, approve_increment only if both findings genuinely fixed, retained limitations, and explicit full#17 false/#16 non-approval. Under5minutes expected.

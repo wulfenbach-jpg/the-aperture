@@ -1,0 +1,5 @@
+save evidence/issue17/slice3-cross-save.json — 4 seat(s): P0 'package-cross-corpus' vs P1 'package-cross-corpus' vs P2 'package-cross-corpus' vs P3 'package-cross-corpus'
+  stored digest 4572cd11e893 | recomputed 4572cd11e893 | matches
+  turn 25 step postcombat main phase | pending None | sandbox modified: false
+  ai: human P0; AI seats P0, P1, P2, P3 = deterministic baseline heuristic; autoplay off
+  replay of 1112 action(s) -> digest 4572cd11e893 | events 2819 | reproduces the save

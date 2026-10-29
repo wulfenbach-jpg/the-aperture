@@ -1,0 +1,27 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T09:19:21.815480+00:00",
+ "cards": [
+  {
+   "name": "Exuberant Wolfbear",
+   "oracle_id": "40f5f8b9-5c2c-41d4-8b83-55a2e51ced64",
+   "scryfall_id": "8c8ff0da-fbe3-4c95-bc39-c975c55b6aea",
+   "set": "iko",
+   "collector_number": "151",
+   "layout": "normal",
+   "mana_cost": "{3}{G}",
+   "type_line": "Creature — Wolf Bear",
+   "power": "4",
+   "toughness": "4",
+   "oracle_text": "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/8c8ff0da-fbe3-4c95-bc39-c975c55b6aea",
+   "retrieved_at": "2026-10-27T09:19:21.815480+00:00"
+  }
+ ]
+}

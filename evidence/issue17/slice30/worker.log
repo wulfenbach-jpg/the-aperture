@@ -1,0 +1,29 @@
+Working...
+**Slice 30 committed: `0d40d5a`.** Product diff clean; no push/merge/closure. Full #17 remains **1 of 8 certified**.
+
+### Implemented
+**Drover Grizzly** `{2}{G}` 4/2 Bear Mount, OTJ 161, immutable source fetched/recorded.
+- Typed reusable `SaddleMount` action with sorcery timing.
+- Helpers: other untapped creatures you control, source excluded, summoning-sick helpers allowed, effective-power sum ≥ 1.
+- Offered actions enumerate bounded eligible-helper subsets; every offer validates.
+- Helpers tap on cost payment; saddle resolves on the normal stack into an until-end saddled designation.
+- Saddled status expires at cleanup and is pruned on battlefield departure.
+- Typed `SourceIsSaddled` attack condition; resolution grants trample to creatures controlled then through existing layer-6 effects.
+- No new GameState field; new stack/action fields are serde/default compatible.
+
+### RED retained
+`issue17_slice30` failed `drover_grizzly_is_sourced_and_supported` before registration.
+
+### Verified
+- `issue17_slice30`: **4 passed** — offered cast/saddle/trample, unsaddled no trigger, self/tapped/opponent/insufficient-power refusals, save/reload saddled state.
+- card_printings 8, catalog_pool 5, slice15 corpus 2, commander 43, replay_digest 6.
+- fmt, workspace clippy `-D warnings`, release CLI: exit 0 (`evidence/issue17/slice30/gates.log`).
+- Fresh audit: **146 catalog / 134 supported / 325 missing**, Ayula 19.
+
+### Journey
+Evidence-only masked demonstrator, not product AI: 4 seats/40 life, seed 2323, terminal P1, 2653 decisions, 55 turns; Drover cast 9, saddle activated 116 times via offered actions, 22 trample-grant events; replay matched and fresh save round-tripped. Digest `b711d966…5677`; snapshot SHA256 `69497ca2…9471`.
+
+### Disclosed gaps
+- No dedicated cleanup, battlefield-departure, or same-ID bounce/recast saddle control.
+- Multi-helper saddle is supported/validated, but the exercised offered path uses minimal one-helper sets.
+- No full workspace matrix rerun; exact-head CI owns it. No 100-card certificate.

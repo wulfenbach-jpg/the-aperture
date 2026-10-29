@@ -1,0 +1,62 @@
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "3b06249",
+  "commit": "slice25 local head in final receipt",
+  "card": {
+    "name": "Exuberant Wolfbear",
+    "mana_cost": "{3}{G}",
+    "type_line": "Creature \u2014 Wolf Bear",
+    "power": "4",
+    "toughness": "4",
+    "oracle_id": "40f5f8b9-5c2c-41d4-8b83-55a2e51ced64",
+    "scryfall_id": "8c8ff0da-fbe3-4c95-bc39-c975c55b6aea",
+    "printing": "iko 151",
+    "retrieved_at": "2026-10-27T09:19:21.815480+00:00",
+    "source": "fixtures/starter-corpus/slice25-sourced.json"
+  },
+  "counts": {
+    "catalog": 142,
+    "union": 459,
+    "supported": 130,
+    "missing": 329,
+    "ayula_missing": 23
+  },
+  "red": "issue17_slice25 exuberant_wolfbear_is_sourced_and_supported failed before implementation",
+  "focused": {
+    "issue17_slice25": "4 passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "replay_digest": "6 passed",
+    "fmt": "exit 0",
+    "clippy": "workspace -D warnings exit 0",
+    "release": "exit 0",
+    "gates_log": "evidence/issue17/slice25/gates.log"
+  },
+  "journey": {
+    "package": "decks/package-slice25.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2323,
+    "commander": "Jasmine Boreal injected each seat (evidence only)",
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1760,
+    "turns": 41,
+    "snapshot_sha256": "1bd229439656be174278cd958eb7083ec495c43be3eefa8a17d4ee6fff881a0d",
+    "digest": "4d6ea58ee735c74a89e142eca90656dbf22faeaf49c2de0fb33c0ec9952c5d52",
+    "replay_digest_matches": true,
+    "fresh_save_roundtrip": true,
+    "casts": 8,
+    "trigger_staged": 9,
+    "base_pt_set_events": 9
+  },
+  "gaps": [
+    "no target-departure/cleanup/save-midability tests",
+    "no full workspace matrix rerun"
+  ],
+  "note": "LKI trigger/stack fields serde-default; no AI policy change"
+}

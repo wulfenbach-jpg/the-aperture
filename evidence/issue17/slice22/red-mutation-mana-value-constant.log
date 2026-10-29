@@ -1,0 +1,47 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.13s
+     Running tests\issue17_slice22.rs (target\debug\deps\issue17_slice22-1be942bdc603fc37.exe)
+
+running 8 tests
+test mana_value_reads_the_printed_cost ... ok
+test an_opponents_land_does_not_trigger_the_landfall_half ... ok
+test an_opponents_creature_spell_does_not_trigger_it ... ok
+test a_noncreature_permanent_spell_does_not_trigger_it ... ok
+test landfall_creates_one_bear_token_and_adds_no_counters ... ok
+test casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature ... FAILED
+test the_counter_count_tracks_a_six_mana_creature ... FAILED
+test the_captured_mana_value_survives_a_save_and_reload_while_targeting ... FAILED
+
+failures:
+
+---- casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature stdout ----
+
+thread 'casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature' (28884) panicked at crates\core\tests\issue17_slice22.rs:153:5:
+assertion `left == right` failed: X is the cast spell's mana value
+  left: 1
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_counter_count_tracks_a_six_mana_creature stdout ----
+
+thread 'the_counter_count_tracks_a_six_mana_creature' (38364) panicked at crates\core\tests\issue17_slice22.rs:203:5:
+assertion `left == right` failed
+  left: 1
+ right: 6
+
+---- the_captured_mana_value_survives_a_save_and_reload_while_targeting stdout ----
+
+thread 'the_captured_mana_value_survives_a_save_and_reload_while_targeting' (9604) panicked at crates\core\tests\issue17_slice22.rs:372:5:
+assertion `left == right` failed: the reloaded trigger still knows the cast spell's mana value
+  left: 1
+ right: 2
+
+
+failures:
+    casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature
+    the_captured_mana_value_survives_a_save_and_reload_while_targeting
+    the_counter_count_tracks_a_six_mana_creature
+
+test result: FAILED. 5 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice22`

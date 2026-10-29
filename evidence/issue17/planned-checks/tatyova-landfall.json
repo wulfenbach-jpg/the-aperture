@@ -1,0 +1,383 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "legal",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 60
+  },
+  "commanders": [
+    {
+      "name": "Tatyova, Benthic Druid",
+      "oracle_id": "0715e860-3b3b-4331-9718-207973e94fee",
+      "color_identity": [
+        "G",
+        "U"
+      ],
+      "layout": "normal",
+      "eligibility": "legal",
+      "reason": "front-face legendary creature"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-25T08:32:00Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "7b8994d9585aa76cc36165bbe72ea4754b375d46e499db4e45e2b679478beb4a",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Aesi, Tyrant of Gyre Strait",
+        "oracle_id": "6511f317-bd38-46d0-b800-7125a3f420da",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Avenger of Zendikar",
+        "oracle_id": "4ba5b3f6-503b-43e6-b66e-4f8c55cffed7",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Bristly Bill, Spine Sower",
+        "oracle_id": "d3b2d8a2-d3bc-448c-9cf6-6bead6010c28",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Courser of Kruphix",
+        "oracle_id": "46779609-4fa7-4fd2-b5b4-7d4d749339e6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Crop Rotation",
+        "oracle_id": "28b46183-c62f-47b1-9fee-3ba148202cab",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Dryad of the Ilysian Grove",
+        "oracle_id": "bdbde5d0-f5e4-44da-b27c-b4ad6f374cc9",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Earthbender Ascension",
+        "oracle_id": "f8966fd5-2926-4ba0-b7d6-cfea40cd4e05",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Elvish Reclaimer",
+        "oracle_id": "94f01534-7bb3-4b1e-8f77-e84156408686",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Evolution Sage",
+        "oracle_id": "b45fdeab-00cc-4422-af9f-66f30a880a7c",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Expedition Map",
+        "oracle_id": "8fcf50cd-e6d0-4516-850f-d42ee75dcc3a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Exploration",
+        "oracle_id": "0c2841bb-038c-4fbf-8360-bc0a1522b58d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Exploration Broodship",
+        "oracle_id": "8a83ecee-092b-456c-803f-a9aaa17c4da9",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Explore",
+        "oracle_id": "b8f566ea-8283-4afa-9ac8-737e26419283",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Floral Evoker",
+        "oracle_id": "4da17e9e-df3e-4c46-a0cf-baafbe67186f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ghirapur Orrery",
+        "oracle_id": "c6bb3a58-131a-4d7b-8c07-173a7de23b06",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Hedron Crab",
+        "oracle_id": "7216f974-3c84-40ef-b904-82019900c204",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Icetill Explorer",
+        "oracle_id": "109cdefd-e8cc-4ac7-b6ba-2cfdef8d780f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Jaddi Offshoot",
+        "oracle_id": "20faefbd-059c-4aae-81e3-31683bf9f7bf",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Khalni Heart Expedition",
+        "oracle_id": "be6155de-c5b2-415c-ad83-142f9926462a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Kiora, the Crashing Wave",
+        "oracle_id": "58cc2097-f4b4-4695-9076-78666050cdb6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Loot, Exuberant Explorer",
+        "oracle_id": "f6476884-f73f-465f-8e7f-ea312a5b306d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Lotus Cobra",
+        "oracle_id": "8ad91f64-ccab-4edc-bd54-b2ee9267d614",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mightform Harmonizer",
+        "oracle_id": "8e025cda-71c5-4d06-8436-decd408667af",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mole Man, Moloid Master",
+        "oracle_id": "34994475-b914-44f6-8ca1-c2747b6d5956",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mossborn Hydra",
+        "oracle_id": "84122d81-9634-4d3f-85a5-f6cf4303691a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Nissa, Resurgent Animist",
+        "oracle_id": "c1fc5923-c3cd-448a-98d1-c154661c2812",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Nissa, Worldsoul Speaker",
+        "oracle_id": "00037840-6089-42ec-8c5c-281f9f474504",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Oracle of Mul Daya",
+        "oracle_id": "6c5b02eb-7829-436a-8555-fea200e4b67f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Prismatic Undercurrents",
+        "oracle_id": "27a3aa64-1de7-4b0c-af23-52886e7d258a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Rampaging Baloths",
+        "oracle_id": "2d3e6549-6cc6-434f-a189-ba3b55e64c34",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Retreat to Coralhelm",
+        "oracle_id": "c450f6b7-bb2a-4b8c-aec7-d27555137b63",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Retreat to Kazandu",
+        "oracle_id": "3f8e5ff1-af89-427e-924c-19a44f9a3788",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ride the Shoopuf",
+        "oracle_id": "81b67745-0b1f-4433-963d-9b9653fb4d95",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Rites of Flourishing",
+        "oracle_id": "7080fb43-5d93-41f5-87d3-bc1801805ea0",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Roaring Earth",
+        "oracle_id": "43abfce5-b1dd-4784-bb91-d57b2c28f6a6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Roil Cartographer",
+        "oracle_id": "3cd7ef87-4cb4-42ff-842f-e9a465dab165",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ruin Crab",
+        "oracle_id": "8afc00d4-a1c6-4329-af2c-a7f58a0c33e7",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Sazh's Chocobo",
+        "oracle_id": "c2b082b4-5d9c-4125-b353-d1cf4f334720",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Scale the Heights",
+        "oracle_id": "13d5b664-db13-406e-9956-3d9fe4177d33",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Scute Swarm",
+        "oracle_id": "aa854d50-444c-49d9-bfb1-5476b33c1c0b",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Scythecat Cub",
+        "oracle_id": "929117cd-caa6-402b-9d7b-1f684d75695c",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Seer's Sundial",
+        "oracle_id": "9929d7ba-cdc5-4099-a0ee-3a15073336f3",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Sowing Mycospawn",
+        "oracle_id": "63a19c7c-49d7-4b75-aac8-d0ff36c45fb8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Springheart Nantuko",
+        "oracle_id": "8a3ad2ef-8bcb-40c0-85de-f03328c2b644",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Stone-Seeder Hierophant",
+        "oracle_id": "ccaea194-4b21-4485-ba08-d8d030c9418d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Sword of Forge and Frontier",
+        "oracle_id": "c6331ce3-21f7-4784-80fe-df1f541a4c46",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Sylvan Scrying",
+        "oracle_id": "ee24bf27-484d-4e1c-998e-6a74e3d3f6c4",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tato Farmer",
+        "oracle_id": "71b5a3b4-31bb-44d8-a80c-36efff2a621e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tatyova, Benthic Druid",
+        "oracle_id": "0715e860-3b3b-4331-9718-207973e94fee",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tempt with Discovery",
+        "oracle_id": "4baa6145-216e-476b-b178-aaaa1e633701",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Thranduil's Company",
+        "oracle_id": "2c195485-83f9-424f-854a-50c4f5b04182",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tifa Lockhart",
+        "oracle_id": "878df304-9d6d-4ce9-b65b-1439c251f3e0",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tireless Provisioner",
+        "oracle_id": "ab8d5f5c-1976-4f77-8ed2-8d28ee666741",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tireless Tracker",
+        "oracle_id": "e6555cca-e608-4c87-b835-9cd47fd1f543",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Toph, Earthbending Master",
+        "oracle_id": "ad5d3e7e-bf8c-4fa3-a81e-1523aec2585f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Wayward Swordtooth",
+        "oracle_id": "3875aef0-3102-4fbf-be90-e4139f7a2348",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "World Map",
+        "oracle_id": "51d4f95e-aad2-4e5f-9f15-a68bbdf9ab3e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Zimone, Mystery Unraveler",
+        "oracle_id": "75bf0f27-9df1-4ab4-97a8-94bb3223bdf9",
+        "reason": "not in the implemented 79-card practice pool"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY",
+      "status": "legal",
+      "message": "commander 'Tatyova, Benthic Druid' is a front-face legendary creature"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "the-aperture planned starter corpus",
+      "source": "desired list for tatyova-landfall; cards from Scryfall search https://api.scryfall.com/cards/search?q=id%3C%3Dug%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "raw_sha256": "84afe04af33c12c23673ce6ff40dfb6fc0106cba8fec94e78227b1c9684f42ab"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/cards/search?q=id%3C%3Dug%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261024210157.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "cards_sha256": "7b8994d9585aa76cc36165bbe72ea4754b375d46e499db4e45e2b679478beb4a",
+      "raw_sha256": "7b8994d9585aa76cc36165bbe72ea4754b375d46e499db4e45e2b679478beb4a"
+    }
+  }
+}

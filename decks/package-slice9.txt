@@ -1,0 +1,9 @@
+// package-slice9 — supported 40-card ritual package, NOT a desired 100-card starter.
+4 Brightstone Ritual
+4 Mana Geyser
+4 Rite of Flame
+4 Goblin Instigator
+4 Dragon Fodder
+4 Krenko's Command
+4 Hordeling Outburst
+12 Mountain

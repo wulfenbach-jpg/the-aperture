@@ -1,0 +1,13 @@
+// package-slice8 — supported 40-card package fixture, NOT a desired 100-card starter.
+3 Soul's Attendant
+3 Razorclaw Bear
+3 Volley Veteran
+3 Counterspell
+3 Dramatic Reversal
+3 Shock
+3 Divination
+3 Goblin War Strike
+4 Plains
+4 Forest
+4 Mountain
+4 Island

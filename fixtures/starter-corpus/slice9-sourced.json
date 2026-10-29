@@ -1,0 +1,71 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T13:18:56Z",
+ "note": "Live Scryfall named printings fetched before slice9 implementation. Brightstone Ritual supersedes its slice8 excluded status.",
+ "cards": [
+  {
+   "name": "Brightstone Ritual",
+   "role": "slice9_package",
+   "oracle_id": "08e90e85-4103-4acb-a8a7-e1329b460aa7",
+   "scryfall_id": "5b08b0a6-c94e-4407-8a24-c8202497b5f2",
+   "set": "ons",
+   "collector_number": "191",
+   "layout": "normal",
+   "mana_cost": "{R}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Add {R} for each Goblin on the battlefield.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Brightstone%20Ritual",
+   "retrieved_at": "2026-10-26T13:18:56Z"
+  },
+  {
+   "name": "Mana Geyser",
+   "role": "slice9_package",
+   "oracle_id": "a8dba58b-2956-492e-ae30-49db2ae68e53",
+   "scryfall_id": "dfbda387-3c7d-4c80-97c3-60c9d4757244",
+   "set": "soc",
+   "collector_number": "247",
+   "layout": "normal",
+   "mana_cost": "{3}{R}{R}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Add {R} for each tapped land your opponents control.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Mana%20Geyser",
+   "retrieved_at": "2026-10-26T13:18:56Z"
+  },
+  {
+   "name": "Rite of Flame",
+   "role": "slice9_package",
+   "oracle_id": "8a2e53f9-8100-488f-8504-b59e9bd1cc29",
+   "scryfall_id": "c062caf7-f0eb-44db-9f74-e6711a13fada",
+   "set": "csp",
+   "collector_number": "96",
+   "layout": "normal",
+   "mana_cost": "{R}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Add {R}{R}, then add {R} for each card named Rite of Flame in each graveyard.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Rite%20of%20Flame",
+   "retrieved_at": "2026-10-26T13:18:56Z"
+  }
+ ]
+}

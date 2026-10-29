@@ -1,0 +1,21 @@
+Working...
+Verdict: **approve_increment** — bounded partial increment only. `full_issue17_accepted: false`.
+
+Reviewed `86db7d316edd6200f7f598849018e428d11b69eb` (one commit over `0a7d781`). Delta touches only `decks.rs`, the issue17 doc, implementation handoff, and repair/review evidence. No engine, card/catalog, deck-list, or source changes.
+
+**Both prior findings resolved**
+
+- **Default names**: loader now uses `file_stem()` only for explicit paths. New `non_explicit_default_loads_keep_the_human_fallback_names` passes; real release binary reports `Temur Beats` / `Izzet Control`.
+- **Docs/manifest**: `docs/issue17-starter-corpus.md` now describes non-null planned `deck_path`, exact desired lists, and explicitly says `deck_path` is not support. Old handoff paragraph is fenced as historical and followed by current state.
+
+**Checks**
+
+- `cargo test --locked -p aperture-cli`: exit 0 — lib 6/6 (including both deck-name tests), commander_check 8/8, explicit_decks 1/1.
+- `cargo fmt --check`, `git diff --check`: exit 0.
+- `cargo build --release --locked -p aperture-cli`: exit 0.
+- Default selfplay probe at 50 steps: correct human names; correctly capped, not a victory.
+- Both unchanged Jasmine replays replayed to recorded digest `d7f8c2adaa17…` with 2364 actions / 6061 events.
+
+Review-1 evidence for the Jasmine game/save/source/manifest was reused because the delta is outside those paths. Routing, source, analyzer, and full eight-style acceptance remain out of scope.
+
+Outputs: `evidence/issue17/review-2.md`, `evidence/issue17/review-2.json`, plus `review2-*` logs.

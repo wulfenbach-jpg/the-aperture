@@ -1,0 +1,17 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running tests\issue17_slice24.rs (target\debug\deps\issue17_slice24-315e8ddde41a5133.exe)
+
+running 10 tests
+test surrak_goreclaw_is_sourced_and_supported ... ok
+test token_and_opponent_entries_do_not_trigger_surrak ... ok
+test native_hasty_werebear_mana_ability_is_actually_offered ... ok
+test surrak_trigger_gives_counter_and_haste_only_to_entered_nontoken_creature ... ok
+test static_other_creature_trample_changes_real_combat ... ok
+test source_left_trigger_still_buffs_the_original_entered_creature ... ok
+test native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves ... ok
+test bounced_entered_creature_loses_old_trigger_and_recast_triggers_once ... ok
+test older_creature_does_not_get_haste_and_cleanup_expires_it ... ok
+test midtrigger_save_reload_finishes_identically ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

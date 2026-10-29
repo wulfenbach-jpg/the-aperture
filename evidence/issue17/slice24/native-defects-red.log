@@ -1,0 +1,32 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0026]: variant `ActivateManaAbility` does not have a field named `source`
+  --> crates\core\tests\issue17_slice24.rs:20:95
+   |
+20 |     assert!(g.legal_actions().iter().any(|a| matches!(a.action, Action::ActivateManaAbility { source } if source == werebear)),
+   |                                                                                               ^^^^^^
+   |                                                                                               |
+   |                                                                                               variant `ActivateManaAbility` does not have this field
+   |                                                                                               help: `ActivateManaAbility` has a field named `land`
+
+error[E0027]: pattern does not mention field `land`
+  --> crates\core\tests\issue17_slice24.rs:20:65
+   |
+20 |     assert!(g.legal_actions().iter().any(|a| matches!(a.action, Action::ActivateManaAbility { source } if source == werebear)),
+   |                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing field `land`
+   |
+help: include the missing field in the pattern
+   |
+20 |     assert!(g.legal_actions().iter().any(|a| matches!(a.action, Action::ActivateManaAbility { source, land } if source == werebear)),
+   |                                                                                                     ++++++
+help: if you don't care about this missing field, you can explicitly ignore it
+   |
+20 |     assert!(g.legal_actions().iter().any(|a| matches!(a.action, Action::ActivateManaAbility { source, land: _ } if source == werebear)),
+   |                                                                                                     +++++++++
+help: or always ignore missing fields here
+   |
+20 |     assert!(g.legal_actions().iter().any(|a| matches!(a.action, Action::ActivateManaAbility { source, .. } if source == werebear)),
+   |                                                                                                     ++++
+
+Some errors have detailed explanations: E0026, E0027.
+For more information about an error, try `rustc --explain E0026`.
+error: could not compile `aperture-core` (test "issue17_slice24") due to 2 previous errors

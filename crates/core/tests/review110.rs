@@ -133,6 +133,7 @@ fn commander_surveilled_to_graveyard_does_not_panic_and_resolution_continues() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     let consider = ObjectId(g.state.next_object);
@@ -153,6 +154,7 @@ fn commander_surveilled_to_graveyard_does_not_panic_and_resolution_continues() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     g.state.players[0].hand.push(consider);
@@ -223,6 +225,7 @@ fn add_obj(g: &mut Game, p: PlayerId, card: CardId, zone: Zone) -> ObjectId {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     match zone {

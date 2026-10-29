@@ -1,0 +1,14 @@
+Working...
+**Verdict: APPROVED_INCREMENT** at `7e1eb5f1b8218e24d7a03377c3cb3c5bb0981a4f`.
+
+**S6-R2-F1 repaired.** Re-ran the unchanged external probe with the required target dir: 3/3 passed with full drainage. Single dying Zulaport → `[21,19,19,19]`; two dying creatures → `[22,18,18,18]` in both creation orders; surviving-watcher control → `[22,18,18,18]`. `f1b7ab6` preserves the original dying identity and excludes the separately dispatched self from the watcher batch.
+
+**Merge/token repair verified.** `edd8008` parents are `f1b7ab6` and master `8de0961`. `04c39e6` restores real destination/death recording before SBA cessation and removes tombstone insertion; `7e1eb5f` makes the Swords trace say the token “is exiled (token cessation awaits the next SBA check…)” and the regression forbids “instead of being exiled.”
+
+Focused checks passed: `issue17_tokens` 10/10, `counters_tokens_library` 16/16, `issue17_slice6` 13/13. That covers pre-#16 save load/replay/digest, counters/revealed/keyword/library, destination-before-cessation, no tombstones, watcher-once, and Swords trace.
+
+Desired lists are unchanged (`git diff 3987dd6..HEAD -- decks/starter-corpus/planned` empty; Jasmine empty). Native audit remains **106 catalog / 459 union = 94 supported + 365 missing / 1 implemented, 0 certified**. Fresh 639-test workspace, build, fmt, clippy, 10/10 CI and package journey evidence reused; no duplicate matrix.
+
+Residual full-issue gaps remain: seven desired starters unsupported, no certified starter, #16 primitives not product acceptance. This verdict does not close/merge #17 or unlock certified/#26/#32 lanes; continuation must return to the same card/branch/PR and preserved histories.
+
+Reports: `evidence/issue17/review227-delta.md`, `review227-delta.json`.

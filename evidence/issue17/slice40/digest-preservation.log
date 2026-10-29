@@ -1,0 +1,4 @@
+# slice 40: the predicate refactor must not move any recorded digest (release CLI at the code head)
+  replayed digest 726fe20e72e1 | matches recorded | events 3861
+  replayed digest 1c13d8fdcdce | matches recorded | events 5347
+  replayed digest c4c5985cd048 | matches recorded | events 4530

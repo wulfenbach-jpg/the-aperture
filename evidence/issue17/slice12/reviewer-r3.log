@@ -1,0 +1,23 @@
+Working...
+**review_outcome: APPROVED_INCREMENT** at `985d8ffe115536068606a851f8b0f34676f17898`.
+`full_issue17_accepted: false`.
+
+**R12-R2-F1 fixed.** `GameState::object_is_referenced` now covers trigger-queue sources, revealed, activation history, stack object/targets, combat, effects, shields, resolving and every typed `Pending` variant. My same probe now returns:
+- `trigger_queue: REJECTED`
+- `revealed: REJECTED`
+- player hand-list injection: `REJECTED` by container validation
+
+The new 11-test slice12 suite covers the strict negative references. Ordinary token BF→GY cessation and valid archived saves remain intact.
+
+**Other repairs verified**
+
+- R12-F2: docs Elas now 53, matching manifest/audit.
+- Test-only UI sentinel refresh: UI lib 1/1, UI session 22/22; import start_flow remains 21/21; no production UI/import behavior change.
+- Fresh demo save-out/reload: `d3eade58f133`, 1573 actions/6981 events; retained default save `328dadbdbdc6`, 1746/7051; old slice8 replay `ffbeaee0db38`, 6087.
+- `cargo fmt --check` and `git diff --check` pass; catalog 119, union 459 = 107 supported + 352 missing; desired files unchanged.
+
+Artifact behavior and native journey evidence reused unchanged; no new game. Current exact-head CI is not claimed green; the `9ec90aa` failure was the test sentinel.
+
+Remaining gaps: full #17 is **1 certified / 7 planned**, 352 union names missing; artifact mana remains explicit-only for the product heuristic; Commander’s Sphere, Friendly Teddy, Aetherize and broader mechanics remain unsupported. No merge/closure or release/#26/#32 unlock. Handoff “No push yet” is stale nonblocking metadata.
+
+Reports: `evidence/issue17/slice12/REVIEW12-R3.md`, `.json`.

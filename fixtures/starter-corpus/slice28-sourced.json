@@ -1,0 +1,33 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T12:07:11Z",
+ "cards": [
+  {
+   "name": "Circle of the Moon Druid",
+   "oracle_id": "90569b99-8b63-4d2e-b7de-b578b8adbdcb",
+   "scryfall_id": "700c9ed8-6bfe-4f1e-855a-5f31e0d2fc9b",
+   "set": "afr",
+   "collector_number": "177",
+   "layout": "normal",
+   "mana_cost": "{2}{G}",
+   "type_line": "Creature — Human Elf Druid",
+   "power": "2",
+   "toughness": "4",
+   "oracle_text": "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://scryfall.com/card/afr/177/circle-of-the-moon-druid?utm_source=api",
+   "retrieved_at": "2026-10-27T12:07:11Z",
+   "printings_checked": 2,
+   "distinct_printing_texts": 1,
+   "printings": [
+    "afr/177",
+    "hbg/204"
+   ]
+  }
+ ]
+}

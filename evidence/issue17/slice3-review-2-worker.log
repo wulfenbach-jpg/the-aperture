@@ -1,0 +1,24 @@
+Working...
+Verdict: **request_changes** for the bounded cross-package increment. `full_issue17_accepted: false`.
+
+Reviewed `0d8a1ee7dfccef39aacaff482b00255e86ff6399` against `3661353`.
+
+**Findings**
+
+1. **Stale Krenko count** — `decks/starter-corpus/manifest.json:211` still says “remaining 52 desired-list cards”, and `docs/issue17-starter-corpus.md:58` says “(52 missing)”. Actual Krenko missing is **51** after Guttersnipe.
+2. **Stale Elas/Swamp claim** — `manifest.json:352` says Swamp is unsupported; `docs/issue17-starter-corpus.md:74-75` says there is no black basic land and Elas cannot be built until Swamp is added. Swamp is now supported (`mdd/296`, black mana), Elas missing is 58 (nonland/interaction gaps), and the same doc’s roadmap bullet 8 correctly says black basic support is implemented.
+
+Both are guide/manifest truthfulness defects; no code change needed.
+
+**Verified behavior**
+
+- Focused tests: cross-package 8/8, Tatyova 5/5, card_printings 4/4, catalog_pool 5/5, starter 8/8, issue13 43/43; fmt/diff/release build clean.
+- Four-seat exact `decks/package-cross-corpus.txt`, seed 5: terminal P2, 1112 actions/25 turns, digest `4572cd11e893…`, not capped; replay matches (2819 events).
+- All four replay seats exactly the 40-card package multiset.
+- Real log shows 8 Guttersnipe triggers and 8 resolutions; damage hits only still-live opponents, never the controller. Source-left/Angrath tests pass.
+- All five source records match archived Scryfall printing data (mana cost, type, P/T, Oracle, legality).
+- Catalog 93; union 459 = 81 supported + 378 missing; manifest sets match; 7 planned, 1 implemented, 0 certified. Bundled defaults and all eight desired lists unchanged.
+
+**Limits**: bounded increment only; seven desired starters remain planned and the 378-name gap remains. Guttersnipe support is its typed trigger/damage primitive only; shared core hooks are a separate #16 hotspot, not approved here. No full matrix/GUI/import/search/playing-strength claim.
+
+Deliverables: `evidence/issue17/slice3-review-2.md`, `evidence/issue17/slice3-review-2.json`, plus `slice3-review2-*` logs.

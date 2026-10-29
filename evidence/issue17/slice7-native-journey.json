@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 0
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 1
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 2
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 62,
+    "ability_activations": 0,
+    "attacks": 35,
+    "blocks": 6,
+    "casts": 39,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 61,
+    "events": 7239,
+    "triggered_abilities": 73
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 2952
+  },
+  "final_digest": "8e0ab4b00e7ff6d018b71ee9317f59c6d794e12472d83bdf4fe2d278c4a3ca8e",
+  "first_player": 3,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 106,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 2952,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-slice6-dies",
+      "seat": 0,
+      "source": "decks/package-slice6-dies.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 37,
+      "name": "package-slice6-dies",
+      "seat": 1,
+      "source": "decks/package-slice6-dies.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-slice6-dies",
+      "seat": 2,
+      "source": "decks/package-slice6-dies.txt"
+    },
+    {
+      "cards": 40,
+      "library": 14,
+      "life": 40,
+      "name": "package-slice6-dies",
+      "seat": 3,
+      "source": "decks/package-slice6-dies.txt"
+    }
+  ],
+  "seed": 610,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2952,
+  "truncated": null,
+  "turns": 66,
+  "winner": 3,
+  "winner_label": "P3"
+}

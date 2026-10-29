@@ -1,0 +1,22 @@
+## Issue #17 — partial starter corpus, slices 8–9
+
+**Draft; the original eight-list certification gate remains open.** Catalog114; exact eight-list union459 =102 catalog-supported names +357 missing. One exact100-card starter implemented; zero certified. Catalog membership is not whole-list playability. Arbitrary Archidekt compatibility remains a non-goal until proven.
+
+### Newly implemented on this continuation
+Soul's Attendant, Razorclaw Bear, Volley Veteran, Dramatic Reversal, Goblin War Strike, Brightstone Ritual, Mana Geyser and Rite of Flame. Live printing IDs, fields and UTC retrieval dates are retained in `fixtures/starter-corpus/slice8-sourced.json` and `slice9-sourced.json`. All eight desired deck contents are unchanged.
+
+Mana pool/event quantities widened to u32, exact payments above255, bounded rendering for large quantities, and preserved old numeric replay behavior. u32MAX saturation remains an explicit simulation limit. Goblin War Strike's planeswalker target is not usable because no planeswalker permanents exist in the pool.
+
+### Verification at the current candidate
+- Exact local/remote/PR/review head `ab9d4f50c1cd8b77ad8b358976fcf89a9a000864`; same-history independent practical review2 **APPROVED_INCREMENT**, zero findings.
+- 10/10 exact-head checks completed SUCCESS; configured required checks pass. This is not merge authorization.
+- Slice8 affected review suites101 tests; final9-test slice8 suite after the unblocked control. Slice9 affected review suites47 tests; final native slice8+9 suites9+6. These are separate runs, not a unique combined test count. Round2 review reused-evidence text accidentally repeats101 for slice9; its actual focused log totals47.
+- fmt, core Clippy warnings-denied and locked release CLI build independently reproduced. Empty quiet-command logs are not presented as evidence.
+- Real exact four-seat40-life package seed801: terminal2377actions/68turns,6087events, separate replay matches `ffbeaee0db38...`. Razorclaw/Volley trigger events occur; other new effects are proven by focused tests, not merely card-name occurrences.
+- Real exact four-seat40-life Krenko package seed901: terminal1339actions/32turns,4379events, separate replay matches `5d20bb4a35e2...`; old slice8 replay still matches. The heuristic casts none of the three new rituals, so focused conformance tests, not this trace, prove their mana behavior.
+- Both journeys use explicit40-card PACKAGE snapshots, not substitutes for desired100-card starters.
+
+### Preserved correctness and limitations
+Prior slice7 exact-once simultaneous death dispatch and token destination-before-SBA integration remain approved; not re-audited here. Friendly Teddy and Aetherize remain unsupported due to multi-player draw/APNAP and attacker-list commander replacement continuations. Brightstone's sourced slice9 implementation supersedes its historical slice8 exclusion. Broader legend/equipment/auras, tribal commander, tutor/reanimation and hundreds of desired cards remain missing. Analyzer gameplay refusal is unchanged. Slice8's absent-catalogRED/implementation-first history and slice9's genuine pre-engineRED are recorded honestly.
+
+No merge, master push, force push, issue closure or certified #26/#32 unlock. Continue on this SAME card/PR and preserved writer/reviewer histories. Full #17 remains unfinished.

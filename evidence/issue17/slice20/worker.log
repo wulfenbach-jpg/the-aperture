@@ -1,0 +1,31 @@
+Working...
+**Slice 20 complete. Local head `cb7a18a`.** Full #17 remains unfinished; **1 of 8 certified**. No push/merge/closure.
+
+### Implemented
+**Vivien’s Grizzly** `{2}{G}` — Creature — Bear Spirit 2/3, exact sourced ability:
+`{3}{G}: Look at the top card... creature/planeswalker → may reveal and hand; otherwise bottom.`
+
+- Anchored top-card look; no temporary removed-object holding, no new `GameState` field.
+- Private owner look, public reveal only when taken.
+- Ineligible card auto-bottoms without reveal; empty library is not a draw/loss.
+- Serialized/validated `TopCardChoice` bound to the exact eligible top card.
+- Existing scry/surveil and optional-trigger behavior unchanged.
+- Source: Scryfall `37f2571b…`, WAR 182, retrieved `2026-10-27T03:25:27Z`; raw + normalized fixtures committed.
+
+### Verification
+- Unsupported RED retained: `issue17_slice20` failed before registration.
+- `issue17_slice20` **7 passed**, including real offered cast/activation, take/reveal, decline/bottom, ineligible, empty library, wrong-seat/action untouched, and save/reload mid-choice parity.
+- Focused green: command_zone_setup 44, abilities 13, rules_conformance 5, issue17_slice17 6, card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43.
+- `fmt --check`, workspace clippy `-D warnings`, release CLI: exit 0.
+- Fresh corpus audit: **137 catalog / 459 union = 125 supported + 334 missing**, Ayula 28 missing; desired snapshots unchanged.
+
+### Journey
+Evidence-only masked demonstrator, **not product AI**: exact 4 seats, 40 life, seed 1919, snapshot SHA256 `12e6d1e9…916f`, terminal `Win{P3}`, 2048 decisions, 46 turns, Vivien cast 6, ability activated 22, take 5 / bottom 5; replay digest matched and fresh save round-tripped. Digest `6d264b7a…8001`.
+
+### Disclosed deviations
+- Take/bottom reuses `AnswerTriggerChoice` / TriggerChoice pending kind with card-specific labels, avoiding a new Action/UI surface.
+- No planeswalker card exists; eligibility uses the printed type-line predicate.
+- AI test helper got only the mechanical new-pending match arm; no policy/search change.
+- No full workspace matrix rerun; exact-head CI owns it.
+
+Evidence: `evidence/issue17/IMPLEMENTATION-RESULT-slice20.json`, `evidence/issue17/SLICE20-HUMAN-CHECKPOINT.md`, `evidence/issue17/slice20/`.

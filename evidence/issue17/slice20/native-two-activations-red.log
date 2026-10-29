@@ -1,0 +1,22 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.26s
+     Running tests\issue17_slice20_native_probe.rs (target\debug\deps\issue17_slice20_native_probe-af24751401adc6b3.exe)
+
+running 1 test
+test two_stacked_activations_from_one_grizzly_are_valid_save_state ... FAILED
+
+failures:
+
+---- two_stacked_activations_from_one_grizzly_are_valid_save_state stdout ----
+
+thread 'two_stacked_activations_from_one_grizzly_are_valid_save_state' (36648) panicked at crates\core\tests\issue17_slice20_native_probe.rs:16:39:
+two legal ability entries must remain a valid state: InvalidState { reason: "object #1 in battlefield has 0 zone-list and 2 stack container entr(ies); exactly one matching container is required" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    two_stacked_activations_from_one_grizzly_are_valid_save_state
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice20_native_probe`

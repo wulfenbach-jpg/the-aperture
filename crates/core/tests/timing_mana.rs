@@ -332,9 +332,17 @@ fn spell_target_that_is_not_on_the_stack_is_rejected() {
         card: CardId::GrizzlyBears,
         controller: P0,
         targets: Vec::new(),
+        modes: Vec::new(),
+        affected: None,
+        affected_player: None,
+        dead_object: None,
+        source_pt_lki: None,
+        search_amount: 0,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,
+        spell_mana_value: 0,
+        x_value: 0,
     };
 }
 

@@ -1,0 +1,71 @@
+{
+  "verdict": "approve_increment",
+  "reviewed_head": "3661353aad1c3d628827e28faf187e23ca5b4cb9",
+  "base": "e16185c81c66e11e5bef686f03c2a3977a791301",
+  "full_issue17_accepted": false,
+  "scope": "Slice-3 Tatyova, Benthic Druid landfall and Jaddi Offshoot defender package only. This is not full issue-17 certification, not #16 integration, and not approval of the shared core hooks for #16.",
+  "findings": [],
+  "checks": [
+    {
+      "command": "git rev-parse HEAD; git diff --name-status e16185c..HEAD",
+      "result": "HEAD 3661353aad1c3d628827e28faf187e23ca5b4cb9. Delta is card/catalog/ability/engine/state, heuristic defender filter, CLI help, Tatyova tests, package deck, manifest missing lists, docs/README, sourced fixture and evidence. No bundled default deck, desired-list text, or token/rules-revision change."
+    },
+    {
+      "command": "cargo test --locked -p aperture-core --test issue17_tatyova --test card_printings --test catalog_pool --test starter_corpus --test issue13_commander_combat",
+      "result": "exit 0: issue17_tatyova 5/5, card_printings 4/4, catalog_pool 5/5, starter_corpus 8/8, issue13 43/43 (evidence/issue17/slice3-review-core.log)."
+    },
+    {
+      "command": "cargo test --locked -p aperture-import --test starter_corpus_planned",
+      "result": "exit 0: 1/1; manifest missing_cards still matches catalog membership (evidence/issue17/slice3-review-import.log)."
+    },
+    {
+      "command": "cargo test --locked -p aperture-cli; cargo fmt --all -- --check; git diff --check; cargo build --release --locked -p aperture-cli",
+      "result": "all exit 0; CLI lib 7/7 including the four-commander help assertion, commander_check 8/8, explicit_decks 1/1 (evidence/issue17/slice3-review-cli.log)."
+    },
+    {
+      "command": "./target/release/aperture-cli.exe selfplay --help",
+      "result": "help lists Tatyova, Benthic Druid among the supported commanders and states both explicit profiles are bounded practice, not full Commander."
+    },
+    {
+      "command": "selfplay --seed 21, four exact decks/package-tatyova-landfall.txt seats, --commander-combat-practice, Tatyova commander each seat, --out/--replay-out/--verbose",
+      "result": "exit 0; terminal P0 win, 2993 actions / 65 turns, 40 life, digest b31adfd97c3123696a0a614a0bb91f434d344acba3796ec064f4054cb37f9d77, replay_digest_matches true, not capped (evidence/issue17/slice3-review-tatyova.json/.log)."
+    },
+    {
+      "command": "python audit of replay seats[].cards vs decks/package-tatyova-landfall.txt",
+      "result": "all four seat libraries are exactly the 40-card package multiset; all four commanders TatyovaBenthicDruid; profile CommanderCombat40."
+    },
+    {
+      "command": "inspect slice3-review-tatyova.log events",
+      "result": "20 Tatyova landfall triggers and 60 Jaddi landfall triggers; sample Tatyova resolution logs 'gains 1 life' then 'draws a card' then AbilityResolved; zero Jaddi attack declarations; landfall triggers are staged before the next priority."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice3-review-tatyova.replay.json",
+      "result": "exit 0; 2993 actions, 7549 events, replayed digest b31adfd97c31 matches recorded."
+    },
+    {
+      "command": "python source comparison against fixtures/starter-corpus/planned/tatyova-landfall.cards.json",
+      "result": "Tatyova fdn/247 and Jaddi Offshoot tdc/260 match archived mana cost, type line, power/toughness, Oracle text and Commander legality; no fabricated metadata observed."
+    },
+    {
+      "command": "read-only corpus audit with catalog regex updated for card_defender!",
+      "result": "catalog 88 unique names; eight-list union 459 all names = 76 supported + 383 missing; manifest missing union 383 and per-list declared sets match; Tatyova remains planned with 56 missing; Jasmine is the only implemented/playable starter; zero certified."
+    },
+    {
+      "command": "git diff --name-status e16185c..HEAD -- decks/temur-beats.txt decks/izzet-control.txt decks/starter-corpus/planned decks/starter-corpus/jasmine-vanilla-stompy.txt",
+      "result": "empty: old bundled defaults and all eight desired-list contents are unchanged."
+    }
+  ],
+  "reused_evidence": [
+    "Prior approved slice-1/slice-2 Jasmine, Krenko and Talrand package evidence; this delta changes no bundled defaults, desired lists, token behavior, or rules revision.",
+    "Coordinator's archived source response and native corpus evidence were checked against the new fixture rather than refetched.",
+    "The Tatyova package game/replay and focused tests above are independently executed at this head; no full historical matrix was rerun."
+  ],
+  "retained_limitations": [
+    "Only the bounded Tatyova/Jaddi package is approved. The eight-list issue-17 gate remains open with seven planned starters and 383 missing names; full_issue17_accepted is false.",
+    "Landfall is implemented for land drops by Tatyova/Jaddi only; other landfall payoffs, extra land drops, broader ramp and other token/keyword/counter packages remain unsupported.",
+    "Defender is one typed static ability; no general defender/attack-restriction keyword system is claimed.",
+    "Core hooks are a separate #16 integration hotspot; this review does not approve #16 integration, arbitrary Commander, release or merge.",
+    "No full suite, historical replay matrix, network refetch, GUI/import/search audit or playing-strength claim. Native exact-head CI is checked separately."
+  ],
+  "next_command": "cargo test -q -p aperture-core --test issue17_tatyova --test issue17_tokens --test issue17_talrand"
+}

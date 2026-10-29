@@ -1,0 +1,26 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.39s
+     Running tests\issue17_slice46.rs (target\debug\deps\issue17_slice46-e6ff61e91e13a057.exe)
+
+running 1 test
+test blocker_still_blocks_alone_after_its_attacker_is_bounced ... FAILED
+
+failures:
+
+---- blocker_still_blocks_alone_after_its_attacker_is_bounced stdout ----
+
+thread 'blocker_still_blocks_alone_after_its_attacker_is_bounced' (47748) panicked at crates\core\tests\issue17_slice46.rs:762:5:
+assertion `left == right` failed
+  left: Graveyard
+ right: Exile
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    blocker_still_blocks_alone_after_its_attacker_is_bounced
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice46`
+
+EXIT=101

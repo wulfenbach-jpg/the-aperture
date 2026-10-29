@@ -1,0 +1,10 @@
+# slice-29 native gates
+fmt: FMT_EXIT=0
+clippy: CLIPPY_EXIT=0
+release-build: RELEASE_EXIT=0
+focused: FOCUSED_EXIT=0
+workspace: WORKSPACE_EXIT=0
+cli-replay: REPLAY_EXIT=0
+red-unsupported: 
+mutations: all mutations produced a RED and every file was restored byte-for-byte
+corpus-audit: AUDIT OK

@@ -1,0 +1,27 @@
+{
+  "catalog_cards": 97,
+  "catalog_unique_names": 97,
+  "exact_union_names": 459,
+  "supported_union_names": 85,
+  "missing_union_names": 374,
+  "manifest_missing_names": 374,
+  "manifest_matches_catalog": true,
+  "changed_lists": {
+    "isamaru-white-aggro": [
+      57,
+      56
+    ],
+    "ayula-bear-counters": [
+      50,
+      47
+    ]
+  },
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "newly_supported": [
+    "Ashcoat Bear",
+    "Ordinary Bear",
+    "Owlbear",
+    "Soul Warden"
+  ]
+}

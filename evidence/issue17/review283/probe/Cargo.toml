@@ -1,0 +1,10 @@
+[package]
+name = "rev283-probe"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+aperture-core = { path = "../../../../crates/core" }
+serde_json = "1"

@@ -1,0 +1,14 @@
+Working...
+**CHANGES_REQUESTED** at `2785c2cefbb92b678ace58949d2373f982a4a208`.
+
+**Blocking — bookkeeping records are wrong.** My independent all-name audit gives **135 catalog / 459 union / 123 supported / 336 missing**, per-list `55/0/51/48/30/52/52/53`; manifest arrays match. The handoff has the correct 123/336, but `docs/issue17-starter-corpus.md:49` still says **122/337**, `:175` says Ayula’s counter/tribal text is unimplemented, and `:315` lists Ayula as an unsupported commander. Those records must be corrected; the code itself is fine. The checkpoint’s 454/118 parse omitted names and is not the all-name union.
+
+**Executed**
+
+- `abilities` **13/13** including the optional-trigger accept/decline regression.
+- `command_zone_setup` **44/44** including Ayula modes/targets, fight prevention/departure, source-left, save/reload, forged submissions.
+- `--lib` **13/13** including the queued-trigger batch regression; `rules_conformance` 5/5; slice17 6/6; fmt/diff-check pass.
+- Demo replay: 4 seats, 1961 actions, terminal Win P2, 5028 events, digest `09e6bb25c505…`; `sha256(decks/package-slice18.txt)` matches `40028e6e…`; save replay matches.
+- Source fixture contains immutable printing URLs/retrieval dates; no import/UI/AI-policy production edits or desired 100-card replacement.
+
+Full original #17 remains unfinished: **1/8 certified**, 336 union names missing. No merge/closure/unlock. Evidence-only report committed as `238b141`; not pushed.

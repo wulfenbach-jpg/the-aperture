@@ -1,0 +1,21 @@
+=== ai_search (corrected command: --test search) ===
+head=6abd820bf570c5469d9e29379af5c3a4c253b368
+command=cargo test -p aperture-ai --test search --locked
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.54s
+     Running tests\search.rs (target\debug\deps\search-2756d6508be01f6d.exe)
+
+running 9 tests
+test pending_decisions_are_refused_with_a_typed_reason ... ok
+test cancellation_reports_the_labelled_fallback ... ok
+test budget_exhaustion_labels_the_fallback ... ok
+test candidates_are_only_offered_actions ... ok
+test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+test reconstruction_is_reproducible_determinization ... ok
+test declared_own_deck_is_used_for_own_draws_only ... ok
+test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
+test small_paired_trial_against_the_frozen_heuristic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 240.47s
+
+EXIT=0 (ai_search --test search)

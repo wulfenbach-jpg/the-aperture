@@ -43,7 +43,7 @@ fn affordable(view: &PlayerView, cost: &ManaCost) -> bool {
             return false;
         }
     }
-    pool.total() >= cost.generic
+    pool.total() >= u32::from(cost.generic)
 }
 
 fn cost_of(card: CardId) -> ManaCost {
@@ -83,6 +83,24 @@ impl HeuristicPolicy {
             },
             Some(PendingKind::DeclareAttackers) => {
                 let (attackers, defender) = self.attackers(view);
+                // A required attack removes the engine's no-attack offer. In
+                // that case use an actual offered declaration: the ordinary
+                // tactical subset can omit the required creature or choose a
+                // different opponent. Keep the old policy unchanged when no
+                // requirement applies; this is a legality adapter, not ranking.
+                let may_decline = view.legal.iter().any(|legal| {
+                    matches!(&legal.action, Action::DeclareAttackers { attackers, .. } if attackers.is_empty())
+                });
+                if !may_decline {
+                    let offered = view.legal.iter().find(|legal| {
+                        matches!(&legal.action, Action::DeclareAttackers { defender: offered, .. } if *offered == defender)
+                    }).or_else(|| view.legal.iter().find(|legal| {
+                        matches!(legal.action, Action::DeclareAttackers { .. })
+                    }));
+                    if let Some(offered) = offered {
+                        return offered.action.clone();
+                    }
+                }
                 Action::DeclareAttackers {
                     attackers,
                     defender,
@@ -91,6 +109,16 @@ impl HeuristicPolicy {
             Some(PendingKind::DeclareBlockers) => Action::DeclareBlockers {
                 blocks: self.blocks(view),
             },
+            // CR 510.1 + 509.1h: Ruxa's permission is always taken by this
+            // heuristic. Assigning as though unblocked sends all of the
+            // creature's combat damage to the defending player and none to the
+            // blockers, which is the aggressive reading of a "may"; it is a
+            // policy choice for an evidence harness, not a claim of strength.
+            Some(PendingKind::CombatDamageAssignment { .. }) => {
+                Action::AnswerCombatDamageAssignment {
+                    as_though_unblocked: true,
+                }
+            }
             Some(
                 PendingKind::ApnapSacrifice
                 | PendingKind::CommanderReturn
@@ -104,6 +132,14 @@ impl HeuristicPolicy {
             ) => view
                 .legal
                 .first()
+                .map(|legal| legal.action.clone())
+                .unwrap_or(Action::Pass),
+            // CR 701.9a: revealing creature cards is free — the cards stay in
+            // hand — so the offered "reveal every creature card" (the last, and
+            // largest, offer) strictly dominates "reveal nothing".
+            Some(PendingKind::ApnapReveal) => view
+                .legal
+                .last()
                 .map(|legal| legal.action.clone())
                 .unwrap_or(Action::Pass),
             None => self.priority_action(view),
@@ -169,7 +205,9 @@ impl HeuristicPolicy {
         let mine: Vec<&CardView> = view
             .own_battlefield
             .iter()
-            .filter(|c| is_creature(c) && !c.tapped && !c.summoning_sick)
+            .filter(|c| {
+                is_creature(c) && !c.tapped && !c.summoning_sick && !c.card.def().has_defender()
+            })
             .collect();
         if mine.is_empty() {
             return (Vec::new(), None);

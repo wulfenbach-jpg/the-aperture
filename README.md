@@ -19,9 +19,15 @@ implementation and it says so everywhere it matters.
   and payment, London mulligan, priority and stack resolution (consecutive passes
   resolve exactly one stack item), sorcery/instant timing, targets with
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
-  discard, damage removal, state-based actions, bounded combat with attack/block
-  declarations and simultaneous damage, empty-library loss, game win/loss.
-* **Supported branch-candidate pool (31 real cards)**: the 16-card practice
+  discard, damage removal, state-based actions, the CR 508.1d maximal attack
+  requirement, indestructible in the state-based-action path, announced `{X}` costs
+  with X carried through resolution, aggregate "total mana value X or less" target
+  sets, the CR 704.5j legend rule, The Ring emblem with its four level-gated
+  triggered abilities (including Ring-bearer designation and landfall temptation),
+  bounded combat with
+  attack/block declarations and simultaneous damage, empty-library loss, game
+  win/loss.
+* **Supported branch-candidate pool (183 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
@@ -40,8 +46,47 @@ implementation and it says so everywhere it matters.
   ability). All three card texts and their printing sources are recorded in
   `crates/core/tests/card_printings.rs`; see
   [docs/issue15-effects.md](docs/issue15-effects.md).
-  Isamaru is commander-only and is refused in every ordinary starting library
-  because the legend rule is not implemented. Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
+  Isamaru, **Jasmine Boreal**, **Krenko, Mob Boss** and **Talrand, Sky Summoner**
+  are commander-only; they are refused in every ordinary starting library because
+  the named command-zone profile owns their setup. The legend rule itself
+  (CR 704.5j, same-name legendary permanents controlled by one player) is
+  implemented as a state-based action.
+  The issue-17 starter package adds **47 sourced vanilla green/white creatures**
+  (Savannah Lions, Elite Vanguard, Balduvian Bears, Watchwolf and 43 more) and
+  the vanilla commander **Jasmine Boreal** (`{3}{G}{W}`, legendary 4/5 Human),
+  all reusing the existing permanent-spell path. Their exact 99-card singleton
+  library is `decks/starter-corpus/jasmine-vanilla-stompy.txt`; see
+  [docs/issue17-starter-corpus.md](docs/issue17-starter-corpus.md). Slice 2 adds
+  the sourced **Krenko goblin-token package**: Krenko, Dragon Fodder, Krenko's
+  Command, Hordeling Outburst, Goblin Instigator, Beetleback Chief, Goblin
+  Warchief, Goblin King, Dragonlord's Servant, Volcanic Dragon, Siege-Gang
+  Lieutenant, Skirk Prospector and Zo-Zu the Punisher, plus an
+  engine-only 1/1 red Goblin token (never importable), plus **Talrand, Sky
+  Summoner** with a complete instant/sorcery cast trigger, an engine-only 2/2
+  blue Drake token with real flying, and flying block restriction. Slice 3 adds
+  **Tatyova, Benthic Druid** (commander-only landfall: gain 1 life then draw) and
+  **Jaddi Offshoot** (real defender + landfall life). The cross-corpus slice adds
+  **Swamp**, **Lightning Bolt**, **Forest Bear**, **Striped Bears** and
+  **Guttersnipe** (controller-only spell-cast trigger dealing 2 to each live
+  opponent, source-left resolution). The exact 100-card Krenko
+  starter remains planned; `decks/package-krenko-tokens.txt` is a clearly named
+  40-card supported package fixture. The other seven target archetypes are
+  planned, not supported. Slice 4 adds **Ordinary Bear** (vanilla), **Ashcoat
+  Bear** (printed Flash), **Owlbear** (printed Trample plus an enters draw) and
+  **Soul Warden** (“another creature enters”, fired for any controller's
+  creature, tokens included). Slice 5 adds **Stitcher's Supplier** (mill three on
+  enters *and* on dies), **Ruin Crab** (landfall: each opponent mills three),
+  **Negate** (counter target noncreature spell), **Preordain** (scry 2 then draw)
+  and the red rituals **Pyretic Ritual**/**Seething Song** (add mana to the pool).
+  Milling, scry-then-draw and mana addition are real rules actions now;
+  target-player milling and tutoring are still not implemented.
+  Slice 59 adds **Dúnedain Rangers** (`{3}{G}` Human Ranger 4/4, LTR 159) with its
+  printed landfall Ring-temptation trigger, and the engine-only **The Ring** emblem
+  (never importable): Ring-bearer designation, CR 704.5j legendary status, the
+  greater-power block restriction, attack draw-then-discard, end-of-combat blocker
+  sacrifice and combat-damage life loss at levels 1-4. See
+  [docs/issue17-starter-corpus.md](docs/issue17-starter-corpus.md) §Slice 59.
+  Crack the Earth is described here: (`{R}`, Sorcery — Arcane; Oracle: “Each player sacrifices a permanent of their choice.”) from the official Gatherer page recorded in [docs/rules-reference.md](docs/rules-reference.md). The two bundled 40-card practice decks are unchanged and do not contain Crack the Earth. No cards outside this list are supported. This is a branch candidate, not an accepted M1 release.
 * **Two bundled 40-card practice decks** (`decks/temur-beats.txt`,
   `decks/izzet-control.txt`).
 * **Headless CLI** (`aperture-cli`): `selfplay`, `replay` (verify), `harness`,
@@ -71,14 +116,32 @@ implementation and it says so everywhere it matters.
   `legal` never means playable. All 2+ commander variants and every non-normal
   layout are refused as `not_certified`. See
   [docs/commander-legality.md](docs/commander-legality.md).
-* **Versioned persistence:** replay v5 embeds ordered seat deck snapshots, the
+* **Versioned persistence:** replay **v6** embeds ordered seat deck snapshots, the
   explicit named profile (`practice-20`, `command-zone-practice-20` or
   `commander-combat-practice-40`), the explicit commander setup (empty for
-  ordinary practice), and the recorded first player; save v8 embeds the game,
+  ordinary practice), and the recorded first player; save **v10** embeds the game,
   replay, seat snapshots, AI settings, the Commander-combat damage ledger and
   digest, including the mulligan round and sacrifice queue. Older replay/save versions are rejected explicitly rather
   than silently reinterpreted, and a recorded `rules_revision` must match this
   build before a replay runs. The pinned rules revision is unchanged.
+  Both numbers are deliberately **not** bumped by the combat-declaration record
+  (`Turn::declared_attackers` / `declared_blockers`, CR 506.5): a bump would
+  reject every older artifact outright, including the pinned pre-#16 v10 fixture
+  that exists to prove an old save still loads. The cost of staying at v10/v6 is
+  a documented limitation rather than a silent one — a save or replay written
+  before that record existed can re-execute to a **different digest** than the
+  one it stored (an older mid-combat recording fails with
+  `replay ended early: digest … != recorded …`). Slice 50 restores Witness's
+  correct live pre-death predicate: a missing declaration no longer suppresses
+  an alone death. Live combat membership is enough, as the absent-field
+  state-continuation regression proves; this does **not** claim every legacy
+  save now verifies its stored digest. Rule-corrected games can also differ
+  behaviorally from recordings made with the earlier declaration-only bug.
+  Slice 50 also preserves blockers whose attackers left combat (CR 509.1g), in
+  an omitted-when-empty `unpaired_blockers` field. It changes hashes only when
+  present. An older save made after losing all blocking pairs has already
+  discarded that membership and cannot reconstruct it; v10/v6 stay in use
+  with that explicit best-effort limitation.
 * **Native desktop UI** (`aperture`): dark charcoal/brass 2–4-seat card table
   with compact 2x2 seat panels, all public battlefields, command zones, life,
   counters, status, stack view, own hand, legal-action buttons, coaching panel
@@ -101,7 +164,7 @@ implementation and it says so everywhere it matters.
   The human is P0 and every other seat can be driven by the deterministic
   heuristic AI with no model service. The setup controls choose 2/3/4 seats and
   either ordinary 20-life practice or the explicit bounded 40-life
-  one-Isamaru-per-seat practice profile; **New game** retains that selection.
+  one-supported-commander-per-seat practice profile; **New game** retains that selection.
   Ordinary defaults use the alternating compiled Temur/Izzet lists. The bounded
   command default uses the compiled command-zone practice library
   (`decks/command-zone-practice.txt`: Plains/Forest/Island plus the supported
@@ -224,25 +287,28 @@ seat starts in that seat's command zone, command-zone casts pay `{2}` per previo
 command-zone cast (CR 903.8), a commander entering a graveyard/exile gets its
 owner's one-time CR 903.9a return choice, and a commander moving to hand/library
 is suspended for the owner's CR 903.9b replacement choice. This named profile
-stays at 20 life. It is **not** Commander legality or full Commander: Isamaru is
-the only supported commander, there is no color-identity/100-card profile, no
-commander damage, no legend rule, no partner/multi-commander; the native table
+stays at 20 life. It is **not** Commander legality or full Commander: Isamaru and Jasmine
+Boreal are the supported commanders, there is no color-identity/100-card profile, no
+commander damage and no partner/multi-commander (the CR 704.5j legend rule is
+implemented separately); the native table
 supports loading/saving the two named command profiles in addition to starting
 the bounded 40-life table, but this is still practice, not Commander.
 
 A separate explicit **bounded Commander-combat practice** profile
 (`--commander-combat-practice`, serialized as `commander-combat-practice-40`)
-starts at 40 life and keeps the same one-Isamaru-per-seat command-zone behavior.
+starts at 40 life and keeps the same one-supported-commander-per-seat command-zone
+behavior.
 The per-commander combat-damage ledger and the CR 903.10a 21-damage loss are
 implemented for this explicit profile (stable `CommanderId` + recipient,
 combat-only credit). It is still **not the Commander format** (no 100-card
-construction, partners, legend rule or full elimination/APNAP cleanup). The
+construction, partners or full elimination/APNAP cleanup; the legend rule is
+implemented as its own state-based action). The
 native setup offers this as the explicit **bounded 40 life** option with one
-Isamaru per seat; its games save/load natively. It remains headless-capable and
+supported commander per seat; its games save/load natively. It remains headless-capable and
 is not the Commander format.
-Isamaru is refused in every ordinary starting
-library. The command-zone sources are Isamaru, Plains, Unsummon, Time Ebb and
-Swords to Plowshares; **Fog** adds bounded full combat-damage prevention (this
+Both supported commanders are refused in every ordinary starting
+library. The command-zone sources are Isamaru, Jasmine Boreal, Plains, Unsummon,
+Time Ebb and Swords to Plowshares; **Fog** adds bounded full combat-damage prevention (this
 turn, all players and permanents) with typed prevented events. Partial
 prevention, damage redirection and replacement effects are not modelled.
 
@@ -250,29 +316,47 @@ prevention, damage redirection and replacement effects are not modelled.
 
 Full Commander legality and gameplay — the bounded command-zone and
 Commander-combat practice profiles above are not Commander: color identity,
-100-card singleton construction, the legend rule and partners/multi-commander
-are absent. The native table exposes these explicit profiles for local practice,
+100-card singleton construction and partners/multi-commander are absent. (The
+CR 704.5j legend rule is implemented as a state-based action; it is not a
+Commander-construction feature.) The native table exposes these explicit profiles for local practice,
 which does not make them Commander. The Commander-combat profile implements 40
 starting life, the per-commander combat-damage ledger and the CR 903.10a 21-damage
 loss and full combat-damage prevention for one turn (Fog); partial prevention,
 redirection and replacement effects are not implemented, so the profile is not
 Commander gameplay. The offline deck-profile analyzer above is
 analysis only;
+Commander graveyard/exile return is an SBA **after** zone entry (CR 903.9a),
+so a commander put into the graveyard does die before the return choice.
+Earlier "never dies" / replacement-effect guidance was incorrect and must not be implemented.
+Thijarian Witness's "was attacking or blocking alone" is read from the **live**
+pre-death combat state, not from a declaration record: CR 506.5 distinguishes
+"attacks alone" (declaration) from "is attacking alone" (live membership), and the
+printed past tense names the live state, snapshotted once per simultaneous death
+batch (CR 704.3). The declaration record is bookkeeping for other questions and is
+never read for this predicate. The residual limits are stated here rather than as a
+rules gap: a save captured mid-combat before that record existed re-executes to a
+different digest, and `GameState::validate` does not constrain the recorded
+declaration lists.
 networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
-Earth sacrifice candidate, triggered abilities, activated abilities other
-than basic-land mana abilities, static abilities beyond the supported forms,
-replacement effects beyond the implemented CR 614/615/616 set, full redirection,
-planeswalkers, counters and tokens *as card text* (the rules layer implements
-typed +1/+1 and -1/-1 counters, creature tokens with correct ownership/
-cessation and the flying/reach/defender keywords, but no card in the 28-card
-pool creates or prints one; the sandbox counter display is storage only; player
-counters do not exist),
-milling/tutoring/libraries as
+Earth sacrifice candidate, triggered abilities outside the typed supported forms,
+activated abilities outside the typed supported forms (basic-land mana, Krenko,
+Prodigal Sorcerer, Rootwalla, Brindle Boar), static abilities beyond the typed
+forms the pool prints (count/threshold statics, damage doubling, cost reduction,
+trample grants, creature-spell cost reduction, and the during-your-turn Bear
+Form line), replacement effects beyond damage doubling, redirection,
+planeswalkers, counters as rules objects (the sandbox counter display is
+storage only), tokens beyond the typed 1/1 red Goblin package, target-player
+milling (self-mill and each-opponent mill are implemented), tutoring, libraries as
 targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
-layers 4–6/7b/7d, Arcane/splice interactions, and any
-card outside this branch candidate's 31-card pool.
+layers 5 colour changes beyond the printed Stuffed Bear animation, layer 6
+ability grants beyond printed keywords and the typed grants (trample, haste, and
+the shroud/hexproof the two Equipment grant), layer 7a
+characteristic-defining power/toughness beyond Beorn's Hospitality's land count and Lumra, Bellow of the Woods' land count (Lumra is modelled as a printed layer-7c additive static with no printed P/T, not as a generic fully ordered layer-7a claim),
+layer 7d (counters stay
+display-only), Arcane/splice interactions, and any card outside this branch
+candidate's 183-card pool.
 Unsupported decks are refused at import rather than silently substituted.
 The 40-card practice file loader also refuses `Commander:`/`Companion:`/
 `Sideboard:` text instead of flattening it into a practice deck. `pool` prints
@@ -283,3 +367,9 @@ divide a blocked creature's damage among its blockers as they choose; this slice
 assigns it automatically in lethal-first order and exposes no assignment choice.
 The engine comment, the coaching panel and README all label this as a bounded
 simplification rather than the rule (`crates/core/tests/combat_teaching.rs`).
+The single exception is a printed permission, now implemented: Ruxa, Patient
+Professor's "you may have that creature assign its combat damage as though it
+weren't blocked" (CR 510.1, slice 53). That choice exists only for a **blocked**
+attacker with no abilities, and it only chooses between the printed
+as-though-unblocked assignment and the automatic one — arbitrary splits, damage
+assignment orders and multi-blocker distributions remain unimplemented.

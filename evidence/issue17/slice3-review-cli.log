@@ -1,0 +1,38 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.05s
+     Running unittests src\main.rs (target\debug\deps\aperture_cli-ae1dfb167f71d971.exe)
+
+running 7 tests
+test tests::selfplay_help_lists_every_supported_commander_and_the_bounded_scope ... ok
+test decks::tests::an_explicit_starter_file_keeps_its_own_identity ... ok
+test harness_cmd::tests::classifier_and_exit_code_are_explicit ... ok
+test decks::tests::an_explicit_missing_deck_path_is_not_replaced_by_the_bundle ... ok
+test decks::tests::non_explicit_default_loads_keep_the_human_fallback_names ... ok
+test harness_cmd::tests::capped_harness_emits_paired_rows_and_exit_2 ... ok
+test harness_cmd::tests::terminal_harness_emits_rows_and_exit_0 has been running for over 60 seconds
+test harness_cmd::tests::terminal_harness_emits_rows_and_exit_0 ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 66.43s
+
+     Running tests\commander_check.rs (target\debug\deps\commander_check-fddcf318319a1821.exe)
+
+running 8 tests
+test commander_check_returns_0_for_a_legal_but_unplayable_deck ... ok
+test pregame_chosen_color_commander_exits_2_without_false_color_illegal ... ok
+test parenthesized_section_headers_are_refused_by_real_consumers ... ok
+test a_valid_mainboard_prefixed_practice_file_still_loads_and_plays ... ok
+test commander_check_returns_1_for_illegal_and_2_for_not_certified ... ok
+test commander_check_returns_2_for_malformed_input_and_out_matches_stdout ... ok
+test a_commander_section_in_a_practice_file_is_refused_by_real_consumers ... ok
+test commander_check_returns_2_for_duplicates_with_incomplete_oracle_text ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.13s
+
+     Running tests\explicit_decks.rs (target\debug\deps\explicit_decks-4b0d5a2310bc089c.exe)
+
+running 1 test
+test coach_refuses_both_explicit_missing_deck_paths ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.31s
+

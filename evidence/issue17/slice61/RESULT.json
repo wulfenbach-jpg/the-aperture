@@ -1,0 +1,85 @@
+{
+  "slice": 61,
+  "kind": "correction slice: review-360's four items; two are code/coverage defects, two are records",
+  "base": "ef03f11",
+  "code_head": "4b1863054c234addaf94ac758d914eed138f471a",
+  "opening_commit": "4b1863054c234addaf94ac758d914eed138f471a",
+  "new_card_enabled": false,
+  "corrections": {
+    "R360-1": "certify_cmd.rs interaction_exclusions() and the Ayula manifest block now state that the CR 704.5j SBA and its controller's choice are implemented and covered; these games never reach a choice",
+    "R360-2": "Jasmine certificate exclusions, docs section 'Exclusion policy', docs feature-gap item 7 and the Jasmine section all corrected; slice-41/43 own-time text marked superseded; slice-59 section records the supersession; isamaru/krenko missing_interactions no longer list the legend rule",
+    "R360-3": "entering_resolves_two_hideaways_that_exile_face_down_and_bottom_the_rest asserts the observable library order (untouched tail on top in order, looked-at non-exiled cards at the bottom as a multiset); fixture tail is two Plains so the two regions are distinguishable",
+    "R360-4": "selfplay --commander help names every CardId::SUPPORTED_COMMANDERS entry including Ayula, Queen Among Bears, drops the retired 'no legend rule' claim, and a new CLI test binds the help text to the registry"
+  },
+  "red_proofs": {
+    "R360-3": {
+      "mutation": "apply_hideaway_exile: library.extend(rest) -> library.splice(0..0, rest) (bottomed cards left on top - the reviewer's mutation)",
+      "result": "8 passed / 1 failed, exit 101",
+      "assertion": "left: [RuneclawBear, Island] / right: [Plains, Plains]",
+      "log": "evidence/issue17/slice61/mutation-bottoming-red.log",
+      "restored": "crates/core/src/engine.rs byte-identical to base, verified clean"
+    },
+    "R360-4": {
+      "mutation": "Ayula, Queen Among Bears deleted from the --commander help list",
+      "result": "selfplay_commander_help_lists_every_supported_commander fails, exit 101",
+      "log": "evidence/issue17/slice61/red-help-missing-ayula.log",
+      "restored": "crates/cli/src/main.rs restored from a byte backup and re-diffed"
+    }
+  },
+  "gates": {
+    "fmt": 0,
+    "clippy_workspace_all_targets_deny_warnings": 0,
+    "focused_binaries": 10,
+    "focused_passed": 79,
+    "focused_failed": 0,
+    "focused_detail": {
+      "certify": 4,
+      "commander_check": 9,
+      "starter_corpus": 8,
+      "catalog_pool": 5,
+      "card_printings": 20,
+      "issue17_slice60": 9,
+      "issue17_slice59_repairs": 7,
+      "issue17_slice59_ring_repairs": 10,
+      "issue17_slice55": 5,
+      "issue17_slice15_corpus": 2
+    },
+    "corpus": "AUDIT OK 166 catalog / 459 union = 153 supported + 306 missing; per-list [55,0,51,48,0,52,52,53]; 2 certified; Ayula both gap fields empty",
+    "no_whole_workspace_local_total_claimed": true
+  },
+  "journey": {
+    "path": "shipped certify command, exact snapshot decks/starter-corpus/ayula-bear-counters.txt (sha256 7a1b3f9c745967bd...19c4)",
+    "seats": 4,
+    "life": 40,
+    "seeds": [1, 2, 3],
+    "games": [
+      {"seed": 1, "status": "terminal", "winner": 1, "steps": 1499, "turns": 31, "digest": "78b301cbef68"},
+      {"seed": 2, "status": "terminal", "winner": 3, "steps": 1373, "turns": 30, "digest": "8ccf4bc4a753"},
+      {"seed": 3, "status": "terminal", "winner": 2, "steps": 1233, "turns": 26, "digest": "0adc5f3097ea"}
+    ],
+    "digests_identical_to_accepted_slice60_certificate": true,
+    "separate_cli_replay": "selfplay --seed 1 with the same snapshot in all four seats and Ayula in the command zone -> terminal Win{P1}, 1499 steps, 78b301cbef68; replay --file -> matches recorded, 3793 events, exit 0",
+    "binary": "debug CLI (cargo run -p aperture-cli --bin aperture-cli); the manifest reproduce line still names the release build",
+    "not": "100-card certification, product AI, strength or GUI evidence"
+  },
+  "corpus": {
+    "catalog": 166,
+    "union": 459,
+    "supported": 153,
+    "missing": 306,
+    "per_list": [55, 0, 51, 48, 0, 52, 52, 53],
+    "certified": 2,
+    "certified_lists": ["jasmine-vanilla-stompy", "ayula-bear-counters"],
+    "full_issue17_accepted": false
+  },
+  "disclosures": [
+    "Original #17 remains unfinished: 2 of 8 certified; six planned lists with real gaps [55,51,48,52,52,53].",
+    "Native authored this slice and is not its independent reviewer.",
+    "No new card and no engine behaviour change: the two code items are a strengthened regression and a CLI help/allow-list defect plus its drift test; the other two are record corrections.",
+    "The R360-3 RED is the reviewer's mutation executed against the strengthened test; the R360-4 RED is a local deletion of the missing commander from the help text.",
+    "crates/core/src/engine.rs was mutated only for the RED and restored; the tracked tree was verified clean.",
+    "No fresh whole-workspace local total is claimed; exact-head CI is the broad gate.",
+    "No completion, merge, master push, closure, dependent unlock, new team or global-config change."
+  ],
+  "next_action": "Independent concise review of ef03f11..code head 4b18630. Then the SAME writer/history/card/branch/draft PR46 continues krenko-goblin-tokens (48 names) starting with Goblin Chieftain (printed haste + other-Goblin +1/+1 and haste static) and then Searslicer Goblin (Raid end-step trigger with 'if you attacked this turn' and a real Goblin token), whole-field missing_cards AND missing_interactions each time, then the remaining lists; 3 of 8 only on an actual certificate."
+}

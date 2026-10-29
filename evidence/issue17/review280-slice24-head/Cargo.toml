@@ -1,0 +1,11 @@
+[package]
+name = "issue17-review280-slice24head"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+aperture-core = { path = "../../../crates/core" }
+aperture-ai = { path = "../../../crates/ai" }
+serde_json = "1"

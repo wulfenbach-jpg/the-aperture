@@ -1,0 +1,19 @@
+Working...
+**Assignment 2 complete — PARTIAL #17.** Assignment 1’s Jasmine package is unchanged; seven additional exact **desired** lists now exist as metadata only. None is supported, playable or certified. No commit/push.
+
+## Delivered
+- `decks/starter-corpus/planned/*.txt` for isamaru, talrand, krenko, ayula, elas, tatyova, zada — each **99 library + separate commander**, **57 unique nonland + 42 basics** (two-color splits 21/21).
+- `decks/starter-corpus/manifest.json`: all eight entries have real `deck_path`; Jasmine `implemented`, seven `planned`, none `certified`; `missing_cards` computed from the current catalog.
+- Real Scryfall sourcing with `order=edhrec` plus archetype theme clauses (goblins, bears, instants/sorceries, sacrifice/dies, landfall/ramp, targeted spells, humans/equipment). URLs, retrieval `2026-10-25T08:32:00Z`, and per-card printing id/set/collector/URI in `fixtures/starter-corpus/planned/source-index.json`.
+- Per-list analyzer snapshots under `fixtures/starter-corpus/planned/`, using existing schemas.
+
+## Evidence
+- Corpus union: **447 unique nonbasic names; 61 supported, 386 missing.** Supported overlap: Jasmine 58/58, Ayula 6/57, Talrand 3/57, others 0/57.
+- `commander-check` for all seven: **format `legal`**, **engine `unsupported`**, totals 100, unsupported 52–59 each; `gameplay.available = false` untouched. Reports in `evidence/issue17/planned-checks/`.
+- Elas gap surfaced honestly: **Swamp is not in the supported pool**, recorded in `missing_cards`/`missing_interactions`.
+- RED: `starter_corpus_planned` failed with “isamaru-white-aggro has no exact desired list”; GREEN after generation.
+- Tests: planned structural test passes; existing starter/manifest and analyzer tests pass; clippy clean. Structural test checks exactly eight ids, 100-card lists, singleton/basic rules, 56–61 nonland names, 38–43 basics, and exact catalog-derived missing names.
+- Docs updated with union counts, per-list overlap, staged interaction roadmap: `docs/issue17-starter-corpus.md`.
+- Handoff: `evidence/issue17/IMPLEMENTATION-HANDOFF-2.md`; machine result updated in `evidence/issue17/implementation-result.json`.
+
+Eight-list release gate remains open; no planned list is called supported or legal-for-play.

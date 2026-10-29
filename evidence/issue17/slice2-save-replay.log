@@ -1,0 +1,5 @@
+save evidence/issue17/slice2-krenko-save.json — 4 seat(s): P0 'package-krenko-tokens' vs P1 'package-krenko-tokens' vs P2 'package-krenko-tokens' vs P3 'package-krenko-tokens'
+  stored digest f4768c8a3bd2 | recomputed f4768c8a3bd2 | matches
+  turn 40 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P0, P1, P2, P3 = deterministic baseline heuristic; autoplay off
+  replay of 1805 action(s) -> digest f4768c8a3bd2 | events 5930 | reproduces the save

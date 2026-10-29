@@ -1,0 +1,209 @@
+    fn apply_cast(
+        &mut self,
+        player: PlayerId,
+        card: ObjectId,
+        targets: &[Target],
+        events: &mut Vec<Event>,
+    ) {
+        let (card_id, from_command_zone, commander_id) = {
+            let obj = self.state.object(card);
+            (obj.card, obj.zone == Zone::Command, obj.commander)
+        };
+        let cost = self
+            .effective_cost(card)
+            .expect("validated command-zone cost still computes");
+        let payment = self
+            .plan_payment(player, &cost)
+            .expect("validated payment still plans");
+        // CR 601.2a: move the card to the stack; CR 601.2h: pay costs.
+        let stack_object = self.move_object_to_stack(player, card, commander_id);
+        self.state.stack.push(StackItem {
+            object: stack_object,
+            card: card_id,
+            controller: player,
+            targets: targets.to_vec(),
+            cursor: 0,
+            entry: StackEntry::Spell,
+            trigger_answered: false,
+        });
+        if from_command_zone
+            && let Some(commander) = commander_id
+            && let Some(registry) = self
+                .state
+                .commanders
+                .iter_mut()
+                .find(|registry| registry.id == commander)
+        {
+            // CR 903.8: the count changes when the commander is cast, never at
+            // resolution, and only for a command-zone cast.
+            registry.casts_from_command_zone += 1;
+        }
+        let target_labels = targets
+            .iter()
+            .map(|t| self.describe_target(*t))
+            .collect::<Vec<_>>();
+        // CR 601.2a: the spell is on the stack before costs are paid (601.2h).
+        events.push(Event::Cast {
+            player,
+            object: stack_object,
+====
+    fn grant_priority(&mut self, player: PlayerId, events: &mut Vec<Event>) {
+        if self.pending_loss_exists() {
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 117.5/608.2: no player receives priority while a stack item is
+        // still resolving. `advance_resolution` follows an item's instructions to
+        // completion in one call, so this guard is a backstop: it can only fire
+        // if a future change reintroduces a mid-resolution grant, and the
+        // scheduler then resumes after the item finishes instead of emitting a
+        // false `Priority` event (R170-1).
+        if self.state.resolving.is_some() {
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 603.3: waiting triggered abilities are put on the stack before any
+        // player actually receives priority.
+        if self.state.pending.is_none() && self.put_triggers(events) && self.state.pending.is_some()
+        {
+            // A trigger still needs its controller's target choice.
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 800.4j: if the seat that would receive priority has left the game,
+        // the next live seat in turn order receives it.
+        let recipient = if self.state.is_live(player) {
+            Some(player)
+        } else {
+            self.state.next_live_seat_after(player)
+        };
+        let Some(recipient) = recipient else {
+            self.state.turn.priority = None;
+            return;
+        };
+        self.state.turn.priority = Some(recipient);
+        self.state.turn.passed = 0;
+====
+                            label: format!(
+                                "Attack P{defender} with all eligible creatures ({})",
+                                names.join(", ")
+                            ),
+                            rules: vec!["508.1a", "508.1f"],
+                        });
+                    }
+                }
+                out
+            }
+            Pending::DeclareBlockers { player } => {
+                let mut out = vec![LegalAction {
+                    action: Action::DeclareBlockers { blocks: Vec::new() },
+                    label: "Declare no blockers".to_string(),
+                    rules: vec!["509.1a"],
+                }];
+                let greedy = self.sample_blocks(*player);
+                if !greedy.is_empty() {
+                    out.push(LegalAction {
+                        action: Action::DeclareBlockers {
+                            blocks: greedy.clone(),
+                        },
+                        label: format!(
+                            "Block with every available creature ({} block(s))",
+                            greedy.len()
+                        ),
+                        rules: vec!["509.1a"],
+                    });
+                }
+                out
+            }
+            Pending::OrderCard {
+                viewed,
+                index,
+                mode,
+                ..
+            } => {
+                let card = self.state.object(viewed[*index]).card.name();
+                let verb = match mode {
+                    OrderMode::Scry => "on top",
+                    OrderMode::Surveil => "on top",
+====
+1905:    fn validate_declare_blockers(
+1906-        &self,
+1907-        player: PlayerId,
+1908-        blocks: &[BlockDecl],
+1909-    ) -> Result<(), EngineError> {
+1910-        match &self.state.pending {
+1911-            Some(Pending::DeclareBlockers { player: p }) if *p == player => {}
+1912-            _ => {
+1913-                return Err(EngineError::illegal(
+1914-                    "declare blockers",
+1915-                    "it is not that player's declaration (CR 509.1a)",
+1916-                ));
+1917-            }
+1918-        }
+1919-        let legal = self.legal_blockers(player);
+1920-        let mut used = Vec::new();
+1921-        for block in blocks {
+1922-            if used.contains(&block.blocker) {
+1923-                return Err(EngineError::illegal(
+1924-                    "declare blockers",
+1925-                    "a creature can block only one attacker unless an effect says otherwise (CR 509.1a)",
+1926-                ));
+1927-            }
+1928-            used.push(block.blocker);
+1929-            if !legal.contains(&block.blocker) {
+1930-                return Err(EngineError::illegal(
+1931-                    "declare blockers",
+1932-                    format!(
+1933-                        "{} cannot block: it must be an untapped creature you control (CR 509.1a)",
+1934-                        self.describe_object(block.blocker)
+1935-                    ),
+1936-                ));
+1937-            }
+1938-            if !self.state.turn.attackers.contains(&block.attacker) {
+1939-                return Err(EngineError::illegal(
+1940-                    "declare blockers",
+1941-                    format!(
+1942-                        "{} is not attacking (CR 509.1a)",
+1943-                        self.describe_object(block.attacker)
+1944-                    ),
+1945-                ));
+1946-            }
+1947-        }
+1948-        Ok(())
+1949-    }
+1950-
+1951-    pub fn legal_attackers(&self, player: PlayerId) -> Vec<ObjectId> {
+1952-        self.state
+1953-            .objects
+1954-            .values()
+1955-            .filter(|o| {
+1956-                o.zone == Zone::Battlefield
+1957-                    && o.controller == player
+1958-                    && o.is_creature()
+1959-                    && !o.tapped
+1960-                    && !o.summoning_sick
+1961-            })
+1962-            .map(|o| o.id)
+1963-            .collect()
+1964-    }
+1965-
+1966-    pub fn legal_blockers(&self, player: PlayerId) -> Vec<ObjectId> {
+1967-        self.state
+1968-            .objects
+1969-            .values()
+1970-            .filter(|o| {
+1971-                o.zone == Zone::Battlefield
+1972-                    && o.controller == player
+1973-                    && o.is_creature()
+1974-                    && !o.tapped
+1975-            })
+1976-            .map(|o| o.id)
+1977-            .collect()
+1978-    }
+1979-
+1980-    // --------------------------------------------------------------- mutation
+1981-
+1982-    fn apply(&mut self, player: PlayerId, action: &Action, events: &mut Vec<Event>) {
+1983-        match action {
+1984-            Action::Pass => self.apply_pass(player, events),
+1985-            Action::PlayLand { card } => self.apply_play_land(player, *card, events),

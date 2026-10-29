@@ -1,0 +1,16 @@
+{
+  "accepted_actions_checked": 954,
+  "all_actions_exactly_offered": true,
+  "discounted_dragon_payments": [
+    {
+      "mana_paid": 4,
+      "printed_mana": 6,
+      "seat": 2,
+      "servants": 2,
+      "step": 864
+    }
+  ],
+  "final_digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+  "self_check_not_independent_review": true,
+  "terminal": true
+}

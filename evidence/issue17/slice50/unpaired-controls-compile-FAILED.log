@@ -1,0 +1,17 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0599]: no method named `player_mut` found for struct `aperture_core::GameState` in the current scope
+   --> crates\core\tests\issue17_slice46.rs:950:25
+    |
+950 |                 g.state.player_mut(P1).hand.push(blocker);
+    |                         ^^^^^^^^^^
+    |
+help: there is a method `player` with a similar name
+    |
+950 -                 g.state.player_mut(P1).hand.push(blocker);
+950 +                 g.state.player(P1).hand.push(blocker);
+    |
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `aperture-core` (test "issue17_slice46") due to 1 previous error
+
+EXIT=101

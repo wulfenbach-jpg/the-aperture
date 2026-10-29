@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Jasmine Boreal",
+      "seat": 0
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 1
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 2
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 29,
+    "ability_activations": 0,
+    "attacks": 33,
+    "blocks": 7,
+    "casts": 19,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 179,
+    "events": 4662,
+    "triggered_abilities": 29
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1680
+  },
+  "final_digest": "e98d6253de6821fbf498396cd11a0bfb808d319c4f3235d29277d5653013e3d6",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 97,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1680,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-soul-warden-tokens",
+      "seat": 0,
+      "source": "decks/package-soul-warden-tokens.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -2,
+      "name": "package-soul-warden-tokens",
+      "seat": 1,
+      "source": "decks/package-soul-warden-tokens.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-soul-warden-tokens",
+      "seat": 2,
+      "source": "decks/package-soul-warden-tokens.txt"
+    },
+    {
+      "cards": 40,
+      "library": 19,
+      "life": 17,
+      "name": "package-soul-warden-tokens",
+      "seat": 3,
+      "source": "decks/package-soul-warden-tokens.txt"
+    }
+  ],
+  "seed": 23,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1680,
+  "truncated": null,
+  "turns": 43,
+  "winner": 3,
+  "winner_label": "P3"
+}

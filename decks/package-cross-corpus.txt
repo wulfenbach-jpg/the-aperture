@@ -1,0 +1,11 @@
+// package-cross-corpus — supported 40-card package fixture, NOT a desired 100-card starter.
+3 Guttersnipe
+3 Lightning Bolt
+4 Opt
+4 Consider
+2 Divination
+4 Forest Bear
+4 Striped Bears
+6 Mountain
+6 Island
+4 Forest

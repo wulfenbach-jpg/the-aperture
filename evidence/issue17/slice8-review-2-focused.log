@@ -1,0 +1,16 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running tests\issue17_slice8.rs (target\debug\deps\issue17_slice8-e193622f38fd2d54.exe)
+
+running 9 tests
+test sourced_slice8_cards_match_printings ... ok
+test goblin_war_strike_damages_target_player_for_each_goblin ... ok
+test dramatic_reversal_untaps_nonlands_but_not_lands ... ok
+test razorclaw_unblocked_does_not_trigger_or_pump ... ok
+test razorclaw_triggers_once_with_two_blockers_and_not_when_unblocked ... ok
+test souls_attendant_optional_another_creature_enters_gain_life ... ok
+test volley_veteran_damages_opponent_creature_for_each_goblin ... ok
+test razorclaw_bear_gets_plus_two_when_blocked_and_reverts ... ok
+test volley_opponent_only_target_and_source_left_runtime_count ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

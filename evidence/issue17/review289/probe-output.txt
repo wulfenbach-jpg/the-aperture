@@ -1,0 +1,43 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.07s
+     Running `C:/AI/r289build\debug\r289probe.exe`
+
+[5] catalog shape
+  pool_size = 148
+  Kamahl: Some("{3}{G}") "Sorcery" effects=Some([EachPlayerMayRevealCreatureCardsForBears])
+  PASS: catalog exposes Kamahl's Summons with the reveal effect
+
+[1] Kamahl's Summons: four seats, active = P2 (not P0)
+  REFUSED as expected: reveal with no pending choice
+  hands before cast: P2 3 P3 2 P0 1 P1 2
+  first seat asked: P2; order: [2, 3, 0, 1]
+  offers while P2 owes an answer: [RevealCreatureCards { cards: [] }, RevealCreatureCards { cards: [ObjectId(27)] }]
+  REFUSED as expected: the same card named twice
+  REFUSED as expected: a non-creature card from the chooser's own hand
+  REFUSED as expected: a creature card from another seat's hand
+  REFUSED as expected (NotYourDecision { expected: 2, got: 0 }): another seat answering a reveal it does not owe
+  P0's empty reveal accepted (declining is legal)
+  Bear tokens by seat P0..P3: [0, 1, 1, 2]
+  hands after: P2 2 P3 2 P0 1 P1 2 (spell + no card moved)
+  CardsRevealed events: [(2, 1), (3, 2), (0, 0), (1, 1)]
+  REFUSED as expected: reveal after the queue resolved
+  PASS: four-seat APNAP reveal, per-seat counts, cards stayed in hand
+
+[2] Kamahl's Summons: every seat declines (3 seats)
+  tokens after everyone declined: 0
+  PASS: declining (empty reveal) is legal for every seat
+
+[3] Surrak and Goreclaw: printed Trample and real trample damage
+  has_trample=true oracle_first_line=Some("Trample")
+  blocker zone=Graveyard, damage to player=5, attacker damage marked=2
+  PASS: trample assigns lethal then tramples over
+
+[4] mandatory target trigger: declining neither offered nor legal
+  iter 0: step=PrecombatMain pending=None stack=1 owner=Some(0)
+  iter 1: step=PrecombatMain pending=None stack=1 owner=Some(1)
+  iter 2: step=PrecombatMain pending=Some(TriggerTarget { player: 0, trigger: TriggerRef { source: ObjectId(1), card: LittleBear, controller: 0, ability: 0, seq: 0, spell_mana_value: 0, affected: None, source_pt_lki: None }, legal: [Permanent(ObjectId(2)), Permanent(ObjectId(3))], queued: [], first: None }) stack=0 owner=Some(0)
+  trigger waits for P0
+  offers: [ChooseTriggerTarget { target: Permanent(ObjectId(2)) }, ChooseTriggerTarget { target: Permanent(ObjectId(3)) }]
+  REFUSED as expected: declining a mandatory target
+  PASS: not offered, and refused as EngineError::Illegal
+
+ALL PROBES PASSED

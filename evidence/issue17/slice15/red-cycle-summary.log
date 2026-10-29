@@ -1,0 +1,14 @@
+no-bear-token: exit=101 failing_tests=4
+    test ayula_influence_discards_exactly_the_named_land_card ... FAILED
+    test bear_tokens_enter_as_creatures_and_trigger_another_creature_enters ... FAILED
+    test bearscape_needs_two_graveyard_cards_and_exiles_exactly_them ... FAILED
+    test mother_bear_is_activated_only_from_the_graveyard_and_only_as_a_sorcery ... FAILED
+no-sorcery-timing: exit=101 failing_tests=1
+    test mother_bear_is_activated_only_from_the_graveyard_and_only_as_a_sorcery ... FAILED
+no-cost-validation: exit=101 failing_tests=2
+    test ayula_influence_discards_exactly_the_named_land_card ... FAILED
+    test bearscape_needs_two_graveyard_cards_and_exiles_exactly_them ... FAILED
+no-graveyard-offer: exit=101 failing_tests=1
+    test mother_bear_is_activated_only_from_the_graveyard_and_only_as_a_sorcery ... FAILED
+restored suite exit 0
+EXIT=0

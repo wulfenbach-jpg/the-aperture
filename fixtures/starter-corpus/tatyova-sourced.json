@@ -1,0 +1,56 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-25T08:32:00Z",
+ "note": "Both records copied from the stored real Scryfall planned-list printing response; no metadata invented.",
+ "cards": [
+  {
+   "name": "Tatyova, Benthic Druid",
+   "role": "commander",
+   "oracle_id": "0715e860-3b3b-4331-9718-207973e94fee",
+   "scryfall_id": "eabc978a-0666-472d-bdc6-d4b29d29eca4",
+   "set": "fdn",
+   "collector_number": "247",
+   "layout": "normal",
+   "mana_cost": "{3}{G}{U}",
+   "type_line": "Legendary Creature — Merfolk Druid",
+   "power": "3",
+   "toughness": "3",
+   "oracle_text": "Landfall — Whenever a land you control enters, you gain 1 life and draw a card.",
+   "color_identity": [
+    "G",
+    "U"
+   ],
+   "keywords": [
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/fdn/247",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  },
+  {
+   "name": "Jaddi Offshoot",
+   "role": "landfall_package",
+   "oracle_id": "20faefbd-059c-4aae-81e3-31683bf9f7bf",
+   "scryfall_id": "3ed79f15-beeb-4157-a567-eac0772f950a",
+   "set": "tdc",
+   "collector_number": "260",
+   "layout": "normal",
+   "mana_cost": "{G}",
+   "type_line": "Creature — Plant",
+   "power": "0",
+   "toughness": "3",
+   "oracle_text": "Defender\nLandfall — Whenever a land you control enters, you gain 1 life.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Defender",
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tdc/260",
+   "retrieved_at": "2026-10-25T08:32:00Z"
+  }
+ ]
+}

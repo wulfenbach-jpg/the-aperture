@@ -1,0 +1,113 @@
+    Blocking waiting for file lock on package cache
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+
+running 43 tests
+test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+test commander_damage_to_a_creature_never_credits_a_player ... ok
+test departing_controller_battlefield_permanent_is_exiled ... ok
+test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+test discard_pending_then_active_departure_settles_once ... ok
+test commander_combat_damage_is_publicly_credited ... ok
+test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+test departed_identity_omitted_from_retired_is_refused ... ok
+test fog_is_a_sourced_catalog_card ... ok
+test fog_does_not_prevent_noncombat_damage ... ok
+test commander_damage_identity_survives_a_modeled_control_change ... ok
+test fog_prevents_combat_damage_to_creatures ... ok
+test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+test fabricated_retired_commander_identity_is_refused ... ok
+test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+test fog_shield_expires_after_cleanup ... ok
+test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+test commander_draw_answer_then_owner_departure_is_atomic ... ok
+test live_commander_cannot_be_listed_as_retired ... ok
+test independent_commanders_do_not_pool ... ok
+test commander_return_queue_survives_a_departing_owner ... ok
+test named_20_life_profiles_are_unchanged ... ok
+test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+test previous_replay_schema_version_is_rejected ... ok
+test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+test noncombat_damage_never_credits_the_ledger ... ok
+test exact_commander_damage_boundaries ... ok
+test serialized_commander_combat_profile_reconstructs_40_life ... ok
+test simultaneous_losses_settle_once_in_seat_order ... ok
+test real_departure_retires_identity_and_keeps_historic_row ... ok
+test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+test malformed_commander_damage_ledgers_are_refused ... ok
+test survivor_owned_source_exiled_but_queue_continues ... ok
+test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+test twenty_two_commander_damage_is_a_loss ... ok
+test previous_save_schema_version_is_rejected ... ok
+test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+test accepted_action_midledger_save_and_replay_roundtrip ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.17s
+
+     Running tests\issue17_slice12.rs (target\debug\deps\issue17_slice12-92fee262fbf05d7d.exe)
+
+running 11 tests
+test artifact_cast_requires_sorcery_timing_and_negate_sees_noncreature ... ok
+test hedron_archive_mana_and_sacrifice_draw_two_with_source_left ... ok
+test archived_tokens_cannot_anchor_live_engine_references ... ok
+test sourced_artifacts_match_printings_and_are_noncreature_permanents ... ok
+test mind_stone_mana_then_sacrifice_draws_on_the_stack ... ok
+test insufficient_generic_mana_refusal_preserves_state ... ok
+test all_three_artifacts_cast_from_hand_and_activate_same_turn ... ok
+test sol_ring_taps_immediately_for_two_colorless_and_cannot_repeat ... ok
+test removed_tokens_are_valid_only_as_inert_archives_of_departed_owners ... ok
+test tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability ... ok
+test mind_and_hedron_mana_abilities_produce_printed_amounts ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice13.rs (target\debug\deps\issue17_slice13-6e1e3977b14e53f6.exe)
+
+running 4 tests
+test sourced_slice13_cards_match_their_printings ... ok
+test sazh_chocobo_landfall_adds_a_real_counter_only_for_its_controller ... ok
+test rampaging_baloths_creates_beast_token_and_survives_source_left ... ok
+test professor_pest_token_dies_gaining_life_once_after_full_drain ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice6.rs (target\debug\deps\issue17_slice6-163b663ee6b23de2.exe)
+
+running 13 tests
+test hedron_crab_may_target_its_own_controller ... ok
+test single_dying_watcher_self_trigger_fires_exactly_once ... ok
+test hedron_crab_mills_the_targeted_player_not_its_controller ... ok
+test sourced_slice6_cards_match_their_live_printings ... ok
+test life_loss_is_not_damage_and_a_damage_shield_never_stops_it ... ok
+test dying_watcher_self_trigger_fires_exactly_once_both_death_orders ... ok
+test blood_artist_drains_for_an_opponents_creature_death_to_the_chosen_player ... ok
+test simultaneous_deaths_each_trigger_the_watchers_regardless_of_id_order ... ok
+test blood_artist_triggers_for_its_own_death_and_for_an_opponents_creature ... ok
+test target_player_spec_offers_every_live_seat_and_refuses_a_creature ... ok
+test surviving_watcher_still_counts_both_deaths_once ... ok
+test creature_tokens_dying_are_seen_by_death_watchers ... ok
+test zulaport_cutthroat_ignores_an_opponents_creature_but_drains_for_its_own_death ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_tokens.rs (target\debug\deps\issue17_tokens-4c5073e334830261.exe)
+
+running 10 tests
+test sourced_token_package_matches_its_recorded_printings ... ok
+test a_token_ceases_to_exist_instead_of_going_to_the_graveyard ... ok
+test goblin_instigator_and_beetleback_chief_trigger_on_entry_in_apnap_order ... ok
+test token_cards_are_not_importable ... ok
+test token_death_is_a_real_graveyard_change_then_cessation ... ok
+test krenko_counts_goblins_including_tokens_and_needs_untapped_untaunted_source ... ok
+test token_sorceries_create_the_printed_count_with_unique_objects ... ok
+test token_bounce_and_exile_record_the_destination_before_cessation ... ok
+test token_state_round_trips_through_serialization_with_an_equal_digest ... ok
+test krenko_never_silently_truncates_a_goblin_count_above_255 ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+

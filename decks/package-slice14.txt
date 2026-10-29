@@ -1,0 +1,8 @@
+// package-slice14 — supported 40-card dynamic-mana package, NOT a desired 100-card starter.
+3 Arcane Signet
+3 Fellwar Stone
+3 Commander's Sphere
+10 Werebear
+4 Grizzly Bears
+4 Forest
+13 Mountain

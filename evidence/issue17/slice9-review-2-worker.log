@@ -1,0 +1,16 @@
+Working...
+**review_outcome: APPROVED_INCREMENT** at `ab9d4f50c1cd8b77ad8b358976fcf89a9a000864`.
+`full_issue17_accepted: false`.
+
+Both prior findings are resolved:
+
+- **Counts fixed:** docs now say **102 supported / 357 missing**, Krenko **48**, and cite the slice9 audit. Manifest arrays/interactions agree with `55/0/51/48/46/55/54/53`; the Rite of Flame graveyard-count note is truthful.
+- **Receipts fixed:** handoff now states `gates.log` is build-only and `repair-gates.log` is empty, cites my actual focused/clippy logs and review-1, and retains the native source check and RED evidence. No fabricated output.
+
+Diff `ea17c27..HEAD` is docs/handoff plus retained evidence only; no production, test, dependency or package change. The added native source-check JSON has no commit field, so I treat it as unchanged source-field evidence and bind this review to `ab9d4f5`.
+
+Reused review-1 results: 101 focused tests, fmt/clippy/release build, seed-901 four-seat package journey (terminal P0, 1339 actions/32 turns, 4379 events, digest `5d20bb4a35e2…`, four exact 40-card seats, replay matched), old slice8 replay `ffbeaee0db38…`/6087 events, and source/corpus audit. No test/build/game rerun.
+
+Remaining gaps: full #17 is 114 catalog, 459 union = 102 supported + 357 missing, **1 implemented / 0 certified**; Friendly Teddy/Aetherize remain excluded and broader mechanics/Ayula text remain open. No #17 acceptance, merge/closure, or certified/#26/#32 unlock.
+
+Reports: `evidence/issue17/slice9-review-2.md`, `.json`.

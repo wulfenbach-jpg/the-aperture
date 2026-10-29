@@ -1,0 +1,22 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+     Running tests\issue17_slice42.rs (target\debug\deps\issue17_slice42-cad1f883e9e2fa4e.exe)
+
+running 1 test
+test equipment_stays_attached_to_a_legally_animated_permanent ... FAILED
+
+failures:
+
+---- equipment_stays_attached_to_a_legally_animated_permanent stdout ----
+
+thread 'equipment_stays_attached_to_a_legally_animated_permanent' (2448) panicked at crates\core\tests\issue17_slice42.rs:25:5:
+equipping an animated enchantment must retain its attachment
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    equipment_stays_attached_to_a_legally_animated_permanent
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 5 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice42`

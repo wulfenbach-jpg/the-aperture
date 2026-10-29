@@ -49,7 +49,7 @@ pub enum Event {
     },
     ManaPoolEmptied {
         player: PlayerId,
-        amount: u8,
+        amount: u32,
     },
     Cast {
         player: PlayerId,
@@ -94,6 +94,22 @@ pub enum Event {
     DrewFromEmpty {
         player: PlayerId,
     },
+    /// CR 701.13a: a card was put from the top of a library into its owner's
+    /// graveyard. One event per card, so a replay can show exactly what was
+    /// milled and in what order.
+    Milled {
+        player: PlayerId,
+        object: ObjectId,
+        card: CardId,
+    },
+    /// CR 106.4: mana was added to a player's mana pool without tapping a
+    /// permanent (Pyretic Ritual, Seething Song).
+    ManaAdded {
+        player: PlayerId,
+        color: ManaColor,
+        amount: u32,
+        pool_total: u32,
+    },
     Scried {
         player: PlayerId,
         count: u8,
@@ -120,6 +136,14 @@ pub enum Event {
         player: PlayerId,
         permanent: Option<ObjectId>,
     },
+    /// CR 701.9a: a seat answered a "reveal any number of cards from your hand"
+    /// instruction. The revealed cards stay in their owner's hand; the count is
+    /// what the effect uses.
+    CardsRevealed {
+        player: PlayerId,
+        cards: Vec<ObjectId>,
+        count: u8,
+    },
     AttackersDeclared {
         player: PlayerId,
         attackers: Vec<ObjectId>,
@@ -133,6 +157,16 @@ pub enum Event {
         attacker_card: CardId,
         blocker: Option<(ObjectId, CardId)>,
         amount: u32,
+    },
+    /// CR 510.1: one attacking creature's controller answered "you may have
+    /// that creature assign its combat damage as though it weren't blocked"
+    /// (Ruxa, Patient Professor). Emitted before the damage, so a trace shows
+    /// the choice itself and not only its consequences.
+    CombatDamageAssignment {
+        player: PlayerId,
+        attacker: ObjectId,
+        card: CardId,
+        as_though_unblocked: bool,
     },
     /// Typed CR 903.10a credit: combat damage actually dealt to a player by one
     /// stable commander identity, plus the resulting cumulative total.

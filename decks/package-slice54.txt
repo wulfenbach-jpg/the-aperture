@@ -1,0 +1,6 @@
+// package-slice54 — evidence-only 40-card Ursine Monstrosity package, NOT a desired starter.
+4 Ursine Monstrosity
+4 Craw Wurm
+4 Grizzly Bears
+4 Centaur Courser
+24 Forest

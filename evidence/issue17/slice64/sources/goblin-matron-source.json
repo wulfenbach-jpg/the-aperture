@@ -1,0 +1,25 @@
+{
+  "name": "Goblin Matron",
+  "set": "plst",
+  "collector_number": "DMR-123",
+  "oracle_id": "145737a7-c597-4dec-b752-207c2d0501e3",
+  "mana_cost": "{2}{R}",
+  "type_line": "Creature \u2014 Goblin",
+  "power": "1",
+  "toughness": "1",
+  "oracle_text": "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2026-05-18",
+  "scryfall_id": "8ee0fdd4-1fb5-4160-b408-2c51ef4f85d0",
+  "retrieved_at_utc": "2026-10-29T10:56:56Z",
+  "provider": "scryfall",
+  "url": "https://scryfall.com/card/plst/DMR-123/goblin-matron",
+  "legalities_commander": "legal"
+}

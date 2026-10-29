@@ -1,0 +1,35 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates\core\tests\issue17_slice45_native.rs:208:18
+    |
+208 |     assert_eq!(g.view_for(P1), hidden.view_for(P1));
+    |                  ^^^^^^^^---- argument #2 of type `&[aperture_core::Event]` is missing
+    |
+note: method defined here
+   --> crates\core\src\view.rs:598:12
+    |
+598 |     pub fn view_for(&self, viewer: PlayerId, log: &[Event]) -> PlayerView {
+    |            ^^^^^^^^
+help: provide the argument
+    |
+208 |     assert_eq!(g.view_for(P1, /* &[aperture_core::Event] */), hidden.view_for(P1));
+    |                             +++++++++++++++++++++++++++++++
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> crates\core\tests\issue17_slice45_native.rs:208:39
+    |
+208 |     assert_eq!(g.view_for(P1), hidden.view_for(P1));
+    |                                       ^^^^^^^^---- argument #2 of type `&[aperture_core::Event]` is missing
+    |
+note: method defined here
+   --> crates\core\src\view.rs:598:12
+    |
+598 |     pub fn view_for(&self, viewer: PlayerId, log: &[Event]) -> PlayerView {
+    |            ^^^^^^^^
+help: provide the argument
+    |
+208 |     assert_eq!(g.view_for(P1), hidden.view_for(P1, /* &[aperture_core::Event] */));
+    |                                                  +++++++++++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0061`.
+error: could not compile `aperture-core` (test "issue17_slice45_native") due to 2 previous errors

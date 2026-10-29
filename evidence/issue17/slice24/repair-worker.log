@@ -1,0 +1,23 @@
+Working...
+**Repair committed: `c2d9b35`.** Native behavioral RED preserved; no push/merge/closure.
+
+### Fixed
+- **Hasty mana offer** — `mana_sources` now consults `has_haste`, so a summoning-sick Werebear with granted haste is actually in `legal_actions` and adds mana.
+- **Departed affected identity** — battlefield departure now invalidates the captured `affected` binding to `None` across trigger queue, stack, and applicable pending trigger references. The mandatory non-target ability stays and resolves with no effect, while a later same-ObjectId incarnation is untouched.
+- **Source-left source identity** — haste grants use captured `StackItem.card`, avoiding dereference of a rekeyed/departed source.
+- **Wording** — corrected to “gets a +1/+1 counter”, not “enters with”.
+- **Validation** — queued/stack affected references are checked; invalidated `None` remains valid.
+- Added native-driven source-left Surrak and token-filtering controls.
+
+### Verification
+- `issue17_slice24`: **10 passed**, including both native failures.
+- abilities 13, timing_mana 12, card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43, replay_digest 6.
+- fmt, workspace clippy `-D warnings`, release CLI: all exit 0.
+- Real exits: `evidence/issue17/slice24/repair-gates.log`.
+- Journey rerun: terminal P3, 1602 decisions, 37 turns, digest `a41bbfd2…c631`, replay matched, fresh save round-tripped; Surrak cast 6, 11 buff events, 11 haste grants, 20 blocked trample-damage events.
+
+### Evidence/gaps
+- Native RED: `evidence/issue17/slice24/native-behavior-red.log` (preserved).
+- Repair receipt: `evidence/issue17/slice24/IMPLEMENT24-REPAIR-RESULT.md`; checkpoint and result updated.
+- Product diff clean after commit (`git diff -- crates` empty).
+- Remaining: midtrigger save is sandbox/direct-fixture, not a reachable action-history save; no separate tap-cost haste activation beyond Werebear mana; no broad workspace matrix. Full #17 remains **1 of 8 certified**.

@@ -1,0 +1,37 @@
+{
+  "verdict": "APPROVED_INCREMENT",
+  "reviewed_head": "7e1eb5f1b8218e24d7a03377c3cb3c5bb0981a4f",
+  "findings": [],
+  "s6_r2_f1": {
+    "status": "repaired",
+    "evidence": "External review224-probe rerun at exact head: 3/3 passed; single Zulaport death drained fully [21,19,19,19]; two-death batch [22,18,18,18] in both creation orders; surviving-watcher control [22,18,18,18]. f1b7ab6 preserves the original dying identity and excludes the separately dispatched self from the watcher batch."
+  },
+  "merge_and_token_repair": {
+    "status": "verified",
+    "evidence": "edd8008 parents are f1b7ab6 and master 8de0961. 04c39e6 removes the merge-time token-downgrade shortcuts: tokens perform the real destination (graveyard/hand/exile/library) and applicable death trigger, then check_sbas detaches them with no Zone::Removed insertion or zone-list residue. 7e1eb5f makes the Swords line say 'is exiled (token cessation awaits the next SBA check)' and the regression forbids any 'instead of being exiled' claim. Focused counters_tokens_library 16/16, issue17_tokens 10/10, issue17_slice6 13/13."
+  },
+  "checks": [
+    {
+      "command": "CARGO_TARGET_DIR=target cargo test --manifest-path evidence/issue17/review224-probe/Cargo.toml --locked -- --nocapture",
+      "result": "exit 0; 3/3 passed with full stack/pending drainage and exact totals listed above."
+    },
+    {
+      "command": "cargo test -p aperture-core --test issue17_tokens --test counters_tokens_library --test issue17_slice6 --locked",
+      "result": "exit 0; 10 + 16 + 13 passed. Includes pre16 v10 save load/replay/digest, counters/revealed/keyword/library tests, token destination-before-cessation, no tombstone, watcher-once, and Swords trace checks."
+    },
+    {
+      "command": "git diff --name-status 3987dd6..HEAD -- decks/starter-corpus/planned decks/starter-corpus/jasmine-vanilla-stompy.txt",
+      "result": "empty: all eight desired list files unchanged. Native audit records 106 catalog, 459 union = 94 supported + 365 missing, 1 implemented / 0 certified, desired_unchanged true."
+    },
+    {
+      "command": "reused fresh handoff evidence",
+      "result": "Evidence/issue17/SLICE7-HUMAN-CHECKPOINT.md records workspace 639 tests, fmt, clippy, release build, 10/10 exact-head CI and the native package journey/replay at this head; not duplicated."
+    }
+  ],
+  "residual_full_issue_gaps": [
+    "Eight desired 100-card starters remain the gate: only Jasmine is implemented (0 certified); seven lists remain planned and 365 union names are unsupported.",
+    "106-card catalog and 94/459 supported names; legend rule, equipment/auras, sacrifice outlets, tutors/reanimation and broader Commander mechanics remain gaps.",
+    "The #16 typed counter/keyword/library primitives and merge integration are not #16 product acceptance or release approval.",
+    "A bounded increment approval does not merge/close #17, certify a starter, or unlock downstream release/#26/#32 lanes; continuation must return to the same card/branch/PR and histories."
+  ]
+}

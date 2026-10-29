@@ -1,0 +1,133 @@
+{
+  "final_head": "20c0d814b9f59a9bce51742f6ff3482a1da59659",
+  "last_ci_verified_head": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+  "ci_summary": {
+    "head": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+    "captured_at": "2026-10-27T06:04:23.532953+00:00",
+    "total": 10,
+    "all_completed": true,
+    "all_success": true,
+    "all_keyed_to_head": true,
+    "required_checks": [
+      {
+        "context": "rust (ubuntu-latest)",
+        "app_id": 15368,
+        "matched": 2,
+        "pass": true
+      },
+      {
+        "context": "rust (windows-latest)",
+        "app_id": 15368,
+        "matched": 2,
+        "pass": true
+      },
+      {
+        "context": "rust (macos-latest)",
+        "app_id": 15368,
+        "matched": 2,
+        "pass": true
+      },
+      {
+        "context": "board and roadmap",
+        "app_id": 15368,
+        "matched": 2,
+        "pass": true
+      }
+    ],
+    "required_pass": true,
+    "runs": [
+      {
+        "id": 122035685768,
+        "name": "rust (windows-latest)",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457989001/job/122035685768"
+      },
+      {
+        "id": 122035685732,
+        "name": "rust (macos-latest)",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457989001/job/122035685732"
+      },
+      {
+        "id": 122035685706,
+        "name": "board and roadmap",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457989001/job/122035685706"
+      },
+      {
+        "id": 122035685643,
+        "name": "rust (ubuntu-latest)",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457989001/job/122035685643"
+      },
+      {
+        "id": 122035685519,
+        "name": "windows package",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457989001/job/122035685519"
+      },
+      {
+        "id": 122035670461,
+        "name": "rust (macos-latest)",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457984489/job/122035670461"
+      },
+      {
+        "id": 122035670402,
+        "name": "rust (ubuntu-latest)",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457984489/job/122035670402"
+      },
+      {
+        "id": 122035670379,
+        "name": "rust (windows-latest)",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457984489/job/122035670379"
+      },
+      {
+        "id": 122035670370,
+        "name": "windows package",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457984489/job/122035670370"
+      },
+      {
+        "id": 122035670144,
+        "name": "board and roadmap",
+        "head_sha": "a89dbecca28ed7db030a8937a5bbfd61d4b076b5",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40457984489/job/122035670144"
+      }
+    ]
+  },
+  "delta_files": [
+    "evidence/issue17/slice21/ci-a89dbec.log",
+    "evidence/issue17/slice21/exact-head-ci-a89dbec.json",
+    "evidence/issue17/slice21/exact-head-ci-summary-a89dbec.json"
+  ],
+  "pr": {
+    "headRefOid": "20c0d814b9f59a9bce51742f6ff3482a1da59659",
+    "isDraft": true,
+    "mergeStateStatus": "BEHIND",
+    "mergeable": "MERGEABLE",
+    "state": "OPEN"
+  }
+}

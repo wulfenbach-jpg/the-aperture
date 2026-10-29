@@ -1,0 +1,15 @@
+Working...
+**APPROVED_INCREMENT** at `3934d765158733a8351a594ed27564cb14431cb8`.
+
+This is the **true original reviewer history**; the earlier `slice17` review used the wrong `review-sessions/` path and is a separate history. I read its `REVIEW17.md` as evidence but independently re-ran the focused checks.
+
+- `cargo test -p aperture-core --test issue17_slice17 --test command_zone_setup --test replay_digest --locked`: slice17 **6/6**, command-zone **34/34**, replay-digest **6/6**. Includes strengthened actual-counter/target/no-death controls, token-only morbid, owner-vs-controller Caller counting, and turn-boundary reset.
+- Demo replay: 4 seats, 1866 actions, terminal P3, 4952 events, digest `85fabffc9aa1` matches.
+- Demo save replay: stored/recomputed digest matches; 1866 actions reproduced.
+- Source fixture has immutable printing URLs/retrieval dates; native audit 134 catalog / 122 supported / 337 missing, Ayula 31, 1 certified; desired snapshots unchanged.
+
+The EachPlayer resume carries and validates serialized progress through mid-commander-replacement draws; cleanup history resets only at actual turn advance. No product-source defect found.
+
+Limitations: no independent mass-destruction Teddy batch, no dedicated simultaneous-death Caller batch, the triggered-source validator exception is broader than this slice, and full workspace was not rerun. Reported exact-head CI is 10/10 SUCCESS. This is an increment only: original #17 remains **1/8 certified**, 337 union names missing; no full acceptance, merge, closure, or downstream unlock.
+
+Report: `evidence/issue17/slice17/REVIEW17-ORIGINAL-HISTORY.md`.

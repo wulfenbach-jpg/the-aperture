@@ -1,0 +1,27 @@
+Working...
+**Slice 8 repair complete — 6 supported cards, 2 explicitly excluded.** No push.
+
+## Removed/blocked (not claimed)
+- **Brightstone Ritual** — real Goblin counts exceed 255 and `ManaPool` is saturating `u8`; removed from CardId/catalog/effect/tests/package. Source retained as `role: excluded`.
+- **Friendly Teddy** — `EachPlayerDraws` lost later players’ draws on commander-draw replacement and used P0 order; removed plus artifact Kind added only for it. No fake fix claim.
+
+Both re-entered the manifest missing set via fresh recomputation; desired lists untouched.
+
+## Kept (6)
+Soul’s Attendant, Razorclaw Bear, Volley Veteran, Aetherize, Dramatic Reversal, Goblin War Strike. Live Scryfall source records retained.
+
+## Controls added
+- OpponentCreature: trigger target choice offered; forged own-creature target refused with **unchanged state digest**.
+- Volley source-left: Unsummon bounce before resolution; X uses runtime Goblin count (2 remaining → lethal 2).
+- Razorclaw two blockers triggers **once** (power 5, not 7); unblocked control retained.
+- Aetherize: all original attacker identities returned, no attackers left, nonattacker stays.
+- Full-drain assertions for stack/trigger_queue/resolving/pending.
+
+## Evidence
+- Focused: slice8 8/8, tokens 10/10, slice6 13/13, counters_tokens 16/16, catalog 5/5, printings 6/6, commander 43/43.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Updated package four-seat journey: terminal, P0 wins, 2319 steps, digest `ffb0e678e8e3…`; all six cards appear; replay/save match 5792 events.
+- New audit only at `evidence/issue17/slice8/corpus-audit.py` + `corpus-state.json`; historical slice3 audit blobs restored exactly from `7e1eb5f`.
+- Current counts: catalog **112**, union 459, supported **100**, missing **359**, manifest matches.
+
+Commit `75287f6`. Handoff rewritten: `evidence/issue17/SLICE8-IMPLEMENT-HANDOFF.md`. Full #17 unfinished; zero certified lists.

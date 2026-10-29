@@ -1,0 +1,13 @@
+Working...
+**CHANGES_REQUESTED** at `b74815d6690d76a7d838bc491fd37b1d791328d0` (code `5b60c2c`; base `cff319d`).
+
+**Behavioral repair is correct:** the delta is exactly the target-spec split. `CreatureYouControl` includes the ability source; `AnotherCreatureYouControl` excludes it for Little Bear. Animated Hospitality is offered/auto-chosen as its own landfall target; unanimated it is not a target; the no-legal-target path is removed with `CR 603.3d`. Little Bear’s “another” behavior is preserved.
+
+**Executed:** slice33 **12/12 passed**, card_printings **12/12 passed**, fmt exit 0; release CLI replay matches **1117 actions / 2967 events / `3dfb14d4ce76…`**. Corpus: **149 / 459 = 137 supported + 322 missing**, per list `55/0/51/48/16/52/52/53`, 1/8 certified. `crates/ai`, `crates/ui`, and deck snapshots are untouched.
+
+**Blocking record defect:** `evidence/issue17/slice34/pre-mutation-sha256.txt` claims engine hash `b61dd29d…`, but the committed/worktree engine is `08988a74…`; `sha256sum -c` exits 1. `SLICE34-HUMAN-CHECKPOINT.md:41-42` therefore falsely claims the mutation was restored byte-for-byte. The current code is correct and unmodified, but the verification receipt must be regenerated/corrected. No production code change is indicated.
+
+**CI:** 10 runs at this head — `board and roadmap` twice successful; rust ubuntu/windows/macos and windows package currently **in_progress** (not passes).
+
+Full #17 remains **1/8 certified**, 322 missing, Ayula 16. Report: `evidence/issue17/review294/REVIEW294.md`.
+OMP_EXIT=0

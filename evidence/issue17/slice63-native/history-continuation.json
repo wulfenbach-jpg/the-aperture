@@ -1,0 +1,18 @@
+{
+  "path": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+  "lines_before": 7293,
+  "lines_after": 7615,
+  "appended": 322,
+  "assistant_messages": 107,
+  "actual_routes": [
+    [
+      "opencode-go",
+      "deepseek-v4.1-flash"
+    ]
+  ],
+  "new_user_message_times": [
+    "2026-10-29T09:39:44.063Z",
+    "2026-10-29T09:53:42.820Z"
+  ],
+  "old_history_preserved": true
+}

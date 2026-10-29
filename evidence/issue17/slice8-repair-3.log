@@ -1,0 +1,20 @@
+Working...
+**Final review repairs complete.** No push. Head `c22b240`.
+
+## Fixed
+1. **Stale counts**
+   - Docs: Isamaru 55, supported **99**, missing **360**, Krenko 49, Talrand 51.
+   - Manifest `missing_interactions`: Talrand 51, Krenko 49, Elas 55. `missing_cards` arrays and desired lists untouched.
+   - Added real five-card summary + three exclusions and bounded Goblin War Strike planeswalker note.
+2. **Razorclaw unblocked control**
+   - Added real unblocked attack test: full drained combat assertion, power stays 3, no BecomesBlocked trigger.
+   - `issue17_slice8` now **9/9**; fmt and clippy `-D warnings` clean.
+3. **RED disclosure corrected**
+   - Handoff now states actual absent-catalog RED (retained in `slice8/retained-red-results.json`), followed by implementation and later harness corrections; no retroactive strict-TDD claim.
+   - “Both remain” corrected to three exclusions.
+   - Printing `scryfall_id`/URI provenance remains in `slice8-sourced.json`; no new fetches.
+   - Goblin War Strike planeswalker half documented as bounded out (no planeswalkers in pool).
+
+No game replay rerun needed (test/docs-only change). Existing journey remains terminal P0, 2377 steps, digest `ffbeaee0db38…`.
+
+Commit: `c22b240`. Full #17 unfinished; no certification claim.

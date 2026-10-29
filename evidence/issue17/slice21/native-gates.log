@@ -1,0 +1,164 @@
+
+COMMAND: cargo test -p aperture-core --test issue17_slice21 --test card_printings --test catalog_pool --test issue17_slice15_corpus --test issue13_commander_combat --test issue17_slice20_privacy --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 8 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue13_commander_combat.rs (target\debug\deps\issue13_commander_combat-ad286b56b3d31991.exe)
+
+running 43 tests
+test co_loser_apnap_chooser_is_not_reassigned_and_terminal_discards_queue ... ok
+test all_remaining_players_losing_is_one_draw_not_a_win ... ok
+test departing_controller_battlefield_permanent_is_exiled ... ok
+test commander_damage_to_a_creature_never_credits_a_player ... ok
+test departed_active_turn_continues_and_pending_declaration_is_cancelled ... ok
+test discard_pending_then_active_departure_settles_once ... ok
+test departing_controller_stack_card_is_exiled_without_a_phantom_entry ... ok
+test fog_is_a_sourced_catalog_card ... ok
+test commander_combat_damage_is_publicly_credited ... ok
+test fog_does_not_prevent_noncombat_damage ... ok
+test departed_identity_omitted_from_retired_is_refused ... ok
+test fog_prevents_combat_damage_before_it_reaches_life_or_ledger ... ok
+test fog_prevents_combat_damage_to_creatures ... ok
+test fog_same_turn_noncombat_control_in_20_life_profile ... ok
+test four_seat_co_loser_apnap_source_departure_continues_survivors ... ok
+test last_unanswered_departure_applies_surviving_choices_before_priority ... ok
+test commander_damage_identity_survives_a_modeled_control_change ... ok
+test fabricated_retired_commander_identity_is_refused ... ok
+test last_unanswered_departure_with_departed_source_applies_choices_once ... ok
+test fog_shield_expires_after_cleanup ... ok
+test named_20_life_profiles_are_unchanged ... ok
+test noncombat_damage_never_credits_the_ledger ... ok
+test previous_replay_schema_version_is_rejected ... ok
+test live_commander_cannot_be_listed_as_retired ... ok
+test independent_commanders_do_not_pool ... ok
+test order_card_pending_then_owner_departure_leaves_no_stale_choice ... ok
+test commander_draw_answer_then_owner_departure_is_atomic ... ok
+test commander_replacement_answer_then_owner_departure_is_atomic ... ok
+test serialized_commander_combat_profile_reconstructs_40_life ... ok
+test survivor_owned_source_exiled_but_queue_continues ... ok
+test simultaneous_losses_settle_once_in_seat_order ... ok
+test malformed_commander_damage_ledgers_are_refused ... ok
+test real_departure_retires_identity_and_keeps_historic_row ... ok
+test exact_commander_damage_boundaries ... ok
+test fog_shield_survives_sandbox_save_and_malformed_shield_is_refused ... ok
+test zone_return_and_recast_keep_the_same_commander_bucket ... ok
+test twenty_two_commander_damage_is_a_loss ... ok
+test commander_return_queue_survives_a_departing_owner ... ok
+test sandbox_save_rejects_swapped_live_commander_identity_binding ... ok
+test previous_save_schema_version_is_rejected ... ok
+test forged_retired_identity_is_refused_by_sandbox_save_load ... ok
+test sandbox_save_accepts_normal_and_reversed_original_setup_binding ... ok
+test accepted_action_midledger_save_and_replay_roundtrip ... ok
+
+test result: ok. 43 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.86s
+
+     Running tests\issue17_slice15_corpus.rs (target\debug\deps\issue17_slice15_corpus-2520fcad538eaf2c.exe)
+
+running 2 tests
+test the_three_slice15_cards_leave_the_ayula_gap ... ok
+test every_desired_list_missing_cards_equals_pool_membership ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice20_privacy.rs (target\debug\deps\issue17_slice20_privacy-168f73ceea44e552.exe)
+
+running 1 test
+test opponents_cannot_distinguish_private_top_card_eligibility ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice21.rs (target\debug\deps\issue17_slice21-2b5fe474e2edc982.exe)
+
+running 8 tests
+test formidable_exact_eight_includes_current_power_and_survives_threshold_fall ... ok
+test source_and_offered_cast_activation_and_formidable_refusal ... ok
+test regeneration_removes_a_blocked_attacker_from_combat_without_player_damage ... ok
+test zero_toughness_and_sacrifice_are_not_regeneration ... ok
+test lethal_hit_consumes_shield_taps_and_prevents_death ... ok
+test multiple_shields_are_consumed_one_per_destruction ... ok
+test exile_and_bounce_are_not_destruction_and_do_not_transfer_shields ... ok
+test save_reload_with_live_shield_has_parity ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+EXIT=0
+
+COMMAND: cargo test -p aperture-core --lib cleanup_expires_regeneration_shields --locked
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running unittests src\lib.rs (target\debug\deps\aperture_core-dd9fe82bd1c89cdf.exe)
+
+running 1 test
+test engine::slice17_cleanup_history_tests::cleanup_expires_regeneration_shields ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.00s
+
+EXIT=0
+
+COMMAND: cargo fmt --all --check
+EXIT=0
+
+COMMAND: cargo clippy --workspace --all-targets --locked -- -D warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.64s
+EXIT=0
+
+COMMAND: cargo build -p aperture-cli --release --locked
+    Finished `release` profile [optimized] target(s) in 0.38s
+EXIT=0
+
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice21/demo-replay.json
+replay seed 1919 — 4 seat(s), 1906 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 0d20c7597183 | matches recorded | events 4909
+EXIT=0
+
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice20/demo-replay.json
+replay seed 1919 — 4 seat(s), 2064 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 72cd69fb1143 | matches recorded | events 5281
+EXIT=0
+
+COMMAND: python evidence/issue17/slice21/corpus-audit.py
+catalog pool entries: 138
+duplicate names: []
+
+per-list: total / missing
+  isamaru-white-aggro     99 cards  missing= 55  bogus_missing=[]
+  jasmine-vanilla-stompy  99 cards  missing=  0  bogus_missing=[]
+  talrand-draw-go         99 cards  missing= 51  bogus_missing=[]
+  krenko-goblin-tokens    99 cards  missing= 48  bogus_missing=[]
+  ayula-bear-counters     99 cards  missing= 27  bogus_missing=[]
+  elas-sacrifice          99 cards  missing= 52  bogus_missing=[]
+  tatyova-landfall        99 cards  missing= 52  bogus_missing=[]
+  zada-spells             99 cards  missing= 53  bogus_missing=[]
+
+union names            : 459
+union supported        : 126
+union missing          : 333
+manifest missing union : 333
+
+AUDIT OK: catalog 138, union 459 = 126 supported + 333 missing
+EXIT=0
+
+ALL_NATIVE_GATES_PASS

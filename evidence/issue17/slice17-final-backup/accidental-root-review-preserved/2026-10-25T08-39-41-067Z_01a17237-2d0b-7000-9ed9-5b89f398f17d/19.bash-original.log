@@ -1,0 +1,345 @@
+diff --git a/README.md b/README.md
+index b87e007..e2632bb 100644
+--- a/README.md
++++ b/README.md
+@@ -21,7 +21,7 @@ implementation and it says so everywhere it matters.
+   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
+   discard, damage removal, state-based actions, bounded combat with attack/block
+   declarations and simultaneous damage, empty-library loss, game win/loss.
+-* **Supported branch-candidate pool (129 real cards)**: the 16-card practice
++* **Supported branch-candidate pool (134 real cards)**: the 16-card practice
+   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
+   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
+   Counterspell, Divination, Opt, Consider, and **Crack the Earth**) plus the
+@@ -301,7 +301,7 @@ storage only), tokens beyond the typed 1/1 red Goblin package, target-player
+ milling (self-mill and each-opponent mill are implemented), tutoring, libraries as
+ targets, multi-face cards (transform/split/meld/modal), sideboard/companion play,
+ layers 4–6/7b/7d (counters stay display-only), Arcane/splice interactions, and any
+-card outside this branch candidate's 129-card pool.
++card outside this branch candidate's 134-card pool.
+ Unsupported decks are refused at import rather than silently substituted.
+ The 40-card practice file loader also refuses `Commander:`/`Companion:`/
+ `Sideboard:` text instead of flattening it into a practice deck. `pool` prints
+diff --git a/crates/core/tests/card_printings.rs b/crates/core/tests/card_printings.rs
+index 8a5c662..8f14889 100644
+--- a/crates/core/tests/card_printings.rs
++++ b/crates/core/tests/card_printings.rs
+@@ -39,6 +39,7 @@ const SLICE9_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slic
+ const SLICE12_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice12-sourced.json");
+ const SLICE13_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice13-sourced.json");
+ const SLICE14_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice14-sourced.json");
++const SLICE17_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice17-sourced.json");
+ const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
+ const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
+ const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
+@@ -149,6 +150,11 @@ fn slice16_cards() -> Vec<Value> {
+     value["cards"].as_array().expect("cards").to_vec()
+ }
+ 
++fn slice17_cards() -> Vec<Value> {
++    let value: Value = serde_json::from_str(SLICE17_SOURCED).expect("sourced slice17 JSON");
++    value["cards"].as_array().expect("cards").to_vec()
++}
++
+ fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
+     card[key].as_str().unwrap_or_else(|| panic!("{key}"))
+ }
+@@ -524,6 +530,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
+         .chain(slice14_cards())
+         .chain(slice15_cards())
+         .chain(slice16_cards())
++        .chain(slice17_cards())
+         .collect();
+     let starter_names: Vec<&str> = starter
+         .iter()
+diff --git a/crates/core/tests/catalog_pool.rs b/crates/core/tests/catalog_pool.rs
+index 9f820ae..1e27567 100644
+--- a/crates/core/tests/catalog_pool.rs
++++ b/crates/core/tests/catalog_pool.rs
+@@ -258,6 +258,9 @@ fn every_printed_ability_maps_to_implemented_semantics() {
+                 }
+                 // Target-player effects (slice 6) are exercised by the ability
+                 // tests: none of them appears in printed spell text yet.
++                Effect::EachPlayerDraws(_)
++                | Effect::PutPlusOneCountersOnTarget(_)
++                | Effect::CreateBearTokensForEachDeathThisTurn => {}
+                 Effect::MillTargetPlayer(_)
+                 | Effect::LoseLife(_)
+                 | Effect::LoseLifeEachOpponent(_) => {
+diff --git a/crates/core/tests/command_zone_setup.rs b/crates/core/tests/command_zone_setup.rs
+index 49b8479..cf7cb6d 100644
+--- a/crates/core/tests/command_zone_setup.rs
++++ b/crates/core/tests/command_zone_setup.rs
+@@ -1738,3 +1738,84 @@ fn ordinary_practice_parser_refuses_the_commander_only_card_with_reason() {
+     );
+     assert!(text.contains("legend"), "{err}");
+ }
++
++#[test]
++fn each_player_draw_continues_every_live_seat_after_a_commander_replacement() {
++    let mut game = command_zone_game();
++    put_commander_on_top_of_library(&mut game);
++    open_main(&mut game);
++    let teddy = add_permanent(&mut game, P0, CardId::FriendlyTeddy);
++    add_permanent(&mut game, P0, CardId::Mountain);
++    add_to_hand(&mut game, P0, CardId::Shock);
++    let shock = hand_card_id(&game, P0, CardId::Shock);
++    game.submit_action(
++        P0,
++        aperture_core::Action::CastSpell {
++            card: shock,
++            targets: vec![aperture_core::Target::Permanent(teddy)],
++        },
++    )
++    .expect("cast Shock");
++    game.submit_action(P0, aperture_core::Action::Pass)
++        .expect("pass Shock");
++    game.submit_action(P1, aperture_core::Action::Pass)
++        .expect("resolve Shock");
++    game.submit_action(P0, aperture_core::Action::Pass)
++        .expect("pass death trigger");
++    game.submit_action(P1, aperture_core::Action::Pass)
++        .expect("resolve death trigger into the first draw");
++    assert!(
++        matches!(
++            game.state.pending,
++            Some(aperture_core::Pending::CommanderDraw {
++                resume: aperture_core::state::DrawResume::EachPlayer { next: P0, .. },
++                ..
++            })
++        ),
++        "the first seat's commander must suspend the all-player draw: {:?}",
++        game.state.pending
++    );
++    assert_eq!(game.state.turn.priority, None, "no early priority");
++    let p1_hand = game.state.player(P1).hand.len();
++    let setups = vec![
++        aperture_core::CommanderSetup {
++            seat: P0,
++            card: CardId::IsamaruHoundOfKonda,
++        },
++        aperture_core::CommanderSetup {
++            seat: P1,
++            card: CardId::IsamaruHoundOfKonda,
++        },
++    ];
++    let replay = aperture_core::Replay::new_command_zone(
++        11,
++        game.state.first_player,
++        decks(),
++        setups,
++        aperture_core::AiSettings::default(),
++    )
++    .expect("replay");
++    let save = aperture_core::SessionSave::capture(&game, replay, Vec::new(), true);
++    let loaded = aperture_core::SessionSave::from_json(&save.to_json())
++        .expect("mid all-player draw save validates and reloads");
++    assert!(matches!(
++        loaded.game.pending,
++        Some(aperture_core::Pending::CommanderDraw {
++            resume: aperture_core::state::DrawResume::EachPlayer { .. },
++            ..
++        })
++    ));
++    game.submit_action(
++        P0,
++        aperture_core::Action::AnswerCommanderDraw {
++            to_command_zone: true,
++        },
++    )
++    .expect("answer commander draw");
++    assert!(game.state.pending.is_none(), "no second replacement");
++    assert_eq!(
++        game.state.player(P1).hand.len(),
++        p1_hand + 1,
++        "the later live seat draws exactly once"
++    );
++}
+diff --git a/crates/core/tests/issue17_slice15_corpus.rs b/crates/core/tests/issue17_slice15_corpus.rs
+index d4b1c13..6a6803e 100644
+--- a/crates/core/tests/issue17_slice15_corpus.rs
++++ b/crates/core/tests/issue17_slice15_corpus.rs
+@@ -118,9 +118,9 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
+             "{name} is supported now, so it cannot be listed as missing"
+         );
+     }
+-    // Updated by slice 16 when Fade from History and Little Bear left the gap;
++    // Updated by slice 17 when the three death-history cards left the gap;
+     // the assertion's purpose (the three slice-15 cards stay supported and the
+     // recorded gap matches the compiled pool) is unchanged.
+-    assert_eq!(missing.len(), 34, "Ayula's remaining sourced gap");
+-    assert_eq!(catalog::all().len(), 131, "the compiled pool");
++    assert_eq!(missing.len(), 31, "Ayula's remaining sourced gap");
++    assert_eq!(catalog::all().len(), 134, "the compiled pool");
+ }
+diff --git a/decks/package-slice17.txt b/decks/package-slice17.txt
+new file mode 100644
+index 0000000..a1e9e95
+--- /dev/null
++++ b/decks/package-slice17.txt
+@@ -0,0 +1,9 @@
++// package-slice17 — supported 40-card death-history package, NOT a desired 100-card starter.
++4 Friendly Teddy
++4 Ulvenwald Bear
++4 Caller of the Claw
++4 Grizzly Bears
++4 Runeclaw Bear
++4 Shock
++8 Forest
++8 Mountain
+diff --git a/decks/starter-corpus/manifest.json b/decks/starter-corpus/manifest.json
+index 3e42c81..6b60c33 100644
+--- a/decks/starter-corpus/manifest.json
++++ b/decks/starter-corpus/manifest.json
+@@ -252,7 +252,6 @@
+         "Ayula, Queen Among Bears",
+         "Beorn the Fierce",
+         "Beorn's Hospitality",
+-        "Caller of the Claw",
+         "Circle of the Moon Druid",
+         "Dancing from Dark to Dawn",
+         "Dragon-Scarred Bear",
+@@ -261,7 +260,6 @@
+         "D\u00fanedain Rangers",
+         "Evercoat Ursine",
+         "Exuberant Wolfbear",
+-        "Friendly Teddy",
+         "Goreclaw, Terror of Qal Sisma",
+         "Kamahl's Summons",
+         "Lightning Greaves",
+@@ -278,7 +276,6 @@
+         "The Earth King",
+         "Thijarian Witness",
+         "Titania's Command",
+-        "Ulvenwald Bear",
+         "Ursine Champion",
+         "Ursine Monstrosity",
+         "Vivien's Grizzly",
+diff --git a/docs/issue17-starter-corpus.md b/docs/issue17-starter-corpus.md
+index 7666ddf..f5ee71d 100644
+--- a/docs/issue17-starter-corpus.md
++++ b/docs/issue17-starter-corpus.md
+@@ -31,7 +31,7 @@ All eight entries now have an exact desired 99-card library file. Only Jasmine's
+ is supported, playable and certified; the other seven are **planned metadata**, never
+ supported defaults. Their `deck_path` points under
+ `decks/starter-corpus/planned/`, and their cards are mostly outside the current
+-131-card pool. Isamaru itself is supported, and the slice-4 package implemented
++134-card pool. Isamaru itself is supported, and the slice-4 package implemented
+ one of its cards (Soul Warden), so `isamaru-white-aggro` now lists 55 missing
+ cards; it stays `planned` because 55 of its chosen cards are still unsupported.
+ Slice 5 implemented one card in each of four other planned lists:
+@@ -46,7 +46,7 @@ basic lands (coordinator evidence
+ `evidence/issue17/slice13/corpus-audit.py` + `slice13/corpus-state.json`):
+ 
+ * union of all referenced names: **459 unique names**;
+-* **119** are in the supported 131-card catalog and **340** are missing;
++* **122** are in the supported 134-card catalog and **337** are missing;
+ * the manifest's `missing_cards` per list is computed from the same catalog
+   membership and sums to the same verified contents. Planned lists remain
+   metadata only; Jasmine is the only certified/playable starter.
+@@ -56,9 +56,10 @@ basic lands (coordinator evidence
+ 
+ Slices 11–13 add the islandwalk bears `Pale Bears` and `River Bear`, Sol Ring,
+ and Professor of Zoomancy from the Ayula list. Islandwalk uses CR 702.14c and
+-the defending player's board. Slices 14–16 add the dynamic mana stones,
+-Werebear, the card-costed Bear makers and, in slice 16, `Fade from History` and
+-`Little Bear`. Ayula currently has **34** missing names.
++the defending player's board. Slices 14–17 add the dynamic mana stones,
++Werebear, the card-costed Bear makers, `Fade from History` and `Little Bear`
++(slice 16), and Friendly Teddy, Ulvenwald Bear and Caller of the Claw
++(slice 17). Ayula currently has **31** missing names.
+ 
+ Slice 16 is the first time "each player who controls ..." creates the token
+ (the token's controller is the permanent's controller, not the spell's), and
+@@ -306,7 +307,7 @@ plays it well.
+ 
+ ## Phased gaps (why the eight-list gate is open)
+ 
+-1. **Card-support surface.** The implemented pool is 131 cards. Non-vanilla
++1. **Card-support surface.** The implemented pool is 134 cards. Non-vanilla
+    archetypes need token creation, activated abilities beyond land mana,
+    triggered abilities, keyword semantics, counters as rules objects and
+    static/layer effects that this slice does not implement. Those are the
+@@ -362,3 +363,6 @@ plays it well.
+   strategy tuning.
+ * The native UI's bundled table still defaults to the practice decks; the
+   starter corpus is exercised through the CLI with explicit deck paths.
++
++## Slice 17: death-history package
++Slice 17 implements three real sourced cards: Friendly Teddy, Ulvenwald Bear and Caller of the Claw. Death history is tracked only while a morbid/count card is present, so pre-slice-17 saves and replays keep their digest. Ayula remains planned with 31 of its 34 desired nonland cards still missing; the eight-list gate is open.
+diff --git a/fixtures/starter-corpus/slice17-sourced.json b/fixtures/starter-corpus/slice17-sourced.json
+new file mode 100644
+index 0000000..2d5e69f
+--- /dev/null
++++ b/fixtures/starter-corpus/slice17-sourced.json
+@@ -0,0 +1,70 @@
++{
++ "schema": "aperture.starter-sourced-cards.v1",
++ "provider": "scryfall",
++ "retrieved_at": "2026-10-26T22:48:41Z",
++ "note": "Friendly Teddy and Ulvenwald Bear from slice17 raw capture; Caller of the Claw from its immutable API URL, fetched 2026-10-26T22:48:41Z. No invented text.",
++ "cards": [
++  {
++   "name": "Friendly Teddy",
++   "oracle_id": "02a8b849-e708-427c-92fe-9a41bb0ec7fe",
++   "scryfall_id": "82b142be-4586-487a-8dd8-a55eff776458",
++   "set": "dsk",
++   "collector_number": "247",
++   "layout": "normal",
++   "mana_cost": "{2}",
++   "type_line": "Artifact Creature — Bear Toy",
++   "power": "2",
++   "toughness": "2",
++   "oracle_text": "When this creature dies, each player draws a card.",
++   "color_identity": [],
++   "keywords": [],
++   "legalities_commander": "legal",
++   "printing_url": "https://api.scryfall.com/cards/82b142be-4586-487a-8dd8-a55eff776458",
++   "retrieved_at": "2026-10-26T22:46:44.372927+00:00"
++  },
++  {
++   "name": "Ulvenwald Bear",
++   "oracle_id": "2a79c29c-e539-49c5-b10c-1d5fd77842c9",
++   "scryfall_id": "9e3837a7-854a-440d-93d7-d36f50149346",
++   "set": "dka",
++   "collector_number": "129",
++   "layout": "normal",
++   "mana_cost": "{2}{G}",
++   "type_line": "Creature — Bear",
++   "power": "2",
++   "toughness": "2",
++   "oracle_text": "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
++   "color_identity": [
++    "G"
++   ],
++   "keywords": [
++    "Morbid"
++   ],
++   "legalities_commander": "legal",
++   "printing_url": "https://api.scryfall.com/cards/9e3837a7-854a-440d-93d7-d36f50149346",
++   "retrieved_at": "2026-10-26T22:46:44.372927+00:00"
++  },
++  {
++   "name": "Caller of the Claw",
++   "oracle_id": "ec79255f-4b4d-4a0a-89d8-c59ba640275b",
++   "scryfall_id": "917c5e37-c15e-4260-b380-f1c73df2bf41",
++   "set": "c15",
++   "collector_number": "177",
++   "layout": "normal",
++   "mana_cost": "{2}{G}",
++   "type_line": "Creature — Elf",
++   "power": "2",
++   "toughness": "2",
++   "oracle_text": "Flash\nWhen this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
++   "color_identity": [
++    "G"
++   ],
++   "keywords": [
++    "Flash"
++   ],
++   "legalities_commander": "legal",
++   "printing_url": "https://api.scryfall.com/cards/917c5e37-c15e-4260-b380-f1c73df2bf41",
++   "retrieved_at": "2026-10-26T22:48:41Z"
++  }
++ ]
++}

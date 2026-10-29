@@ -1,0 +1,75 @@
+{
+  "review_outcome": "REQUEST_CHANGES",
+  "reviewed_head": "ea17c272d61d0644ab2ce378870a50643c3db1e0",
+  "base": "c22b240be304802ed31a7f7f9acb8d656d6218bf",
+  "full_issue17_accepted": false,
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "docs/issue17-starter-corpus.md:48,71",
+      "summary": "Tracked corpus counts are stale after slice 9: docs say 99 supported / 360 missing and Krenko 49, while the verified corpus is 102 supported / 357 missing with Krenko 48 (Talrand 51, Elas 55 already correct in the manifest text).",
+      "repro": "evidence/issue17/slice9/corpus-audit.py and corpus-state.json report catalog 114, union 459, supported 102, missing 357; manifest missing arrays are 55/0/51/48/46/55/54/53 and match the catalog. docs line 48 says 99/360 and line 71 says Krenko 49.",
+      "expected": "Update docs to 102 supported / 357 missing and Krenko 48; no code change.",
+      "smallest_discriminator": "Audit prints 102/357 and per-list Krenko 48; the cited docs lines print 99/360 and 49."
+    },
+    {
+      "severity": "low",
+      "file": "evidence/issue17/slice9/repair-gates.log; evidence/issue17/slice9/gates.log",
+      "summary": "The repair-gates receipt is 0 bytes, and gates.log contains only build lines (Compiling/Finished). The handoff's test/fmt/clippy/build receipt claim is not actually supported by those cited logs, even though I independently reran the focused tests, fmt, core clippy and release build successfully.",
+      "repro": "wc -c repair-gates.log -> 0; gates.log contains Compiling core/import/ai/cli and Finished release, with no test/fmt/clippy output.",
+      "expected": "Store the actual focused-test/fmt/clippy/build outputs in the receipt logs, or label the claim as independently reproduced rather than evidenced by gates.log.",
+      "smallest_discriminator": "The cited repair-gates.log is empty and gates.log has five build-only lines."
+    }
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice9 --test issue17_slice5 --test timing_mana --test issue15_effects --test issue15_layers --test catalog_pool --test card_printings --locked",
+      "result": "exit 0: slice9 6/6, slice5 10/10, timing_mana 12/12, issue15 effects 4/4, issue15 layers 4/4, catalog 5/5, printings 6/6."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check; cargo clippy -p aperture-core --all-targets --locked -- -D warnings; cargo build --release --locked -p aperture-cli",
+      "result": "all exit 0."
+    },
+    {
+      "command": "cargo run --release --bin aperture-cli -- selfplay --seed 901 --max-steps 5000, four decks/package-slice9.txt seats, Krenko each seat, commander-combat practice",
+      "result": "exit 0; terminal P0, 1339 actions/32 turns, digest 5d20bb4a35e2adbe21eab65eee427cdb9f2726d51fe027d57ae2acbc528a4626, replay_digest_matches true; four exact 40-card package snapshots and four Krenko commanders."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice9-review-game.replay.json",
+      "result": "exit 0; 1339 actions, 4379 events, digest 5d20bb4a35e2 matches."
+    },
+    {
+      "command": "inspect slice9-review-game.log",
+      "result": "The heuristic cast no Brightstone Ritual, Mana Geyser or Rite of Flame in this terminal trace (6 casts total); focused tests prove their mana behavior. No new ritual ManaAdded events occur in this journey."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice8/game.replay.json",
+      "result": "exit 0; 2377 actions, 6087 events, old digest ffbeaee0db38 still matches."
+    },
+    {
+      "command": "read-only corpus/source audit",
+      "result": "catalog 114; union 459; supported 102; missing 357; manifest matches; per-list 55/0/51/48/46/55/54/53; desired list files unchanged. Slice9 source records for Brightstone, Mana Geyser and Rite of Flame match the live printing fields; Friendly Teddy/Aetherize remain excluded."
+    }
+  ],
+  "journey": {
+    "seed": 901,
+    "status": "terminal",
+    "winner": 0,
+    "steps": 1339,
+    "turns": 32,
+    "events": 4379,
+    "digest": "5d20bb4a35e2adbe21eab65eee427cdb9f2726d51fe027d57ae2acbc528a4626",
+    "seats": "four exact 40-card package snapshots; Krenko commander each",
+    "replay": "matches"
+  },
+  "reuse": [
+    "Native handoff/source records and the new slice9 tests; old slice8 replay compatibility independently rerun above.",
+    "No old slice1-8 audit or full historical matrix repeated."
+  ],
+  "remaining_gaps": [
+    "Full #17 remains unfinished: 114 catalog, 459 union = 102 supported + 357 missing, 1 implemented / 0 certified of eight desired lists.",
+    "Friendly Teddy and Aetherize remain excluded; broader legend/equipment/tutor/reanimation and Ayula tribal/counter text remain unsupported.",
+    "The four-seat package journey does not cast the three new rituals; focused tests, not the heuristic trace, prove their resolution behavior.",
+    "This increment approval would not merge/close #17, certify a starter, or unlock release/#26/#32 lanes."
+  ]
+}

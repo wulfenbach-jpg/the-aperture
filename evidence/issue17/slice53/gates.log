@@ -1,0 +1,280 @@
+head=fa3c7bbdd82c29682c5c276a045c4c24cc49f7e0
+started=2026-10-28T23:02:29Z
+=== fmt ===
+command=cargo fmt --all --check
+EXIT=0 (fmt)
+=== focused_ruxa ===
+command=cargo test -p aperture-core --test issue17_slice53_ruxa --locked
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running tests\issue17_slice53_ruxa.rs (target\debug\deps\issue17_slice53_ruxa-06c8b90dabc425f5.exe)
+
+running 14 tests
+test ruxa_is_registered_with_its_printed_text_and_three_implemented_surfaces ... ok
+test the_anthem_pumps_only_your_creatures_with_no_abilities ... ok
+test a_graveyard_card_cannot_be_named_as_a_permanent_or_from_an_opponent ... ok
+test a_creature_card_with_any_ability_is_never_offered ... ok
+test an_unblocked_attacker_is_never_asked ... ok
+test assigning_as_though_unblocked_deals_all_damage_to_the_player ... ok
+test the_attack_trigger_returns_a_card_without_touching_the_draw_path ... ok
+test a_blocked_attacker_with_abilities_is_never_asked ... ok
+test declining_keeps_the_ordinary_assignment ... ok
+test the_enters_trigger_returns_the_chosen_no_ability_creature_card ... ok
+test two_eligible_attackers_are_asked_in_order_and_damage_is_dealt_once ... ok
+test a_commander_card_in_a_graveyard_is_offered_the_command_zone ... ok
+test a_forged_pending_for_a_creature_with_abilities_is_refused ... ok
+test forged_assignment_pendings_are_refused_by_validate_and_by_a_real_load ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+EXIT=0 (focused_ruxa)
+=== focused_slice46 ===
+command=cargo test -p aperture-core --test issue17_slice46 --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.99s
+     Running tests\issue17_slice46.rs (target\debug\deps\issue17_slice46-e6ff61e91e13a057.exe)
+
+running 14 tests
+test death_outside_combat_does_not_trigger ... ok
+test clue_token_sacrifices_itself_to_draw_a_card ... ok
+test sole_blocker_dying_in_combat_is_exiled_and_investigated ... ok
+test sole_attacker_dying_in_combat_is_exiled_and_investigated ... ok
+test death_beside_another_attacker_does_not_trigger ... ok
+test witness_and_clue_are_catalogued_as_printed_and_token_is_not_a_card ... ok
+test blocker_killed_after_its_companion_left_combat_is_blocking_alone ... ok
+test attacker_killed_after_its_companion_left_combat_is_attacking_alone ... ok
+test absent_legacy_declaration_does_not_suppress_a_live_alone_death ... ok
+test bounced_and_recast_unpaired_blocker_is_not_still_blocking ... ok
+test cub_put_attacker_counts_without_a_declaration ... ok
+test unpaired_blocker_and_paired_blocker_are_not_blocking_alone ... ok
+test blocker_still_blocks_alone_after_its_attacker_is_bounced ... ok
+test malformed_unpaired_blockers_fail_validation_and_real_save_load ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+EXIT=0 (focused_slice46)
+=== focused_slice48 ===
+command=cargo test -p aperture-core --test issue17_slice48 --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.75s
+     Running tests\issue17_slice48.rs (target\debug\deps\issue17_slice48-05f096c1faa3d463.exe)
+
+running 6 tests
+test owlbear_cub_is_registered_with_its_printed_text ... ok
+test a_defender_with_seven_lands_never_triggers_the_look ... ok
+test eight_lands_looks_at_the_top_eight_and_offers_only_creature_cards ... ok
+test declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order ... ok
+test the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage ... ok
+test a_look_with_no_creature_card_puts_everything_on_the_bottom ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT=0 (focused_slice48)
+=== focused_slice49 ===
+command=cargo test -p aperture-core --test issue17_slice49 --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running tests\issue17_slice49.rs (target\debug\deps\issue17_slice49-9b081ebe60690af6.exe)
+
+running 8 tests
+test review329_attack_restriction_is_not_intervening_if ... ok
+test review329_owner_must_see_every_looked_card ... ok
+test entire_opponent_view_and_digest_ignore_hidden_eligibility_and_pick ... ok
+test review329_no_creatures_still_requires_private_look ... ok
+test review329_post_pick_valid_continuation_control ... ok
+test review329_look_pending_cannot_replace_titania_search_on_load ... ok
+test short_and_empty_library_looks_round_trip_before_acknowledgement ... ok
+test forged_look_states_are_refused_by_validation_and_real_load ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+EXIT=0 (focused_slice49)
+=== card_printings ===
+command=cargo test -p aperture-core --test card_printings --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 19 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test slice37_druids_familiar_matches_its_recorded_printing ... ok
+test slice38_spider_ham_matches_its_recorded_printing ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test slice43_lumra_matches_its_recorded_printing ... ok
+test slice46_thijarian_witness_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test slice48_owlbear_cub_matches_its_recorded_printing ... ok
+test slice53_ruxa_matches_its_recorded_printing ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+EXIT=0 (card_printings)
+=== starter_corpus ===
+command=cargo test -p aperture-core --test starter_corpus --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+     Running tests\starter_corpus.rs (target\debug\deps\starter_corpus-05f2cda4096c1ba4.exe)
+
+running 8 tests
+test jasmine_is_refused_in_every_ordinary_library ... ok
+test the_starter_manifest_names_eight_targets_and_claims_only_one ... ok
+test jasmine_boreal_is_a_typed_supported_commander ... ok
+test jasmine_commander_damage_uses_the_existing_ledger ... ok
+test jasmine_commander_cast_tax_and_return_use_the_existing_paths ... ok
+test every_sourced_vanilla_creature_matches_its_printing ... ok
+test the_first_starter_library_is_exact_and_fully_supported ... ok
+test every_sourced_vanilla_creature_casts_and_resolves ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+EXIT=0 (starter_corpus)
+=== catalog_pool ===
+command=cargo test -p aperture-core --test catalog_pool --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.83s
+     Running tests\catalog_pool.rs (target\debug\deps\catalog_pool-509dbd748f1c41fc.exe)
+
+running 5 tests
+test unsupported_card_names_are_rejected_by_the_deck_parser ... ok
+test bundled_practice_decks_are_exactly_forty_supported_cards ... ok
+test every_printed_ability_maps_to_implemented_semantics ... ok
+test pool_size_is_bounded_and_names_are_unique ... ok
+test game_setup_uses_twenty_life_and_forty_card_decks ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT=0 (catalog_pool)
+=== slice15_corpus ===
+command=cargo test -p aperture-core --test issue17_slice15_corpus --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.87s
+     Running tests\issue17_slice15_corpus.rs (target\debug\deps\issue17_slice15_corpus-2520fcad538eaf2c.exe)
+
+running 2 tests
+test the_three_slice15_cards_leave_the_ayula_gap ... ok
+test every_desired_list_missing_cards_equals_pool_membership ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT=0 (slice15_corpus)
+=== ai_search ===
+command=cargo test -p aperture-ai --test search --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.82s
+     Running tests\search.rs (target\debug\deps\search-2756d6508be01f6d.exe)
+
+running 9 tests
+test pending_decisions_are_refused_with_a_typed_reason ... ok
+test cancellation_reports_the_labelled_fallback ... ok
+test budget_exhaustion_labels_the_fallback ... ok
+test candidates_are_only_offered_actions ... ok
+test hidden_hand_identity_never_leaks_into_the_analysis ... ok
+test reconstruction_is_reproducible_determinization ... ok
+test declared_own_deck_is_used_for_own_draws_only ... ok
+test a_live_reveal_leaves_the_search_world_runnable_and_legal ... ok
+test small_paired_trial_against_the_frozen_heuristic has been running for over 60 seconds
+test small_paired_trial_against_the_frozen_heuristic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 242.74s
+
+EXIT=0 (ai_search)
+=== corpus_audit ===
+command=python evidence/issue17/slice53/corpus-audit.py
+catalog_cards      = 162
+union_names        = 459
+supported_union    = 149
+missing_union      = 310
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=4
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 4, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+AUDIT OK
+EXIT=0 (corpus_audit)
+=== clippy ===
+command=cargo clippy --workspace --all-targets --locked -- -D warnings
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+    Checking aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.78s
+EXIT=0 (clippy)
+=== locked_release ===
+command=cargo build --workspace --release --locked
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 12.52s
+EXIT=0 (locked_release)
+=== workspace_tests ===
+command=cargo test --workspace --all-targets --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+error: could not compile `aperture-ai` (test "decider_redirect")
+
+Caused by:
+  process didn't exit successfully: `C:\Users\alex3\.rustup\toolchains\stable-x86_64-pc-windows-msvc\bin\rustc.exe --crate-name decider_redirect --edition=2024 'crates\ai\tests\decider_redirect.rs' --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=5b1bfda01cd0aae4 -C extra-filename=-2bd174564f80f3c0 --out-dir 'C:\AI\aperture-worktrees\issue-17\target\debug\deps' -C 'incremental=C:\AI\aperture-worktrees\issue-17\target\debug\incremental' -L 'dependency=C:\AI\aperture-worktrees\issue-17\target\debug\deps' --extern 'aperture_ai=C:\AI\aperture-worktrees\issue-17\target\debug\deps\libaperture_ai-7522ae5919f837fe.rlib' --extern 'aperture_core=C:\AI\aperture-worktrees\issue-17\target\debug\deps\libaperture_core-16732a4ef4a94784.rlib' --extern 'reqwest=C:\AI\aperture-worktrees\issue-17\target\debug\deps\libreqwest-a5e07e732eed3c15.rlib' --extern 'serde=C:\AI\aperture-worktrees\issue-17\target\debug\deps\libserde-12551d657c266bc9.rlib' --extern 'serde_json=C:\AI\aperture-worktrees\issue-17\target\debug\deps\libserde_json-54e804d5434149f7.rlib' --extern 'thiserror=C:\AI\aperture-worktrees\issue-17\target\debug\deps\libthiserror-95ef31cdfaf05cef.rlib' -C link-arg=/Brepro` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+warning: build failed, waiting for other jobs to finish...
+error: linking with `link.exe` failed: exit code: 0xc0000142
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\rustcp2T6C7\\symbols.o" "<75 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps/{libaperture_core-16732a4ef4a94784,libserde_json-54e804d5434149f7,libmemchr-98167bb721a04246,libitoa-e3c0ba9b4bf823f1,libzmij-aada8b4141319915,libthiserror-95ef31cdfaf05cef,libsha2-adb6be4de8875545,libcpufeatures-66a3875d1da3c704,libcfg_if-2a9baa04367fd0c9,libdigest-e02c25d9cd7b17a1,libconst_oid-6271167944f10f34,libcrypto_common-f5814aa4aefcc150,libblock_buffer-fc7bbddd4ce79a9e,libhybrid_array-256aa4178778ebff,libtypenum-8bcf8082153153e3,libserde-12551d657c266bc9,libserde_core-57845a9fdb08cf9f}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\card_printings-da6d3d70662ff2ff.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/Brepro"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: 
+
+note: `link.exe` returned an unexpected error
+
+note: the Visual Studio build tools may need to be repaired using the Visual Studio installer
+
+note: or a necessary component may be missing from the "C++ build tools" workload
+
+error: could not compile `aperture-core` (test "card_printings") due to 1 previous error
+error: linking with `link.exe` failed: exit code: 0xc0000142
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\rustcibB2xI\\symbols.o" "<45 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps/{libaperture_core-16732a4ef4a94784,libserde_json-54e804d5434149f7,libmemchr-98167bb721a04246,libitoa-e3c0ba9b4bf823f1,libzmij-aada8b4141319915,libthiserror-95ef31cdfaf05cef,libsha2-adb6be4de8875545,libcpufeatures-66a3875d1da3c704,libcfg_if-2a9baa04367fd0c9,libdigest-e02c25d9cd7b17a1,libconst_oid-6271167944f10f34,libcrypto_common-f5814aa4aefcc150,libblock_buffer-fc7bbddd4ce79a9e,libhybrid_array-256aa4178778ebff,libtypenum-8bcf8082153153e3,libserde-12551d657c266bc9,libserde_core-57845a9fdb08cf9f}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\issue17_slice4-5ef916ada5136ae7.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/Brepro"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: 
+
+error: linking with `link.exe` failed: exit code: 0xc0000142
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\rustciJuR85\\symbols.o" "<82 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps/{libaperture_core-16732a4ef4a94784,libserde_json-54e804d5434149f7,libmemchr-98167bb721a04246,libitoa-e3c0ba9b4bf823f1,libzmij-aada8b4141319915,libthiserror-95ef31cdfaf05cef,libsha2-adb6be4de8875545,libcpufeatures-66a3875d1da3c704,libcfg_if-2a9baa04367fd0c9,libdigest-e02c25d9cd7b17a1,libconst_oid-6271167944f10f34,libcrypto_common-f5814aa4aefcc150,libblock_buffer-fc7bbddd4ce79a9e,libhybrid_array-256aa4178778ebff,libtypenum-8bcf8082153153e3,libserde-12551d657c266bc9,libserde_core-57845a9fdb08cf9f}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\issue17_slice10_certification-71e60c1e439f4a1e.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/Brepro"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: 
+
+error: could not compile `aperture-core` (test "issue17_slice4") due to 1 previous error
+error: linking with `link.exe` failed: exit code: 0xc0000142
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\rustcI712vi\\symbols.o" "<6 object files omitted>" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps/{libreqwest-a5e07e732eed3c15,librustls_pki_types-cfe160a7cf640d6f,libzeroize-a495669d99b0df73,libhyper_tls-9f2d6663f56933ad,libtokio_native_tls-d84b23b55e9a0c58,libmime-8ede93d96115279f,libencoding_rs-4de2437338d7617d,libscopeguard-f9af39921d49bdee,libsimdutf8-82e2b5386ce80e85,libcore_detect-21fb0f6a14debca2,libtower_http-bdb93ff8c3866a40,libbitflags-8306fcbd57c36556,libtower-f56f5f952e434c39,libtower_layer-4eacd845f8c85bab,libnative_tls-a53b0e039faf3163,libschannel-52b425eae74e4a82,libhyper_util-8b62440cb76ee7a5,libbase64-a75ab4b516b8846a,libipnet-2c7fc2c70829e56b,libfutures_channel-4c73cf07e25a35fe,libtower_service-3e4dd2d12300c9bd,libtracing-3d402cadfacc9b73,libtracing_core-24855a8b1423940b,libonce_cell-22bd65229808d6d6,libhyper-0c9aaa3269ceac8a,libwant-8d829e504a516d8a,libtry_lock-359727a375a97c2b,libhttparse-d6072118e92cccce,libatomic_waker-37f72f1c43a7949f,libtokio-ce9e615a2a4a96f5,libsocket2-a4b6a48e1c1565be,libmio-e6147dd3fc686042,libwindows_sys-cfb8a611965a1dcb,libwindows_link-bda7b06ca2a905d0,libhttp_body_util-0b5c0d035c7e375f,libhttp_body-ee5bfd0e41d67b1e,liblog-54f5c103f1581374,libfutures_util-e0bd6948615eff16,libfutures_io-c9468889e3c59372,libslab-191c18549b6180ce,libpin_project_lite-2794a596cc55c9ac,libfutures_sink-0d5cb2e8987be6d2,libfutures_task-5539893697143d3c,liburl-1b3a992aa76730a6,libidna-a2834f4b0f9bd9c9,libidna_adapter-79f2b2e7514186aa,libicu_properties-3de3ce48ee893f65,libicu_properties_data-59ff5ea5053508cf,libicu_normalizer-9e3ec9199fbd9405,libsmallvec-33cb17c3542e7645,libicu_normalizer_data-58748c04f4f560bb,libicu_collections-76f7151314250239,libutf8_iter-651cebd53fca0007,libpotential_utf-46e4271d8893458e,libicu_provider-0fe7b7b747b17995,libicu_locale_core-8c01e4a707fca221,libtinystr-b19d4134ad83947f,liblitemap-ab419dcde9c648c0,libwriteable-6f0ee316781fbc24,libzerovec-8a230ceea7d66adf,libzerotrie-f5365ee364525eba,libyoke-3bfb1b202b4583d7,libstable_deref_trait-c20f19c4e4458d06,libzerofrom-87cb3046634d06ac,libform_urlencoded-9cf6bb0f4ceb701e,libpercent_encoding-d3ece61258b6911e,libhttp-527e0501c7716479,libbytes-f6b51951d2383516,libsync_wrapper-2c4e12539945028e,libfutures_core-4e0278df753b8692}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps/{libaperture_core-16732a4ef4a94784,libsha2-adb6be4de8875545,libcpufeatures-66a3875d1da3c704,libcfg_if-2a9baa04367fd0c9,libdigest-e02c25d9cd7b17a1,libconst_oid-6271167944f10f34,libcrypto_common-f5814aa4aefcc150,libblock_buffer-fc7bbddd4ce79a9e,libhybrid_array-256aa4178778ebff,libtypenum-8bcf8082153153e3,libthiserror-95ef31cdfaf05cef,libserde_json-54e804d5434149f7,libmemchr-98167bb721a04246,libitoa-e3c0ba9b4bf823f1,libzmij-aada8b4141319915,libserde-12551d657c266bc9,libserde_core-57845a9fdb08cf9f}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\aperture_import-9a46427d4074de25.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/Brepro"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: 
+
+error: could not compile `aperture-core` (test "issue17_slice10_certification") due to 1 previous error
+error: could not compile `aperture-import` (lib test) due to 1 previous error
+error: linking with `link.exe` failed: exit code: 0xc0000142
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\rustcVvu0zH\\symbols.o" "<101 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps/{libaperture_core-16732a4ef4a94784,libserde_json-54e804d5434149f7,libmemchr-98167bb721a04246,libitoa-e3c0ba9b4bf823f1,libzmij-aada8b4141319915,libthiserror-95ef31cdfaf05cef,libsha2-adb6be4de8875545,libcpufeatures-66a3875d1da3c704,libcfg_if-2a9baa04367fd0c9,libdigest-e02c25d9cd7b17a1,libconst_oid-6271167944f10f34,libcrypto_common-f5814aa4aefcc150,libblock_buffer-fc7bbddd4ce79a9e,libhybrid_array-256aa4178778ebff,libtypenum-8bcf8082153153e3,libserde-12551d657c266bc9,libserde_core-57845a9fdb08cf9f}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\AI\\aperture-worktrees\\issue-17\\target\\debug\\deps\\apnap-c739c2de7ea2ac11.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/Brepro"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: 
+
+error: could not compile `aperture-core` (test "apnap") due to 1 previous error
+EXIT=101 (workspace_tests)
+finished=2026-10-28T23:07:30Z

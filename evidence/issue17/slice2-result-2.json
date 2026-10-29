@@ -1,0 +1,95 @@
+{
+  "issue": 17,
+  "slice": "slice2 assignment2 \u2014 token defect repairs",
+  "status": "PARTIAL",
+  "eight_list_gate": "open",
+  "head": "86db7d316edd6200f7f598849018e428d11b69eb",
+  "defects": [
+    {
+      "id": "goblin-count-truncation",
+      "red": "crates/core/tests/issue17_tokens.rs krenko_never_silently_truncates_a_goblin_count_above_255: expected 301 tokens, observed 255",
+      "fix": "goblin_count and create_goblin_tokens use usize; no clamps; fixed-count spell effects cast u8 to usize",
+      "green": "10/10 issue17_tokens pass"
+    },
+    {
+      "id": "token-cessation-order",
+      "red": "token_death_is_a_real_graveyard_change_then_cessation and token_bounce_and_exile_record_the_destination_before_cessation failed: cessation intercepted before destination/death; no Destroyed event",
+      "fix": "removed pre-destination interception; tokens move to real destination (graveyard/hand/exile/library) and applicable Destroyed/Dies triggers fire; check_sbas removes nonbattlefield tokens to Zone::Removed per CR111.7 after the zone change",
+      "green": "destination/Destroyed events precede cessation; no graveyard/hand/exile residue; Swords last-known power life gain preserved"
+    }
+  ],
+  "mechanics": {
+    "x_is_unclamped_usize": true,
+    "token_death_real_zone_change": true,
+    "cessation_is_sba": true,
+    "no_graveyard_residue": true,
+    "bounce_exile_destination_recorded": true,
+    "swords_life_gain": true
+  },
+  "red_green": {
+    "honest_note": "Assignment1 implementation-first disclosure retained. These two corrections were test-first with actual RED before production edits.",
+    "focused_log": "evidence/issue17/slice2-repairs-focused.log",
+    "gates_log": "evidence/issue17/slice2-repairs-gates.log"
+  },
+  "verification": {
+    "fmt": 0,
+    "clippy": 0,
+    "release_build": 0,
+    "issue17_tokens": "10 passed",
+    "starter_planned": "1 passed",
+    "starter_analyzer": "3 passed"
+  },
+  "journey": {
+    "fixture": "decks/package-krenko-tokens.txt",
+    "status": "terminal",
+    "winner": 0,
+    "steps": 1805,
+    "turns": 40,
+    "starting_life": 40,
+    "digest": "e2827d82da51bba3a3d744aebd9ec848865b93478f228a6e2456590e8bf384d7",
+    "report": "evidence/issue17/slice2-repairs-krenko-game.json",
+    "log": "evidence/issue17/slice2-repairs-krenko-game.log",
+    "cessation_events": 109,
+    "note": "digest changed from f4768c8a3bd2 as expected because token death now performs a real graveyard change before cessation"
+  },
+  "replay": {
+    "direct": "evidence/issue17/slice2-repairs-replay.log",
+    "save": "evidence/issue17/slice2-repairs-save-replay.log",
+    "matches": true
+  },
+  "legacy": {
+    "jasmine_replay": "evidence/issue17/slice2-repairs-jasmine-replay.log",
+    "result": "digest d7f8c2adaa17 matches, unchanged"
+  },
+  "desired_lists": {
+    "changed": false,
+    "content_diff": "none; `git diff --stat -- decks/starter-corpus/planned ...` empty",
+    "baseline": "evidence/issue17/slice2-input-list-hashes.json"
+  },
+  "talrand": {
+    "registered": false,
+    "reason": "Full runtime budget was used by the two required token repairs. Talrand needs a complete spell-cast trigger plus real flying token/block restriction; not left partly registered. No fake flying or spell copy."
+  },
+  "unfinished": [
+    "Talrand not implemented (no partial registration)",
+    "tokens remain the 1/1 red Goblin type only",
+    "legend rule absent; Krenko commander-only",
+    "no #16 integration claim; tokens.rs does not exist in this branch"
+  ],
+  "changed_files": [
+    "crates/core/src/engine.rs",
+    "crates/core/tests/issue17_tokens.rs",
+    "evidence/issue17/SLICE2-IMPLEMENTATION-HANDOFF-2.md",
+    "evidence/issue17/slice2-result-2.json",
+    "evidence/issue17/slice2-repairs-gates.log",
+    "evidence/issue17/slice2-repairs-focused.log",
+    "evidence/issue17/slice2-repairs-krenko-game.json",
+    "evidence/issue17/slice2-repairs-krenko-game.replay.json",
+    "evidence/issue17/slice2-repairs-krenko-game.log",
+    "evidence/issue17/slice2-repairs-replay.log",
+    "evidence/issue17/slice2-repairs-krenko-save.json",
+    "evidence/issue17/slice2-repairs-save-replay.log",
+    "evidence/issue17/slice2-repairs-jasmine-replay.log"
+  ],
+  "commit_or_push": "none"
+}

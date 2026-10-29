@@ -1,0 +1,20 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.55s
+     Running tests\abilities.rs (target\debug\deps\abilities-383e8f8d7ef294d9.exe)
+
+running 13 tests
+test tap_ability_is_refused_while_summoning_sick_and_when_tapped ... ok
+test an_ability_on_the_stack_is_not_a_spell ... ok
+test activated_ability_needs_its_controller_and_a_legal_target ... ok
+test sacrifice_cost_ability_moves_the_source_and_gains_life ... ok
+test activated_ability_effect_comes_before_ability_resolved_and_priority ... ok
+test enters_the_battlefield_trigger_draws_before_priority ... ok
+test optional_trigger_is_declined_or_used_by_its_controller ... ok
+test tap_ability_goes_on_the_stack_and_deals_damage ... ok
+test trigger_without_a_legal_target_is_removed ... ok
+test simultaneous_dies_triggers_use_apnap_order_and_lki ... ok
+test trigger_target_lost_before_resolution_makes_the_ability_fizzle ... ok
+test triggered_ability_effect_comes_before_ability_resolved_and_priority ... ok
+test mana_cost_ability_and_once_each_turn_limit ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

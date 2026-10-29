@@ -1,0 +1,23 @@
+Working...
+**review_outcome: APPROVED_INCREMENT** at `1d99b74371f06bdb645a3d4494ddb48e02d81e14`.
+`full_issue17_accepted: false`.
+
+**Verified**
+
+- Slice13 4/4: Sazh controller-only typed counter, Baloths Beast source-left, Professor Pest dies-trigger exactly once, sourced printings.
+- Slice12 strict controls 11/11; exact `four_seat_co_loser_apnap_source_departure_continues_survivors` passes with the new **token-only** archival guard. My trigger_queue/revealed/hand-list probe rejects all three; live-owner Removed and real off-battlefield token controls remain rejected.
+- UI sentinel tests: UI lib 1/1, UI session 22/22; import `start_flow` 21/21. Test fixtures only; no production UI/import behavior change.
+- Seed1301 real journey: terminal P1, 1568 actions/34 turns/5018 events, digest `4cbaa34f0de1`; fresh save-out reloads/replays the same digest. Old slice8 replay still `ffbeaee0db38`/6087.
+- Journey events: Sazh 2 / Baloths 3 / Professor 4 casts, 18 +1/+1 counter events, 1 Beast +4 Pest creations. No Pest dies-trigger line in this terminal trace; focused test proves it.
+- Native source check all seven fields true. Catalog 122, union 459 = 110 supported + 349 missing; desired snapshots unchanged; Beast/Pest Token names follow CR111.4 and are nonimportable.
+- `cargo fmt --check` and `git diff --check` pass.
+
+**Nonblocking notes**
+
+- Handoff says “no Pest death occurred,” but the log records a Pest put into a graveyard/ceasing at the terminal game-over mass-death point; no dies-trigger/life line appears.
+- Handoff “gains life before the token ceases” is loose: the trigger is queued before CR 111.7 cessation, but the life effect resolves later from the stack.
+- `slice13/gates.log` records only release-build output; focused tests/fmt were independently rerun.
+
+Remaining gaps: full #17 is **1 certified / 7 planned**, 349 union names missing; artifact mana remains explicit-only for the product heuristic; Friendly Teddy, Aetherize, Commander’s Sphere and broader mechanics remain open. Current exact-head CI is not claimed green; no merge/closure or release/#26/#32 unlock.
+
+Reports: `evidence/issue17/slice13/REVIEW13.md`, `.json`.

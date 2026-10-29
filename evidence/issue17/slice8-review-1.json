@@ -1,0 +1,68 @@
+{
+  "review_outcome": "REQUEST_CHANGES",
+  "reviewed_head": "818afdb8afbb5977b6e08b085654304e4b5754bf",
+  "base": "7e1eb5f1b8218e24d7a03377c3cb3c5bb0981a4f",
+  "full_issue17_accepted": false,
+  "scope": "Slice-8 five-card package and three explicit exclusions only. Not full issue-17, not #16 integration, not release/merge approval.",
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "docs/issue17-starter-corpus.md:34,48,63; decks/starter-corpus/manifest.json:142,204,335",
+      "summary": "Corpus accounting text is stale after slice 8: the docs claim Isamaru 56 missing, 100 supported/359 missing, Krenko 51 and Talrand 54; the manifest interaction strings claim Talrand 54, Krenko 51 and Elas 58. The verified counts are Isamaru 55, catalog 111 / union 459 / supported 99 / missing 360, Krenko 49, Talrand 51, Elas 55. The actual missing_cards arrays are correct; only the free-text claims are wrong.",
+      "repro": "python evidence/issue17/slice8/corpus-audit.py -> catalog 111, union 459, supported 99, missing 360, manifest_missing 360, per-list 55/0/51/49/46/55/54/55; compare the cited docs/manifest lines.",
+      "expected": "Update the counts to 99 supported / 360 missing and the actual per-list counts, without changing missing_cards or the desired files.",
+      "smallest_discriminator": "The audit prints 99/360 and per-list 55/51/49/55; the cited prose says 100/359, 56/54/51/58."
+    },
+    {
+      "severity": "low",
+      "file": "crates/core/tests/issue17_slice8.rs:402",
+      "summary": "The test named razorclaw_triggers_once_with_two_blockers_and_not_when_unblocked never exercises an unblocked attack. Production code only queues BecomesBlocked from turn.blockers, so current behavior appears correct, but the named control does not discriminate the unblocked case.",
+      "repro": "Read the test body: it declares one attacker and two blockers, then asserts power 5; there is no unblocked attack/no-trigger assertion.",
+      "expected": "Add an unblocked Razorclaw attack control asserting no BecomesBlocked trigger and unchanged power, or rename the test to match what it covers."
+    }
+  ],
+  "checks": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice8 --test issue17_tokens --test issue17_slice6 --test counters_tokens_library --test catalog_pool --test card_printings --test issue13_commander_combat --locked",
+      "result": "exit 0: slice8 8/8, tokens 10/10, slice6 13/13, counters/tokens/library 16/16, catalog 5/5, printings 6/6, issue13 43/43 (evidence/issue17/slice8-review-focused.log)."
+    },
+    {
+      "command": "cargo run --release --bin aperture-cli -- selfplay --seed 801 --max-steps 5000, four decks/package-slice8.txt seats, Isamaru each seat, commander-combat practice",
+      "result": "exit 0; terminal P0, 2377 actions / 68 turns, digest ffbeaee0db38c4de6a90bed44c5f111ee09cb05e54a3d2b86adf75ffa3a4b082, replay_digest_matches true; four exact 40-card package seat snapshots and four Isamaru commanders."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice8-review-game.replay.json",
+      "result": "exit 0; 2377 actions, 6087 events, digest ffbeaee0db38 matches."
+    },
+    {
+      "command": "inspect slice8-review-game.log for actual changed behavior",
+      "result": "Soul's Attendant was cast 3 times but each was countered before resolution; Razorclaw Bear cast 4 times and produced 2 BecomesBlocked triggers; Volley Veteran cast 4 times and produced 2 ETB triggers; Dramatic Reversal and Goblin War Strike were drawn but not cast. Focused tests, not this heuristic trace, prove those two effects."
+    },
+    {
+      "command": "python evidence/issue17/slice8/corpus-audit.py; read slice8-native-source-check.json",
+      "result": "catalog 111; union 459; supported 99; missing 360; manifest matches; desired_contents_unchanged true. All eight live source records fields_match true. Excluded Brightstone Ritual/Friendly Teddy/Aetherize have no catalog/CardId/code support and remain in manifest missing."
+    },
+    {
+      "command": "git diff --name-status 7e1eb5f..HEAD -- decks/starter-corpus/planned decks/starter-corpus/jasmine-vanilla-stompy.txt evidence/issue17/slice3-native-corpus.json evidence/issue17/slice3-native-corpus.py",
+      "result": "empty: original eight desired files, Jasmine list and historical slice3 audit files unchanged."
+    }
+  ],
+  "journey": {
+    "seed": 801,
+    "status": "terminal",
+    "winner": 0,
+    "steps": 2377,
+    "turns": 68,
+    "events": 6087,
+    "digest": "ffbeaee0db38c4de6a90bed44c5f111ee09cb05e54a3d2b86adf75ffa3a4b082",
+    "seats": "four exact 40-card package snapshots; Isamaru commander each",
+    "replay": "matches"
+  },
+  "remaining_gaps": [
+    "Eight desired 100-card starters remain the gate: 1 implemented / 0 certified of 8, with 360 union names missing.",
+    "Brightstone Ritual, Friendly Teddy and Aetherize remain explicitly excluded; bounded mana widening, serialized multi-player draw continuation and attacker-list commander-replacement continuation are still needed.",
+    "Ayula's printed counter/tribal text and broader legend/equipment/tutor/reanimation mechanics remain unimplemented; #16 primitives are not product acceptance.",
+    "Goblin War Strike is implemented for target players only; no planeswalker permanents exist in the current pool, so the printed planeswalker half is not currently targetable.",
+    "This increment approval would not close/merge #17, certify a starter, or unlock downstream release lanes."
+  ]
+}

@@ -1,0 +1,48 @@
+mutation: red-mutation-landfall-watches-the-wrong-event.log
+file: crates\core\src\ability.rs
+sha256_before: c17b9d78ef72456259e4335b46657f9007d3eedbe5daee70c6510b74d7b22624
+sha256_after_restore: c17b9d78ef72456259e4335b46657f9007d3eedbe5daee70c6510b74d7b22624
+cargo_exit: 101
+expected_failures: ['landfall_targets_a_creature_you_control_and_puts_one_counter']
+observed_failures: ['beorns_hospitality_is_sourced_and_supported', 'landfall_targets_a_creature_you_control_and_puts_one_counter']
+discriminating: True
+note: the expectation is that every named test fails; a mutation may
+also fail neighbouring tests that share the animated-permanent
+precondition, which is reported here rather than hidden.
+
+
+running 7 tests
+test beorns_hospitality_is_sourced_and_supported ... FAILED
+test landfall_targets_a_creature_you_control_and_puts_one_counter ... FAILED
+test an_opponents_land_does_not_trigger_it ... ok
+test the_animation_is_not_offered_without_its_mana_cost ... ok
+test a_pump_applies_on_top_of_the_characteristic_defining_value ... ok
+test the_animation_adds_the_bear_type_and_reads_the_land_count_live ... ok
+test the_animation_outlives_cleanup_and_ends_with_the_permanent ... ok
+
+failures:
+
+---- beorns_hospitality_is_sourced_and_supported stdout ----
+
+thread 'beorns_hospitality_is_sourced_and_supported' (33552) panicked at crates\core\tests\issue17_slice33.rs:155:5:
+assertion `left == right` failed
+  left: SpellCast
+ right: LandEnters
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- landfall_targets_a_creature_you_control_and_puts_one_counter stdout ----
+
+thread 'landfall_targets_a_creature_you_control_and_puts_one_counter' (38164) panicked at crates\core\tests\issue17_slice33.rs:353:9:
+the mandatory landfall trigger asks its controller for a target
+
+
+failures:
+    beorns_hospitality_is_sourced_and_supported
+    landfall_targets_a_creature_you_control_and_puts_one_counter
+
+test result: FAILED. 5 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.90s
+     Running tests\issue17_slice33.rs (target\debug\deps\issue17_slice33-c01c6e9d985be65a.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice33`

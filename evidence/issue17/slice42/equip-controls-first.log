@@ -1,0 +1,11 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.74s
+     Running tests\issue17_slice42_equip_controls.rs (target\debug\deps\issue17_slice42_equip_controls-3f29c607308de6a5.exe)
+
+running 3 tests
+test equip_is_refused_while_a_spell_is_on_the_stack ... ok
+test equip_refusals_are_atomic_for_control_target_and_cost ... ok
+test protection_is_read_live_and_two_equipment_coexist_on_one_creature ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,0 +1,30 @@
+Working...
+**PARTIAL #17 — repair complete, committed, not pushed.**
+
+Commits on `aperture/issue-17`:
+- `7e4a013` — implementation/tests/fixtures/docs
+- `bfaa782` — repair result + human checkpoint
+
+### Repairs
+1. **Cleanup semantics** — death history no longer clears in `finish_cleanup`; reset occurs only when `turn.number` advances. New cleanup-priority regression calls real cleanup twice and retains earlier deaths.
+2. **Each-player draw suspension** — added serialized `DrawResume::EachPlayer` progress (next seat, cards left, per-seat count, completed live seats, fixed live total). Commander replacement at an earlier seat no longer skips later live seats. Mid-suspension save validates/reloads; no early priority.
+3. **Save validator** — allows a triggered ability’s source card to remain in its zone (e.g. graveyard) while its stack item exists, which the new suspension test exposed.
+4. **Counter event** — +1/+1 placement now emits the existing authoritative counter state event with resulting total.
+5. **AI delta disclosed** — only initialization/copy of the two new state fields in `crates/ai/src/search.rs` and `crates/ai/tests/common.rs`; no policy/search changes.
+6. **Closed-corpus tracking** documented and old replay digests preserved.
+
+### Verification
+| check | result |
+|---|---|
+| slice17 tests | 5 passed |
+| cleanup-history lib test | passed |
+| command_zone_setup | 34 passed |
+| replay_digest / ordering_persistence | 6 + 2 passed |
+| `cargo clippy --workspace --all-targets -D warnings` | exit 0 |
+| `cargo build --release -p aperture-cli` | exit 0 |
+| Journey seed 1616 | terminal win seat 3, digest `85fabffc…c7027`, replay matched, 4 Bears |
+| Fresh save | `demo-save.json` validates, reloads, exact state equal |
+
+Evidence: `evidence/issue17/slice17/IMPLEMENT-RESULT.md`, `evidence/issue17/SLICE17-HUMAN-CHECKPOINT.md`, `evidence/issue17/TDD-slice17.md`, `evidence/issue17/slice17/demo-save.json`.
+
+Open: Ayula 31/34 cards missing; eight-list gate open; no full workspace rerun per instruction; no 100-card Commander game; old #20 reporter pointer untouched.

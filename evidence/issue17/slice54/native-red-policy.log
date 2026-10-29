@@ -1,0 +1,25 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.08s
+     Running tests\issue17_ursine_policy.rs (target\debug\deps\issue17_ursine_policy-fa4ab158c6679351.exe)
+
+running 1 test
+test heuristic_obeys_ursine_attack_requirement_from_public_offer ... FAILED
+
+failures:
+
+---- heuristic_obeys_ursine_attack_requirement_from_public_offer stdout ----
+
+thread 'heuristic_obeys_ursine_attack_requirement_from_public_offer' (35416) panicked at crates\ai\tests\issue17_ursine_policy.rs:19:9:
+heuristic proposed illegal action at step622: DeclareAttackers { attackers: [ObjectId(122)], defender: Some(0) }: Err(Illegal { action: "declare attackers", reason: "this declaration obeys 0 attack requirements, but 1 can be obeyed (CR 508.1d)" })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    heuristic_obeys_ursine_attack_requirement_from_public_offer
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
+
+error: test failed, to rerun pass `-p aperture-ai --test issue17_ursine_policy`
+
+EXIT=101

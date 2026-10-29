@@ -1,0 +1,77 @@
+{
+  "verdict": "request_changes",
+  "reviewed_head": "0d8a1ee7dfccef39aacaff482b00255e86ff6399",
+  "base": "3661353aad1c3d628827e28faf187e23ca5b4cb9",
+  "full_issue17_accepted": false,
+  "scope": "Only the five-card cross-package delta (Swamp, Lightning Bolt, Forest Bear, Striped Bears, Guttersnipe) plus the source-left damage repair. Not full issue-17, not #16 integration, and not the shared core-hook review.",
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "decks/starter-corpus/manifest.json",
+      "line": 211,
+      "summary": "The Krenko missing_interactions text still says 'remaining 52 desired-list cards', but adding Guttersnipe reduced the Krenko missing set to 51. docs/issue17-starter-corpus.md:58 repeats '52 missing'.",
+      "repro": "manifest krenko-goblin-tokens.missing_cards has 51 entries; docs line 58 says '(52 missing)'. The verified per-list count is Krenko 51.",
+      "expected": "Both guide and manifest text should state 51 remaining Krenko names (or avoid a stale hard-coded total).",
+      "repair": "Update the manifest interaction string and docs line 58; no code change."
+    },
+    {
+      "severity": "medium",
+      "file": "decks/starter-corpus/manifest.json",
+      "line": 352,
+      "summary": "The Elas missing_interactions text still says 'black basic land (Swamp) is not in the supported pool', and docs/issue17-starter-corpus.md:74-75 says the pool has no black basic land and Elas cannot be built until Swamp is added. Swamp is now supported as mdd/296.",
+      "repro": "catalog contains Swamp with basic_mana Some(Black); Elas missing_cards no longer contains Swamp (58 missing); docs bullet 8 says black basic support is implemented, but lines 74-75 contradict it.",
+      "expected": "Remove/replace the stale no-Swamp claim and describe the remaining Elas gaps (its 57 nonland names and unsupported interactions), not black basic availability.",
+      "repair": "Update the manifest Elas interaction string and the docs paragraph; no code change."
+    }
+  ],
+  "checks": [
+    {
+      "command": "git rev-parse HEAD; git diff --name-status 3661353..HEAD",
+      "result": "HEAD 0d8a1ee7dfccef39aacaff482b00255e86ff6399. Delta is ability/card/catalog/engine, cross-package tests, package deck, manifest/source/docs, and evidence. No bundled default deck, UI, import/search, or desired-list file changes."
+    },
+    {
+      "command": "cargo test --locked -p aperture-core --test issue17_cross_package --test issue17_tatyova --test card_printings --test catalog_pool --test starter_corpus --test issue13_commander_combat",
+      "result": "exit 0: cross_package 8/8, Tatyova 5/5, card_printings 4/4, catalog_pool 5/5, starter 8/8, issue13 43/43 (evidence/issue17/slice3-review2-core.log)."
+    },
+    {
+      "command": "cargo fmt --all -- --check; git diff --check; cargo build --release --locked -p aperture-cli",
+      "result": "all exit 0."
+    },
+    {
+      "command": "selfplay --seed 5, four exact decks/package-cross-corpus.txt seats (ordinary practice), --out/--replay-out/--verbose",
+      "result": "exit 0; terminal P2 win, 1112 actions / 25 turns, starting life 20, digest 4572cd11e8933e629e21e57ac4e59646d100b4c9397bb88b94d78e47ad843456, replay_digest_matches true, not capped (evidence/issue17/slice3-review2-cross.json/.log)."
+    },
+    {
+      "command": "python audit of replay seats[].cards vs decks/package-cross-corpus.txt",
+      "result": "all four seats are exactly the 40-card package multiset; ordinary practice profile; no commanders."
+    },
+    {
+      "command": "inspect slice3-review2-cross.log",
+      "result": "8 Guttersnipe spell-cast triggers and 8 resolutions. Each resolution's immediately preceding life-loss lines hit only P2's opponents (P0/P1/P3 as still live); controller P2 never takes the trigger damage. As opponents are eliminated, remaining live opponents are hit."
+    },
+    {
+      "command": "aperture-cli replay --file evidence/issue17/slice3-review2-cross.replay.json",
+      "result": "exit 0; 1112 actions, 2819 events; replayed digest 4572cd11e893 matches recorded."
+    },
+    {
+      "command": "python comparison of all five cross-package records against archived planned-list Scryfall objects",
+      "result": "Swamp mdd/296, Lightning Bolt msc/806, Forest Bear ptk/135, Striped Bears wth/140, Guttersnipe hoc/196: mana cost, type line, power/toughness, Oracle text and Commander legality all match; no fabrication found."
+    },
+    {
+      "command": "read-only corpus audit with card_defender regex",
+      "result": "catalog 93 unique names; union 459 all names = 81 supported + 378 missing; manifest missing union 378 and per-list sets match; 7 planned, 1 implemented, 0 certified; desired contents unchanged. Tatyova remains planned with 56 missing; Krenko 51, Ayula 50, Elas 58."
+    },
+    {
+      "command": "git diff --name-status 3661353..HEAD -- decks/temur-beats.txt decks/izzet-control.txt decks/starter-corpus/planned",
+      "result": "empty: bundled defaults and all eight desired lists unchanged."
+    }
+  ],
+  "retained_limitations": [
+    "Approves only the bounded cross-package increment with the two documentation/manifest truthfulness repairs. Seven desired starters remain planned/unsupported and the 378-name corpus gap remains.",
+    "Guttersnipe support is the printed spell-cast trigger and damage primitive only; source-left LKI debt outside this bounded effect is not claimed fixed.",
+    "Defender adapter and the shared core hooks remain separately reviewed #16 integration hotspots; this is not #16 approval.",
+    "No full suite, historical replay matrix, full network/source refresh, GUI/import/search audit or playing-strength claim. Native exact-head CI is checked separately.",
+    "The cross-package handoff lists docs/issue15-effects.md in 'Changed' but no such delta exists in this range; not treated as a support claim."
+  ],
+  "next_command": "cargo test -q -p aperture-core --test issue17_cross_package --test issue17_tatyova --test issue17_tokens --test issue17_talrand"
+}

@@ -1,0 +1,18 @@
+Working...
+**APPROVED_INCREMENT** at `3b06249d8bfc3f58cfa454e30ed2be417e23639f` (code `c2d9b35`; base `632c5e7`).
+
+Verified the actual implementation, not just receipts:
+
+- MOM 337 source/fixture matches immutable `9c10934d-9016-43c4-a7ab-56cc7d8f671f`.
+- Printed and static “other controlled creatures” trample feed the real combat damage path.
+- Entry trigger excludes self/tokens/opponents, applies counter and haste to the captured nontoken creature, and remains mandatory if that creature leaves.
+- Source-left resolution still buffs the original entered creature.
+- `affected` bindings are invalidated on battlefield departure; a same-id bounce/recast cannot inherit the old trigger or haste effect. My external probe for the haste-transfer case passed.
+- Haste reaches attack legality, tap-cost activation validation, and actual mana offers; cleanup expiries.
+- Both native REDs are real behavior failures at `c457e49`; both repairs are committed in `c2d9b35`.
+
+**Executed:** slice24 focused **10/10 passed**; release replay **1602 actions / 4127 events / `a41bbfd2…` matches**. Inspected native journey: 6 Surrak casts, 11 counter/haste events, 20 blocked-trample damage events; corpus audit: 141 catalog / 459 = 129 supported + 330 missing, Ayula 24, 1 certified.
+
+**Nonblocking:** `corpus-audit.log`’s final summary says Ayula 25 while its per-list output, JSON, and docs say 24; midtrigger save test is sandbox/direct-fixture; opponent-entry and ordinary tap-ability haste are code-inspected only; pending-trigger affected copies are cleared but not separately validated.
+
+Full #17 remains 1/8 certified, 330 missing, Ayula 24. Report: `evidence/issue17/slice24/REVIEW24-ORIGINAL-HISTORY.md`. No source/test edits retained, no commits.

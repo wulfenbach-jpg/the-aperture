@@ -1,0 +1,712 @@
+{
+  "source": "https://api.scryfall.com/cards/collection",
+  "retrieved_at_utc": "2026-10-26T16:21:29.299160+00:00",
+  "requested": 46,
+  "returned": 46,
+  "not_found": [],
+  "cards": [
+    {
+      "name": "Arcane Signet",
+      "mana_cost": "{2}",
+      "mana_value": 2.0,
+      "type_line": "Artifact",
+      "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "frc",
+      "collector_number": "20",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0bc7f093-bef0-4f1a-852c-4b75ebf54838&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/frc/20/arcane-signet?utm_source=api"
+    },
+    {
+      "name": "Ayula's Influence",
+      "mana_cost": "{G}{G}{G}",
+      "mana_value": 3.0,
+      "type_line": "Enchantment",
+      "oracle_text": "Discard a land card: Create a 2/2 green Bear creature token.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "mh1",
+      "collector_number": "156",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A25d955e3-2b98-4a75-bb51-6072000111be&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mh1/156/ayulas-influence?utm_source=api"
+    },
+    {
+      "name": "Ayula, Queen Among Bears",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Legendary Creature — Bear",
+      "oracle_text": "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Fight"
+      ],
+      "set": "mh1",
+      "collector_number": "155",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa79d2fc8-467f-464d-9e73-2dae4b059628&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mh1/155/ayula-queen-among-bears?utm_source=api"
+    },
+    {
+      "name": "Bearscape",
+      "mana_cost": "{1}{G}{G}",
+      "mana_value": 3.0,
+      "type_line": "Enchantment",
+      "oracle_text": "{1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "ody",
+      "collector_number": "229",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7e481e22-4122-4259-8978-4727eb307195&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/ody/229/bearscape?utm_source=api"
+    },
+    {
+      "name": "Beorn the Fierce",
+      "mana_cost": "{3}{G}{G}",
+      "mana_value": 5.0,
+      "type_line": "Legendary Creature — Bear Shapeshifter Warrior",
+      "oracle_text": "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+      "power": "6",
+      "toughness": "6",
+      "keywords": [
+        "Trample"
+      ],
+      "set": "hob",
+      "collector_number": "119",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A30ca8e92-5955-46a1-86c1-094a873f518f&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/hob/119/beorn-the-fierce?utm_source=api"
+    },
+    {
+      "name": "Beorn's Hospitality",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Enchantment",
+      "oracle_text": "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+      "power": null,
+      "toughness": null,
+      "keywords": [
+        "Landfall"
+      ],
+      "set": "hob",
+      "collector_number": "120",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad9ed7252-11d1-432b-9101-ac08cd28826d&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/hob/120/beorns-hospitality?utm_source=api"
+    },
+    {
+      "name": "Caller of the Claw",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Elf",
+      "oracle_text": "Flash\nWhen this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Flash"
+      ],
+      "set": "c15",
+      "collector_number": "177",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aec79255f-4b4d-4a0a-89d8-c59ba640275b&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/c15/177/caller-of-the-claw?utm_source=api"
+    },
+    {
+      "name": "Circle of the Moon Druid",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Human Elf Druid",
+      "oracle_text": "Bear Form — During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
+      "power": "2",
+      "toughness": "4",
+      "keywords": [],
+      "set": "afr",
+      "collector_number": "177",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A90569b99-8b63-4d2e-b7de-b578b8adbdcb&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/afr/177/circle-of-the-moon-druid?utm_source=api"
+    },
+    {
+      "name": "Dancing from Dark to Dawn",
+      "mana_cost": "{3}{G}{G}",
+      "mana_value": 5.0,
+      "type_line": "Enchantment",
+      "oracle_text": "Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.\nLandfall — Whenever a land you control enters, create a 2/2 green Bear creature token.",
+      "power": null,
+      "toughness": null,
+      "keywords": [
+        "Landfall"
+      ],
+      "set": "hob",
+      "collector_number": "123",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5ba482e9-fbb0-4d9f-a3a9-414892bcdfed&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/hob/123/dancing-from-dark-to-dawn?utm_source=api"
+    },
+    {
+      "name": "Dragon-Scarred Bear",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.",
+      "power": "3",
+      "toughness": "2",
+      "keywords": [
+        "Regenerate",
+        "Formidable"
+      ],
+      "set": "dtk",
+      "collector_number": "183",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2f6f49a4-f2ea-4147-a6d3-69cf875c302e&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/dtk/183/dragon-scarred-bear?utm_source=api"
+    },
+    {
+      "name": "Drover Grizzly",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear Mount",
+      "oracle_text": "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+      "power": "4",
+      "toughness": "2",
+      "keywords": [
+        "Saddle"
+      ],
+      "set": "otj",
+      "collector_number": "161",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A290fe09e-04ab-48d1-a60e-db47ea8c4d00&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/otj/161/drover-grizzly?utm_source=api"
+    },
+    {
+      "name": "Druid's Familiar",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Soulbond (You may pair this creature with another unpaired creature when either enters. They remain paired for as long as you control both of them.)\nAs long as this creature is paired with another creature, each of those creatures gets +2/+2.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Soulbond"
+      ],
+      "set": "avr",
+      "collector_number": "175",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6a5b1cd4-e597-4122-8fc7-4dce241d7c01&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/avr/175/druids-familiar?utm_source=api"
+    },
+    {
+      "name": "Dúnedain Rangers",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Creature — Human Ranger",
+      "oracle_text": "Landfall — Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
+      "power": "4",
+      "toughness": "4",
+      "keywords": [
+        "Landfall"
+      ],
+      "set": "ltr",
+      "collector_number": "159",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7de2a364-4383-437a-b6d6-55e4721a0141&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/ltr/159/d%C3%BAnedain-rangers?utm_source=api"
+    },
+    {
+      "name": "Evercoat Ursine",
+      "mana_cost": "{4}{G}",
+      "mana_value": 5.0,
+      "type_line": "Creature — Elemental Bear",
+      "oracle_text": "Trample\nHideaway 3, hideaway 3 (When this creature enters, look at the top three cards of your library, exile one face down, then put the rest on the bottom in a random order. Then do it again.)\nWhenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
+      "power": "6",
+      "toughness": "5",
+      "keywords": [
+        "Trample",
+        "Hideaway"
+      ],
+      "set": "blc",
+      "collector_number": "30",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A65c32889-3d70-449f-af76-05385c78c5a9&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/blc/30/evercoat-ursine?utm_source=api"
+    },
+    {
+      "name": "Exuberant Wolfbear",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Creature — Wolf Bear",
+      "oracle_text": "Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.",
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "set": "iko",
+      "collector_number": "151",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A40f5f8b9-5c2c-41d4-8b83-55a2e51ced64&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/iko/151/exuberant-wolfbear?utm_source=api"
+    },
+    {
+      "name": "Fade from History",
+      "mana_cost": "{2}{G}{G}",
+      "mana_value": 4.0,
+      "type_line": "Sorcery",
+      "oracle_text": "Each player who controls an artifact or enchantment creates a 2/2 green Bear creature token. Then destroy all artifacts and enchantments.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "bro",
+      "collector_number": "177",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A533767ca-7208-4c88-b160-375479b68285&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/bro/177/fade-from-history?utm_source=api"
+    },
+    {
+      "name": "Fellwar Stone",
+      "mana_cost": "{2}",
+      "mana_value": 2.0,
+      "type_line": "Artifact",
+      "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "mbc",
+      "collector_number": "74",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A95560508-7ac9-4be9-8a3f-3c7d5b52807b&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mbc/74/fellwar-stone?utm_source=api"
+    },
+    {
+      "name": "Friendly Teddy",
+      "mana_cost": "{2}",
+      "mana_value": 2.0,
+      "type_line": "Artifact Creature — Bear Toy",
+      "oracle_text": "When this creature dies, each player draws a card.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "set": "dsk",
+      "collector_number": "247",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A02a8b849-e708-427c-92fe-9a41bb0ec7fe&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/dsk/247/friendly-teddy?utm_source=api"
+    },
+    {
+      "name": "Goreclaw, Terror of Qal Sisma",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Legendary Creature — Bear",
+      "oracle_text": "Creature spells you cast with power 4 or greater cost {2} less to cast.\nWhenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.",
+      "power": "4",
+      "toughness": "3",
+      "keywords": [],
+      "set": "cmm",
+      "collector_number": "293",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abefb211f-37ca-4083-98d4-9ff1f28be3f2&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/cmm/293/goreclaw-terror-of-qal-sisma?utm_source=api"
+    },
+    {
+      "name": "Kamahl's Summons",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Sorcery",
+      "oracle_text": "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "ons",
+      "collector_number": "269",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b6ef0a2-cd90-44c8-8f11-e1983f2b1dfd&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/ons/269/kamahls-summons?utm_source=api"
+    },
+    {
+      "name": "Lightning Greaves",
+      "mana_cost": "{2}",
+      "mana_value": 2.0,
+      "type_line": "Artifact — Equipment",
+      "oracle_text": "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
+      "power": null,
+      "toughness": null,
+      "keywords": [
+        "Equip"
+      ],
+      "set": "msc",
+      "collector_number": "202",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aca204b66-8d0c-431a-8d34-282f7c2d17da&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/msc/202/lightning-greaves?utm_source=api"
+    },
+    {
+      "name": "Little Bear",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Flash\nWhen this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.",
+      "power": "3",
+      "toughness": "2",
+      "keywords": [
+        "Flash"
+      ],
+      "set": "hob",
+      "collector_number": "128",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A53c6c6bf-0256-424d-b937-1cc7d9e2d574&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/hob/128/little-bear?utm_source=api"
+    },
+    {
+      "name": "Lumra, Bellow of the Woods",
+      "mana_cost": "{4}{G}{G}",
+      "mana_value": 6.0,
+      "type_line": "Legendary Creature — Elemental Bear",
+      "oracle_text": "Reach, vigilance\nLumra's power and toughness are each equal to the number of lands you control.\nWhen Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped.",
+      "power": "*",
+      "toughness": "*",
+      "keywords": [
+        "Reach",
+        "Vigilance",
+        "Mill"
+      ],
+      "set": "blb",
+      "collector_number": "183",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/blb/183/lumra-bellow-of-the-woods?utm_source=api"
+    },
+    {
+      "name": "Mother Bear",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "set": "mh1",
+      "collector_number": "171",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afe742976-ef13-4c25-972f-254b1ed436de&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mh1/171/mother-bear?utm_source=api"
+    },
+    {
+      "name": "Owlbear Cub",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bird Bear",
+      "oracle_text": "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Mama's Coming"
+      ],
+      "set": "clb",
+      "collector_number": "246",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0c92432d-ac76-47d2-af7a-fdffd4b546a2&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/clb/246/owlbear-cub?utm_source=api"
+    },
+    {
+      "name": "Pale Bears",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Landwalk",
+        "Islandwalk"
+      ],
+      "set": "ice",
+      "collector_number": "256",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0acb070b-6e81-4e0e-925d-14da9b931355&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/ice/256/pale-bears?utm_source=api"
+    },
+    {
+      "name": "Professor of Zoomancy",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Creature — Bear Druid",
+      "oracle_text": "When this creature enters, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+      "power": "4",
+      "toughness": "3",
+      "keywords": [],
+      "set": "stx",
+      "collector_number": "140",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa22b8220-b41d-4b58-aa68-2c65ce37c517&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/stx/140/professor-of-zoomancy?utm_source=api"
+    },
+    {
+      "name": "Rampaging Yao Guai",
+      "mana_cost": "{X}{G}{G}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear Mutant",
+      "oracle_text": "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Vigilance",
+        "Trample"
+      ],
+      "set": "pip",
+      "collector_number": "82",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad37e8f75-c7cb-4270-bb2f-0125e972ed15&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/pip/82/rampaging-yao-guai?utm_source=api"
+    },
+    {
+      "name": "River Bear",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Landwalk",
+        "Islandwalk"
+      ],
+      "set": "9ed",
+      "collector_number": "266",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A568c4d02-501e-44ce-871c-adf9e4b9d8d6&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/9ed/266/river-bear?utm_source=api"
+    },
+    {
+      "name": "Ruxa, Patient Professor",
+      "mana_cost": "{2}{G}{G}",
+      "mana_value": 4.0,
+      "type_line": "Legendary Creature — Bear Druid",
+      "oracle_text": "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.\nCreatures you control with no abilities get +1/+1.\nFor each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
+      "power": "4",
+      "toughness": "4",
+      "keywords": [],
+      "set": "c21",
+      "collector_number": "66",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad760f2f0-6653-47c4-bd7b-aab2f398ddf2&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/c21/66/ruxa-patient-professor?utm_source=api"
+    },
+    {
+      "name": "Sol Ring",
+      "mana_cost": "{1}",
+      "mana_value": 1.0,
+      "type_line": "Artifact",
+      "oracle_text": "{T}: Add {C}{C}.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "frc",
+      "collector_number": "21",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6ad8011d-3471-4369-9d68-b264cc027487&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/frc/21/sol-ring?utm_source=api"
+    },
+    {
+      "name": "Spectral Bears",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Creature — Bear Spirit",
+      "oracle_text": "Whenever this creature attacks, if defending player controls no black nontoken permanents, it doesn't untap during your next untap step.",
+      "power": "3",
+      "toughness": "3",
+      "keywords": [],
+      "set": "me1",
+      "collector_number": "131",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A539899f3-f3f2-4f7a-a6f6-e80d4a39f753&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/me1/131/spectral-bears?utm_source=api"
+    },
+    {
+      "name": "Spider-Ham, Peter Porker",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Legendary Creature — Spider Boar Hero",
+      "oracle_text": "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Food",
+        "Animal May-Ham"
+      ],
+      "set": "spm",
+      "collector_number": "114",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A00b50215-e832-417f-9c80-2bc3050b6ebb&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/spm/114/spider-ham-peter-porker?utm_source=api"
+    },
+    {
+      "name": "Spirit of the Aldergard",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Snow Creature — Bear Spirit",
+      "oracle_text": "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.\nThis creature gets +1/+0 for each other snow permanent you control.",
+      "power": "0",
+      "toughness": "4",
+      "keywords": [],
+      "set": "khm",
+      "collector_number": "195",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aff3bc67b-f435-4bb7-9c21-8d24d8808c1a&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/khm/195/spirit-of-the-aldergard?utm_source=api"
+    },
+    {
+      "name": "Stuffed Bear",
+      "mana_cost": "{2}",
+      "mana_value": 2.0,
+      "type_line": "Artifact",
+      "oracle_text": "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "mid",
+      "collector_number": "259",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1402c116-194e-49ca-a8c1-09ca659c220c&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mid/259/stuffed-bear?utm_source=api"
+    },
+    {
+      "name": "Surrak and Goreclaw",
+      "mana_cost": "{4}{G}{G}",
+      "mana_value": 6.0,
+      "type_line": "Legendary Creature — Human Bear",
+      "oracle_text": "Trample\nOther creatures you control have trample.\nWhenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.",
+      "power": "6",
+      "toughness": "5",
+      "keywords": [
+        "Trample"
+      ],
+      "set": "mom",
+      "collector_number": "337",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A95be5f72-1f81-4ec6-9bd9-f0b07bfc874b&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mom/337/surrak-and-goreclaw?utm_source=api"
+    },
+    {
+      "name": "Swiftfoot Boots",
+      "mana_cost": "{2}",
+      "mana_value": 2.0,
+      "type_line": "Artifact — Equipment",
+      "oracle_text": "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+      "power": null,
+      "toughness": null,
+      "keywords": [
+        "Equip"
+      ],
+      "set": "mbc",
+      "collector_number": "77",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8b143ad-43ec-4e0d-a440-e348daa31391&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/mbc/77/swiftfoot-boots?utm_source=api"
+    },
+    {
+      "name": "The Earth King",
+      "mana_cost": "{3}{G}",
+      "mana_value": 4.0,
+      "type_line": "Legendary Creature — Human Noble Ally",
+      "oracle_text": "When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "set": "tla",
+      "collector_number": "172",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad5770b0f-4493-42e9-a2d7-0e74a28da4ba&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/tla/172/the-earth-king?utm_source=api"
+    },
+    {
+      "name": "Thijarian Witness",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Creature — Alien Cleric",
+      "oracle_text": "Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+      "power": "0",
+      "toughness": "4",
+      "keywords": [
+        "Investigate",
+        "Bear Witness",
+        "Flash"
+      ],
+      "set": "who",
+      "collector_number": "111",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad273033b-3b8b-4ce9-afe8-208d82dd20f1&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/who/111/thijarian-witness?utm_source=api"
+    },
+    {
+      "name": "Titania's Command",
+      "mana_cost": "{4}{G}{G}",
+      "mana_value": 6.0,
+      "type_line": "Sorcery",
+      "oracle_text": "Choose two —\n• Exile target player's graveyard. You gain 1 life for each card exiled this way.\n• Search your library for up to two land cards, put them onto the battlefield tapped, then shuffle.\n• Create two 2/2 green Bear creature tokens.\n• Put two +1/+1 counters on each creature you control.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "bro",
+      "collector_number": "194",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7aae0a3d-8882-4485-a126-f06ea6593dcb&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/bro/194/titanias-command?utm_source=api"
+    },
+    {
+      "name": "Ulvenwald Bear",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear",
+      "oracle_text": "Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [
+        "Morbid"
+      ],
+      "set": "dka",
+      "collector_number": "129",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2a79c29c-e539-49c5-b10c-1d5fd77842c9&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/dka/129/ulvenwald-bear?utm_source=api"
+    },
+    {
+      "name": "Ursine Champion",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Creature — Human Berserker",
+      "oracle_text": "{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.",
+      "power": "2",
+      "toughness": "2",
+      "keywords": [],
+      "set": "m19",
+      "collector_number": "304",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4f142d99-8146-4b16-a2cc-ac03da19b960&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/m19/304/ursine-champion?utm_source=api"
+    },
+    {
+      "name": "Ursine Monstrosity",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear Mutant",
+      "oracle_text": "Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+      "power": "3",
+      "toughness": "3",
+      "keywords": [
+        "Trample",
+        "Mill"
+      ],
+      "set": "dsc",
+      "collector_number": "36",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A647feda9-2876-4430-902f-10dc1f4f99a9&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/dsc/36/ursine-monstrosity?utm_source=api"
+    },
+    {
+      "name": "Vivien's Grizzly",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Creature — Bear Spirit",
+      "oracle_text": "{3}{G}: Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.",
+      "power": "2",
+      "toughness": "3",
+      "keywords": [],
+      "set": "war",
+      "collector_number": "182",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6dbd0764-4bfe-4a58-905d-aeee70ceb798&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/war/182/viviens-grizzly?utm_source=api"
+    },
+    {
+      "name": "Werebear",
+      "mana_cost": "{1}{G}",
+      "mana_value": 2.0,
+      "type_line": "Creature — Human Bear Druid",
+      "oracle_text": "{T}: Add {G}.\nThreshold — This creature gets +3/+3 as long as there are seven or more cards in your graveyard.",
+      "power": "1",
+      "toughness": "1",
+      "keywords": [
+        "Threshold"
+      ],
+      "set": "dmr",
+      "collector_number": "182",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A96cf3320-c730-4618-8768-28a179f4d9c0&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/dmr/182/werebear?utm_source=api"
+    },
+    {
+      "name": "Words of Wilding",
+      "mana_cost": "{2}{G}",
+      "mana_value": 3.0,
+      "type_line": "Enchantment",
+      "oracle_text": "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
+      "power": null,
+      "toughness": null,
+      "keywords": [],
+      "set": "ons",
+      "collector_number": "305",
+      "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A888582df-4fe2-4d05-9b62-10c90aaa76f2&unique=prints",
+      "scryfall_uri": "https://scryfall.com/card/ons/305/words-of-wilding?utm_source=api"
+    }
+  ]
+}

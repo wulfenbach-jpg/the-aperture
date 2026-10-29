@@ -1,0 +1,30 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-28T00:54:14.462327+00:00",
+ "cards": [
+  {
+   "name": "Spider-Ham, Peter Porker",
+   "oracle_id": "00b50215-e832-417f-9c80-2bc3050b6ebb",
+   "scryfall_id": "41f18f42-b86b-4a12-9f0d-76b761571195",
+   "set": "spm",
+   "collector_number": "114",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Legendary Creature \u2014 Spider Boar Hero",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham \u2014 Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Food",
+    "Animal May-Ham"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://scryfall.com/card/spm/114/spider-ham-peter-porker",
+   "retrieved_at": "2026-10-28T00:54:14.462327+00:00"
+  }
+ ]
+}

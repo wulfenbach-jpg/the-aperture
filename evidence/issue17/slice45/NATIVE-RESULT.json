@@ -1,0 +1,88 @@
+{
+  "full_issue17_accepted": false,
+  "independent_review_exists": false,
+  "base": "32c25a1de2b922e604466e2ce469cbb8700252af",
+  "code_head": "de3a4fbeaad9ceb8b4e7425965710f819d30e412",
+  "writer_commit": "0f2bcdd",
+  "native_coauthor_commit": "de3a4fbeaad9ceb8b4e7425965710f819d30e412",
+  "counts": {
+    "catalog": 159,
+    "union": 459,
+    "supported_union": 146,
+    "missing_union": 313,
+    "ayula_missing": 7,
+    "certified_lists": 1,
+    "desired_lists": 8
+  },
+  "focused": {
+    "suites": 14,
+    "passed": 114,
+    "failed": 0
+  },
+  "command_exits": {
+    "fmt_apply": 0,
+    "fmt_check": 0,
+    "focused": 0,
+    "clippy": 0,
+    "release": 0,
+    "journey": 0,
+    "separate_replay": 0,
+    "prior_snow_replay": 0,
+    "audit": 0
+  },
+  "journey": {
+    "bear_tokens": 8,
+    "boosted_spirit_samples": 0,
+    "casts": {
+      "Centaur Courser": 8,
+      "Craw Wurm": 2,
+      "Grizzly Bears": 7,
+      "Titania's Command": 8
+    },
+    "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+    "counter_events": 15,
+    "deck": "decks/package-slice45.txt",
+    "digest": "45d674d2e926bbab485106311929bd5c796d751676bac36b03efa8e8716e2143",
+    "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+    "exile_grave_events": 4,
+    "kind": "40-card package, not a desired starter",
+    "outcome": {
+      "Win": {
+        "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+        "winner": 3
+      }
+    },
+    "replay_digest_matches": true,
+    "replay_events": 4145,
+    "searched_land_entries": 8,
+    "seats": 4,
+    "seed": 2323,
+    "snapshot_sha256": "83bfd3399bb5c36b85b8ba09ed666d98005c90f6e9bcd06e031c6392c5fde5d8",
+    "snapshots_exact": true,
+    "spirit_static_samples": 0,
+    "starting_life": 40,
+    "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+    "status": "terminal",
+    "steps": 1618,
+    "turns": 38
+  },
+  "ci": {
+    "head": "de3a4fbeaad9ceb8b4e7425965710f819d30e412",
+    "completed_success": 10,
+    "all_keyed": true
+  },
+  "native_reds": [
+    "native-red-validation-load.log:4failed/1passed,exit101",
+    "native-red-public.log:1failed,exit101",
+    "native-red-public-stack.log:1failed,exit101"
+  ],
+  "disclosures": [
+    "Writer implementation-first; native repair REDs do not retroactively make it TDD.",
+    "Native run co-authored product; requires independent review.",
+    "40-card masked-offer demonstrator is not100-card certification/productAI/strength.",
+    "No nonbasic-land source in current runtime pool; any-land filter is implemented but nonbasic demonstration unclaimed.",
+    "StackView exposes public modes; native UI renderer not changed or visually verified.",
+    "Historical approved increments retained, no re-audit.",
+    "No merge/master push/closure/downstream unlock."
+  ]
+}

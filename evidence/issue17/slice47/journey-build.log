@@ -1,0 +1,138 @@
+     Locking 134 packages to latest Rust 1.97.1 compatible versions
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling stable_deref_trait v1.2.1
+   Compiling windows-link v0.2.1
+   Compiling pin-project-lite v0.2.17
+   Compiling bytes v1.12.1
+   Compiling itoa v1.0.18
+   Compiling futures-core v0.3.34
+   Compiling writeable v0.6.4
+   Compiling litemap v0.8.3
+   Compiling smallvec v1.16.4
+   Compiling windows-sys v0.61.2
+   Compiling memchr v2.8.3
+   Compiling utf8_iter v1.0.4
+   Compiling icu_normalizer_data v2.4.0
+   Compiling icu_properties_data v2.4.0
+   Compiling futures-sink v0.3.34
+   Compiling httparse v1.10.1
+   Compiling percent-encoding v2.3.2
+   Compiling futures-io v0.3.34
+   Compiling slab v0.4.12
+   Compiling futures-task v0.3.34
+   Compiling rustversion v1.0.23
+   Compiling serde_core v1.0.229
+   Compiling typenum v1.20.1
+   Compiling native-tls v0.2.18
+   Compiling once_cell v1.21.4
+   Compiling libc v0.2.191
+   Compiling http v1.5.0
+   Compiling tower-service v0.3.3
+   Compiling futures-util v0.3.34
+   Compiling try-lock v0.2.5
+   Compiling zmij v1.0.23
+   Compiling want v0.3.2
+   Compiling syn v3.0.9
+   Compiling tracing-core v0.1.36
+   Compiling cfg-if v1.0.5
+   Compiling serde v1.0.229
+   Compiling hybrid-array v0.4.15
+   Compiling atomic-waker v1.1.2
+   Compiling http-body v1.1.0
+   Compiling serde_json v1.0.154
+   Compiling tracing v0.1.44
+   Compiling encoding_rs v0.8.42
+   Compiling form_urlencoded v1.2.2
+   Compiling block-buffer v0.12.1
+   Compiling crypto-common v0.2.2
+   Compiling futures-channel v0.3.34
+   Compiling sync_wrapper v1.0.2
+   Compiling const-oid v0.10.2
+   Compiling base64 v0.23.1
+   Compiling ipnet v2.12.2
+   Compiling thiserror v2.0.21
+   Compiling tower-layer v0.3.3
+   Compiling http-body-util v0.1.5
+   Compiling core_detect v1.0.0
+   Compiling bitflags v2.13.2
+   Compiling digest v0.11.3
+   Compiling simdutf8 v0.1.5
+   Compiling multiversion_no_op v1.0.0
+   Compiling scopeguard v1.2.0
+   Compiling zeroize v1.9.1
+   Compiling cpufeatures v0.3.1
+   Compiling mime v0.3.17
+   Compiling log v0.4.34
+   Compiling synstructure v0.14.0
+   Compiling rustls-pki-types v1.15.1
+   Compiling sha2 v0.11.1
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.7
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.4
+   Compiling socket2 v0.6.5
+   Compiling zerovec v0.11.9
+   Compiling zerotrie v0.2.5
+   Compiling mio v1.2.4
+   Compiling schannel v0.1.30
+   Compiling tokio v1.54.1
+   Compiling tinystr v0.8.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_collections v2.4.0
+   Compiling icu_locale_core v2.4.0
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling icu_provider v2.4.0
+   Compiling icu_properties v2.4.0
+   Compiling icu_normalizer v2.4.0
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice47-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice47-journey-driver)
+    Finished `release` profile [optimized] target(s) in 40.64s
+     Running `target\release\issue17-slice47-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 12,
+    "Grizzly Bears": 9,
+    "Thijarian Witness": 11
+  },
+  "clue_tokens_created": 104,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice46.txt",
+  "digest": "da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde",
+  "driver": "evidence-only masked alone-attacking demonstrator; NOT product heuristic or strength evidence",
+  "exile_events": 14,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+      "winner": 1
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 8098,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "ab8deef31bbef3606a19e4bcc532bac3b4023a4358c163128bbd7c239682818c",
+  "snapshots_exact": true,
+  "solo_attacks_declared": 38,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 3073,
+  "turns": 54
+}
+EXIT=0

@@ -1,0 +1,13 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.93s
+     Running tests\issue17_slice57.rs (target\debug\deps\issue17_slice57-d13ec969a6a8a450.exe)
+
+running 3 tests
+test r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer ... ok
+test r348_aggregate_mode_cannot_be_omitted ... ok
+test r348_injected_candidates_are_refused_even_before_selection ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s
+
+
+EXIT=0

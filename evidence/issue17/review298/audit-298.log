@@ -1,0 +1,10 @@
+catalog names: 150
+macros seen: ['card', 'card_artifact', 'card_defender', 'card_flash', 'card_green', 'card_islandwalk', 'card_trample']
+manifest starters: 8
+union: 459
+supported: 138 missing: 321
+per list: [('isamaru-white-aggro', 55), ('jasmine-vanilla-stompy', 0), ('talrand-draw-go', 51), ('krenko-goblin-tokens', 48), ('ayula-bear-counters', 15), ('elas-sacrifice', 52), ('tatyova-landfall', 52), ('zada-spells', 53)]
+certified: ['jasmine-vanilla-stompy'] 1 of 8
+AYULA row: ayula-bear-counters commander Ayula, Queen Among Bears missing 15
+  names: ["Druid's Familiar", 'Dúnedain Rangers', 'Evercoat Ursine', 'Lightning Greaves', 'Lumra, Bellow of the Woods', 'Owlbear Cub', 'Rampaging Yao Guai', 'Ruxa, Patient Professor', 'Spider-Ham, Peter Porker', 'Spirit of the Aldergard', 'Swiftfoot Boots', 'The Earth King', 'Thijarian Witness', "Titania's Command", 'Ursine Monstrosity']
+all manifests agree: True

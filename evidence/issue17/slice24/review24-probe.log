@@ -1,0 +1,9 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.77s
+     Running tests\review24_probe.rs (target\debug\deps\review24_probe-a85cafe01c07eb04.exe)
+
+running 1 test
+test old_haste_effect_does_not_follow_recast_same_object_id ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

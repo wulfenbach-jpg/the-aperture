@@ -1,0 +1,20 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.40s
+     Running unittests src\lib.rs (target\debug\deps\aperture_core-dd9fe82bd1c89cdf.exe)
+
+running 13 tests
+test layer::tests::finite_shield_absorbs_only_its_remaining_amount ... ok
+test counters::tests::paired_power_counters_annihilate_equally ... ok
+test counters::tests::counters_store_only_nonzero_kinds_and_sum_canonically ... ok
+test counters::tests::removing_more_counters_than_held_clamps_and_never_goes_negative ... ok
+test layer::tests::modifier_effects_describe_themselves_in_layer_7c ... ok
+test layer::tests::unlimited_shield_prevents_every_applicable_instance ... ok
+test tokens::tests::flying_is_blocked_only_by_flying_or_reach ... ok
+test counters::tests::serde_round_trip_is_canonical ... ok
+test counters::tests::deserialization_refuses_non_canonical_counters ... ok
+test tokens::tests::islandwalk_forbids_every_blocker_while_the_defender_controls_an_island ... ok
+test tokens::tests::token_cards_are_creatures_outside_the_importable_pool ... ok
+test engine::slice17_cleanup_history_tests::repeated_cleanup_keeps_earlier_deaths_until_the_turn_number_advances ... ok
+test engine::slice17_cleanup_history_tests::ayula_removed_trigger_does_not_drop_the_rest_of_the_batch ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

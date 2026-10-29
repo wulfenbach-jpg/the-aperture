@@ -1,0 +1,96 @@
+diff --git a/crates/core/src/engine.rs b/crates/core/src/engine.rs
+index 38f2f0e..4bedefd 100644
+--- a/crates/core/src/engine.rs
++++ b/crates/core/src/engine.rs
+@@ -1187,6 +1187,32 @@ impl Game {
+         // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
+         // is on the battlefield.
+         self.queue_triggers(new_id, card, controller, TriggerEvent::EntersBattlefield);
++        // CR 603.6a: "another creature enters" triggers on other permanents fire
++        // for this creature; the source's controller is the trigger's
++        // controller, regardless of who controls the entering creature. The
++        // entering permanent is excluded because the printed word is "another".
++        if is_creature {
++            let watchers: Vec<(ObjectId, CardId, PlayerId)> = self
++                .state
++                .objects
++                .values()
++                .filter(|object| object.zone == Zone::Battlefield && object.id != new_id)
++                .filter(|object| {
++                    ability::triggers_on(object.card, TriggerEvent::AnotherCreatureEnters)
++                        .next()
++                        .is_some()
++                })
++                .map(|object| (object.id, object.card, object.controller))
++                .collect();
++            for (source, source_card, source_controller) in watchers {
++                self.queue_triggers(
++                    source,
++                    source_card,
++                    source_controller,
++                    TriggerEvent::AnotherCreatureEnters,
++                );
++            }
++        }
+     }
+ 
+     fn draw(&mut self, p: PlayerId, events: &mut Vec<Event>) -> bool {
+@@ -1840,7 +1866,10 @@ impl Game {
+                 reason: "that player does not have priority (CR 117.1a)".to_string(),
+             });
+         }
+-        if spec.instant {
++        // CR 702.8a: Flash is the only printed permission to cast a noninstant
++        // spell at instant timing; it covers the whole of `check_timing`, not
++        // just the main-phase clause.
++        if spec.instant || def.has_flash() {
+             return Ok(());
+         }
+         if self.state.turn.active != player {
+@@ -4590,22 +4619,30 @@ impl Game {
+                 // among the blockers as they choose. This slice is narrower: it
+                 // assigns automatically in lethal-first order and exposes no
+                 // damage-assignment choice (documented in the coach and README).
++                // CR 702.19b: a trampling attacker must assign lethal damage to
++                // every blocker before it may assign any to the player, so with
++                // trample the surplus after lethal assignment goes to the
++                // defending player instead of piling onto the last blocker.
++                let trample = atk.has_trample();
+                 let mut remaining = power;
+                 for (i, blocker) in its_blockers.iter().enumerate() {
+-                    let assign = if i + 1 == its_blockers.len() {
+-                        remaining
+-                    } else {
+-                        let lethal = match self.state.try_object(*blocker) {
+-                            Some(b) => (b.toughness() - b.damage as i32).max(1),
+-                            None => remaining,
+-                        };
++                    let lethal = match self.state.try_object(*blocker) {
++                        Some(b) => (b.toughness() - b.damage as i32).max(1),
++                        None => remaining,
++                    };
++                    let assign = if trample || i + 1 != its_blockers.len() {
+                         remaining.min(lethal).max(0)
++                    } else {
++                        remaining
+                     };
+                     remaining -= assign;
+                     if assign > 0 {
+                         damage.push((*attacker, Some(*blocker), assign as u32));
+                     }
+                 }
++                if trample && remaining > 0 {
++                    damage.push((*attacker, None, remaining as u32));
++                }
+                 for blocker in &its_blockers {
+                     if let Some(b) = self.state.try_object(*blocker) {
+                         let bp = b.power();
+@@ -4810,6 +4847,8 @@ impl Game {
+                 };
+                 let rules = if self.state.object(id).card.def().is_instant() {
+                     vec!["117.1a"]
++                } else if self.state.object(id).card.def().has_flash() {
++                    vec!["117.1a", "702.8a"]
+                 } else {
+                     vec!["117.1a", "601.2a"]
+                 };

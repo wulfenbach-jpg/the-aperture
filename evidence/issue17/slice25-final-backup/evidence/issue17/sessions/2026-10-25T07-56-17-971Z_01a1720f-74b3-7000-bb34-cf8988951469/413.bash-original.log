@@ -1,0 +1,26 @@
+2574:    pub fn legal_attackers(&self, player: PlayerId) -> Vec<ObjectId> {
+2575-        self.state
+2576-            .objects
+2577-            .values()
+2578-            .filter(|o| {
+2579-                o.zone == Zone::Battlefield
+2580-                    && o.controller == player
+2581-                    && o.is_creature()
+2582-                    && !o.tapped
+2583-                    && !o.summoning_sick
+2584-                    // CR 702.3b: defender can't attack.
+2585-                    && !o.has_keyword(crate::tokens::Keyword::Defender)
+2586-            })
+2587-            .map(|o| o.id)
+2588-            .collect()
+2589-    }
+2590-
+2591-    pub fn legal_blockers(&self, player: PlayerId) -> Vec<ObjectId> {
+2592-        self.state
+2593-            .objects
+2594-            .values()
+2595-            .filter(|o| {
+2596-                o.zone == Zone::Battlefield
+2597-                    && o.controller == player
+2598-                    && o.is_creature()
+2599-                    && !o.tapped

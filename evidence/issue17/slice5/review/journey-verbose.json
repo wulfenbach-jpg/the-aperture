@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Jasmine Boreal",
+      "seat": 0
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 1
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 2
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 21,
+    "ability_activations": 0,
+    "attacks": 43,
+    "blocks": 3,
+    "casts": 17,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 66,
+    "events": 6227,
+    "triggered_abilities": 21
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 2494
+  },
+  "final_digest": "104adbf674ec216ea329adb8562e650b0fcdc210b7bd97b190d0a4b991c3e537",
+  "first_player": 0,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 103,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 2494,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 50,
+      "library": 0,
+      "life": 21,
+      "name": "package-slice5-mill",
+      "seat": 0,
+      "source": "decks/package-slice5-mill.txt"
+    },
+    {
+      "cards": 50,
+      "library": 0,
+      "life": 1,
+      "name": "package-slice5-mill",
+      "seat": 1,
+      "source": "decks/package-slice5-mill.txt"
+    },
+    {
+      "cards": 50,
+      "library": 4,
+      "life": 20,
+      "name": "package-slice5-mill",
+      "seat": 2,
+      "source": "decks/package-slice5-mill.txt"
+    },
+    {
+      "cards": 50,
+      "library": 0,
+      "life": 32,
+      "name": "package-slice5-mill",
+      "seat": 3,
+      "source": "decks/package-slice5-mill.txt"
+    }
+  ],
+  "seed": 501,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2494,
+  "truncated": null,
+  "turns": 60,
+  "winner": 2,
+  "winner_label": "P2"
+}

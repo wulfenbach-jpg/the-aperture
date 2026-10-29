@@ -1,0 +1,14 @@
+{
+  "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+  "retrieved_at": "2026-10-28T18:32:50.468102+00:00",
+  "bytes": 977752,
+  "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+  "pin_matches": true,
+  "rules": {
+    "506.5.": "506.5. A creature attacks alone if it’s the only creature declared as an attacker during the declare attackers step. A creature is attacking alone if it’s attacking but no other creatures are. A creature blocks alone if it’s the only creature declared as a blocker during the declare blockers step. A creature is blocking alone if it’s blocking but no other creatures are.",
+    "603.4.": "603.4. A triggered ability may read “When/Whenever/At [trigger event], if [condition], [effect].” When the trigger event occurs, the ability checks whether the stated condition is true. The ability triggers only if it is; otherwise it does nothing. If the ability triggers, it checks the stated condition again as it resolves. If the condition isn’t true at that time, the ability is removed from the stack and does nothing. Note that this mirrors the check for legal targets. This rule is referred to as the “intervening ‘if’ clause” rule. (The word “if” has only its normal English meaning anywhere else in the text of a card; this rule only applies to an “if” that immediately follows a trigger condition.)",
+    "603.10.": "603.10. Normally, objects that exist immediately after an event are checked to see if the event matched any trigger conditions, and continuous effects that exist at that time are used to determine what the trigger conditions are and what the objects involved in the event look like. However, some triggered abilities are exceptions to this rule; the game “looks back in time” to determine if those abilities trigger, using the existence of those abilities and the appearance of objects immediately prior to the event. The list of exceptions is as follows:",
+    "903.9a ": "903.9a If a commander is in a graveyard or in exile and that object was put into that zone since the last time state-based actions were checked, its owner may put it into the command zone. This is a state-based action. See rule 704.",
+    "509.1g": "509.1g Each chosen creature still controlled by the defending player becomes a blocking creature. Each one is blocking the attacking creatures chosen for it. It remains a blocking creature until it’s removed from combat or the combat phase ends, whichever comes first. See rule 506.4."
+  }
+}

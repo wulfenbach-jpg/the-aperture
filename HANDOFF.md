@@ -31,7 +31,8 @@ the branch question is shared by the Study panel button and the `G` shortcut, so
 neither trigger can replace the live position without asking.
 Known limits: +1/+1 counters remain storage/display only (combat math ignores
 them); a sandbox game's embedded replay is uncertified; this is still bounded
-28–31-card practice, not Commander. Tests: `crates/core/tests/issue20_sandbox.rs`,
+28–31-card practice at that milestone, not Commander. The pool has since grown
+to 79 cards with the issue-17 starter package. Tests: `crates/core/tests/issue20_sandbox.rs`,
 `crates/ui/tests/issue20_controls.rs` and the app viewport tests; details in
 `docs/issue20-tabletop.md` and `evidence/issue20/DELIVERY.md`.
 
@@ -302,41 +303,24 @@ capture even with `--decider`.
   doubling or copying, and same-controller trigger ordering as a *choice*
   (simultaneous triggers from one controller are ordered by source arrival
   order, not by CR 603.3b player choice).
-* Static abilities, replacement/prevention effects, planeswalkers, battles,
-  milling/tutoring/searching *as card text*, library manipulation beyond
-  scry/surveil 1, multi-face cards.
-* Counters are typed rules objects (`Object.counters`, CR 122): +1/+1 and
-  -1/-1 change power/toughness, feed combat and state-based actions, clear on
-  every zone change and are public in every projection. A permanent holding both
-  kinds loses N of each at every state-based-action checkpoint (CR 704.5q). No
-  card in the 28-card pool creates a counter yet; the *sandbox*
-  `Object.plus_one_counters` display field is still storage only. No layers — a
-  single until-end-of-turn pump.
-* **Player counters do not exist**: the issue named "object and player
-  counters", but only object counters are typed and stored. Nothing in the 28-card
-  pool puts a counter on a player (no poison, experience, energy or commander tax
-  counter is modelled), so player counters are deliberately absent rather than
-  approximated.
-* Save/replay compatibility at `SAVE_VERSION` 10 / `REPLAY_VERSION` 6: a pre-#16
-  save has no `counters` and no `revealed` key. Both fields are
-  `#[serde(default)]`, so such a save still loads with empty counters, and an
-  empty value is skipped when serializing, so a state that uses neither keeps its
-  pre-#16 serialized form and digest — old replays still verify instead of
-  failing as digest mismatches. A malformed counters payload (zero-count kind,
-  unknown kind, negative count, wrong JSON type) is refused as a load error and
-  never silently repaired.
-* Creature tokens are rules objects (`crates/core/src/tokens.rs`, CR 111):
-  owned/controlled by their creator, summoning sick, cease to exist on any
-  zone change and never enter a graveyard/hand/library/stack. Token
-  characteristics live outside the importable pool, so a token can never be
-  imported or cast, and no pool card creates one yet.
-* Keywords are typed and enforced where the engine can observe them (flying /
-  reach blocking, defender attacking). No card in the 28-card pool prints a
-  keyword; only the flying Spirit token carries one today.
-* Library operations `mill`, `shuffle`, `reveal`, `tap`/`untap` exist as
-  deterministic state primitives (CR 701.13/701.16/701.20/701.26) with
-  information-safe projections; no pool card uses them yet, and `mill` stops
-  before a commander so it can never bypass the CR 903.9a owner choice.
+* Static abilities, replacement/prevention effects, token types beyond the
+  bounded engine-only 1/1 red Goblin and 2/2 blue Drake packages (and token
+  interactions beyond those packages), planeswalkers,
+  battles, target-player milling (self-mill and each-opponent mill **are**
+  implemented as rule actions; a commander milled out of a library lands in the
+  graveyard and the existing CR 903.9a state-based action then offers its
+  owner the return), tutoring/searching, library manipulation beyond
+  scry/surveil 1 and the two-effect scry-then-draw of Preordain,
+  multi-face cards.
+* Counters are stored and displayed but do not affect rules math
+  (`Object.plus_one_counters`); no layers — a single until-end-of-turn pump only.
+* Effects that act on "each opponent" (`Effect::MillEachOpponent`,
+  `Effect::DamageEachOpponent`) iterate seats in seat order, not in APNAP order
+  (CR 101.4). Per-player graveyards and life are unaffected, so the deviation is
+  only visible in the order the events are logged and no chooser gains
+  information from it. Crack the Earth's "each player sacrifices" does **not**
+  share this deviation: it walks APNAP order from the active seat
+  (`apnap_order_from`) and is covered by `crates/core/tests/apnap.rs`.
 * Object identity is stable across zone changes (real Magic creates a new object
   per zone change); unobservable in this pool but relevant before scaling cards.
 * Damage assignment for a multi-blocked attacker is automatic and lethal-first.
@@ -354,3 +338,87 @@ capture even with `--decider`.
   permanently mark the session `SANDBOX-MODIFIED`; certified replay claims end
   there.
 * No undo; branching is done by loading a save or re-running a replay.
+
+## 11. Issue 17 corpus slice 6 — death watchers and target-player effects
+
+Three more sourced cards are supported (pool 103 → **106**), all read from live
+Scryfall this run (`fixtures/starter-corpus/slice6-sourced.json`, one distinct
+printed text per card across every printing):
+
+| card | printing | new behaviour |
+|---|---|---|
+| Blood Artist | soc 209 | any creature dies → **target player** loses 1 life, you gain 1 |
+| Zulaport Cutthroat | soc 233 | a creature you control (or itself) dies → each opponent loses 1 life, you gain 1 |
+| Hedron Crab | tdc 155 | landfall → **target player** mills three cards |
+
+New primitives: `TargetSpec::Player` (every live seat, controller included),
+`Effect::MillTargetPlayer`, `Effect::LoseLife`, `Effect::LoseLifeEachOpponent`,
+and the `TriggerEvent::{CreatureDies, CreatureYouControlDies,
+AnotherCreatureYouControlDies}` watcher family. Life loss is *not* damage
+(CR 118.2): it emits `LifeChange` only, so a real damage-prevention shield
+(Mending Hands) cannot stop it. Card deaths and creature-token deaths both fire
+the watchers, because `move_to_graveyard` is the single departure path.
+
+Corpus: catalog **106**, eight-list union 459 = **94 supported + 365 missing**
+(Elas 57→55, Tatyova 55→54), **1 implemented / 0 certified** starters. Elas il-Kor
+itself was sourced but **not** added: it prints Deathtouch, which the rules layer
+does not model.
+
+Known limits of this slice: sacrifice outlets, equipment/artifacts, counters as
+rules objects, tutors, reanimation, Deathtouch and every graveyard *reader* stay
+unimplemented, so no desired 100-card starter is certified. Details:
+`docs/issue17-starter-corpus.md`, `evidence/issue17/SLICE6-HUMAN-CHECKPOINT.md`.
+
+## 12. Issue 17 corpus slice 10 — the first certified starter list
+
+`jasmine-vanilla-stompy` is now **certified end to end**, not merely
+implemented. One of eight desired lists; the eight-list release gate stays open.
+
+New executable acceptance (`crates/cli/src/certify_cmd.rs`, `aperture-cli
+certify`): reads the list's own deck file through the manifest path, hashes the
+exact bytes, refuses to substitute a bundled practice deck, verifies every card
+in the list is supported, plays four-seat 40-life Commander-combat games with
+that snapshot in every seat, and requires a terminal outcome whose replay
+reproduces the same state digest. It also reports which cards were actually cast
+or played rather than inferring coverage from catalog membership.
+
+Recorded certificate `evidence/issue17/slice10/certification.json`: snapshot
+SHA-256 `4312ab2a90a94a4f9c9578b330a093dcec7eb1aa253785c97667cb0fab967491`,
+99 library cards + 1 commander, seeds 1/2/3 all terminal and replay-verified
+(2364/2802/1685 steps, winners P1/P2/P3), 55 of 61 unique names observed in play
+and the other 6 named explicitly. The manifest entry is `certified` with a
+machine-checked `certification` block, and two conformance suites fail if the
+record stops matching the real file (`crates/core/tests/
+issue17_slice10_certification.rs`, `crates/cli/tests/certify.rs`).
+
+Documented exclusions for this list: the legend rule (CR 704.5j) is unmodelled
+and unreachable here (one commander copy per seat, no copy effects); equipment,
+Auras, planeswalkers and nonbasic lands are absent; native table, trainer,
+playing strength and arbitrary Archidekt compatibility remain non-goals. The
+credential is a bounded commander-combat practice game under the built-in
+heuristic, not the Commander format and not a strength claim.
+
+## 13. Issue 17 corpus slice 11 — islandwalk, and one snapshot hash basis
+
+Two sourced cards close part of the Ayula gap: `Pale Bears` ({2}{G} 2/2) and
+`River Bear` ({3}{G} 3/3), both printing exactly
+"Islandwalk (This creature can't be blocked as long as defending player controls
+an Island.)" from Scryfall (ice 256 and 9ed 266; one distinct printed text across
+1 and 4 printings; `fixtures/starter-corpus/slice11-sourced.json`, retrieved
+2026-10-26). The engine now models CR 702.14c: `CardDef::islandwalk` carries the
+printed keyword, `tokens::keywords` serves it to `can_block`, which takes whether
+the *defending* player controls an Island; the greedy blocking plan never offers
+an illegal islandwalk block, and a forged block is refused with a message naming
+the keyword. Pool size 114 → 116; the eight-list union is 459 names with 104
+supported and 355 missing; `ayula-bear-counters` has 44 missing. Still **1
+certified / 0 more** of eight.
+
+The `certify` snapshot hash now has one basis: `aperture_core::digest::
+normalize_snapshot_text` /`snapshot_digest` decode the file as UTF-8 and fold
+CRLF to LF, and the command, the core certification test and the CLI acceptance
+test all use it. Previously the command hashed normalized text while the CLI test
+hashed raw checkout bytes, so the same 1444-byte list certified as `4312ab2a` on
+an LF checkout and `1fbaf76e` on the CRLF Windows runner — the Windows CI
+failure at `7d6c62e`. A new control re-encodes the identical list with CRLF and
+requires the same snapshot hash.
+

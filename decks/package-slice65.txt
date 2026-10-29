@@ -1,0 +1,12 @@
+// package-slice65 — evidence-only 40-card package, NOT a certified starter.
+// This file is exactly what the slice-65 CLI journey ran: three copies of the
+// card that slice enabled (Siege-Gang Commander) and 37 Mountains. It makes the
+// three-token enters trigger and a "Sacrifice a Goblin" cost reachable; it does
+// NOT guarantee the heuristic policy casts them — in the recorded slice-65 game
+// the heuristic never cast Siege-Gang Commander, which is why the
+// changed-behaviour journey for that card is the in-engine offers-only driver.
+// Header corrected in slice 66 (review 365, R365-4): the earlier text described
+// "one other Goblin payoff" and "34 Mountains" and claimed the cast happened,
+// none of which was true of this file.
+3 Siege-Gang Commander
+37 Mountain

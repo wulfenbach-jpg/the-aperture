@@ -1,0 +1,17 @@
+{
+  "name": "Ursine Monstrosity",
+  "set": "DSC",
+  "collector_number": "36",
+  "mana_cost": "{2}{G}",
+  "type_line": "Creature — Bear Mutant",
+  "power": "3",
+  "toughness": "3",
+  "oracle_text": "Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+  "printing_id": "73cc6df4-3564-4ace-bf8a-eac3e62d725a",
+  "oracle_id": "647feda9-2876-4430-902f-10dc1f4f99a9",
+  "retrieved_utc": "2026-10-28T13:49:35.417772+00:00",
+  "request_url": "https://api.scryfall.com/cards/named?fuzzy=Ursine%20Monstrosity",
+  "request_kind": "named_fuzzy",
+  "sha256": "594faad5ae580565d77ff7c227dd9d294c2fcb8a12377580041bfefe2a04731b",
+  "bytes": 5208
+}

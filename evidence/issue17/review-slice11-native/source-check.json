@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://api.scryfall.com/cards/ice/256",
+    "scryfall_id": "7f19c2a3-6403-4a78-bf45-6e339578d673",
+    "checks": {
+      "name": true,
+      "mana_cost": true,
+      "type_line": true,
+      "oracle_text": true,
+      "power": true,
+      "toughness": true
+    }
+  },
+  {
+    "url": "https://api.scryfall.com/cards/9ed/266",
+    "scryfall_id": "518bf281-80bc-4e85-9b8e-15577dfcdec7",
+    "checks": {
+      "name": true,
+      "mana_cost": true,
+      "type_line": true,
+      "oracle_text": true,
+      "power": true,
+      "toughness": true
+    }
+  }
+]

@@ -1,0 +1,16 @@
+Working...
+**APPROVED_INCREMENT** at `41d55ee87bbd1de200b40df92ea06d80aecf9516` (base `78dea97`).
+
+The earlier approval at `f4a02a2` is **superseded** by the proven privacy leak; this is a new verdict for the repair, not a retroactive approval.
+
+**Verified**
+
+- Product diff is only the owner-only `Pending::TopCardChoice` mask in `view.rs`, the permanent privacy regression, and the repair receipt. No engine/profile/AI change.
+- `issue17_slice20_privacy` **1/1**, `issue17_slice20` **9/9**, `projection` **4/4**.
+- Full opposing `PlayerView` is equal for eligible Grizzly Bears vs ineligible Forest hidden on top, including masked digest. Owner retains identity, `pending_viewed`, and take/bottom offers; opponents get a neutral pending shape.
+- Unchanged journey replay: 2064 actions, 46 turns, 5281 events, digest `72cd69fb1143…`.
+- fmt/diff-check pass.
+
+No blocking finding remains. Full #17 is still **1/8 certified**, 137 catalog / 459 union = 125 supported + 334 missing, Ayula 28 missing. No merge/closure/unlock; exact-head CI remains parent-owned.
+
+Report: `evidence/issue17/slice20/REVIEW20-PRIVACY.md` (not committed).

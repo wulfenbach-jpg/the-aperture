@@ -1,0 +1,120 @@
+            card,
+        });
+        // CR 700.4 + 603.6c: a permanent put into a graveyard from the
+        // battlefield "dies". The trigger keeps the card and its controller as
+        // last known information; `source` is the graveyard object.
+        if let Some((card, controller)) = dying {
+            self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
+            // The dying permanent's own "this creature ... dies" trigger is
+            // order-independent, so it is queued here rather than in the batch.
+            self.queue_self_death(new_id, card, controller);
+            return Some((new_id, card, controller));
+        }
+        None
+    }
+
+    fn enter_battlefield(&mut self, id: ObjectId, controller: PlayerId, events: &mut Vec<Event>) {
+        let Some(mut object) = self.detach_object(id) else {
+            return;
+        };
+        let card = object.card;
+        let is_creature = card.def().is_creature();
+        object.controller = controller;
+        object.tapped = false;
+        object.damage = 0;
+        // CR 302.6: summoning sickness applies until the controller's next
+        // untap step.
+        object.summoning_sick = is_creature;
+        object.pump_power = 0;
+        object.pump_toughness = 0;
+        let new_id = self.insert_object(object, Zone::Battlefield);
+        events.push(Event::PermanentEntered {
+            object: new_id,
+            card,
+            controller,
+        });
+        // CR 603.6a: an enters-the-battlefield trigger fires once the permanent
+    Ok(())
+}
+
+/// Every permanent on the battlefield with a "creature dies" watcher ability,
+/// snapshotted before a batch of deaths moves anything. A watcher that dies in
+/// the same batch still sees the batch (CR 704.3, 603.6c).
+fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
+    game.state
+        .objects
+        .values()
+        .filter(|object| object.zone == Zone::Battlefield)
+        .filter(|object| {
+            ability::triggers_on(object.card, TriggerEvent::CreatureDies)
+                .next()
+                .is_some()
+                || ability::triggers_on(object.card, TriggerEvent::CreatureYouControlDies)
+                    .next()
+                    .is_some()
+                || ability::triggers_on(object.card, TriggerEvent::AnotherCreatureYouControlDies)
+                    .next()
+                    .is_some()
+        })
+        .map(|object| (object.id, object.card, object.controller))
+        .collect()
+}
+
+fn target_spec_rule(spec: TargetSpec) -> &'static str {
+    match spec {
+        TargetSpec::None => "CR 601.2c",
+        TargetSpec::AnyTarget => "any target: CR 115.4",
+        TargetSpec::Player => "target player: CR 115.4",
+    /// CR 603.6a + 601.2: the controller cast an instant or sorcery spell.
+    SpellCast,
+    /// CR 603.6a: a land entered under this source's controller.
+    LandEnters,
+    /// CR 603.6a with the printed word "another" (CR 603.6a + 109.5): a
+    /// creature other than the source entered the battlefield. The entering
+    /// permanent's controller is irrelevant; the trigger's controller is the
+    /// source permanent's controller.
+    AnotherCreatureEnters,
+    /// CR 603.6c + 700.4 with the printed wording "creature dies" (no
+    /// controller restriction): any creature anywhere died, including the
+    /// source itself (Blood Artist).
+    CreatureDies,
+    /// CR 603.6c + 700.4 with the printed wording "this creature or another
+    /// creature you control dies": a creature the watcher's controller
+    /// controlled died. The dying creature may be the watcher itself
+    /// (Zulaport Cutthroat).
+    CreatureYouControlDies,
+    /// Same wording but strictly "another creature you control dies": the
+    /// dying creature must not be the watcher itself (Elas il-Kor).
+    AnotherCreatureYouControlDies,
+}
+
+impl TriggerEvent {
+    pub fn name(self) -> &'static str {
+        match self {
+385:const ZULAPORT_CUTTHROAT: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+386-    text: "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+387-    event: TriggerEvent::CreatureYouControlDies,
+388-    optional: false,
+389-    target: TargetSpec::None,
+390-    effects: &[Effect::LoseLifeEachOpponent(1), Effect::GainLife(1)],
+391-})];
+392-
+393-const HEDRON_CRAB: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+394-    text: "Landfall — Whenever a land you control enters, target player mills three cards.",
+395-    event: TriggerEvent::LandEnters,
+396-    optional: false,
+397-    target: TargetSpec::Player,
+--
+407:        CardId::ZulaportCutthroat => ZULAPORT_CUTTHROAT,
+408-        CardId::HedronCrab => HEDRON_CRAB,
+409-        CardId::Owlbear => OWLBEAR,
+410-        CardId::SoulWarden => SOUL_WARDEN,
+411-        CardId::StripedBears => STRIPED_BEARS,
+412-        CardId::Guttersnipe => GUTTERSNIPE,
+413-        CardId::TatyovaBenthicDruid => TATYOVA,
+414-        CardId::JaddiOffshoot => JADDI,
+415-        CardId::TalrandSkySummoner => TALRAND,
+416-        CardId::KrenkoMobBoss => KRENKO,
+417-        CardId::GoblinInstigator => GOBLIN_INSTIGATOR,
+418-        CardId::BeetlebackChief => BEETLEBACK_CHIEF,
+419-        CardId::ProdigalSorcerer => TORCHER,

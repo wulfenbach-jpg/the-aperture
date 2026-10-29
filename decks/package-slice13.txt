@@ -1,0 +1,10 @@
+// package-slice13 — supported 40-card landfall/token package, NOT a desired 100-card starter.
+3 Sazh's Chocobo
+3 Rampaging Baloths
+3 Professor of Zoomancy
+4 Goblin Instigator
+4 Dragon Fodder
+4 Krenko's Command
+4 Shock
+8 Forest
+7 Mountain

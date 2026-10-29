@@ -8,6 +8,14 @@ pub enum Target {
     Player(PlayerId),
     /// A permanent on the battlefield.
     Permanent(ObjectId),
+    /// CR 110.1 + 400.1: a **card** in a zone that is not the battlefield. Today
+    /// only a card in a graveyard is ever offered ("target creature card with no
+    /// abilities **from your graveyard**", Ruxa, Patient Professor). It is a
+    /// distinct variant rather than a reuse of `Permanent` so a
+    /// `Target::Permanent` can never name an object that is not on the
+    /// battlefield, and so a permanent-only effect can never consume a
+    /// graveyard card by accident.
+    Card(ObjectId),
     /// A spell on the stack, identified by the stack object's id.
     Spell(ObjectId),
 }
@@ -31,8 +39,37 @@ pub enum Action {
         card: ObjectId,
         targets: Vec<Target>,
     },
+    /// Cast a modal spell with exactly two distinct modes chosen at cast time.
+    CastSpellWithModes {
+        card: ObjectId,
+        modes: [u8; 2],
+        targets: Vec<Target>,
+    },
+    /// CR 107.3a + 601.2b: cast a spell whose printed cost contains `{X}` and
+    /// announce the value of X. The value is paid as additional generic mana and
+    /// travels with the spell (manifest value, entry counters, entry triggers),
+    /// so a later resolution never has to guess it. A card that does not print
+    /// `{X}` is refused, and a card that does print it cannot be cast through
+    /// [`Action::CastSpell`] — X is announced explicitly or not at all.
+    CastSpellWithX {
+        card: ObjectId,
+        x: u8,
+        targets: Vec<Target>,
+    },
     ActivateManaAbility {
         land: ObjectId,
+    },
+    /// CR 605.1a: a costed mana ability whose cost is sacrificing a chosen
+    /// Goblin ("Sacrifice a Goblin: Add {R}"). It resolves immediately and never
+    /// uses the stack.
+    ActivateSacrificeManaAbility {
+        source: ObjectId,
+        sacrifice: ObjectId,
+    },
+    /// Dynamic mana ability with an explicit chosen color.
+    ActivateColorManaAbility {
+        source: ObjectId,
+        color: crate::card::ManaColor,
     },
     /// Structured attacker declaration. In the bounded M1 multiplayer model every
     /// attacker in one declaration attacks the same defending seat; `defender`
@@ -88,15 +125,89 @@ pub enum Action {
         mode: u8,
         targets: Vec<Target>,
     },
+    /// CR 118.3 + 602.2b: activate an ability whose printed cost includes
+    /// cards ("Discard a land card", "Exile two cards from your graveyard").
+    /// The activator names those cards; the engine validates each one against
+    /// the cost the card actually prints and the zone that cost reads, so a
+    /// caller can never supply a cost the card does not have. Abilities with
+    /// no card cost are still activated through [`Action::ActivateAbility`],
+    /// which keeps every pre-existing replay and test literal valid.
+    /// CR 702.171: pay a Mount's saddle cost by tapping named other creatures.
+    /// Choose one basic land for the active library search, or finish.
+    SearchLibraryPick {
+        card: ObjectId,
+    },
+    SearchLibraryDone,
+    ChooseRingBearer {
+        bearer: Option<ObjectId>,
+    },
+    /// CR 702.75a: answer a hideaway look by exiling one of the looked-at cards
+    /// face down. The card must be one of the offered `looked` cards; the rest
+    /// go to the bottom in a random order when this is submitted.
+    HideawayExile {
+        card: ObjectId,
+    },
+    /// "You may play one of them without paying its mana cost" (Evercoat
+    /// Ursine): play one card exiled with the resolving permanent. `modes` is
+    /// empty except for a printed modal spell, and `targets` are the spell's
+    /// normal targets; a printed `{X}` is always 0 (printed ruling).
+    PlayExiledCard {
+        card: ObjectId,
+        modes: Vec<u8>,
+        targets: Vec<Target>,
+    },
+    /// Decline the "you may play" offer; the ability has no other effect.
+    DeclinePlayExiled,
+    ChooseLegendaryKeep {
+        permanent: ObjectId,
+    },
+    SaddleMount {
+        source: ObjectId,
+        creatures: Vec<ObjectId>,
+    },
+    ActivateCostedAbility {
+        source: ObjectId,
+        ability: u8,
+        mode: u8,
+        targets: Vec<Target>,
+        /// Cards named to pay the cost, in the order the printed cost reads
+        /// them (the land to discard first, then the graveyard cards).
+        cost_cards: Vec<ObjectId>,
+    },
     /// CR 603.3d: choose the targets for a triggered ability being put on the
     /// stack.
     ChooseTriggerTarget {
         target: Target,
     },
+    /// CR 115.6: put a triggered ability whose printed target is "up to one"
+    /// on the stack with no target at all. Legal only while such a trigger is
+    /// waiting for its target choice; a trigger with a mandatory target never
+    /// offers it.
+    DeclineTriggerTarget,
+    /// CR 601.2c: finish choosing the *set* of targets for a triggered ability
+    /// printed as "any number of target ..." (Rampaging Yao Guai). Legal only
+    /// while that trigger is waiting for its set; the chosen set may be empty,
+    /// which is the "destroy nothing" answer.
+    FinishTriggerTargets,
     /// CR 603.5: accept or decline an optional ("you may") triggered ability as
     /// it resolves.
     AnswerTriggerChoice {
         use_ability: bool,
+    },
+    /// CR 510.1 + 608.2c: answer Ruxa, Patient Professor's "you may have that
+    /// creature assign its combat damage as though it weren't blocked" for the
+    /// creature the pending choice names. `true` assigns the creature's whole
+    /// combat damage as though it had no blockers (so it goes to the defending
+    /// player and none to the blockers); `false` assigns normally.
+    AnswerCombatDamageAssignment {
+        as_though_unblocked: bool,
+    },
+    /// CR 701.9a + 101.4: answer Kamahl's Summons' "each player may reveal any
+    /// number of creature cards from their hand". The named cards must all be
+    /// in the choosing seat's hand and be creature cards; they stay in hand.
+    /// An empty list is the legal "reveal nothing" answer.
+    RevealCreatureCards {
+        cards: Vec<ObjectId>,
     },
 }
 
@@ -106,7 +217,11 @@ impl Action {
             Action::Pass => "pass",
             Action::PlayLand { .. } => "play land",
             Action::CastSpell { .. } => "cast spell",
+            Action::CastSpellWithModes { .. } => "cast modal spell",
+            Action::CastSpellWithX { .. } => "cast spell",
             Action::ActivateManaAbility { .. } => "mana ability",
+            Action::ActivateSacrificeManaAbility { .. } => "mana ability",
+            Action::ActivateColorManaAbility { .. } => "mana ability",
             Action::DeclareAttackers { .. } => "declare attackers",
             Action::DeclareBlockers { .. } => "declare blockers",
             Action::Mulligan { .. } => "mulligan choice",
@@ -118,8 +233,21 @@ impl Action {
             Action::AnswerCommanderReplacement { .. } => "commander replacement choice",
             Action::AnswerCommanderDraw { .. } => "commander draw replacement choice",
             Action::ActivateAbility { .. } => "activate ability",
+            Action::ActivateCostedAbility { .. } => "activate ability",
+            Action::SaddleMount { .. } => "saddle mount",
+            Action::SearchLibraryPick { .. } => "choose a basic land",
+            Action::SearchLibraryDone => "finish searching",
+            Action::ChooseRingBearer { .. } => "choose Ring-bearer",
+            Action::ChooseLegendaryKeep { .. } => "choose legendary permanent",
+            Action::HideawayExile { .. } => "choose a hideaway exile",
+            Action::PlayExiledCard { .. } => "play a card exiled with hideaway",
+            Action::DeclinePlayExiled => "decline the hideaway play",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
+            Action::DeclineTriggerTarget => "decline trigger target",
+            Action::FinishTriggerTargets => "finish trigger targets",
             Action::AnswerTriggerChoice { .. } => "trigger choice",
+            Action::AnswerCombatDamageAssignment { .. } => "combat damage assignment choice",
+            Action::RevealCreatureCards { .. } => "reveal creature cards",
         }
     }
 }

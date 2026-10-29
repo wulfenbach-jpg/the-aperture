@@ -352,6 +352,7 @@ fn ordinary_end_step_growth_expires_in_cleanup_without_cleanup_priority() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     let forest = ObjectId(g.state.next_object);
@@ -372,6 +373,7 @@ fn ordinary_end_step_growth_expires_in_cleanup_without_cleanup_priority() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     let growth = ObjectId(g.state.next_object);
@@ -392,6 +394,7 @@ fn ordinary_end_step_growth_expires_in_cleanup_without_cleanup_priority() {
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     g.state.players[P0 as usize].hand.push(growth);

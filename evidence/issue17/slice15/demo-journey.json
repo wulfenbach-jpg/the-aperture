@@ -1,0 +1,35 @@
+{
+  "activations": {
+    "Ayula's Influence": 6,
+    "Bearscape": 7,
+    "Mother Bear": 2
+  },
+  "bear_tokens_created": 17,
+  "casts": {
+    "Ayula's Influence": 6,
+    "Bearscape": 8,
+    "Grizzly Bears": 13,
+    "Mother Bear": 4
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice15.txt",
+  "digest": "0bf033d9bb37ca708a4f1ce1f9ade108935bcf25ffb1143fe7256b166d2accbe",
+  "driver": "evidence-only masked card-preferring demonstrator; NOT product heuristic/strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 4107,
+  "seats": 4,
+  "seed": 1515,
+  "snapshot_sha256": "e2b6aef86c2b7af3de2b885a6e96fbfc562bc5543f74af62fabd7256443fd251",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1529,
+  "turns": 36
+}

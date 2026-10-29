@@ -1,0 +1,93 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T10:59:47Z",
+ "source": "https://api.scryfall.com (named?exact + search?unique=prints)",
+ "note": "Three records read from live Scryfall in this run (named+exact and unique=prints); every printing of each card carries the same Oracle text, so the catalog string is not printing-specific. Elas il-Kor was also captured but is not implemented (its printed Deathtouch keyword is unmodelled), so it is recorded only in slice6-sourced-raw.json.",
+ "cards": [
+  {
+   "name": "Zulaport Cutthroat",
+   "role": "creature_you_control_dies_drain",
+   "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+   "scryfall_id": "c43609fb-3cee-44e0-98d0-3ecaba1d5767",
+   "set": "soc",
+   "collector_number": "233",
+   "set_name": "Secrets of Strixhaven Commander",
+   "released_at": "2026-04-24",
+   "layout": "normal",
+   "mana_cost": "{1}{B}",
+   "type_line": "Creature — Human Rogue Ally",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/soc/233",
+   "printings_checked": 14,
+   "distinct_printed_texts": [
+    "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life."
+   ],
+   "retrieved_at": "2026-10-26T10:59:47Z"
+  },
+  {
+   "name": "Blood Artist",
+   "role": "any_creature_dies_drain_target_player",
+   "oracle_id": "310f141c-7f37-4729-aed6-dd9c09db448d",
+   "scryfall_id": "b5275d76-2947-4219-be21-614c7421614a",
+   "set": "soc",
+   "collector_number": "209",
+   "set_name": "Secrets of Strixhaven Commander",
+   "released_at": "2026-04-24",
+   "layout": "normal",
+   "mana_cost": "{1}{B}",
+   "type_line": "Creature — Vampire",
+   "power": "0",
+   "toughness": "1",
+   "oracle_text": "Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.",
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/soc/209",
+   "printings_checked": 18,
+   "distinct_printed_texts": [
+    "Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life."
+   ],
+   "retrieved_at": "2026-10-26T10:59:47Z"
+  },
+  {
+   "name": "Hedron Crab",
+   "role": "landfall_target_player_mill_three",
+   "oracle_id": "7216f974-3c84-40ef-b904-82019900c204",
+   "scryfall_id": "d109b70e-862f-4d8a-8b40-ef6dc904868f",
+   "set": "tdc",
+   "collector_number": "155",
+   "set_name": "Tarkir: Dragonstorm Commander",
+   "released_at": "2025-04-11",
+   "layout": "normal",
+   "mana_cost": "{U}",
+   "type_line": "Creature — Crab",
+   "power": "0",
+   "toughness": "2",
+   "oracle_text": "Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [
+    "Mill",
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tdc/155",
+   "printings_checked": 4,
+   "distinct_printed_texts": [
+    "Landfall — Whenever a land you control enters, target player mills three cards. (They put the top three cards of their library into their graveyard.)"
+   ],
+   "retrieved_at": "2026-10-26T10:59:47Z"
+  }
+ ]
+}

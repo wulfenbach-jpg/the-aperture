@@ -1,0 +1,10 @@
+// package-slice57 — evidence-only 40-card Rampaging Yao Guai package, NOT a desired starter.
+// Four artifacts and one cheap artifact-creature give the entry trigger real targets;
+// the rest is a green creature base so the game is played, not goldfished.
+4 Rampaging Yao Guai
+4 Sol Ring
+4 Arcane Signet
+4 Commander's Sphere
+4 Friendly Teddy
+4 Grizzly Bears
+16 Forest

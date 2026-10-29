@@ -1,0 +1,95 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 0
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 1
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 2
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 0,
+    "ability_activations": 0,
+    "attacks": 15,
+    "blocks": 0,
+    "casts": 15,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 1,
+    "damage_events": 55,
+    "events": 3830,
+    "triggered_abilities": 0
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 1517
+  },
+  "final_digest": "8a1e7055798f71eb45a89ee0148bd4b2f95b6262932bddddfdcb167334a90337",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 116,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 1517,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-islandwalk-slice11",
+      "seat": 0,
+      "source": "decks/package-islandwalk-slice11.txt"
+    },
+    {
+      "cards": 40,
+      "library": 21,
+      "life": 38,
+      "name": "package-islandwalk-slice11",
+      "seat": 1,
+      "source": "decks/package-islandwalk-slice11.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-islandwalk-slice11",
+      "seat": 2,
+      "source": "decks/package-islandwalk-slice11.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -8,
+      "name": "package-islandwalk-slice11",
+      "seat": 3,
+      "source": "decks/package-islandwalk-slice11.txt"
+    }
+  ],
+  "seed": 1114,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1517,
+  "truncated": null,
+  "turns": 39,
+  "winner": 1,
+  "winner_label": "P1"
+}

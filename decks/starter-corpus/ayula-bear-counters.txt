@@ -1,0 +1,63 @@
+// ayula-bear-counters — 99-card library; commander supplied separately: Ayula, Queen Among Bears
+// Green bear tribal +1/+1 counters. Every card is supported by the compiled pool;
+// this file is the exact snapshot the certificate hashes.
+1 Goreclaw, Terror of Qal Sisma
+1 Lumra, Bellow of the Woods
+1 Surrak and Goreclaw
+1 The Earth King
+1 Rampaging Yao Guai
+1 Titania's Command
+1 Fade from History
+1 Evercoat Ursine
+1 Spider-Ham, Peter Porker
+1 Owlbear Cub
+1 Ruxa, Patient Professor
+1 Dancing from Dark to Dawn
+1 Werebear
+1 Beorn the Fierce
+1 Grizzly Bears
+1 Mother Bear
+1 Alpine Grizzly
+1 Owlbear
+1 Beorn's Hospitality
+1 Ashcoat Bear
+1 Runeclaw Bear
+1 Bear Cub
+1 Friendly Teddy
+1 Balduvian Bears
+1 Forest Bear
+1 Spectral Bears
+1 Stuffed Bear
+1 Thijarian Witness
+1 Ursine Champion
+1 Sol Ring
+1 Arcane Signet
+1 Swiftfoot Boots
+1 Lightning Greaves
+1 Fellwar Stone
+1 Ayula's Influence
+1 Ursine Monstrosity
+1 Bearscape
+1 Drover Grizzly
+1 Caller of the Claw
+1 Little Bear
+1 Ulvenwald Bear
+1 Dragon-Scarred Bear
+1 Vivien's Grizzly
+1 Pale Bears
+1 Words of Wilding
+1 Circle of the Moon Druid
+1 Spirit of the Aldergard
+1 Druid's Familiar
+1 Striped Bears
+1 Dúnedain Rangers
+1 River Bear
+1 Ordinary Bear
+1 Golden Bear
+1 Kamahl's Summons
+1 Professor of Zoomancy
+1 Razorclaw Bear
+1 Exuberant Wolfbear
+
+// Basic lands
+42 Forest

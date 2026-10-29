@@ -1,0 +1,97 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.42s
+     Running tests\issue17_slice13.rs (target\debug\deps\issue17_slice13-6e1e3977b14e53f6.exe)
+
+running 4 tests
+test sourced_slice13_cards_match_their_printings ... ok
+test sazh_chocobo_landfall_adds_a_real_counter_only_for_its_controller ... ok
+test rampaging_baloths_creates_beast_token_and_survives_source_left ... ok
+test professor_pest_token_dies_gaining_life_once_after_full_drain ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice24.rs (target\debug\deps\issue17_slice24-315e8ddde41a5133.exe)
+
+running 10 tests
+test surrak_goreclaw_is_sourced_and_supported ... ok
+test static_other_creature_trample_changes_real_combat ... ok
+test native_hasty_werebear_mana_ability_is_actually_offered ... ok
+test token_and_opponent_entries_do_not_trigger_surrak ... ok
+test surrak_trigger_gives_counter_and_haste_only_to_entered_nontoken_creature ... ok
+test native_untargeted_entry_trigger_stays_on_stack_after_entered_object_leaves ... ok
+test source_left_trigger_still_buffs_the_original_entered_creature ... ok
+test bounced_entered_creature_loses_old_trigger_and_recast_triggers_once ... ok
+test older_creature_does_not_get_haste_and_cleanup_expires_it ... ok
+test midtrigger_save_reload_finishes_identically ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice25.rs (target\debug\deps\issue17_slice25-7f587d18a697ec4a.exe)
+
+running 7 tests
+test exuberant_wolfbear_is_sourced_and_supported ... ok
+test declining_leaves_human_unchanged ... ok
+test attack_trigger_sets_human_base_to_current_wolfbear_stats_after_counters ... ok
+test source_left_uses_effective_last_known_power_for_base_setting ... ok
+test native_source_departure_uses_real_post_trigger_pump_lki ... ok
+test native_current_source_after_trigger_and_target_pumps_layer_before_cleanup ... ok
+test native_human_target_offer_refuses_nonhuman_opponent_and_wrong_seat_unchanged ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice26.rs (target\debug\deps\issue17_slice26-edb7bc6b426e4cf2.exe)
+
+running 6 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_activation_is_not_offered_without_the_printed_six_mana ... ok
+test a_bear_target_filter_sees_the_new_subtype ... ok
+test the_type_change_and_pump_both_end_with_the_turn ... ok
+test the_printed_once_each_turn_restriction_is_enforced ... ok
+test activation_pumps_the_source_and_makes_it_a_bear_for_a_real_bear_check ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice28.rs (target\debug\deps\issue17_slice28-cfb9f7bf614b3534.exe)
+
+running 5 tests
+test the_catalog_string_is_the_recorded_printing_and_both_layers_are_typed ... ok
+test a_non_bear_creature_still_gets_no_counter_so_the_check_is_discriminating ... ok
+test the_condition_is_its_controllers_turn_not_seat_zero ... ok
+test the_base_setting_sits_under_layer_7c_and_under_counters ... ok
+test it_enters_as_a_four_two_bear_during_its_controllers_turn_and_reverts_after ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice29.rs (target\debug\deps\issue17_slice29-5a9819d21baab889.exe)
+
+running 9 tests
+test the_catalog_string_is_the_recorded_printing_and_the_ability_is_typed ... ok
+test the_ability_offer_requires_two_mana_and_the_card_is_not_a_creature_spell ... ok
+test the_colour_query_starts_from_the_printed_colour_and_layer_five_replaces_it ... ok
+test it_is_a_plain_artifact_until_the_printed_ability_animates_it ... ok
+test a_second_activation_restacks_the_same_layers_without_stacking_the_stats ... ok
+test an_animated_bear_dies_as_a_creature ... ok
+test the_animation_expires_at_cleanup_and_the_artifact_reverts ... ok
+test it_cannot_attack_on_the_turn_it_entered_but_attacks_for_four_on_a_later_turn ... ok
+test a_save_and_reload_preserves_the_animation_and_its_layers ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\timing_mana.rs (target\debug\deps\timing_mana-e7fe47c4a09c074d.exe)
+
+running 12 tests
+test stale_submissions_are_rejected ... ok
+test sorcery_requires_your_main_phase_with_an_empty_stack ... ok
+test land_cannot_be_played_outside_your_main_phase_or_turn ... ok
+test spell_target_that_is_not_on_the_stack_is_rejected ... ok
+test mana_pool_empties_when_the_step_or_phase_ends ... ok
+test land_can_be_played_once_in_your_own_main_phase ... ok
+test mana_ability_is_only_for_untapped_basic_lands ... ok
+test cost_is_paid_on_cast_by_tapping_lands ... ok
+test land_cannot_be_played_with_a_nonempty_stack ... ok
+test casting_a_creature_puts_it_onto_the_battlefield_with_summoning_sickness ... ok
+test unaffordable_spell_is_rejected_and_state_is_identical ... ok
+test illegal_action_attempts_leave_the_state_unchanged ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

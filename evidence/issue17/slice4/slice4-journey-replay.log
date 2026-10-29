@@ -1,0 +1,4 @@
+    Finished `release` profile [optimized] target(s) in 0.48s
+     Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice4/slice4-journey.replay.json`
+replay seed 17 — 4 seat(s), 1567 action(s), recorded outcome Some(Win { winner: 1, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest 5e905fdc0399 | matches recorded | events 4209

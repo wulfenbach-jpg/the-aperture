@@ -1,0 +1,23 @@
+Working...
+**review_outcome: REQUEST_CHANGES** at `9ec90aa7ff45d9d20981321b64da16234ba0b776`.
+`full_issue17_accepted: false`.
+
+**Findings**
+
+1. **High — save roundtrip is broken.** Fresh artifact-journey save-out succeeds (digest `d3eade58f133`), but replaying the written save exits 1:
+   `token #541 (Goblin Token) is in the removed from the game zone; tokens cease to exist off the battlefield`.
+   Reproduced independently:
+   `replay --file evidence/issue17/slice12/demo-replay.json --save-out evidence/issue17/slice12-review-demo-save.json` then replay that save. Retained `slice12/save.json` fails likewise at token #507. The handoff’s “save replay matches” claim is false. Departed-player tokens must not leave an unreloadable canonical state; add a save-roundtrip regression.
+2. **Medium — stale Elas prose.** `docs/issue17-starter-corpus.md:120` says 55 unsupported nonland names; manifest and audit say **53**.
+
+**Verified**
+
+- Focused `--locked`: slice12 9/9, slice9 6/6, tokens 10/10, catalog 5/5, printings 7/7, issue13 43/43; fmt/diff-check clean.
+- Native demo replay: terminal P3, 1573 actions/32 turns, digest `d3eade58f133`, 6981 events, four exact 40-card snapshots; actual casts Sol Ring 7 / Mind Stone 8 / Hedron 10 and mana activations 53/7/6. Driver is evidence-only, not product AI.
+- Old slice8 replay still matches `ffbeaee0db38…`/6087 events.
+- Source check: all six live Scryfall fields match for all three artifacts; Commander’s Sphere excluded. Catalog 119, union 459 = 107 supported + 352 missing; manifest arrays match; desired files unchanged.
+- Artifact casting/activation tests pass; unmodified product heuristic casts zero artifacts, as disclosed.
+
+**Remaining gaps:** full #17 is 1 certified / 7 planned; 352 union names missing. Artifact mana remains explicit-only for AI; Commander’s Sphere, Friendly Teddy, Aetherize and broader mechanics remain open. No #17 acceptance, merge/closure, or release/#26/#32 unlock.
+
+Reports: `evidence/issue17/slice12/REVIEW12.md`, `.json`.

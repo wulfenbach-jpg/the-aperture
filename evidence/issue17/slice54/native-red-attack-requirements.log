@@ -1,0 +1,35 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
+     Running tests\issue17_slice54_regressions.rs (target\debug\deps\issue17_slice54_regressions-d962a1f2704b0712.exe)
+
+running 4 tests
+test pump_is_fixed_after_a_genuinely_new_graveyard_type ... ok
+test wrong_opponent_cannot_evade_one_able_ursine_requirement ... FAILED
+test conflicting_requirements_offer_only_maximum_satisfiable_groups ... FAILED
+test requirement_ends_at_end_combat_but_pump_and_indestructible_do_not ... ok
+
+failures:
+
+---- wrong_opponent_cannot_evade_one_able_ursine_requirement stdout ----
+
+thread 'wrong_opponent_cannot_evade_one_able_ursine_requirement' (32024) panicked at crates\core\tests\issue17_slice54_regressions.rs:39:5:
+an able Ursine must attack chosen P3, not P1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- conflicting_requirements_offer_only_maximum_satisfiable_groups stdout ----
+
+thread 'conflicting_requirements_offer_only_maximum_satisfiable_groups' (36880) panicked at crates\core\tests\issue17_slice54_regressions.rs:66:13:
+assertion `left == right` failed: CR508.1d requires maximum requirements, seed=0, defender=1
+  left: 0
+ right: 2
+
+
+failures:
+    conflicting_requirements_offer_only_maximum_satisfiable_groups
+    wrong_opponent_cannot_evade_one_able_ursine_requirement
+
+test result: FAILED. 2 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice54_regressions`
+
+EXIT=101

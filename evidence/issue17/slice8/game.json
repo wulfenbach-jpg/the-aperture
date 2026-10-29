@@ -1,0 +1,132 @@
+{
+  "commander_damage": [
+    {
+      "amount": 2,
+      "commander": 4,
+      "recipient": 0
+    }
+  ],
+  "commander_damage_totals": [
+    {
+      "commander": 1,
+      "recipient": 1,
+      "total": 12
+    },
+    {
+      "commander": 1,
+      "recipient": 2,
+      "total": 8
+    },
+    {
+      "commander": 1,
+      "recipient": 3,
+      "total": 14
+    },
+    {
+      "commander": 4,
+      "recipient": 0,
+      "total": 2
+    },
+    {
+      "commander": 4,
+      "recipient": 1,
+      "total": 10
+    },
+    {
+      "commander": 4,
+      "recipient": 2,
+      "total": 8
+    }
+  ],
+  "commanders": [
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 0
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 1
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 2
+    },
+    {
+      "card": "Isamaru, Hound of Konda",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 4,
+    "ability_activations": 0,
+    "attacks": 39,
+    "blocks": 5,
+    "casts": 34,
+    "commander_damage_events": 27,
+    "commander_damage_losses": 0,
+    "counterspells": 7,
+    "damage_events": 68,
+    "events": 6088,
+    "triggered_abilities": 4
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 2377
+  },
+  "final_digest": "ffbeaee0db38c4de6a90bed44c5f111ee09cb05e54a3d2b86adf75ffa3a4b082",
+  "first_player": 3,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 111,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 2377,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 40,
+      "library": 7,
+      "life": 26,
+      "name": "package-slice8",
+      "seat": 0,
+      "source": "decks/package-slice8.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -2,
+      "name": "package-slice8",
+      "seat": 1,
+      "source": "decks/package-slice8.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": 0,
+      "name": "package-slice8",
+      "seat": 2,
+      "source": "decks/package-slice8.txt"
+    },
+    {
+      "cards": 40,
+      "library": 0,
+      "life": -1,
+      "name": "package-slice8",
+      "seat": 3,
+      "source": "decks/package-slice8.txt"
+    }
+  ],
+  "seed": 801,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2377,
+  "truncated": null,
+  "turns": 68,
+  "winner": 0,
+  "winner_label": "P0"
+}

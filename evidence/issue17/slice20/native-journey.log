@@ -1,0 +1,39 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice20-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice20-journey-driver)
+    Finished `release` profile [optimized] target(s) in 34.75s
+     Running `target\release\issue17-slice20-journey.exe`
+{
+  "activations": 22,
+  "bottom_choices": 5,
+  "casts": {
+    "Centaur Courser": 3,
+    "Craw Wurm": 4,
+    "Grizzly Bears": 7,
+    "Runeclaw Bear": 10,
+    "Vivien's Grizzly": 6
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice20.txt",
+  "digest": "72cd69fb1143763fcd8fe1387b9a625c896538bdd389f33958d8705d8c7cdd48",
+  "driver": "evidence-only masked attack/cast-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "mandatory_bottom_acknowledgements": 16,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 5281,
+  "seats": 4,
+  "seed": 1919,
+  "snapshot_sha256": "12e6d1e92cdfb56e159e7b96465db2d03a1f511337f2dbca31371521e554916f",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2064,
+  "take_choices": 5,
+  "turns": 46
+}

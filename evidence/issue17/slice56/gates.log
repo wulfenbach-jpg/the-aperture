@@ -1,0 +1,97 @@
+### fmt
+fmt_exit=0
+### clippy (workspace, all targets, -D warnings)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
+clippy_exit=0
+### focused: the suites this delta touches
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running tests\coach_trace.rs (target\debug\deps\coach_trace-87af5f3f9971d177.exe)
+
+running 7 tests
+test the_1014_note_states_apnap_order ... ok
+test walkthrough_new_game_pass_round_states_the_next_resolution ... ok
+test walkthrough_categories_are_separate_and_strategy_is_absent_by_design ... ok
+test walkthrough_consecutive_passes_are_listed_seat_by_seat ... ok
+test walkthrough_cast_opens_a_response_window_and_names_what_resolves ... ok
+test coaching_of_a_non_decision_seat_never_describes_anothers_hand ... ok
+test walkthrough_apnap_pending_teaches_apnap_order_and_keeps_private_choices_private ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\combat_teaching.rs (target\debug\deps\combat_teaching-5dc0e9e20e981503.exe)
+
+running 2 tests
+test the_5101c_note_does_not_teach_lethal_first_as_the_rule ... ok
+test combat_coaching_identifies_the_automatic_assignment_as_a_simplification ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice54.rs (target\debug\deps\issue17_slice54-3a6f637d49637047.exe)
+
+running 4 tests
+test ursine_monstrosity_is_sourced_and_supported ... ok
+test ursine_trigger_pump_is_fixed_and_affects_toughness ... ok
+test begin_combat_mills_forces_attack_and_sets_indestructible_body ... ok
+test ursine_effects_expire_and_state_loads_roundtrip ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice54_regressions.rs (target\debug\deps\issue17_slice54_regressions-d962a1f2704b0712.exe)
+
+running 6 tests
+test bounced_source_still_mills_but_does_not_receive_battlefield_effects ... ok
+test pump_is_fixed_after_a_genuinely_new_graveyard_type ... ok
+test tapped_required_attacker_may_decline_and_zero_toughness_still_dies ... ok
+test wrong_opponent_cannot_evade_one_able_ursine_requirement ... ok
+test requirement_ends_at_end_combat_but_pump_and_indestructible_do_not ... ok
+test conflicting_requirements_offer_only_maximum_satisfiable_groups ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\issue17_slice55.rs (target\debug\deps\issue17_slice55-b41b86ba35644523.exe)
+
+running 5 tests
+test coach_reports_a_zero_toughness_permanent_as_a_graveyard_move ... ok
+test coach_still_reports_a_zero_toughness_indestructible_permanent ... ok
+test coach_does_not_promise_destruction_of_an_indestructible_creature ... ok
+test a_present_source_still_reports_its_grant ... ok
+test departed_source_trigger_reports_the_absence_of_its_grants ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\review_regressions.rs (target\debug\deps\review_regressions-e100bf7a2ea8aa4b.exe)
+
+running 10 tests
+test a_resolved_spell_runs_sbas_before_priority_is_granted ... ok
+test coaching_never_describes_another_seats_hand ... ok
+test a_destroyed_attacker_assigns_no_combat_damage ... ok
+test a_blocker_that_died_absorbs_nothing_and_the_attacker_stays_blocked ... ok
+test a_mana_ability_is_refused_while_a_choice_is_pending ... ok
+test a_dead_attacker_cannot_be_blocked ... ok
+test the_opponent_does_not_learn_a_private_scry_or_surveil_choice ... ok
+test the_player_who_plays_first_skips_their_first_draw_step ... ok
+test the_game_start_log_does_not_reveal_the_replay_seed ... ok
+test a_mulligan_that_could_never_be_bottomed_is_refused ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+focused_exit=0
+### corpus whole-field audit
+catalog_cards      = 163
+union_names        = 459
+supported_union    = 150
+missing_union      = 309
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=48
+  ayula-bear-counters        status=planned   missing=3
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 48, 3, 52, 52, 53]
+certified_lists    = 1 ['jasmine-vanilla-stompy']
+whole_field_supported_card_citations = []
+Ayula interaction citations equal all three missing card names
+AUDIT OK
+corpus_exit=0

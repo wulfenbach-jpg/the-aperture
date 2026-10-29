@@ -1,0 +1,34 @@
+{
+  "boosted_spirit_samples": 4093,
+  "casts": {
+    "Centaur Courser": 8,
+    "Craw Wurm": 4,
+    "Grizzly Bears": 6,
+    "Spirit of the Aldergard": 9
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice44.txt",
+  "digest": "a31bed4673732ccda50ce9dccd46ca44143f6b34caaab750d800340aa6219a1c",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 4360,
+  "search_shuffles": 9,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "877155d67162135a82271ebc2b19b543b11f9f417d97c297dace00427663f06c",
+  "snapshots_exact": true,
+  "snow_reveals": 8,
+  "spirit_static_samples": 4489,
+  "starting_life": 40,
+  "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+  "status": "terminal",
+  "steps": 1689,
+  "turns": 40
+}

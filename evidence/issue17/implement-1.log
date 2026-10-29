@@ -1,0 +1,25 @@
+Working...
+**PARTIAL #17** — first starter package implemented and exercised; eight-list gate remains open. No commit/push/PR.
+
+## Delivered
+- **Jasmine Boreal** added to the typed commander registry (`SUPPORTED_COMMANDERS`) with 47 sourced vanilla green/white creatures; pool **31 → 79**.
+- Exact starter: `decks/starter-corpus/jasmine-vanilla-stompy.txt` — **99 library cards**: 58 unique singleton nonlands + 41 basics (20 Plains, 21 Forest); commander supplied separately.
+- Sourced Scryfall data: `fixtures/starter-corpus/sourced-cards.json`, raw responses in `evidence/issue17/scryfall-responses.json` (retrieved `2026-10-25T07:59:45Z`).
+- Offline analyzer snapshots: `fixtures/starter-corpus/jasmine-vanilla-stompy.{deck,cards}.json` + fixture manifest.
+- Manifest: `decks/starter-corpus/manifest.json` (8 targets, Jasmine `implemented`, rest `planned`, `deck_path: null`).
+- Docs: `docs/issue17-starter-corpus.md`; TDD: `evidence/issue17/TDD.md`; handoff: `evidence/issue17/IMPLEMENTATION-HANDOFF.md`; machine result: `evidence/issue17/implementation-result.json`.
+
+## Verified
+- RED before production edits: 6/7 starter tests failed on missing cards; analyzer reported 48 unsupported cards.
+- `cargo test --all-targets`: **468 passed / 0 failed**, 71 suites.
+- `fmt --check`, `clippy -D warnings`, release CLI build: clean.
+- `commander-check`: format `legal`, engine `supported`, 1 commander / 99 library / 100 total.
+- Exact four-seat game, release binary, seed 1, 40 life, all four decks/commanders explicit: **terminal**, P1 wins, 2364 steps, 53 turns, digest `d7f8c2adaa17…`; 55 casts, Jasmine cast by every seat, 30 distinct new vanilla cards cast.
+- Separate replay: digest matches; all four replay seat libraries exactly the 99-card list.
+- Legacy: no state/digest/version change; full replay/save tests pass. The tracked issue-14 v6 evidence replay fails identically at the untouched base commit (pre-existing issue-15 state drift, documented in `legacy-replay-note.md`).
+
+## Open
+- Only 1 of 8 starters implemented; six target commanders and token/trigger/keyword/counter/copy/landfall/drain semantics remain unsupported.
+- Analyzer’s blanket `gameplay.available = false` remains unchanged.
+- Reporter pointer still targets old #20; disclosed, untouched.
+- `evidence/issue17/IMPLEMENT-2.md` appeared during the run; **not executed** — this admission bounded the run to slice 1 + handoff. Coordinator files preserved.

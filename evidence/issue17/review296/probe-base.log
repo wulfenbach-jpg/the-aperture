@@ -1,0 +1,38 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling typenum v1.20.1
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling const-oid v0.10.2
+   Compiling thiserror v2.0.21
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.154
+   Compiling memchr v2.8.3
+   Compiling cpufeatures v0.3.1
+   Compiling itoa v1.0.18
+   Compiling cfg-if v1.0.5
+   Compiling hybrid-array v0.4.15
+   Compiling syn v3.0.9
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling digest v0.11.3
+   Compiling sha2 v0.11.1
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling aperture-core v0.1.0 (C:\AI\r296base\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.14s
+     Running tests\review296_probe.rs (target\debug\deps\review296_probe-0b7ed8cf322debc6.exe)
+
+running 3 tests
+test probe_creature_you_control_source_membership ... PROBE creature_you_control offered=[] contains_source=false
+PROBE landfall_self counters=0 pending=false stats=4/4
+ok
+test probe_little_bear_alone_removed ... PROBE little_bear_alone removed=true staged=false pending=false counters=0
+ok
+test probe_little_bear_offer_list ... PROBE little_bear_offer_list legal=["Exuberant Wolfbear", "Grizzly Bears"] count=2 source_in_offer=false
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+BASE_EXIT=0

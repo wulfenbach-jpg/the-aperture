@@ -1,0 +1,184 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T09:33:21Z",
+ "note": "Six records read from live Scryfall in this run (named+exact and unique=prints); every printing of each card carries the same Oracle text.",
+ "cards": [
+  {
+   "name": "Stitcher's Supplier",
+   "role": "mill_on_enters_or_dies",
+   "oracle_id": "7fd61a18-6e4f-40c5-aa00-3d101ec1ec82",
+   "scryfall_id": "2edcde06-b326-476e-884d-770187c785fe",
+   "set": "tdc",
+   "collector_number": "196",
+   "set_name": "Tarkir: Dragonstorm Commander",
+   "released_at": "2025-04-11",
+   "layout": "normal",
+   "mana_cost": "{B}",
+   "type_line": "Creature \u2014 Zombie",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "When this creature enters or dies, mill three cards. (Put the top three cards of your library into your graveyard.)",
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [
+    "Mill"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tdc/196",
+   "printings_checked": 11,
+   "distinct_printing_texts": 1,
+   "distinct_printing_texts_list": [
+    "When this creature enters or dies, mill three cards. (Put the top three cards of your library into your graveyard.)"
+   ],
+   "retrieved_at": "2026-10-26T09:33:21Z"
+  },
+  {
+   "name": "Ruin Crab",
+   "role": "landfall_mill_each_opponent",
+   "oracle_id": "8afc00d4-a1c6-4329-af2c-a7f58a0c33e7",
+   "scryfall_id": "738ce273-c938-42d2-83b2-c4f5f4000b0b",
+   "set": "znr",
+   "collector_number": "75",
+   "set_name": "Zendikar Rising",
+   "released_at": "2020-09-25",
+   "layout": "normal",
+   "mana_cost": "{U}",
+   "type_line": "Creature \u2014 Crab",
+   "power": "0",
+   "toughness": "3",
+   "oracle_text": "Landfall \u2014 Whenever a land you control enters, each opponent mills three cards. (To mill a card, a player puts the top card of their library into their graveyard.)",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [
+    "Mill",
+    "Landfall"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/znr/75",
+   "printings_checked": 6,
+   "distinct_printing_texts": 1,
+   "distinct_printing_texts_list": [
+    "Landfall \u2014 Whenever a land you control enters, each opponent mills three cards. (To mill a card, a player puts the top card of their library into their graveyard.)"
+   ],
+   "retrieved_at": "2026-10-26T09:33:21Z"
+  },
+  {
+   "name": "Negate",
+   "role": "counter_target_noncreature_spell",
+   "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+   "scryfall_id": "52d58fe4-6070-4022-9cd7-c35a11b44525",
+   "set": "tmt",
+   "collector_number": "47",
+   "set_name": "Teenage Mutant Ninja Turtles",
+   "released_at": "2026-03-06",
+   "layout": "normal",
+   "mana_cost": "{1}{U}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Counter target noncreature spell.",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tmt/47",
+   "printings_checked": 34,
+   "distinct_printing_texts": 1,
+   "distinct_printing_texts_list": [
+    "Counter target noncreature spell."
+   ],
+   "retrieved_at": "2026-10-26T09:33:21Z"
+  },
+  {
+   "name": "Preordain",
+   "role": "scry_two_then_draw",
+   "oracle_id": "ac641490-ca14-48d7-8cc4-b69ce984befa",
+   "scryfall_id": "dd29a0e5-c1de-4e8a-8866-715e9f9cde1f",
+   "set": "tdc",
+   "collector_number": "161",
+   "set_name": "Tarkir: Dragonstorm Commander",
+   "released_at": "2025-04-11",
+   "layout": "normal",
+   "mana_cost": "{U}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Scry 2, then draw a card. (To scry 2, look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [
+    "Scry"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/tdc/161",
+   "printings_checked": 26,
+   "distinct_printing_texts": 1,
+   "distinct_printing_texts_list": [
+    "Scry 2, then draw a card. (To scry 2, look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)"
+   ],
+   "retrieved_at": "2026-10-26T09:33:21Z"
+  },
+  {
+   "name": "Pyretic Ritual",
+   "role": "add_three_red_mana",
+   "oracle_id": "86ef6474-613f-41fb-931c-d4279b03ed99",
+   "scryfall_id": "1e577638-a7ed-4bcc-90fb-0cffe87d5a28",
+   "set": "m11",
+   "collector_number": "153",
+   "set_name": "Magic 2011",
+   "released_at": "2010-07-16",
+   "layout": "normal",
+   "mana_cost": "{1}{R}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Add {R}{R}{R}.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/m11/153",
+   "printings_checked": 6,
+   "distinct_printing_texts": 1,
+   "distinct_printing_texts_list": [
+    "Add {R}{R}{R}."
+   ],
+   "retrieved_at": "2026-10-26T09:33:21Z"
+  },
+  {
+   "name": "Seething Song",
+   "role": "add_five_red_mana",
+   "oracle_id": "64bf8929-f5f2-4d50-8667-13b1d007bcfc",
+   "scryfall_id": "f493ce26-005c-4ddc-80f0-47bea4fd013a",
+   "set": "c21",
+   "collector_number": "179",
+   "set_name": "Commander 2021",
+   "released_at": "2021-04-23",
+   "layout": "normal",
+   "mana_cost": "{2}{R}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Add {R}{R}{R}{R}{R}.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/c21/179",
+   "printings_checked": 10,
+   "distinct_printing_texts": 2,
+   "distinct_printing_texts_list": [
+    "",
+    "Add {R}{R}{R}{R}{R}."
+   ],
+   "retrieved_at": "2026-10-26T09:33:21Z"
+  }
+ ]
+}

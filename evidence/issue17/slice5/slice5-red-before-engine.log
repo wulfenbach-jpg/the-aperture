@@ -1,0 +1,32 @@
+
+---- pyretic_ritual_and_seething_song_add_red_mana_to_the_pool stdout ----
+
+thread 'pyretic_ritual_and_seething_song_add_red_mana_to_the_pool' (12064) panicked at crates\core\tests\issue17_slice5.rs:40:5:
+the scripted driver never reached the expected state
+
+---- stitchers_supplier_mills_three_again_when_it_dies stdout ----
+
+thread 'stitchers_supplier_mills_three_again_when_it_dies' (35744) panicked at crates\core\tests\issue17_slice5.rs:40:5:
+the scripted driver never reached the expected state
+
+---- ruin_crab_mills_each_opponent_on_landfall_but_not_its_controller stdout ----
+
+thread 'ruin_crab_mills_each_opponent_on_landfall_but_not_its_controller' (26052) panicked at crates\core\tests\issue17_slice5.rs:40:5:
+the scripted driver never reached the expected state
+
+---- stitchers_supplier_mills_three_when_it_enters stdout ----
+
+thread 'stitchers_supplier_mills_three_when_it_enters' (44152) panicked at crates\core\tests\issue17_slice5.rs:40:5:
+the scripted driver never reached the expected state
+
+
+failures:
+    negate_never_offers_a_creature_spell_and_refuses_a_forged_one
+    pyretic_ritual_and_seething_song_add_red_mana_to_the_pool
+    ruin_crab_mills_each_opponent_on_landfall_but_not_its_controller
+    stitchers_supplier_mills_three_again_when_it_dies
+    stitchers_supplier_mills_three_when_it_enters
+
+test result: FAILED. 5 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice5`

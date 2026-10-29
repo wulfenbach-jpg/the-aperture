@@ -1,0 +1,3 @@
+replay seed 7 — 4 seat(s), 1805 action(s), recorded outcome Some(Win { winner: 0, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  certified session save of the finished game written to evidence/issue17/slice2-krenko-save.json (digest f4768c8a3bd2)
+  replayed digest f4768c8a3bd2 | matches recorded | events 5930

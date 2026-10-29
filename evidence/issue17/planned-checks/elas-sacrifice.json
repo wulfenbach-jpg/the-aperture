@@ -1,0 +1,388 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "legal",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 60
+  },
+  "commanders": [
+    {
+      "name": "Elas il-Kor, Sadistic Pilgrim",
+      "oracle_id": "a4d33e21-d3fe-4d5b-903c-b75e859d6f7f",
+      "color_identity": [
+        "B",
+        "W"
+      ],
+      "layout": "normal",
+      "eligibility": "legal",
+      "reason": "front-face legendary creature"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-25T08:32:00Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "5061296cd653212a149b64c0afe01e9045746d54e9688aad71f57489d6ef53a1",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Accursed Marauder",
+        "oracle_id": "d8ad23a1-0b43-48ea-9fbe-d89b29194509",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Altar of Dementia",
+        "oracle_id": "d64e9152-ef24-4394-aeb0-9c3befc56549",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Animate Dead",
+        "oracle_id": "c0d8fef4-65f4-4769-982d-b397d2b7e977",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ashnod's Altar",
+        "oracle_id": "4d18bcba-a346-445e-a182-6cc30b7e066d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ayara, First of Locthwain",
+        "oracle_id": "388168b3-ec68-4af2-b88c-6a5ec88c15f6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Bastion of Remembrance",
+        "oracle_id": "c7f33cea-2ec8-4081-9208-a5b1d86721b3",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Blood Artist",
+        "oracle_id": "310f141c-7f37-4729-aed6-dd9c09db448d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Bolas's Citadel",
+        "oracle_id": "2bd111bb-ce02-414c-b5b7-e0e037d8d96b",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Boromir, Warden of the Tower",
+        "oracle_id": "d72b57e5-1c6e-4f02-968f-7e2dd24f0d3c",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Braids, Arisen Nightmare",
+        "oracle_id": "e0445c80-fa53-4c3e-881e-940e9fce7f57",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Burnished Hart",
+        "oracle_id": "893fed41-c144-433f-af88-bc7d419b7fb3",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Carrion Feeder",
+        "oracle_id": "a1cc5e37-b09a-4b7f-afd5-77c1c35aa425",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Commander's Sphere",
+        "oracle_id": "0b67c4e2-f88b-4e01-85a1-9d5f5b8db13b",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Corrupted Conviction",
+        "oracle_id": "b45e35df-9032-4482-89a6-c7c50c6d0a79",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Culling the Weak",
+        "oracle_id": "6385fd0d-256d-4400-9319-afa8170024db",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Dauthi Voidwalker",
+        "oracle_id": "f1c2dbe2-fbe0-4058-bdf1-91d1b1832786",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Deadly Dispute",
+        "oracle_id": "457af74a-02b3-4659-846d-63e482667f34",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Diabolic Intent",
+        "oracle_id": "038519b9-bca8-4b27-b5ac-2409595469d0",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Dread Return",
+        "oracle_id": "352b64d2-2ae5-44ee-a64f-94932ef545d3",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Elas il-Kor, Sadistic Pilgrim",
+        "oracle_id": "a4d33e21-d3fe-4d5b-903c-b75e859d6f7f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Elenda, the Dusk Rose",
+        "oracle_id": "ce35f262-b93f-4409-8b33-26a7ed7abac8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Enduring Innocence",
+        "oracle_id": "98a389f4-2905-47f3-b60e-3d4afb3e5cb0",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Enduring Tenacity",
+        "oracle_id": "98e698ae-1a69-469c-9cfb-0e3fedeb71d4",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Expedition Map",
+        "oracle_id": "8fcf50cd-e6d0-4516-850f-d42ee75dcc3a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Flare of Fortitude",
+        "oracle_id": "4ff07b7c-e97a-4b57-bcf1-2f22c37a8bd6",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Flare of Malice",
+        "oracle_id": "4ce156f8-6b0b-41ce-9e8f-b2735c757406",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Fleshbag Marauder",
+        "oracle_id": "4b1bf05e-753e-4350-a913-894cf3cecc0c",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Grave Pact",
+        "oracle_id": "6f4ac4a4-53ec-4bc9-8f5c-d4b801d867b2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Grim Hireling",
+        "oracle_id": "89738595-dafb-400a-bfba-91a53a37e717",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Hedron Archive",
+        "oracle_id": "32263baa-d3f0-463f-92b3-4e9938476add",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Idol of Oblivion",
+        "oracle_id": "c232d974-9c65-4bce-b045-e5a7cc0c62e0",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Kaya's Ghostform",
+        "oracle_id": "b15c6203-6311-44eb-916d-a4c271960c74",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Lion's Eye Diamond",
+        "oracle_id": "ee6099b0-fb1f-42f1-b862-7708c6e36d05",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Lotus Petal",
+        "oracle_id": "32e5339e-9e4f-46f8-b305-f9d6d3ba8bb5",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Luminous Broodmoth",
+        "oracle_id": "28c7c816-07e7-42fb-923c-bf149ba28b38",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mind Stone",
+        "oracle_id": "c97361b5-af16-4a7b-af85-a429dbaf4ad2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mirkwood Bats",
+        "oracle_id": "0636b6c3-0662-420a-b30d-f0a14e7c512d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mondrak, Glory Dominus",
+        "oracle_id": "fe83087d-c6c1-40be-9295-baaa1c6b2db1",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Myr Retriever",
+        "oracle_id": "d07d3be3-f69d-4484-8467-cffd43871788",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Phyrexian Altar",
+        "oracle_id": "8d02b297-97c4-4379-9862-0a462400f66f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Pitiless Plunderer",
+        "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Plaguecrafter",
+        "oracle_id": "2e3ee458-fa3f-4452-ab95-5a7fb5a0483b",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ranger-Captain of Eos",
+        "oracle_id": "cada3481-cc2b-4412-b9b5-0436af53aad2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Saw in Half",
+        "oracle_id": "eea18c55-8695-4ba1-9b38-3e7638692f5f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Selfless Spirit",
+        "oracle_id": "71d785a9-ddc8-472e-a778-a551b444a4bd",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Skullclamp",
+        "oracle_id": "65986c1b-8e51-4604-b685-d82fa7d1263a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Solemn Simulacrum",
+        "oracle_id": "00c0543c-2a1f-4425-8283-4062d74a1637",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Stitcher's Supplier",
+        "oracle_id": "7fd61a18-6e4f-40c5-aa00-3d101ec1ec82",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Swamp",
+        "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Syr Konrad, the Grim",
+        "oracle_id": "14c3ff84-1e82-4606-a433-869fc52cc382",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "The Meathook Massacre",
+        "oracle_id": "127de52b-df75-4342-95a0-20d84c5bf916",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Torment of Hailfire",
+        "oracle_id": "30a0a6c2-1fbb-4784-ab96-22611d57e62c",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Victimize",
+        "oracle_id": "240e85d3-e495-4877-8609-4b4056c402f7",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Village Rites",
+        "oracle_id": "365548fb-5acc-4a8a-b20b-26d28b7d029f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Viscera Seer",
+        "oracle_id": "f82a4e85-526d-4456-b700-7760043a31be",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Warren Soultrader",
+        "oracle_id": "ace86e56-efde-4eb7-8815-71456a4c3abe",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Wayfarer's Bauble",
+        "oracle_id": "31f15274-301b-47c5-ba19-0ced04520878",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Yawgmoth, Thran Physician",
+        "oracle_id": "a1e232c0-dc38-47be-a5a0-f68bc1d86a29",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Zulaport Cutthroat",
+        "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+        "reason": "not in the implemented 79-card practice pool"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY",
+      "status": "legal",
+      "message": "commander 'Elas il-Kor, Sadistic Pilgrim' is a front-face legendary creature"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "the-aperture planned starter corpus",
+      "source": "desired list for elas-sacrifice; cards from Scryfall search https://api.scryfall.com/cards/search?q=id%3C%3Dwb%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "raw_sha256": "59a4d1621f2cb2b7a823f56038a23162c05df9a304f5df36d8ad3d90ea86449d"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/cards/search?q=id%3C%3Dwb%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261024210157.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "cards_sha256": "5061296cd653212a149b64c0afe01e9045746d54e9688aad71f57489d6ef53a1",
+      "raw_sha256": "5061296cd653212a149b64c0afe01e9045746d54e9688aad71f57489d6ef53a1"
+    }
+  }
+}

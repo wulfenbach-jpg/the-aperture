@@ -1,0 +1,63 @@
+// tatyova-landfall — DESIRED, NOT SUPPORTED. 99 library cards; commander: Tatyova, Benthic Druid
+// Metadata-only planned list; do not load as a supported/default deck.
+1 Tireless Provisioner
+1 Crop Rotation
+1 Explore
+1 Scute Swarm
+1 Avenger of Zendikar
+1 Exploration
+1 Dryad of the Ilysian Grove
+1 Lotus Cobra
+1 Rampaging Baloths
+1 Evolution Sage
+1 Expedition Map
+1 Oracle of Mul Daya
+1 Icetill Explorer
+1 Tireless Tracker
+1 Springheart Nantuko
+1 Mossborn Hydra
+1 Aesi, Tyrant of Gyre Strait
+1 Loot, Exuberant Explorer
+1 Tempt with Discovery
+1 Bristly Bill, Spine Sower
+1 Ruin Crab
+1 Sylvan Scrying
+1 Hedron Crab
+1 Exploration Broodship
+1 Elvish Reclaimer
+1 Tifa Lockhart
+1 Khalni Heart Expedition
+1 Scythecat Cub
+1 World Map
+1 Sazh's Chocobo
+1 Ride the Shoopuf
+1 Roil Cartographer
+1 Jaddi Offshoot
+1 Roaring Earth
+1 Wayward Swordtooth
+1 Courser of Kruphix
+1 Rites of Flourishing
+1 Retreat to Coralhelm
+1 Sword of Forge and Frontier
+1 Nissa, Resurgent Animist
+1 Earthbender Ascension
+1 Retreat to Kazandu
+1 Tato Farmer
+1 Mole Man, Moloid Master
+1 Scale the Heights
+1 Floral Evoker
+1 Sowing Mycospawn
+1 Ghirapur Orrery
+1 Toph, Earthbending Master
+1 Mightform Harmonizer
+1 Seer's Sundial
+1 Zimone, Mystery Unraveler
+1 Prismatic Undercurrents
+1 Nissa, Worldsoul Speaker
+1 Kiora, the Crashing Wave
+1 Stone-Seeder Hierophant
+1 Thranduil's Company
+
+// Basic lands
+21 Island
+21 Forest

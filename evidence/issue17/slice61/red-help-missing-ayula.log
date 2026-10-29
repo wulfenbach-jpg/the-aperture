@@ -1,0 +1,56 @@
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.55s
+     Running tests\commander_check.rs (target\debug\deps\commander_check-fddcf318319a1821.exe)
+
+running 1 test
+test selfplay_commander_help_lists_every_supported_commander ... FAILED
+
+failures:
+
+---- selfplay_commander_help_lists_every_supported_commander stdout ----
+
+thread 'selfplay_commander_help_lists_every_supported_commander' (46224) panicked at crates\cli\tests\commander_check.rs:449:9:
+`selfplay --help` omits supported commander Ayula, Queen Among Bears: Play one deterministic 2-4 seat AI game and report the result
+
+Usage: aperture-cli.exe selfplay [OPTIONS]
+
+Options:
+      --seed <SEED>
+          [default: 1]
+      --seats <SEATS>
+          Seat count when no explicit --deck paths are supplied (2..=4)
+      --deck <DECK>
+          One deck path per seat; repeat 2..=4 times. Defaults to the bundled practice decks (cycling A/B for extra seats)
+      --max-steps <MAX_STEPS>
+          [default: 4000]
+      --max-millis <MAX_MILLIS>
+          Wall-clock bound for the run, milliseconds
+      --decider-seat <DECIDER_SEAT>
+          Use the local Decider-2B service for this seat (0..=3)
+      --decider-timeout-ms <DECIDER_TIMEOUT_MS>
+          [default: 4000]
+      --out <OUT>
+          Write the machine-readable report here
+      --replay-out <REPLAY_OUT>
+          Also write the replay (with digest) here
+      --verbose
+          Print every event
+      --command-zone-practice
+          Explicit command-zone practice profile (20 life, one supported commander per seat, NOT full Commander)
+      --commander-combat-practice
+          Explicit BOUNDED Commander-combat practice profile (40 life, one supported commander per seat, NOT the Commander format)
+      --commander <COMMANDER>
+          One `SEAT:CARD` commander spec per seat; requires an explicit command-zone profile (`--command-zone-practice` or `--commander-combat-practice`). Example: `0:Krenko, Mob Boss`. Supported commanders — exactly the entries of `CardId::SUPPORTED_COMMANDERS` — are: Isamaru, Hound of Konda; Jasmine Boreal; Krenko, Mob Boss; Talrand, Sky Summoner; Tatyova, Benthic Druid. Both explicit profiles are bounded practice, not the Commander format (one supported commander per seat, 20 or 40 life)
+  -h, --help
+          Print help
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    selfplay_commander_help_lists_every_supported_commander
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.69s
+
+error: test failed, to rerun pass `-p aperture-cli --test commander_check`
+EXIT=101

@@ -1,0 +1,93 @@
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "7dc933a",
+  "commit": "local slice20 head recorded in final receipt",
+  "card": {
+    "name": "Vivien's Grizzly",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Bear Spirit",
+    "power": "2",
+    "toughness": "3",
+    "oracle_id": "6dbd0764-4bfe-4a58-905d-aeee70ceb798",
+    "scryfall_id": "37f2571b-6756-462c-9e71-3121fa458160",
+    "printing": "war 182",
+    "retrieved_at": "2026-10-27T03:25:27.464708+00:00",
+    "source": "fixtures/starter-corpus/slice20-sourced.json"
+  },
+  "counts": {
+    "catalog": 137,
+    "union": 459,
+    "supported": 125,
+    "missing": 334,
+    "ayula_missing": 28
+  },
+  "red": {
+    "command": "cargo test -p aperture-core --test issue17_slice20",
+    "result": "failed vivien_grizzly_is_sourced_and_supported before implementation"
+  },
+  "focused": {
+    "issue17_slice20": "9 passed",
+    "command_zone_setup": "44 passed",
+    "abilities": "13 passed",
+    "rules_conformance": "5 passed",
+    "issue17_slice17": "6 passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed"
+  },
+  "gates": {
+    "fmt": "exit 0",
+    "clippy": "workspace all-targets -D warnings exit 0",
+    "release": "exit 0"
+  },
+  "journey": {
+    "driver": "evidence/issue17/slice20-journey-driver (evidence-only masked demonstrator, NOT product AI)",
+    "package": "decks/package-slice20.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 1919,
+    "commanders": "Jasmine Boreal injected each seat",
+    "status": "terminal",
+    "winner": 3,
+    "steps": 2064,
+    "turns": 46,
+    "digest": "72cd69fb1143763fcd8fe1387b9a625c896538bdd389f33958d8705d8c7cdd48",
+    "snapshot_sha256": "12e6d1e92cdfb56e159e7b96465db2d03a1f511337f2dbca31371521e554916f",
+    "replay_digest_matches": true,
+    "fresh_save_roundtrip": true,
+    "vivien_casts": 6,
+    "activations": 22,
+    "take_choices": 5,
+    "bottom_choices": 5,
+    "mandatory_bottom_acknowledgements": 16
+  },
+  "deviations": [
+    "Take/bottom reuses AnswerTriggerChoice and TriggerChoice pending kind with card-specific legal labels; no new Action enum.",
+    "No planeswalker card exists in the pool; eligibility uses the printed type line.",
+    "No full workspace matrix rerun; exact-head CI remains authoritative."
+  ],
+  "remaining": [
+    "7 of 8 desired 100-card lists not certified",
+    "Ayula 28 missing, no 100-card certificate",
+    "No push/merge/closure"
+  ],
+  "repair": {
+    "red": "evidence/issue17/slice20/native-two-activations-red.log",
+    "fixed": [
+      "ability stack entries are source references, not zone/spell containers; multiple legal activations share one source",
+      "ineligible look has private mandatory bottom acknowledgement",
+      "removed tautological assertions; added exact order/hand/resolved and insufficient mana",
+      "real SessionSave loader at top pending with second activation below; both finish exactly once"
+    ],
+    "tests": "issue17_slice20 9 passed",
+    "journey_digest": "72cd69fb1143763fcd8fe1387b9a625c896538bdd389f33958d8705d8c7cdd48",
+    "disclosures": [
+      "state.rs validator repaired for ability source containers",
+      "ai/tests/common.rs pending exhaustiveness only",
+      "look/reveal citations 701.20a/701.20e verified"
+    ]
+  }
+}

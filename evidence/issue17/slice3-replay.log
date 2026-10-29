@@ -1,0 +1,3 @@
+replay seed 21 — 4 seat(s), 2993 action(s), recorded outcome Some(Win { winner: 0, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
+  certified session save of the finished game written to evidence/issue17/slice3-tatyova-save.json (digest b31adfd97c31)
+  replayed digest b31adfd97c31 | matches recorded | events 7549

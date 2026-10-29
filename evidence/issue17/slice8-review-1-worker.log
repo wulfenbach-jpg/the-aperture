@@ -1,0 +1,25 @@
+Working...
+**review_outcome: REQUEST_CHANGES** at `818afdb8afbb5977b6e08b085654304e4b5754bf`.
+`full_issue17_accepted: false`; #16 integration not approved.
+
+**Findings**
+
+1. **Medium — stale corpus counts in tracked docs/manifest text.**
+   - `docs/issue17-starter-corpus.md:34` says Isamaru 56 missing (actual 55); `:48` says 100 supported / 359 missing (actual **99 / 360**); `:63` says Krenko 51 / Talrand 54 (actual **49 / 51**).
+   - `decks/starter-corpus/manifest.json:142,204,335` says Talrand 54, Krenko 51, Elas 58 (actual **51 / 49 / 55**).
+   - The `missing_cards` arrays are correct; only free-text counts are stale.
+   - Discriminator: `python evidence/issue17/slice8/corpus-audit.py` prints `99/360` and the actual per-list counts.
+
+2. **Low — Razorclaw control overclaims.** `razorclaw_triggers_once_with_two_blockers_and_not_when_unblocked` (`crates/core/tests/issue17_slice8.rs:402`) never exercises an unblocked attack. Code only queues `BecomesBlocked` from `turn.blockers`, so behavior appears correct, but the named no-unblocked-trigger control is absent. Add an unblocked/no-trigger assertion or rename.
+
+**Checks**
+
+- Focused `--locked`: slice8 8/8, tokens 10/10, slice6 13/13, counters/tokens/library 16/16, catalog 5/5, printings 6/6, issue13 43/43.
+- Four-seat exact `package-slice8.txt`, seed 801, Isamaru each seat, commander-combat practice: terminal P0, 2377 actions/68 turns, 6087 events, digest `ffbeaee0db38…`; four exact 40-card seat snapshots; separate replay matches.
+- Actual journey casts: Soul's Attendant 3 (all countered), Razorclaw 4 with 2 blocked triggers, Volley Veteran 4 with 2 ETB triggers; Dramatic Reversal/Goblin War Strike drawn but not cast — focused tests cover those two.
+- All eight live source records match native check. Excluded Brightstone Ritual/Friendly Teddy/Aetherize have no catalog/CardId/code support and remain manifest-missing; package excludes them.
+- Original eight desired files, Jasmine list and historical slice3 audit unchanged.
+
+**Remaining gaps:** eight desired starters remain (**1 implemented / 0 certified**; 360 union names missing). Excluded cards still need bounded mana, serialized multi-player draw continuation and attacker-list commander replacement. War Strike is player-target only; no planeswalker permanents exist. No release/#26/#32 unlock.
+
+Reports: `evidence/issue17/slice8-review-1.md`, `.json`, plus `slice8-review-*` logs.

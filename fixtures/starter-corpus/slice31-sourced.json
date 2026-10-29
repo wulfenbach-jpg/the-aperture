@@ -1,0 +1,29 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T15:33:31.357366+00:00",
+ "cards": [
+  {
+   "name": "Beorn the Fierce",
+   "oracle_id": "30ca8e92-5955-46a1-86c1-094a873f518f",
+   "scryfall_id": "367d5f8b-77ee-47f7-bc71-972d62c280a9",
+   "set": "hob",
+   "collector_number": "119",
+   "layout": "normal",
+   "mana_cost": "{3}{G}{G}",
+   "type_line": "Legendary Creature — Bear Shapeshifter Warrior",
+   "power": "6",
+   "toughness": "6",
+   "oracle_text": "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Trample"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/367d5f8b-77ee-47f7-bc71-972d62c280a9",
+   "retrieved_at": "2026-10-27T15:33:31.357366+00:00"
+  }
+ ]
+}

@@ -1,0 +1,41 @@
+3111:    fn apply_discard(&mut self, player: PlayerId, cards: &[ObjectId], events: &mut Vec<Event>) {
+3112-        self.state.pending = None;
+3113-        for card in cards {
+3114-            let Some(mut object) = self.detach_object(*card) else {
+3115-                continue;
+3116-            };
+3117-            let card_id = object.card;
+3118-            object.tapped = false;
+3119-            object.damage = 0;
+3120-            object.summoning_sick = false;
+3121-            object.pump_power = 0;
+3122-            object.pump_toughness = 0;
+3123-            self.insert_object(object, Zone::Graveyard);
+3124-            events.push(Event::Discarded {
+3125-                player,
+3126-                card: card_id,
+3127-            });
+3128-        }
+3129-        self.finish_cleanup(events);
+3130-    }
+3131-
+3132-    // ----------------------------------------------------------- scheduler
+3133-
+3134-    fn grant_priority(&mut self, player: PlayerId, events: &mut Vec<Event>) {
+3135-        if self.pending_loss_exists() {
+3136-            self.state.turn.priority = None;
+3137-            return;
+3138-        }
+3139-        // CR 117.5/608.2: no player receives priority while a stack item is
+3140-        // still resolving. `advance_resolution` follows an item's instructions to
+3141-        // completion in one call, so this guard is a backstop: it can only fire
+3142-        // if a future change reintroduces a mid-resolution grant, and the
+3143-        // scheduler then resumes after the item finishes instead of emitting a
+3144-        // false `Priority` event (R170-1).
+3145-        if self.state.resolving.is_some() {
+3146-            self.state.turn.priority = None;
+3147-            return;
+3148-        }
+3149-        // CR 603.3: waiting triggered abilities are put on the stack before any
+3150-        // player actually receives priority.
+3151-        if self.state.pending.is_none() && self.put_triggers(events) && self.state.pending.is_some()

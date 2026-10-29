@@ -1,0 +1,5934 @@
+P0 draws Hill Giant
+P0 draws Dragon Fodder
+P0 draws Mountain
+P0 draws Mountain
+P0 draws Goblin Instigator
+P0 draws Mountain
+P0 draws Hordeling Outburst
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+Game start — P1 plays first
+— Turn 1: P1 —
+P1 keeps a hand of 7
+P2 keeps a hand of 7
+P3 keeps a hand of 7
+P0 keeps a hand of 7
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 2: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 3: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 4: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Beetleback Chief
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 5: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 casts Goblin Instigator
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Instigator resolves (controlled by P1)
+Goblin Instigator enters the battlefield under P1
+P1's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P1
+state-based action: P1 creates a 1/1 red Goblin token (#165)
+P1's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 6: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Lightning Strike targeting Goblin (#165)
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+3 damage to Goblin (#165)
+Lightning Strike resolves (controlled by P2)
+Lightning Strike is put into a graveyard
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 7: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 casts Goblin Instigator
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Instigator resolves (controlled by P3)
+Goblin Instigator enters the battlefield under P3
+P3's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#166)
+P3's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 8: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Hill Giant
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 casts Goblin Instigator
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin Instigator resolves (controlled by P0)
+Goblin Instigator enters the battlefield under P0
+P0's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#167)
+P0's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 9: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 casts Lightning Strike targeting Goblin (#166)
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+3 damage to Goblin (#166)
+Lightning Strike resolves (controlled by P1)
+Lightning Strike is put into a graveyard
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 casts Shock targeting Goblin Instigator (#132)
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+2 damage to Goblin Instigator (#132)
+Shock resolves (controlled by P1)
+Shock is put into a graveyard
+Goblin Instigator is put into a graveyard
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Goblin Instigator
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 39)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 10: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Shock targeting Goblin Instigator (#51)
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+2 damage to Goblin Instigator (#51)
+Shock resolves (controlled by P2)
+Shock is put into a graveyard
+Goblin Instigator is put into a graveyard
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 11: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 casts Lightning Strike targeting Goblin (#167)
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+3 damage to Goblin (#167)
+Lightning Strike resolves (controlled by P3)
+Lightning Strike is put into a graveyard
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 12: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Shock
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Goblin Instigator
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 38)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 13: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 casts Krenko, Mob Boss
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Krenko, Mob Boss resolves (controlled by P1)
+Krenko, Mob Boss enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 14: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Krenko, Mob Boss
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Krenko, Mob Boss resolves (controlled by P2)
+Krenko, Mob Boss enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 15: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 casts Krenko, Mob Boss
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Krenko, Mob Boss resolves (controlled by P3)
+Krenko, Mob Boss enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 16: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 casts Krenko, Mob Boss
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Krenko, Mob Boss resolves (controlled by P0)
+Krenko, Mob Boss enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 declares no attackers
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 17: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P1
+state-based action: P1 creates a 1/1 red Goblin token (#176)
+P1's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 18: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#177)
+P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Beetleback Chief
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Beetleback Chief resolves (controlled by P2)
+Beetleback Chief enters the battlefield under P2
+P2's triggered ability from Beetleback Chief goes on the stack: When this creature enters, create two 1/1 red Goblin creature tokens.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#178)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#179)
+P2's ability from Beetleback Chief resolves: When this creature enters, create two 1/1 red Goblin creature tokens.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 19: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#180)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 casts Lightning Strike targeting Krenko, Mob Boss (#171)
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+3 damage to Krenko, Mob Boss (#171)
+Lightning Strike resolves (controlled by P3)
+Lightning Strike is put into a graveyard
+Krenko, Mob Boss is put into a graveyard
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P2 puts commander #182 into the command zone from the graveyard (CR 903.9a)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 20: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#183)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#184)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Krenko's Command
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Hill Giant
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Hill Giant resolves (controlled by P0)
+Hill Giant enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Goblin Instigator
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+1 damage to Goblin (#176)
+1 combat damage to Goblin
+1 damage to Goblin Instigator (#11)
+1 combat damage to Goblin Instigator
+Goblin Instigator is put into a graveyard
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 21: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P1
+state-based action: P1 creates a 1/1 red Goblin token (#185)
+P1's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 22: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Goblin Instigator
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin Instigator resolves (controlled by P2)
+Goblin Instigator enters the battlefield under P2
+P2's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#186)
+P2's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Beetleback Chief, Goblin, Goblin, Goblin
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 38)
+1 damage to Goblin (#185)
+1 combat damage to Goblin
+1 damage to Goblin (#177)
+1 combat damage to Goblin
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 37)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 36)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 23: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#187)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#188)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Lightning Strike targeting Krenko, Mob Boss (#169)
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+3 damage to Krenko, Mob Boss (#169)
+Lightning Strike resolves (controlled by P3)
+Lightning Strike is put into a graveyard
+Krenko, Mob Boss is put into a graveyard
+state-based action: 1 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P1 puts commander #190 into the command zone from the graveyard (CR 903.9a)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 35)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 24: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#191)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#192)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#193)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Dragon Fodder
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Hill Giant
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Hill Giant resolves (controlled by P0)
+Hill Giant enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Hill Giant, Goblin, Goblin
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 32)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 31)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 30)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 25: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Mountain
+P1 receives priority
+P1 casts Krenko, Mob Boss
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Krenko, Mob Boss resolves (controlled by P1)
+Krenko, Mob Boss enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 26: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 casts Krenko, Mob Boss
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Krenko, Mob Boss resolves (controlled by P2)
+Krenko, Mob Boss enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 declares no attackers
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 27: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#198)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#199)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#200)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#201)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Goblin Instigator
+P3 taps Mountain for {R}
+P3 taps Mountain for {R}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin Instigator resolves (controlled by P3)
+Goblin Instigator enters the battlefield under P3
+P3's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#202)
+P3's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 28: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#203)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#204)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#205)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#206)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#207)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#208)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 casts Beetleback Chief
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 taps Mountain for {R}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Beetleback Chief resolves (controlled by P0)
+Beetleback Chief enters the battlefield under P0
+P0's triggered ability from Beetleback Chief goes on the stack: When this creature enters, create two 1/1 red Goblin creature tokens.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#209)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#210)
+P0's ability from Beetleback Chief resolves: When this creature enters, create two 1/1 red Goblin creature tokens.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Hill Giant, Hill Giant
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 damage to Krenko, Mob Boss (#195)
+3 combat damage to Krenko, Mob Boss
+3 damage to Hill Giant (#24)
+3 combat damage to Hill Giant
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 27)
+Hill Giant is put into a graveyard
+Krenko, Mob Boss is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P1 puts commander #212 into the command zone from the graveyard (CR 903.9a)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 29: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Goblin Instigator
+P1 taps Mountain for {R}
+P1 taps Mountain for {R}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin Instigator resolves (controlled by P1)
+Goblin Instigator enters the battlefield under P1
+P1's triggered ability from Goblin Instigator goes on the stack: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P1
+state-based action: P1 creates a 1/1 red Goblin token (#213)
+P1's ability from Goblin Instigator resolves: When this creature enters, create a 1/1 red Goblin creature token.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 30: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#214)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#215)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#216)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#217)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#218)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#219)
+P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Hill Giant
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Hill Giant resolves (controlled by P2)
+Hill Giant enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Goblin Instigator, Beetleback Chief, Goblin, Goblin, Goblin
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P1 declares 2 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+1 damage to Goblin Instigator (#50)
+1 combat damage to Goblin Instigator
+1 damage to Goblin Instigator (#92)
+1 combat damage to Goblin Instigator
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 25)
+1 damage to Goblin (#213)
+1 combat damage to Goblin
+1 damage to Goblin (#178)
+1 combat damage to Goblin
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 24)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 23)
+Goblin Instigator is put into a graveyard
+Goblin Instigator is put into a graveyard
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 4 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 31: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#220)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#221)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#222)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#223)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#224)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#225)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#226)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#227)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#228)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#229)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin Instigator, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 22)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 21)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 20)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 19)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 18)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 17)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 16)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 15)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 14)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 32: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#230)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#231)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#232)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#233)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#234)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#235)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#236)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#237)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#238)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#239)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#240)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#241)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#242)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#243)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#244)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Beetleback Chief, Hill Giant, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 12)
+3 combat damage to a player
+3 damage to P1
+P1 loses 3 life (now 9)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 8)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 7)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 6)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 5)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 4)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 3)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 2)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now 0)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -1)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -2)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -3)
+1 combat damage to a player
+1 damage to P1
+P1 loses 1 life (now -4)
+state-based action: P1 loses: life total is -4 (CR 704.5a)
+state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 33: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#245)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#246)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#247)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#248)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#249)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#250)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#251)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#252)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#253)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#254)
+P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Beetleback Chief
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 taps Mountain for {R}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Beetleback Chief resolves (controlled by P2)
+Beetleback Chief enters the battlefield under P2
+P2's triggered ability from Beetleback Chief goes on the stack: When this creature enters, create two 1/1 red Goblin creature tokens.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#255)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#256)
+P2's ability from Beetleback Chief resolves: When this creature enters, create two 1/1 red Goblin creature tokens.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P2 attacks with Beetleback Chief, Hill Giant, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares 8 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 38)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 35)
+1 damage to Goblin (#220)
+1 combat damage to Goblin
+1 damage to Goblin (#179)
+1 combat damage to Goblin
+1 damage to Goblin (#221)
+1 combat damage to Goblin
+1 damage to Goblin (#186)
+1 combat damage to Goblin
+1 damage to Goblin (#222)
+1 combat damage to Goblin
+1 damage to Goblin (#214)
+1 combat damage to Goblin
+1 damage to Goblin (#223)
+1 combat damage to Goblin
+1 damage to Goblin (#215)
+1 combat damage to Goblin
+1 damage to Goblin (#224)
+1 combat damage to Goblin
+1 damage to Goblin (#216)
+1 combat damage to Goblin
+1 damage to Goblin (#225)
+1 combat damage to Goblin
+1 damage to Goblin (#217)
+1 combat damage to Goblin
+1 damage to Goblin (#226)
+1 combat damage to Goblin
+1 damage to Goblin (#218)
+1 combat damage to Goblin
+1 damage to Goblin (#227)
+1 combat damage to Goblin
+1 damage to Goblin (#219)
+1 combat damage to Goblin
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 16 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 34: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#257)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#258)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#259)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#260)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#261)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#262)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#263)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#264)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#265)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#266)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#267)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#268)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Mountain
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 declares no attackers
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 35: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#269)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#270)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#271)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#272)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#273)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#274)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#275)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#276)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#277)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#278)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#279)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#280)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#281)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#282)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#283)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#284)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#285)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#286)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#287)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#288)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#289)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#290)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#291)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#292)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#293)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#294)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#295)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#296)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#297)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#298)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Mountain
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Beetleback Chief, Hill Giant
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P2 declares 1 blocker(s)
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 damage to Beetleback Chief (#95)
+2 combat damage to Beetleback Chief
+2 damage to Beetleback Chief (#13)
+2 combat damage to Beetleback Chief
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 35)
+Beetleback Chief is put into a graveyard
+Beetleback Chief is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 36: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#299)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#300)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#301)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#302)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#303)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#304)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#305)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#306)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#307)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#308)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#309)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#310)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#311)
+Goblin enters the battlefield under P2
+state-based action: P2 creates a 1/1 red Goblin token (#312)
+P2's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Mountain
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P2 attacks with Beetleback Chief, Hill Giant, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P3 declares 12 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 33)
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 30)
+1 damage to Goblin Instigator (#130)
+1 combat damage to Goblin Instigator
+1 damage to Goblin (#245)
+1 combat damage to Goblin
+1 damage to Goblin (#180)
+1 combat damage to Goblin
+1 damage to Goblin (#246)
+1 combat damage to Goblin
+1 damage to Goblin (#187)
+1 combat damage to Goblin
+1 damage to Goblin (#247)
+1 combat damage to Goblin
+1 damage to Goblin (#188)
+1 combat damage to Goblin
+1 damage to Goblin (#248)
+1 combat damage to Goblin
+1 damage to Goblin (#198)
+1 combat damage to Goblin
+1 damage to Goblin (#249)
+1 combat damage to Goblin
+1 damage to Goblin (#199)
+1 combat damage to Goblin
+1 damage to Goblin (#250)
+1 combat damage to Goblin
+1 damage to Goblin (#200)
+1 combat damage to Goblin
+1 damage to Goblin (#251)
+1 combat damage to Goblin
+1 damage to Goblin (#201)
+1 combat damage to Goblin
+1 damage to Goblin (#252)
+1 combat damage to Goblin
+1 damage to Goblin (#202)
+1 combat damage to Goblin
+1 damage to Goblin (#253)
+1 combat damage to Goblin
+1 damage to Goblin (#228)
+1 combat damage to Goblin
+1 damage to Goblin (#254)
+1 combat damage to Goblin
+1 damage to Goblin (#229)
+1 combat damage to Goblin
+1 damage to Goblin (#255)
+1 combat damage to Goblin
+1 damage to Goblin (#257)
+1 combat damage to Goblin
+1 damage to Goblin (#256)
+1 combat damage to Goblin
+Goblin Instigator is put into a graveyard
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 24 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 37: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#313)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#314)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#315)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#316)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#317)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#318)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#319)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#320)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#321)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#322)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#323)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#324)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P2 declares 11 blocker(s)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+1 damage to Goblin (#299)
+1 combat damage to Goblin
+1 damage to Goblin (#258)
+1 combat damage to Goblin
+1 damage to Goblin (#300)
+1 combat damage to Goblin
+1 damage to Goblin (#259)
+1 combat damage to Goblin
+1 damage to Goblin (#301)
+1 combat damage to Goblin
+1 damage to Goblin (#260)
+1 combat damage to Goblin
+1 damage to Goblin (#302)
+1 combat damage to Goblin
+1 damage to Goblin (#261)
+1 combat damage to Goblin
+1 damage to Goblin (#303)
+1 combat damage to Goblin
+1 damage to Goblin (#262)
+1 combat damage to Goblin
+1 damage to Goblin (#304)
+1 combat damage to Goblin
+1 damage to Goblin (#263)
+1 combat damage to Goblin
+1 damage to Goblin (#305)
+1 combat damage to Goblin
+1 damage to Goblin (#264)
+1 combat damage to Goblin
+1 damage to Goblin (#306)
+1 combat damage to Goblin
+1 damage to Goblin (#265)
+1 combat damage to Goblin
+1 damage to Goblin (#307)
+1 combat damage to Goblin
+1 damage to Goblin (#266)
+1 combat damage to Goblin
+1 damage to Goblin (#308)
+1 combat damage to Goblin
+1 damage to Goblin (#267)
+1 combat damage to Goblin
+1 damage to Goblin (#309)
+1 combat damage to Goblin
+1 damage to Goblin (#268)
+1 combat damage to Goblin
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 22 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 38: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#325)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#326)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#327)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#328)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#329)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#330)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#331)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#332)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#333)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#334)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#335)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#336)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#337)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#338)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#339)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#340)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#341)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#342)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#343)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#344)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#345)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#346)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#347)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#348)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#349)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#350)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#351)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#352)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#353)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#354)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#355)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#356)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#357)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#358)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#359)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#360)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#361)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#362)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#363)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#364)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#365)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#366)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#367)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#368)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#369)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#370)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#371)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#372)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#373)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#374)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#375)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#376)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#377)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#378)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#379)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#380)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#381)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#382)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#383)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Shock
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Hill Giant, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P2 declares 3 blocker(s)
+P0 receives priority
+P0 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P2
+P2 loses 3 life (now 32)
+1 damage to Goblin (#310)
+1 combat damage to Goblin
+1 damage to Goblin (#183)
+1 combat damage to Goblin
+1 damage to Goblin (#311)
+1 combat damage to Goblin
+1 damage to Goblin (#184)
+1 combat damage to Goblin
+1 damage to Goblin (#312)
+1 combat damage to Goblin
+1 damage to Goblin (#191)
+1 combat damage to Goblin
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 31)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 30)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 29)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 28)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 27)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 26)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 25)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 24)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 23)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 22)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 21)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 20)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 19)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 18)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 17)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 16)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 15)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 14)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 13)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 12)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 11)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 10)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 9)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 8)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 7)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 6)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 5)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 4)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 3)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 2)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now 0)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -1)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -2)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -3)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -4)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -5)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -6)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -7)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -8)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -9)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -10)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -11)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -12)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -13)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -14)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -15)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -16)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -17)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -18)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -19)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -20)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -21)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -22)
+1 combat damage to a player
+1 damage to P2
+P2 loses 1 life (now -23)
+state-based action: P2 loses: life total is -23 (CR 704.5a)
+state-based action: P2 leaves the game; all objects owned by P2 leave the game (CR 800.4a)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 3 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 39: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#384)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#385)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#386)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#387)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#388)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#389)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#390)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#391)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#392)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#393)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#394)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#395)
+Goblin enters the battlefield under P3
+state-based action: P3 creates a 1/1 red Goblin token (#396)
+P3's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P3 attacks with Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P0 declares 12 blocker(s)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+1 damage to Goblin (#325)
+1 combat damage to Goblin
+1 damage to Goblin (#313)
+1 combat damage to Goblin
+1 damage to Goblin (#326)
+1 combat damage to Goblin
+1 damage to Goblin (#314)
+1 combat damage to Goblin
+1 damage to Goblin (#327)
+1 combat damage to Goblin
+1 damage to Goblin (#315)
+1 combat damage to Goblin
+1 damage to Goblin (#328)
+1 combat damage to Goblin
+1 damage to Goblin (#316)
+1 combat damage to Goblin
+1 damage to Goblin (#329)
+1 combat damage to Goblin
+1 damage to Goblin (#317)
+1 combat damage to Goblin
+1 damage to Goblin (#330)
+1 combat damage to Goblin
+1 damage to Goblin (#318)
+1 combat damage to Goblin
+1 damage to Goblin (#331)
+1 combat damage to Goblin
+1 damage to Goblin (#319)
+1 combat damage to Goblin
+1 damage to Goblin (#332)
+1 combat damage to Goblin
+1 damage to Goblin (#320)
+1 combat damage to Goblin
+1 damage to Goblin (#333)
+1 combat damage to Goblin
+1 damage to Goblin (#321)
+1 combat damage to Goblin
+1 damage to Goblin (#334)
+1 combat damage to Goblin
+1 damage to Goblin (#322)
+1 combat damage to Goblin
+1 damage to Goblin (#335)
+1 combat damage to Goblin
+1 damage to Goblin (#323)
+1 combat damage to Goblin
+1 damage to Goblin (#336)
+1 combat damage to Goblin
+1 damage to Goblin (#324)
+1 combat damage to Goblin
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 24 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 40: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Krenko, Mob Boss: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#397)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#398)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#399)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#400)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#401)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#402)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#403)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#404)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#405)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#406)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#407)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#408)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#409)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#410)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#411)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#412)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#413)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#414)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#415)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#416)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#417)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#418)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#419)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#420)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#421)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#422)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#423)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#424)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#425)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#426)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#427)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#428)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#429)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#430)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#431)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#432)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#433)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#434)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#435)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#436)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#437)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#438)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#439)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#440)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#441)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#442)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#443)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#444)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#445)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#446)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#447)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#448)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#449)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#450)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#451)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#452)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#453)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#454)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#455)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#456)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#457)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#458)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#459)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#460)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#461)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#462)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#463)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#464)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#465)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#466)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#467)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#468)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#469)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#470)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#471)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#472)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#473)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#474)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#475)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#476)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#477)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#478)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#479)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#480)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#481)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#482)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#483)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#484)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#485)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#486)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#487)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#488)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#489)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#490)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#491)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#492)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#493)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#494)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#495)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#496)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#497)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#498)
+Goblin enters the battlefield under P0
+state-based action: P0 creates a 1/1 red Goblin token (#499)
+P0's ability from Krenko, Mob Boss resolves: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Mountain
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Mountain
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 attacks with Hill Giant, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin, Goblin
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 13 blocker(s)
+P0 receives priority
+P0 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+3 combat damage to a player
+3 damage to P3
+P3 loses 3 life (now 27)
+1 damage to Goblin (#384)
+1 combat damage to Goblin
+1 damage to Goblin (#192)
+1 combat damage to Goblin
+1 damage to Goblin (#385)
+1 combat damage to Goblin
+1 damage to Goblin (#193)
+1 combat damage to Goblin
+1 damage to Goblin (#386)
+1 combat damage to Goblin
+1 damage to Goblin (#203)
+1 combat damage to Goblin
+1 damage to Goblin (#387)
+1 combat damage to Goblin
+1 damage to Goblin (#204)
+1 combat damage to Goblin
+1 damage to Goblin (#388)
+1 combat damage to Goblin
+1 damage to Goblin (#205)
+1 combat damage to Goblin
+1 damage to Goblin (#389)
+1 combat damage to Goblin
+1 damage to Goblin (#206)
+1 combat damage to Goblin
+1 damage to Goblin (#390)
+1 combat damage to Goblin
+1 damage to Goblin (#207)
+1 combat damage to Goblin
+1 damage to Goblin (#391)
+1 combat damage to Goblin
+1 damage to Goblin (#208)
+1 combat damage to Goblin
+1 damage to Goblin (#392)
+1 combat damage to Goblin
+1 damage to Goblin (#209)
+1 combat damage to Goblin
+1 damage to Goblin (#393)
+1 combat damage to Goblin
+1 damage to Goblin (#210)
+1 combat damage to Goblin
+1 damage to Goblin (#394)
+1 combat damage to Goblin
+1 damage to Goblin (#230)
+1 combat damage to Goblin
+1 damage to Goblin (#395)
+1 combat damage to Goblin
+1 damage to Goblin (#231)
+1 combat damage to Goblin
+1 damage to Goblin (#396)
+1 combat damage to Goblin
+1 damage to Goblin (#232)
+1 combat damage to Goblin
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 26)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 25)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 24)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 23)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 22)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 21)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 20)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 19)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 18)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 17)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 16)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 15)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 14)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 13)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 12)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 11)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 10)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 9)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 8)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 7)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 6)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 5)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 4)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 3)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 2)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 1)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now 0)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -1)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -2)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -3)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -4)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -5)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -6)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -7)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -8)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -9)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -10)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -11)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -12)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -13)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -14)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -15)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -16)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -17)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -18)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -19)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -20)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -21)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -22)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -23)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -24)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -25)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -26)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -27)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -28)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -29)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -30)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -31)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -32)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -33)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -34)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -35)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -36)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -37)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -38)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -39)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -40)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -41)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -42)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -43)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -44)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -45)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -46)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -47)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -48)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -49)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -50)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -51)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -52)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -53)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -54)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -55)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -56)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -57)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -58)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -59)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -60)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -61)
+1 combat damage to a player
+1 damage to P3
+P3 loses 1 life (now -62)
+state-based action: P3 loses: life total is -62 (CR 704.5a)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: Goblin token ceases to exist (CR 111.7)
+state-based action: 13 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+Game over — P0 wins: opponents' life totals reached 0 or less (CR 704.5a)
+selfplay seed=7 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P0 in 1805 steps (40 turns)
+  digest f4768c8a3bd2 | replay verified | casts 25 attacks 17 blocks 11 counters 0
+  replay written to evidence/issue17/slice2-krenko-game.replay.json
+  report written to evidence/issue17/slice2-krenko-game.json

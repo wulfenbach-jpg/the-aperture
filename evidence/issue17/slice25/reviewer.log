@@ -1,0 +1,17 @@
+Working...
+**APPROVED_INCREMENT** at `ea106932d649da6876004fdf5c1a2ce6e441d19c` (code `823680d`; base `3b06249`).
+
+Verified actual source/code/tests:
+
+- IKO 151 source matches immutable `8c8ff0da-fbe3-4c95-bc39-c975c55b6aea`.
+- Optional attack trigger targets only controlled Humans; non-Human, opponent, and wrong-seat submissions refuse without state/digest change.
+- Resolution uses the source’s current effective P/T; Giant Growth responses produce the expected 11/11 target and cleanup restores 3/2.
+- Layer 7b setting runs before counters/7c modifiers.
+- Source-left uses the first-departure pumped LKI (7/7); same-id recast does not overwrite it.
+- No new pending kind or AI policy change.
+
+**Executed:** slice25 focused **7/7 passed**; release replay **1760 actions / 4471 events / `4d6ea58e…` matches**. Inspected native **100-test** focused log and journey: 8 Wolfbear casts, 9 staged triggers, 9 base-P/T events. Corpus: **142 catalog / 459 = 130 supported + 329 missing, Ayula 23, 1 certified**. `git diff --check` passes.
+
+**Nonblocking gaps:** no reachable mid-optional save/reload test; no dedicated target-bounce/recast, target-departure, or source-recast-overrides-LKI test; those paths were code-inspected only and no defect was demonstrated. Full #17 remains 1/8 certified, 329 missing, Ayula 23. Exact-head CI remains parent-owned.
+
+Report: `evidence/issue17/slice25/REVIEW25-ORIGINAL-HISTORY.md`. No source/test edits or commits.

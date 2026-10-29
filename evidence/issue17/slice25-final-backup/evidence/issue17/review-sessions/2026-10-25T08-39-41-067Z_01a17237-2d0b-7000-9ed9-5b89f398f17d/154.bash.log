@@ -1,0 +1,22 @@
+50:  20 adds `Vivien's Grizzly` to the previously verified 124/335 split; the union
+66:(slice 17). Ayula currently has **28** missing names.
+376:Slice 17 implements three real sourced cards: Friendly Teddy, Ulvenwald Bear and Caller of the Claw. Death history is tracked only while a morbid/count card is present, so pre-slice-17 saves and replays keep their digest. Ayula remains planned with 29 of its 34 desired nonland cards still missing; the eight-list gate is open.
+379:Ayula is a supported commander (`{1}{G}`, 2/2 Legendary Bear) with sourced printing data in `fixtures/starter-corpus/slice18-sourced.json`. Her trigger fires only for another Bear its controller controls; token entries count and opposing Bear entries do not. The controller chooses counters or fight before targets. Counters may target any Bear (including an opponent's). Fight requires a Bear you control and a creature you don't control, revalidates both at resolution, and deals damage simultaneously through the existing prevention/replacement pipeline. Ayula has 29 missing desired-list cards after slice 19; the eight-list gate remains open.
+384:## Slice 20: Vivien's Grizzly
+385:Vivien's Grizzly (`{2}{G}`, 2/3 Bear Spirit) is sourced in `fixtures/starter-corpus/slice20-sourced.json` (Scryfall WAR 182, retrieved 2026-10-27T03:25:27Z). Its `{3}{G}` ability looks at the anchored top card: a creature/planeswalker card gets a private reveal-and-take or bottom choice; a nonqualifying card goes to the bottom without being revealed; an empty library is not a draw. Old replay digests are unchanged because no state field was added.
+* The AI is the existing deterministic heuristic. This package adds no
+  strategy tuning.
+* The native UI's bundled table still defaults to the practice decks; the
+  starter corpus is exercised through the CLI with explicit deck paths.
+
+## Slice 17: death-history package
+Slice 17 implements three real sourced cards: Friendly Teddy, Ulvenwald Bear and Caller of the Claw. Death history is tracked only while a morbid/count card is present, so pre-slice-17 saves and replays keep their digest. Ayula remains planned with 29 of its 34 desired nonland cards still missing; the eight-list gate is open.
+
+## Slice 18: Ayula, Queen Among Bears
+Ayula is a supported commander (`{1}{G}`, 2/2 Legendary Bear) with sourced printing data in `fixtures/starter-corpus/slice18-sourced.json`. Her trigger fires only for another Bear its controller controls; token entries count and opposing Bear entries do not. The controller chooses counters or fight before targets. Counters may target any Bear (including an opponent's). Fight requires a Bear you control and a creature you don't control, revalidates both at resolution, and deals damage simultaneously through the existing prevention/replacement pipeline. Ayula has 29 missing desired-list cards after slice 19; the eight-list gate remains open.
+
+## Slice 19: Spectral Bears and the first attack trigger
+`Spectral Bears` (`{1}{G}` Creature — Bear Spirit 3/3, me1 131, sourced in `fixtures/starter-corpus/slice19-sourced.json`) is the pool's first attack trigger. Its printed intervening-if — "if defending player controls no black nontoken permanents" — is evaluated in the declare attackers step before the trigger is queued and again at resolution, so an attack into a black nontoken permanent never reaches the stack, while a black *token* does not satisfy the exclusion. The payoff marks the attacker so that its controller's next untap step leaves it tapped exactly once (CR 502.3); the marker is serde-skipped when empty, so every previously recorded digest is unchanged. Black is read from the printed mana cost (CR 202.2a) or the token's own colors. Attack triggers are now infrastructure rather than a card patch: `TriggerEvent::Attacks` plus `TriggerCondition`, the latter evaluated before queueing and re-checked at resolution. Ayula has 29 missing names; the eight-list gate remains open and no list is certified by this slice.
+
+## Slice 20: Vivien's Grizzly
+Vivien's Grizzly (`{2}{G}`, 2/3 Bear Spirit) is sourced in `fixtures/starter-corpus/slice20-sourced.json` (Scryfall WAR 182, retrieved 2026-10-27T03:25:27Z). Its `{3}{G}` ability looks at the anchored top card: a creature/planeswalker card gets a private reveal-and-take or bottom choice; a nonqualifying card goes to the bottom without being revealed; an empty library is not a draw. Old replay digests are unchanged because no state field was added.

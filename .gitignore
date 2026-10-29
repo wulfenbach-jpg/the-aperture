@@ -11,3 +11,6 @@
 /.omp/
 *.gguf
 *.safetensors
+
+# Evidence-only journey drivers build into evidence/**/target; never commit them.
+evidence/**/target/

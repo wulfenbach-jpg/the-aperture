@@ -1,0 +1,15 @@
+independent-reproduce (git archive of HEAD -> out-of-tree build/run):
+  "spider_ham_casts": 8,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1450,
+  "turns": 34
+}
+driver_exit=0
+2a096e6826c2a49902417570f3d001cc0aab23a9185bc9b1659db9d9ca0086c3 *evidence/issue17/slice38/driver-journey.json
+1e590f10fd7b2fc09e942f011bf45929e74457df7d7c0c4bab5de09e7e639e3d *evidence/issue17/slice38/driver-replay.json
+436c3bf07d475216d8669f64090ce90c89cb71df3c9047d73e77d033918e66a2 *evidence/issue17/slice38/driver-save.json
+=== committed blobs ===
+2a096e6826c2a49902417570f3d001cc0aab23a9185bc9b1659db9d9ca0086c3 *-
+1e590f10fd7b2fc09e942f011bf45929e74457df7d7c0c4bab5de09e7e639e3d *-
+436c3bf07d475216d8669f64090ce90c89cb71df3c9047d73e77d033918e66a2 *-

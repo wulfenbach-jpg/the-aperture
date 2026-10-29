@@ -63,16 +63,16 @@ pub fn parse_cost(text: &str) -> ManaCost {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ManaPool {
-    pub white: u8,
-    pub blue: u8,
-    pub black: u8,
-    pub red: u8,
-    pub green: u8,
-    pub colorless: u8,
+    pub white: u32,
+    pub blue: u32,
+    pub black: u32,
+    pub red: u32,
+    pub green: u32,
+    pub colorless: u32,
 }
 
 impl ManaPool {
-    pub fn get(&self, color: ManaColor) -> u8 {
+    pub fn get(&self, color: ManaColor) -> u32 {
         match color {
             ManaColor::White => self.white,
             ManaColor::Blue => self.blue,
@@ -83,7 +83,7 @@ impl ManaPool {
         }
     }
 
-    pub fn add(&mut self, color: ManaColor, amount: u8) {
+    pub fn add(&mut self, color: ManaColor, amount: u32) {
         let slot = match color {
             ManaColor::White => &mut self.white,
             ManaColor::Blue => &mut self.blue,
@@ -104,13 +104,18 @@ impl ManaPool {
             ManaColor::Green => &mut self.green,
             ManaColor::Colorless => &mut self.colorless,
         };
-        let taken = (*slot).min(amount);
+        let taken = (*slot).min(u32::from(amount));
         *slot -= taken;
-        taken
+        taken as u8
     }
 
-    pub fn total(&self) -> u8 {
-        self.white + self.blue + self.black + self.red + self.green + self.colorless
+    pub fn total(&self) -> u32 {
+        self.white
+            .saturating_add(self.blue)
+            .saturating_add(self.black)
+            .saturating_add(self.red)
+            .saturating_add(self.green)
+            .saturating_add(self.colorless)
     }
 
     pub fn is_empty(&self) -> bool {
@@ -128,8 +133,12 @@ impl ManaPool {
             (ManaColor::Red, self.red),
             (ManaColor::Green, self.green),
         ] {
-            for _ in 0..n {
-                s.push_str(color.symbol());
+            if n > 32 {
+                s.push_str(&format!("{}x{n}", color.symbol()));
+            } else {
+                for _ in 0..n {
+                    s.push_str(color.symbol());
+                }
             }
         }
         if s.is_empty() {

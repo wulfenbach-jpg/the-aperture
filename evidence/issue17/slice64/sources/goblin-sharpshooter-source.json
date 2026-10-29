@@ -1,0 +1,25 @@
+{
+  "name": "Goblin Sharpshooter",
+  "set": "c13",
+  "collector_number": "111",
+  "oracle_id": "d81285b7-a718-411a-8be3-ecc0cfe0bcb0",
+  "mana_cost": "{2}{R}",
+  "type_line": "Creature \u2014 Goblin",
+  "power": "1",
+  "toughness": "1",
+  "oracle_text": "This creature doesn't untap during your untap step.\nWhenever a creature dies, untap this creature.\n{T}: This creature deals 1 damage to any target.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2013-11-01",
+  "scryfall_id": "4f72e9e2-ed47-40ff-bc2e-8446ef545022",
+  "retrieved_at_utc": "2026-10-29T10:56:54Z",
+  "provider": "scryfall",
+  "url": "https://scryfall.com/card/c13/111/goblin-sharpshooter",
+  "legalities_commander": "legal"
+}

@@ -1,0 +1,367 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "legal",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 59
+  },
+  "commanders": [
+    {
+      "name": "Talrand, Sky Summoner",
+      "oracle_id": "ea1eb902-a23c-44ff-9169-19baf71de238",
+      "color_identity": [
+        "U"
+      ],
+      "layout": "normal",
+      "eligibility": "legal",
+      "reason": "front-face legendary creature"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-25T08:32:00Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "3a3d6609efc79cbaa9834d1fa522bf116d8e9ff1d03d78eab51eb22f4b9410b6",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "unsupported",
+    "unsupported_cards": [
+      {
+        "name": "Aetherize",
+        "oracle_id": "7c779721-cd1b-4696-9ae9-68ccc284ed2a",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "An Offer You Can't Refuse",
+        "oracle_id": "234a734b-ba28-4f1b-9d01-3c3e7d516590",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Arcane Denial",
+        "oracle_id": "ab1cc360-b9de-48d9-9983-4dfe4a7d2a37",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Archmage's Charm",
+        "oracle_id": "85cbb035-25df-43bb-ae06-ab098f448b02",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Blue Sun's Zenith",
+        "oracle_id": "613a41b8-0b4f-4995-bf1e-ca41f96e6438",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Borne Upon a Wind",
+        "oracle_id": "ce19962d-94f9-4b2b-b668-963c0acce308",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Brain Freeze",
+        "oracle_id": "464c0150-3dbc-403b-9ada-fef25ab1f29d",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Brainstorm",
+        "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Brainsurge",
+        "oracle_id": "46c727cb-1f47-4775-8af4-0230ef53966b",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Curse of the Swine",
+        "oracle_id": "5669ea7c-c4fc-494c-896b-4bce9b494817",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Cyclonic Rift",
+        "oracle_id": "d75b9c82-1b49-4c3e-a1b5-aeef57d6644b",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Deep Analysis",
+        "oracle_id": "579cbd92-797f-4cdf-91ed-fca7a523eae5",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Disallow",
+        "oracle_id": "88b51e15-6630-4e14-a6b8-db0aa12e34ef",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Distant Melody",
+        "oracle_id": "ac6c5852-71c7-4f19-8c87-ccb345052862",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Dramatic Reversal",
+        "oracle_id": "da46904c-8fb8-44c2-b2ab-775a1cc12ec3",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Fabricate",
+        "oracle_id": "422e1869-134f-463d-9fa1-86b66a998b3e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Fact or Fiction",
+        "oracle_id": "437b2dab-15e0-4b9a-a204-58622d37a3b3",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Fierce Guardianship",
+        "oracle_id": "d09c9cba-fdd2-479b-ad5d-d05181c3e3f9",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Flare of Denial",
+        "oracle_id": "437cfd16-94bc-43ba-afd8-e9e9d028a4ca",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Flusterstorm",
+        "oracle_id": "86bf58f2-7f25-4e10-b797-25e0e8e67769",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Force of Negation",
+        "oracle_id": "ac2173f9-f223-440a-9231-fd98762bdc6f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Force of Will",
+        "oracle_id": "956381ba-6d37-4a8a-846c-bad79222dbee",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Frantic Search",
+        "oracle_id": "16e015b2-f8a3-4b1a-80be-58a8f5fb5e8c",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ghostly Flicker",
+        "oracle_id": "ad0070db-6454-41cb-861f-8f5b8fc2a3b8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Gifts Ungiven",
+        "oracle_id": "58aec411-167d-4709-8560-793eaaed62c5",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Gitaxian Probe",
+        "oracle_id": "1d67f5ff-1fce-45e5-b6a1-416c569351e2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "High Tide",
+        "oracle_id": "dc671205-f2fa-454f-9957-921a6069ad53",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Into the Flood Maw",
+        "oracle_id": "8cb36a67-9206-4665-a03f-64f52ba559c4",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Irenicus's Vile Duplication",
+        "oracle_id": "a3faf698-1dac-45ef-9c43-c8cead489ffc",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mana Drain",
+        "oracle_id": "74d3277a-38e5-4732-afed-084a56148f20",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mental Misstep",
+        "oracle_id": "1a0770e6-b093-4439-baff-6889a50ba12e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mindbreak Trap",
+        "oracle_id": "48712d36-5c13-4ded-87a4-68106da4a5cd",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Muddle the Mixture",
+        "oracle_id": "0826cf7d-7ccc-459b-a92f-29dc169628f8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Mystical Tutor",
+        "oracle_id": "fb81f95c-70f8-4eb7-8d15-15d0ae23ec03",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Narset's Reversal",
+        "oracle_id": "d55f6c70-321f-4fb4-bd33-0850ae1a7c36",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Negate",
+        "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Pact of Negation",
+        "oracle_id": "f3e213a4-ba5a-468a-93b3-c0a34e1bd725",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Ponder",
+        "oracle_id": "02090581-61aa-4348-ad57-451be8ee91c2",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Pongify",
+        "oracle_id": "05849bd6-8f38-4031-be2b-e2aa03beb8cc",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Preordain",
+        "oracle_id": "ac641490-ca14-48d7-8cc4-b69ce984befa",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Rapid Hybridization",
+        "oracle_id": "06692cd9-ac2f-4a32-8fd1-043ba3c0fe71",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Reality Shift",
+        "oracle_id": "70dc830e-d05b-4fc7-88dd-879e140b3fbf",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Refute",
+        "oracle_id": "eb1dfa29-7371-4cb6-bfa2-16f7820b69be",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Rewind",
+        "oracle_id": "bb27bfdf-fe8d-45bd-ad62-8118dce06eda",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Rite of Replication",
+        "oracle_id": "fb60739e-1dc3-481d-a056-ad72e665c680",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Snap",
+        "oracle_id": "ac914d98-221e-426c-8a50-342896b15f9e",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Solve the Equation",
+        "oracle_id": "f02682f0-26c0-4032-9df3-273b6a45d0a8",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Stock Up",
+        "oracle_id": "2251e34e-4ce8-4452-9dc6-d8cce8583996",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Swan Song",
+        "oracle_id": "8ddfc283-c9b4-41a5-af88-cf0068e986cc",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Talrand, Sky Summoner",
+        "oracle_id": "ea1eb902-a23c-44ff-9169-19baf71de238",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Tezzeret's Gambit",
+        "oracle_id": "b33d2b77-f068-4fdc-a1a8-0353a35e3973",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Unwind",
+        "oracle_id": "e38b8ecb-e7ae-474d-b6a4-29cc1aa8ccd9",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Wave Goodbye",
+        "oracle_id": "06ef46c6-00ba-40e6-b866-d0095ab83749",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Whir of Invention",
+        "oracle_id": "152b91c9-cc07-4ca8-944f-9bc2242a2283",
+        "reason": "not in the implemented 79-card practice pool"
+      },
+      {
+        "name": "Windfall",
+        "oracle_id": "08becc07-28bc-4a2f-a6b0-28a2998d2f50",
+        "reason": "not in the implemented 79-card practice pool"
+      }
+    ]
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY",
+      "status": "legal",
+      "message": "commander 'Talrand, Sky Summoner' is a front-face legendary creature"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "the-aperture planned starter corpus",
+      "source": "desired list for talrand-draw-go; cards from Scryfall search https://api.scryfall.com/cards/search?q=id%3C%3Du%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "raw_sha256": "2a323c4da72793b2d5b8a05ee19626b7e6f61dc142abea72a149e9ff3570c73a"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/cards/search?q=id%3C%3Du%20legal%3Acommander%20-t%3Aland%20-is%3Afunny%20-is%3Adigital&unique=cards&order=edhrec",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261024210157.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-25T08:32:00Z",
+      "cards_sha256": "3a3d6609efc79cbaa9834d1fa522bf116d8e9ff1d03d78eab51eb22f4b9410b6",
+      "raw_sha256": "3a3d6609efc79cbaa9834d1fa522bf116d8e9ff1d03d78eab51eb22f4b9410b6"
+    }
+  }
+}

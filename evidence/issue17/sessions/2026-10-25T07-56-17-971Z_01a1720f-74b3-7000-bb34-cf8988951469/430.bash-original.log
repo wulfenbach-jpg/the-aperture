@@ -1,0 +1,55 @@
+908:pub fn trigger_condition(card: CardId) -> TriggerCondition {
+909-    match card {
+910-        CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
+911-        _ => TriggerCondition::Always,
+912-    }
+913-}
+914-
+915-// ------------------------------------------------------- static abilities
+916-
+917-/// What a layered static power/toughness ability counts. Each variant exists
+918-/// because a supported card prints it; adding a card with a different count
+919-/// means adding a variant here, not approximating it in the engine.
+920-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+921-pub enum CountSource {
+922-    /// "for each creature card in your opponents' graveyards"
+923-    /// (Wight of Precinct Six — a layer 7c static, *not* characteristic-defining).
+924-    CreatureCardsInOpponentsGraveyards,
+925-}
+926-
+927-/// A printed static ability that produces a continuous or replacement effect.
+928-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+929-pub enum StaticAbility {
+930-    /// CR 613.4c: "gets +P/+T for each ..." — an additive modifier that applies
+931-    /// for as long as the source is on the battlefield. It is a layer 7c
+932-    /// effect, so it stacks with until-end-of-turn modifiers instead of
+933-    /// setting a base value.
+934-    PowerToughnessPerCount {
+935-        count: CountSource,
+936-        power: i32,
+937-        toughness: i32,
+938-        text: &'static str,
+939-    },
+940-    /// CR 614.1a: "If a source you control would deal damage to a permanent or
+941-    /// player, it deals double that damage instead." The doubled source may be
+942-    /// a permanent (a creature's combat or ability damage) or a spell on the
+943-    /// stack (Shock), because the printed word is "source", not "creature".
+944-    DamageFromControlledSources { factor: u32, text: &'static str },
+945-    /// Threshold +P/+T while the controller has at least this many cards in
+946-    /// their graveyard (Werebear).
+947-    ThresholdPowerToughness {
+948-        minimum: usize,
+949-        power: i32,
+950-        toughness: i32,
+951-        text: &'static str,
+952-    },
+953-    /// CR 601.2f + 118.7: "Creature spells you cast with power N or greater cost
+954-    /// {G} less to cast" (Goreclaw, Terror of Qal Sisma). It is a static ability
+955-    /// of a permanent, so it applies only while that permanent is on the
+956-    /// battlefield, and it reduces only the generic part of the cost — colored
+957-    /// pips are never reduced (CR 118.7a).
+958-    CreatureSpellsYouCastWithPowerCostLess {
+3000:    fn trigger_condition_holds(&self, card: CardId, defender: PlayerId) -> bool {
+3001:        match ability::trigger_condition(card) {
+4234:                if !self.trigger_condition_holds(card, defender) {
+6640:                    .map(|defender| self.trigger_condition_holds(card, defender))

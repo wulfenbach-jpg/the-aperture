@@ -1,0 +1,8 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.20s
+     Running tests\starter_corpus_planned.rs (target\debug\deps\starter_corpus_planned-ccd2b2343f57fa39.exe)
+
+running 1 test
+test eight_targets_have_exact_desired_lists_and_honest_missing_cards ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.50s
+

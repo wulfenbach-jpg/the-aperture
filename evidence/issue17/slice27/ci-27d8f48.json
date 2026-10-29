@@ -1,0 +1,134 @@
+{
+  "head": "27d8f48",
+  "branch_head_ci": {
+    "run": 40493923124,
+    "event": "push",
+    "name": "Rust quality",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3",
+    "jobs": [
+      {
+        "name": "board and roadmap",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154446198,
+        "started_at": "2026-10-27T11:08:50Z",
+        "completed_at": "2026-10-27T11:09:00Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "rust (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154446269,
+        "started_at": "2026-10-27T11:08:51Z",
+        "completed_at": "2026-10-27T11:16:08Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "windows package",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154446283,
+        "started_at": "2026-10-27T11:08:50Z",
+        "completed_at": "2026-10-27T11:13:45Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "rust (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154446394,
+        "started_at": "2026-10-27T11:08:50Z",
+        "completed_at": "2026-10-27T11:16:20Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "rust (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154446404,
+        "started_at": "2026-10-27T11:08:50Z",
+        "completed_at": "2026-10-27T11:18:41Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      }
+    ]
+  },
+  "merge_ref_ci": {
+    "run": 40493931766,
+    "event": "pull_request",
+    "name": "Rust quality",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3",
+    "jobs": [
+      {
+        "name": "windows package",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154475750,
+        "started_at": "2026-10-27T11:08:54Z",
+        "completed_at": "2026-10-27T11:16:48Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "board and roadmap",
+        "status": "completed",
+        "conclusion": "success",
+        "job_id": 122154476002,
+        "started_at": "2026-10-27T11:08:54Z",
+        "completed_at": "2026-10-27T11:09:04Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "rust (windows-latest)",
+        "status": "completed",
+        "conclusion": "failure",
+        "job_id": 122154476095,
+        "started_at": "2026-10-27T11:08:54Z",
+        "completed_at": "2026-10-27T11:10:44Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "rust (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "failure",
+        "job_id": 122154476148,
+        "started_at": "2026-10-27T11:08:55Z",
+        "completed_at": "2026-10-27T11:11:12Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      },
+      {
+        "name": "rust (macos-latest)",
+        "status": "completed",
+        "conclusion": "failure",
+        "job_id": 122154476215,
+        "started_at": "2026-10-27T11:08:54Z",
+        "completed_at": "2026-10-27T11:09:48Z",
+        "app": "github-actions",
+        "app_id": 15368,
+        "head_sha": "27d8f483cf431626c0eb95f308e6e328cf8353c3"
+      }
+    ]
+  },
+  "note": "push run is keyed to the branch head 27d8f48 and is fully green; the pull_request run compiles the synthetic merge of origin/master 51dffda (#28 move review, PR56) with this branch and fails in master's own new crates/ai/tests/review.rs:60, which passes a u8 to this branch's u32 mana::add (crates/core/src/mana.rs:86). That widening is branch-only commit e300bdd (approved slice 9 work), so the merge-ref failure is a cross-lane API conflict owned by the integration supervisor, not a defect introduced by the slice-27 record repair."
+}

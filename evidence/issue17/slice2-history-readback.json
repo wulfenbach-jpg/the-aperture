@@ -1,0 +1,20 @@
+{
+  "sessions": {
+    "path": "C:\\AI\\aperture-worktrees\\issue-17\\evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+    "backup_path": "C:\\AI\\aperture-worktrees\\issue-17\\evidence\\issue17\\slice2-final-history-backup-run202\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+    "new_assistant_models": {
+      "opencode-go/deepseek-v4.1-flash": 147
+    },
+    "latest_timestamp": "2026-10-26T06:19:01.020Z",
+    "bytes": 3413505
+  },
+  "review-sessions": {
+    "path": "C:\\AI\\aperture-worktrees\\issue-17\\evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+    "backup_path": "C:\\AI\\aperture-worktrees\\issue-17\\evidence\\issue17\\slice2-final-history-backup-run202\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+    "new_assistant_models": {
+      "opencode-go/deepseek-v4.1-flash": 45
+    },
+    "latest_timestamp": "2026-10-26T06:21:39.550Z",
+    "bytes": 1332193
+  }
+}

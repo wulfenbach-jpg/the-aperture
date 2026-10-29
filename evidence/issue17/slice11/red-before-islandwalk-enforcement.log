@@ -1,0 +1,41 @@
+
+running 5 tests
+test pale_bears_and_river_bear_match_their_printed_text ... ok
+test another_players_island_never_makes_the_attacker_unblockable ... ok
+test an_islandwalk_attacker_is_blockable_when_the_defender_controls_no_island ... ok
+test an_islandwalk_attacker_cannot_be_blocked_while_the_defender_controls_an_island ... FAILED
+test the_greedy_blocking_plan_only_stops_an_islandwalker_without_an_island ... FAILED
+
+failures:
+
+---- an_islandwalk_attacker_cannot_be_blocked_while_the_defender_controls_an_island stdout ----
+
+thread 'an_islandwalk_attacker_cannot_be_blocked_while_the_defender_controls_an_island' (34456) panicked at crates\core\tests\common\mod.rs:212:18:
+expected rejection
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_greedy_blocking_plan_only_stops_an_islandwalker_without_an_island stdout ----
+
+thread 'the_greedy_blocking_plan_only_stops_an_islandwalker_without_an_island' (4472) panicked at crates\core\tests\issue17_slice11.rs:325:5:
+no block plan may be offered while the defender controls an Island
+
+
+failures:
+    an_islandwalk_attacker_cannot_be_blocked_while_the_defender_controls_an_island
+    the_greedy_blocking_plan_only_stops_an_islandwalker_without_an_island
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: unused variable: `defender_controls_island`
+  --> crates\core\src\tokens.rs:54:61
+   |
+54 | pub fn can_block(attacker: &[Keyword], blocker: &[Keyword], defender_controls_island: bool) -> bool {
+   |                                                             ^^^^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_defender_controls_island`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `aperture-core` (lib) generated 1 warning (run `cargo fix --lib -p aperture-core` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.53s
+     Running tests\issue17_slice11.rs (target\debug\deps\issue17_slice11-6c8508510e2831db.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice11`

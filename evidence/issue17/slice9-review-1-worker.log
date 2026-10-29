@@ -1,0 +1,21 @@
+Working...
+**review_outcome: REQUEST_CHANGES** at `ea17c272d61d0644ab2ce378870a50643c3db1e0`.
+`full_issue17_accepted: false`.
+
+**Findings**
+
+1. **Medium — stale corpus counts.** `docs/issue17-starter-corpus.md:48` says 99 supported / 360 missing; `:71` says Krenko 49. Verified state is **102 supported / 357 missing**, per-list `55/0/51/48/46/55/54/53`; manifest arrays match. Discriminator: `python evidence/issue17/slice9/corpus-audit.py` prints 102/357 and Krenko 48.
+2. **Low — incomplete gate receipts.** `evidence/issue17/slice9/repair-gates.log` is 0 bytes; `gates.log` contains only five build lines. The handoff's test/fmt/clippy/build receipt claim is not backed by those logs, though I independently reran them successfully.
+
+**Checks**
+
+- Focused `--locked`: slice9 6/6, slice5 10/10, timing_mana 12/12, issue15 effects 4/4, issue15 layers 4/4, catalog 5/5, printings 6/6.
+- `cargo fmt --check`, `git diff --check`, core clippy `-D warnings`, release build: all exit 0.
+- Four-seat exact `package-slice9.txt`, seed 901, Krenko each seat, commander-combat practice: terminal P0, 1339 actions/32 turns, digest `5d20bb4a35e2…`, 4379 events; four exact 40-card snapshots; replay matches.
+- The heuristic cast zero Brightstone/Mana Geyser/Rite of Flame; focused tests, not the journey, prove their behavior. No new ritual mana events in the trace.
+- Old slice8 replay still matches `ffbeaee0db38…` / 6087 events.
+- Audit: catalog 114, union 459 = 102 supported + 357 missing; manifest matches; desired files unchanged. Live source records match; Friendly Teddy/Aetherize remain excluded.
+
+Remaining gaps: full #17 is **1 implemented / 0 certified**, 357 union names missing; broader mechanics and the two exclusions remain. This pass does not merge/close #17 or unlock release/#26/#32 lanes.
+
+Reports: `evidence/issue17/slice9-review-1.md`, `.json`.

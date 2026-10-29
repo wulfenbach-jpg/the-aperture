@@ -523,7 +523,14 @@ fn pending_kind_name(kind: PendingKind) -> String {
         PendingKind::DeclareBlockers => "declare blockers".to_string(),
         PendingKind::OrderCard { index, .. } => format!("order card (index {index})"),
         PendingKind::Discard { count } => format!("discard (count {count})"),
+        PendingKind::CombatDamageAssignment { attacker, card } => {
+            format!(
+                "combat damage assignment ({} {attacker} as {card:?})",
+                card.name()
+            )
+        }
         PendingKind::ApnapSacrifice => "Crack the Earth APNAP queue".to_string(),
+        PendingKind::ApnapReveal => "APNAP reveal queue".to_string(),
         PendingKind::CommanderReturn => "commander return".to_string(),
         PendingKind::CommanderReplacement => "commander replacement".to_string(),
         PendingKind::CommanderDraw => "commander draw replacement".to_string(),
@@ -741,6 +748,9 @@ fn reconstruct(
         // A fabricated belief object is unknown by construction: no counter
         // information is invented for it (CR 122 counters are real state).
         counters: Counters::new(),
+        // A fabricated belief object is likewise never paired (CR 702.94a
+        // pairing is real state, and no hidden-information guess invents one).
+        paired_with: None,
     };
 
     let mut players = Vec::with_capacity(real_state.players.len());
@@ -864,16 +874,53 @@ fn reconstruct(
         attackers: view.attackers.clone(),
         blocked: real_state.turn.blocked.clone(),
         blockers: view.blockers.clone(),
+        // Public combat facts, like `blocked`/`defender` above: the attack and
+        // block declarations were announced to every seat, and whether a
+        // blocker remains in combat after its attacker leaves is also public.
+        // These are not hidden-zone or policy inputs.
+        declared_attackers: real_state.turn.declared_attackers.clone(),
+        declared_blockers: real_state.turn.declared_blockers.clone(),
+        unpaired_blockers: real_state.turn.unpaired_blockers.clone(),
         combat_damage_done: real_state.turn.combat_damage_done,
         defender: real_state.turn.defender,
     };
+
+    // Public Ring projection only: level and bearer are announced state, not
+    // hidden information. No policy, ranking or budget reads them. The search
+    // world can only carry object ids it copied into its public ledger; a bearer
+    // outside that ledger is not representable as a battlefield object, so the
+    // projection keeps the level and omits that link.
+    let rings: Vec<aperture_core::state::RingState> = view
+        .rings
+        .iter()
+        .map(|ring| aperture_core::state::RingState {
+            temptations: ring.temptations,
+            bearer: ring.bearer.filter(|id| {
+                objects
+                    .get(id)
+                    .is_some_and(|object| object.zone == Zone::Battlefield)
+            }),
+            sacrifice_at_end_of_combat: Vec::new(),
+        })
+        .collect();
 
     Ok(GameState {
         seed,
         first_player: real_state.first_player,
         rng,
         objects,
+        creature_died_this_turn: real_state.creature_died_this_turn,
+        // Forced initializer for the field slice 35 added to `GameState`; the
+        // search projection copies the same value so its state stays truthful.
+        draw_replacements: real_state.draw_replacements.clone(),
+        nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
         commanders: real_state.commanders.clone(),
+        rings,
+        activation_priority: None,
+        attacked_this_turn: real_state.attacked_this_turn.clone(),
+        goblins_entered_this_turn: real_state.goblins_entered_this_turn.clone(),
+        hideaway: real_state.hideaway.clone(),
+        face_down_exile: real_state.face_down_exile.clone(),
         profile: real_state.profile,
         commander_damage: real_state.commander_damage.clone(),
         retired_commanders: real_state.retired_commanders.clone(),
@@ -898,8 +945,10 @@ fn reconstruct(
         trigger_queue: Vec::new(),
         next_trigger_seq: 0,
         activation_uses: real_state.activation_uses.clone(),
+        skip_next_untap: real_state.skip_next_untap.clone(),
         effects: Vec::new(),
         shields: Vec::new(),
+        regeneration_shields: Vec::new(),
         next_effect: real_state.next_effect,
         next_timestamp: real_state.next_timestamp,
         revision: 0,

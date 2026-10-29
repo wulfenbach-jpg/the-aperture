@@ -1,0 +1,213 @@
+{
+  "status": "implementation increment ready for independent review",
+  "full_issue17_accepted": false,
+  "independent_review_outcome": null,
+  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "branch": "aperture/issue-17",
+  "base": "dc9bb3c0788df022853e5bdcbc00cbfab8035963",
+  "initial_product": "7fa3b133ec231dc85e140c7823973fa5b51c0a4e",
+  "native_functional_repair": "2d5cc18c35eb9f3c33c71a1f2bf0e5605d340e7a",
+  "code_corpus_head": "1b134db04cd2ddf03520c47384bfef7e1695d935",
+  "evidence_tip": {
+    "sha_source": "native task post-publication metadata; this result is written before its own evidence commit",
+    "ci_claim": false
+  },
+  "increment_card": "Ursine Monstrosity (DSC36), complete printed clauses in the declared supported model",
+  "source": {
+    "printing": "73cc6df4-3564-4ace-bf8a-eac3e62d725a",
+    "retrieved_at": "2026-10-28T23:54:49.142002+00:00",
+    "fixture": "fixtures/starter-corpus/slice54-sourced.json"
+  },
+  "corpus": {
+    "catalog": 163,
+    "union": 459,
+    "supported": 150,
+    "missing": 309,
+    "per_list": [
+      55,
+      0,
+      51,
+      48,
+      3,
+      52,
+      52,
+      53
+    ],
+    "certified": 1,
+    "desired": 8,
+    "ayula_missing": [
+      "Dúnedain Rangers",
+      "Evercoat Ursine",
+      "Rampaging Yao Guai"
+    ],
+    "both_ayula_gap_fields": 3,
+    "whole_field_log": "evidence/issue17/slice54/native-gates.log (corpus section)"
+  },
+  "gates": {
+    "fmt": {
+      "exit": 0,
+      "test_result_lines": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    "focused_core": {
+      "exit": 0,
+      "test_result_lines": 9,
+      "passed": 107,
+      "failed": 0
+    },
+    "policy_adapter": {
+      "exit": 0,
+      "test_result_lines": 2,
+      "passed": 16,
+      "failed": 0
+    },
+    "corpus": {
+      "exit": 0,
+      "test_result_lines": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    "clippy": {
+      "exit": 0,
+      "test_result_lines": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    "release": {
+      "exit": 0,
+      "test_result_lines": 0,
+      "passed": 0,
+      "failed": 0
+    },
+    "journey": {
+      "exit": 0,
+      "test_result_lines": 0,
+      "passed": 0,
+      "failed": 0
+    }
+  },
+  "focused_aggregate": {
+    "suites": 11,
+    "passed": 123,
+    "failed": 0,
+    "definition": "9 core suites107 plus2 AI suites16; not workspace or search total"
+  },
+  "new_test_delta": {
+    "base": "dc9bb3c",
+    "new_tests": 11,
+    "files": {
+      "crates/core/tests/issue17_slice54.rs": 4,
+      "crates/core/tests/issue17_slice54_regressions.rs": 6,
+      "crates/ai/tests/issue17_ursine_policy.rs": 1
+    }
+  },
+  "ci": {
+    "head": "1b134db04cd2ddf03520c47384bfef7e1695d935",
+    "total": 10,
+    "completed_success": 10,
+    "all_keyed": true,
+    "rerun_requested": false,
+    "receipt": "evidence/issue17/slice54/exact-head-ci-1b134db.json",
+    "evidence_tip_claim": false
+  },
+  "red": [
+    {
+      "receipt": "evidence/issue17/slice54/native-red-attack-requirements.log",
+      "compiles": true,
+      "failed": 2,
+      "exit": 101,
+      "symptoms": "wrong opponent accepted; zero requirements obeyed where two possible"
+    },
+    {
+      "receipt": "evidence/issue17/slice54/native-red-policy.log",
+      "compiles": true,
+      "failed": 1,
+      "exit": 101,
+      "symptom": "real default heuristic wrong-defender refusal at step622"
+    },
+    {
+      "receipt": "evidence/issue17/slice54/native-red-whole-field.log",
+      "exit": 1,
+      "symptom": "stale supported Ursine interaction detected before whole-field rewrite"
+    }
+  ],
+  "journey": {
+    "casts": {
+      "Centaur Courser": 8,
+      "Craw Wurm": 3,
+      "Grizzly Bears": 7,
+      "Ursine Monstrosity": 8
+    },
+    "combat_damage_events": 55,
+    "combat_mill_events": 30,
+    "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+    "deck": "decks/package-slice54.txt",
+    "digest": "cebf64e0243ea2925dcfe11b191e7bb1b64a3e631fe4ac834432104652ff35fb",
+    "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+    "kind": "40-card package, not a desired starter",
+    "outcome": {
+      "Win": {
+        "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+        "winner": 3
+      }
+    },
+    "replay_digest_matches": true,
+    "replay_events": 4596,
+    "seats": 4,
+    "seed": 2323,
+    "snapshot_sha256": "8a42aa381112b2d5199e38e63ff1c9a03fc40688e691a73108aad84263436b39",
+    "snapshots_exact": true,
+    "starting_life": 40,
+    "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+    "status": "terminal",
+    "steps": 1801,
+    "turns": 39
+  },
+  "default_cli": {
+    "status": "terminal",
+    "winner": 2,
+    "steps": 1752,
+    "turns": 38,
+    "final_digest": "2bd43d639ed51c7a70e5321c961ccf09471d8c4b60af8ac888198672c672e255",
+    "counts": {
+      "abilities_declined": 0,
+      "abilities_resolved": 23,
+      "ability_activations": 0,
+      "attacks": 21,
+      "blocks": 6,
+      "casts": 26,
+      "commander_damage_events": 0,
+      "commander_damage_losses": 0,
+      "counterspells": 0,
+      "damage_events": 59,
+      "events": 4463,
+      "triggered_abilities": 23
+    },
+    "replay_digest_matches": true,
+    "starting_life": 40,
+    "seat_count": 4
+  },
+  "children_inspected": [
+    "t_26a7a4ff",
+    "t_3c2fe51a"
+  ],
+  "children_are": "scheduled certified-input evaluation wait and unassigned release-soak backlog, not review children; left gated",
+  "disclosures": [
+    "Original #17 unfinished: 1/8 certified, Ayula3, no new exact100-card certificate.",
+    "Native co-authored this increment and is not its independent reviewer.",
+    "Initial card construction implementation-first; no strict initial mechanic TDD claim. Native functional repairs have genuine pre-fix compiling assertion REDs.",
+    "Initial native compile attempt used nonexistent P2/P3 aliases; retained as FAILED, not behavioral RED.",
+    "Inherited single-defender combat model; conflicting requirements maximized within that model, not full multi-defender Commander.",
+    "Only six supported card types can appear in supported graveyards; no arbitrary-card support.",
+    "Narrow heuristic legality adapter only when no-attack unavailable; no search ranking/budget/sampling/model/provider change.",
+    "No new local full-workspace test rerun; current exact-head CI supplies that gate.",
+    "Source-left bounce and no-hand-grant tested; no new legal same-object Flash recast test claimed for this non-Flash card.",
+    "Original fixture save is sandbox-marked with dummy replay decks; separate real journey uses non-sandbox save/load and full genuine replay.",
+    "40-card journeys are not 100-card certificates or strength/GUI evidence; prior pre-repair slice54 recordings retained as superseded, not claimed compatible.",
+    "Earlier SLICE54-HUMAN-CHECKPOINT and slice54/RESULT are superseded by FINAL documents; original test and source records retained.",
+    "Inherited modified sessions JSONL and unrelated reviewer artifacts excluded from publication."
+  ],
+  "next_action": "Independent practical delta review of dc9bb3c..published evidence tip, code1b134db; then same writer/history/card/branch/PR46 completes NEXT-CARDS and exact100-card Ayula certification only when both gaps0.",
+  "no_merge_master_push_closure_or_unlock": true
+}

@@ -1,0 +1,4 @@
+selfplay seed=23 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P3 in 1680 steps (43 turns)
+  digest e98d6253de68 | replay verified | casts 19 attacks 33 blocks 7 counters 0
+  replay written to evidence/issue17/slice4/slice4-warden-game.replay.json
+  report written to evidence/issue17/slice4/slice4-warden-game.json

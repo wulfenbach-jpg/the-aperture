@@ -1,0 +1,29 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running tests\issue17_slice62.rs (target\debug\deps\issue17_slice62-64c0257e086a991f.exe)
+
+running 7 tests
+test chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate ... ok
+test goblin_chieftain_anthem_and_haste_are_other_owned_goblins_only ... ok
+test actual_attack_declaration_records_the_turn_fact_after_the_attacker_leaves ... ok
+test raid_does_not_trigger_when_entering_end_step_without_an_attack ... ok
+test searslicer_casts_and_raid_end_step_makes_a_real_token_after_attackers_leave ... ok
+test real_attack_history_save_loads_and_both_games_finish_identically ... ok
+test raid_history_resets_on_turn_transition_and_roundtrips_a_save ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice63.rs (target\debug\deps\issue17_slice63-2ccd52e67be0d701.exe)
+
+running 10 tests
+test servant_static_is_typed_for_dragons_not_goblins ... ok
+test warchief_reduces_generic_but_never_the_goblin_colored_pip ... ok
+test warchief_haste_includes_self_and_other_controlled_goblins_only ... ok
+test king_anthem_and_mountainwalk_cross_controllers_and_exclude_source ... ok
+test warchief_reduces_only_goblin_generic_costs_and_stacks ... ok
+test warchief_haste_recipients_lose_ability_and_haste_when_it_departs ... ok
+test mountainwalk_reads_the_defending_players_effective_mountain_and_self_is_excluded ... ok
+test servant_reduces_a_real_dragon_cast_and_stacks_with_servant_controls ... ok
+test all_three_cards_cast_from_hand_through_the_stack ... ok
+test warchief_reduction_applies_to_krenkos_generic_commander_tax ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

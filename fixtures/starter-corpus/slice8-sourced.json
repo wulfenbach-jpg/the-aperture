@@ -1,0 +1,180 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T12:53:23Z",
+ "note": "Live Scryfall named printing fetch before implementation.",
+ "cards": [
+  {
+   "name": "Soul's Attendant",
+   "oracle_id": "045a9d3d-c20d-427f-a77b-0bffc6f55526",
+   "scryfall_id": "3223c0ac-cc22-4886-8919-11273b477cc7",
+   "set": "roe",
+   "collector_number": "44",
+   "layout": "normal",
+   "mana_cost": "{W}",
+   "type_line": "Creature — Human Cleric",
+   "power": "1",
+   "toughness": "1",
+   "oracle_text": "Whenever another creature enters, you may gain 1 life.",
+   "color_identity": [
+    "W"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Soul%27s%20Attendant",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
+  },
+  {
+   "name": "Razorclaw Bear",
+   "oracle_id": "3ee07899-e6d6-4dcf-8596-4d2420690d7c",
+   "scryfall_id": "08c0cdbe-ca74-4edc-96ea-6db8eefe99d8",
+   "set": "p02",
+   "collector_number": "142",
+   "layout": "normal",
+   "mana_cost": "{2}{G}{G}",
+   "type_line": "Creature — Bear",
+   "power": "3",
+   "toughness": "3",
+   "oracle_text": "Whenever this creature becomes blocked, it gets +2/+2 until end of turn.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Razorclaw%20Bear",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
+  },
+  {
+   "name": "Volley Veteran",
+   "oracle_id": "bf4268e6-170a-445b-b215-718f7494ae28",
+   "scryfall_id": "7fc914fe-e699-4a21-aa09-f3573d020b87",
+   "set": "fdn",
+   "collector_number": "550",
+   "layout": "normal",
+   "mana_cost": "{3}{R}",
+   "type_line": "Creature — Goblin Warrior",
+   "power": "4",
+   "toughness": "2",
+   "oracle_text": "When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Volley%20Veteran",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
+  },
+  {
+   "name": "Brightstone Ritual",
+   "oracle_id": "08e90e85-4103-4acb-a8a7-e1329b460aa7",
+   "scryfall_id": "5b08b0a6-c94e-4407-8a24-c8202497b5f2",
+   "set": "ons",
+   "collector_number": "191",
+   "layout": "normal",
+   "mana_cost": "{R}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Add {R} for each Goblin on the battlefield.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Brightstone%20Ritual",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "excluded",
+   "status": "excluded",
+   "exclusion_reason": "bounded mana representation saturates >255"
+  },
+  {
+   "name": "Aetherize",
+   "oracle_id": "7c779721-cd1b-4696-9ae9-68ccc284ed2a",
+   "scryfall_id": "1e5530fc-0291-4a17-b048-c5d24e6f51d8",
+   "set": "fdn",
+   "collector_number": "151",
+   "layout": "normal",
+   "mana_cost": "{3}{U}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Return all attacking creatures to their owner's hand.",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Aetherize",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "excluded",
+   "status": "excluded",
+   "exclusion_reason": "attacking-commander CR903.9b continuation not implemented"
+  },
+  {
+   "name": "Dramatic Reversal",
+   "oracle_id": "da46904c-8fb8-44c2-b2ab-775a1cc12ec3",
+   "scryfall_id": "2ad14406-4504-4951-83f0-82c298964d6c",
+   "set": "tle",
+   "collector_number": "158",
+   "layout": "normal",
+   "mana_cost": "{1}{U}",
+   "type_line": "Instant",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Untap all nonland permanents you control.",
+   "color_identity": [
+    "U"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Dramatic%20Reversal",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "implemented"
+  },
+  {
+   "name": "Friendly Teddy",
+   "oracle_id": "02a8b849-e708-427c-92fe-9a41bb0ec7fe",
+   "scryfall_id": "82b142be-4586-487a-8dd8-a55eff776458",
+   "set": "dsk",
+   "collector_number": "247",
+   "layout": "normal",
+   "mana_cost": "{2}",
+   "type_line": "Artifact Creature — Bear Toy",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "When this creature dies, each player draws a card.",
+   "color_identity": [],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Friendly%20Teddy",
+   "retrieved_at": "2026-10-26T12:50:12Z",
+   "role": "excluded",
+   "status": "excluded",
+   "exclusion_reason": "each-player draw continuation/APNAP not complete"
+  },
+  {
+   "name": "Goblin War Strike",
+   "oracle_id": "5944d5c7-65ab-425f-a453-ed5871ca3d73",
+   "scryfall_id": "dce59945-37a2-4f09-8831-9d44b4a59ea7",
+   "set": "scg",
+   "collector_number": "96",
+   "layout": "normal",
+   "mana_cost": "{R}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Goblin War Strike deals damage to target player or planeswalker equal to the number of Goblins you control.",
+   "color_identity": [
+    "R"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/named?exact=Goblin%20War%20Strike",
+   "retrieved_at": "2026-10-26T12:53:23Z",
+   "role": "implemented"
+  }
+ ]
+}

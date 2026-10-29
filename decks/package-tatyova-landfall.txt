@@ -1,0 +1,12 @@
+// package-tatyova-landfall — supported 40-card Tatyova package fixture, NOT a desired 100-card starter.
+// Commander supplied separately: Tatyova, Benthic Druid.
+3 Jaddi Offshoot
+3 Elvish Visionary
+3 Grizzly Bears
+3 Giant Growth
+3 Fog
+3 Divination
+3 Opt
+3 Consider
+8 Forest
+8 Island

@@ -1,0 +1,73 @@
+head=68fc8f18ed49d494152c25ef841ac62bb0fdb708
+
+command=cargo run --release --locked (slice57-journey-driver)
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice57-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice57-journey-driver)
+    Finished `release` profile [optimized] target(s) in 27.94s
+     Running `target\release\issue17-slice57-journey.exe`
+{
+  "aggregate_set_sizes": [
+    1,
+    2,
+    2,
+    2,
+    2,
+    4
+  ],
+  "aggregate_sets_committed": 6,
+  "announced_x": [
+    0,
+    0,
+    0,
+    0,
+    1,
+    3,
+    4,
+    5,
+    3,
+    8
+  ],
+  "casts": {
+    "Arcane Signet": 9,
+    "Commander's Sphere": 10,
+    "Friendly Teddy": 9,
+    "Grizzly Bears": 4,
+    "Rampaging Yao Guai": 10,
+    "Sol Ring": 9
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice57.txt",
+  "destroy_instructions": 6,
+  "destroyed_permanents": 13,
+  "digest": "8a34da9bb066dd3ba18606043a65e0f4a39a32d60e3a181714f967c0ecb07253",
+  "driver": "evidence-only masked X/aggregate-target demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "max_plus_one_counters_on_a_yao_guai": 8,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 5052,
+  "seats": 4,
+  "seed": 5757,
+  "snapshot_sha256": "12ab766ed8be59ef74c0aaf7c222d735e269ab6b504c88d0281b31d5ef951004",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "static_measurement": "public battlefield at the final state; not policy input",
+  "status": "terminal",
+  "steps": 1960,
+  "turns": 47
+}
+EXIT=0 (driver)
+
+command=target/release/aperture-cli.exe replay --file evidence/issue17/slice57/native/demo-save.json
+save evidence/issue17/slice57/native/demo-save.json — 4 seat(s): P0 'package-slice57' vs P1 'package-slice57' vs P2 'package-slice57' vs P3 'package-slice57'
+  stored digest 8a34da9bb066 | recomputed 8a34da9bb066 | matches
+  turn 47 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P1 = deterministic baseline heuristic; autoplay off
+  replay of 1960 action(s) -> digest 8a34da9bb066 | events 5052 | reproduces the save
+EXIT=0 (separate_release_cli)

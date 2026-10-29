@@ -1,0 +1,336 @@
+{
+  "files": [
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl",
+      "bytes": 7660803,
+      "sha256": "f0b74b86a6b29bc4a7417ddfb658a3534aee93806f26fbcd7637511e279830e4"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\1.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\1.bash-original.log",
+      "bytes": 1773,
+      "sha256": "53c18663163d5c14368805080575aedd4dc312550117d029a8391f8651715697"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\110.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\110.bash.log",
+      "bytes": 2071,
+      "sha256": "a6e7dd1feefd792bbe3740c14293fb52ac71803cb17de68253169677abf5f038"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\125.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\125.bash.log",
+      "bytes": 3601,
+      "sha256": "7d174a049883bb55442d554a83b0478b4c4ce42a4b8f1d6f2336192007878b1e"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\128.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\128.bash.log",
+      "bytes": 342707,
+      "sha256": "aef04f086ce56a95e40b6cd399099c33813423078e8896b7ecf20bb0db2ae531"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\158.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\158.bash.log",
+      "bytes": 797,
+      "sha256": "8ab83814b7c6b4d875112cdf9fb4af96934bef36af1fa1aed937671a58f38674"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\160.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\160.bash-original.log",
+      "bytes": 2839,
+      "sha256": "89123cd9207501e5f23bfdc3bba932ef3401c9e3926de35e2293e099b8f99d6e"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\163.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\163.bash-original.log",
+      "bytes": 8335,
+      "sha256": "8acc02703ae594d937ae5b9135f8bf0736e29c1ff79e54d11d3a5fd1a141cac5"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\178.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\178.bash-original.log",
+      "bytes": 2121,
+      "sha256": "a17a20156e5a320f52f49fd14e1e563496ed6d36b8c24eae3ade1fff1922e9a9"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\18.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\18.bash-original.log",
+      "bytes": 8381,
+      "sha256": "f008b1ae52e9186f221196cce768953a9e23c1c3d084f6f9a9e1d39c3ac3306d"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\188.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\188.bash-original.log",
+      "bytes": 5239,
+      "sha256": "7e95732a1735ae7c3032d1a37f2ef9238c7aa0c0ccfe2246afccd57354cea007"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\195.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\195.bash.log",
+      "bytes": 1128,
+      "sha256": "a851e445eff67f04986b3e3fccd763ac51aa8bfc7ecb35da7da33c63a8d5d4a2"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\198.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\198.bash-original.log",
+      "bytes": 6153,
+      "sha256": "7593d5ebe5dfc3abd15f8d9a444572a2cc23d85a10ee18478471efce6706fdce"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\206.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\206.bash-original.log",
+      "bytes": 1816,
+      "sha256": "782ea7036c11263a0c7d58e56d7cc7cd887b534e0a8c2f89ee59ffeb7e5edd82"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\211.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\211.bash-original.log",
+      "bytes": 5290,
+      "sha256": "c1cb1b95e8bb628fbcf2db9f2e95725bce6a5b2718d720228411208656070b58"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\230.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\230.bash-original.log",
+      "bytes": 4482,
+      "sha256": "f4a44e2e4b6d90852737afbee68cfeae858834e79c3b4c4ef74735e14c6054c4"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\232.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\232.bash-original.log",
+      "bytes": 3396,
+      "sha256": "b6b85536d8eae1f668afed603e210fd5bcea589b0bc326fa8704255e1371ffa2"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\24.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\24.bash.log",
+      "bytes": 582738,
+      "sha256": "0f7f23afab52d011a83f5c1a68855b9cf3083dcc5fe9dafdd33312576077313d"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\245.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\245.bash-original.log",
+      "bytes": 1979,
+      "sha256": "6a47b15c5ead6c08ecd2d5f79fca95f6be2379f8c109858a8775cac8dc498637"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\246.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\246.bash.log",
+      "bytes": 5183,
+      "sha256": "b69b8df4b0c527c22c1ded9871d481e06fa262024b97f020518a728ae7454469"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\247.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\247.bash-original.log",
+      "bytes": 5276,
+      "sha256": "ffe6333ef58f92400201fa059cdc331b5b2d558b5c909a9aee21b9347fe851d2"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\248.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\248.bash.log",
+      "bytes": 5013,
+      "sha256": "5d62e695d399e1b777a541933191752d78ad0b7353390f35b93d627a28c10152"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\255.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\255.bash-original.log",
+      "bytes": 5688,
+      "sha256": "2b7ab070ca9039225e7244e5b054318ff612f08ce6df6f64d3528b0c1ba44639"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\257.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\257.bash-original.log",
+      "bytes": 2031,
+      "sha256": "d078d5d833e2b7b5758cbc59d8ffe75188291b17b17ccfd6f732be8d2cea4094"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\258.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\258.bash.log",
+      "bytes": 337758,
+      "sha256": "c49ad325f268183f4c170101845483e77e0b5e520732679709ce21251bbf471f"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\261.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\261.bash-original.log",
+      "bytes": 3159,
+      "sha256": "9e88fe458f1d449fb5a0e73b5f8864efb8fe63bef6236c79219f54e73922d8c9"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\273.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\273.bash.log",
+      "bytes": 475837,
+      "sha256": "129685ee36c31638f8a1539538f149809be15e1a9d4fc8d1a6c932bffc72a470"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\276.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\276.bash-original.log",
+      "bytes": 2111,
+      "sha256": "2be40c69484ceb77a0fb540c9ebf12dd835dffdaec7e35be3164dda134552f36"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\280.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\280.bash-original.log",
+      "bytes": 1174,
+      "sha256": "1be699813540ff83cdae0913f0e3af18b5cc50265d814adeebabd386fa6603c9"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\285.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\285.bash-original.log",
+      "bytes": 2891,
+      "sha256": "76ad80a98ded4521523d26f2ef0da60e5a6462cc0746668fcf0ffde34ec5db08"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\288.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\288.bash.log",
+      "bytes": 887,
+      "sha256": "d253c31353efb0b6a7574ea0debb32b97a91134b3fe294e7e1e9e028589c9dd3"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\330.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\330.bash.log",
+      "bytes": 2306,
+      "sha256": "627cef5ef05b63a12f48a215aef213a33b7d0e9d86330e834a7839aaf524a209"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\347.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\347.bash.log",
+      "bytes": 133291,
+      "sha256": "9316a01e5a125808d4101f6765dcecf913f1fea3121243662277d27af480a83b"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\349.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\349.bash.log",
+      "bytes": 1489,
+      "sha256": "71c1b00313ff51837933cf0e079caa35950b040bab4e91b52922b9de7ce61f1c"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\374.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\374.bash-original.log",
+      "bytes": 1696,
+      "sha256": "9628ee49d9f64ceb0f954e01d8ac378272c537b1d27398c65f3030262b721f69"
+    },
+    {
+      "source": "evidence\\issue17\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\48.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\sessions\\2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469\\48.bash.log",
+      "bytes": 989,
+      "sha256": "e8cd206d81119efd35fd6bf25fcafd9d23ddd4b2d2b7ff8c441f41ad702306d3"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+      "bytes": 4021046,
+      "sha256": "f1c62ee95a9bb6329d9ad5b850037fb044b079339d6b6a56d38107e53b7787da"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\105.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\105.bash-original.log",
+      "bytes": 1579,
+      "sha256": "ad22fc8b44a8642639feef9b6ea9626bc103c4f8ed0432f1e44cc828fc560629"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\110.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\110.bash.log",
+      "bytes": 4782,
+      "sha256": "4a9b8d252029b1ffa7ba0c9255d63df31ff45dd7b266244e68294f470483dfc9"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\112.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\112.bash.log",
+      "bytes": 79332,
+      "sha256": "ac17355c927c9f3115430ba23732c402d320effca014b4102b8296419ee1f798"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\119.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\119.bash-original.log",
+      "bytes": 10321,
+      "sha256": "32481f47b9a99839f1e9fe2a5a63bf095d45d92f76758ed75a1f93fc048b879c"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\130.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\130.bash.log",
+      "bytes": 3381,
+      "sha256": "e3b6ec6b3b288fdb0f25abae1710f4e6d387deffff54cded01e0ebd75b33f40d"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\136.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\136.bash-original.log",
+      "bytes": 11390,
+      "sha256": "8d2849f3f7c1bf8240a94a7f727c646ab6c7033235b44ee7d677d01a4015bfe0"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\42.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\42.bash.log",
+      "bytes": 7109,
+      "sha256": "d42acddd40d2313e43844906fa5e447ed4c32b515e8da4d326dbca5fc855a718"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\78.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\78.bash-original.log",
+      "bytes": 1128,
+      "sha256": "9520c09a4b25be24e448271f3d329638e4844e447c17057574d31984e76aaf9f"
+    },
+    {
+      "source": "evidence\\issue17\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\92.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\92.bash-original.log",
+      "bytes": 1536,
+      "sha256": "adf2f61202fbc5be1bf63a894b50c8a6c18450c78ac6a1ddbad3e6f7da2d9498"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl",
+      "bytes": 516787,
+      "sha256": "54bacf80b946638488ccf964d77044a7d87be8ff631a790212e89a9e2d0a5282"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\19.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\19.bash-original.log",
+      "bytes": 15555,
+      "sha256": "a6da5615b9f122b8d8b64c5ae2f66cf4c13bcf612efea1cc009065f42a277052"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\2.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\2.bash-original.log",
+      "bytes": 2079,
+      "sha256": "a8beb285019631940cf8244ad50372ca8795c2ac02489ffc7af4dfb135716cec"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\3.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\3.bash-original.log",
+      "bytes": 1874,
+      "sha256": "28ed993001b8d202c5c94a7887227fda8ab7bb0e8f67607fe440a0fa441cf330"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\49.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\49.bash-original.log",
+      "bytes": 2554,
+      "sha256": "750b972ffa4b8449fcc236c97f71f939ee9ba0f13938c08ccf7eaf68ad9fd397"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\53.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\53.bash-original.log",
+      "bytes": 1961,
+      "sha256": "b94dfbeb4dc4d956f85dd7a7fac1eee1e898bced543f2d3fcbdcc16daa756983"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\56.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\56.bash-original.log",
+      "bytes": 1582,
+      "sha256": "c1d3429bce5f20d8808d5f27ec1f86b0d1eb5f7bf24e401fa991cccf5715dd4b"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\57.bash.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\57.bash.log",
+      "bytes": 51997,
+      "sha256": "d3ad00b48ab07ea885cfa3fda8036e84aa9358e3b9001d0052b01896e786e080"
+    },
+    {
+      "source": "review-sessions\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\8.bash-original.log",
+      "backup": "evidence\\issue17\\slice17-final-backup\\accidental-root-review-preserved\\2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d\\8.bash-original.log",
+      "bytes": 22409,
+      "sha256": "1d24bc5d4bd7ac9dc1d35ee48c6e341c5ab96f681541234f641adcdcf925e0f9"
+    }
+  ],
+  "total_files": 55,
+  "total_bytes": 14390830
+}

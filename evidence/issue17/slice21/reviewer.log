@@ -1,0 +1,19 @@
+Working...
+**CHANGES_REQUESTED** at `d9d2c945673a256a62639b7a789adca549ea7984` (code `412f63a`).
+
+**Blocking finding — shield transfers through bounce/recast.**
+`RegenerationShield` is keyed only by `ObjectId`; non-commander objects retain their id across zone changes (`insert_object`), and `move_to_hand` → `move_object_to_stack` → `enter_battlefield` reuses it. Shields are cleared only at cleanup. Reproduced against exact head: activate shield, Unsummon, recast the same Dragon-Scarred Bear, Shock it → bear remains **Battlefield** instead of going to the graveyard. The existing exile/bounce test misses this because it inserts a new object rather than recasting the bounced card.
+
+A temporary probe reproduced the failure; probe source was removed, log retained at `evidence/issue17/slice21-review-probe.log`.
+
+**Verified**
+
+- slice21 **8/8**, issue13 **43/43**, replay_digest **6/6**
+- cleanup-expiry unit **1/1**
+- fmt and `git diff --check` pass
+- Slice21 release replay: 1906 actions, 4909 events, digest `0d20c7597183`
+- Legacy replay: 2064 actions, 5281 events, digest `72cd69fb1143`
+- DTK 183 source/stamp and oracle match; Formidable current-power activation-only check and 25 activation / 25 shield / 1 regeneration accounting confirmed
+- AI diff is shield-field initialization only
+
+Full #17 remains **1/8 certified**, 333 missing / Ayula 27. Report: `evidence/issue17/slice21/REVIEW21.md`. No implementation edits or commits.

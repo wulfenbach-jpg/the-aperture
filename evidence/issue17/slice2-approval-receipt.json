@@ -1,0 +1,14 @@
+{
+  "reviewed_head": "e16185c81c66e11e5bef686f03c2a3977a791301",
+  "review_outcome": "approve_increment",
+  "full_issue17_accepted": false,
+  "implemented_lists": 1,
+  "certified_lists": 0,
+  "desired_lists": 8,
+  "catalog_cards": 86,
+  "missing_corpus_names": 385,
+  "exact_head_ci_success": 10,
+  "required_checks_pass": true,
+  "desired_list_contents_unchanged": true,
+  "no_merge_or_closure": true
+}

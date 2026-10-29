@@ -1,0 +1,34 @@
+retrieved_at 2026-10-27T21:06:29.666092+00:00
+not_found []
+== Words of Wilding | ons 305 | {2}{G} | Enchantment | None / None | kw []
+   oracle_id 888582df-4fe2-4d05-9b62-10c90aaa76f2 scryfall_id fdb9565f-5b09-4127-b169-3146079dab84
+   colors ['G'] ci ['G'] mv 3.0
+   text: '{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.'
+== Thijarian Witness | who 111 | {1}{G} | Creature — Alien Cleric | 0 / 4 | kw ['Investigate', 'Bear Witness', 'Flash']
+   oracle_id d273033b-3b8b-4ce9-afe8-208d82dd20f1 scryfall_id da05e23b-419f-4023-9ad4-1227bb1b53be
+   colors ['G'] ci ['G'] mv 2.0
+   text: 'Flash\nBear Witness — Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It\'s an artifact with "{2}, Sacrifice this token: Draw a card.")'
+== Lumra, Bellow of the Woods | blb 183 | {4}{G}{G} | Legendary Creature — Elemental Bear | * / * | kw ['Reach', 'Vigilance', 'Mill']
+   oracle_id 97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb scryfall_id ae4f3aaf-3960-48cd-b34b-32e4ae5ae088
+   colors ['G'] ci ['G'] mv 6.0
+   text: "Reach, vigilance\nLumra's power and toughness are each equal to the number of lands you control.\nWhen Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped."
+== Ursine Monstrosity | dsc 36 | {2}{G} | Creature — Bear Mutant | 3 / 3 | kw ['Trample', 'Mill']
+   oracle_id 647feda9-2876-4430-902f-10dc1f4f99a9 scryfall_id 73cc6df4-3564-4ace-bf8a-eac3e62d725a
+   colors ['G'] ci ['G'] mv 3.0
+   text: 'Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.'
+== The Earth King | tla 172 | {3}{G} | Legendary Creature — Human Noble Ally | 2 / 2 | kw []
+   oracle_id d5770b0f-4493-42e9-a2d7-0e74a28da4ba scryfall_id a8d5dca6-381a-4361-b265-27de8d04335c
+   colors ['G'] ci ['G'] mv 4.0
+   text: 'When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.'
+== Spider-Ham, Peter Porker | spm 114 | {1}{G} | Legendary Creature — Spider Boar Hero | 2 / 2 | kw ['Food', 'Animal May-Ham']
+   oracle_id 00b50215-e832-417f-9c80-2bc3050b6ebb scryfall_id 41f18f42-b86b-4a12-9f0d-76b761571195
+   colors ['G'] ci ['G'] mv 2.0
+   text: 'When Spider-Ham enters, create a Food token. (It\'s an artifact with "{2}, {T}, Sacrifice this token: You gain 3 life.")\nAnimal May-Ham — Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.'
+== Owlbear Cub | clb 246 | {2}{G} | Creature — Bird Bear | 3 / 3 | kw ["Mama's Coming"]
+   oracle_id 0c92432d-ac76-47d2-af7a-fdffd4b546a2 scryfall_id be177b66-dab3-47ef-bcdf-8d99eb57e19f
+   colors ['G'] ci ['G'] mv 3.0
+   text: "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order."
+== Rampaging Yao Guai | pip 82 | {X}{G}{G}{G} | Creature — Bear Mutant | 2 / 2 | kw ['Vigilance', 'Trample']
+   oracle_id d37e8f75-c7cb-4270-bb2f-0125e972ed15 scryfall_id 63619236-a27a-4fdd-add6-7a295901f906
+   colors ['G'] ci ['G'] mv 3.0
+   text: 'Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.'

@@ -1,0 +1,21 @@
+catalog pool entries: 139
+duplicate names: []
+
+per-list: cards / missing / status
+  isamaru-white-aggro       99   55  planned
+  jasmine-vanilla-stompy    99    0  certified
+  talrand-draw-go           99   51  planned
+  krenko-goblin-tokens      99   48  planned
+  ayula-bear-counters       99   26  planned
+  elas-sacrifice            99   52  planned
+  tatyova-landfall          99   52  planned
+  zada-spells               99   53  planned
+
+union names            : 459
+union supported        : 127
+union missing          : 332
+manifest missing union : 332
+ayula missing          : 26
+certified lists        : ['jasmine-vanilla-stompy']
+
+AUDIT OK: catalog 139, union 459 = 127 supported + 332 missing, Ayula 26, 1 certified

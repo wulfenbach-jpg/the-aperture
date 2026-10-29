@@ -1,0 +1,92 @@
+
+COMMAND: git rev-parse HEAD
+c7f7dedb0d5e1eabb630540099745e92961f5cbb
+EXIT=0
+
+COMMAND: cargo test -p aperture-core --locked --test issue17_slice41 --test ordering_persistence --test replay_digest --test issue17_slice12 --test rules_conformance
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.22s
+     Running tests\issue17_slice12.rs (target\debug\deps\issue17_slice12-92fee262fbf05d7d.exe)
+
+running 11 tests
+test archived_tokens_cannot_anchor_live_engine_references ... ok
+test removed_tokens_are_valid_only_as_inert_archives_of_departed_owners ... ok
+test sourced_artifacts_match_printings_and_are_noncreature_permanents ... ok
+test mind_stone_mana_then_sacrifice_draws_on_the_stack ... ok
+test hedron_archive_mana_and_sacrifice_draw_two_with_source_left ... ok
+test artifact_cast_requires_sorcery_timing_and_negate_sees_noncreature ... ok
+test sol_ring_taps_immediately_for_two_colorless_and_cannot_repeat ... ok
+test all_three_artifacts_cast_from_hand_and_activate_same_turn ... ok
+test mind_and_hedron_mana_abilities_produce_printed_amounts ... ok
+test insufficient_generic_mana_refusal_preserves_state ... ok
+test tapping_for_mana_does_not_untap_for_the_sacrifice_draw_ability ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice41.rs (target\debug\deps\issue17_slice41-c6fbb863586e85a0.exe)
+
+running 11 tests
+test earth_king_is_sourced_and_supported ... ok
+test earth_king_really_casts_and_creates_distinct_four_four_bear ... ok
+test attack_search_resolves_from_the_captured_count_after_its_source_leaves ... ok
+test zero_pick_search_still_shuffles_and_forged_or_duplicate_picks_are_atomic_refusals ... ok
+test searched_lands_fire_existing_landfall_once_each_without_spending_land_play ... ok
+test carved_bear_token_ceases_to_exist_after_leaving_the_battlefield ... ok
+test attack_search_is_one_trigger_for_two_qualifiers_and_puts_basic_lands_tapped ... ok
+test full_opponent_projection_is_independent_of_hidden_search_candidates ... ok
+test midsearch_save_reload_keeps_private_progress_and_finishes_identically ... ok
+test midsearch_after_one_pick_save_reload_continues_identically ... ok
+test forged_search_pending_duplicates_and_subset_are_rejected_by_validate_and_save ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\ordering_persistence.rs (target\debug\deps\ordering_persistence-617dbda96e8e7eeb.exe)
+
+running 2 tests
+test ordinary_and_command_opt_consider_both_order_answers_save_resume_and_replay ... ok
+test legal_time_ebb_decline_consider_all_owner_answers_preserve_draw_identity_tax_and_replay ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.60s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\rules_conformance.rs (target\debug\deps\rules_conformance-668296280b7f54a5.exe)
+
+running 5 tests
+test conformance_manifest_pins_the_engine_rules_revision ... ok
+test cleanup_cases ... ok
+test state_based_action_cases ... ok
+test timing_and_priority_cases ... ok
+test multi_blocker_damage_cases ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+EXIT=0
+
+COMMAND: cargo fmt --all --check
+EXIT=0
+
+COMMAND: cargo clippy --workspace --all-targets --locked -- -D warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.68s
+EXIT=0
+
+COMMAND: cargo build -p aperture-cli --release --locked
+    Finished `release` profile [optimized] target(s) in 0.40s
+EXIT=0
+
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice41/demo-replay.json
+replay seed 2323 — 4 seat(s), 1780 action(s), recorded outcome Some(Win { winner: 3, reason: "opponents' life totals reached 0 or less (CR 704.5a)" })
+  replayed digest d646deedfac9 | matches recorded | events 4576
+EXIT=0
+
+COMMAND: git diff --exit-code -- crates/core/src/state.rs crates/core/tests/issue17_slice41.rs
+EXIT=0

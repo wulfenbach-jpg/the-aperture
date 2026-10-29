@@ -55,10 +55,17 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             rng: aperture_core::rng::Pcg32::new(seed),
             objects: BTreeMap::new(),
             commanders: Vec::new(),
+            rings: Vec::new(),
+            activation_priority: None,
+            attacked_this_turn: Vec::new(),
+            goblins_entered_this_turn: Vec::new(),
+            hideaway: Vec::new(),
+            face_down_exile: Default::default(),
             profile: Profile::Practice20,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
             prevent_all_combat_damage_turn: None,
+            draw_replacements: Vec::new(),
             players: (0..seat_count as PlayerId)
                 .map(|id| new_player(id, &format!("P{id}")))
                 .collect(),
@@ -73,6 +80,9 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
                 attackers: Vec::new(),
                 blocked: Vec::new(),
                 blockers: Vec::new(),
+                declared_attackers: Vec::new(),
+                declared_blockers: Vec::new(),
+                unpaired_blockers: Vec::new(),
                 combat_damage_done: false,
                 defender: None,
             },
@@ -83,9 +93,13 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             trigger_queue: Vec::new(),
             next_trigger_seq: 0,
             revealed: Vec::new(),
+            creature_died_this_turn: false,
+            nontoken_creature_deaths_this_turn: Vec::new(),
             activation_uses: BTreeMap::new(),
+            skip_next_untap: Default::default(),
             effects: Vec::new(),
             shields: Vec::new(),
+            regeneration_shields: Vec::new(),
             next_effect: 1,
             next_timestamp: 1,
             revision: 0,
@@ -116,6 +130,7 @@ impl Fixture {
                 pump_toughness: 0,
                 plus_one_counters: 0,
                 counters: aperture_core::counters::Counters::default(),
+                paired_with: None,
             },
         );
         match zone {
@@ -251,6 +266,15 @@ pub fn auto_answer(game: &Game) -> Action {
                 .find(|legal| matches!(legal.action, Action::ChooseSacrifice { .. }))
                 .map(|legal| legal.action)
                 .expect("an APNAP sacrifice option is offered"),
+            Pending::ApnapReveal { .. } => game
+                .legal_actions()
+                .into_iter()
+                // The offers are deterministic: "reveal nothing" first, then
+                // "reveal every creature card in hand". Take the larger one so a
+                // harness game actually exercises the token creation.
+                .rfind(|legal| matches!(legal.action, Action::RevealCreatureCards { .. }))
+                .map(|legal| legal.action)
+                .expect("an APNAP reveal option is offered"),
             Pending::OrderCard { .. } => Action::OrderCard { to_top: true },
             Pending::CommanderReturn { .. } => Action::AnswerCommanderReturn {
                 to_command_zone: true,
@@ -258,12 +282,27 @@ pub fn auto_answer(game: &Game) -> Action {
             Pending::CommanderReplacement { .. } => Action::AnswerCommanderReplacement {
                 to_command_zone: true,
             },
+            Pending::SearchLibrary { .. } => Action::SearchLibraryDone,
+            Pending::RingTemptation { .. } | Pending::LegendaryChoice { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| {
+                    matches!(
+                        legal.action,
+                        Action::ChooseRingBearer { .. } | Action::ChooseLegendaryKeep { .. }
+                    )
+                })
+                .map(|legal| legal.action)
+                .expect("a Ring/legend choice is offered"),
             Pending::CommanderDraw { .. } => Action::AnswerCommanderDraw {
                 to_command_zone: true,
             },
             // Declare the first offered target; accept the first offered option
             // for a "you may" trigger (the engine lists "use it" first).
-            Pending::TriggerTarget { .. } | Pending::TriggerChoice { .. } => game
+            Pending::TriggerTarget { .. }
+            | Pending::TriggerChoice { .. }
+            | Pending::TriggerMode { .. }
+            | Pending::TopCardChoice { .. } => game
                 .legal_actions()
                 .into_iter()
                 .find(|legal| {
@@ -274,7 +313,9 @@ pub fn auto_answer(game: &Game) -> Action {
                 })
                 .map(|legal| legal.action)
                 .expect("a triggered-ability option is offered"),
-            Pending::BottomCards { .. } | Pending::Discard { .. } => game
+            Pending::BottomCards { .. }
+            | Pending::Discard { .. }
+            | Pending::EffectDiscard { .. } => game
                 .legal_actions()
                 .into_iter()
                 .find(|a| {
@@ -285,6 +326,23 @@ pub fn auto_answer(game: &Game) -> Action {
                 })
                 .map(|a| a.action)
                 .expect("a sample bottom/discard action is offered"),
+            // CR 510.1: this helper's fixed policy takes the permission, which is
+            // the deterministic first offer from `pending_actions`.
+            Pending::CombatDamageAssignment { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| matches!(legal.action, Action::AnswerCombatDamageAssignment { .. }))
+                .map(|legal| legal.action)
+                .expect("a combat damage assignment option is offered"),
+            // Hideaway's look takes the first offered card; the "you may play"
+            // offer is declined so the fixed policy never adds a free cast.
+            Pending::HideawayChoice { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| matches!(legal.action, Action::HideawayExile { .. }))
+                .map(|legal| legal.action)
+                .expect("a hideaway exile option is offered"),
+            Pending::PlayExiled { .. } => Action::DeclinePlayExiled,
         };
     }
     Action::Pass

@@ -1,0 +1,27 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.43s
+     Running tests\issue17_slice48.rs (target\debug\deps\issue17_slice48-05f096c1faa3d463.exe)
+
+running 6 tests
+test owlbear_cub_is_registered_with_its_printed_text ... ok
+test eight_lands_looks_at_the_top_eight_and_offers_only_creature_cards ... ok
+test declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order ... ok
+test a_look_with_no_creature_card_puts_everything_on_the_bottom ... ok
+test a_defender_with_seven_lands_never_triggers_the_look ... FAILED
+test the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage ... ok
+
+failures:
+
+---- a_defender_with_seven_lands_never_triggers_the_look stdout ----
+
+thread 'a_defender_with_seven_lands_never_triggers_the_look' (29420) panicked at crates\core\tests\issue17_slice48.rs:174:5:
+seven lands is not eight: nothing may be looked at
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    a_defender_with_seven_lands_never_triggers_the_look
+
+test result: FAILED. 5 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice48`

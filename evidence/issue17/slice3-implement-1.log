@@ -1,0 +1,21 @@
+Working...
+**Slice 3 partial delivered — Tatyova landfall + Jaddi Offshoot defender working.** No commit/push.
+
+## Implemented
+- **Tatyova, Benthic Druid** (`{3}{G}{U}`, 3/3, commander-only): controller-only landfall trigger; resolves **gain 1 life, then draw** through the existing stack.
+- **Jaddi Offshoot** (`{G}`, 0/3, Defender): landfall gain 1 life; real defender enforcement in `legal_attackers`, explicit forged-declaration refusal (`CR 702.3b`) with unchanged state, and heuristic attacker filtering.
+- Landfall triggers only for permanents controlled by the player whose land entered; existing queued-source and normal land-play paths preserved.
+- CLI selfplay help now lists Tatyova.
+
+## Genuine RED
+- Before mechanics (scaffold only): Jaddi was in legal attackers (`defender cannot attack`); Tatyova landfall did not change life (`40` vs `41`).
+- CLI help RED: `help omits Tatyova, Benthic Druid`.
+- Additional preserved failure: first real journey failed because the heuristic forged a Jaddi attack; fixed with the defender filter, then the journey became terminal.
+
+## Verification
+- `issue17_tatyova` 3/3; tokens 10/10, Talrand 6/6, printings 4/4, catalog 5/5, commander 43/43, planned 1/1, CLI 8+1.
+- fmt, clippy `-D warnings`, release CLI build clean.
+- Four-seat package `decks/package-tatyova-landfall.txt` (40-card supported fixture, not the desired starter), seed 21: **terminal**, P0 wins, 2993 steps, digest `b31adfd97c31…`; 20 Tatyova triggers + Jaddi landfall events; replay and save parity both match.
+- Pool 86 → **88**; manifest recomputed (Tatyova 56 missing); union 447 = 67 supported + 380 missing. All eight exact desired lists unchanged.
+
+Handoff: `evidence/issue17/slice3-implementation.md`; gates/focused logs under `evidence/issue17/slice3-*`.

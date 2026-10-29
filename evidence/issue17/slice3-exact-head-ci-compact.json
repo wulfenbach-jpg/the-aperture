@@ -1,0 +1,68 @@
+{
+  "head": "9cecd62ddb56d44e6853f9f9098fd3a473635b66",
+  "fetched_from": "GitHub check-runs API",
+  "total": 10,
+  "success": 10,
+  "checks": [
+    {
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287291897/job/121454050545"
+    },
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287291897/job/121454049955"
+    },
+    {
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287291897/job/121454049947"
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287291897/job/121454049827"
+    },
+    {
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287291897/job/121454049722"
+    },
+    {
+      "name": "windows package",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287296840/job/121454049642"
+    },
+    {
+      "name": "rust (macos-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287296840/job/121454049378"
+    },
+    {
+      "name": "rust (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287296840/job/121454049353"
+    },
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287296840/job/121454049166"
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/wulfenbach-jpg/the-aperture/actions/runs/40287296840/job/121454049056"
+    }
+  ]
+}

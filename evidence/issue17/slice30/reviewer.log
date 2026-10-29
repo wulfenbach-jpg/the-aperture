@@ -1,0 +1,16 @@
+Working...
+**APPROVED_INCREMENT** at `44b3351db4ab1743ba9fcd8fa927648d7d2e2e26` (implementation `dea6fab`; base `de3ba07`).
+
+Verified source/code/tests:
+
+- OTJ 161 source matches immutable `560062cd-34f8-4d30-9e25-099b03961724`.
+- Saddle 1 is sorcery-timed, uses distinct other untapped controlled creatures, rejects invalid helpers without state change, taps the chosen helpers, and resolves through a source-bound stack item.
+- Source departure invalidates the saddle activation binding; `Saddled` expires at cleanup or battlefield departure.
+- `SourceIsSaddled` gates the attack trigger; trample is granted at resolution to all creatures controlled then, including an animated Stuffed Bear.
+- Animated artifact helpers/recipients work through `Game::is_creature`.
+
+**Executed:** slice30 focused **6/6 passed**; release replay **2653 actions / 6968 events / `b711d966…` matches**. Inspected native 61-test focused log, fmt/clippy/release pass, journey (9 Drover casts, 116 saddle activations, 22 trample grants), and fresh audit: **146 catalog / 459 = 134 supported + 325 missing, Ayula 19, 1 certified**. `git diff --check` passes.
+
+**Nonblocking residual:** the offer enumerator caps at 10 helpers and emits no offers above that, while direct validation remains general — acceptable for this bounded-practice increment, not full card conformance. `RESULT.md` claims pruning was narrowed to saddle, but `detach_object` still drops all effects targeting the departing object; no behavioral defect was demonstrated. No direct source-left attack-trigger test or same-ID reentry test; code-inspected only.
+
+Full #17 remains **1/8 certified**, 325 missing, Ayula 19. Report: `evidence/issue17/slice30/REVIEW30-ORIGINAL-HISTORY.md`. No edits, commits, or closures.

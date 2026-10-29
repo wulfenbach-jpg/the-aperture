@@ -1,0 +1,18 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.22s
+     Running tests\issue17_slice5.rs (target\debug\deps\issue17_slice5-94ee365a899689b8.exe)
+
+running 10 tests
+test sourced_slice5_cards_match_their_live_printings ... ok
+test stitchers_supplier_registers_both_printed_trigger_events ... ok
+test negate_never_offers_a_creature_spell_and_refuses_a_forged_one ... ok
+test negate_counters_a_noncreature_spell ... ok
+test preordain_scries_two_then_draws_one ... ok
+test ruin_crab_mills_each_opponent_on_landfall_but_not_its_controller ... ok
+test stitchers_supplier_mills_three_again_when_it_dies ... ok
+test the_mill_counter_and_ritual_package_is_reachable_from_real_decks ... ok
+test stitchers_supplier_mills_three_when_it_enters ... ok
+test pyretic_ritual_and_seething_song_add_red_mana_to_the_pool ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

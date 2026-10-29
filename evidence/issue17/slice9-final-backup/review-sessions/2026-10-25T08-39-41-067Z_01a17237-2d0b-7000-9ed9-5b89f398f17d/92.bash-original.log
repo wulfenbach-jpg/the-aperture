@@ -1,0 +1,43 @@
+// package-ayula-slice4 — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises the slice-4 Ayula package: Ordinary Bear (vanilla), Ashcoat Bear
+// (Flash), Owlbear (Trample + enters draw) alongside already-supported bears.
+3 Owlbear
+4 Ashcoat Bear
+4 Ordinary Bear
+4 Forest Bear
+3 Striped Bears
+4 Grizzly Bears
+4 Centaur Courser
+3 Rootwalla
+3 Giant Growth
+8 Forest
+----
+4482:    fn create_tokens(
+4483-        &mut self,
+4484-        controller: PlayerId,
+4485-        card: CardId,
+4486-        count: usize,
+4487-        events: &mut Vec<Event>,
+4488-    ) {
+4489-        for _ in 0..count {
+4490-            let id = ObjectId(self.state.next_object);
+4491-            self.state.next_object += 1;
+4492-            let mut object = blank_object(id, card, controller);
+4493-            object.controller = controller;
+4494-            object.zone = Zone::Battlefield;
+4495-            object.summoning_sick = true;
+4496-            self.state.objects.insert(id, object);
+4497-            events.push(Event::PermanentEntered {
+4498-                object: id,
+4499-                card,
+4500-                controller,
+4501-            });
+4502-            events.push(Event::StateBasedAction {
+4503-                description: format!("P{controller} creates {card} token ({id})"),
+4504-            });
+4505-            self.queue_triggers(id, card, controller, TriggerEvent::EntersBattlefield);
+4506-        }
+4507-    }
+4508-
+4509-    fn begin_order(
+4510-        &mut self,

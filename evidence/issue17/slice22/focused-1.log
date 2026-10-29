@@ -1,0 +1,41 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.45s
+     Running tests\issue17_slice22.rs (target\debug\deps\issue17_slice22-1be942bdc603fc37.exe)
+
+running 8 tests
+test mana_value_reads_the_printed_cost ... ok
+test an_opponents_land_does_not_trigger_the_landfall_half ... ok
+test a_noncreature_permanent_spell_does_not_trigger_it ... ok
+test an_opponents_creature_spell_does_not_trigger_it ... ok
+test landfall_creates_one_bear_token_and_adds_no_counters ... ok
+test the_captured_mana_value_survives_a_save_and_reload_while_targeting ... FAILED
+test casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature ... FAILED
+test the_counter_count_tracks_a_six_mana_creature ... FAILED
+
+failures:
+
+---- the_captured_mana_value_survives_a_save_and_reload_while_targeting stdout ----
+
+thread 'the_captured_mana_value_survives_a_save_and_reload_while_targeting' (44368) panicked at crates\core\tests\issue17_slice22.rs:347:5:
+assertion failed: matches!(game.state.pending, Some(Pending::TriggerTarget { .. }))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature stdout ----
+
+thread 'casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature' (11520) panicked at crates\core\tests\issue17_slice22.rs:126:9:
+the cast trigger must ask for its target: None
+
+---- the_counter_count_tracks_a_six_mana_creature stdout ----
+
+thread 'the_counter_count_tracks_a_six_mana_creature' (18868) panicked at crates\core\tests\common\mod.rs:209:21:
+expected 0 to be able to act, got: action choose trigger target is not legal here: no triggered ability is waiting for a target choice (CR 603.3d)
+
+
+failures:
+    casting_a_creature_puts_its_mana_value_in_counters_on_the_chosen_creature
+    the_captured_mana_value_survives_a_save_and_reload_while_targeting
+    the_counter_count_tracks_a_six_mana_creature
+
+test result: FAILED. 5 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice22`

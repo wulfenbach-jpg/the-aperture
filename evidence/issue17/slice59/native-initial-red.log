@@ -1,0 +1,54 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+     Running tests\issue17_slice59_repairs.rs (target\debug\deps\issue17_slice59_repairs-5a49eccf2de1cb81.exe)
+
+running 5 tests
+test ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice ... FAILED
+test ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect ... FAILED
+test ordinary_blocking_does_not_materialize_empty_ring_state ... FAILED
+test ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load ... FAILED
+test forged_ring_pending_cannot_select_an_opponents_permanent ... FAILED
+
+failures:
+
+---- ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice stdout ----
+
+thread 'ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice' (8660) panicked at crates\core\tests\issue17_slice59_repairs.rs:50:5:
+becomes-blocked Ring ability must trigger, not schedule as a declaration side effect
+
+---- ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect stdout ----
+
+thread 'ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect' (26336) panicked at crates\core\tests\issue17_slice59_repairs.rs:35:5:
+assertion `left == right` failed: Ring draw waits for its trigger to resolve (CR603.3)
+  left: 1
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- ordinary_blocking_does_not_materialize_empty_ring_state stdout ----
+
+thread 'ordinary_blocking_does_not_materialize_empty_ring_state' (2492) panicked at crates\core\tests\issue17_slice59_repairs.rs:87:5:
+an ordinary combat must not insert serialized Ring bookkeeping
+
+---- ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load stdout ----
+
+thread 'ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load' (26144) panicked at crates\core\tests\issue17_slice59_repairs.rs:60:5:
+foreign bearer validates=true, sandbox_loads=true
+
+---- forged_ring_pending_cannot_select_an_opponents_permanent stdout ----
+
+thread 'forged_ring_pending_cannot_select_an_opponents_permanent' (39320) panicked at crates\core\tests\issue17_slice59_repairs.rs:74:5:
+forged choice validates=true, sandbox_loads=true, accepted=true
+
+
+failures:
+    forged_ring_pending_cannot_select_an_opponents_permanent
+    ordinary_blocking_does_not_materialize_empty_ring_state
+    ring_attack_draw_is_a_stack_trigger_not_a_declaration_side_effect
+    ring_blocked_creates_a_stack_trigger_before_delaying_sacrifice
+    ring_state_refuses_another_seats_bearer_at_validate_and_sandbox_load
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice59_repairs`
+
+native_initial_red_exit=101

@@ -1,0 +1,70 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-29T19:30:29Z",
+  "cards": [
+    {
+      "name": "Skirk Prospector",
+      "oracle_id": "c18013e4-0b99-44e3-a2b2-027ace68723a",
+      "scryfall_id": "7bc508b3-8b38-4cf0-89a7-a2cb247ed083",
+      "set": "dmr",
+      "collector_number": "137",
+      "layout": "normal",
+      "released_at": "2023-01-13",
+      "mana_cost": "{R}",
+      "type_line": "Creature — Goblin",
+      "power": "1",
+      "toughness": "1",
+      "oracle_text": "Sacrifice a Goblin: Add {R}.",
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [],
+      "legalities_commander": "legal",
+      "mana_value": 1,
+      "printings_checked": 9,
+      "printings": [
+        "dd1/51",
+        "ddg/49",
+        "dmr/137",
+        "dom/144",
+        "evg/51",
+        "ons/230",
+        "plst/DOM-144",
+        "sld/2414",
+        "vma/186"
+      ],
+      "printings_distinct_oracle_texts": 1,
+      "retrieved_at_utc": "2026-10-29T19:26:17Z"
+    },
+    {
+      "name": "Zo-Zu the Punisher",
+      "oracle_id": "0e412b68-9179-4094-960a-95692428855b",
+      "scryfall_id": "e7c927d6-911d-4a37-89a2-6c500edf4dd7",
+      "set": "dds",
+      "collector_number": "41",
+      "layout": "normal",
+      "released_at": "2017-03-31",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Legendary Creature — Goblin Warrior",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Whenever a land enters, Zo-Zu deals 2 damage to that land's controller.",
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [],
+      "legalities_commander": "legal",
+      "mana_value": 3,
+      "printings_checked": 4,
+      "printings": [
+        "chk/200",
+        "dds/41",
+        "slc/26",
+        "slc/53"
+      ],
+      "printings_distinct_oracle_texts": 1,
+      "retrieved_at_utc": "2026-10-29T19:26:18Z"
+    }
+  ]
+}

@@ -402,26 +402,40 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 OrderMode::Surveil => vec!["701.25a"],
             },
             Pending::Discard { .. } => vec!["514.1"],
+            Pending::EffectDiscard { .. } => vec!["701.54a"],
+            Pending::CombatDamageAssignment { .. } => vec!["510.1", "509.1h"],
             Pending::ApnapSacrifice { .. } => vec!["101.4", "701.21a"],
+            Pending::ApnapReveal { .. } => vec!["101.4", "701.9a"],
             Pending::CommanderReturn { .. } => vec!["903.9a"],
             Pending::CommanderReplacement { .. } | Pending::CommanderDraw { .. } => {
                 vec!["903.9b"]
             }
             Pending::TriggerTarget { .. } => vec!["603.3d"],
             Pending::TriggerChoice { .. } => vec!["603.5"],
+            Pending::TriggerMode { .. } => vec!["603.3c", "700.2b"],
+            Pending::RingTemptation { .. } => vec!["701.54a"],
+            Pending::LegendaryChoice { .. } => vec!["704.5j"],
+            Pending::TopCardChoice { .. } => vec!["701.20e"],
+            Pending::HideawayChoice { .. } => vec!["702.75a", "701.20a", "701.20e"],
+            Pending::PlayExiled { .. } => vec!["702.75a", "608.2g"],
+            Pending::SearchLibrary { .. } => vec!["701.23"],
         };
-        let text = if matches!(pending, Pending::ApnapSacrifice { .. })
-            && pending.player() != viewer
-        {
+        let text = if pending.player() != viewer
+            && matches!(
+                pending,
+                Pending::ApnapSacrifice { .. } | Pending::ApnapReveal { .. }
+            ) {
             format!(
-                "P{} has a simultaneous sacrifice choice pending; details are private to that seat.",
+                "P{} has a pending choice; details are private to that seat.",
                 pending.player()
             )
         } else {
             pending.describe()
         };
         let apnap_note = match pending {
-            Pending::ApnapSacrifice { .. } | Pending::CommanderReturn { .. } => {
+            Pending::ApnapSacrifice { .. }
+            | Pending::ApnapReveal { .. }
+            | Pending::CommanderReturn { .. } => {
                 " These choices are made in APNAP order: seats answer one at a time in turn order, starting with the active player (CR 101.4)."
             }
             _ => "",
@@ -466,23 +480,39 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
         }
     }
 
-    let lethal: Vec<String> = state
-        .objects
-        .values()
-        .filter(|o| {
-            o.zone == crate::ids::Zone::Battlefield
-                && o.is_creature()
-                && (o.toughness() <= 0 || o.damage as i32 >= o.toughness())
-        })
-        .map(|o| {
-            format!(
-                "{} ({} damage, {} toughness)",
-                o.name(),
-                o.damage,
-                o.toughness()
-            )
-        })
-        .collect();
+    // CR 704.5f moves a creature with zero toughness to its owner's graveyard as
+    // a state-based action — it never destroys it, and indestructible does not
+    // stop that move — while CR 704.5g's lethal-damage destruction does not apply
+    // to an indestructible permanent (CR 702.12b). Telling the player that such a
+    // creature "will be destroyed" was a false statement either way.
+    let mut lethal: Vec<String> = Vec::new();
+    let mut zero_toughness: Vec<String> = Vec::new();
+    let mut spared: Vec<String> = Vec::new();
+    for o in state.objects.values() {
+        if o.zone != crate::ids::Zone::Battlefield || !game.is_creature(o) {
+            continue;
+        }
+        // CR 704.5f: zero or less toughness is a graveyard move by state-based
+        // action — not a destroy, and not a consequence of damage.
+        if o.toughness() <= 0 {
+            zero_toughness.push(format!("{} ({} toughness)", o.name(), o.toughness()));
+            continue;
+        }
+        if (o.damage as i32) < o.toughness() {
+            continue;
+        }
+        let text = format!(
+            "{} ({} damage, {} toughness)",
+            o.name(),
+            o.damage,
+            o.toughness()
+        );
+        if game.has_indestructible(o.id) {
+            spared.push(text);
+        } else {
+            lethal.push(text);
+        }
+    }
     if !lethal.is_empty() {
         out.push(Explanation {
             topic: "state-based actions".to_string(),
@@ -492,6 +522,28 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
                 lethal.join(", ")
             ),
             rules: vec!["117.5", "704.5g"],
+        });
+    }
+    if !zero_toughness.is_empty() {
+        out.push(Explanation {
+            topic: "state-based actions".to_string(),
+            kind: ExplanationKind::Rule,
+            text: format!(
+                "Waiting for state-based actions: {} has zero or less toughness and is put into its owner's graveyard (CR 704.5f). That is not a destroy, so indestructible does not prevent it (CR 702.12b).",
+                zero_toughness.join(", ")
+            ),
+            rules: vec!["117.5", "704.5f"],
+        });
+    }
+    if !spared.is_empty() {
+        out.push(Explanation {
+            topic: "state-based actions".to_string(),
+            kind: ExplanationKind::Rule,
+            text: format!(
+                "Waiting for state-based actions: {} has lethal damage but is indestructible, so the destroy does not apply (CR 702.12b).",
+                spared.join(", ")
+            ),
+            rules: vec!["704.5g", "702.12b"],
         });
     }
 

@@ -1,0 +1,73 @@
+{
+  "schema": "aperture.sourced-cards.v1",
+  "provider": "Scryfall per-card API (cards/named with exact=, then the printing search by oracle id)",
+  "retrieved_at": "2026-10-29T13:45:38Z",
+  "note": "Oracle text is fetched, never typed. Every printing was enumerated and each card has exactly one distinct oracle text, so the implemented wording cannot be a reprint variant.",
+  "cards": [
+    {
+      "name": "Pashalik Mons",
+      "set": "dmr",
+      "collector_number": "133",
+      "oracle_id": "bdb94ccd-1bb5-4bb7-9539-e1b1c97c19c5",
+      "mana_cost": "{2}{R}",
+      "type_line": "Legendary Creature — Goblin Warrior",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.\n{3}{R}, Sacrifice a Goblin: Create two 1/1 red Goblin creature tokens.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2023-01-13",
+      "scryfall_id": "ca20a650-65b0-4714-b7ce-0481af3db377",
+      "legalities_commander": "legal",
+      "mana_value": 3.0,
+      "printings_checked": 5,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "dmr/133",
+        "dmr/328",
+        "j21/495",
+        "mh1/138",
+        "sld/2408"
+      ]
+    },
+    {
+      "name": "Goblin Trashmaster",
+      "set": "m19",
+      "collector_number": "144",
+      "oracle_id": "0283bf5e-ddf2-4a4a-a7cf-d3e27eed7e7d",
+      "mana_cost": "{2}{R}{R}",
+      "type_line": "Creature — Goblin Warrior",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Other Goblins you control get +1/+1.\nSacrifice a Goblin: Destroy target artifact.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2018-07-13",
+      "scryfall_id": "2bc69988-3c2d-4b76-a8c0-05926b9bbd08",
+      "legalities_commander": "legal",
+      "mana_value": 4.0,
+      "printings_checked": 6,
+      "printings_distinct_oracle_texts": 1,
+      "printings": [
+        "anb/72",
+        "m19/144",
+        "plst/M19-144",
+        "pm19/144p",
+        "pm19/144s",
+        "sld/317"
+      ]
+    }
+  ]
+}

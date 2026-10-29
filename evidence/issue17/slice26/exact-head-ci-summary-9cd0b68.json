@@ -1,0 +1,67 @@
+{
+  "head": "9cd0b683a0562e9d1d105ccc684657f4a74fcdec",
+  "retrieved_at": "2026-10-27T10:15:11.371754+00:00",
+  "total": 5,
+  "states": {
+    "in_progress:None": 4,
+    "completed:success": 1
+  },
+  "all_keyed_to_head": true,
+  "required_checks": [
+    {
+      "context": "rust (ubuntu-latest)",
+      "app_id": 15368
+    },
+    {
+      "context": "rust (windows-latest)",
+      "app_id": 15368
+    },
+    {
+      "context": "rust (macos-latest)",
+      "app_id": 15368
+    },
+    {
+      "context": "board and roadmap",
+      "app_id": 15368
+    }
+  ],
+  "required_pass": false,
+  "green": false,
+  "checks": [
+    {
+      "name": "rust (windows-latest)",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "9cd0b683a0562e9d1d105ccc684657f4a74fcdec",
+      "app_id": 15368
+    },
+    {
+      "name": "board and roadmap",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "9cd0b683a0562e9d1d105ccc684657f4a74fcdec",
+      "app_id": 15368
+    },
+    {
+      "name": "rust (ubuntu-latest)",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "9cd0b683a0562e9d1d105ccc684657f4a74fcdec",
+      "app_id": 15368
+    },
+    {
+      "name": "rust (macos-latest)",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "9cd0b683a0562e9d1d105ccc684657f4a74fcdec",
+      "app_id": 15368
+    },
+    {
+      "name": "windows package",
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "9cd0b683a0562e9d1d105ccc684657f4a74fcdec",
+      "app_id": 15368
+    }
+  ]
+}

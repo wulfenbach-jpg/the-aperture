@@ -1,0 +1,20 @@
+union names: 459
+supported (from evidence/issue17/review296/supported-names.txt): 149
+isamaru-white-aggro          status=planned    cards= 59 missing= 55 recomputed_missing= 55 recorded_matches=True
+jasmine-vanilla-stompy       status=certified  cards= 61 missing=  0 recomputed_missing=  0 recorded_matches=True
+talrand-draw-go              status=planned    cards= 59 missing= 51 recomputed_missing= 51 recorded_matches=True
+krenko-goblin-tokens         status=planned    cards= 59 missing= 48 recomputed_missing= 48 recorded_matches=True
+ayula-bear-counters          status=planned    cards= 59 missing= 16 recomputed_missing= 16 recorded_matches=True
+elas-sacrifice               status=planned    cards= 60 missing= 52 recomputed_missing= 52 recorded_matches=True
+tatyova-landfall             status=planned    cards= 60 missing= 52 recomputed_missing= 52 recorded_matches=True
+zada-spells                  status=planned    cards= 59 missing= 53 recomputed_missing= 53 recorded_matches=True
+union 459 = supported 137 + missing 322
+list isamaru-white-aggro          fully_supported=False unsupported=55
+list jasmine-vanilla-stompy       fully_supported=True unsupported=0
+list talrand-draw-go              fully_supported=False unsupported=51
+list krenko-goblin-tokens         fully_supported=False unsupported=48
+list ayula-bear-counters          fully_supported=False unsupported=16
+list elas-sacrifice               fully_supported=False unsupported=52
+list tatyova-landfall             fully_supported=False unsupported=52
+list zada-spells                  fully_supported=False unsupported=53
+ALL_RECORDED_MISSING_MATCH True

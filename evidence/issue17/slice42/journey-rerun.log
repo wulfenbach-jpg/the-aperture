@@ -1,0 +1,95 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling http v1.5.0
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling futures-util v0.3.34
+   Compiling httparse v1.10.1
+   Compiling hybrid-array v0.4.15
+   Compiling serde_core v1.0.229
+   Compiling rustversion v1.0.23
+   Compiling schannel v0.1.30
+   Compiling serde v1.0.229
+   Compiling tracing v0.1.44
+   Compiling form_urlencoded v1.2.2
+   Compiling futures-channel v0.3.34
+   Compiling tokio v1.54.1
+   Compiling encoding_rs v0.8.42
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling syn v3.0.9
+   Compiling native-tls v0.2.18
+   Compiling http-body v1.1.0
+   Compiling rustls-pki-types v1.15.1
+   Compiling http-body-util v0.1.5
+   Compiling digest v0.11.3
+   Compiling sha2 v0.11.1
+   Compiling serde_json v1.0.154
+   Compiling synstructure v0.14.0
+   Compiling zerovec-derive v0.11.7
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.4
+   Compiling zerovec v0.11.9
+   Compiling zerotrie v0.2.5
+   Compiling thiserror v2.0.21
+   Compiling tinystr v0.8.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_collections v2.4.0
+   Compiling icu_locale_core v2.4.0
+   Compiling hyper v1.12.0
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower v0.5.3
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling hyper-util v0.1.21
+   Compiling icu_provider v2.4.0
+   Compiling icu_properties v2.4.0
+   Compiling icu_normalizer v2.4.0
+   Compiling hyper-tls v0.6.0
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling tower-http v0.6.11
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice42-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice42-journey-driver)
+    Finished `release` profile [optimized] target(s) in 37.26s
+     Running `target\release\issue17-slice42-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 5,
+    "Craw Wurm": 4,
+    "Grizzly Bears": 3,
+    "Lightning Greaves": 7,
+    "Swiftfoot Boots": 7
+  },
+  "combat_damage_events": 48,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice42.txt",
+  "digest": "1750a81eb981f0112472e8c6908e0942ea3942a6d6f13afc722002199158f551",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "equip_activations": 17,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3949,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "05cb383d0882cad0b572155a2a1be3c2abc8500f085b944afd82f24ca01e6dcb",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1565,
+  "successful_attachments": 17,
+  "turns": 36
+}
+journey_exit=0

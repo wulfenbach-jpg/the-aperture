@@ -1,0 +1,137 @@
+{
+  "commander_damage": [
+    {
+      "amount": 4,
+      "commander": 1,
+      "recipient": 1
+    },
+    {
+      "amount": 12,
+      "commander": 3,
+      "recipient": 1
+    }
+  ],
+  "commander_damage_totals": [
+    {
+      "commander": 1,
+      "recipient": 1,
+      "total": 4
+    },
+    {
+      "commander": 2,
+      "recipient": 0,
+      "total": 4
+    },
+    {
+      "commander": 2,
+      "recipient": 2,
+      "total": 12
+    },
+    {
+      "commander": 2,
+      "recipient": 3,
+      "total": 4
+    },
+    {
+      "commander": 3,
+      "recipient": 1,
+      "total": 12
+    },
+    {
+      "commander": 3,
+      "recipient": 3,
+      "total": 7
+    }
+  ],
+  "commanders": [
+    {
+      "card": "Jasmine Boreal",
+      "seat": 0
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 1
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 2
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 3
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 8,
+    "ability_activations": 7,
+    "attacks": 19,
+    "blocks": 11,
+    "casts": 55,
+    "commander_damage_events": 10,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 104,
+    "events": 6061,
+    "triggered_abilities": 1
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 2364
+  },
+  "final_digest": "d7f8c2adaa17d906bdaaed28f9482589faa65c5863d1f134377ca45665ddab48",
+  "first_player": 3,
+  "policies": "heuristic vs heuristic vs heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 79,
+  "profile": "commander-combat-practice-40",
+  "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 2364,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 4,
+  "seats": [
+    {
+      "cards": 99,
+      "library": 0,
+      "life": -5,
+      "name": "jasmine-vanilla-stompy",
+      "seat": 0,
+      "source": "decks/starter-corpus/jasmine-vanilla-stompy.txt"
+    },
+    {
+      "cards": 99,
+      "library": 76,
+      "life": 16,
+      "name": "jasmine-vanilla-stompy",
+      "seat": 1,
+      "source": "decks/starter-corpus/jasmine-vanilla-stompy.txt"
+    },
+    {
+      "cards": 99,
+      "library": 0,
+      "life": -4,
+      "name": "jasmine-vanilla-stompy",
+      "seat": 2,
+      "source": "decks/starter-corpus/jasmine-vanilla-stompy.txt"
+    },
+    {
+      "cards": 99,
+      "library": 0,
+      "life": -1,
+      "name": "jasmine-vanilla-stompy",
+      "seat": 3,
+      "source": "decks/starter-corpus/jasmine-vanilla-stompy.txt"
+    }
+  ],
+  "seed": 1,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2364,
+  "truncated": null,
+  "turns": 53,
+  "winner": 1,
+  "winner_label": "P1"
+}

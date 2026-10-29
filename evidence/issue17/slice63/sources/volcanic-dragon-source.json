@@ -1,0 +1,28 @@
+{
+  "name": "Volcanic Dragon",
+  "set": "cmr",
+  "collector_number": "207",
+  "oracle_id": "994db177-03f5-43dd-bf7b-2994e8d430d3",
+  "mana_cost": "{4}{R}{R}",
+  "type_line": "Creature — Dragon",
+  "power": "4",
+  "toughness": "4",
+  "oracle_text": "Flying, haste",
+  "keywords": [
+    "Flying",
+    "Haste"
+  ],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2020-11-20",
+  "scryfall_id": "46419d29-21a1-4753-a2f0-1d0d996ec54e",
+  "retrieved_at_utc": "2026-10-29T09:54:11Z",
+  "provider": "scryfall",
+  "url": "https://api.scryfall.com/cards/named?exact=Volcanic%20Dragon",
+  "legalities_commander": "legal"
+}

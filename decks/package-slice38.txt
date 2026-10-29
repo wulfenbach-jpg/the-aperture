@@ -1,0 +1,17 @@
+// package-slice38 — supported 40-card package fixture, NOT a desired 100-card starter.
+// Exercises Spider-Ham, Peter Porker (SPM 114): the Food token it creates and the
+// "Animal May-Ham" anthem over the printed subtype list. Bears (Grizzly Bears,
+// Bear Cub, Runeclaw Bear, Ordinary Bear), a Wolf (Exuberant Wolfbear) and a
+// creature whose subtype changes on the turn (Circle of the Moon Druid) give the
+// anthem four different reasons to apply, and Stuffed Bear gives it a permanent
+// that is not a creature until it is animated.
+4 Spider-Ham, Peter Porker
+4 Grizzly Bears
+4 Bear Cub
+4 Runeclaw Bear
+4 Ordinary Bear
+2 Exuberant Wolfbear
+2 Circle of the Moon Druid
+2 Stuffed Bear
+2 Giant Growth
+12 Forest

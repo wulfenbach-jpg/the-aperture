@@ -1,0 +1,96 @@
+{
+  "slice": 43,
+  "task": "t_67778feb",
+  "issue": 17,
+  "branch": "aperture/issue-17",
+  "pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "base": "cddb5f5",
+  "review_consumed": "review314 (APPROVED_INCREMENT for slice 42; three record corrections required; CR 702.6b rule unproven)",
+  "full_issue17_accepted": false,
+  "certified_lists": 1,
+  "certified_lists_total": 8,
+  "catalog_cards": 156,
+  "union_names": 459,
+  "supported_union_names": 144,
+  "missing_union_names": 315,
+  "ayula_missing": 9,
+  "record_corrections": {
+    "R314-1": "decks/starter-corpus/manifest.json starters[ayula-bear-counters].missing_interactions rewritten as a whole: equipment entry removed (implemented in slice 42), library-search entry replaced per remaining card, one entry per missing interaction",
+    "R314-2": "SLICE42-HUMAN-CHECKPOINT.md and slice42/RESULT.json now publish 892 passed / 0 failed / 1 ignored over 125 binaries for `cargo test --workspace --locked`, and state that 995 was the aggregate receipt sum that double-counted the focused suites",
+    "R314-3": "README.md layer-6 sentence and docs/issue17-starter-corpus.md:700-701 corrected: the pool grants shroud and hexproof via Lightning Greaves and Swiftfoot Boots; protection remains unsupported"
+  },
+  "equip_targeting_regressions": {
+    "rule": "CR 702.6b: equip is a targeted activated ability, so shroud and hexproof apply to the equip target",
+    "test": "crates/core/tests/issue17_slice42_equip_controls.rs::equip_cannot_target_a_protected_creature_but_keeps_existing_attachments",
+    "result": "passes: shroud refuses the controller's own equip (no offer, refused submit, state untouched); hexproof allows the controller's equip; a keyword gained after attachment never detaches; one attachment per Equipment survives a move",
+    "verdict": "no defect found; the rule was previously assumed and is now exercised"
+  },
+  "effect_ordering_sweep": "evidence/issue17/slice43/EFFECT-ORDERING-SWEEP.md — five sites enumerated, only recompute_layers queries a derived property after mutating effects, and it does so after restoring them; new disclosure: vigilance is read from printed keywords, not the live grant path",
+  "card": {
+    "name": "Lumra, Bellow of the Woods",
+    "printing": "blb 183",
+    "scryfall_id": "ae4f3aaf-3960-48cd-b34b-32e4ae5ae088",
+    "oracle_id": "97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb",
+    "retrieved_at": "2026-10-28T10:55:27Z",
+    "fixture": "fixtures/starter-corpus/slice43-sourced.json",
+    "raw_capture": "evidence/issue17/slice43/sources/lumra-blb-183.json",
+    "new_surfaces": [
+      "printed */* represented as no printed power/toughness plus a characteristic-defining static (CountSource::LandsYouControl)",
+      "Keyword::Vigilance read at CR 508.1f",
+      "printed Reach as a blocking permission for a catalog creature",
+      "Effect::ReturnLandCardsFromGraveyardTapped (CR 608.2c set, tapped entry through the canonical path)"
+    ]
+  },
+  "focused_tests": {
+    "issue17_slice43": "4 passed",
+    "issue17_slice42_equip_controls": "4 passed",
+    "card_printings": "16 passed",
+    "catalog_pool": "5 passed",
+    "starter_corpus": "8 passed",
+    "issue17_slice42": "9 passed",
+    "issue17_slice41": "11 passed",
+    "issue17_slice12": "11 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed"
+  },
+  "journey": {
+    "deck": "decks/package-slice43.txt",
+    "kind": "40-card evidence package, not a starter certificate",
+    "snapshot_sha256": "32378ca06d1829ea272e43c8f42d1ee1f401cccfb7f0eadb0e3f150c079e3099",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 2324,
+    "status": "terminal",
+    "outcome": "Win{P2} (opponents' life totals reached 0 or less, CR 704.5a)",
+    "steps": 1433,
+    "turns": 34,
+    "replay_events": 3604,
+    "digest": "689ed550346410ea041334384a1034a92fdd751b593ca6faffee740e8465677f",
+    "lumra_casts": 4,
+    "lumra_declared_attacks": 9,
+    "vigilance_assertions": 9,
+    "graveyard_land_return_triggers": 4,
+    "returned_land_entries": 12,
+    "combat_damage_events": 29,
+    "replay_digest_matches": true,
+    "save_reload_equal": true,
+    "driver": "evidence/issue17/slice43-journey-driver",
+    "receipt": "evidence/issue17/slice43/journey-driver.log"
+  },
+  "gates": {
+    "fmt": "cargo fmt --all --check exit 0",
+    "clippy": "cargo clippy --workspace --all-targets --locked -- -D warnings exit 0",
+    "workspace": "see evidence/issue17/slice43/native-verify.log"
+  },
+  "disclosed": [
+    "this slice implements one card; Ayula still has 9 names missing and no starter status changed",
+    "the journey is a 40-card package and masked demonstrator, not a 100-card certificate and not AI strength evidence",
+    "legend rule CR 704.5j is not implemented (Lumra is the second legendary card admitted into a practice library)",
+    "vigilance is read from printed keywords only; nothing grants or removes it today",
+    "the return effect returns land cards specifically; a nonland return needs its own effect",
+    "other starters' missing_interactions fields were not re-audited in this slice",
+    "review299/301/306/307/309-recovery/313/314 reviewer artifacts remain untracked"
+  ],
+  "next_action": "independent review of this increment, then the remaining 9 Ayula names (Ring, hideaway, snow, modal, dig-and-attack, investigate/Clue, combat-damage-as-unblocked, X total-mana-value destruction, mill-driven attack restriction)",
+  "no_merge_master_push_or_closure": true
+}

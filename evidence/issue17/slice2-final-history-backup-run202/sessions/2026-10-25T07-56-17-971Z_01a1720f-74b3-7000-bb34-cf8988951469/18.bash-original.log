@@ -1,0 +1,203 @@
+372:struct CardMeta {
+373-    oracle_id: Option<String>,
+374-    name: Option<String>,
+375-    layout: Option<String>,
+376-    type_line: Option<String>,
+377-    color_identity: Option<Vec<String>>,
+378-    legality: Option<CommanderLegality>,
+379-    keywords: Vec<String>,
+380-    oracle_text: Option<String>,
+381-    produced_mana: Option<Vec<String>>,
+382-    faces: Vec<CardFaceEvidence>,
+383-    issues: Vec<String>,
+384-}
+385-
+386-struct CardIndex {
+387-    cards: Vec<CardMeta>,
+388-    by_oracle: std::collections::BTreeMap<String, Vec<usize>>,
+389-    by_name: std::collections::BTreeMap<String, Vec<usize>>,
+390-}
+391-
+392-#[derive(Debug)]
+393-enum Resolution {
+394-    Found(usize),
+395-    Missing,
+396-    Ambiguous(String),
+397-}
+398-
+399-const COLORS: [&str; 5] = ["W", "U", "B", "R", "G"];
+400-
+401-fn canonical_name(name: &str) -> String {
+402-    name.trim()
+403-        .to_lowercase()
+404-        .split_whitespace()
+405-        .collect::<Vec<_>>()
+406-        .join(" ")
+407-}
+408-
+409-fn nonempty_string(value: &Value, key: &str, issues: &mut Vec<String>) -> Option<String> {
+410-    match value.get(key) {
+411-        Some(Value::String(text)) if !text.trim().is_empty() => Some(text.clone()),
+412-        Some(Value::String(_)) => {
+413-            issues.push(format!("'{key}' is empty"));
+414-            None
+415-        }
+416-        Some(_) => {
+417-            issues.push(format!("'{key}' is not a string"));
+418-            None
+419-        }
+420-        None => {
+421-            issues.push(format!("'{key}' is missing"));
+422-            None
+423-        }
+424-    }
+425-}
+426-
+427-fn validate_card(value: &Value) -> CardMeta {
+428-    let mut issues = Vec::new();
+429-    if nonempty_string(value, "object", &mut issues).as_deref() != Some("card") {
+430-        issues.push("object is not 'card'".to_string());
+431-    }
+432-    let _id = nonempty_string(value, "id", &mut issues);
+433-    let oracle_id = nonempty_string(value, "oracle_id", &mut issues);
+434-    let name = nonempty_string(value, "name", &mut issues);
+435-    let layout = nonempty_string(value, "layout", &mut issues);
+436-    let type_line = nonempty_string(value, "type_line", &mut issues);
+437-    if let Some(type_line) = &type_line
+438-        && !type_line_is_known(type_line)
+439-    {
+440-        issues.push(format!(
+441-            "type_line '{type_line}' contains an unknown supertype/type token"
+442-        ));
+443-    }
+444-    let color_identity = match value.get("color_identity") {
+445-        Some(Value::Array(items)) => {
+446-            let mut colors = Vec::new();
+447-            let mut seen = std::collections::BTreeSet::new();
+448-            let mut bad = false;
+449-            for item in items {
+450-                match item.as_str() {
+451-                    Some(color) if COLORS.contains(&color) => {
+452-                        if !seen.insert(color.to_string()) {
+====
+427:fn validate_card(value: &Value) -> CardMeta {
+428-    let mut issues = Vec::new();
+429-    if nonempty_string(value, "object", &mut issues).as_deref() != Some("card") {
+430-        issues.push("object is not 'card'".to_string());
+431-    }
+432-    let _id = nonempty_string(value, "id", &mut issues);
+433-    let oracle_id = nonempty_string(value, "oracle_id", &mut issues);
+434-    let name = nonempty_string(value, "name", &mut issues);
+435-    let layout = nonempty_string(value, "layout", &mut issues);
+436-    let type_line = nonempty_string(value, "type_line", &mut issues);
+437-    if let Some(type_line) = &type_line
+438-        && !type_line_is_known(type_line)
+439-    {
+440-        issues.push(format!(
+441-            "type_line '{type_line}' contains an unknown supertype/type token"
+442-        ));
+443-    }
+444-    let color_identity = match value.get("color_identity") {
+445-        Some(Value::Array(items)) => {
+446-            let mut colors = Vec::new();
+447-            let mut seen = std::collections::BTreeSet::new();
+448-            let mut bad = false;
+449-            for item in items {
+450-                match item.as_str() {
+451-                    Some(color) if COLORS.contains(&color) => {
+452-                        if !seen.insert(color.to_string()) {
+453-                            issues.push(format!("color_identity repeats '{color}'"));
+454-                            bad = true;
+455-                        } else {
+456-                            colors.push(color.to_string());
+457-                        }
+458-                    }
+459-                    Some(color) => {
+460-                        issues.push(format!("color_identity contains unknown color '{color}'"));
+461-                        bad = true;
+462-                    }
+463-                    None => {
+464-                        issues.push("color_identity contains a non-string entry".to_string());
+465-                        bad = true;
+466-                    }
+467-                }
+468-            }
+469-            if bad { None } else { Some(colors) }
+470-        }
+471-        Some(_) => {
+472-            issues.push("'color_identity' is not an array".to_string());
+473-            None
+474-        }
+475-        None => {
+476-            issues.push("'color_identity' is missing".to_string());
+477-            None
+478-        }
+479-    };
+480-    let legality = match value.get("legalities") {
+481-        Some(Value::Object(legalities)) => match legalities.get("commander") {
+482-            Some(Value::String(status)) => match status.as_str() {
+483-                "legal" => Some(CommanderLegality::Legal),
+484-                "not_legal" => Some(CommanderLegality::NotLegal),
+485-                "banned" => Some(CommanderLegality::Banned),
+486-                "restricted" => Some(CommanderLegality::Restricted),
+487-                other => {
+488-                    issues.push(format!("legalities.commander has unknown value '{other}'"));
+489-                    None
+490-                }
+491-            },
+492-            Some(_) => {
+493-                issues.push("legalities.commander is not a string".to_string());
+494-                None
+495-            }
+496-            None => {
+497-                issues.push("legalities.commander is missing".to_string());
+498-                None
+499-            }
+500-        },
+501-        Some(_) => {
+502-            issues.push("'legalities' is not an object".to_string());
+503-            None
+504-        }
+505-        None => {
+506-            issues.push("'legalities' is missing".to_string());
+507-            None
+508-        }
+509-    };
+510-    let keywords = match value.get("keywords") {
+511-        Some(Value::Array(items)) => {
+512-            let mut keywords = Vec::new();
+513-            for item in items {
+514-                match item.as_str() {
+515-                    Some(keyword) => keywords.push(keyword.to_lowercase()),
+516-                    None => issues.push("'keywords' contains a non-string entry".to_string()),
+517-                }
+518-            }
+519-            keywords
+520-        }
+521-        Some(_) => {
+522-            issues.push("'keywords' is not an array".to_string());
+523-            Vec::new()
+524-        }
+525-        None => {
+526-            issues.push("'keywords' is missing".to_string());
+527-            Vec::new()
+528-        }
+529-    };
+530-    let produced_mana = match value.get("produced_mana") {
+531-        Some(Value::Array(items)) => {
+532-            let mut colors = Vec::new();
+533-            let mut bad = false;
+534-            for item in items {
+535-                match item.as_str() {
+536-                    Some(color) if COLORS.contains(&color) || color == "C" => {
+537-                        colors.push(color.to_string())
+538-                    }
+539-                    Some(color) => {
+540-                        issues.push(format!("produced_mana contains unknown value '{color}'"));
+541-                        bad = true;
+542-                    }
+543-                    None => {
+544-                        issues.push("produced_mana contains a non-string entry".to_string());
+545-                        bad = true;
+546-                    }
+547-                }

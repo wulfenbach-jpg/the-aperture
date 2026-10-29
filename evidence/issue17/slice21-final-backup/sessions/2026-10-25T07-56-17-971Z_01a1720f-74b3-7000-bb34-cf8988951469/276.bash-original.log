@@ -1,0 +1,42 @@
+254:pub struct MulliganRound {
+255-    pub round: u8,
+256-    /// Exact eligible seats for this round (previous mulliganers after round 1).
+257-    pub eligible: Vec<PlayerId>,
+258-    /// Seats that mulliganed in the previous round; empty in round 1.
+259-    pub previous_mulliganers: Vec<PlayerId>,
+260-    /// Seats locked in by a keep declaration across all rounds.
+261-    pub kept: Vec<PlayerId>,
+262-    /// Eligible seats in starting-player APNAP order (equal to `eligible`).
+263-    pub order: Vec<PlayerId>,
+264-    /// Index of the next seat that must declare.
+265-    pub cursor: usize,
+266-    /// `true` = keep, `false` = mulligan, for seats `order[..cursor]`.
+267-    pub declarations: BTreeMap<PlayerId, bool>,
+268-    /// Mulliganers whose post-redraw London bottom choice is still pending.
+269-    pub bottom_queue: Vec<PlayerId>,
+270-    /// Mulliganers whose bottom choice was already collected this batch.
+271-    pub bottomed: Vec<PlayerId>,
+272-}
+273-
+274-impl Pending {
+275-    pub fn player(&self) -> PlayerId {
+276-        match self {
+277-            Pending::Mulligan { player }
+278-            | Pending::BottomCards { player, .. }
+279-            | Pending::DeclareAttackers { player }
+526:pub struct StackItem {
+527-    pub object: ObjectId,
+528-    /// Card identity recorded when the item was put on the stack. For a spell
+529-    /// this is the spell's card; for an ability it is the source's card as last
+530-    /// known information, so resolution never depends on the source's current
+531-    /// zone (or on it still existing).
+532-    pub card: CardId,
+533-    pub controller: PlayerId,
+534-    pub targets: Vec<crate::action::Target>,
+535-    /// Index of the next effect to apply during resolution (CR 608.2c).
+536-    pub cursor: u8,
+537-    /// Spell or ability. Ability entries resolve without moving their source
+538-    /// into a graveyard for resolution (CR 603.3, 608.2).
+539-    pub entry: StackEntry,
+540-    /// Set once the controller has answered a CR 603.5 "you may" trigger.
+541-    pub trigger_answered: bool,

@@ -1,0 +1,34 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s
+     Running tests\issue17_slice57.rs (target\debug\deps\issue17_slice57-d13ec969a6a8a450.exe)
+
+running 5 tests
+test r348_direct_answer_cannot_trust_a_downgraded_or_injected_offer ... ok
+test r348_aggregate_mode_cannot_be_omitted ... ok
+test r348_saved_stack_x_must_respect_the_cast_bound ... FAILED
+test r348_non_x_spell_cannot_carry_saved_x ... FAILED
+test r348_injected_candidates_are_refused_even_before_selection ... ok
+
+failures:
+
+---- r348_saved_stack_x_must_respect_the_cast_bound stdout ----
+
+thread 'r348_saved_stack_x_must_respect_the_cast_bound' (38284) panicked at crates\core\tests\issue17_slice57.rs:808:5:
+saved X21: validates=true, sandbox_loads=true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- r348_non_x_spell_cannot_carry_saved_x stdout ----
+
+thread 'r348_non_x_spell_cannot_carry_saved_x' (29236) panicked at crates\core\tests\issue17_slice57.rs:820:5:
+unrelated spell X1: validates=true, sandbox_loads=true
+
+
+failures:
+    r348_non_x_spell_cannot_carry_saved_x
+    r348_saved_stack_x_must_respect_the_cast_bound
+
+test result: FAILED. 3 passed; 2 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice57`
+
+EXIT=101

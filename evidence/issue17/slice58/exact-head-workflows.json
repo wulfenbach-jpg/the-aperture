@@ -1,0 +1,1 @@
+[{"conclusion":"success","databaseId":40815263822,"event":"pull_request","headSha":"2d8d8b3b48ad5e767ffd2d642ee7c55135033010","name":"Rust quality","status":"completed"},{"conclusion":"success","databaseId":40815255576,"event":"push","headSha":"2d8d8b3b48ad5e767ffd2d642ee7c55135033010","name":"Rust quality","status":"completed"}]

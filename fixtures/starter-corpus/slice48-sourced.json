@@ -1,0 +1,29 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-28T13:49:35.417772+00:00",
+ "cards": [
+  {
+   "name": "Owlbear Cub",
+   "oracle_id": "0c92432d-ac76-47d2-af7a-fdffd4b546a2",
+   "scryfall_id": "be177b66-dab3-47ef-bcdf-8d99eb57e19f",
+   "set": "clb",
+   "collector_number": "246",
+   "layout": "normal",
+   "mana_cost": "{2}{G}",
+   "type_line": "Creature — Bird Bear",
+   "power": "3",
+   "toughness": "3",
+   "oracle_text": "Mama's Coming — Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Mama's Coming"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/be177b66-dab3-47ef-bcdf-8d99eb57e19f",
+   "retrieved_at": "2026-10-28T13:49:35.417772+00:00"
+  }
+ ]
+}

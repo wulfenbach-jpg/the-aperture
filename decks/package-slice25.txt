@@ -1,0 +1,8 @@
+// package-slice25 — evidence-only 40-card Wolfbear package, NOT a desired starter.
+4 Exuberant Wolfbear
+4 Elite Vanguard
+4 Grizzly Bears
+4 Centaur Courser
+4 Craw Wurm
+16 Forest
+4 Plains

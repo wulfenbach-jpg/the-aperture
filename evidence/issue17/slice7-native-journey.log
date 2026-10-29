@@ -1,0 +1,4 @@
+selfplay seed=610 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P3 in 2952 steps (66 turns)
+  digest 8e0ab4b00e7f | replay verified | casts 39 attacks 35 blocks 6 counters 0
+  replay written to evidence/issue17/slice7-native-journey.replay.json
+  report written to evidence/issue17/slice7-native-journey.json

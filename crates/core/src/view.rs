@@ -39,12 +39,27 @@ pub struct CardView {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum PendingKind {
     Mulligan,
-    BottomCards { count: u8 },
+    BottomCards {
+        count: u8,
+    },
     DeclareAttackers,
     DeclareBlockers,
-    OrderCard { index: usize, mode: OrderMode },
-    Discard { count: u8 },
+    OrderCard {
+        index: usize,
+        mode: OrderMode,
+    },
+    Discard {
+        count: u8,
+    },
+    /// CR 510.1: one blocked attacker is waiting for its controller's
+    /// "assign as though it weren't blocked" answer. The attacker stays a public
+    /// object, so the projection carries its id and card name.
+    CombatDamageAssignment {
+        attacker: ObjectId,
+        card: CardId,
+    },
     ApnapSacrifice,
+    ApnapReveal,
     CommanderReturn,
     CommanderReplacement,
     CommanderDraw,
@@ -59,6 +74,9 @@ pub struct StackView {
     pub name: &'static str,
     pub controller: PlayerId,
     pub targets: Vec<String>,
+    /// Public choices announced when casting a modal spell, in printed order.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub modes: Vec<&'static str>,
 }
 
 /// Public command-zone information. The registry's current ObjectId is NOT
@@ -74,6 +92,13 @@ pub struct CommanderView {
     pub zone: Option<Zone>,
     pub casts_from_command_zone: u32,
     pub tax: u32,
+}
+
+/// Public per-seat Ring level and bearer (CR 701.54).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct RingView {
+    pub temptations: u8,
+    pub bearer: Option<ObjectId>,
 }
 
 /// Public cumulative commander-damage row (CR 903.10a); commander identities
@@ -120,6 +145,9 @@ pub struct PlayerView {
     pub commanders: Vec<CommanderView>,
     /// Public cumulative commander combat damage (CR 903.10a).
     pub commander_damage: Vec<CommanderDamageView>,
+    /// Public per-seat Ring level and bearer (CR 701.54). Empty until a Ring
+    /// temptation first materializes the state.
+    pub rings: Vec<RingView>,
     pub own_library_count: usize,
     pub own_life: i32,
     /// Whether the viewing seat has left the game.
@@ -131,6 +159,12 @@ pub struct PlayerView {
     /// Public combat state (CR 508/509: declarations are public).
     pub attackers: Vec<ObjectId>,
     pub blockers: Vec<(ObjectId, ObjectId)>,
+    /// CR 509.1g: a blocker whose attacker has left combat is still a blocking
+    /// creature until it is removed from combat or the combat phase ends, so it
+    /// has no pair to report in `blockers`. It is public combat state exactly
+    /// like the pairs above and is listed separately rather than invented as a
+    /// pair with a departed attacker.
+    pub unpaired_blockers: Vec<ObjectId>,
     pub stack: Vec<StackView>,
     pub turn_number: u32,
     pub active: PlayerId,
@@ -193,9 +227,10 @@ fn card_view(game: &Game, id: ObjectId) -> CardView {
         name: def.name,
         controller: obj.controller,
         tapped: obj.tapped,
-        // Characteristics, not printed values: counters and pumps included.
-        power: obj.is_creature().then(|| obj.power()),
-        toughness: obj.is_creature().then(|| obj.toughness()),
+        // Characteristics, not printed values: counters, pumps and an
+        // animation that adds the creature type (Stuffed Bear) included.
+        power: game.is_creature(obj).then(|| obj.power()),
+        toughness: game.is_creature(obj).then(|| obj.toughness()),
         damage: obj.damage,
         summoning_sick: obj.summoning_sick,
         pump_power: obj.pump_power,
@@ -212,7 +247,7 @@ fn card_view(game: &Game, id: ObjectId) -> CardView {
     }
 }
 
-fn zone_cards(game: &Game, p: PlayerId, zone: Zone) -> Vec<CardView> {
+fn zone_cards(game: &Game, viewer: PlayerId, p: PlayerId, zone: Zone) -> Vec<CardView> {
     let ids: Vec<ObjectId> = match zone {
         Zone::Graveyard => game.state.player(p).graveyard.clone(),
         Zone::Exile => game.state.player(p).exile.clone(),
@@ -226,7 +261,29 @@ fn zone_cards(game: &Game, p: PlayerId, zone: Zone) -> Vec<CardView> {
         Zone::Command => game.state.player(p).command_zone.clone(),
         Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
     };
-    ids.into_iter().map(|id| card_view(game, id)).collect()
+    ids.into_iter()
+        .map(|id| {
+            let mut view = card_view(game, id);
+            // CR 406.3 + the printed hideaway ruling: a card exiled face down is
+            // not identified to anyone except a player who controlled the
+            // exiling permanent. Every other viewer sees a face-down card with no
+            // printed characteristics, so the projection never renders its
+            // identity.
+            if game.state.face_down_exile.contains(&id) {
+                let may_look = game
+                    .state
+                    .hideaway
+                    .iter()
+                    .any(|link| link.card == id && link.controller == viewer);
+                if !may_look {
+                    view.name = "a face-down exiled card";
+                    view.oracle = "";
+                    view.cost = None;
+                }
+            }
+            view
+        })
+        .collect()
 }
 
 /// Render one event from `viewer`'s perspective, masking hidden information.
@@ -245,6 +302,21 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             format!("P{player} puts {count} card(s) on the bottom of their library")
         }
         Event::TurnBegin { turn, active } => format!("— Turn {turn}: P{active} —"),
+        Event::CombatDamageAssignment {
+            player,
+            attacker,
+            card,
+            as_though_unblocked,
+        } => format!(
+            "P{player} has {} ({attacker}) assign its combat damage {}{}",
+            card.name(),
+            if *as_though_unblocked {
+                "as though it weren't blocked"
+            } else {
+                "normally"
+            },
+            " (CR 510.1)"
+        ),
         Event::StepBegin { step } => format!("[{}]", step.name()),
         Event::Priority { player } => format!("P{player} receives priority"),
         Event::Pass { player } => format!("P{player} passes"),
@@ -305,6 +377,29 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
             let verb = if *delta > 0 { "gains" } else { "loses" };
             format!("P{player} {verb} {} life (now {life})", delta.abs())
         }
+        Event::Milled { player, card, .. } => {
+            // A graveyard is a public zone (CR 400.2), so the card name is
+            // rendered for every viewer, unlike a draw.
+            format!("P{player} mills {}", card.name())
+        }
+        Event::ManaAdded {
+            player,
+            color,
+            amount,
+            pool_total,
+        } => {
+            if *player == viewer {
+                format!(
+                    "P{player} adds {amount} {} to their mana pool (now {pool_total})",
+                    color.symbol()
+                )
+            } else {
+                format!(
+                    "P{player} adds {amount} {} to their mana pool",
+                    color.symbol()
+                )
+            }
+        }
         Event::Draw { player, card, .. } => {
             if *player == viewer {
                 format!("P{player} draws {}", card.name())
@@ -343,6 +438,29 @@ pub fn render_event(game: &Game, viewer: PlayerId, event: &Event) -> String {
                 format!("P{player} discards {}", card.name())
             } else {
                 format!("P{player} discards a card")
+            }
+        }
+        Event::CardsRevealed {
+            player,
+            cards,
+            count,
+        } => {
+            if cards.is_empty() {
+                format!("P{player} reveals no creature cards")
+            } else {
+                let names: Vec<&'static str> = cards
+                    .iter()
+                    .map(|id| {
+                        game.state
+                            .try_object(*id)
+                            .map(|object| object.card.name())
+                            .unwrap_or("a card")
+                    })
+                    .collect();
+                format!(
+                    "P{player} reveals {count} creature card(s) from hand: {}",
+                    names.join(", ")
+                )
             }
         }
         Event::SacrificeChosen { player, permanent } => match permanent {
@@ -550,13 +668,33 @@ impl Game {
     pub fn view_for(&self, viewer: PlayerId, log: &[Event]) -> PlayerView {
         let me = self.state.player(viewer);
         let pending_viewed = match &self.state.pending {
+            Some(crate::state::Pending::SearchLibrary {
+                player,
+                looked,
+                mode,
+                ..
+            }) if *player == viewer
+                && *mode
+                    == crate::state::LibrarySearchMode::CreatureFromTopToBattlefieldAttacking =>
+            {
+                looked.iter().map(|id| card_view(self, *id)).collect()
+            }
             Some(crate::state::Pending::OrderCard { player, viewed, .. }) if *player == viewer => {
                 viewed.iter().map(|id| card_view(self, *id)).collect()
+            }
+            Some(crate::state::Pending::TopCardChoice { player, card, .. })
+                if *player == viewer =>
+            {
+                vec![card_view(self, *card)]
             }
             _ => Vec::new(),
         };
         let pending_for_viewer = self.state.pending.as_ref().filter(|pending| match pending {
-            crate::state::Pending::ApnapSacrifice { player, .. } => *player == viewer,
+            crate::state::Pending::ApnapSacrifice { player, .. }
+            | crate::state::Pending::ApnapReveal { player, .. }
+            | crate::state::Pending::TopCardChoice { player, .. }
+            | crate::state::Pending::SearchLibrary { player, .. }
+            | crate::state::Pending::RingTemptation { player, .. } => *player == viewer,
             _ => true,
         });
         let rendered: Vec<String> = if log.len() > LOG_LINES {
@@ -594,10 +732,10 @@ impl Game {
                         life: player.life,
                         hand_count: player.hand_size(),
                         library_count: player.library.len(),
-                        battlefield: zone_cards(self, seat, Zone::Battlefield),
-                        graveyard: zone_cards(self, seat, Zone::Graveyard),
-                        exile: zone_cards(self, seat, Zone::Exile),
-                        command_zone: zone_cards(self, seat, Zone::Command),
+                        battlefield: zone_cards(self, viewer, seat, Zone::Battlefield),
+                        graveyard: zone_cards(self, viewer, seat, Zone::Graveyard),
+                        exile: zone_cards(self, viewer, seat, Zone::Exile),
+                        command_zone: zone_cards(self, viewer, seat, Zone::Command),
                     }
                 }
             })
@@ -607,11 +745,11 @@ impl Game {
             viewer_name: me.name.clone(),
             seat_count: self.state.seat_count(),
             opponents,
-            own_hand: zone_cards(self, viewer, Zone::Hand),
-            own_battlefield: zone_cards(self, viewer, Zone::Battlefield),
-            own_graveyard: zone_cards(self, viewer, Zone::Graveyard),
-            own_exile: zone_cards(self, viewer, Zone::Exile),
-            own_command_zone: zone_cards(self, viewer, Zone::Command),
+            own_hand: zone_cards(self, viewer, viewer, Zone::Hand),
+            own_battlefield: zone_cards(self, viewer, viewer, Zone::Battlefield),
+            own_graveyard: zone_cards(self, viewer, viewer, Zone::Graveyard),
+            own_exile: zone_cards(self, viewer, viewer, Zone::Exile),
+            own_command_zone: zone_cards(self, viewer, viewer, Zone::Command),
             revealed: self
                 .state
                 .revealed_hidden()
@@ -649,6 +787,15 @@ impl Game {
                     amount: entry.amount,
                 })
                 .collect(),
+            rings: self
+                .state
+                .rings
+                .iter()
+                .map(|ring| RingView {
+                    temptations: ring.temptations,
+                    bearer: ring.bearer,
+                })
+                .collect(),
             own_library_count: me.library.len(),
             own_life: me.life,
             own_eliminated: me.lost,
@@ -662,6 +809,7 @@ impl Game {
             own_mulligans: me.mulligans,
             attackers: self.state.turn.attackers.clone(),
             blockers: self.state.turn.blockers.clone(),
+            unpaired_blockers: self.state.turn.unpaired_blockers.clone(),
             stack: self
                 .state
                 .stack
@@ -673,6 +821,14 @@ impl Game {
                     card: item.card,
                     name: item.card.name(),
                     controller: item.controller,
+                    modes: {
+                        let mut modes = item.modes.clone();
+                        modes.sort_unstable();
+                        modes
+                            .into_iter()
+                            .filter_map(|mode| crate::card::modal_mode_name(item.card, mode))
+                            .collect()
+                    },
                     targets: item
                         .targets
                         .iter()
@@ -701,13 +857,28 @@ impl Game {
                     PendingKind::Discard { count: *count }
                 }
                 crate::state::Pending::ApnapSacrifice { .. } => PendingKind::ApnapSacrifice,
+                crate::state::Pending::ApnapReveal { .. } => PendingKind::ApnapReveal,
+                crate::state::Pending::CombatDamageAssignment { order, cursor, .. } => {
+                    PendingKind::CombatDamageAssignment {
+                        attacker: order[*cursor].attacker,
+                        card: self.state.object(order[*cursor].attacker).card,
+                    }
+                }
                 crate::state::Pending::CommanderReturn { .. } => PendingKind::CommanderReturn,
                 crate::state::Pending::CommanderReplacement { .. } => {
                     PendingKind::CommanderReplacement
                 }
                 crate::state::Pending::CommanderDraw { .. } => PendingKind::CommanderDraw,
                 crate::state::Pending::TriggerTarget { .. } => PendingKind::TriggerTarget,
-                crate::state::Pending::TriggerChoice { .. } => PendingKind::TriggerChoice,
+                crate::state::Pending::TriggerChoice { .. }
+                | crate::state::Pending::TriggerMode { .. }
+                | crate::state::Pending::TopCardChoice { .. }
+                | crate::state::Pending::SearchLibrary { .. }
+                | crate::state::Pending::RingTemptation { .. }
+                | crate::state::Pending::EffectDiscard { .. } => PendingKind::TriggerChoice,
+                crate::state::Pending::LegendaryChoice { .. } => PendingKind::TriggerChoice,
+                crate::state::Pending::HideawayChoice { .. }
+                | crate::state::Pending::PlayExiled { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })

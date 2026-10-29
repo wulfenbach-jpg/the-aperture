@@ -1,0 +1,78 @@
+{
+  "slice": 57,
+  "increment_card": "Rampaging Yao Guai (PIP 82) — announced X, X entry counters, aggregate-mana-value destroy",
+  "full_issue17_accepted": false,
+  "corpus": {
+    "catalog": 164,
+    "union": 459,
+    "supported": 151,
+    "missing": 308,
+    "per_list": [55, 0, 51, 48, 2, 52, 52, 53],
+    "ayula_missing": ["Dúnedain Rangers", "Evercoat Ursine"],
+    "certified": 1,
+    "desired": 8
+  },
+  "heads": {
+    "base": "0e16435",
+    "opening_record_commit": "4d519a8",
+    "product_head": "68fc8f1",
+    "product_head_parent": "58a14e5",
+    "evidence_tip": "see metadata published_tip"
+  },
+  "record_items_closed": ["R356-1", "R356-2", "R356-3"],
+  "gates": {
+    "fmt": 0,
+    "clippy_workspace_all_targets_deny_warnings": 0,
+    "focused_slice57": "14 passed / 0 failed",
+    "focused_neighbours": "50 passed / 0 failed across 6 suites (slice55 5, slice54 4, slice53_ruxa 15, card_printings 19, catalog_pool 5, slice15_corpus 2)",
+    "focused_total": "7 suites / 64 passed / 0 failed",
+    "separate_ai_search_suite": "9 passed / 0 failed (253.36 s), not counted in the 64",
+    "corpus": "AUDIT OK 164 / 459 = 151 + 308, per-list [55,0,51,48,2,52,52,53], 1 certified",
+    "locked_release_build": 0,
+    "workspace_all_targets": "139 result lines / 993 passed / 0 failed / 1 ignored, exit 0 at the 68fc8f1 tree",
+    "ci": {
+      "head": "68fc8f18ed49d494152c25ef841ac62bb0fdb708",
+      "total": 10,
+      "completed_success": 10,
+      "cancelled": 0,
+      "failure": 0,
+      "all_keyed_to_head": true,
+      "receipt": "evidence/issue17/slice57/exact-head-ci-68fc8f1.json",
+      "runs": "evidence/issue17/slice57/exact-head-runs-68fc8f1.json",
+      "disclosure": "The first attempt at these runs was 4 success / 6 cancelled by the lane's own evidence push under the repository concurrency group; the six cancelled jobs were re-run on the same SHA and completed green, so this is a real 10/10 on the code head. The evidence-only tip claims none."
+    }
+  },
+  "journey": {
+    "kind": "evidence-only masked X/target-set demonstrator, 40-card package, NOT a 100-card certificate or strength/GUI claim",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 5757,
+    "package": "decks/package-slice57.txt",
+    "snapshot_sha256": "12ab766ed8be59ef74c0aaf7c222d735e269ab6b504c88d0281b31d5ef951004",
+    "winner": 2,
+    "steps": 1960,
+    "turns": 47,
+    "events": 5052,
+    "digest": "8a34da9bb066dd3ba18606043a65e0f4a39a32d60e3a181714f967c0ecb07253",
+    "yao_guai_casts": 10,
+    "announced_x": [0, 0, 0, 0, 1, 3, 4, 5, 3, 8],
+    "aggregate_sets_committed": 6,
+    "aggregate_set_sizes": [1, 2, 2, 2, 2, 4],
+    "destroy_instructions": 6,
+    "destroyed_permanents": 13,
+    "max_plus_one_counters": 8,
+    "separate_release_cli_replay": "matches recorded, exit 0",
+    "fresh_non_sandbox_save_load": true,
+    "digest_unchanged_by_the_self_review_commit": true
+  },
+  "disclosures": [
+    "Original #17 unfinished: 1 of 8 certified, Ayula 2 names (Dúnedain Rangers, Evercoat Ursine). No completion, merge, master push, closure, dependent unlock, new team or global config change.",
+    "Native co-authored the increment and is not the independent reviewer.",
+    "Card construction was implementation-first; no strict initial TDD claim. The first counter implementation added counters before insert_object cleared them (CR 122.2) and the focused test caught it before publication; the failed attempt is described, not hidden.",
+    "The aggregate total is enforced at targeting (CR 601.2c) and not re-derived at resolution; mana value is the printed cost with {X}=0 (CR 202.3); no copy or cost-modification effects exist in the pool.",
+    "Announced X is bounded to 0..=20; the bound is a typed refusal, not a wrap.",
+    "The journey is a 40-card evidence package with a demonstrator policy, not the product heuristic and not a playing-strength, GUI or 100-card certificate claim.",
+    "Exact-head CI is claimed only for the product head whose own runs completed; the evidence-only tip claims none."
+  ],
+  "next_action": "Independent concise practical increment review of the product head. Then SAME writer/history/card/branch/PR46 continues with Dúnedain Rangers (the Ring) and Evercoat Ursine (hideaway), then the exact 100-card four-seat certification with separate replays; 2 of 8 only on actual success."
+}

@@ -1,0 +1,2 @@
+replay seed 501 — 4 seat(s), 1880 action(s), recorded outcome Some(Win { winner: 2, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
+  replayed digest d0c888f680d7 | matches recorded | events 4654

@@ -1,0 +1,93 @@
+79:pub struct ContinuousEffect {
+80-    pub id: u32,
+81-    /// Monotonic rule-visible timestamp; the engine never uses wall-clock time.
+82-    pub timestamp: u64,
+83-    pub source: Option<ObjectId>,
+84-    pub card: CardId,
+85-    pub controller: PlayerId,
+86-    pub layer: Layer,
+87-    pub target: ObjectId,
+88-    pub kind: ContinuousKind,
+89-    pub duration: EffectDuration,
+90-}
+91-
+92-impl ContinuousEffect {
+93-    pub fn describe(&self) -> String {
+94-        match self.kind {
+95-            ContinuousKind::ModifyPowerToughness { power, toughness } => format!(
+96-                "{:+}/{:+} until end of turn ({})",
+97-                power,
+98-                toughness,
+99-                self.layer.rules()
+100-            ),
+101-        }
+102-    }
+103-}
+104-
+105-/// The object or player a damage event is dealt to.
+106-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+107-pub enum DamageTarget {
+108-    Player(PlayerId),
+109-    Permanent(ObjectId),
+156:pub struct DamageShield {
+157-    pub id: u32,
+158-    pub timestamp: u64,
+159-    pub source: Option<ObjectId>,
+160-    pub card: CardId,
+161-    /// Controller of the effect that created the shield.
+162-    pub controller: PlayerId,
+163-    pub scope: ShieldScope,
+164-    pub target: ShieldTarget,
+165-    pub remaining: Option<u32>,
+166-    /// Turn the shield was created on; it expires in that turn's cleanup step.
+167-    pub created_turn: u32,
+168-}
+169-
+170-impl DamageShield {
+171-    pub fn applies_to(&self, target: DamageTarget, combat: bool) -> bool {
+172-        if self.scope == ShieldScope::CombatDamageOnly && !combat {
+173-            return false;
+174-        }
+175-        if self.remaining == Some(0) {
+176-            return false;
+177-        }
+178-        self.target.matches(target)
+179-    }
+180-
+181-    /// Consume as much of `amount` as the shield can prevent and return the
+182-    /// prevented part.
+183-    pub fn absorb(&mut self, amount: u32) -> u32 {
+184-        match self.remaining {
+185-            None => amount,
+186-            Some(remaining) => {
+187-                let prevented = remaining.min(amount);
+188-                self.remaining = Some(remaining - prevented);
+189-                prevented
+190-            }
+191-        }
+192-    }
+193-
+194-    pub fn exhausted(&self) -> bool {
+195-        self.remaining == Some(0)
+196-    }
+197-
+198-    pub fn amount_text(&self) -> String {
+199-        match self.remaining {
+200-            None => "all damage".to_string(),
+201-            Some(0) => "0 damage".to_string(),
+124:pub enum ShieldTarget {
+125-    Any,
+126-    Player(PlayerId),
+127-    Permanent(ObjectId),
+128-}
+129-
+130-impl ShieldTarget {
+131-    pub fn matches(self, target: DamageTarget) -> bool {
+132-        match (self, target) {
+133-            (ShieldTarget::Any, _) => true,
+134-            (ShieldTarget::Player(a), DamageTarget::Player(b)) => a == b,
+135-            (ShieldTarget::Permanent(a), DamageTarget::Permanent(b)) => a == b,
+136-            _ => false,
+137-        }
+138-    }
+139-

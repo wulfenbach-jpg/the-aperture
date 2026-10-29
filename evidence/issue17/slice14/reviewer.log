@@ -1,0 +1,21 @@
+Working...
+**review_outcome: APPROVED_INCREMENT** at `472aeba1e06b3a657647219815f8cc2380106cb4`.
+`full_issue17_accepted: false`.
+
+**Verified**
+
+- Focused `--locked`: slice14 **10/10**, slice13 4/4, slice12 11/11, tokens 10/10, issue13 43/43 including the APNAP source-left discriminator, catalog 5/5, printings 7/7.
+- Dynamic offers: ready Werebear offered; sick/tapped Werebear not; tapped dynamic artifacts offer no colors; every offered action validates; forged color/wrong state refused before tap. Arcane identity, Fellwar opponent-land colors (tapped included, own/eliminated excluded), Werebear threshold both ways/layers, and Sphere sacrifice-while-tapped all pass.
+- Demo journey: terminal P0, 2371 actions/42 turns/6665 events, digest `028cc2e33168`; fresh save-out reloads/replays the same digest. Old slice8 replay still `ffbeaee0db38`/6087.
+- Actual counts: Arcane/Fellwar/Sphere/Werebear casts 7/7/7/18; mana activations 51/39/7/82; 7 Sphere draws. Driver is evidence-only, not product strength.
+- Native source receipts match. Catalog 126, union 459 = 114 supported + 345 missing; desired snapshots unchanged; manifest matches. `cargo fmt --check` and `git diff --check` pass.
+
+**Nonblocking**
+
+- `CardDef.mana_choices` and `CardDef.creature_mana` are always `None`; behavior uses `CardId` accessors. No current consumer reads the dead fields, but they are inconsistent public metadata.
+- `docs/issue17-starter-corpus.md:67` still says Commander’s Sphere is unsupported; it is implemented.
+- Handoff says 8 slice14 tests (final 10); last paragraph still lists Sphere as excluded; demo JSON artifact keys include nonartifact names. Prose/metadata only.
+
+Remaining gaps: full #17 is **1 certified / 7 planned**, 345 union names missing; product heuristic still casts no artifacts and does not auto-activate nonland mana; broader Commander mechanics and Friendly Teddy/Aetherize remain open. Current exact-head CI is pending/not green; no merge, closure or release/#26/#32 unlock.
+
+Reports: `evidence/issue17/slice14/REVIEW14.md`, `.json`.

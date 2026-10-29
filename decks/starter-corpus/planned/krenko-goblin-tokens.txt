@@ -1,0 +1,62 @@
+// krenko-goblin-tokens — DESIRED, NOT SUPPORTED. 99 library cards; commander: Krenko, Mob Boss
+// Metadata-only planned list; do not load as a supported/default deck.
+1 Guttersnipe
+1 Hexing Squelcher
+1 Brash Taunter
+1 Krenko, Tin Street Kingpin
+1 Goblin Engineer
+1 Kiki-Jiki, Mirror Breaker
+1 Dragonlord's Servant
+1 Skirk Prospector
+1 Crime Novelist
+1 Treasure Nabber
+1 Goblin Welder
+1 Siege-Gang Commander
+1 Sting, the Glinting Dagger
+1 Grenzo, Havoc Raiser
+1 Impulsive Pilferer
+1 Legion Warboss
+1 Goblin Matron
+1 Dragon Fodder
+1 Krenko's Command
+1 Goblin Warchief
+1 Brightstone Ritual
+1 Mogg War Marshal
+1 Conspicuous Snoop
+1 Goro-Goro, Disciple of Ryusei
+1 Goblin Instigator
+1 Goblin Chirurgeon
+1 Goblin Recruiter
+1 Searslicer Goblin
+1 Legion Loyalist
+1 Rundvelt Hordemaster
+1 Goblin War Strike
+1 Goblin Lackey
+1 Stadium Headliner
+1 Scuzzback Scrounger
+1 General Kreat, the Boltbringer
+1 Squee, the Immortal
+1 Hordeling Outburst
+1 Goblin Chieftain
+1 Pashalik Mons
+1 Howlsquad Heavy
+1 Breeches, Eager Pillager
+1 Goblin King
+1 Hobgoblin Bandit Lord
+1 Goblin Sharpshooter
+1 Squee, Goblin Nabob
+1 Zo-Zu the Punisher
+1 Empty the Warrens
+1 Siege-Gang Lieutenant
+1 Goblin Trashmaster
+1 Zada, Hedron Grinder
+1 Beetleback Chief
+1 Goblin Ringleader
+1 Goblin Traprunner
+1 Goblin War Party
+1 Volley Veteran
+1 Redcap Gutter-Dweller
+1 Moggcatcher
+
+// Basic lands
+42 Mountain

@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2026-10-26T13:19:34.774Z",
+    "output": "---- rite_of_flame_counts_base_and_all_graveyard_copies stdout ----\n\nthread 'rite_of_flame_counts_base_and_all_graveyard_copies' (26592) panicked at crates\\core\\tests\\issue17_slice9.rs:10:46:\nRite of Flame must be supported\n\n---- mana_geyser_counts_only_opponent_tapped_lands stdout ----\n\nthread 'mana_geyser_counts_only_opponent_tapped_lands' (33220) panicked at crates\\core\\tests\\issue17_slice9.rs:10:46:\nMana Geyser must be supported\n\n\nfailures:\n    brightstone_counts_all_goblins_including_opponents_and_above_255\n    mana_geyser_counts_only_opponent_tapped_lands\n    mana_pool_adds_and_pays_above_255_without_truncation\n    rite_of_flame_counts_base_and_all_graveyard_copies\n\ntest result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\nerror: test failed, to rerun pass `-p aperture-core --test issue17_slice9`\n\n\nWall time: 1.27 seconds"
+  },
+  {
+    "timestamp": "2026-10-26T13:19:51.232Z",
+    "output": "  left: 0\n right: 4\n\n---- brightstone_counts_all_goblins_including_opponents_and_above_255 stdout ----\n\nthread 'brightstone_counts_all_goblins_including_opponents_and_above_255' (30864) panicked at crates\\core\\tests\\issue17_slice9.rs:92:5:\nassertion `left == right` failed\n  left: 0\n right: 300\n\n\nfailures:\n    brightstone_counts_all_goblins_including_opponents_and_above_255\n    mana_geyser_counts_only_opponent_tapped_lands\n    mana_pool_adds_and_pays_above_255_without_truncation\n    rite_of_flame_counts_base_and_all_graveyard_copies\n\ntest result: FAILED. 0 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\nerror: test failed, to rerun pass `-p aperture-core --test issue17_slice9`\n\n\nWall time: 7.81 seconds"
+  },
+  {
+    "timestamp": "2026-10-26T13:20:40.015Z",
+    "output": ". 1/4\nrite_of_flame_counts_base_and_all_graveyard_copies --- FAILED\n..\nfailures:\n\n---- rite_of_flame_counts_base_and_all_graveyard_copies stdout ----\n\nthread 'rite_of_flame_counts_base_and_all_graveyard_copies' (27928) panicked at crates\\core\\tests\\issue17_slice9.rs:136:5:\nassertion `left == right` failed\n  left: 6\n right: 4\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    rite_of_flame_counts_base_and_all_graveyard_copies\n\ntest result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\nerror: test failed, to rerun pass `-p aperture-core --test issue17_slice9`\n\n\nWall time: 5.91 seconds"
+  }
+]

@@ -1,0 +1,80 @@
+{
+  "status": "PARTIAL #17",
+  "full_issue17_accepted": false,
+  "certified_lists": "1 of 8",
+  "base": "cdfc32e",
+  "commit": "slice21 local head in final receipt",
+  "card": {
+    "name": "Dragon-Scarred Bear",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Bear",
+    "power": "3",
+    "toughness": "2",
+    "oracle_id": "2f6f49a4-f2ea-4147-a6d3-69cf875c302e",
+    "scryfall_id": "689a6390-894a-4d31-87c2-f9cec3b187a7",
+    "printing": "dtk 183",
+    "retrieved_at": "2026-10-27T04:44:50.249896+00:00",
+    "source": "fixtures/starter-corpus/slice21-sourced.json"
+  },
+  "counts": {
+    "catalog": 138,
+    "union": 459,
+    "supported": 126,
+    "missing": 333,
+    "ayula_missing": 27
+  },
+  "red": "issue17_slice21 dragon_scarred_bear_is_sourced_and_supported failed before implementation",
+  "focused": {
+    "issue17_slice21": "8 passed",
+    "engine cleanup unit": "passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "issue17_slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "replay_digest": "6 passed",
+    "fmt": "exit 0",
+    "clippy": "workspace -D warnings exit 0",
+    "release": "exit 0",
+    "legacy_slice20_replay": "exit 0, digest 72cd69fb1143 matched",
+    "gates_log": "evidence/issue17/slice21/gates.log"
+  },
+  "journey": {
+    "package": "decks/package-slice21.txt",
+    "seats": 4,
+    "starting_life": 40,
+    "seed": 1919,
+    "commander": "Jasmine Boreal injected each seat (evidence only)",
+    "status": "terminal",
+    "winner": 3,
+    "steps": 1906,
+    "turns": 45,
+    "snapshot_sha256": "f48f7a9011ac005858ce26b71e9313751694d0773797c815c5158480fb880003",
+    "digest": "0d20c7597183ecb764f7b858dd87ca9aa654e3a4ac6984bada01e9df27926520",
+    "replay_digest_matches": true,
+    "fresh_save_roundtrip": true,
+    "bear_casts": 7,
+    "activations": 25,
+    "shield_created_events": 25,
+    "regeneration_events": 1
+  },
+  "deviations": [
+    "Formidable uses 207.2c plus activation restriction 602.1b/602.5",
+    "AI changes are mechanical shield-field initialization only at search.rs:727 and tests/common.rs:83",
+    "Journey driver reads public battlefield/shield bookkeeping only; submits projected legal actions",
+    "No full workspace matrix rerun"
+  ],
+  "remaining": [
+    "7 of 8 lists uncertified",
+    "Ayula 27 missing, no 100-card certificate",
+    "No push/merge/closure"
+  ],
+  "identity_repair": {
+    "reviewed_head": "d9d2c94",
+    "verdict": "CHANGES_REQUESTED",
+    "red_log": "evidence/issue17/slice21-review-probe.log",
+    "fix": "detach_object drops regeneration shields on actual battlefield departure; ordinary bounce/recast same ObjectId regression",
+    "tests": "issue17_slice21 8 passed",
+    "legacy_slice20_replay": "exit 0 digest 72cd69fb1143",
+    "gates": "evidence/issue17/slice21/identity-repair-gates.log"
+  }
+}

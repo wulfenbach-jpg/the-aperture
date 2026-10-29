@@ -1,0 +1,14 @@
+{
+  "writer": {
+    "assistant_turns": 501,
+    "models": {
+      "opencode-go/deepseek-v4.1-flash": 501
+    }
+  },
+  "reviewer": {
+    "assistant_turns": 153,
+    "models": {
+      "opencode-go/deepseek-v4.1-flash": 153
+    }
+  }
+}

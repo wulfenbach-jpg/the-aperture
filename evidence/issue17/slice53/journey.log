@@ -1,0 +1,45 @@
+head=f7e1d419368b8fee1ffd46bd43af78d4207305c0
+=== driver ===
+    Finished `release` profile [optimized] target(s) in 0.21s
+     Running `target\release\issue17-slice53-journey.exe`
+{
+  "cards_returned_from_graveyard_to_hand": 12,
+  "casts": {
+    "Centaur Courser": 6,
+    "Grizzly Bears": 19,
+    "Ruxa, Patient Professor": 5
+  },
+  "combat_damage_to_creatures": 68,
+  "combat_damage_to_players": 166,
+  "commander": "Jasmine Boreal",
+  "deck": "decks/package-slice53.txt",
+  "digest": "b5cb7a5679b90e2ef4de2a4759e8fec6be840a5feac24d9fef20e86e544eee1a",
+  "driver": "evidence-only masked Ruxa demonstrator; NOT product heuristic or strength evidence",
+  "events": 3646,
+  "kind": "40-card package, not a desired starter",
+  "outcome": "Some(Win { winner: 0, reason: \"opponents' life totals reached 0 or less (CR 704.5a)\" })",
+  "profile": "CommanderCombat40",
+  "replay_digest_matches": true,
+  "ruxa_assignments_accepted": 6,
+  "ruxa_assignments_declined": 5,
+  "ruxa_assignments_offered": 11,
+  "ruxa_casts": 5,
+  "seats": 4,
+  "seed": 5353,
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1410,
+  "turns": 33
+}
+EXIT=0 (driver)
+=== separate release CLI replay ===
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 3.95s
+     Running `target\release\aperture-cli.exe replay --file evidence/issue17/slice53/ruxa/demo-save.json`
+save evidence/issue17/slice53/ruxa/demo-save.json — 4 seat(s): P0 'package-slice53' vs P1 'package-slice53' vs P2 'package-slice53' vs P3 'package-slice53'
+  stored digest b5cb7a5679b9 | recomputed b5cb7a5679b9 | matches
+  turn 33 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P1 = deterministic baseline heuristic; autoplay off
+  replay of 1410 action(s) -> digest b5cb7a5679b9 | events 3646 | reproduces the save
+EXIT=0 (cli_replay)

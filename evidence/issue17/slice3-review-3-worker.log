@@ -1,0 +1,16 @@
+Working...
+Verdict: **approve_increment** at `9cecd62ddb56d44e6853f9f9098fd3a473635b66`. `full_issue17_accepted: false`; #16 integration not approved.
+
+Both requested findings and the false changed-file mention are fixed:
+
+- Krenko now consistently says **51** missing (`manifest.json:211`, docs line 58).
+- Elas no longer claims Swamp is unavailable; manifest names 58 unsupported nonland names plus sacrifice/death-drain/tutor-reanimation gaps, Swamp is absent from Elas missing, and docs line 74-75 describes the real gaps.
+- Cross-package handoff no longer lists `docs/issue15-effects.md` as changed and records the removal.
+
+Checks:
+
+- `git diff --name-status 0d8a1ee..HEAD`: manifest, issue17 docs and handoff only; **no code/test changes**.
+- `git diff --check`: exit 0.
+- `python evidence/issue17/slice3-native-corpus.py`: catalog 93, union 459, supported 81, missing 378, manifest matches; Krenko 51, Elas 58; desired contents unchanged; one implemented, seven planned.
+
+Prior seed-5 cross-package journey/replay and focused checks remain valid because the engine/tests are unchanged. No remaining blocker. Deliverables: `slice3-review-3.md` and `slice3-review-3.json`.

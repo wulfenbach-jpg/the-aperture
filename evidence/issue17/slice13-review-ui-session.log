@@ -1,0 +1,30 @@
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 14.16s
+     Running tests\session.rs (target\debug\deps\session-c2dbd5f93700f6f6.exe)
+
+running 22 tests
+test a_new_game_resets_the_sandbox_flag_and_keeps_the_decks ... ok
+test an_unsupported_card_in_a_commander_import_is_refused_and_never_substituted ... ok
+test a_commander_import_certifies_and_starts_the_seat_with_its_own_commander ... ok
+test bounded_forty_life_profile_has_one_public_commander_per_seat ... ok
+test native_session_makes_the_apnap_choice_actionable_only_for_the_entitled_human ... ok
+test an_illegal_action_is_refused_and_leaves_the_state_identical ... ok
+test native_startup_refuses_parenthesized_commander_headers ... ok
+test ordinary_default_seats_stay_temur_izzet ... ok
+test native_table_starts_four_ordinary_seats_and_retains_them_on_a_new_game ... ok
+test the_ai_steps_only_for_its_own_seat ... ok
+test sandbox_tools_change_the_state_and_void_certified_play ... ok
+test native_startup_refuses_a_commander_text_file_instead_of_flattening_it ... ok
+test the_profile_line_states_the_scope ... ok
+test native_startup_still_accepts_a_valid_mainboard_prefixed_file ... ok
+test a_branch_point_restores_the_earlier_position_and_labels_the_boundary ... ok
+test four_seat_load_resizes_the_native_import_controls ... ok
+test sandbox_modified_save_roundtrip_preserves_the_uncertified_flag ... ok
+test save_and_load_round_trip_preserves_pending_choices_rng_and_ai_mode ... ok
+test bounded_forty_life_four_seat_save_load_round_trips ... ok
+test background_load_of_a_malformed_apnap_save_clears_busy_and_preserves_state ... ok
+test default_four_seat_bounded_libraries_actually_cast_isamaru ... ok
+test a_stale_import_result_is_discarded_and_the_seat_is_not_left_busy ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.32s
+

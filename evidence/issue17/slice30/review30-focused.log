@@ -1,0 +1,13 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.23s
+     Running tests\issue17_slice30.rs (target\debug\deps\issue17_slice30-cf14312d5cdae756.exe)
+
+running 6 tests
+test drover_grizzly_is_sourced_and_supported ... ok
+test unsaddled_attack_does_not_grant_and_invalid_saddles_are_refused ... ok
+test saddle_uses_other_untapped_creatures_and_grants_trample_on_attack ... ok
+test animated_stuffed_bear_is_a_helper_and_trample_recipient ... ok
+test saddle_cleanup_and_source_left_activation_do_not_persist ... ok
+test saddle_refusals_and_save_reload_preserve_state ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

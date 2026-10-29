@@ -1,0 +1,28 @@
+{
+  "schema": "aperture.starter-sourced-cards.v1",
+  "provider": "scryfall",
+  "retrieved_at": "2026-10-27T00:54:48Z",
+  "note": "Ayula-list card from the immutable slice-19 provider snapshot; exact printing read from cards/sources/printings/e56143db-0274-4878-9d54-619e7f037a33.json.",
+  "cards": [
+    {
+      "name": "Spectral Bears",
+      "oracle_id": "539899f3-f3f2-4f7a-a6f6-e80d4a39f753",
+      "scryfall_id": "e56143db-0274-4878-9d54-619e7f037a33",
+      "set": "me1",
+      "collector_number": "131",
+      "layout": "normal",
+      "mana_cost": "{1}{G}",
+      "type_line": "Creature — Bear Spirit",
+      "power": "3",
+      "toughness": "3",
+      "oracle_text": "Whenever this creature attacks, if defending player controls no black nontoken permanents, it doesn't untap during your next untap step.",
+      "color_identity": [
+        "G"
+      ],
+      "keywords": [],
+      "legalities_commander": "legal",
+      "printing_url": "https://api.scryfall.com/cards/e56143db-0274-4878-9d54-619e7f037a33",
+      "retrieved_at": "2026-10-27T00:54:48Z"
+    }
+  ]
+}

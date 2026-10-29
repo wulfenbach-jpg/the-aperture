@@ -1,0 +1,408 @@
+[
+  {
+    "name": "Beorn the Fierce",
+    "set": "hob",
+    "collector_number": "119",
+    "scryfall_id": "367d5f8b-77ee-47f7-bc71-972d62c280a9",
+    "oracle_id": "30ca8e92-5955-46a1-86c1-094a873f518f",
+    "mana_cost": "{3}{G}{G}",
+    "type_line": "Legendary Creature \u2014 Bear Shapeshifter Warrior",
+    "power": "6",
+    "toughness": "6",
+    "oracle_text": "Trample\nOther Bears you control get +2/+2.\nAt the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 5.0
+  },
+  {
+    "name": "Beorn's Hospitality",
+    "set": "hob",
+    "collector_number": "120",
+    "scryfall_id": "153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9",
+    "oracle_id": "d9ed7252-11d1-432b-9101-ac08cd28826d",
+    "mana_cost": "{1}{G}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Landfall \u2014 Whenever a land you control enters, put a +1/+1 counter on target creature you control.\n{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains \"This creature's power and toughness are each equal to the number of lands you control.\" (This effect doesn't end.)",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 2.0
+  },
+  {
+    "name": "Circle of the Moon Druid",
+    "set": "afr",
+    "collector_number": "177",
+    "scryfall_id": "700c9ed8-6bfe-4f1e-855a-5f31e0d2fc9b",
+    "oracle_id": "90569b99-8b63-4d2e-b7de-b578b8adbdcb",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Human Elf Druid",
+    "power": "2",
+    "toughness": "4",
+    "oracle_text": "Bear Form \u2014 During your turn, this creature is a Bear with base power and toughness 4/2. (It loses all other creature types.)",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 3.0
+  },
+  {
+    "name": "Drover Grizzly",
+    "set": "otj",
+    "collector_number": "161",
+    "scryfall_id": "560062cd-34f8-4d30-9e25-099b03961724",
+    "oracle_id": "290fe09e-04ab-48d1-a60e-db47ea8c4d00",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Bear Mount",
+    "power": "4",
+    "toughness": "2",
+    "oracle_text": "Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 3.0
+  },
+  {
+    "name": "Druid's Familiar",
+    "set": "avr",
+    "collector_number": "175",
+    "scryfall_id": "1d8c794a-7964-41f0-bc9c-27af7cf87aaa",
+    "oracle_id": "6a5b1cd4-e597-4122-8fc7-4dce241d7c01",
+    "mana_cost": "{3}{G}",
+    "type_line": "Creature \u2014 Bear",
+    "power": "2",
+    "toughness": "2",
+    "oracle_text": "Soulbond (You may pair this creature with another unpaired creature when either enters. They remain paired for as long as you control both of them.)\nAs long as this creature is paired with another creature, each of those creatures gets +2/+2.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 4.0
+  },
+  {
+    "name": "D\u00fanedain Rangers",
+    "set": "ltr",
+    "collector_number": "159",
+    "scryfall_id": "630e1e36-2f5d-44d4-9ff2-19ae75295016",
+    "oracle_id": "7de2a364-4383-437a-b6d6-55e4721a0141",
+    "mana_cost": "{3}{G}",
+    "type_line": "Creature \u2014 Human Ranger",
+    "power": "4",
+    "toughness": "4",
+    "oracle_text": "Landfall \u2014 Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 4.0
+  },
+  {
+    "name": "Evercoat Ursine",
+    "set": "blc",
+    "collector_number": "30",
+    "scryfall_id": "b299d768-b171-47e5-b69d-82ce13917c43",
+    "oracle_id": "65c32889-3d70-449f-af76-05385c78c5a9",
+    "mana_cost": "{4}{G}",
+    "type_line": "Creature \u2014 Elemental Bear",
+    "power": "6",
+    "toughness": "5",
+    "oracle_text": "Trample\nHideaway 3, hideaway 3 (When this creature enters, look at the top three cards of your library, exile one face down, then put the rest on the bottom in a random order. Then do it again.)\nWhenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 5.0
+  },
+  {
+    "name": "Kamahl's Summons",
+    "set": "ons",
+    "collector_number": "269",
+    "scryfall_id": "0edc37c6-b6a8-424f-95dd-928d03c28542",
+    "oracle_id": "8b6ef0a2-cd90-44c8-8f11-e1983f2b1dfd",
+    "mana_cost": "{3}{G}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player may reveal any number of creature cards from their hand. Then each player creates a 2/2 green Bear creature token for each card they revealed this way.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 4.0
+  },
+  {
+    "name": "Lightning Greaves",
+    "set": "msc",
+    "collector_number": "202",
+    "scryfall_id": "b61634ae-05be-4b56-8ebb-9d4ade902e42",
+    "oracle_id": "ca204b66-8d0c-431a-8d34-282f7c2d17da",
+    "mana_cost": "{2}",
+    "type_line": "Artifact \u2014 Equipment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Equipped creature has haste and shroud. (It can't be the target of spells or abilities.)\nEquip {0}",
+    "colors": [],
+    "color_identity": [],
+    "cmc": 2.0
+  },
+  {
+    "name": "Lumra, Bellow of the Woods",
+    "set": "blb",
+    "collector_number": "183",
+    "scryfall_id": "ae4f3aaf-3960-48cd-b34b-32e4ae5ae088",
+    "oracle_id": "97a84e9d-bfc4-4ca2-b1e8-908dba56ccdb",
+    "mana_cost": "{4}{G}{G}",
+    "type_line": "Legendary Creature \u2014 Elemental Bear",
+    "power": "*",
+    "toughness": "*",
+    "oracle_text": "Reach, vigilance\nLumra's power and toughness are each equal to the number of lands you control.\nWhen Lumra enters, mill four cards. Then return all land cards from your graveyard to the battlefield tapped.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 6.0
+  },
+  {
+    "name": "Owlbear Cub",
+    "set": "clb",
+    "collector_number": "246",
+    "scryfall_id": "be177b66-dab3-47ef-bcdf-8d99eb57e19f",
+    "oracle_id": "0c92432d-ac76-47d2-af7a-fdffd4b546a2",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Bird Bear",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "Mama's Coming \u2014 Whenever this creature attacks a player who controls eight or more lands, look at the top eight cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking that player. Put the rest on the bottom of your library in a random order.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 3.0
+  },
+  {
+    "name": "Rampaging Yao Guai",
+    "set": "pip",
+    "collector_number": "82",
+    "scryfall_id": "63619236-a27a-4fdd-add6-7a295901f906",
+    "oracle_id": "d37e8f75-c7cb-4270-bb2f-0125e972ed15",
+    "mana_cost": "{X}{G}{G}{G}",
+    "type_line": "Creature \u2014 Bear Mutant",
+    "power": "2",
+    "toughness": "2",
+    "oracle_text": "Vigilance, trample\nThis creature enters with X +1/+1 counters on it.\nWhen this creature enters, destroy any number of target artifacts and/or enchantments with total mana value X or less.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 3.0
+  },
+  {
+    "name": "Ruxa, Patient Professor",
+    "set": "c21",
+    "collector_number": "66",
+    "scryfall_id": "e07b8142-6a49-46e7-b862-41f89a59b894",
+    "oracle_id": "d760f2f0-6653-47c4-bd7b-aab2f398ddf2",
+    "mana_cost": "{2}{G}{G}",
+    "type_line": "Legendary Creature \u2014 Bear Druid",
+    "power": "4",
+    "toughness": "4",
+    "oracle_text": "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.\nCreatures you control with no abilities get +1/+1.\nFor each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 4.0
+  },
+  {
+    "name": "Spider-Ham, Peter Porker",
+    "set": "spm",
+    "collector_number": "114",
+    "scryfall_id": "41f18f42-b86b-4a12-9f0d-76b761571195",
+    "oracle_id": "00b50215-e832-417f-9c80-2bc3050b6ebb",
+    "mana_cost": "{1}{G}",
+    "type_line": "Legendary Creature \u2014 Spider Boar Hero",
+    "power": "2",
+    "toughness": "2",
+    "oracle_text": "When Spider-Ham enters, create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAnimal May-Ham \u2014 Other Spiders, Boars, Bats, Bears, Birds, Cats, Dogs, Frogs, Jackals, Lizards, Mice, Otters, Rabbits, Raccoons, Rats, Squirrels, Turtles, and Wolves you control get +1/+1.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 2.0
+  },
+  {
+    "name": "Spirit of the Aldergard",
+    "set": "khm",
+    "collector_number": "195",
+    "scryfall_id": "220df551-3820-4910-a206-14501ba02e69",
+    "oracle_id": "ff3bc67b-f435-4bb7-9c21-8d24d8808c1a",
+    "mana_cost": "{3}{G}",
+    "type_line": "Snow Creature \u2014 Bear Spirit",
+    "power": "0",
+    "toughness": "4",
+    "oracle_text": "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.\nThis creature gets +1/+0 for each other snow permanent you control.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 4.0
+  },
+  {
+    "name": "Stuffed Bear",
+    "set": "mid",
+    "collector_number": "259",
+    "scryfall_id": "4cd40276-016b-475f-906f-74d31dceaf70",
+    "oracle_id": "1402c116-194e-49ca-a8c1-09ca659c220c",
+    "mana_cost": "{2}",
+    "type_line": "Artifact",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
+    "colors": [],
+    "color_identity": [],
+    "cmc": 2.0
+  },
+  {
+    "name": "Swiftfoot Boots",
+    "set": "trc",
+    "collector_number": "501",
+    "scryfall_id": "3b69b12e-ef29-455c-8939-eacf44c6c3f6",
+    "oracle_id": "c8b143ad-43ec-4e0d-a440-e348daa31391",
+    "mana_cost": "{2}",
+    "type_line": "Artifact \u2014 Equipment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+    "colors": [],
+    "color_identity": [],
+    "cmc": 2.0
+  },
+  {
+    "name": "The Earth King",
+    "set": "tla",
+    "collector_number": "172",
+    "scryfall_id": "a8d5dca6-381a-4361-b265-27de8d04335c",
+    "oracle_id": "d5770b0f-4493-42e9-a2d7-0e74a28da4ba",
+    "mana_cost": "{3}{G}",
+    "type_line": "Legendary Creature \u2014 Human Noble Ally",
+    "power": "2",
+    "toughness": "2",
+    "oracle_text": "When The Earth King enters, create a 4/4 green Bear creature token.\nWhenever one or more creatures you control with power 4 or greater attack, search your library for up to that many basic land cards, put them onto the battlefield tapped, then shuffle.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 4.0
+  },
+  {
+    "name": "Thijarian Witness",
+    "set": "who",
+    "collector_number": "111",
+    "scryfall_id": "da05e23b-419f-4023-9ad4-1227bb1b53be",
+    "oracle_id": "d273033b-3b8b-4ce9-afe8-208d82dd20f1",
+    "mana_cost": "{1}{G}",
+    "type_line": "Creature \u2014 Alien Cleric",
+    "power": "0",
+    "toughness": "4",
+    "oracle_text": "Flash\nBear Witness \u2014 Whenever another creature dies, if it was attacking or blocking alone, exile it and investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 2.0
+  },
+  {
+    "name": "Titania's Command",
+    "set": "bro",
+    "collector_number": "194",
+    "scryfall_id": "753567c7-c484-4c0d-8128-7710e23c428f",
+    "oracle_id": "7aae0a3d-8882-4485-a126-f06ea6593dcb",
+    "mana_cost": "{4}{G}{G}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose two \u2014\n\u2022 Exile target player's graveyard. You gain 1 life for each card exiled this way.\n\u2022 Search your library for up to two land cards, put them onto the battlefield tapped, then shuffle.\n\u2022 Create two 2/2 green Bear creature tokens.\n\u2022 Put two +1/+1 counters on each creature you control.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 6.0
+  },
+  {
+    "name": "Ursine Monstrosity",
+    "set": "dsc",
+    "collector_number": "36",
+    "scryfall_id": "73cc6df4-3564-4ace-bf8a-eac3e62d725a",
+    "oracle_id": "647feda9-2876-4430-902f-10dc1f4f99a9",
+    "mana_cost": "{2}{G}",
+    "type_line": "Creature \u2014 Bear Mutant",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 3.0
+  },
+  {
+    "name": "Words of Wilding",
+    "set": "ons",
+    "collector_number": "305",
+    "scryfall_id": "fdb9565f-5b09-4127-b169-3146079dab84",
+    "oracle_id": "888582df-4fe2-4d05-9b62-10c90aaa76f2",
+    "mana_cost": "{2}{G}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "cmc": 3.0
+  }
+]

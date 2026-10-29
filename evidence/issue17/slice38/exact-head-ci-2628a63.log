@@ -1,0 +1,37 @@
+[0s] runs=0 states={} pending=0
+[31s] runs=0 states={} pending=0
+[61s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[92s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[122s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[153s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[184s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[214s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[245s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[275s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[306s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[337s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[367s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[398s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[429s] runs=10 states={'in_progress/None': 8, 'completed/success': 2} pending=8
+[459s] runs=10 states={'in_progress/None': 7, 'completed/success': 3} pending=7
+[490s] runs=10 states={'in_progress/None': 7, 'completed/success': 3} pending=7
+[520s] runs=10 states={'in_progress/None': 6, 'completed/success': 4} pending=6
+[551s] runs=10 states={'in_progress/None': 3, 'completed/success': 7} pending=3
+[581s] runs=10 states={'in_progress/None': 3, 'completed/success': 7} pending=3
+[612s] runs=10 states={'in_progress/None': 2, 'completed/success': 8} pending=2
+[643s] runs=10 states={'completed/success': 9, 'in_progress/None': 1} pending=1
+[673s] runs=10 states={'completed/success': 10} pending=0
+head 2628a63ac31588b316309748aa2829df6c1892b8
+total 10  states {'completed/success': 10}
+ALL_KEYED=True ALL_SUCCESS=True
+   completed   success  board and roadmap
+   completed   success  board and roadmap
+   completed   success  rust (macos-latest)
+   completed   success  rust (macos-latest)
+   completed   success  rust (ubuntu-latest)
+   completed   success  rust (ubuntu-latest)
+   completed   success  rust (windows-latest)
+   completed   success  rust (windows-latest)
+   completed   success  windows package
+   completed   success  windows package
+ci_exit=0

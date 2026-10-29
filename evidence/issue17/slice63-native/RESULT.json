@@ -1,0 +1,259 @@
+{
+  "slice": 63,
+  "status": "candidate for independent practical increment review",
+  "native_coauthored": true,
+  "independent_review": false,
+  "base": "a4ac11ca9813d6ba8327c658e8f793673755dc27",
+  "code_and_driver_head": "150435b94f2e5282eaf6c5dbc782ffe1c148680e",
+  "product_commits": [
+    "c58213a",
+    "77865fb"
+  ],
+  "standalone_driver_format_commit": "150435b",
+  "full_issue17_accepted": false,
+  "corpus": {
+    "catalog": 172,
+    "union": 459,
+    "supported": 158,
+    "missing": 301,
+    "per_list": [
+      55,
+      0,
+      51,
+      43,
+      0,
+      52,
+      52,
+      53
+    ],
+    "certified": 2,
+    "certified_lists": [
+      "jasmine-vanilla-stompy",
+      "ayula-bear-counters"
+    ],
+    "desired": 8
+  },
+  "demanded_enabled": [
+    "Goblin Warchief",
+    "Goblin King",
+    "Dragonlord's Servant"
+  ],
+  "out_of_list_positive_control": "Volcanic Dragon",
+  "gates": {
+    "writer_focused_result_lines": 12,
+    "writer_focused_passed": 139,
+    "writer_focused_failed": 0,
+    "native_affected_passed": 17,
+    "native_affected_failed": 0,
+    "overlaps_writer": true,
+    "new_test_delta": 11,
+    "new_tests": "10 slice63 + 1 printing conformance",
+    "writer_fmt_clippy_locked_workspace_release": "all exit 0, aggregate exit 0; repair-final-native/gates.log",
+    "native_fmt_and_driver_fmt": "exit 0",
+    "no_fresh_local_workspace_test_total_claimed": true
+  },
+  "native_journey": {
+    "all_goblin_tokens": 2,
+    "attack_declarations": 14,
+    "casts": {
+      "Dragonlord's Servant": 3,
+      "Goblin Instigator": 2,
+      "Goblin King": 6,
+      "Goblin Warchief": 6,
+      "Volcanic Dragon": 1
+    },
+    "combat_damage_events": 44,
+    "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+    "deck": "decks/package-slice63.txt",
+    "digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+    "dragon_casts_with_servant": 1,
+    "driver": "projected legal-offer evidence driver; explicitly not product AI",
+    "kind": "40-card package, not a desired starter",
+    "outcome": {
+      "Win": {
+        "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+        "winner": 3
+      }
+    },
+    "replay_digest_matches": true,
+    "replay_events": 2455,
+    "seats": 4,
+    "seed": 2323,
+    "snapshot_sha256": "b2539164ff5335e672549608b0d17a51a714137981ff99eb6819f2d01f68fa6a",
+    "snapshots_exact": true,
+    "starting_life": 40,
+    "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+    "status": "terminal",
+    "steps": 954,
+    "turns": 23
+  },
+  "native_offer_and_payment_audit": {
+    "accepted_actions_checked": 954,
+    "all_actions_exactly_offered": true,
+    "discounted_dragon_payments": [
+      {
+        "mana_paid": 4,
+        "printed_mana": 6,
+        "seat": 2,
+        "servants": 2,
+        "step": 864
+      }
+    ],
+    "final_digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+    "self_check_not_independent_review": true,
+    "terminal": true
+  },
+  "three_artifacts_byte_identical_to_writer": {
+    "demo-journey.json": true,
+    "demo-replay.json": true,
+    "demo-save.json": true
+  },
+  "separate_release_cli_replay": "matches recorded, 2455 events, exit 0",
+  "sources": [
+    {
+      "name": "Dragonlord's Servant",
+      "set": "tdc",
+      "collector_number": "210",
+      "oracle_id": "faf81ae0-0b35-45ef-a50d-6cecf0c0eeeb",
+      "mana_cost": "{1}{R}",
+      "type_line": "Creature — Goblin Shaman",
+      "power": "1",
+      "toughness": "3",
+      "oracle_text": "Dragon spells you cast cost {1} less to cast.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2025-04-11",
+      "scryfall_id": "be6fa0dc-74e7-4fad-9bdd-8e986612577a",
+      "retrieved_at_utc": "2026-10-29T09:40:02Z",
+      "provider": "scryfall",
+      "url": "https://api.scryfall.com/cards/named?exact=Dragonlord%27s%20Servant",
+      "legalities_commander": "legal"
+    },
+    {
+      "name": "Goblin King",
+      "set": "10e",
+      "collector_number": "207",
+      "oracle_id": "d236b3fc-0d3f-4d99-875d-e32a33fe5767",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Creature — Goblin",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Other Goblins get +1/+1 and have mountainwalk.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2007-07-13",
+      "scryfall_id": "4b266935-25ea-49c5-a1da-57c22a4362fd",
+      "retrieved_at_utc": "2026-10-29T09:40:01Z",
+      "provider": "scryfall",
+      "url": "https://api.scryfall.com/cards/named?exact=Goblin%20King",
+      "legalities_commander": "legal"
+    },
+    {
+      "name": "Goblin Warchief",
+      "set": "dom",
+      "collector_number": "130",
+      "oracle_id": "39882df0-c20f-469d-94ba-1617224e71a1",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Creature — Goblin Warrior",
+      "power": "2",
+      "toughness": "2",
+      "oracle_text": "Goblin spells you cast cost {1} less to cast.\nGoblins you control have haste.",
+      "keywords": [],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2018-04-27",
+      "scryfall_id": "5bac033c-dc4e-40a0-b103-4892e4b50249",
+      "retrieved_at_utc": "2026-10-29T09:40:01Z",
+      "provider": "scryfall",
+      "url": "https://api.scryfall.com/cards/named?exact=Goblin%20Warchief",
+      "legalities_commander": "legal"
+    },
+    {
+      "name": "Volcanic Dragon",
+      "set": "cmr",
+      "collector_number": "207",
+      "oracle_id": "994db177-03f5-43dd-bf7b-2994e8d430d3",
+      "mana_cost": "{4}{R}{R}",
+      "type_line": "Creature — Dragon",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Flying, haste",
+      "keywords": [
+        "Flying",
+        "Haste"
+      ],
+      "colors": [
+        "R"
+      ],
+      "color_identity": [
+        "R"
+      ],
+      "layout": "normal",
+      "released_at": "2020-11-20",
+      "scryfall_id": "46419d29-21a1-4753-a2f0-1d0d996ec54e",
+      "retrieved_at_utc": "2026-10-29T09:54:11Z",
+      "provider": "scryfall",
+      "url": "https://api.scryfall.com/cards/named?exact=Volcanic%20Dragon",
+      "legalities_commander": "legal"
+    }
+  ],
+  "ci": {
+    "head": "150435b94f2e5282eaf6c5dbc782ffe1c148680e",
+    "total": 10,
+    "success": 10,
+    "all_keyed": true,
+    "both_workflows_complete": true,
+    "runs": {
+      "pull_request": {
+        "id": 40854642665,
+        "attempt": 1,
+        "updated_at": "2026-10-29T10:15:40Z"
+      },
+      "push": {
+        "id": 40854628109,
+        "attempt": 1,
+        "updated_at": "2026-10-29T10:16:04Z"
+      }
+    },
+    "evidence_pushed_only_after_both_complete": true,
+    "receipt": "evidence/issue17/slice63-native/exact-head-ci-150435b.json",
+    "evidence_tip_claimed_no_own_ci": true
+  },
+  "children_inspected": [
+    "t_26a7a4ff",
+    "t_3c2fe51a"
+  ],
+  "children_disposition": "Scheduled certified-input evaluation wait and unassigned soak backlog left gated; not increment-review children",
+  "disclosures": [
+    "Native is a coauthor/self-checker, NOT independent reviewer.",
+    "Local initial c58213a broke existing Chieftain opponent/no-abilities control; native retained assertion RED and same writer repaired BEFORE any push.",
+    "Volcanic Dragon is authorized out-of-list positive control, not desired-union progress.",
+    "Krenko commander-tax test constructs an explicit taxed command-zone fixture; not a whole-game commander recast journey.",
+    "954-step journey is a projected-offer 40-card package using Jasmine setup; not exact100-card Krenko certification, product AI, strength or GUI evidence.",
+    "Native posthoc trace audit proves all 954 accepted actions were exactly offered and actual Dragon cast paid 4 mana with two Servants (printed 6).",
+    "Initial standalone driver fmt check failed, formatting only was fixed in 150435b; subsequent native driver/workspace fmt pass.",
+    "Initial pre-repair receipts retained; TDD.md records initial 8-test phase, not retroactive TDD for the later 2 tests.",
+    "No new serialized state fields, AI/search/UI/import code or global config changed.",
+    "Full original #17 remains unfinished: 2 of 8 certified, six lists planned, 301 union names missing."
+  ],
+  "next_action": "One independent practical delta review of a4ac11c..150435b plus evidence-only successor. Then SAME writer/history/card/branch/draftPR46 continues grouped sourced Krenko demanded mechanics; 3/8 only after actual exact-list certificate.",
+  "no_merge_master_push_closure_unlock_newteam_globalconfig": true,
+  "created_at": "2026-10-29T10:16:37.818788+00:00"
+}

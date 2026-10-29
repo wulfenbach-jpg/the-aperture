@@ -1,0 +1,7 @@
+# Slice17 final assertion strengthening — same sole writer, max6minutes
+SAME independent reviewer APPROVED_INCREMENT at bfaa782 (REVIEW17.md). No product-source defect; do NOT change source or re-audit prior code. Before final publication strengthen the genuinely vacuous morbid assertions in NATIVE-TEST-GAP.md. Modify only crates/core/tests/issue17_slice17.rs plus truthful small result note.
+
+No-death: require actual entered Ulvenwald object present and ZERO counters, not merely drained trigger_queue.
+Positive: put a persistent opposing RuneclawBear target in fixture BEFORE cast/trigger offer. Kill a different creature, cast Ulvenwald, answer offered TriggerTarget with the preexisting opposing RuneclawBear (assert offer includes it), then require target exists and EXACT2 counters. No target.is_none escape. Add token-only death case enabling morbid with 2 counters and non-token owner death count remaining0. If convenient add one Fade containing Teddy verifying both draw once + exactlyone nontoken death, but priority first three tests.
+
+Run focused issue17_slice17, fmt --check, workspace clippy -D warnings (no fullsuite/build/journey repeat; SOURCE UNCHANGED) with real exit status (no tail pipeline unless set -o pipefail). Keep existing controls. Commit tests+small result note ONLY; no histories/targets/backups. No push; parent publishes then final exact-headCI. Write slice17/ASSERTION-STRENGTHENING.md and stop. Do not claim new source verdict/new TDD if tests already green, don't rerun review or whole matrices.

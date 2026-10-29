@@ -1,0 +1,30 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-26T23:40:57.955217+00:00",
+ "note": "Ayula exact printing from immutable slice17 remaining-sources capture.",
+ "cards": [
+  {
+   "name": "Ayula, Queen Among Bears",
+   "oracle_id": "a79d2fc8-467f-464d-9e73-2dae4b059628",
+   "scryfall_id": "c046dfb0-9ca3-4219-a6b0-d7503bc2fbd0",
+   "set": "mh1",
+   "collector_number": "155",
+   "layout": "normal",
+   "mana_cost": "{1}{G}",
+   "type_line": "Legendary Creature — Bear",
+   "power": "2",
+   "toughness": "2",
+   "oracle_text": "Whenever another Bear you control enters, choose one —\n• Put two +1/+1 counters on target Bear.\n• Target Bear you control fights target creature you don't control.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Fight"
+   ],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/c046dfb0-9ca3-4219-a6b0-d7503bc2fbd0",
+   "retrieved_at": "2026-10-26T23:40:57.955217+00:00"
+  }
+ ]
+}

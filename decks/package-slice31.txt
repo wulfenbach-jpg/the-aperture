@@ -1,0 +1,8 @@
+// package-slice31 — evidence-only 40-card beginning-of-combat package, NOT a desired starter.
+4 Beorn the Fierce
+4 Grizzly Bears
+4 Runeclaw Bear
+4 Elite Vanguard
+4 Centaur Courser
+4 Craw Wurm
+16 Forest

@@ -1,0 +1,99 @@
+{
+  "review": "issue 17 slice 5 — independent execution review",
+  "candidate": "eb0a6f5 (aperture/issue-17, draft PR46)",
+  "reviewer": "independent review worker 1",
+  "verdict": "approve_increment",
+  "tallies": "focused 10/10 pass; workspace 526 pass / 0 fail over 82 suite result lines; fmt clean; clippy -D warnings clean; release build ok; journey terminal (winner P2, 2494 steps, 60 turns, digest 104adbf674ec..., replay verified) and separate replay 2494 actions / 6227 events digest matches; Scryfall 6/6 cards identical; own probes 14/14 pass",
+  "claim_results": [
+    {
+      "claim": "1. Mill is a real zone move in library order, fires no dies trigger, count matches n, stops at an empty library",
+      "result": "confirmed",
+      "evidence": "probe_slice5: short_library_mill (library of 1, mill 3 -> exactly 1 Milled, Island in graveyard, library empty), mill_fires_no_battlefield_triggers (3 Milled in library order, 0 Destroyed, no cascade), source engine.rs mill_cards (library.first + break on empty), focused test stitchers_supplier_mills_three_when_it_enters"
+    },
+    {
+      "claim": "2. Milling an empty library does not lose the game (CR 704.5b is a draw rule)",
+      "result": "confirmed",
+      "evidence": "probe empty_library_mill: 0 Milled, life 20, outcome None, drew_from_empty false; probe ruin_crab_mill_short_libraries_are_harmless (one opponent with an empty library, game continues)"
+    },
+    {
+      "claim": "3. Stitcher's Supplier mills on ETB and again on death",
+      "result": "confirmed",
+      "evidence": "probe supplier_mills_again_when_it_dies: Bolt, dead Supplier, then exactly 3 milled cards (library left with the remaining cards), 3 Milled events, 1 Destroyed of the Supplier. The shipped test also lands on the post-trigger state: before the dies trigger resolves the graveyard holds only [Bolt, Supplier], so its 5-card assertion can only be reached after the mill."
+    },
+    {
+      "claim": "4. Ruin Crab's landfall mill hits every live opponent and never its controller",
+      "result": "confirmed",
+      "evidence": "probe ruin_crab_* : opponent's land does not trigger; controller's land mills P0/P2 3 each, P3 (lost) skipped, controller untouched, two crabs stack to 6"
+    },
+    {
+      "claim": "5. Negate never offers a creature spell, refuses a forged Target::Spell with BadTarget and no state change; a countered spell resolves nothing",
+      "result": "confirmed",
+      "evidence": "focused test + probe negate_forged_creature_spell_changes_nothing (hand 1, mana blue 2, stack 1 after refusal) + probe negate_refuses_an_ability_on_the_stack (an ability is not a spell). legal_targets and validate_cast share one code path (engine.rs 1772-1877)"
+    },
+    {
+      "claim": "6. AddMana adds exactly the printed amount after the cost is paid; ManaAdded.pool_total is truthful",
+      "result": "confirmed",
+      "evidence": "probe ritual_mana_is_spendable_then_empties_at_step_end: pool 3 after paying 2, ManaAdded (3,3), pool survives priority passing inside the step, a Lightning Bolt pays 1 out of it, ManaPoolEmptied amount 2 at the step change (CR 500.4)"
+    },
+    {
+      "claim": "7. Preordain really orders then draws",
+      "result": "confirmed (shipped test cannot distinguish the order; see F-2)",
+      "evidence": "probe preordain_orders_then_draws with a real bottoming decision (first viewed card to bottom): event order Scried -> OrderedCard -> OrderedCard -> Draw Forest, hand [Forest], library [Mountain, Island]"
+    },
+    {
+      "claim": "8. Live Scryfall provenance for all six cards",
+      "result": "confirmed 6/6",
+      "evidence": "review/scryfall_check.py fetched tdc/196, znr/75, tmt/47, tdc/161, m11/153, c21/179; oracle text, mana cost, type line and P/T all equal the catalog strings (review/scryfall-live.json, scryfall-check.log)"
+    },
+    {
+      "claim": "9. pool_size 103, every new name importable, Hedron Crab still refused",
+      "result": "confirmed",
+      "evidence": "probe pool_statements; cargo test catalog_pool 5/5; CLI 'pool' reports 103 cards"
+    },
+    {
+      "claim": "10. New Event variants do not break replay or the save format",
+      "result": "confirmed",
+      "evidence": "workspace 526/526; replay_digest 6, ordering_persistence 2, projection 4, scry_surveil 5, counterspell 4, timing_mana 12, card_printings 6, starter_corpus 8 all green; pre-slice-5 evidence replays still match (slice4 journey1 5e905fdc0399, slice3 cross 4572cd11e893) and slice3-cross-save recomputes the stored digest. The slice2-krenko-save mismatch reproduces byte-identically on a build of the parent commit 4a6a3f0, so it is pre-existing and not caused by slice 5"
+    }
+  ],
+  "findings": [
+    {
+      "id": "S5-R1-F1",
+      "severity": "low",
+      "claim": "The commit message and decks/package-slice5-mill.txt line 1 both call it a '40-card PACKAGE fixture', and every other decks/package-*.txt is exactly 40 cards",
+      "evidence": "for f in decks/package-*.txt; do grep -E '^[0-9]+ ' $f | awk '{s+=$1} END{print s}'; done -> ayula 40, cross 40, krenko 40, soul-warden 40, talrand 40, tatyova 40, package-slice5-mill 50; selfplay report seats[].cards = 50",
+      "fix": "Either trim package-slice5-mill.txt to 40 cards (e.g. 4+4+4+4+3+3 new cards + 4 Grizzly Bears + 4 Runeclaw Bear + 10 lands) or reword the file header and commit/PR text to '50-card package fixture'."
+    },
+    {
+      "id": "S5-R1-F2",
+      "severity": "low",
+      "claim": "7: 'Preordain's scry-2-then-draw really orders then draws (not draw-then-scry)' — the shipped focused test is offered as the proof",
+      "evidence": "crates/core/tests/issue17_slice5.rs:372-418 uses auto_answer, which always keeps viewed cards on top; with effects reversed to [Draw(1), Scry(2)] the same asserts still pass (draw Island, then scry Forest+Mountain keeping both -> library [Forest, Mountain], hand [Island]). The behaviour itself is correct: review/probe_slice5.rs preordain_orders_then_draws prints Scried -> OrderedCard(false) -> OrderedCard(true) -> Draw Forest.",
+      "fix": "Make the test order-sensitive: assert the log position of Event::Scried precedes the first Event::Draw, or answer Pending::OrderCard with to_top=false for the first viewed card and assert the drawn card is the second (the review probe shows both)."
+    },
+    {
+      "id": "S5-R1-F3",
+      "severity": "info",
+      "claim": "4/6: each-opponent effects should be applied in APNAP order (CR 101.4)",
+      "evidence": "probe ruin_crab_mills_each_live_opponent_only with P1 active prints mill event order [0,0,0,2,2,2] — seat order from seat 0 — where APNAP from the active seat would mill P2 before P0. No gameplay consequence (mills and damage are simultaneous, no replacement effects), and Effect::DamageEachOpponent has the same pre-existing shape.",
+      "fix": "Optional: iterate opponents as (seat + n - active) % n like the CR 903.9a / APNAP queues do, so the event log order matches the rules; otherwise record the deviation in HANDOFF.md's not-implemented list."
+    }
+  ],
+  "observed_tallies": {
+    "focused_tests": "10 passed / 0 failed (cargo test -p aperture-core --test issue17_slice5)",
+    "workspace_tests": "526 passed / 0 failed across 82 suite result lines (78 test binaries + 4 doc-test bins), cargo test --workspace --locked",
+    "named_suites": "replay_digest 6, ordering_persistence 2, projection 4, scry_surveil 5, counterspell 4, timing_mana 12, catalog_pool 5, card_printings 6, starter_corpus 8 — all pass",
+    "fmt": "cargo fmt --all --check exit 0, no diff",
+    "clippy": "cargo clippy --workspace --all-targets --locked -- -D warnings exit 0, no warnings",
+    "release_build": "cargo build --workspace --release --locked exit 0",
+    "journey": "status terminal, winner P2, 2494 steps, 60 turns, digest 104adbf674ec216ea329adb8562e650b0fcdc210b7bd97b190d0a4b991c3e537, replay verified inside selfplay; a second run of seed 501 reproduced the identical digest",
+    "separate_replay": "aperture-cli replay --file journey.replay.json -> 2494 actions, 6227 events, replayed digest 104adbf674ec matches recorded",
+    "scryfall": "6/6 cards match on oracle text, mana cost, type line and P/T (tdc 196, znr 75, tmt 47, tdc 161, m11 153, c21 179)",
+    "corpus_numbers": "union 459, catalog 103, supported 91, missing 368, elas unsupported nonland 57 — every README/docs figure matches; all eight manifest missing_cards lists match a fresh recomputation",
+    "own_probes": "14/14 pass in evidence/issue17/slice5/review/probe.log"
+  },
+  "report_paths": [
+    "evidence/issue17/slice5/review/slice5-review-1.json",
+    "evidence/issue17/slice5/review/slice5-review-1.md"
+  ]
+}

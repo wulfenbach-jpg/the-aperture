@@ -1,0 +1,97 @@
+poll 0: 10 check runs, 7 still running
+poll 1: 10 check runs, 6 still running
+poll 2: 10 check runs, 5 still running
+poll 3: 10 check runs, 4 still running
+poll 4: 10 check runs, 4 still running
+poll 5: 10 check runs, 4 still running
+poll 6: 10 check runs, 3 still running
+poll 7: 10 check runs, 1 still running
+poll 8: 10 check runs, 1 still running
+poll 9: 10 check runs, 1 still running
+poll 10: 10 check runs, 0 still running
+{
+ "head": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+ "check_runs": 10,
+ "all_keyed_to_head": true,
+ "all_completed_success": true,
+ "workflows": {
+  "Rust quality": [
+   {
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 40506451741,
+    "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d"
+   },
+   {
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 40506442341,
+    "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d"
+   }
+  ]
+ },
+ "checks": [
+  {
+   "name": "rust (ubuntu-latest)",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (windows-latest)",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "board and roadmap",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (macos-latest)",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "windows package",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "board and roadmap",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (windows-latest)",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (macos-latest)",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  },
+  {
+   "name": "windows package",
+   "conclusion": "success",
+   "head_sha": "6f58f75e6282b44e81a54132cbff7437f19b072d",
+   "app": "github-actions"
+  }
+ ]
+}

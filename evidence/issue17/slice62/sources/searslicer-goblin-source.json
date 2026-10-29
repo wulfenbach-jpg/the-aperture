@@ -1,0 +1,24 @@
+{
+  "name": "Searslicer Goblin",
+  "set": "fdn",
+  "collector_number": "93",
+  "scryfall_id": "94ad0b97-a318-4e76-ac79-b3e83417c333",
+  "oracle_id": "86ec0b56-497f-481c-a03a-c4e64e8e7404",
+  "mana_cost": "{1}{R}",
+  "type_line": "Creature — Goblin Warrior",
+  "power": "2",
+  "toughness": "1",
+  "oracle_text": "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+  "keywords": [
+    "Raid"
+  ],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "retrieved_at_utc": "2026-10-29T08:48:16Z",
+  "provider": "scryfall",
+  "url": "https://api.scryfall.com/cards/named?exact=Searslicer%20Goblin"
+}

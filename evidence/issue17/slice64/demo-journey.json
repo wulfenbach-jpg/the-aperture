@@ -1,0 +1,43 @@
+{
+  "ability_activations": 16,
+  "attack_declarations": 17,
+  "casts": {
+    "Goblin Instigator": 7,
+    "Goblin Matron": 2,
+    "Goblin Sharpshooter": 3,
+    "Hobgoblin Bandit Lord": 6,
+    "Krenko, Tin Street Kingpin": 7
+  },
+  "combat_damage_events": 68,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice64.txt",
+  "digest": "a0196628d36de095a5b2518474c9068d277887a9d25c63eed26ad1c12ef10e31",
+  "driver": "projected legal-offer evidence driver; explicitly not product AI",
+  "goblin_search_reveals": 2,
+  "goblin_tokens_entered": 42,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "prefers_slice64_cards": [
+    "Goblin Matron",
+    "Krenko, Tin Street Kingpin",
+    "Hobgoblin Bandit Lord",
+    "Goblin Sharpshooter"
+  ],
+  "replay_digest_matches": true,
+  "replay_events": 3498,
+  "search_picks": 2,
+  "seats": 4,
+  "seed": 2424,
+  "snapshot_sha256": "273bcc9999ff59f085db05632557a6a735d6767a6cdb1e4b5cdf0a3b72e2d0ce",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+  "status": "terminal",
+  "steps": 1325,
+  "turns": 27
+}

@@ -1,0 +1,33 @@
+{
+  "bear_token_events": 16,
+  "cast_trigger_counter_events": 11,
+  "casts": {
+    "Centaur Courser": 6,
+    "Craw Wurm": 4,
+    "Dancing from Dark to Dawn": 6,
+    "Grizzly Bears": 5,
+    "Runeclaw Bear": 6
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "dancing_trigger_staged": 27,
+  "deck": "decks/package-slice22.txt",
+  "digest": "17f03348d81c1a92a6bd578db9ce2be95737985a6e255ff2fa769389e128a04d",
+  "driver": "evidence-only masked cast/land-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 3891,
+  "seats": 4,
+  "seed": 2222,
+  "snapshot_sha256": "aede2055909b8857db7b1c5b2196e72fdecabe11047ef23bc42c989f1b6c8b81",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1500,
+  "turns": 33
+}

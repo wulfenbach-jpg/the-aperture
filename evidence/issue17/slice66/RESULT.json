@@ -1,0 +1,84 @@
+{
+  "slice": 66,
+  "issue": 17,
+  "branch": "aperture/issue-17",
+  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "opening_commit": "849466f",
+  "code_head": "edfc3631ab2e598a10067f7f03cbdbfbbee8d001",
+  "base": "4e33fb0",
+  "master": "73820d7",
+  "review_corrections_closed": ["R365-1", "R365-2", "R365-3", "R365-4"],
+  "enabled_cards": ["Pashalik Mons", "Goblin Trashmaster"],
+  "new_primitives": [
+    "TriggerEvent::GoblinYouControlDies (subtype-narrowed dies watcher, effective subtype captured on the death record)",
+    "TargetSpec::Artifact (exactly one artifact, either controller, never an enchantment)",
+    "Effect::DestroyTargetArtifact",
+    "cost-trigger staging: put_triggers after the ability's StackItem push (R365-1)"
+  ],
+  "corpus": {
+    "catalog": 179,
+    "union": 459,
+    "supported": 165,
+    "missing": 294,
+    "per_list": [55, 0, 51, 36, 0, 52, 52, 53],
+    "krenko_missing": 36,
+    "certified": 2,
+    "certified_lists": ["jasmine-vanilla-stompy", "ayula-bear-counters"],
+    "audit": "AUDIT OK"
+  },
+  "gates": {
+    "fmt": 0,
+    "clippy_workspace_all_targets_deny_warnings": 0,
+    "workspace_all_targets": {
+      "result_lines": 157,
+      "passed": 1162,
+      "failed": 0,
+      "ignored": 2,
+      "exit": 0
+    },
+    "focused": "issue17_slice66 2/0, issue17_slice66_cards 5/0, issue17_slice66_journey 1/0, card_printings 25/0, catalog_pool 5/0, issue13_commander_combat 43/0, issue17_slice15_corpus 2/0, issue17_slice65 11/0, issue17_slice64 5/0",
+    "r365_1_red": "both order tests failed on the unfixed engine (0 passed / 2 failed, exit 101): stack held only Activated { ability: 1 }"
+  },
+  "journey": {
+    "in_engine": {
+      "seats": 4,
+      "life": 40,
+      "events": 129,
+      "digest": "7b1df80ec3c2af52b0b4bf4dbb04d88a9fad0494662f32ce477d2dff5ffe5865",
+      "asserts": [
+        "cast Pashalik Mons and Goblin Trashmaster through offered actions",
+        "anthem pumps the other Goblin to 2/2 and not the Trashmaster",
+        "the dies trigger is staged above the ability, its target is asked first, and its damage resolves before the ability resolves",
+        "two tokens created after the sacrifice",
+        "opponent's artifact destroyed",
+        "combat damage to the fourth seat"
+      ]
+    },
+    "cli": {
+      "command": "selfplay --seats 4 --seed 2626 --commander-combat-practice --commander 0..3:Krenko, Mob Boss --deck decks/package-slice66.txt x4 --out evidence/issue17/slice66/journey.json --replay-out evidence/issue17/slice66/journey-replay.json",
+      "status": "terminal",
+      "winner": 2,
+      "steps": 1373,
+      "turns": 30,
+      "events": 3733,
+      "digest": "70d147dbdac0",
+      "separate_replay": "matches recorded, exit 0",
+      "pashalik_casts": 8,
+      "trashmaster_casts": 4,
+      "pashalik_pings": 22,
+      "heuristic_activated_new_abilities": 0,
+      "artifact_destroyed_in_cli_game": false
+    }
+  },
+  "disclosures": [
+    "Original #17 remains unfinished: 2 of 8 certified, six planned lists with real gaps, Krenko 36 missing.",
+    "Native authored this increment and is not its independent reviewer.",
+    "R365-1 changes accepted behaviour: a replay recorded on an earlier head where a sacrifice-cost dies trigger resolved after the ability now diverges. No GameState field was added, so ordinary saves/replays without such a sequence are unaffected.",
+    "The CLI heuristic casts both new cards (8 + 4) and the dies watcher fires 22 times, but it never activates either new ability and no artifact reached the battlefield, so the activation and artifact-destruction behaviour is evidenced by the in-engine journey.",
+    "Skirk Prospector (nonland mana ability, CR 605.1a) and Siege-Gang Lieutenant (Lieutenant + haste grant) remain missing rather than approximated.",
+    "The 40-card CLI package is a demonstrator, not 100-card certification, product AI strength or GUI evidence.",
+    "No completion, merge, master push, closure, dependent unlock, new team or global-config change."
+  ],
+  "full_issue17_accepted": false,
+  "no_merge_master_push_closure_or_unlock": true
+}

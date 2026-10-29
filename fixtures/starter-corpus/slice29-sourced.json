@@ -1,0 +1,31 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T13:14:48Z",
+ "cards": [
+  {
+   "name": "Stuffed Bear",
+   "oracle_id": "1402c116-194e-49ca-a8c1-09ca659c220c",
+   "scryfall_id": "4cd40276-016b-475f-906f-74d31dceaf70",
+   "set": "mid",
+   "collector_number": "259",
+   "layout": "normal",
+   "mana_cost": "{2}",
+   "type_line": "Artifact",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.",
+   "color_identity": [],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://scryfall.com/card/mid/259/stuffed-bear?utm_source=api",
+   "retrieved_at": "2026-10-27T13:14:48Z",
+   "printings_checked": 2,
+   "distinct_printing_texts": 1,
+   "printings": [
+    "dbl/259",
+    "mid/259"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.20s
+     Running tests\issue17_tokens.rs (target\debug\deps\issue17_tokens-4c5073e334830261.exe)
+
+running 1 test
+test token_bounce_and_exile_record_the_destination_before_cessation ... FAILED
+
+failures:
+
+---- token_bounce_and_exile_record_the_destination_before_cessation stdout ----
+
+thread 'token_bounce_and_exile_record_the_destination_before_cessation' (38020) panicked at crates\core\tests\issue17_tokens.rs:607:5:
+no trace may describe token cessation as replacing exile: [Cast { player: 0, object: ObjectId(3), card: SwordsToPlowshares, targets: ["Goblin Token (#10)"] }, ManaTapped { player: 0, land: ObjectId(8), color: White }, Priority { player: 0 }, Pass { player: 0 }, Priority { player: 1 }, Pass { player: 1 }, StateBasedAction { description: "Goblin Token (#10) is exiled" }, LifeChange { player: 0, delta: 1, life: 21 }, StateBasedAction { description: "Goblin Token ceases to exist instead of being exiled (CR 111.7); P0 gains 1 life (now 21)" }, Resolve { controller: 0, object: ObjectId(3), card: SwordsToPlowshares }, Destroyed { object: ObjectId(3), card: SwordsToPlowshares }, StateBasedAction { description: "Goblin Token token ceases to exist (CR 111.7)" }, Priority { player: 0 }, Pass { player: 0 }, Priority { player: 1 }, Pass { player: 1 }, StepBegin { step: DeclareBlockers }, Priority { player: 0 }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    token_bounce_and_exile_record_the_destination_before_cessation
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-core --test issue17_tokens`

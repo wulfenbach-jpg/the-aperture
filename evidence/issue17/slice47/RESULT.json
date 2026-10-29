@@ -1,0 +1,79 @@
+{
+  "slice": 47,
+  "issue": 17,
+  "increment": "R325-1: 'attacking or blocking alone' is the CR 506.5 declaration record, in code as well as prose; plus the CR 903.9a commander-return known limit",
+  "full_issue17_accepted": false,
+  "certified_lists": 1,
+  "certified_lists_total": 8,
+  "catalog_cards": 160,
+  "ayula_missing": 6,
+  "corpus_audit": {
+    "catalog_cards": 160,
+    "union_names": 459,
+    "supported_union": 147,
+    "missing_union": 312,
+    "per_list_missing": [55, 0, 51, 48, 6, 52, 52, 53],
+    "certified_lists": ["jasmine-vanilla-stompy"],
+    "audit_log": "evidence/issue17/slice47/corpus-audit.log",
+    "audit_exit": 0
+  },
+  "code_head": "4c55d94aa14f264c70bc596451f9a9f19f4814d0",
+  "base_head": "aab47c1604b110d9188f9f1f9f20c89614d1a73f",
+  "branch": "aperture/issue-17",
+  "published_pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "pr_state": "OPEN, draft. Code head 4c55d94 == local == remote; PR headRefOid 1b1c542 is the evidence tip and differs from the code head by the CI/journey receipts commit only. Base master untouched.",
+  "changes": {
+    "product": [
+      "crates/core/src/state.rs: Turn::declared_attackers / Turn::declared_blockers (serde default + skip_serializing_if empty), documented as the CR 506.5 declaration record",
+      "crates/core/src/engine.rs: record the declaration in apply_declare_attackers / apply_declare_blockers; never prune it; clear it at end of combat and at turn start; capture_combat_alone reads the record; engine + DeathRecord + snapshot docs rewritten to the declaration reading",
+      "crates/core/tests/issue17_slice46.rs: +2 discriminating regressions (attacker and blocker) and a cast_at_creature helper",
+      "crates/core/tests/common/mod.rs, crates/ai/tests/common.rs: Turn literals carry the new fields",
+      "crates/ai/src/search.rs: the search world's Turn literal carries the declaration record, read from real_state like the neighbouring public combat facts; no policy/budget/hidden-information change"
+    ],
+    "docs": [
+      "docs/issue17-starter-corpus.md slice 46: declaration reading, the sequential-mid-combat consequence in user terms, and the CR 903.9a commander-return deviation",
+      "README.md 'What is explicitly NOT implemented': CR 903.9a return shape recorded as a pre-existing known limit"
+    ],
+    "evidence": [
+      "evidence/issue17/SLICE47-HUMAN-CHECKPOINT.md",
+      "evidence/issue17/slice47/NEXT-CARDS-BRIEF.md (per-card primitive inventory and order for the six remaining Ayula names)",
+      "evidence/issue17/slice47/native-red-live-state-reading.log (both new tests fail on the old live-state reading, exit 101)",
+      "evidence/issue17/slice47/{fmt,clippy,release-build,focused-tests,workspace-tests,workspace-tests-final}.log",
+      "evidence/issue17/slice47/{demo-journey.json,demo-replay.json,demo-save.json,journey.log,cli-replay.log,prior-recordings.log,corpus-audit.py,corpus-audit.log}",
+      "evidence/issue17/slice47-journey-driver/ (committed driver source, lockfile; target/ ignored)",
+      "evidence/issue17/slice47/{ci-watch.log,exact-head-ci-4c55d94.json}"
+    ]
+  },
+  "red": {
+    "log": "evidence/issue17/slice47/native-red-live-state-reading.log",
+    "what": "capture_combat_alone temporarily restored to the pre-repair live-state read; the two new regressions then fail (attacker: left Exile / right Graveyard; blocker: an exile that must not happen)",
+    "exit": 101,
+    "green_after_restore": "issue17_slice46 8/8"
+  },
+  "gates": {
+    "focused": "17 suites / 130 passed / 0 failed",
+    "workspace": "133 binaries / 926 passed / 0 failed / 1 ignored, exit 0",
+    "fmt": "exit 0",
+    "clippy_workspace_all_targets_locked_deny_warnings": "exit 0",
+    "release_build_locked": "exit 0",
+    "journey": "package-slice46, 4 seats, 40 life, seed 2323, Win{P1} (empty-library draw), 3073 steps, 54 turns, 8098 replay events, digest da4eacd5363fc16b6242d1c52fe86c2157c556d5e66a01696a6d6ba15b995bde — byte-identical to the slice-46 recording; 38 solo attacks, 104 Clue tokens, 14 creature exiles; in-driver replay + fresh SessionSave reload equal",
+    "separate_cli_replay": "target/release/aperture-cli replay --file evidence/issue17/slice47/demo-replay.json -> 'replayed digest da4eacd5363f | matches recorded | events 8098', exit 0",
+    "ci": {
+      "head": "4c55d94aa14f264c70bc596451f9a9f19f4814d0",
+      "receipt": "evidence/issue17/slice47/exact-head-ci-4c55d94.json",
+      "result": "10/10 completed SUCCESS, every head_sha keyed to 4c55d94, 0 failed, 0 pending, no re-run needed"
+    }
+  },
+  "disclosures": [
+    "Original #17 remains UNFINISHED: 1 of 8 lists certified, Ayula 6 names missing, catalog still 160 — this slice adds no card.",
+    "Recording the declaration record changes the canonical JSON of a state that has a live declaration. A replay whose terminal state is a combat kill with declared attackers no longer reproduces its recorded digest: the slice-45 recording re-executes to the same actions and outcome but hashes 99bc8446… where 45d674d2… was recorded. The slice-46 recording (empty-library ending, no declaration) still matches exactly. This is intrinsic to storing public game state that must survive save/load; omitting it from serialization would make a reloaded mid-combat save forget the declaration.",
+    "Pre-change artifacts do NOT all verify at this head, and the version numbers stay where they are on purpose. Executed: `aperture-cli replay --file evidence/issue17/slice45/demo-save.json` parses, re-executes and then fails with `replay ended early: digest 99bc8446... != recorded 45d674d2...`, exit 1; the pinned pre-#16 v10 fixture still loads and verifies because it is a pre-combat state with the absent field genuinely absent. A legacy mid-combat save carries no declaration record, so for the rest of that combat the alone question answers \"not alone\" and a genuine alone-attack death stops firing Thijarian Witness, unrecoverably. SAVE_VERSION deliberately stays 10 and REPLAY_VERSION stays 6: a bump would reject every older artifact including that pinned fixture, which is worse than the digest under-report. Recorded as a documented limitation in README 'Versioned persistence' and in the slice-47 checkpoint.",
+    "crates/ai/src/search.rs is the only non-core file touched: two Turn literal fields, read from real_state like blocked/defender because declarations are public. No search policy, budget, sampling or hidden-information rule changed.",
+    "The CR 903.9a commander-return over-triggering is pre-existing engine behaviour, recorded as a known limit; no test pins the deviant shape and nothing was fixed there.",
+    "Legend rule CR 704.5j and every earlier limitation are unchanged.",
+    "This run wrote the change, so it is not its own independent reviewer; the journey is an evidence-only 40-card package, not a 100-card certificate and not AI strength.",
+    "Prior reviewer artifacts and the modified saved-session JSONL remain untracked/uncommitted."
+  ],
+  "next_action": "Independent practical delta review of aab47c1..4c55d94 (declaration reading correctness, both discriminating regressions, and judgement on the disclosed digest divergence), then the same writer/history/card/PR46 takes evidence/issue17/slice47/NEXT-CARDS-BRIEF.md in order — Owlbear Cub first — with the whole-field missing_cards/missing_interactions rewrite as each card leaves the gap list, and only then the exact 100-card four-seat certification with separate replays.",
+  "no_merge_master_push_closure_or_unlock": true
+}

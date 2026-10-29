@@ -1,0 +1,23 @@
+Working...
+**Repair committed: `2acef3d`.** No push/merge/closure. Full #17 unfinished; 1 of 8 certified.
+
+### Fixes
+1. **Ability-source persistence** — stack-container validation now counts only real **spell** containers. Any number of activated/triggered ability entries may reference one source; malformed spell containers still fail exactly once. No persistence version change.
+2. **Private look for ineligible cards** — owner now gets a mandatory-bottom acknowledgement showing only their `pending_viewed` identity; opponents see nothing; forged take is refused unchanged. Resolution completes after the bottom.
+3. **Assertions strengthened** — removed `library[0] == library[0]` tautology; asserts exact remaining library order, hand membership/zone, `AbilityResolved`, no stack/resolving/pending, plus sufficient vs insufficient mana offers.
+4. **Stacked activation save** — two offered paid activations remain valid; save/load at top pending with the second still below; both continue and resolve exactly once.
+5. **Rules** — look/reveal labels verified against pinned **701.20a/701.20e**.
+
+### Verification
+- Native RED retained: `evidence/issue17/slice20/native-two-activations-red.log`.
+- `issue17_slice20`: **9 passed**; command_zone_setup 44, abilities 13, rules_conformance 5, issue17_slice17 6, card_printings 8, catalog_pool 5, slice15 corpus 2, issue13 commander 43.
+- `fmt --check`, workspace clippy `-D warnings`, release CLI: all exit 0.
+- Fresh corpus counts unchanged: **137 catalog / 125 supported / 334 missing**, Ayula 28.
+
+### Journey rerun
+4 seats, 40 life, seed 1919, snapshot SHA256 `12e6d1e9…916f`; terminal P3, **2064 decisions, 46 turns**; Vivien cast 6, activations 22, take 5 / voluntary bottom 5 / mandatory bottom 16; replay matched and fresh save round-trips. Digest `72cd69fb…cdd48`.
+
+### Disclosures
+- `state.rs` validator repair is compatibility for legitimate ability-source saves, not a new state shape.
+- `crates/ai/tests/common.rs` only gained the new pending exhaustiveness arm; no AI policy/search change. Preserved slice19 `search.rs:724`/`common.rs:80` initialization-only disclosure.
+- No full workspace matrix rerun; exact-head CI owns it. Native probe file left unstaged; RED log preserved.

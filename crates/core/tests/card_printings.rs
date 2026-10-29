@@ -18,7 +18,549 @@
 //! the pool before this guard and their strings were accepted in earlier
 //! reviewed slices.
 
+use aperture_core::CardId;
 use aperture_core::catalog;
+use serde_json::Value;
+
+/// Issue-17 starter package provenance: the captured Scryfall printing records
+/// for the 47 vanilla creatures and Jasmine Boreal. Unlike the hand-recorded
+/// entries above, this list is data-driven; the fields are the provider's and
+/// the same fixture drives the catalog conformance test.
+const STARTER_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sourced-cards.json");
+const KRENKO_SOURCED: &str =
+    include_str!("../../../fixtures/starter-corpus/krenko-tokens-sourced.json");
+const TALRAND_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/talrand-sourced.json");
+const TATYOVA_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/tatyova-sourced.json");
+const CROSS_SOURCED: &str =
+    include_str!("../../../fixtures/starter-corpus/cross-package-sourced.json");
+const SLICE4_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice4-sourced.json");
+const SLICE8_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice8-sourced.json");
+const SLICE9_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice9-sourced.json");
+const SLICE12_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice12-sourced.json");
+const SLICE13_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice13-sourced.json");
+const SLICE14_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice14-sourced.json");
+const SLICE17_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice17-sourced.json");
+const SLICE18_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice18-sourced.json");
+const SLICE20_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice20-sourced.json");
+const SLICE21_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice21-sourced.json");
+const SLICE24_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice24-sourced.json");
+const SLICE25_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice25-sourced.json");
+const SLICE30_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice30-sourced.json");
+const SLICE41_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice41-sourced.json");
+const SLICE42_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice42-sourced.json");
+const SLICE44_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice44-sourced.json");
+const SLICE45_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice45-sourced.json");
+const SLICE54_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice54-sourced.json");
+const SLICE59_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice59-sourced.json");
+/// Slice 60: Evercoat Ursine (BLC 30), fetched 2026-10-29.
+const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice60-sourced.json");
+/// Slice 62: Goblin Chieftain (JMP 324) and Searslicer Goblin (FDN 93), fetched
+/// 2026-10-29.
+const SLICE62_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice62-sourced.json");
+/// Slice 65: Siege-Gang Commander (DMR 136), fetched 2026-10-29.
+const SLICE65_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice65-sourced.json");
+/// Slice 66: Pashalik Mons (DMR 133) and Goblin Trashmaster (M19 144), fetched
+/// 2026-10-29.
+const SLICE66_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice66-sourced.json");
+/// Slice 64: Goblin Sharpshooter (C13 111), Krenko, Tin Street Kingpin (MOC
+/// 287), Hobgoblin Bandit Lord (AFR 147) and Goblin Matron (PLST DMR-123),
+/// fetched 2026-10-29.
+const SLICE64_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice64-sourced.json");
+/// Slice 63: Goblin Warchief (DOM 130), Goblin King (10E 207) and Dragonlord's
+/// Servant (TDC 210), fetched 2026-10-29.
+const SLICE63_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice63-sourced.json");
+const SLICE67_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice67-sourced.json");
+const SLICE68_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice68-sourced.json");
+/// Slice 69: Moggcatcher (NEM 96), fetched 2026-10-29.
+const SLICE69_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice69-sourced.json");
+/// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
+const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
+/// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
+const SLICE48_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice48-sourced.json");
+/// Slice 53: Ruxa, Patient Professor (C21 66), fetched 2026-10-28.
+const SLICE53_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice53-sourced.json");
+const SLICE57_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice57-sourced.json");
+/// Slice 43: Lumra, Bellow of the Woods (BLB 183), fetched 2026-10-28.
+const SLICE43_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice43-sourced.json");
+/// Slice 26: Ursine Champion (M19 304), fetched 2026-10-27.
+const SLICE26_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice26-sourced.json");
+const SLICE22_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice22-sourced.json");
+/// Slice 28: Circle of the Moon Druid (AFR 177), fetched 2026-10-27.
+const SLICE28_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice28-sourced.json");
+/// Slice 29: Stuffed Bear (MID 259), fetched 2026-10-27.
+const SLICE29_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice29-sourced.json");
+/// Slice 23: Goreclaw, Terror of Qal Sisma (CMM 293), fetched 2026-10-27.
+const SLICE23_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice23-sourced.json");
+/// Slice 31: Beorn the Fierce (HOB 119), fetched 2026-10-27.
+const SLICE31_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice31-sourced.json");
+/// Slice 32: Kamahl's Summons (ONS 269) and Surrak and Goreclaw (MOM 337), fetched 2026-10-27.
+const SLICE32_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice32-sourced.json");
+/// Slice 33: Beorn's Hospitality (HOB 120), fetched 2026-10-27.
+const SLICE33_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice33-sourced.json");
+const SLICE35_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice35-sourced.json");
+/// Slice 37: Druid's Familiar (AVR 175), fetched 2026-10-27.
+const SLICE37_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice37-sourced.json");
+/// Slice 38: Spider-Ham, Peter Porker (SPM 114), fetched 2026-10-28.
+const SLICE38_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice38-sourced.json");
+const SLICE15_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice15-sourced.json");
+const SLICE16_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice16-sourced.json");
+const SLICE5_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice5-sourced.json");
+const SLICE6_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice6-sourced.json");
+const SLICE11_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice11-sourced.json");
+const SLICE19_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice19-sourced.json");
+
+fn starter_new_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(STARTER_SOURCED).expect("sourced starter JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| matches!(card["role"].as_str(), Some("vanilla" | "commander")))
+        .cloned()
+        .collect()
+}
+
+fn krenko_new_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(KRENKO_SOURCED).expect("sourced Krenko JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| matches!(card["role"].as_str(), Some("commander" | "token_package")))
+        .cloned()
+        .collect()
+}
+
+fn talrand_card() -> Vec<Value> {
+    let value: Value = serde_json::from_str(TALRAND_SOURCED).expect("sourced Talrand JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| card["role"] == "commander")
+        .cloned()
+        .collect()
+}
+
+fn tatyova_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(TATYOVA_SOURCED).expect("sourced Tatyova JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn cross_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(CROSS_SOURCED).expect("sourced cross JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice4_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE4_SOURCED).expect("sourced slice4 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice5_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE5_SOURCED).expect("sourced slice5 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice6_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE6_SOURCED).expect("sourced slice6 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice8_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE8_SOURCED).expect("sourced slice8 JSON");
+    value["cards"]
+        .as_array()
+        .expect("cards")
+        .iter()
+        .filter(|card| card["role"] != "excluded")
+        .cloned()
+        .collect()
+}
+
+fn slice9_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE9_SOURCED).expect("sourced slice9 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice11_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE11_SOURCED).expect("sourced slice11 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice12_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE12_SOURCED).expect("sourced slice12 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice13_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE13_SOURCED).expect("sourced slice13 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice14_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE14_SOURCED).expect("sourced slice14 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice15_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE15_SOURCED).expect("sourced slice15 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice16_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE16_SOURCED).expect("sourced slice16 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice17_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE17_SOURCED).expect("sourced slice17 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice18_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE18_SOURCED).expect("sourced slice18 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice19_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE19_SOURCED).expect("sourced slice19 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice20_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE20_SOURCED).expect("sourced slice20 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice21_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE21_SOURCED).expect("sourced slice21 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice22_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE22_SOURCED).expect("sourced slice22 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice23_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE23_SOURCED).expect("sourced slice23 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice24_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE24_SOURCED).expect("sourced slice24 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice25_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE25_SOURCED).expect("sourced slice25 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice26_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE26_SOURCED).expect("sourced slice26 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice28_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE28_SOURCED).expect("sourced slice28 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice29_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE29_SOURCED).expect("sourced slice29 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice30_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE30_SOURCED).expect("sourced slice30 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice31_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE31_SOURCED).expect("sourced slice31 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice32_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE32_SOURCED).expect("sourced slice32 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice33_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE33_SOURCED).expect("sourced slice33 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice35_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE35_SOURCED).expect("sourced slice35 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice37_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE37_SOURCED).expect("sourced slice37 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice38_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE38_SOURCED).expect("sourced slice38 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+/// Slice 38 added Spider-Ham, Peter Porker (SPM 114). Its printing is the
+/// authority for the cost, the type line, the power/toughness and the whole
+/// two-ability oracle text — including the Food token's quoted ability — so a
+/// hand-authored string can never drift from the card. All five Scryfall
+/// printings (spm 114/201, pspm 114s, pw25 10, om1 118) carry one identical
+/// text, type line, cost and P/T (`evidence/issue17/slice38/sources/printings.json`).
+#[test]
+fn slice38_spider_ham_matches_its_recorded_printing() {
+    let cards = slice38_cards();
+    assert_eq!(cards.len(), 1, "slice 38 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Spider-Ham, Peter Porker");
+    let def = catalog::by_name("Spider-Ham, Peter Porker")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "spm");
+    assert_eq!(sourced_text(record, "collector_number"), "114");
+    assert_eq!(record["power"].as_str(), Some("2"));
+    assert_eq!(record["toughness"].as_str(), Some("2"));
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "41f18f42-b86b-4a12-9f0d-76b761571195",
+        "the immutable printing id, not the oracle id"
+    );
+    assert!(
+        def.oracle.contains(
+            "(It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+        ),
+        "the Food token's quoted ability is part of the printed text"
+    );
+}
+
+/// Slice 37 added Druid's Familiar (AVR 175). Its printing is the authority for
+/// the cost, the type line, the power/toughness and the whole two-ability oracle
+/// text, so a hand-authored string can never drift from the card.
+#[test]
+fn slice37_druids_familiar_matches_its_recorded_printing() {
+    let cards = slice37_cards();
+    assert_eq!(cards.len(), 1, "slice 37 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Druid's Familiar");
+    let def = catalog::by_name("Druid's Familiar")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "avr");
+    assert_eq!(sourced_text(record, "collector_number"), "175");
+    assert_eq!(record["power"].as_str(), Some("2"));
+    assert_eq!(record["toughness"].as_str(), Some("2"));
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "1d8c794a-7964-41f0-bc9c-27af7cf87aaa",
+        "the immutable printing id, not the oracle id"
+    );
+}
+
+/// Slice 35 added Words of Wilding (ONS 305). Its printing is the authority for
+/// the cost, the type line and the whole one-ability oracle text.
+#[test]
+fn slice35_words_of_wilding_matches_its_recorded_printing() {
+    let cards = slice35_cards();
+    assert_eq!(cards.len(), 1, "slice 35 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Words of Wilding");
+    let def = catalog::by_name("Words of Wilding")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "ons");
+    assert_eq!(sourced_text(record, "collector_number"), "305");
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "fdb9565f-5b09-4127-b169-3146079dab84"
+    );
+    assert_eq!(
+        sourced_text(record, "oracle_id"),
+        "888582df-4fe2-4d05-9b62-10c90aaa76f2"
+    );
+    assert!(def.is_enchantment(), "printed type line");
+    assert!(!def.is_creature(), "a printed Enchantment");
+}
+
+/// Slice 33 added Beorn's Hospitality (HOB 120). Its printing is the authority
+/// for the cost, the type line, the whole two-ability oracle text and the
+/// colour; the retrieved stamp and printing URL are recorded so the text can be
+/// re-checked against the provider instead of against this file.
+#[test]
+fn slice33_beorns_hospitality_matches_its_recorded_printing() {
+    let cards = slice33_cards();
+    assert_eq!(cards.len(), 1, "slice 33 records one card");
+    let record = &cards[0];
+    assert_eq!(sourced_text(record, "name"), "Beorn's Hospitality");
+    let def = catalog::by_name("Beorn's Hospitality")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(record, "type_line"), "type");
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")), "cost");
+    assert_eq!(sourced_text(record, "set"), "hob");
+    assert_eq!(sourced_text(record, "collector_number"), "120");
+    assert_eq!(
+        sourced_text(record, "scryfall_id"),
+        "153ca57e-30f0-4ad7-ae9d-c55cbf0fd4c9"
+    );
+    assert_eq!(def.power, None, "an enchantment prints no power");
+    assert_eq!(def.toughness, None, "an enchantment prints no toughness");
+    assert_eq!(
+        def.colors,
+        &[aperture_core::ManaColor::Green],
+        "the printing's colour identity is green"
+    );
+    assert!(def.kinds.contains(&aperture_core::Kind::Enchantment));
+    assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+    assert!(sourced_text(record, "printing_url").starts_with("https://api.scryfall.com/cards/"));
+    assert!(!sourced_text(record, "retrieved_at").is_empty());
+    // The two printed sentences are what the typed abilities say.
+    let abilities =
+        aperture_core::ability::abilities(catalog::by_name("Beorn's Hospitality").unwrap());
+    assert_eq!(abilities.len(), 2);
+    assert!(
+        abilities[0]
+            .text()
+            .starts_with("Landfall — Whenever a land you control enters"),
+        "the trigger text is the printing's first sentence"
+    );
+    assert!(
+        abilities[1]
+            .text()
+            .starts_with("{5}{G}{G}: This enchantment becomes a Bear creature in addition"),
+        "the activated text is the printing's second sentence"
+    );
+}
+
+/// Only the card slice 32 newly adds to the pool. Surrak and Goreclaw is in the
+/// slice-32 fixture to record the printed keyword that repaired it, but its
+/// catalog row already existed and is counted by the slice-24 fixture.
+fn slice32_new_cards() -> Vec<Value> {
+    slice32_cards()
+        .into_iter()
+        .filter(|card| sourced_text(card, "name") == "Kamahl's Summons")
+        .collect()
+}
+
+fn slice41_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE41_SOURCED).expect("sourced slice41 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice42_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE42_SOURCED).expect("sourced slice42 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice43_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE43_SOURCED).expect("sourced slice43 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice44_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE44_SOURCED).expect("sourced slice44 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice45_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE45_SOURCED).expect("sourced slice45 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice46_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE46_SOURCED).expect("sourced slice46 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice48_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE48_SOURCED).expect("sourced slice48 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice53_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE53_SOURCED).expect("sourced slice53 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice54_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE54_SOURCED).expect("sourced slice54 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice57_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE57_SOURCED).expect("sourced slice57 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice59_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE59_SOURCED).expect("sourced slice59 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice60_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE60_SOURCED).expect("sourced slice60 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice68_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE68_SOURCED).expect("sourced slice68 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice69_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE69_SOURCED).expect("sourced slice69 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice67_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE67_SOURCED).expect("sourced slice67 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice63_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE63_SOURCED).expect("sourced slice63 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice65_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE65_SOURCED).expect("sourced slice65 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice66_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE66_SOURCED).expect("sourced slice66 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice64_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE64_SOURCED).expect("sourced slice64 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice62_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE62_SOURCED).expect("sourced slice62 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn sourced_text<'a>(card: &'a Value, key: &str) -> &'a str {
+    card[key].as_str().unwrap_or_else(|| panic!("{key}"))
+}
 
 /// One authoritative printing of a pool card.
 struct Printing {
@@ -47,6 +589,160 @@ const PRINTINGS: &[Printing] = &[
         oracle_text: "Prevent the next 4 damage that would be dealt to any target this turn.",
         power: None,
         toughness: None,
+    },
+    Printing {
+        name: "Goblin Chieftain",
+        set: "jmp",
+        collector_number: "324",
+        scryfall_uri: "https://scryfall.com/card/jmp/324/goblin-chieftain",
+        printings_checked: 10,
+        retrieved: "2026-10-29",
+        oracle_text: "Haste (This creature can attack and {T} as soon as it comes under your control.)\nOther Goblin creatures you control get +1/+1 and have haste.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Searslicer Goblin",
+        set: "fdn",
+        collector_number: "93",
+        scryfall_uri: "https://scryfall.com/card/fdn/93/searslicer-goblin",
+        printings_checked: 6,
+        retrieved: "2026-10-29",
+        oracle_text: "Raid — At the beginning of your end step, if you attacked this turn, create a 1/1 red Goblin creature token.",
+        power: Some("2"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Goblin Sharpshooter",
+        set: "c13",
+        collector_number: "111",
+        scryfall_uri: "https://scryfall.com/card/c13/111/goblin-sharpshooter",
+        printings_checked: 6,
+        retrieved: "2026-10-29",
+        oracle_text: "This creature doesn't untap during your untap step.\nWhenever a creature dies, untap this creature.\n{T}: This creature deals 1 damage to any target.",
+        power: Some("1"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Krenko, Tin Street Kingpin",
+        set: "moc",
+        collector_number: "287",
+        scryfall_uri: "https://scryfall.com/card/moc/287/krenko-tin-street-kingpin",
+        printings_checked: 9,
+        retrieved: "2026-10-29",
+        oracle_text: "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+        power: Some("1"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Hobgoblin Bandit Lord",
+        set: "afr",
+        collector_number: "147",
+        scryfall_uri: "https://scryfall.com/card/afr/147/hobgoblin-bandit-lord",
+        printings_checked: 6,
+        retrieved: "2026-10-29",
+        oracle_text: "Other Goblins you control get +1/+1.\n{R}, {T}: This creature deals damage equal to the number of Goblins that entered the battlefield under your control this turn to any target.",
+        power: Some("2"),
+        toughness: Some("3"),
+    },
+    Printing {
+        name: "Goblin Matron",
+        set: "plst",
+        collector_number: "DMR-123",
+        scryfall_uri: "https://scryfall.com/card/plst/DMR-123/goblin-matron",
+        printings_checked: 17,
+        retrieved: "2026-10-29",
+        oracle_text: "When this creature enters, you may search your library for a Goblin card, reveal that card, put it into your hand, then shuffle.",
+        power: Some("1"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Goblin Warchief",
+        set: "dom",
+        collector_number: "130",
+        scryfall_uri: "https://scryfall.com/card/dom/130/goblin-warchief",
+        printings_checked: 13,
+        retrieved: "2026-10-29",
+        oracle_text: "Goblin spells you cast cost {1} less to cast.\nGoblins you control have haste.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Goblin King",
+        set: "10e",
+        collector_number: "207",
+        scryfall_uri: "https://scryfall.com/card/10e/207/goblin-king",
+        printings_checked: 23,
+        retrieved: "2026-10-29",
+        oracle_text: "Other Goblins get +1/+1 and have mountainwalk.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Dragonlord's Servant",
+        set: "tdc",
+        collector_number: "210",
+        scryfall_uri: "https://scryfall.com/card/tdc/210/dragonlords-servant",
+        printings_checked: 14,
+        retrieved: "2026-10-29",
+        oracle_text: "Dragon spells you cast cost {1} less to cast.",
+        power: Some("1"),
+        toughness: Some("3"),
+    },
+    Printing {
+        name: "Volcanic Dragon",
+        set: "cmr",
+        collector_number: "207",
+        scryfall_uri: "https://scryfall.com/card/cmr/207/volcanic-dragon",
+        printings_checked: 12,
+        retrieved: "2026-10-29",
+        oracle_text: "Flying, haste",
+        power: Some("4"),
+        toughness: Some("4"),
+    },
+    Printing {
+        name: "Siege-Gang Lieutenant",
+        set: "plst",
+        collector_number: "M3C-113",
+        scryfall_uri: "https://scryfall.com/card/plst/M3C-113/siege-gang-lieutenant",
+        printings_checked: 3,
+        retrieved: "2026-10-29",
+        oracle_text: "Lieutenant — At the beginning of combat on your turn, if you control your commander, create two 1/1 red Goblin creature tokens. Those tokens gain haste until end of turn.\n{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Skirk Prospector",
+        set: "dmr",
+        collector_number: "137",
+        scryfall_uri: "https://scryfall.com/card/dmr/137/skirk-prospector",
+        printings_checked: 9,
+        retrieved: "2026-10-29",
+        oracle_text: "Sacrifice a Goblin: Add {R}.",
+        power: Some("1"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Moggcatcher",
+        set: "nem",
+        collector_number: "96",
+        scryfall_uri: "https://scryfall.com/card/nem/96/moggcatcher",
+        printings_checked: 3,
+        retrieved: "2026-10-29",
+        oracle_text: "{3}, {T}: Search your library for a Goblin permanent card, put it onto the battlefield, then shuffle.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Zo-Zu the Punisher",
+        set: "dds",
+        collector_number: "41",
+        scryfall_uri: "https://scryfall.com/card/dds/41/zo-zu-the-punisher",
+        printings_checked: 4,
+        retrieved: "2026-10-29",
+        oracle_text: "Whenever a land enters, Zo-Zu deals 2 damage to that land's controller.",
+        power: Some("2"),
+        toughness: Some("2"),
     },
     Printing {
         name: "Angrath's Marauders",
@@ -144,14 +840,403 @@ fn every_new_pool_card_matches_its_recorded_authoritative_printing() {
 }
 
 #[test]
+fn every_starter_corpus_card_matches_its_recorded_printing() {
+    let cards = starter_new_cards();
+    assert_eq!(cards.len(), 48, "47 vanilla creatures plus the commander");
+    for card in cards {
+        let name = sourced_text(&card, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&card, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&card, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&card, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            card["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            card["toughness"].as_str(),
+            "{name} toughness"
+        );
+        assert_eq!(sourced_text(&card, "layout"), "normal");
+        assert!(
+            sourced_text(&card, "printing_url").starts_with("https://api.scryfall.com/cards/"),
+            "{name} records no concrete Scryfall printing"
+        );
+        assert!(!sourced_text(&card, "retrieved_at").is_empty());
+        assert_eq!(sourced_text(&card, "legalities_commander"), "legal");
+        assert_eq!(card["keywords"].as_array().map(Vec::len), Some(0));
+    }
+}
+
+#[test]
+fn every_krenko_package_card_matches_its_recorded_printing() {
+    let cards = krenko_new_cards();
+    assert_eq!(cards.len(), 6, "Krenko plus five token-package cards");
+    for card in cards {
+        let name = sourced_text(&card, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&card, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&card, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&card, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            card["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            card["toughness"].as_str(),
+            "{name} toughness"
+        );
+        assert_eq!(sourced_text(&card, "layout"), "normal");
+        assert!(sourced_text(&card, "printing_url").starts_with("https://api.scryfall.com/cards/"));
+        assert_eq!(sourced_text(&card, "legalities_commander"), "legal");
+    }
+    // The token is engine-only, never in the importable catalog.
+    let token: Value = serde_json::from_str::<Value>(KRENKO_SOURCED).unwrap()["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|card| card["role"] == "token")
+        .cloned()
+        .expect("token source record");
+    assert_eq!(token["type_line"], "Token Creature — Goblin");
+    assert_eq!(token["power"], "1");
+    assert_eq!(token["toughness"], "1");
+    assert_eq!(
+        CardId::GoblinToken.def().type_line,
+        token["type_line"].as_str().unwrap()
+    );
+}
+
+/// Slice 4 adds two cards whose printed text is a modelled keyword, so the
+/// catalog must agree with the printing on the keyword *and* on the flag that
+/// makes the engine execute it. A silent mismatch (a card that prints Trample
+/// while the engine does not trample) is what this guard exists to catch.
+#[test]
+fn every_slice4_card_matches_its_recorded_printing_and_keywords() {
+    let cards = slice4_cards();
+    assert_eq!(cards.len(), 4, "slice 4 adds four sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str(),
+            "{name} toughness"
+        );
+        let printed_flash = record["keywords"]
+            .as_array()
+            .expect("keywords")
+            .iter()
+            .any(|keyword| keyword == "Flash");
+        let printed_trample = record["keywords"]
+            .as_array()
+            .expect("keywords")
+            .iter()
+            .any(|keyword| keyword == "Trample");
+        assert_eq!(def.has_flash(), printed_flash, "{name} flash flag");
+        assert_eq!(def.has_trample(), printed_trample, "{name} trample flag");
+        assert_eq!(sourced_text(&record, "layout"), "normal");
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert_eq!(
+            record["distinct_printing_texts"].as_u64(),
+            Some(1),
+            "{name} wording is identical across its printings"
+        );
+        assert!(record["printings_checked"].as_u64().unwrap_or(0) >= 1);
+    }
+}
+
+/// Slice 11 adds two cards whose printed text is Islandwalk, so the catalog must
+/// agree with the printing on the keyword *and* on the table the blocking path
+/// consults. A card that prints Islandwalk while the engine lets it be blocked,
+/// or one that is unblockable without printing it, fails here.
+#[test]
+fn every_slice11_card_matches_its_recorded_printing_and_islandwalk() {
+    let cards = slice11_cards();
+    assert_eq!(cards.len(), 2, "slice 11 adds two sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let id = catalog::by_name(name).unwrap_or_else(|| panic!("{name} is not in the pool"));
+        let def = id.def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str(),
+            "{name} toughness"
+        );
+        assert_eq!(
+            def.oracle.matches("Islandwalk").count(),
+            1,
+            "{name} prints exactly one evasion keyword"
+        );
+        assert_eq!(
+            aperture_core::tokens::keywords(id),
+            &[aperture_core::tokens::Keyword::Islandwalk],
+            "{name} must be islandwalk in the table the blocker check reads"
+        );
+        assert_eq!(
+            record["distinct_printed_texts"].as_u64(),
+            Some(1),
+            "{name} wording is identical across its printings"
+        );
+        assert!(record["prints"].as_u64().unwrap_or(0) >= 1);
+        assert_eq!(
+            sourced_text(&record, "printing_set"),
+            record["printing"]["set"].as_str().expect("set"),
+            "{name} records the set it was copied from"
+        );
+        assert!(
+            sourced_text(&record, "scryfall_uri").starts_with("https://scryfall.com/card/"),
+            "{name} records a printable source"
+        );
+    }
+}
+
+/// Slice 31 adds Beorn the Fierce. Its printing carries a keyword line
+/// ("Trample"), so the catalog's keyword flag must come from the record instead
+/// of being asserted by hand: the same invented-text class of defect this file
+/// exists to catch (R185-1/R185-2) would otherwise reappear as an invented
+/// keyword.
+#[test]
+fn every_slice31_card_matches_its_recorded_printing_and_trample() {
+    let cards = slice31_cards();
+    assert_eq!(cards.len(), 1, "slice 31 adds one sourced card");
+    for record in &cards {
+        let name = sourced_text(record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(record, "oracle_text"),
+            "{name} oracle"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()),
+            Some(sourced_text(record, "power").to_string()),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()),
+            Some(sourced_text(record, "toughness").to_string()),
+            "{name} toughness"
+        );
+        assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+        assert_eq!(
+            card_keywords(record),
+            vec!["Trample".to_string()],
+            "{name} printed keyword line"
+        );
+        assert!(def.has_trample(), "{name} prints Trample");
+        assert!(
+            sourced_text(record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert!(!sourced_text(record, "retrieved_at").is_empty());
+    }
+}
+
+#[test]
+fn every_slice32_card_matches_its_recorded_printing() {
+    let cards = slice32_cards();
+    assert_eq!(cards.len(), 2, "slice 32 records two cards");
+    let kamahl = cards
+        .iter()
+        .find(|card| sourced_text(card, "name") == "Kamahl's Summons")
+        .expect("Kamahl's Summons record");
+    let def = catalog::by_name("Kamahl's Summons")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(kamahl, "oracle_text"), "oracle");
+    assert_eq!(def.type_line, sourced_text(kamahl, "type_line"), "type");
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(kamahl, "mana_cost")),
+        "mana cost"
+    );
+    assert_eq!(sourced_text(kamahl, "set"), "ons");
+    assert_eq!(sourced_text(kamahl, "collector_number"), "269");
+    assert_eq!(def.power, None, "a sorcery has no power");
+    assert_eq!(sourced_text(kamahl, "legalities_commander"), "legal");
+    assert!(sourced_text(kamahl, "printing_url").starts_with("https://api.scryfall.com/cards/"));
+    assert!(!sourced_text(kamahl, "retrieved_at").is_empty());
+}
+
+/// Slice 32 repaired an included card's own printed keyword: Surrak and
+/// Goreclaw prints Trample, so the pool row must model it (it previously did
+/// not, and its static grants trample only to *other* creatures).
+#[test]
+fn surrak_and_goreclaw_models_the_trample_its_printing_records() {
+    let cards = slice32_cards();
+    let surrak = cards
+        .iter()
+        .find(|card| sourced_text(card, "name") == "Surrak and Goreclaw")
+        .expect("Surrak and Goreclaw record");
+    assert_eq!(sourced_text(surrak, "set"), "mom");
+    assert_eq!(sourced_text(surrak, "collector_number"), "337");
+    assert_eq!(
+        card_keywords(surrak),
+        vec!["Trample".to_string()],
+        "the printing's keyword list"
+    );
+    let def = catalog::by_name("Surrak and Goreclaw")
+        .expect("in the pool")
+        .def();
+    assert_eq!(def.oracle, sourced_text(surrak, "oracle_text"));
+    assert!(def.has_trample(), "the printed keyword is modelled");
+}
+
+#[test]
 fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
+    let starter: Vec<Value> = starter_new_cards()
+        .into_iter()
+        .chain(krenko_new_cards())
+        .chain(talrand_card())
+        .chain(tatyova_cards())
+        .chain(cross_cards())
+        .chain(slice4_cards())
+        .chain(slice5_cards())
+        .chain(slice6_cards())
+        .chain(slice8_cards())
+        .chain(slice9_cards())
+        .chain(slice11_cards())
+        .chain(slice12_cards())
+        .chain(slice13_cards())
+        .chain(slice14_cards())
+        .chain(slice15_cards())
+        .chain(slice16_cards())
+        .chain(slice17_cards())
+        .chain(slice18_cards())
+        .chain(slice19_cards())
+        .chain(slice20_cards())
+        .chain(slice21_cards())
+        .chain(slice22_cards())
+        .chain(slice23_cards())
+        .chain(slice24_cards())
+        .chain(slice25_cards())
+        .chain(slice26_cards())
+        .chain(slice28_cards())
+        .chain(slice29_cards())
+        .chain(slice30_cards())
+        .chain(slice41_cards())
+        .chain(slice42_cards())
+        .chain(slice43_cards())
+        .chain(slice44_cards())
+        .chain(slice45_cards())
+        .chain(slice54_cards())
+        .chain(slice59_cards())
+        .chain(slice60_cards())
+        .chain(slice46_cards())
+        .chain(slice48_cards())
+        .chain(slice53_cards())
+        .chain(slice57_cards())
+        .chain(slice31_cards())
+        .chain(slice32_new_cards())
+        .chain(slice33_cards())
+        .chain(slice35_cards())
+        .chain(slice37_cards())
+        .chain(slice38_cards())
+        .chain(slice65_cards())
+        .chain(slice66_cards())
+        .collect();
+    let starter_names: Vec<&str> = starter
+        .iter()
+        .map(|card| sourced_text(card, "name"))
+        .collect();
     for card in catalog::all() {
         let recorded = PRINTINGS.iter().any(|printing| printing.name == card.name);
         let legacy = LEGACY_POOL.contains(&card.name);
+        let sourced = starter_names.contains(&card.name);
         assert!(
-            recorded || legacy,
+            recorded || legacy || sourced,
             "{} has no recorded authoritative printing: add a record to \
-             crates/core/tests/card_printings.rs instead of authoring card text by hand",
+             crates/core/tests/card_printings.rs or to \
+             fixtures/starter-corpus/sourced-cards.json instead of authoring card text by hand",
             card.name
         );
         assert!(
@@ -159,10 +1244,982 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
             "{} is both legacy and recorded",
             card.name
         );
+        assert!(
+            !(sourced && (recorded || legacy)),
+            "{} is both a starter-sourced card and an older record",
+            card.name
+        );
     }
     assert_eq!(
         catalog::all().len(),
-        PRINTINGS.len() + LEGACY_POOL.len(),
-        "the pool size must equal the recorded and legacy cards"
+        PRINTINGS.len() + LEGACY_POOL.len() + starter.len(),
+        "the pool size must equal the recorded, legacy and starter-sourced cards"
     );
+}
+
+/// Slice 46: Thijarian Witness (WHO 111). The catalog string must equal the
+/// printing's `oracle_text` verbatim, the printed Flash must be the catalog's
+/// keyword flag, and the one printed trigger line must be a typed ability — the
+/// card must not print rules text the engine cannot execute.
+#[test]
+fn slice46_thijarian_witness_matches_its_recorded_printing() {
+    let cards = slice46_cards();
+    assert_eq!(cards.len(), 1, "slice 46 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Thijarian Witness");
+    let def = catalog::by_name(name)
+        .expect("Thijarian Witness is in the pool")
+        .def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    assert_eq!(
+        def.power,
+        sourced_text(record, "power").parse::<i32>().ok(),
+        "{name} power"
+    );
+    assert_eq!(
+        def.toughness,
+        sourced_text(record, "toughness").parse::<i32>().ok(),
+        "{name} toughness"
+    );
+    assert!(
+        def.flash,
+        "printed Flash (CR 702.8a) is a real keyword flag"
+    );
+    assert_eq!(
+        card_keywords(record),
+        vec!["Investigate", "Bear Witness", "Flash"],
+        "the printing's keyword list, including its two ability words"
+    );
+    assert!(
+        aperture_core::tokens::keywords(CardId::ThijarianWitness).is_empty(),
+        "none of the printed keyword entries is one the keyword table executes"
+    );
+    // Every printed rules line is carried by a typed ability: "Flash" is the
+    // catalog's keyword flag and the Bear Witness line is the one trigger.
+    // Reminder text in parentheses is not rules text (CR 207.2a); the Clue
+    // reminder's content is carried by the token definition asserted below, so
+    // the typed ability is compared against the rule line without it.
+    let abilities = aperture_core::abilities(CardId::ThijarianWitness);
+    assert_eq!(abilities.len(), 1, "one printed trigger");
+    for line in def.oracle.lines().filter(|line| *line != "Flash") {
+        let rule_text = line.split(" (").next().unwrap_or(line);
+        assert!(
+            abilities.iter().any(|ability| ability.text() == rule_text),
+            "the printed line {rule_text:?} has no typed implementation"
+        );
+    }
+    // The Clue token's own printed line is its one activated ability.
+    let clue = CardId::ClueToken.def();
+    assert_eq!(clue.oracle, "{2}, Sacrifice this token: Draw a card.");
+    let clue_abilities = aperture_core::abilities(CardId::ClueToken);
+    assert_eq!(clue_abilities.len(), 1);
+    assert_eq!(clue_abilities[0].text(), clue.oracle);
+}
+
+/// Slice 48: Owlbear Cub (CLB 246). The catalog string must equal the printing's
+/// `oracle_text` verbatim and the whole printed trigger line must be the one typed
+/// ability — the card must not print rules text the engine cannot execute. The
+/// printing's only keyword entry is its ability word ("Mama's Coming"), which is
+/// not a rules keyword, so the keyword table must stay empty for it.
+#[test]
+fn slice48_owlbear_cub_matches_its_recorded_printing() {
+    let cards = slice48_cards();
+    assert_eq!(cards.len(), 1, "slice 48 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Owlbear Cub");
+    let def = catalog::by_name(name)
+        .expect("Owlbear Cub is in the pool")
+        .def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    assert_eq!(
+        def.power,
+        sourced_text(record, "power").parse::<i32>().ok(),
+        "{name} power"
+    );
+    assert_eq!(
+        def.toughness,
+        sourced_text(record, "toughness").parse::<i32>().ok(),
+        "{name} toughness"
+    );
+    assert!(
+        def.kinds
+            .iter()
+            .any(|kind| matches!(kind, aperture_core::card::Kind::Creature)),
+        "it is a creature"
+    );
+    assert_eq!(
+        card_keywords(record),
+        vec!["Mama's Coming"],
+        "the printing's one keyword entry is an ability word"
+    );
+    assert!(
+        aperture_core::tokens::keywords(CardId::OwlbearCub).is_empty(),
+        "an ability word is not a keyword the table executes"
+    );
+    let abilities = aperture_core::abilities(CardId::OwlbearCub);
+    assert_eq!(abilities.len(), 1, "one printed trigger line");
+    assert_eq!(abilities[0].text(), def.oracle, "the line is implemented");
+}
+
+/// Slice 53: Ruxa, Patient Professor (C21 66). The catalog string equals the
+/// printing's `oracle_text` verbatim, the card has no printed keyword ability,
+/// and the three printed lines are exactly the abilities the engine executes:
+/// one trigger table entry per printed event, and one static per printed
+/// continuous sentence. A line the engine executed twice, or a line it did not
+/// execute at all, fails here.
+#[test]
+fn slice53_ruxa_matches_its_recorded_printing() {
+    let cards = slice53_cards();
+    assert_eq!(cards.len(), 1, "slice 53 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Ruxa, Patient Professor");
+    let def = catalog::by_name(name).expect("Ruxa is in the pool").def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    assert_eq!(
+        def.power,
+        sourced_text(record, "power").parse::<i32>().ok(),
+        "{name} power"
+    );
+    assert_eq!(
+        def.toughness,
+        sourced_text(record, "toughness").parse::<i32>().ok(),
+        "{name} toughness"
+    );
+    assert!(
+        card_keywords(record).is_empty(),
+        "the printing has no keyword ability"
+    );
+    assert!(
+        aperture_core::tokens::keywords(CardId::RuxaPatientProfessor).is_empty(),
+        "no keyword is executed for it"
+    );
+    let printed: Vec<&str> = def.oracle.split('\n').collect();
+    assert_eq!(printed.len(), 3, "three printed lines");
+
+    // The enters/attacks sentence is one trigger entry per event, both carrying
+    // the printed wording verbatim (CR 603.1: the event is what triggers).
+    let triggers = aperture_core::abilities(CardId::RuxaPatientProfessor);
+    assert_eq!(triggers.len(), 2, "one entry per printed trigger event");
+    for trigger in triggers {
+        assert_eq!(trigger.text(), printed[0], "the trigger line is executed");
+    }
+
+    // The two continuous sentences are layer-7c statics and the permission.
+    let statics = aperture_core::ability::static_abilities(CardId::RuxaPatientProfessor);
+    assert_eq!(statics.len(), 2, "two printed continuous sentences");
+    let static_text: Vec<&str> = statics.iter().map(|entry| entry.text()).collect();
+    for line in &printed[1..] {
+        assert!(
+            static_text.contains(line),
+            "printed continuous line is executed: {line}"
+        );
+    }
+}
+
+/// Slice 5 adds six cards whose behaviour is new (mill, counter target
+/// noncreature spell, scry-then-draw, red rituals), so the catalog string must
+/// equal the printing's `oracle_text` and the typed ability/effect must match
+/// the printed wording. Seething Song has one prepare-layout printing whose
+/// top-level `oracle_text` is empty; every single-face printing carries the same
+/// text, which is what the check below asserts.
+#[test]
+fn every_slice5_card_matches_its_recorded_printing() {
+    let cards = slice5_cards();
+    assert_eq!(cards.len(), 6, "slice 5 adds six sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str(),
+            "{name} power"
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str(),
+            "{name} toughness"
+        );
+        let texts: Vec<&str> = record["distinct_printing_texts_list"]
+            .as_array()
+            .expect("distinct printing texts")
+            .iter()
+            .filter_map(|text| text.as_str())
+            .filter(|text| !text.is_empty())
+            .collect();
+        assert_eq!(
+            texts,
+            vec![def.oracle],
+            "{name} prints one rules text across its single-face printings"
+        );
+        assert!(record["printings_checked"].as_u64().unwrap_or(0) >= 1);
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(
+            !sourced_text(&record, "retrieved_at").is_empty(),
+            "{name} records when it was read"
+        );
+    }
+}
+
+/// Slice 60 adds Evercoat Ursine: the catalog text, type line, cost, P/T and
+/// printed Trample keyword must all come from the BLC 30 printing, and its two
+/// hideaway abilities plus the free-play trigger must be typed on the card.
+#[test]
+fn every_slice60_card_matches_its_recorded_printing() {
+    let cards = slice60_cards();
+    assert_eq!(cards.len(), 1, "slice 60 adds one sourced card");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert!(
+            def.has_trample(),
+            "{name} prints Trample, so the keyword flag must be set"
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(
+            record["printings_checked"].as_u64().unwrap_or(0) >= 1,
+            "{name} records how many printings were checked"
+        );
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name} prints one rules text across its printings"
+        );
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert!(!sourced_text(&record, "retrieved_at").is_empty());
+        let abilities = aperture_core::abilities(def.id);
+        assert_eq!(abilities.len(), 3, "{name} carries three typed abilities");
+        assert!(
+            abilities
+                .iter()
+                .all(|ability| def.oracle.contains(ability.text())),
+            "{name} prints every typed ability it declares"
+        );
+    }
+}
+
+/// Slice 64 adds four demanded Krenko cards that share primitives, so the
+/// catalog text must equal the recorded printing *and* the shared machinery must
+/// really be wired: the standing untap restriction, the creature-dies untap, the
+/// subtype anthem, Krenko's ordered counter-then-tokens instruction pair, and
+/// Goblin Matron's optional search.
+#[test]
+fn every_slice64_card_matches_its_recorded_printing_and_shared_abilities() {
+    use aperture_core::ability::{Ability, StaticAbility, abilities, static_abilities};
+
+    let cards = slice64_cards();
+    assert_eq!(cards.len(), 4, "slice 64 adds four sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        // Every card in this batch is a Goblin creature, which is what makes the
+        // batch a Goblin-payoff batch rather than four unrelated cards.
+        assert!(def.is_creature() && def.is_goblin(), "{name} is a Goblin");
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name}'s wording never changed between printings"
+        );
+    }
+
+    // Sharpshooter's first printed line is a standing restriction, and the
+    // second line is the direct untap instruction that ignores it.
+    assert!(
+        static_abilities(CardId::GoblinSharpshooter)
+            .iter()
+            .any(|ability| matches!(
+                ability,
+                StaticAbility::SelfDoesNotUntapDuringUntapStep { .. }
+            )),
+        "Goblin Sharpshooter prints a standing untap restriction"
+    );
+    assert!(abilities(CardId::GoblinSharpshooter).iter().any(|ability| {
+        matches!(
+            ability,
+            Ability::Triggered(triggered)
+                if triggered.event == aperture_core::ability::TriggerEvent::CreatureDies
+                    && triggered.effects == [aperture_core::card::Effect::UntapSource]
+        )
+    }));
+
+    // Bandit Lord's anthem is the shared subtype-filtered layer 7c static.
+    assert!(
+        static_abilities(CardId::HobgoblinBanditLord)
+            .iter()
+            .any(|ability| matches!(
+                ability,
+                StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { subtypes, .. }
+                    if *subtypes == ["Goblin"]
+            )),
+        "Hobgoblin Bandit Lord prints the shared Goblin anthem"
+    );
+
+    // Krenko's printed instructions are ordered: the counter, then the tokens.
+    let krenko = abilities(CardId::KrenkoTinStreetKingpin);
+    assert_eq!(krenko.len(), 1);
+    assert_eq!(
+        krenko[0].effects(),
+        &[
+            aperture_core::card::Effect::PutPlusOneCounterOnSource,
+            aperture_core::card::Effect::CreateGoblinTokensEqualToSourcePower,
+        ],
+        "the counter is placed before the token count is read"
+    );
+
+    // Matron's search is optional, so the "may" is answered before any search.
+    let matron = abilities(CardId::GoblinMatron);
+    assert_eq!(matron.len(), 1);
+    match matron[0] {
+        Ability::Triggered(triggered) => {
+            assert!(triggered.optional, "Goblin Matron's search is a \"may\"");
+            assert_eq!(
+                triggered.effects,
+                &[aperture_core::card::Effect::SearchGoblinCardToHand]
+            );
+        }
+        Ability::Activated(_) => panic!("Goblin Matron's ability is triggered"),
+    }
+}
+
+/// Slice 15 adds three cards whose cost is paid with cards, so the catalog text
+/// must equal the printing *and* the typed ability must cost exactly what the
+/// printing says: one land discarded, two graveyard cards exiled, or the card
+/// itself exiled from the graveyard — and only Mother Bear prints "activate only
+/// as a sorcery". A hand-authored ability that paid a different cost would fail
+/// here rather than in review.
+#[test]
+fn every_slice15_card_prints_the_cost_its_ability_actually_pays() {
+    use aperture_core::ability::{Ability, AbilityCost, abilities};
+
+    let cards = slice15_cards();
+    assert_eq!(cards.len(), 3, "slice 15 adds three sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert!(!sourced_text(&record, "retrieved_at").is_empty());
+        assert_eq!(
+            card_keywords(&record),
+            Vec::<String>::new(),
+            "{name} prints no keyword line"
+        );
+
+        let id = catalog::by_name(name).unwrap();
+        let activated: Vec<_> = abilities(id)
+            .iter()
+            .filter_map(Ability::activated)
+            .collect();
+        assert_eq!(
+            activated.len(),
+            1,
+            "{name} prints exactly one activated ability"
+        );
+        let cost: AbilityCost = activated[0].cost;
+        let expected = match name {
+            "Ayula's Influence" => AbilityCost {
+                discard_land: true,
+                ..AbilityCost::NONE
+            },
+            "Bearscape" => AbilityCost {
+                mana: Some("{1}{G}"),
+                exile_graveyard_cards: 2,
+                ..AbilityCost::NONE
+            },
+            "Mother Bear" => AbilityCost {
+                mana: Some("{3}{G}{G}"),
+                exile_source_from_graveyard: true,
+                ..AbilityCost::NONE
+            },
+            other => panic!("{other} has no recorded expectation"),
+        };
+        assert_eq!(cost, expected, "{name} pays exactly the printed cost");
+        let expected_sorcery = name == "Mother Bear";
+        assert_eq!(
+            activated[0].sorcery_timing, expected_sorcery,
+            "{name} 'activate only as a sorcery' matches its printing"
+        );
+        assert!(
+            activated[0]
+                .text
+                .contains(sourced_text(&record, "oracle_text")),
+            "{name} ability text is the printed sentence"
+        );
+    }
+
+    // The Bear token is engine-only, never importable, and prints 2/2 green Bear.
+    assert_eq!(CardId::BearToken.def().type_line, "Token Creature — Bear");
+    assert_eq!(CardId::BearToken.def().power, Some(2));
+    assert_eq!(CardId::BearToken.def().toughness, Some(2));
+    assert!(CardId::BearToken.def().is_creature());
+    assert!(catalog::by_name("Bear Token").is_none());
+}
+
+fn card_keywords(record: &Value) -> Vec<String> {
+    record["keywords"]
+        .as_array()
+        .expect("keywords")
+        .iter()
+        .filter_map(|keyword| keyword.as_str().map(str::to_string))
+        .collect()
+}
+
+/// Slice 43: Lumra, Bellow of the Woods. The catalog string must equal the
+/// printing's oracle text verbatim, and the two places where this card differs
+/// from every other sourced card are asserted explicitly: it prints `*`/`*`
+/// rather than numbers (so the catalog carries no fixed power/toughness and the
+/// value comes from a characteristic-defining static), and its two keywords are
+/// the ones the engine's keyword table actually executes for it.
+#[test]
+fn slice43_lumra_matches_its_recorded_printing() {
+    let cards = slice43_cards();
+    assert_eq!(cards.len(), 1, "slice 43 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    assert_eq!(name, "Lumra, Bellow of the Woods");
+    let def = catalog::by_name(name).expect("Lumra is in the pool").def();
+    assert_eq!(
+        def.oracle,
+        sourced_text(record, "oracle_text"),
+        "{name} text"
+    );
+    assert_eq!(
+        def.type_line,
+        sourced_text(record, "type_line"),
+        "{name} type"
+    );
+    assert_eq!(
+        def.cost,
+        Some(sourced_text(record, "mana_cost")),
+        "{name} cost"
+    );
+    for side in ["power", "toughness"] {
+        assert_eq!(
+            sourced_text(record, side),
+            "*",
+            "{name} prints a characteristic-defining {side}"
+        );
+    }
+    assert!(
+        def.power.is_none() && def.toughness.is_none(),
+        "a */* card must not carry invented numbers"
+    );
+    let keywords = card_keywords(record);
+    assert_eq!(keywords, vec!["Reach", "Vigilance", "Mill"]);
+    let executed = aperture_core::tokens::keywords(CardId::LumraBellowOfTheWoods);
+    assert_eq!(
+        executed,
+        &[
+            aperture_core::tokens::Keyword::Reach,
+            aperture_core::tokens::Keyword::Vigilance
+        ],
+        "the two printed keywords the engine executes"
+    );
+    // Every printed line of text is carried by a typed ability or static, so no
+    // sentence of the printing is silently unimplemented.
+    let abilities = aperture_core::abilities(CardId::LumraBellowOfTheWoods);
+    let statics = aperture_core::ability::static_abilities(CardId::LumraBellowOfTheWoods);
+    assert_eq!(abilities.len(), 1);
+    assert_eq!(statics.len(), 1);
+    for line in def.oracle.lines().skip(1) {
+        assert!(
+            abilities.iter().any(|ability| ability.text() == line)
+                || statics
+                    .iter()
+                    .any(|static_ability| static_ability.text() == line),
+            "the printed line {line:?} has no typed implementation"
+        );
+    }
+}
+
+#[test]
+fn every_slice62_card_matches_its_recorded_printing_and_keywords() {
+    let cards = slice62_cards();
+    assert_eq!(cards.len(), 2, "slice 62 adds two sourced cards");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        let keywords: Vec<&str> = record["keywords"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(Value::as_str)
+            .collect();
+        if name == "Goblin Chieftain" {
+            assert!(keywords.contains(&"Haste"));
+            assert!(
+                aperture_core::tokens::keywords(def.id)
+                    .contains(&aperture_core::tokens::Keyword::Haste)
+            );
+            if sourced_text(&record, "name") != "Volcanic Dragon" {
+                assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+            } else {
+                assert!(def.has_flying());
+                assert!(
+                    aperture_core::tokens::keywords(def.id)
+                        .contains(&aperture_core::tokens::Keyword::Haste)
+                );
+            }
+        } else {
+            assert!(keywords.contains(&"Raid"));
+            assert!(
+                aperture_core::ability::triggers_on(
+                    def.id,
+                    aperture_core::ability::TriggerEvent::EndStep
+                )
+                .next()
+                .is_some()
+            );
+        }
+    }
+}
+
+#[test]
+fn every_slice63_card_matches_its_recorded_printing_and_shared_statics() {
+    let cards = slice63_cards();
+    assert_eq!(
+        cards.len(),
+        4,
+        "slice 63 adds three demanded cards plus the authorized Dragon control"
+    );
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        if sourced_text(&record, "name") != "Volcanic Dragon" {
+            assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+        } else {
+            assert!(def.has_flying());
+            assert!(
+                aperture_core::tokens::keywords(def.id)
+                    .contains(&aperture_core::tokens::Keyword::Haste)
+            );
+        }
+    }
+}
+/// Slice 65: Siege-Gang Commander (DMR 136). The catalog text must equal the
+/// recorded printing verbatim — the current wording costs the throw at `{1}{R}`,
+/// not the original Scourge printing's `{2}{R}` — and both printed abilities must
+/// be typed, including the "Sacrifice a Goblin" cost that only this card carries.
+#[test]
+fn slice65_siege_gang_commander_matches_its_recorded_printing() {
+    use aperture_core::ability::{Ability, abilities};
+
+    let cards = slice65_cards();
+    assert_eq!(cards.len(), 1, "slice 65 adds one sourced card");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(def.is_creature() && def.is_goblin(), "{name} is a Goblin");
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name}'s wording never changed between printings"
+        );
+        assert_eq!(record["printings_checked"].as_u64(), Some(18));
+
+        let abilities = abilities(def.id);
+        assert_eq!(abilities.len(), 2, "{name} carries two typed abilities");
+        assert!(
+            abilities
+                .iter()
+                .all(|ability| def.oracle.contains(ability.text())),
+            "{name} prints every typed ability it declares"
+        );
+        let Ability::Activated(activated) = &abilities[1] else {
+            panic!("{name}'s second ability is the activated one");
+        };
+        assert_eq!(
+            activated.cost.sacrifice_creature_subtype,
+            Some("Goblin"),
+            "the cost is a chosen Goblin, not a fixed sacrifice"
+        );
+        assert_eq!(activated.cost.mana, Some("{1}{R}"));
+    }
+}
+
+/// Slice 66: Pashalik Mons (DMR 133) and Goblin Trashmaster (M19 144). Both
+/// catalog rows must equal the recorded printings verbatim, both are Goblins,
+/// and the two printed shapes are typed: Pashalik's subtype-narrowed dies
+/// watcher plus a `{3}{R}, Sacrifice a Goblin` token maker, and Trashmaster's
+/// `Sacrifice a Goblin: Destroy target artifact` with an artifact-only target.
+#[test]
+fn slice66_pashalik_and_trashmaster_match_their_recorded_printings() {
+    use aperture_core::ability::{Ability, StaticAbility, abilities, static_abilities};
+
+    let cards = slice66_cards();
+    assert_eq!(cards.len(), 2, "slice 66 adds two sourced cards");
+    for record in &cards {
+        let name = sourced_text(record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+        assert!(def.is_creature() && def.is_goblin(), "{name} is a Goblin");
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name}'s wording never changed between printings"
+        );
+        assert!(
+            abilities(def.id)
+                .iter()
+                .all(|ability| { def.oracle.contains(ability.text()) })
+        );
+    }
+
+    let mons = catalog::by_name("Pashalik Mons")
+        .expect("Pashalik Mons")
+        .def();
+    assert!(
+        mons.type_line.contains("Legendary"),
+        "the printed supertype is modelled, so the legend rule applies"
+    );
+    let mons_abilities = abilities(mons.id);
+    assert_eq!(mons_abilities.len(), 2);
+    let Ability::Triggered(watcher) = &mons_abilities[0] else {
+        panic!("the dies watcher is the first printed ability");
+    };
+    assert_eq!(
+        watcher.event,
+        aperture_core::ability::TriggerEvent::GoblinYouControlDies,
+        "the watcher is narrowed to Goblins, not every creature"
+    );
+    assert_eq!(watcher.target, aperture_core::TargetSpec::AnyTarget);
+    let Ability::Activated(maker) = &mons_abilities[1] else {
+        panic!("the token maker is the second printed ability");
+    };
+    assert_eq!(maker.cost.mana, Some("{3}{R}"));
+    assert_eq!(maker.cost.sacrifice_creature_subtype, Some("Goblin"));
+
+    let trash = catalog::by_name("Goblin Trashmaster")
+        .expect("Goblin Trashmaster")
+        .def();
+    let trash_abilities = abilities(trash.id);
+    assert_eq!(trash_abilities.len(), 1);
+    let Ability::Activated(destroyer) = &trash_abilities[0] else {
+        panic!("Trashmaster prints one activated ability");
+    };
+    assert_eq!(destroyer.target, aperture_core::TargetSpec::Artifact);
+    assert_eq!(destroyer.cost.sacrifice_creature_subtype, Some("Goblin"));
+    assert_eq!(
+        destroyer.cost.mana, None,
+        "the printed ability has no mana cost"
+    );
+    assert!(
+        static_abilities(trash.id)
+            .iter()
+            .any(|static_ability| matches!(
+                static_ability,
+                StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. }
+            )),
+        "the printed anthem is a typed layer 7c static"
+    );
+}
+
+#[test]
+fn every_slice67_card_matches_its_recorded_printing_and_abilities() {
+    let cards = slice67_cards();
+    assert_eq!(cards.len(), 1);
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    let def = catalog::by_name(name).expect("in pool").def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"));
+    assert_eq!(def.type_line, sourced_text(record, "type_line"));
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")));
+    assert_eq!(
+        def.power.map(|p| p.to_string()).as_deref(),
+        record["power"].as_str()
+    );
+    assert_eq!(
+        def.toughness.map(|t| t.to_string()).as_deref(),
+        record["toughness"].as_str()
+    );
+    assert_eq!(aperture_core::ability::abilities(def.id).len(), 2);
+    assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+}
+
+#[test]
+fn every_slice69_card_matches_its_recorded_printing() {
+    let cards = slice69_cards();
+    assert_eq!(cards.len(), 1, "slice 69 sources one card");
+    let record = &cards[0];
+    let name = sourced_text(record, "name");
+    let def = catalog::by_name(name).expect("in pool").def();
+    assert_eq!(def.oracle, sourced_text(record, "oracle_text"));
+    assert_eq!(def.type_line, sourced_text(record, "type_line"));
+    assert_eq!(def.cost, Some(sourced_text(record, "mana_cost")));
+    assert_eq!(
+        def.power.map(|p| p.to_string()).as_deref(),
+        record["power"].as_str()
+    );
+    assert_eq!(
+        def.toughness.map(|t| t.to_string()).as_deref(),
+        record["toughness"].as_str()
+    );
+    assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+    assert_eq!(
+        record["printings_distinct_oracle_texts"].as_u64(),
+        Some(1),
+        "every printing prints the same oracle text"
+    );
+    assert_eq!(aperture_core::ability::abilities(def.id).len(), 1);
+}
+
+#[test]
+fn every_slice68_card_matches_its_recorded_printing() {
+    let cards = slice68_cards();
+    assert_eq!(cards.len(), 2);
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name).expect("in pool").def();
+        assert_eq!(def.oracle, sourced_text(&record, "oracle_text"));
+        assert_eq!(def.type_line, sourced_text(&record, "type_line"));
+        assert_eq!(def.cost, Some(sourced_text(&record, "mana_cost")));
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+    }
 }

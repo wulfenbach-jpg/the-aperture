@@ -1,0 +1,62 @@
+{
+  "slice": 55,
+  "date": "2026-10-28",
+  "base": "55a55f690ebc262969db8280f4b8626f9f8a97ef",
+  "opening_commit": "a332e29",
+  "code_head": "e4c5fcd73cddf199e365cca95c8fc3c172f50c6c",
+  "branch": "aperture/issue-17",
+  "pr": "https://github.com/wulfenbach-jpg/the-aperture/pull/46",
+  "card_enabled_this_slice": false,
+  "no_card_reason": "All three remaining Ayula names need a subsystem that does not exist (X announcement plus aggregate-mana-value multi-target for Rampaging Yao Guai, the Ring emblem and Ring-bearer for Dunedain Rangers, two hideaway resolutions plus linked face-down exile and free play for Evercoat Ursine); none is finishable inside this dispatch, so this slice ships two real honesty defects in the approved Ursine increment instead of half of one of them.",
+  "record_items_closed": ["R354-1", "R354-2", "R354-3"],
+  "product_defects_fixed": [
+    "R354 N-1: the Ursine Monstrosity combat trigger emitted a 'gains indestructible/+1/+1 and must attack' event line even when its source had already left the battlefield, so the log narrated a grant that never happened. The grant is now created only while the source is a battlefield permanent and the event line reports the skipped grants; the mill still happens (CR 608.2b). The observable defect was the false event line: a stale effect would have been at most transient because recompute_layers drops effects whose target is not a battlefield permanent.",
+    "R354 N-4: the coach reported 'has lethal damage and will be destroyed' for indestructible permanents. CR 702.12b exempts them from the lethal-damage destroy; a zero-toughness permanent is moved to its owner's graveyard by the CR 704.5f state-based action, which is not a destroy. The report is split into a destroyed list and an indestructible-and-spared list, each with its own rules citation."
+  ],
+  "local_gates": {
+    "fmt": "cargo fmt --all --check exit 0 (slice55/fmt.log)",
+    "clippy": "cargo clippy -p aperture-core --all-targets --locked -- -D warnings exit 0 (slice55/clippy.log)",
+    "focused": "6 suites / 32 passed / 0 failed (coach_trace 7, combat_teaching 2, issue17_slice54 4, issue17_slice54_regressions 6, issue17_slice55 3, review_regressions 10) exit 0 (slice55/focused.log)",
+    "corpus_whole_field": "AUDIT OK 163 catalog / 459 union = 150 supported + 309 missing, per-list [55,0,51,48,3,52,52,53], Ayula 3, 1 of 8 certified, no missing_interactions entry cites a supported card, exit 0 (slice55/corpus-audit.log)"
+  },
+  "ci": {
+    "code_head": "e4c5fcd73cddf199e365cca95c8fc3c172f50c6c",
+    "code_head_result": "10 runs: 2 success + 8 cancelled. The lane pushed its evidence commit while the jobs were running and ci.yml cancel-in-progress killed them, so the code head has NO green gate.",
+    "green_gate": {
+      "head": "4738a2bdfdb2b2423962055c3c8945d2fa2020b9",
+      "result": "10/10 completed success",
+      "covers_the_code": "the only delta between e4c5fcd and 4738a2b is evidence/, so this run compiled and tested the identical Rust tree",
+      "receipt": "evidence/issue17/slice55/exact-head-ci-e4c5fcd.json"
+    },
+    "evidence_tip_ci": "none claimed",
+    "operating_rule": "wait for CI to complete before pushing evidence; a cancelled job is never reported as green"
+  },
+  "red": {
+    "log": "slice55/red-honesty.log",
+    "command": "cargo test -p aperture-core --test issue17_slice55 --locked against the pre-fix crates/core/src/{coach,engine}.rs restored from HEAD a332e29",
+    "result": "1 passed / 2 failed, exit 101",
+    "failures": [
+      "departed_source_trigger_reports_the_absence_of_its_grants: the log narrated a grant that did not happen",
+      "coach_does_not_promise_destruction_of_an_indestructible_creature: 'will be destroyed' was reported for an indestructible creature"
+    ],
+    "control": "a_present_source_still_reports_its_grant passed before and after, so the new wording did not silence the ordinary case"
+  },
+  "not_rerun": [
+    "No four-seat journey was re-executed this slice: the change is a log wording and a coach projection, and it creates no continuous effect earlier than before, so no game state, digest, policy, ranking, sampling or persistence behaviour changes. The exact-code-head CI run supplies the full-workspace test gate; this is disclosed rather than claimed.",
+    "No new card, no new certificate: original #17 remains 1 of 8 certified."
+  ],
+  "scope": {
+    "files": [
+      "README.md",
+      "docs/issue17-starter-corpus.md",
+      "crates/core/src/engine.rs",
+      "crates/core/src/coach.rs",
+      "crates/core/tests/issue17_slice55.rs",
+      "evidence/issue17/slice55/*"
+    ],
+    "no_engine_state_change": "No serialized field, digest input, priority rule, legality rule, combat rule or AI policy changed.",
+    "visibility": "Game::has_indestructible widened to pub(crate) for the coach read; no behaviour change in its one existing caller."
+  },
+  "full_issue17_accepted": false,
+  "no_merge_master_push_closure_or_unlock": true
+}

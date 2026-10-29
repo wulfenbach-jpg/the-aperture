@@ -1,0 +1,34 @@
+Working...
+**Slice 18 complete with caveats. Implementation `9c3a594`; evidence head `d809e6c`.**
+
+### Delivered
+- **Ayula, Queen Among Bears** sourced from `fixtures/starter-corpus/slice18-sourced.json` and registered as a supported commander.
+- Trigger only for **another Bear its controller controls**: token entries trigger; Ayula’s own entry and opposing-Bear entries do not.
+- Mode chosen before targets:
+  - Counters: any Bear, including an opponent’s.
+  - Fight: Bear you control + creature you don’t control.
+  - Modes lacking a full legal target set are omitted.
+- Fight revalidates both printed relations at resolution, deals both damage instances simultaneously via the existing damage pipeline, and fizzles with no partial fight if a target leaves.
+- Counts refreshed: **135 catalog / 123 supported / 336 missing**; Ayula gap **30**.
+
+### Verification
+| check | result |
+|---|---|
+| `command_zone_setup` | 39 passed |
+| `issue17_slice17` | 6 passed |
+| `card_printings` / `catalog_pool` | 8 / 5 passed |
+| `issue17_slice15_corpus` / `issue13_commander_combat` | 2 / 43 passed |
+| `fmt --check` | exit 0 |
+| workspace clippy `-D warnings` | exit 0 |
+| release CLI | built |
+
+Journey: 4 seats, 40 life, seed 1616, exact 40-card package, terminal P2 win, 1961 decisions, 43 turns, digest `09e6bb25c505c1c090759e379fc442626c9ac04bc5dffbbe6548b5f8dcc3ba24`, replay match, fresh save round-trip. Ayula cast 3×; counters chosen 5×; fight chosen 4×.
+
+### Disclosed gaps
+- Modal choice reuses `AnswerTriggerChoice` boolean rather than a new typed action; labels/offers are mode-specific.
+- Production code preceded the new tests; no retroactive TDD claim.
+- No focused Ayula pending-choice save/load/replay, source-departure test, or explicit fight prevention/replacement test. Target departure is covered.
+- No full workspace rerun; no 100-card certificate. Eight-list gate remains open.
+- No push/merge/PR/closure.
+
+Evidence: `evidence/issue17/IMPLEMENTATION-RESULT-slice18.json`, `evidence/issue17/slice18/HANDOFF.md`.

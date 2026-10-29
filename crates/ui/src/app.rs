@@ -849,6 +849,32 @@ impl ApertureApp {
                     "London mulligan: a fresh seven, then one card on the bottom per mulligan (CR 103.5)",
                 );
             }
+            aperture_core::view::PendingKind::CombatDamageAssignment { attacker, card } => {
+                ui.label(format!(
+                    "{} ({attacker}) is blocked — assign its combat damage as though it weren't?",
+                    card.name()
+                ));
+                ui.horizontal(|ui| {
+                    if ui.button("As though unblocked").clicked() {
+                        let _ = self
+                            .session
+                            .submit_human(Action::AnswerCombatDamageAssignment {
+                                as_though_unblocked: true,
+                            });
+                    }
+                    if ui.button("Normally").clicked() {
+                        let _ = self
+                            .session
+                            .submit_human(Action::AnswerCombatDamageAssignment {
+                                as_though_unblocked: false,
+                            });
+                    }
+                });
+                theme::muted(
+                    ui,
+                    "CR 510.1: all of its combat damage goes to the defending player and none to the blockers",
+                );
+            }
             aperture_core::view::PendingKind::OrderCard { index, mode } => {
                 let name = view
                     .pending_viewed
@@ -1049,6 +1075,24 @@ impl ApertureApp {
                     .iter()
                     .filter_map(|legal| match &legal.action {
                         Action::ChooseSacrifice { .. } => {
+                            Some((legal.action.clone(), legal.label.clone()))
+                        }
+                        _ => None,
+                    })
+                    .collect();
+                for (action, label) in choices {
+                    if ui.button(label).clicked() {
+                        let _ = self.session.submit_human(action);
+                    }
+                }
+            }
+            aperture_core::view::PendingKind::ApnapReveal => {
+                ui.label("Reveal any number of creature cards from your hand:");
+                let choices: Vec<(Action, String)> = view
+                    .legal
+                    .iter()
+                    .filter_map(|legal| match &legal.action {
+                        Action::RevealCreatureCards { .. } => {
                             Some((legal.action.clone(), legal.label.clone()))
                         }
                         _ => None,
@@ -4405,7 +4449,7 @@ Deck
         app.session
             .start_table(61, 2, Profile::CommanderCombat40)
             .expect("bounded command table");
-        let refused = IMPORT_JOURNEY_COMMAND_SEAT.replace("2 Unsummon", "2 Sol Ring");
+        let refused = IMPORT_JOURNEY_COMMAND_SEAT.replace("2 Unsummon", "2 Darksteel Ingot");
         let import =
             crate::session::import_seat_text_for(0, "P0 refused", &refused, app.session.profile)
                 .expect("import runs");
@@ -4426,7 +4470,7 @@ Deck
             "the support axis is not shown: {joined}"
         );
         assert!(
-            joined.contains("Sol Ring"),
+            joined.contains("Darksteel Ingot"),
             "the exact unsupported card is not listed: {joined}"
         );
         assert!(
@@ -4972,6 +5016,7 @@ Deck
                         // A synthetic board-filling permanent starts with no
                         // typed counters; this fixture only needs board bulk.
                         counters: aperture_core::counters::Counters::new(),
+                        paired_with: None,
                     },
                 );
             }

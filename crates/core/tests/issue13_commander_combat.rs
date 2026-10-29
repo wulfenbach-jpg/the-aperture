@@ -885,6 +885,7 @@ fn add_card(
             pump_toughness: 0,
             plus_one_counters: 0,
             counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
         },
     );
     match zone {
@@ -1365,9 +1366,34 @@ fn fog_is_a_sourced_catalog_card() {
     assert_eq!(fog.def().cost, Some("{G}"));
     assert!(fog.def().is_instant());
     // The pool grew from 22 to 28 when issue 14 added the ability-bearing
-    // starter cards, and to 31 when issue 15 added the replacement/prevention/
-    // layer starter cards; Fog's own sourced semantics are unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 31);
+    // starter cards, to 31 when issue 15 added the replacement/prevention/layer
+    // starter cards, to 79 when issue 17 added the 47 vanilla starter
+    // creatures plus Jasmine Boreal, to 85 with the Krenko token package, to 86 with Talrand, to 88 with Tatyova/Jaddi Offshoot, to 93 with the cross-corpus package, to 97 with the slice-4 Ayula/Isamaru package (Ordinary Bear, Ashcoat Bear, Owlbear, Soul Warden), to 103 with the slice-5 mill/counter/ritual package, and to 106 with the slice-6 death-watcher package (Blood Artist, Zulaport Cutthroat, Hedron Crab);
+    // Fog's own sourced semantics are unchanged.
+    // ... and to 129 with the slice-15 Bear-token package (Ayula's Influence,
+    // Bearscape, Mother Bear), to 131 with the slice-16 pair (Fade from
+    // History, Little Bear), to 134 with the slice-17 death-history trio, to
+    // 135 with the slice-18 commander Ayula, Queen Among Bears, and to 136 with
+    // the slice-19 attack-trigger bear Spectral Bears.
+    // ... and to 139 with the slice-22 enchantment Dancing from Dark to Dawn,
+    // and to 140 with the slice-23 Bear lord Goreclaw, Terror of Qal Sisma, and
+    // to 143 with slice 24's Surrak and Goreclaw, slice 25's Exuberant Wolfbear
+    // and slice 26's Ursine Champion, to 144 with slice 28's Circle of the
+    // Moon Druid, to 145 with slice 29's Stuffed Bear, and to 147 with slice
+    // 30's Drover Grizzly and slice 31's Beorn the Fierce, and to 148 with
+    // slice 32's Kamahl's Summons, and to 149 with slice 33's Beorn's
+    // Hospitality, and to 151 with slice 37's Druid's Familiar, and to 152 with
+    // slice 38's Spider-Ham, Peter Porker, and to 160 with the Ayula-list cards
+    // of slices 41-46 (the last being Thijarian Witness).
+    // Slice 48 adds Owlbear Cub (160 -> 161), slice 53 adds Ruxa, Patient
+    // Professor (161 -> 162), slices 59/60 add Dúnedain Rangers and Evercoat
+    // Ursine (162 -> 164), slice 62 adds Goblin Chieftain and Searslicer Goblin
+    // (164 -> 166), slice 63 adds Goblin Warchief, Goblin King, Dragonlord's
+    // Servant and the authorized Volcanic Dragon control (166 -> 170) and slice
+    // 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit
+    // Lord and Goblin Matron (170 -> 176 with the two slice-57/59 pieces already
+    // counted above); the assertion's purpose is unchanged.
+    assert_eq!(aperture_core::catalog::pool_size(), 183);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }
@@ -1386,9 +1412,17 @@ fn departing_controller_stack_card_is_exiled_without_a_phantom_entry() {
         card: CardId::Shock,
         controller: P0,
         targets: vec![Target::Player(P1)],
+        modes: Vec::new(),
+        affected: None,
+        affected_player: None,
+        dead_object: None,
+        source_pt_lki: None,
+        search_amount: 0,
         cursor: 0,
         entry: StackEntry::Spell,
         trigger_answered: false,
+        spell_mana_value: 0,
+        x_value: 0,
     });
     game.state.players[P0 as usize].life = 0;
     game.state.turn.step = Step::PrecombatMain;
@@ -2067,7 +2101,8 @@ fn four_seat_co_loser_apnap_source_departure_continues_survivors() {
     assert_eq!(game.state.object(p3_forest).zone, Zone::Battlefield);
     assert!(
         game.state.validate().is_ok(),
-        "source-left provenance validates"
+        "source-left provenance validates: {:?}",
+        game.state.validate()
     );
     events.extend(submit_ok(
         &mut game,

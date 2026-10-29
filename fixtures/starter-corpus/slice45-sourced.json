@@ -1,0 +1,27 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-28T13:02:38.381243+00:00",
+ "cards": [
+  {
+   "name": "Titania's Command",
+   "oracle_id": "7aae0a3d-8882-4485-a126-f06ea6593dcb",
+   "scryfall_id": "753567c7-c484-4c0d-8128-7710e23c428f",
+   "set": "bro",
+   "collector_number": "194",
+   "layout": "normal",
+   "mana_cost": "{4}{G}{G}",
+   "type_line": "Sorcery",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "Choose two —\n• Exile target player's graveyard. You gain 1 life for each card exiled this way.\n• Search your library for up to two land cards, put them onto the battlefield tapped, then shuffle.\n• Create two 2/2 green Bear creature tokens.\n• Put two +1/+1 counters on each creature you control.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/753567c7-c484-4c0d-8128-7710e23c428f",
+   "retrieved_at": "2026-10-28T13:02:38.381243+00:00"
+  }
+ ]
+}

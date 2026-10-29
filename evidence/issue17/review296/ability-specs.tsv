@@ -1,0 +1,55 @@
+Ayula's Influence	None	Discard a land card: Create a 2/2 green Bear creature token.
+Ayula, Queen Among Bears	Bear	Whenever another Bear you control enters, choose one —
+Ayula, Queen Among Bears	BearYouControl	Whenever another Bear you control enters, choose one —
+Bearscape	None	{1}{G}, Exile two cards from your graveyard: Create a 2/2 green Bear creature token.
+Beetleback Chief	None	When this creature enters, create two 1/1 red Goblin creature tokens.
+Beorn the Fierce	UpToOneCreatureYouControl	At the beginning of combat on your turn, put a trample counter on up to one target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards.
+Beorn's Hospitality	CreatureYouControl	Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature you control.
+Beorn's Hospitality	None	{5}{G}{G}: This enchantment becomes a Bear creature in addition to its other types and gains "This creature's power and toughness are each equal to the number of lands you control." (This effect doesn't end.)
+Blood Artist	Player	Whenever this creature or another creature dies, target player loses 1 life and you gain 1 life.
+Brindle Boar	None	Sacrifice Brindle Boar: You gain 4 life.
+Caller of the Claw	None	When this creature enters, create a 2/2 green Bear creature token for each nontoken creature put into your graveyard from the battlefield this turn.
+Commander's Sphere	None	Sacrifice this artifact: Draw a card.
+Dancing from Dark to Dawn	CreatureYouControl	Whenever you cast a creature spell, put X +1/+1 counters on target creature you control, where X is that spell's mana value.
+Dancing from Dark to Dawn	None	Landfall — Whenever a land you control enters, create a 2/2 green Bear creature token.
+Dragon-Scarred Bear	None	Formidable — {1}{G}: Regenerate this creature. Activate only if creatures you control have total power 8 or greater.
+Drover Grizzly	None	Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)
+Drover Grizzly	None	Whenever this creature attacks while saddled, creatures you control gain trample until end of turn.
+Elvish Visionary	None	When Elvish Visionary enters the battlefield, draw a card.
+Exuberant Wolfbear	HumanYouControl	Whenever this creature attacks, you may have the base power and toughness of target Human you control become equal to this creature's power and toughness until end of turn.
+Festering Goblin	Creature	When Festering Goblin dies, target creature gets -1/-1 until end of turn.
+Friendly Teddy	None	When this creature dies, each player draws a card.
+Goblin Instigator	None	When this creature enters, create a 1/1 red Goblin creature token.
+Goreclaw, Terror of Qal Sisma	None	Whenever Goreclaw attacks, each creature you control with power 4 or greater gets +1/+1 and gains trample until end of turn.
+Guttersnipe	None	Whenever you cast an instant or sorcery spell, this creature deals 2 damage to each opponent.
+Hedron Archive	None	{2}, {T}, Sacrifice this artifact: Draw two cards.
+Hedron Crab	Player	Landfall — Whenever a land you control enters, target player mills three cards.
+Jaddi Offshoot	None	Landfall — Whenever a land you control enters, you gain 1 life.
+Krenko, Mob Boss	None	{T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control.
+Little Bear	AnotherCreatureYouControl	When this creature enters, untap another target creature you control. If that creature is a Bear, put a +1/+1 counter on it.
+Mind Stone	None	{1}, {T}, Sacrifice this artifact: Draw a card.
+Mother Bear	None	{3}{G}{G}, Exile this card from your graveyard: Create two 2/2 green Bear creature tokens. Activate only as a sorcery.
+Oculus	None	When Oculus dies, you may draw a card.
+Owlbear	None	Keen Senses — When this creature enters, draw a card.
+Prodigal Sorcerer	AnyTarget	{T}: Prodigal Sorcerer deals 1 damage to any target.
+Professor of Zoomancy	None	When this creature enters, create a 1/1 black and green Pest creature token with "When this token dies, you gain 1 life."
+Rampaging Baloths	None	Landfall — Whenever a land you control enters, create a 4/4 green Beast creature token.
+Razorclaw Bear	None	Whenever this creature becomes blocked, it gets +2/+2 until end of turn.
+Rootwalla	None	{1}{G}: Rootwalla gets +2/+2 until end of turn. Activate only once each turn.
+Ruin Crab	None	Landfall — Whenever a land you control enters, each opponent mills three cards.
+Sazh's Chocobo	None	Landfall — Whenever a land you control enters, put a +1/+1 counter on this creature.
+Soul Warden	None	Whenever another creature enters, you gain 1 life.
+Soul's Attendant	None	Whenever another creature enters, you may gain 1 life.
+Spectral Bears	None	Whenever this creature attacks, if defending player controls no black nontoken permanents, it doesn't untap during your next untap step.
+Stitcher's Supplier	None	When this creature enters or dies, mill three cards.
+Stitcher's Supplier	None	When this creature enters or dies, mill three cards.
+Striped Bears	None	When this creature enters, draw a card.
+Stuffed Bear	None	{2}: This artifact becomes a 4/4 green Bear artifact creature until end of turn.
+Surrak and Goreclaw	None	Whenever another nontoken creature you control enters, put a +1/+1 counter on it. It gains haste until end of turn.
+Talrand, Sky Summoner	None	Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+Tatyova, Benthic Druid	None	Landfall — Whenever a land you control enters, you gain 1 life and draw a card.
+Ulvenwald Bear	Creature	Morbid — When this creature enters, if a creature died this turn, put two +1/+1 counters on target creature.
+Ursine Champion	None	{5}{G}: This creature gets +3/+3 and becomes a Bear Berserker until end of turn. Activate only once each turn.
+Vivien's Grizzly	None	Look at the top card of your library. If it's a creature or planeswalker card, you may reveal it and put it into your hand. If you don't put the card into your hand, put it on the bottom of your library.
+Volley Veteran	OpponentCreature	When this creature enters, it deals damage to target creature an opponent controls equal to the number of Goblins you control.
+Zulaport Cutthroat	None	Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.

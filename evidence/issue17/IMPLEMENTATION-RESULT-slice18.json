@@ -1,0 +1,88 @@
+{
+  "status": "PARTIAL #17",
+  "slice": 18,
+  "branch": "aperture/issue-17",
+  "base_head": "3934d76",
+  "commit": "9c3a594",
+  "implemented": [
+    "Ayula, Queen Among Bears commander and modal trigger"
+  ],
+  "sources": "fixtures/starter-corpus/slice18-sourced.json; retrieved 2026-10-26T23:40:57.955217+00:00",
+  "tests": {
+    "command_zone_setup": "44 passed",
+    "issue17_slice17": "6 passed",
+    "card_printings": "8 passed",
+    "catalog_pool": "5 passed",
+    "slice15_corpus": "2 passed",
+    "issue13_commander_combat": "43 passed",
+    "clippy": "workspace -D warnings exit 0",
+    "fmt": "exit 0",
+    "release": "aperture-cli built",
+    "abilities": "13 passed",
+    "lib": "13 passed",
+    "rules_conformance": "5 passed"
+  },
+  "journey": {
+    "seed": 1616,
+    "seats": 4,
+    "deck": "decks/package-slice18.txt",
+    "starting_life": 40,
+    "commander": "Ayula, Queen Among Bears injected each seat by evidence-only driver",
+    "status": "terminal",
+    "winner": 2,
+    "steps": 1961,
+    "turns": 43,
+    "digest": "09e6bb25c505c1c090759e379fc442626c9ac04bc5dffbbe6548b5f8dcc3ba24",
+    "replay_matches": true,
+    "counters_modes": 5,
+    "fight_modes": 4,
+    "ayula_casts": 3,
+    "snapshot_sha256": "40028e6e00c20fd3da34e0a283cdd973f95e92d1144db2810c62d6af544490ec"
+  },
+  "counts": {
+    "catalog": 135,
+    "supported": 123,
+    "missing": 336,
+    "ayula_missing": 30
+  },
+  "deviations": [
+    "Modal choice reuses AnswerTriggerChoice bool (true counters, false fight) rather than adding a new action; labels and legal offers are mode-specific.",
+    "Implementation preceded the new Ayula tests; no retroactive TDD claim.",
+    "No dedicated Ayula pending-choice save/load/replay test, source-left test, or prevention/replacement fight test.",
+    "No 100-card certificate; journey is a 40-card package."
+  ],
+  "remaining": [
+    "Ayula 30 missing desired cards",
+    "Eight lists gate open",
+    "No full workspace suite rerun after slice18"
+  ],
+  "repair": {
+    "parent": "9c3a594",
+    "commit": "branch head (final receipt)",
+    "fixed": [
+      "optional TriggerChoice regression",
+      "queued trigger drain",
+      "fight/mode citations",
+      "archived refs first/queued"
+    ],
+    "red": [
+      "abilities optional_trigger... failed at 9c3a594: 12 passed/1 failed (\"declining is a typed event\")",
+      "scratch-revert queued trigger test failed \"the second trigger must still be placed\""
+    ],
+    "added_coverage": [
+      "source-left resolution",
+      "fight prevention via Mending Hands",
+      "fight target departure",
+      "unavailable fight mode",
+      "token vs opponent trigger",
+      "TriggerMode save/load and identical finish",
+      "fight first-target save/load and identical finish",
+      "wrong-seat refusal after reload",
+      "forged pending action/target refusals with state unchanged"
+    ],
+    "still_missing": [
+      "forged archived-state refusal test (reference traversal is implemented)",
+      "full workspace suite was not rerun for this test-only follow-up"
+    ]
+  }
+}

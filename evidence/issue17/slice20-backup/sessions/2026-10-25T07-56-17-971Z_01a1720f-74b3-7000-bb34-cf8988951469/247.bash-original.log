@@ -1,0 +1,122 @@
+Native further concrete issue for this same repair assignment (read this once before handoff): Aetherize currently loops move_to_hand directly. That helper unconditionally detaches/reinserts, while normal ReturnToHand effect has explicit commander hand replacement path. Aetherize must offer EACH affected commander's owner the existing command-zone return choice BEFORE move to hand (CR903.9b), with serialized continuation across remaining attackers. Otherwise exclude Aetherize too until complete; do not call it supported while bypassing existing commander choice. Add focused regression for an attacking Isamaru accepting/declining return and token/nonattacker controls. Preserve original per-card text; removing unsupported card is preferable to claiming it works. Native reread found helper itself does not implement the commander choice.977:    fn begin_commander_replacement(
+978-        &mut self,
+979-        id: ObjectId,
+980-        destination: Zone,
+981-        item: &StackItem,
+982-    ) -> bool {
+983-        let Some(object) = self.state.try_object(id) else {
+984-            return false;
+985-        };
+986-        let Some(commander) = object.commander else {
+987-            return false;
+988-        };
+989-        let Some(registry) = self
+990-            .state
+991-            .commanders
+992-            .iter()
+993-            .find(|registry| registry.id == commander)
+994-        else {
+995-            return false;
+996-        };
+997-        self.state.pending = Some(Pending::CommanderReplacement {
+998-            player: registry.owner,
+999-            commander,
+1000-            object: id,
+1001-            from_zone: object.zone,
+1002-            destination,
+1003-            source: item.object,
+1004-            cursor: item.cursor + 1,
+1005-        });
+1006-        self.state.turn.priority = None;
+1007-        true
+1008-    }
+1009-
+1010-    fn apply_commander_draw(
+1011-        &mut self,
+1012-        player: PlayerId,
+1013-        to_command_zone: bool,
+1014-        events: &mut Vec<Event>,
+1015-    ) {
+1016-        let Some(Pending::CommanderDraw {
+1017-            object,
+1018-            remaining,
+1019-            resume,
+1020-            ..
+1021-        }) = self.state.pending.take()
+1022-        else {
+1023-            return;
+1024-        };
+1025-        let target_zone = if to_command_zone {
+1026-            Zone::Command
+1027-        } else {
+1028-            Zone::Hand
+1029-        };
+1030-        if let Some(mut moved) = self.detach_object(object) {
+1031-            moved.tapped = false;
+1032-            moved.damage = 0;
+1033-            moved.summoning_sick = false;
+1034-            moved.pump_power = 0;
+1035-            moved.pump_toughness = 0;
+1036-            let card = moved.card;
+1037-            let new_id = self.insert_object(moved, target_zone);
+1067:    fn apply_commander_replacement(
+1068-        &mut self,
+1069-        player: PlayerId,
+1070-        to_command_zone: bool,
+1071-        events: &mut Vec<Event>,
+1072-    ) {
+1073-        let Some(Pending::CommanderReplacement {
+1074-            commander,
+1075-            object,
+1076-            destination,
+1077-            ..
+1078-        }) = self.state.pending.take()
+1079-        else {
+1080-            return;
+1081-        };
+1082-        let target_zone = if to_command_zone {
+1083-            Zone::Command
+1084-        } else {
+1085-            destination
+1086-        };
+1087-        let Some(mut moved) = self.detach_object(object) else {
+1088-            return;
+1089-        };
+1090-        moved.tapped = false;
+1091-        moved.damage = 0;
+1092-        moved.summoning_sick = false;
+1093-        moved.pump_power = 0;
+1094-        moved.pump_toughness = 0;
+1095-        let card = moved.card;
+1096-        if target_zone == Zone::Library {
+1097-            let owner = moved.owner;
+1098-            let new_id = self.insert_object(moved, Zone::Library);
+1099-            let library = &mut self.state.players[owner as usize].library;
+1100-            library.retain(|id| *id != new_id);
+1101-            library.insert(0, new_id);
+1102-            events.push(Event::StateBasedAction {
+1103-                description: format!(
+1104-                    "P{player} puts commander {new_id} on top of their library (CR 903.9b)"
+1105-                ),
+1106-            });
+1107-        } else {
+1108-            let new_id = self.insert_object(moved, target_zone);
+1109-            events.push(Event::StateBasedAction {
+1110-                description: format!(
+1111-                    "P{player} puts commander {new_id} into the {} (CR 903.9b)",
+1112-                    target_zone.name()
+1113-                ),
+1114-            });
+1115-        }
+1116-        let _ = (commander, card);
+1117-    }
+1118-
+1119-    fn move_to_top_of_library(&mut self, id: ObjectId, events: &mut Vec<Event>) {
+1120-        let Some(mut object) = self.detach_object(id) else {
+1121-            return;
+1122-        };
+1123-        let owner = object.owner;
+1124-        let card = object.card;
+1125-        object.tapped = false;
+1126-        object.damage = 0;
+1127-        object.summoning_sick = false;

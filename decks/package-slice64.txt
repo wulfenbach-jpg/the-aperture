@@ -1,0 +1,9 @@
+// package-slice64 — evidence-only 40-card package, NOT a certified starter.
+// The four slice-64 cards plus the slice-62 token maker and Mountains, so the
+// journey really casts what this slice enabled.
+4 Goblin Matron
+4 Krenko, Tin Street Kingpin
+4 Hobgoblin Bandit Lord
+4 Goblin Sharpshooter
+4 Goblin Instigator
+20 Mountain

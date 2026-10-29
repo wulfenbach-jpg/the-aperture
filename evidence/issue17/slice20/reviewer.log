@@ -1,0 +1,16 @@
+Working...
+**APPROVED_INCREMENT** at `f4a02a2a05bce7ea6b22a66c60568256327f7ef5` (base `7dc933a`).
+
+Ran independently:
+
+- slice20 **9/9**, command-zone **44/44**, abilities **13/13**, card printings **8/8**, catalog **5/5**, slice15 corpus **2/2**, commander combat **43/43**, rules conformance **5/5**.
+- Demo replay: 4 seats, 2064 actions, terminal Win P3, 5281 events, digest `72cd69fb1143…` matches.
+- Demo save: stored/recomputed digest matches; 2064 actions reproduced.
+- `sha256(decks/package-slice20.txt)` matches the journey snapshot `12e6d1e9…`.
+- fmt and diff-check pass.
+
+No blocking behavior defect: Vivien’s top-card look is anchored/private, eligible cards offer owner-only take-or-bottom, ineligible cards require private mandatory bottom, take reveals only the chosen card, empty library neither draws nor loses, forged/wrong-seat actions leave state unchanged, and two same-source activations plus mid-pending save/reload resolve exactly once. The validator repair preserves exact one-spell-container checks while allowing multiple ability-source references.
+
+Nonblocking: planeswalker eligibility is code-inspected only (none in pool); the 40-card journey is an evidence-only demonstrator, not product AI or a 100-card certificate. Full #17 remains **1/8 certified**, 137 catalog / 459 union = 125 supported + 334 missing, Ayula 28 missing. No merge/closure/unlock; exact-head CI remains parent-owned.
+
+Report: `evidence/issue17/slice20/REVIEW20.md` (not committed, per assignment).

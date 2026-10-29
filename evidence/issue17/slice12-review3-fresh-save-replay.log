@@ -1,0 +1,5 @@
+save evidence/issue17/slice12-review3-fresh-save.json — 4 seat(s): P0 'package-slice12' vs P1 'package-slice12' vs P2 'package-slice12' vs P3 'package-slice12'
+  stored digest d3eade58f133 | recomputed d3eade58f133 | matches
+  turn 32 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P1 = deterministic baseline heuristic; autoplay off
+  replay of 1573 action(s) -> digest d3eade58f133 | events 6981 | reproduces the save

@@ -1,0 +1,7 @@
+// package-slice20 — evidence-only 40-card top-card-look package, NOT a desired starter.
+4 Vivien's Grizzly
+4 Grizzly Bears
+4 Runeclaw Bear
+4 Centaur Courser
+4 Craw Wurm
+20 Forest

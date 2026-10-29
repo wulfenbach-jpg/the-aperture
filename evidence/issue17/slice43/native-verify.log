@@ -1,0 +1,13 @@
+== fmt
+fmt_exit=0
+== clippy
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.08s
+== workspace
+      1 test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+      1 test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+      2 test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+      3 test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+      1 test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 241.08s
+workspace_done

@@ -1,0 +1,99 @@
+M	crates/core/src/engine.rs
+M	crates/core/tests/issue17_slice21.rs
+M	evidence/issue17/IMPLEMENTATION-RESULT-slice21.json
+M	evidence/issue17/SLICE21-HUMAN-CHECKPOINT.md
+A	evidence/issue17/slice21/identity-repair-gates.log
+937:    fn detach_object(&mut self, id: ObjectId) -> Option<Object> {
+938-        let object = self.state.objects.remove(&id)?;
+939-        // A regeneration shield belongs to one battlefield permanent, not to
+940-        // the card identity that survives a zone change. Leaving the
+941-        // battlefield ends it; this is not regeneration or shield consumption.
+942-        if object.zone == Zone::Battlefield {
+943-            self.state
+944-                .regeneration_shields
+945-                .retain(|shield| shield.object != id);
+946-        }
+947-        for player in &mut self.state.players {
+948-            player.library.retain(|c| *c != id);
+949-            player.hand.retain(|c| *c != id);
+950-            player.graveyard.retain(|c| *c != id);
+951-            player.exile.retain(|c| *c != id);
+952-            player.command_zone.retain(|c| *c != id);
+953-        }
+954-        // A represented card changing zone leaves the stack in the same move.
+955-        // A spell leaves the stack with its card. An ability does not: its
+956-        // source may change zones (or leave the game) while the ability is
+957-        // still on the stack (CR 603.3, 608.2).
+958-        self.state
+959-            .stack
+960-            .retain(|item| item.object != id || item.entry != StackEntry::Spell);
+961-        if self.state.resolving == Some(id) {
+962-            self.state.resolving = None;
+963-        }
+964-        self.state.turn.attackers.retain(|c| *c != id);
+965-        self.state.turn.blocked.retain(|c| *c != id);
+966-        self.state
+967-            .turn
+968-            .blockers
+969-            .retain(|(blocker, attacker)| *blocker != id && *attacker != id);
+970-        Some(object)
+971-    }
+972-
+973-    /// Insert an object into `zone`, re-keying commander objects. The stable
+974-    /// commander registry then points at the new object; stale target ids do not
+975-    /// follow (CR 400.7, 903.3).
+976-    fn insert_object(&mut self, mut object: Object, zone: Zone) -> ObjectId {
+977-        let owner = object.owner;
+978-        let commander = object.commander;
+979-        let old_id = object.id;
+980-        let new_id = if commander.is_some() {
+981-            let id = ObjectId(self.state.next_object);
+982-            self.state.next_object += 1;
+24:fn activate_shield(g: &mut Game, bear: ObjectId) {
+85:fn shield_game(seed: u64, extra_power: &[CardId], forests: usize) -> (Game, ObjectId) {
+156:    activate_shield(&mut g, bear);
+157:    assert_eq!(g.state.regeneration_shields.len(), 1);
+158:    assert!(!g.state.object(bear).tapped, "shield creation does not tap");
+163:fn lethal_hit_consumes_shield_taps_and_prevents_death() {
+164:    let (mut g, bear) = shield_game(
+173:    activate_shield(&mut g, bear);
+178:    assert!(g.state.regeneration_shields.is_empty());
+183:        "a second hit without a shield destroys it"
+188:fn multiple_shields_are_consumed_one_per_destruction() {
+189:    let (mut g, bear) = shield_game(
+198:    activate_shield(&mut g, bear);
+199:    activate_shield(&mut g, bear);
+200:    assert_eq!(g.state.regeneration_shields.len(), 2);
+203:    assert_eq!(g.state.regeneration_shields.len(), 1);
+206:    assert!(g.state.regeneration_shields.is_empty());
+212:fn exile_and_bounce_are_not_destruction_and_do_not_transfer_shields() {
+213:    let (mut g, bear) = shield_game(
+222:    activate_shield(&mut g, bear);
+232:        g.state.regeneration_shields.is_empty(),
+233:        "leaving the battlefield ends the old shield"
+236:    let (mut g, bear) = shield_game(
+245:    activate_shield(&mut g, bear);
+247:    let unsummon = add_hand(&mut g, CardId::Unsummon);
+251:    // battlefield incarnation's shield must nevertheless be gone.
+256:        .expect("the bounced card is offered for recast")
+262:        g.state.regeneration_shields.is_empty(),
+263:        "battlefield departure ends the old shield"
+269:        "old shield cannot protect the recast permanent"
+274:fn save_reload_with_live_shield_has_parity() {
+275:    let (mut g, bear) = shield_game(
+284:    activate_shield(&mut g, bear);
+285:    assert_eq!(g.state.regeneration_shields.len(), 1);
+298:    let loaded = SessionSave::from_json(&save.to_json()).expect("save with live shield loads");
+309:    let (mut g, bear) = shield_game(
+321:    activate_shield(&mut g, bear);
+376:    let (mut g, bear) = shield_game(2109, &[CardId::GrizzlyBears, CardId::RuneclawBear], 10);
+406:        g.state.regeneration_shields.len(),
+408:        "threshold fall after activation does not remove the shield"
+414:    let (mut g, bear) = shield_game(
+423:    activate_shield(&mut g, bear);
+443:        g.state.regeneration_shields.is_empty(),
+444:        "battlefield departure ends the shield; it was not applied as regeneration"
+447:    let (mut g, bear) = shield_game(
+456:    activate_shield(&mut g, bear);
+493:        g.state.regeneration_shields.is_empty(),
+494:        "battlefield departure ends the shield; it was not applied as regeneration"

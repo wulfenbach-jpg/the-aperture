@@ -1,0 +1,49 @@
+{
+  "armed_remaining_at_game_end": 5,
+  "bear_tokens_from_replacements": 25,
+  "casts": {
+    "Grizzly Bears": 6,
+    "Runeclaw Bear": 1,
+    "Ursine Champion": 3,
+    "Words of Wilding": 4
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice35.txt",
+  "digest": "1c13d8fdcdce2e427588650b0a69e0c7365d382c432b43d2983b361d1a6099c0",
+  "draws_replaced": 25,
+  "draws_replaced_by_seat": [
+    3,
+    3,
+    9,
+    10
+  ],
+  "drew_from_empty_events": 0,
+  "driver": "evidence-only masked arm/cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "purpose": "review 297: the card is cast, its ability is activated, and a real draw step consumes the armed replacement",
+  "replacements_armed": 124,
+  "replay_digest_matches": true,
+  "replay_events": 5347,
+  "seats": 4,
+  "seed": 3535,
+  "snapshot_sha256": "0726fadc6ca9503fe405f3b944d15f5421903d6a0d0082ef999b6d3daf7fee7e",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 2048,
+  "turns": 41,
+  "unspent_cleared_by_seat": [
+    6,
+    18,
+    28,
+    42
+  ],
+  "unspent_replacements_cleared_at_cleanup": 94,
+  "words_activations": 124
+}

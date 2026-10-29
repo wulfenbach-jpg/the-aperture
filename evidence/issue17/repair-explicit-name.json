@@ -1,0 +1,71 @@
+{
+  "commander_damage": [],
+  "commander_damage_totals": [],
+  "commanders": [
+    {
+      "card": "Jasmine Boreal",
+      "seat": 0
+    },
+    {
+      "card": "Jasmine Boreal",
+      "seat": 1
+    }
+  ],
+  "counts": {
+    "abilities_declined": 0,
+    "abilities_resolved": 0,
+    "ability_activations": 0,
+    "attacks": 0,
+    "blocks": 0,
+    "casts": 0,
+    "commander_damage_events": 0,
+    "commander_damage_losses": 0,
+    "counterspells": 0,
+    "damage_events": 0,
+    "events": 147,
+    "triggered_abilities": 0
+  },
+  "decider": null,
+  "decision_sources": {
+    "heuristic": 50
+  },
+  "final_digest": "e5678f6710fe2561e7cf0dc570bd3ec96e0d4f9c5a04f5b2987d7800c9e264a9",
+  "first_player": 1,
+  "policies": "heuristic vs heuristic",
+  "policy_notes": [],
+  "pool_size": 79,
+  "profile": "commander-combat-practice-40",
+  "reason": "",
+  "replay_digest_matches": true,
+  "replay_error": null,
+  "replay_steps": 50,
+  "rules_revision": "2026-09-25",
+  "schema": "aperture-selfplay/2",
+  "seat_count": 2,
+  "seats": [
+    {
+      "cards": 99,
+      "library": 91,
+      "life": 40,
+      "name": "jasmine-vanilla-stompy",
+      "seat": 0,
+      "source": "decks/starter-corpus/jasmine-vanilla-stompy.txt"
+    },
+    {
+      "cards": 99,
+      "library": 91,
+      "life": 40,
+      "name": "jasmine-vanilla-stompy",
+      "seat": 1,
+      "source": "decks/starter-corpus/jasmine-vanilla-stompy.txt"
+    }
+  ],
+  "seed": 2,
+  "starting_life": 40,
+  "status": "capped",
+  "steps": 50,
+  "truncated": "step cap of 50 reached before the game ended",
+  "turns": 3,
+  "winner": null,
+  "winner_label": "none"
+}

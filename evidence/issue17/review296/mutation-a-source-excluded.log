@@ -1,0 +1,62 @@
+mutation: mutation-a-source-excluded
+file: crates\core\src\engine.rs
+sha256_before: 0fca967d9abef6500d16d4bb7598994614cda6c69793b1ee0a6ec9902f97e77d
+restored_ok: True
+cargo_exit: 101
+failed_tests: ['a_pump_applies_on_top_of_the_characteristic_defining_value', 'an_animated_hospitality_is_its_own_landfall_target', 'landfall_offers_the_animated_source_alongside_another_creature', 'the_animation_adds_the_bear_type_and_reads_the_land_count_live']
+
+
+running 12 tests
+test beorns_hospitality_is_sourced_and_supported ... ok
+test an_opponents_land_does_not_trigger_it ... ok
+test the_animation_is_not_offered_without_its_mana_cost ... ok
+test landfall_without_a_legal_target_is_removed_not_staged ... ok
+test little_bear_keeps_the_printed_another_exclusion ... ok
+test an_unanimated_hospitality_is_not_its_own_landfall_target ... ok
+test landfall_targets_a_creature_you_control_and_puts_one_counter ... ok
+test an_animated_hospitality_is_its_own_landfall_target ... FAILED
+test the_animation_adds_the_bear_type_and_reads_the_land_count_live ... FAILED
+test a_pump_applies_on_top_of_the_characteristic_defining_value ... FAILED
+test landfall_offers_the_animated_source_alongside_another_creature ... FAILED
+test the_animation_outlives_cleanup_and_ends_with_the_permanent ... ok
+
+failures:
+
+---- an_animated_hospitality_is_its_own_landfall_target stdout ----
+
+thread 'an_animated_hospitality_is_its_own_landfall_target' (38276) panicked at crates\core\tests\issue17_slice33.rs:500:5:
+"target creature you control" includes the animated source
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_animation_adds_the_bear_type_and_reads_the_land_count_live stdout ----
+
+thread 'the_animation_adds_the_bear_type_and_reads_the_land_count_live' (28984) panicked at crates\core\tests\issue17_slice33.rs:221:5:
+assertion `left == right` failed: the landfall trigger counters the animated source
+  left: 0
+ right: 1
+
+---- a_pump_applies_on_top_of_the_characteristic_defining_value stdout ----
+
+thread 'a_pump_applies_on_top_of_the_characteristic_defining_value' (18628) panicked at crates\core\tests\issue17_slice33.rs:297:5:
+assertion `left == right` failed: 4 lands + 1 landfall counter
+  left: (4, 4)
+ right: (5, 5)
+
+---- landfall_offers_the_animated_source_alongside_another_creature stdout ----
+
+thread 'landfall_offers_the_animated_source_alongside_another_creature' (20832) panicked at crates\core\tests\issue17_slice33.rs:564:9:
+two legal targets mean the controller is asked
+
+
+failures:
+    a_pump_applies_on_top_of_the_characteristic_defining_value
+    an_animated_hospitality_is_its_own_landfall_target
+    landfall_offers_the_animated_source_alongside_another_creature
+    the_animation_adds_the_bear_type_and_reads_the_land_count_live
+
+test result: FAILED. 8 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\r296cand\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.77s
+     Running tests\issue17_slice33.rs (target\debug\deps\issue17_slice33-c01c6e9d985be65a.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice33`

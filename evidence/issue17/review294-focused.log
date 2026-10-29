@@ -1,0 +1,20 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+     Running tests\issue17_slice33.rs (target\debug\deps\issue17_slice33-c01c6e9d985be65a.exe)
+
+running 12 tests
+test beorns_hospitality_is_sourced_and_supported ... ok
+test landfall_without_a_legal_target_is_removed_not_staged ... ok
+test an_opponents_land_does_not_trigger_it ... ok
+test the_animation_is_not_offered_without_its_mana_cost ... ok
+test little_bear_keeps_the_printed_another_exclusion ... ok
+test landfall_targets_a_creature_you_control_and_puts_one_counter ... ok
+test an_unanimated_hospitality_is_not_its_own_landfall_target ... ok
+test the_animation_adds_the_bear_type_and_reads_the_land_count_live ... ok
+test an_animated_hospitality_is_its_own_landfall_target ... ok
+test a_pump_applies_on_top_of_the_characteristic_defining_value ... ok
+test landfall_offers_the_animated_source_alongside_another_creature ... ok
+test the_animation_outlives_cleanup_and_ends_with_the_permanent ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

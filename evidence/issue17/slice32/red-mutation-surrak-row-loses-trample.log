@@ -1,0 +1,34 @@
+mutation: red-mutation-surrak-row-loses-trample.log
+file: crates\core\src\catalog.rs
+sha256_before: 2c4919dbab5be671bb147529dee12fa90f6b6005091390ec1be0101c6b218434
+sha256_after_restore: 2c4919dbab5be671bb147529dee12fa90f6b6005091390ec1be0101c6b218434
+cargo_exit: 101
+expected_failures: ['surrak_and_goreclaw_prints_its_own_trample']
+observed_failures: ['surrak_and_goreclaw_prints_its_own_trample']
+discriminating: True
+
+
+running 4 tests
+test kamahls_summons_is_sourced_and_supported ... ok
+test surrak_and_goreclaw_prints_its_own_trample ... FAILED
+test a_mandatory_target_trigger_never_offers_or_accepts_declining ... ok
+test every_seat_reveals_in_apnap_order_and_creates_that_many_bears ... ok
+
+failures:
+
+---- surrak_and_goreclaw_prints_its_own_trample stdout ----
+
+thread 'surrak_and_goreclaw_prints_its_own_trample' (40756) panicked at crates\core\tests\issue17_slice32.rs:318:5:
+an included card's own printed Trample must be modelled
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    surrak_and_goreclaw_prints_its_own_trample
+
+test result: FAILED. 3 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.98s
+     Running tests\issue17_slice32.rs (target\debug\deps\issue17_slice32-5e41b7807f5c4e3e.exe)
+error: test failed, to rerun pass `-p aperture-core --test issue17_slice32`

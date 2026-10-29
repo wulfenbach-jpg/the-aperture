@@ -1,0 +1,92 @@
+{
+  "schema": "aperture.commander-report.v1",
+  "status": "legal",
+  "deck": {
+    "commanders": 1,
+    "library": 99,
+    "total": 100,
+    "unique_canonical_names": 61
+  },
+  "commanders": [
+    {
+      "name": "Jasmine Boreal",
+      "oracle_id": "942407bf-862a-4a0b-b19d-b9f8ee833026",
+      "color_identity": [
+        "G",
+        "W"
+      ],
+      "layout": "normal",
+      "eligibility": "legal",
+      "reason": "front-face legendary creature"
+    }
+  ],
+  "format_legality": {
+    "status": "legal",
+    "as_of": "2026-10-25T07:59:45Z",
+    "age_days": 0,
+    "stale": false,
+    "snapshot_sha256": "4cc6119461e6c619a21a6a7eac2d02c270db557fe46bd917e0af1ae09feec907",
+    "basis": "as of the captured offline snapshot; not a live ban-list lookup"
+  },
+  "engine_support": {
+    "status": "supported",
+    "unsupported_cards": []
+  },
+  "gameplay": {
+    "available": false,
+    "reasons": [
+      "command zone and commander return rules are not implemented",
+      "commander tax is not implemented",
+      "40 starting life is not implemented",
+      "21 commander combat damage is not implemented",
+      "Commander multiplayer seat semantics are not implemented"
+    ]
+  },
+  "findings": [
+    {
+      "code": "CMD-COMMANDER-COUNT",
+      "status": "legal",
+      "message": "exactly one commander"
+    },
+    {
+      "code": "CMD-ELIGIBILITY",
+      "status": "legal",
+      "message": "commander 'Jasmine Boreal' is a front-face legendary creature"
+    },
+    {
+      "code": "CMD-COUNT-100",
+      "status": "legal",
+      "message": "100 cards including 1 commander(s) and 99 library cards"
+    },
+    {
+      "code": "CMD-SINGLETON",
+      "status": "legal",
+      "message": "no duplicate non-basic English names"
+    },
+    {
+      "code": "CMD-FORMAT-LEGAL",
+      "status": "legal",
+      "message": "every referenced card is legal in Commander as of the recorded snapshot"
+    }
+  ],
+  "card_evidence": [],
+  "provenance": {
+    "deck": {
+      "kind": "constructed",
+      "provider": "the-aperture starter corpus",
+      "source": "exact decks/starter-corpus/jasmine-vanilla-stompy.txt library plus the separately specified commander; identities from the recorded Scryfall printings",
+      "captured_at": "2026-10-25T07:59:45Z",
+      "raw_sha256": "853a49d4dac4ee35b277139a673d927fdc2efdbc290cf40871da34390a50574f"
+    },
+    "cards": {
+      "kind": "real",
+      "provider": "scryfall",
+      "api_url": "https://api.scryfall.com/bulk-data",
+      "download_url": "https://data.scryfall.io/oracle-cards/oracle-cards-20261024210157.jsonl.gz",
+      "bulk_type": "oracle_cards",
+      "captured_at": "2026-10-25T07:59:45Z",
+      "cards_sha256": "4cc6119461e6c619a21a6a7eac2d02c270db557fe46bd917e0af1ae09feec907",
+      "raw_sha256": "4cc6119461e6c619a21a6a7eac2d02c270db557fe46bd917e0af1ae09feec907"
+    }
+  }
+}

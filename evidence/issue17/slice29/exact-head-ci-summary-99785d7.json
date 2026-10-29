@@ -1,0 +1,86 @@
+{
+ "head": "99785d783f991918b541fef7793a3e6a1bb48e75",
+ "check_runs": 10,
+ "all_keyed_to_head": true,
+ "all_completed_success": true,
+ "workflows": {
+  "Rust quality": [
+   {
+    "event": "pull_request",
+    "status": "in_progress",
+    "conclusion": null,
+    "run_id": 40515855378,
+    "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75"
+   },
+   {
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 40515845297,
+    "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75"
+   }
+  ]
+ },
+ "checks": [
+  {
+   "name": "windows package",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (windows-latest)",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (macos-latest)",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "board and roadmap",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "windows package",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (ubuntu-latest)",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "board and roadmap",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (windows-latest)",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  },
+  {
+   "name": "rust (macos-latest)",
+   "conclusion": "success",
+   "head_sha": "99785d783f991918b541fef7793a3e6a1bb48e75",
+   "app": "github-actions"
+  }
+ ]
+}

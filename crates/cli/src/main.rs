@@ -1,6 +1,7 @@
 //! THE APERTURE headless CLI: offline self-play, replay verification, coaching
 //! output, and real (bounded) Archidekt import.
 
+mod certify_cmd;
 mod commander_cmd;
 mod decks;
 mod harness_cmd;
@@ -64,8 +65,15 @@ pub enum Command {
         /// supported commander per seat, NOT the Commander format).
         #[arg(long = "commander-combat-practice")]
         commander_combat_practice: bool,
-        /// One `SEAT:CARD` commander spec per seat; requires
-        /// --command-zone-practice. Example: `0:Isamaru, Hound of Konda`.
+        /// One `SEAT:CARD` commander spec per seat; requires an explicit
+        /// command-zone profile (`--command-zone-practice` or
+        /// `--commander-combat-practice`). Example:
+        /// `0:Krenko, Mob Boss`. Supported commanders — exactly the entries of
+        /// `CardId::SUPPORTED_COMMANDERS` — are: Isamaru, Hound of Konda;
+        /// Jasmine Boreal; Ayula, Queen Among Bears; Krenko, Mob Boss;
+        /// Talrand, Sky Summoner; Tatyova, Benthic Druid.
+        /// Both explicit profiles are bounded practice, not the Commander
+        /// format (one supported commander per seat, 20 or 40 life).
         #[arg(long = "commander")]
         commander: Vec<String>,
     },
@@ -164,6 +172,31 @@ pub enum Command {
     DeciderHealth {
         #[arg(long, default_value = "http://127.0.0.1:8765")]
         base_url: String,
+    },
+    /// Certify one starter list end to end from its exact snapshot: hash the
+    /// declared deck file, verify every card is supported, play real four-seat
+    /// Commander-combat games with that snapshot in every seat, and require a
+    /// terminal outcome whose replay reproduces the same digest. Exit 0
+    /// certified; any other outcome (not certified, or a refused/unreadable
+    /// input) exits non-zero with the reason on stderr.
+    Certify {
+        /// Starter corpus manifest (decks/starter-corpus/manifest.json).
+        #[arg(long, default_value = "decks/starter-corpus/manifest.json")]
+        manifest: PathBuf,
+        /// Starter id to certify, e.g. jasmine-vanilla-stompy.
+        #[arg(long)]
+        starter: String,
+        #[arg(long, default_value_t = 4)]
+        seats: usize,
+        /// Comma-separated seeds, default 1,2,3.
+        #[arg(long, default_value = "1,2,3")]
+        seeds: String,
+        /// Write the machine-readable certificate here.
+        #[arg(long)]
+        out: Option<PathBuf>,
+        /// Print the certificate JSON.
+        #[arg(long)]
+        json: bool,
     },
 }
 
@@ -322,5 +355,63 @@ fn main() -> anyhow::Result<()> {
             std::process::exit(commander_cmd::run(&deck, &cards, json, out.as_deref()));
         }
         Command::DeciderHealth { base_url } => import_cmd::decider_health(&base_url),
+        Command::Certify {
+            manifest,
+            starter,
+            seats,
+            seeds,
+            out,
+            json,
+        } => {
+            let seeds: Vec<u64> = seeds
+                .split(',')
+                .map(str::trim)
+                .filter(|seed| !seed.is_empty())
+                .map(|seed| {
+                    seed.parse::<u64>().map_err(|_| {
+                        anyhow::anyhow!("--seeds must be comma-separated integers, got '{seed}'")
+                    })
+                })
+                .collect::<Result<_, _>>()?;
+            let code = certify_cmd::run(certify_cmd::Args {
+                manifest,
+                starter,
+                seats,
+                seeds,
+                max_steps: 20000,
+                out,
+                json,
+            })?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+            Ok(())
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::CommandFactory;
+
+    #[test]
+    fn selfplay_help_lists_every_supported_commander_and_the_bounded_scope() {
+        let mut command = Cli::command();
+        let selfplay = command.find_subcommand_mut("selfplay").expect("selfplay");
+        let help = selfplay.render_long_help().to_string();
+        for commander in [
+            "Isamaru, Hound of Konda",
+            "Jasmine Boreal",
+            "Krenko, Mob Boss",
+            "Talrand, Sky Summoner",
+            "Tatyova, Benthic Druid",
+        ] {
+            assert!(help.contains(commander), "help omits {commander}: {help}");
+        }
+        assert!(
+            help.to_lowercase().contains("bounded"),
+            "help must state the bounded Commander-combat scope: {help}"
+        );
     }
 }

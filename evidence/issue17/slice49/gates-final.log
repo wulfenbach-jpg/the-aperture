@@ -1,0 +1,327 @@
+
+COMMAND: python evidence/issue17/slice49/setup-journey.py
+C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice49-journey-driver
+EXIT=0
+
+COMMAND: cargo fmt --all
+EXIT=0
+
+COMMAND: cargo fmt --all --check
+EXIT=0
+
+COMMAND: cargo test -p aperture-core --locked --test issue17_slice49 --test issue17_slice48 --test issue17_slice45_native --test issue17_slice41 --test issue17_slice44_search_controls --test issue17_slice19 --test ordering_persistence --test replay_digest --test starter_corpus --test card_printings
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.28s
+     Running tests\card_printings.rs (target\debug\deps\card_printings-683912effb053546.exe)
+
+running 18 tests
+test every_new_pool_card_matches_its_recorded_authoritative_printing ... ok
+test every_slice31_card_matches_its_recorded_printing_and_trample ... ok
+test every_slice32_card_matches_its_recorded_printing ... ok
+test every_slice11_card_matches_its_recorded_printing_and_islandwalk ... ok
+test slice33_beorns_hospitality_matches_its_recorded_printing ... ok
+test slice35_words_of_wilding_matches_its_recorded_printing ... ok
+test every_slice15_card_prints_the_cost_its_ability_actually_pays ... ok
+test every_slice4_card_matches_its_recorded_printing_and_keywords ... ok
+test slice37_druids_familiar_matches_its_recorded_printing ... ok
+test slice38_spider_ham_matches_its_recorded_printing ... ok
+test every_slice5_card_matches_its_recorded_printing ... ok
+test slice43_lumra_matches_its_recorded_printing ... ok
+test slice48_owlbear_cub_matches_its_recorded_printing ... ok
+test every_krenko_package_card_matches_its_recorded_printing ... ok
+test slice46_thijarian_witness_matches_its_recorded_printing ... ok
+test surrak_and_goreclaw_models_the_trample_its_printing_records ... ok
+test every_starter_corpus_card_matches_its_recorded_printing ... ok
+test every_pool_card_added_after_issue_15_has_a_recorded_printing ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice19.rs (target\debug\deps\issue17_slice19-96fd29cc72abed04.exe)
+
+running 6 tests
+test spectral_bears_is_registered_from_its_printed_text ... ok
+test the_printed_condition_is_rechecked_when_the_trigger_resolves ... ok
+test a_nonattacking_bear_never_gets_the_restriction ... ok
+test a_black_nontoken_permanent_on_defense_stops_the_trigger ... ok
+test a_black_token_does_not_stop_the_trigger ... ok
+test attacking_triggers_and_skips_exactly_one_untap_step ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice41.rs (target\debug\deps\issue17_slice41-c6fbb863586e85a0.exe)
+
+running 11 tests
+test earth_king_is_sourced_and_supported ... ok
+test earth_king_really_casts_and_creates_distinct_four_four_bear ... ok
+test searched_lands_fire_existing_landfall_once_each_without_spending_land_play ... ok
+test carved_bear_token_ceases_to_exist_after_leaving_the_battlefield ... ok
+test attack_search_resolves_from_the_captured_count_after_its_source_leaves ... ok
+test zero_pick_search_still_shuffles_and_forged_or_duplicate_picks_are_atomic_refusals ... ok
+test attack_search_is_one_trigger_for_two_qualifiers_and_puts_basic_lands_tapped ... ok
+test full_opponent_projection_is_independent_of_hidden_search_candidates ... ok
+test midsearch_save_reload_keeps_private_progress_and_finishes_identically ... ok
+test midsearch_after_one_pick_save_reload_continues_identically ... ok
+test forged_search_pending_duplicates_and_subset_are_rejected_by_validate_and_save ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice44_search_controls.rs (target\debug\deps\issue17_slice44_search_controls-ddddfb3532fc8026.exe)
+
+running 4 tests
+test snow_search_prompts_describe_reveal_to_hand_not_battlefield ... ok
+test snow_search_direct_refusals_are_atomic_and_pick_remains_private_until_done ... ok
+test snow_search_validator_rejects_two_picks_even_when_both_are_snow ... ok
+test snow_search_validator_rejects_non_snow_basic_land_and_real_load_refuses_it ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice45_native.rs (target\debug\deps\issue17_slice45_native-dca8c409be5a9cbc.exe)
+
+running 7 tests
+test bears_created_by_earlier_mode_receive_counters_later_in_printed_order ... ok
+test searched_lands_enter_tapped_and_fire_landfall_once_each ... ok
+test private_candidates_do_not_change_opponent_view_and_zero_pick_still_shuffles ... ok
+test any_land_pending_is_bound_to_selected_search_instruction ... ok
+test search_pending_filter_cannot_be_swapped_on_save ... ok
+test search_capacity_is_exactly_two_in_validation_and_load ... ok
+test duplicate_and_unknown_saved_modes_are_refused ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice48.rs (target\debug\deps\issue17_slice48-05f096c1faa3d463.exe)
+
+running 6 tests
+test owlbear_cub_is_registered_with_its_printed_text ... ok
+test a_defender_with_seven_lands_never_triggers_the_look ... ok
+test eight_lands_looks_at_the_top_eight_and_offers_only_creature_cards ... ok
+test declining_puts_the_looked_cards_on_the_bottom_and_keeps_the_rest_in_order ... ok
+test the_chosen_creature_enters_tapped_attacking_and_deals_combat_damage ... ok
+test a_look_with_no_creature_card_puts_everything_on_the_bottom ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests\issue17_slice49.rs (target\debug\deps\issue17_slice49-9b081ebe60690af6.exe)
+
+running 8 tests
+test review329_attack_restriction_is_not_intervening_if ... ok
+test review329_owner_must_see_every_looked_card ... ok
+test entire_opponent_view_and_digest_ignore_hidden_eligibility_and_pick ... ok
+test review329_post_pick_valid_continuation_control ... ok
+test review329_no_creatures_still_requires_private_look ... ok
+test review329_look_pending_cannot_replace_titania_search_on_load ... ok
+test short_and_empty_library_looks_round_trip_before_acknowledgement ... ok
+test forged_look_states_are_refused_by_validation_and_real_load ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests\ordering_persistence.rs (target\debug\deps\ordering_persistence-617dbda96e8e7eeb.exe)
+
+running 2 tests
+test ordinary_and_command_opt_consider_both_order_answers_save_resume_and_replay ... ok
+test legal_time_ebb_decline_consider_all_owner_answers_preserve_draw_identity_tax_and_replay ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.58s
+
+     Running tests\replay_digest.rs (target\debug\deps\replay_digest-2c721625d92937b8.exe)
+
+running 6 tests
+test london_mulligan_bottoms_one_card_per_mulligan ... ok
+test library_order_comes_from_the_seed_not_from_stored_state ... ok
+test a_tampered_replay_fails_instead_of_inventing_a_result ... ok
+test save_and_load_restore_pending_choices_rng_and_ai_settings ... ok
+test replaying_a_recorded_game_reproduces_the_digest ... ok
+test the_same_seed_and_actions_produce_the_same_state_digest ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests\starter_corpus.rs (target\debug\deps\starter_corpus-05f2cda4096c1ba4.exe)
+
+running 8 tests
+test jasmine_is_refused_in_every_ordinary_library ... ok
+test the_starter_manifest_names_eight_targets_and_claims_only_one ... ok
+test jasmine_boreal_is_a_typed_supported_commander ... ok
+test jasmine_commander_damage_uses_the_existing_ledger ... ok
+test jasmine_commander_cast_tax_and_return_use_the_existing_paths ... ok
+test every_sourced_vanilla_creature_matches_its_printing ... ok
+test the_first_starter_library_is_exact_and_fully_supported ... ok
+test every_sourced_vanilla_creature_casts_and_resolves ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+EXIT=0
+
+COMMAND: cargo clippy --workspace --all-targets --locked -- -D warnings
+    Checking aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Checking aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+    Checking aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+    Checking aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ui)
+    Checking aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.79s
+EXIT=0
+
+COMMAND: cargo build -p aperture-cli --release --locked
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling aperture-import v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\import)
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling aperture-cli v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\cli)
+    Finished `release` profile [optimized] target(s) in 27.59s
+EXIT=0
+
+COMMAND: cargo run --release --locked --manifest-path evidence/issue17/slice49-journey-driver/Cargo.toml
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling stable_deref_trait v1.2.1
+   Compiling windows-link v0.2.1
+   Compiling bytes v1.12.1
+   Compiling pin-project-lite v0.2.17
+   Compiling futures-core v0.3.34
+   Compiling itoa v1.0.18
+   Compiling smallvec v1.16.4
+   Compiling writeable v0.6.4
+   Compiling litemap v0.8.3
+   Compiling windows-sys v0.61.2
+   Compiling memchr v2.8.3
+   Compiling icu_properties_data v2.4.0
+   Compiling utf8_iter v1.0.4
+   Compiling icu_normalizer_data v2.4.0
+   Compiling futures-sink v0.3.34
+   Compiling serde_core v1.0.229
+   Compiling percent-encoding v2.3.2
+   Compiling typenum v1.20.1
+   Compiling futures-io v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling rustversion v1.0.23
+   Compiling slab v0.4.12
+   Compiling httparse v1.10.1
+   Compiling libc v0.2.191
+   Compiling zmij v1.0.23
+   Compiling http v1.5.0
+   Compiling futures-util v0.3.34
+   Compiling try-lock v0.2.5
+   Compiling tower-service v0.3.3
+   Compiling native-tls v0.2.18
+   Compiling once_cell v1.21.4
+   Compiling tracing-core v0.1.36
+   Compiling want v0.3.2
+   Compiling syn v3.0.9
+   Compiling hybrid-array v0.4.15
+   Compiling atomic-waker v1.1.2
+   Compiling cfg-if v1.0.5
+   Compiling serde_json v1.0.154
+   Compiling serde v1.0.229
+   Compiling http-body v1.1.0
+   Compiling tracing v0.1.44
+   Compiling encoding_rs v0.8.42
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling form_urlencoded v1.2.2
+   Compiling futures-channel v0.3.34
+   Compiling sync_wrapper v1.0.2
+   Compiling const-oid v0.10.2
+   Compiling ipnet v2.12.2
+   Compiling thiserror v2.0.21
+   Compiling base64 v0.23.1
+   Compiling tower-layer v0.3.3
+   Compiling http-body-util v0.1.5
+   Compiling zeroize v1.9.1
+   Compiling cpufeatures v0.3.1
+   Compiling digest v0.11.3
+   Compiling scopeguard v1.2.0
+   Compiling multiversion_no_op v1.0.0
+   Compiling core_detect v1.0.0
+   Compiling simdutf8 v0.1.5
+   Compiling bitflags v2.13.2
+   Compiling sha2 v0.11.1
+   Compiling rustls-pki-types v1.15.1
+   Compiling mime v0.3.17
+   Compiling log v0.4.34
+   Compiling synstructure v0.14.0
+   Compiling zerofrom-derive v0.1.8
+   Compiling yoke-derive v0.8.4
+   Compiling zerovec-derive v0.11.7
+   Compiling displaydoc v0.2.7
+   Compiling serde_derive v1.0.229
+   Compiling thiserror-impl v2.0.21
+   Compiling zerofrom v0.1.8
+   Compiling yoke v0.8.4
+   Compiling zerovec v0.11.9
+   Compiling zerotrie v0.2.5
+   Compiling socket2 v0.6.5
+   Compiling mio v1.2.4
+   Compiling schannel v0.1.30
+   Compiling tinystr v0.8.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_collections v2.4.0
+   Compiling icu_locale_core v2.4.0
+   Compiling tokio v1.54.1
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+   Compiling icu_provider v2.4.0
+   Compiling icu_normalizer v2.4.0
+   Compiling icu_properties v2.4.0
+   Compiling idna_adapter v1.2.2
+   Compiling idna v1.1.0
+   Compiling url v2.5.8
+   Compiling hyper v1.12.0
+   Compiling tower v0.5.3
+   Compiling tokio-native-tls v0.3.1
+   Compiling tower-http v0.6.11
+   Compiling hyper-util v0.1.21
+   Compiling hyper-tls v0.6.0
+   Compiling reqwest v0.13.5
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\ai)
+   Compiling issue17-slice48-cub-journey v0.1.0 (C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice49-journey-driver)
+    Finished `release` profile [optimized] target(s) in 39.47s
+     Running `evidence\issue17\slice49-journey-driver\target\release\issue17-slice48-cub-journey.exe`
+{
+  "casts": {
+    "Centaur Courser": 12,
+    "Grizzly Bears": 11,
+    "Owlbear Cub": 12
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "cub_bottoms": 5,
+  "cub_looks": 5,
+  "cub_private_looks_observed": 5,
+  "cub_puts": 4,
+  "deck": "decks/package-slice48.txt",
+  "digest": "acf204aa4711241f2c7c3124c3195d4f9ee93a6a471a25d5a8df56562e747ac9",
+  "done_only_acknowledgements": 5,
+  "driver": "evidence-only masked Owlbear Cub demonstrator; NOT product heuristic or strength evidence",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)",
+      "winner": 2
+    }
+  },
+  "private_viewed_card_samples": 33,
+  "replay_digest_matches": true,
+  "replay_events": 8658,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "edb12266011a2f4c716fb4562273164f3b57a6cc4d605fc6277f86d742677cd9",
+  "snapshots_exact": true,
+  "solo_attacks_declared": 59,
+  "solo_exile_events": 0,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 3463,
+  "turns": 95,
+  "witness_style_clues": 0
+}
+EXIT=0
+
+COMMAND: target/release/aperture-cli.exe replay --file evidence/issue17/slice49/cub-replay.json
+replay seed 2323 — 4 seat(s), 3463 action(s), recorded outcome Some(Win { winner: 2, reason: "opponent lost by attempting to draw from an empty library (CR 104.3c, 704.5b)" })
+  replayed digest acf204aa4711 | matches recorded | events 8658
+EXIT=0
+
+COMMAND: git diff --check
+warning: in the working copy of 'crates/core/src/ability.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'crates/core/src/engine.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'crates/core/src/state.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'crates/core/src/view.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'crates/core/tests/issue17_slice48.rs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl', LF will be replaced by CRLF the next time Git touches it
+EXIT=0

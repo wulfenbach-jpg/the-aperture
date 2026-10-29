@@ -705,7 +705,7 @@ pub(crate) fn classify(entry: &NormEntry, excluded: &[String]) -> (EntryStatus, 
         Some(card) if card.is_supported_commander() => (
             EntryStatus::Unsupported,
             Some(format!(
-                "'{}' is commander-only in the command-zone practice profile; it cannot be certified as an ordinary practice library card (the legend rule is not modeled)",
+                "'{}' is commander-only in the command-zone practice profile; it cannot be certified as an ordinary practice library card (the named command-zone profile owns its setup)",
                 entry.name
             )),
         ),

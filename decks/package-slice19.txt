@@ -1,0 +1,9 @@
+// package-slice19 — evidence-only 40-card Ayula package, NOT a desired 100-card starter.
+4 Grizzly Bears
+4 Spectral Bears
+4 Ulvenwald Bear
+4 Caller of the Claw
+4 Friendly Teddy
+4 Shock
+8 Forest
+8 Mountain

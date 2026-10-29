@@ -1,0 +1,4762 @@
+P0 draws Island
+P0 draws Island
+P0 draws Time Ebb
+P0 draws Consider
+P0 draws Prodigal Sorcerer
+P0 draws Opt
+P0 draws Unsummon
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P2 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+P3 draws a card
+Game start — P1 plays first
+— Turn 1: P1 —
+P2 keeps a hand of 7
+P3 keeps a hand of 7
+P0 keeps a hand of 7
+P1 mulligans (mulligan count 1)
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 draws a card
+P1 keeps a hand of 7
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 2: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 3: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 4: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 5: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 6: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 7: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 8: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Consider
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 9: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+P1 discards a card
+— Turn 10: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2 casts Prodigal Sorcerer
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Prodigal Sorcerer resolves (controlled by P2)
+Prodigal Sorcerer enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 11: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 casts Prodigal Sorcerer
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Prodigal Sorcerer resolves (controlled by P3)
+Prodigal Sorcerer enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 12: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Time Ebb
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 plays Island
+P0 receives priority
+P0 casts Prodigal Sorcerer
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Prodigal Sorcerer resolves (controlled by P0)
+Prodigal Sorcerer enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 13: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1 receives priority
+P1 casts Prodigal Sorcerer
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Prodigal Sorcerer resolves (controlled by P1)
+Prodigal Sorcerer enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 14: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 39)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2 casts Talrand, Sky Summoner
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Talrand, Sky Summoner resolves (controlled by P2)
+Talrand, Sky Summoner enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 15: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+1 damage to P0
+P0 loses 1 life (now 38)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 casts Talrand, Sky Summoner
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Talrand, Sky Summoner resolves (controlled by P3)
+Talrand, Sky Summoner enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 16: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P1
+P1 loses 1 life (now 39)
+P0's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Consider
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 17: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 37)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 casts Prodigal Sorcerer
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Prodigal Sorcerer resolves (controlled by P1)
+Prodigal Sorcerer enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 18: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 36)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Prodigal Sorcerer
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Prodigal Sorcerer resolves (controlled by P2)
+Prodigal Sorcerer enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with 
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 34)
+2 commander combat damage from commander#3 to P0 (cumulative 2, CR 903.10a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 casts Consider
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Drake Token enters the battlefield under P2
+state-based action: P2 creates Drake Token token (#169)
+P2's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 surveils 1
+P2 keeps a card it looked at (contents hidden)
+P2 draws a card
+Consider resolves (controlled by P2)
+Consider is put into a graveyard
+P2 receives priority
+P2 plays Island
+P2 receives priority
+P2's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 casts Opt
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Drake Token enters the battlefield under P2
+state-based action: P2 creates Drake Token token (#170)
+P2's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 scries 1
+P2 keeps a card it looked at (contents hidden)
+P2 draws a card
+Opt resolves (controlled by P2)
+Opt is put into a graveyard
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 19: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+1 damage to P0
+P0 loses 1 life (now 33)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Prodigal Sorcerer
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Prodigal Sorcerer resolves (controlled by P3)
+Prodigal Sorcerer enters the battlefield under P3
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with 
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 31)
+2 commander combat damage from commander#4 to P0 (cumulative 2, CR 903.10a)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 casts Consider
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Drake Token enters the battlefield under P3
+state-based action: P3 creates Drake Token token (#171)
+P3's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 surveils 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Consider resolves (controlled by P3)
+Consider is put into a graveyard
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 casts Opt
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Drake Token enters the battlefield under P3
+state-based action: P3 creates Drake Token token (#172)
+P3's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 scries 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Opt resolves (controlled by P3)
+Opt is put into a graveyard
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 20: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P1
+P1 loses 1 life (now 38)
+P0's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Prodigal Sorcerer
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Prodigal Sorcerer
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Prodigal Sorcerer resolves (controlled by P0)
+Prodigal Sorcerer enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 21: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 30)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 29)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 22: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 28)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 27)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Prodigal Sorcerer
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 casts Counterspell targeting Prodigal Sorcerer on the stack
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Prodigal Sorcerer is put into a graveyard
+Prodigal Sorcerer is countered by Counterspell
+Counterspell resolves (controlled by P1)
+Counterspell is put into a graveyard
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 36)
+2 commander combat damage from commander#3 to P1 (cumulative 2, CR 903.10a)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 34)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 32)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 23: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+1 damage to P0
+P0 loses 1 life (now 26)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+1 damage to P0
+P0 loses 1 life (now 25)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Drake Token, Drake Token
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 30)
+2 commander combat damage from commander#4 to P1 (cumulative 2, CR 903.10a)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 28)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 26)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 casts Opt
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Drake Token enters the battlefield under P3
+state-based action: P3 creates Drake Token token (#173)
+P3's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 scries 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Opt resolves (controlled by P3)
+Opt is put into a graveyard
+P3 receives priority
+P3's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 casts Opt
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Drake Token enters the battlefield under P3
+state-based action: P3 creates Drake Token token (#174)
+P3's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 scries 1
+P3 keeps a card it looked at (contents hidden)
+P3 draws a card
+Opt resolves (controlled by P3)
+Opt is put into a graveyard
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 24: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P0 receives priority
+P0 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P1
+P1 loses 1 life (now 25)
+P0's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P1
+P1 loses 1 life (now 24)
+P0's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Time Ebb
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+P0 discards Time Ebb
+— Turn 25: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 24)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 23)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 plays Island
+P1 receives priority
+P1 casts Talrand, Sky Summoner
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+Talrand, Sky Summoner resolves (controlled by P1)
+Talrand, Sky Summoner enters the battlefield under P1
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 26: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 22)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 21)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 casts Prodigal Sorcerer
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Prodigal Sorcerer resolves (controlled by P2)
+Prodigal Sorcerer enters the battlefield under P2
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 19)
+2 commander combat damage from commander#3 to P0 (cumulative 4, CR 903.10a)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 17)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 15)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 casts Opt
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+Drake Token enters the battlefield under P2
+state-based action: P2 creates Drake Token token (#177)
+P2's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 scries 1
+P2 keeps a card it looked at (contents hidden)
+P2 draws a card
+Opt resolves (controlled by P2)
+Opt is put into a graveyard
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 27: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+1 damage to P0
+P0 loses 1 life (now 14)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+1 damage to P0
+P0 loses 1 life (now 13)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 11)
+2 commander combat damage from commander#4 to P0 (cumulative 4, CR 903.10a)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 9)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 7)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 5)
+2 combat damage to a player
+2 damage to P0
+P0 loses 2 life (now 3)
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 28: P0 —
+[untap step]
+[upkeep step]
+P0 receives priority
+P0 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P0 receives priority
+P0 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P1
+P1 loses 1 life (now 23)
+P0's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P1
+P1 loses 1 life (now 22)
+P0's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P0 draws Prodigal Sorcerer
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P0 receives priority
+P0 casts Prodigal Sorcerer
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 taps Island for {U}
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Prodigal Sorcerer resolves (controlled by P0)
+Prodigal Sorcerer enters the battlefield under P0
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P0 receives priority
+P0 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 29: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 2)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+1 damage to P0
+P0 loses 1 life (now 1)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare attackers step]
+P1 attacks with Talrand, Sky Summoner
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 38)
+2 commander combat damage from commander#2 to P3 (cumulative 2, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+[cleanup step]
+— Turn 30: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P0)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P0 receives priority
+P0 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+1 damage to P0
+P0 loses 1 life (now 0)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+state-based action: P0 loses: life total is 0 (CR 704.5a)
+state-based action: P0 leaves the game; all objects owned by P0 leave the game (CR 800.4a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+P2's Prodigal Sorcerer ability fizzles: all of its targets are illegal, so it does not resolve (CR 608.2b)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+P2's Prodigal Sorcerer ability fizzles: all of its targets are illegal, so it does not resolve (CR 608.2b)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 20)
+2 commander combat damage from commander#3 to P1 (cumulative 4, CR 903.10a)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 18)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 16)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 14)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[postcombat main phase]
+P2 receives priority
+P2's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 casts Opt
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Talrand, Sky Summoner on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+Drake Token enters the battlefield under P2
+state-based action: P2 creates Drake Token token (#178)
+P2's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 scries 1
+P2 keeps a card it looked at (contents hidden)
+P2 draws a card
+Opt resolves (controlled by P2)
+Opt is put into a graveyard
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[cleanup step]
+— Turn 31: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P3 receives priority
+P3 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+1 damage to P1
+P1 loses 1 life (now 13)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P1 receives priority
+TRUNCATED: P1 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P1 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+1 damage to P1
+P1 loses 1 life (now 12)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Prodigal Sorcerer
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P1 receives priority
+P1's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P1 casts Counterspell targeting Prodigal Sorcerer on the stack
+P1 taps Island for {U}
+P1 taps Island for {U}
+P1 receives priority
+P1 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Talrand, Sky Summoner on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+P3 receives priority
+P3 passes
+Drake Token enters the battlefield under P1
+state-based action: P1 creates Drake Token token (#179)
+P1's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+Prodigal Sorcerer is put into a graveyard
+Prodigal Sorcerer is countered by Counterspell
+Counterspell resolves (controlled by P1)
+Counterspell is put into a graveyard
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P1 declares 1 blocker(s)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 damage to Drake Token (#179)
+2 combat damage to Drake Token
+2 damage to Talrand, Sky Summoner (#168)
+2 combat damage to Talrand, Sky Summoner
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 10)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 8)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 6)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now 4)
+Talrand, Sky Summoner is put into a graveyard
+Drake Token is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: Drake Token token ceases to exist (CR 111.7)
+state-based action: P3 puts commander #181 into the command zone from the graveyard (CR 903.9a)
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 32: P1 —
+[untap step]
+[upkeep step]
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P1 receives priority
+P1 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P1 receives priority
+P1 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 37)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 36)
+P1's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P1 draws a card
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P1 attacks with Talrand, Sky Summoner
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 34)
+2 commander combat damage from commander#2 to P3 (cumulative 4, CR 903.10a)
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P1 receives priority
+P1 passes
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 33: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P1)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+1 damage to P1
+P1 loses 1 life (now 3)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+1 damage to P1
+P1 loses 1 life (now 2)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+1 damage to P1
+P1 loses 1 life (now 1)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+P1 receives priority
+P1 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now -1)
+2 commander combat damage from commander#3 to P1 (cumulative 6, CR 903.10a)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now -3)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now -5)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now -7)
+2 combat damage to a player
+2 damage to P1
+P1 loses 2 life (now -9)
+state-based action: P1 loses: life total is -9 (CR 704.5a)
+state-based action: P1 leaves the game; all objects owned by P1 leave the game (CR 800.4a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 34: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P2)
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P2)
+P3 receives priority
+P3 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+1 damage to P2
+P2 loses 1 life (now 39)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P2 receives priority
+TRUNCATED: P2 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P2 passes
+1 damage to P2
+P2 loses 1 life (now 38)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 plays Island
+P3 receives priority
+P3 casts Talrand, Sky Summoner
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P2 receives priority
+P2's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 casts Counterspell targeting Talrand, Sky Summoner on the stack
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2's triggered ability from Talrand, Sky Summoner goes on the stack: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P2 casts Counterspell targeting Talrand, Sky Summoner on the stack
+P2 taps Island for {U}
+P2 taps Island for {U}
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+Drake Token enters the battlefield under P2
+state-based action: P2 creates Drake Token token (#183)
+P2's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+Talrand, Sky Summoner is put into a graveyard
+Talrand, Sky Summoner is countered by Counterspell
+Counterspell resolves (controlled by P2)
+Counterspell is put into a graveyard
+state-based action: P3 puts commander #185 into the command zone from the graveyard (CR 903.9a)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+Drake Token enters the battlefield under P2
+state-based action: P2 creates Drake Token token (#186)
+P2's ability from Talrand, Sky Summoner resolves: Whenever you cast an instant or sorcery spell, create a 2/2 blue Drake creature token with flying.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+Counterspell does not resolve: all of its targets are illegal, so it does not resolve (CR 608.2b)
+Counterspell is put into a graveyard
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P2 declares 2 blocker(s)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 damage to Drake Token (#183)
+2 combat damage to Drake Token
+2 damage to Drake Token (#171)
+2 combat damage to Drake Token
+2 damage to Drake Token (#186)
+2 combat damage to Drake Token
+2 damage to Drake Token (#172)
+2 combat damage to Drake Token
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 36)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 34)
+Drake Token is put into a graveyard
+Drake Token is put into a graveyard
+Drake Token is put into a graveyard
+Drake Token is put into a graveyard
+state-based action: 4 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: Drake Token token ceases to exist (CR 111.7)
+state-based action: Drake Token token ceases to exist (CR 111.7)
+state-based action: Drake Token token ceases to exist (CR 111.7)
+state-based action: Drake Token token ceases to exist (CR 111.7)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 35: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 33)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 32)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 31)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 29)
+2 commander combat damage from commander#3 to P3 (cumulative 2, CR 903.10a)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 27)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 25)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 23)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 21)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 36: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P2)
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P2)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+1 damage to P2
+P2 loses 1 life (now 33)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+1 damage to P2
+P2 loses 1 life (now 32)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 casts Talrand, Sky Summoner
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 taps Island for {U}
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+Talrand, Sky Summoner resolves (controlled by P3)
+Talrand, Sky Summoner enters the battlefield under P3
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Drake Token, Drake Token
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 30)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 28)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 37: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 20)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 19)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 18)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P3 declares 1 blocker(s)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 damage to Talrand, Sky Summoner (#188)
+2 combat damage to Talrand, Sky Summoner
+2 damage to Talrand, Sky Summoner (#166)
+2 combat damage to Talrand, Sky Summoner
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 16)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 14)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 12)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 10)
+Talrand, Sky Summoner is put into a graveyard
+Talrand, Sky Summoner is put into a graveyard
+state-based action: 2 creature(s) had lethal damage or toughness 0 and were put into the graveyard (CR 704.5f, 704.5g)
+state-based action: P2 puts commander #191 into the command zone from the graveyard (CR 903.9a)
+state-based action: P3 puts commander #192 into the command zone from the graveyard (CR 903.9a)
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[postcombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[end step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[cleanup step]
+— Turn 38: P3 —
+[untap step]
+[upkeep step]
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P2)
+P3 receives priority
+P3 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P2)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+1 damage to P2
+P2 loses 1 life (now 27)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+1 damage to P2
+P2 loses 1 life (now 26)
+P3's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[draw step]
+P3 draws a card
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[precombat main phase]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[beginning of combat step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[declare attackers step]
+P3 attacks with Drake Token, Drake Token
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[declare blockers step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 24)
+2 combat damage to a player
+2 damage to P2
+P2 loses 2 life (now 22)
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[end of combat step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[postcombat main phase]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[end step]
+P3 receives priority
+P3 passes
+P2 receives priority
+P2 passes
+[cleanup step]
+— Turn 39: P2 —
+[untap step]
+[upkeep step]
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 activates Prodigal Sorcerer: {T}: Prodigal Sorcerer deals 1 damage to any target. (targeting P3)
+P2 receives priority
+P2 passes
+P3 receives priority
+TRUNCATED: P3 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 9)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+TRUNCATED: P3 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 8)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+TRUNCATED: P3 policy action was rejected (target is not legal for Counterspell: Prodigal Sorcerer on the stack is not a legal target for Counterspell (target spell: CR 115.1)); passing instead
+P3 passes
+1 damage to P3
+P3 loses 1 life (now 7)
+P2's ability from Prodigal Sorcerer resolves: {T}: Prodigal Sorcerer deals 1 damage to any target.
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[draw step]
+P2 draws a card
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[precombat main phase]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[beginning of combat step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare attackers step]
+P2 attacks with Drake Token, Drake Token, Drake Token, Drake Token
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[declare blockers step]
+P2 receives priority
+P2 passes
+P3 receives priority
+P3 passes
+[combat damage step]
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 5)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 3)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now 1)
+2 combat damage to a player
+2 damage to P3
+P3 loses 2 life (now -1)
+state-based action: P3 loses: life total is -1 (CR 704.5a)
+state-based action: P3 leaves the game; all objects owned by P3 leave the game (CR 800.4a)
+Game over — P2 wins: opponents' life totals reached 0 or less (CR 704.5a)
+selfplay seed=11 seats=4 heuristic vs heuristic vs heuristic vs heuristic -> status terminal winner P2 in 1830 steps (39 turns)
+  digest c9fb97c6fc08 | replay verified | casts 29 attacks 17 blocks 3 counters 3
+  replay written to evidence/issue17/slice2-talrand-game.replay.json
+  report written to evidence/issue17/slice2-talrand-game.json

@@ -1,0 +1,35 @@
+{
+  "all_goblin_tokens": 2,
+  "attack_declarations": 14,
+  "casts": {
+    "Dragonlord's Servant": 3,
+    "Goblin Instigator": 2,
+    "Goblin King": 6,
+    "Goblin Warchief": 6,
+    "Volcanic Dragon": 1
+  },
+  "combat_damage_events": 44,
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice63.txt",
+  "digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+  "dragon_casts_with_servant": 1,
+  "driver": "projected legal-offer evidence driver; explicitly not product AI",
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "replay_digest_matches": true,
+  "replay_events": 2455,
+  "seats": 4,
+  "seed": 2323,
+  "snapshot_sha256": "b2539164ff5335e672549608b0d17a51a714137981ff99eb6819f2d01f68fa6a",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",
+  "status": "terminal",
+  "steps": 954,
+  "turns": 23
+}

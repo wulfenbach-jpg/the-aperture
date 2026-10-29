@@ -1,0 +1,175 @@
+{
+  "reviewed_head": "c0e0a69ad430e73d47b718ac8973ef464b32b632",
+  "verdict": "APPROVED",
+  "blocking_findings": [],
+  "tests_run": [
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice22 --locked",
+      "result": "test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+    },
+    {
+      "command": "cargo test -p aperture-core --test card_printings --locked",
+      "result": "test result: ok. 8 passed; 0 failed"
+    },
+    {
+      "command": "cargo test -p aperture-core --test catalog_pool --locked",
+      "result": "test result: ok. 5 passed; 0 failed"
+    },
+    {
+      "command": "cargo test -p aperture-core --test issue13_commander_combat --locked",
+      "result": "test result: ok. 43 passed; 0 failed"
+    },
+    {
+      "command": "cargo test -p aperture-core --test issue17_slice15_corpus --locked",
+      "result": "test result: ok. 2 passed; 0 failed"
+    },
+    {
+      "command": "cargo test -p aperture-core --test abilities --locked",
+      "result": "test result: ok. 13 passed; 0 failed"
+    }
+  ],
+  "probes": [
+    {
+      "name": "X_grizzly_bears_is_2",
+      "method": "real Action::CastSpell + Action::ChooseTriggerTarget on a public-API board",
+      "observed": "counters=2, staged=1 (mana value of {1}{G} = 2)",
+      "expected": "counters=2",
+      "pass": true
+    },
+    {
+      "name": "X_craw_wurm_is_6",
+      "method": "real cast of {4}{G}{G} Craw Wurm",
+      "observed": "counters=6",
+      "expected": "counters=6",
+      "pass": true
+    },
+    {
+      "name": "opponent_cast_does_not_trigger",
+      "method": "P1 casts a creature while P0 owns the enchantment",
+      "observed": "staged=0 counters=0, no pending choice",
+      "expected": "0/0",
+      "pass": true
+    },
+    {
+      "name": "noncreature_permanent_does_not_trigger",
+      "method": "P0 casts Bearscape (enchantment spell)",
+      "observed": "staged=0 counters=0, enchantment resolved to battlefield",
+      "expected": "0/0 and normal resolution",
+      "pass": true
+    },
+    {
+      "name": "landfall_makes_real_bear",
+      "method": "real Action::PlayLand with the enchantment on the battlefield",
+      "observed": "one Bear Token 2/2, green=true, subtype Bear=true, watcher counters=0",
+      "expected": "one real 2/2 green Bear token",
+      "pass": true
+    },
+    {
+      "name": "no_legal_target_removes_trigger",
+      "method": "cast the only creature with no other creature controlled",
+      "observed": "TriggerRemoved x1, no pending choice, spell resolved, digest 5a86ea75cbf3",
+      "expected": "trigger removed (CR 603.3d), engine not deadlocked",
+      "pass": true
+    },
+    {
+      "name": "two_enchantments_both_trigger",
+      "method": "two copies of Dancing on P0's battlefield, cast {1}{G} Bears",
+      "observed": "staged=2, counters=4",
+      "expected": "2 triggers x X=2",
+      "pass": true
+    },
+    {
+      "name": "countered_spell_still_sizes_trigger",
+      "method": "P1 casts Counterspell at the creature spell after the trigger target is chosen",
+      "observed": "spell countered, trigger still adds counters=2",
+      "expected": "value captured at cast time survives the spell leaving the stack",
+      "pass": true
+    },
+    {
+      "name": "target_gone_at_resolution_is_harmless",
+      "method": "P1 casts Shock at the chosen 2/2 in response",
+      "observed": "target in graveyard, no panic, counters=0",
+      "expected": "ability resolves with no legal target, no counters",
+      "pass": true
+    },
+    {
+      "name": "serde_zero_is_byte_identical",
+      "method": "serde_json of a clean state and of a pending-trigger state",
+      "observed": "clean JSON contains no 'spell_mana_value'; sized JSON has exactly one \"spell_mana_value\":2; reload digest stable 0089e3dbcf58",
+      "expected": "zero omitted, non-zero present, digest unchanged",
+      "pass": true
+    },
+    {
+      "name": "slice20_demo_replay_digest",
+      "method": "Replay::from_json + run_recorded on evidence/issue17/slice20/demo-replay.json",
+      "observed": "digest 72cd69fb1143 reproduced exactly",
+      "expected": "recorded final_digest unchanged",
+      "pass": true
+    },
+    {
+      "name": "slice21_demo_replay_digest",
+      "method": "Replay::from_json + run_recorded on evidence/issue17/slice21/demo-replay.json",
+      "observed": "digest 0d20c7597183 reproduced exactly",
+      "expected": "recorded final_digest unchanged",
+      "pass": true
+    },
+    {
+      "name": "mana_value_matches_printed_cost",
+      "method": "sweep of all catalog cards with a cost vs mana::parse_cost; symbol-shape scan",
+      "observed": "134/134 costed cards agree; no hybrid/X/Phyrexian/snow/colorless symbols in the pool",
+      "expected": "no pool card whose printed cost makes mana_value wrong",
+      "pass": true
+    },
+    {
+      "name": "hybrid_and_x_costs",
+      "method": "synthetic CardDef values evaluated directly",
+      "observed": "{G/W}=0 {2/W}=2 {W/P}=0 {X}{G}=1 {10}{G}=11",
+      "expected": "per the new doc comment {G/W} and {W/P} should be 1; latent, unreachable in this pool",
+      "pass": false,
+      "blocking": false
+    },
+    {
+      "name": "pending_choice_has_no_priority_holder",
+      "method": "after a real cast that opens Pending::TriggerTarget, inspect priority and state.validate()",
+      "observed": "pending=TriggerTarget, priority=None, validate=Ok, reload_digest=afe8802cc0eb",
+      "expected": "no priority holder alongside a pending choice (the repaired defect)",
+      "pass": true
+    },
+    {
+      "name": "priority_after_plain_cast",
+      "method": "cast a creature with no cast trigger on the battlefield",
+      "observed": "priority=Some(0), Priority events=1, legal_actions=1",
+      "expected": "the fix does not starve the ordinary cast path",
+      "pass": true
+    }
+  ],
+  "unverified": [
+    "The enchantment leaving the battlefield while its own trigger is on the stack: not reproducible with the 139-card pool (only enchantment destruction is Fade from History, a sorcery; bounce targets creatures). Reasoned only: StackItem carries spell_mana_value/targets and the effect never reads the source zone.",
+    "A creature spell with {X} in its cost: no such card in the pool; mana_value maps {X} to 0 and this is disclosed in the code comment and docs.",
+    "Hybrid/Phyrexian mana costs: latent doc/code mismatch ({G/W}=0, {W/P}=0 versus the documented/hybrid rule of 1); no pool card is affected.",
+    "Forward compatibility of a save captured mid-pending with a non-zero spell_mana_value: SAVE_VERSION stayed 10 and an older build would silently default the field to 0. Not exercised.",
+    "Full workspace tests, native UI journeys and cross-platform runs: not run in this review by instruction; CI at the exact head covers linux/macos/windows plus the Windows package job.",
+    "Printed-text provenance beyond Scryfall: catalog text, cost, type line and set/number match the recorded Scryfall payload (hob 123) and one web cross-check; no second authoritative source consulted."
+  ],
+  "non_blocking_findings": [
+    "README.md (repository root) is edited, outside the stated allowlist for this lane; the content is a correct 138 -> 139 pool-count update.",
+    "CardDef::mana_value's doc comment and docs/issue17-starter-corpus.md both claim a hybrid/Phyrexian symbol contributes its numeric half 'and otherwise 1', but the code returns 0 for non-numeric halves; unreachable in the current pool.",
+    "SAVE_VERSION/REPLAY_VERSION unchanged although a new (skipped-when-zero) save field exists."
+  ],
+  "scope_check": {
+    "diff_range": "b671414..c0e0a69",
+    "files_changed": 61,
+    "outside_allowlist": ["README.md"],
+    "insertions": 23522,
+    "deletions": 23
+  },
+  "ci": {
+    "pr": 46,
+    "head_sha": "c0e0a69ad430e73d47b718ac8973ef464b32b632",
+    "check_runs_total": 10,
+    "state": "all completed/success at review time",
+    "note": "5 job names x 2 workflow runs (push 40463221552, pull_request 40463228154) on the same head SHA"
+  },
+  "local_equals_remote": true,
+  "reviewed_at_utc": "2026-10-27T06:57:39Z"
+}

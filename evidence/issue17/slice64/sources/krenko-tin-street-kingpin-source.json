@@ -1,0 +1,25 @@
+{
+  "name": "Krenko, Tin Street Kingpin",
+  "set": "moc",
+  "collector_number": "287",
+  "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0",
+  "mana_cost": "{2}{R}",
+  "type_line": "Legendary Creature \u2014 Goblin",
+  "power": "1",
+  "toughness": "2",
+  "oracle_text": "Whenever Krenko attacks, put a +1/+1 counter on it, then create a number of 1/1 red Goblin creature tokens equal to Krenko's power.",
+  "keywords": [],
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "layout": "normal",
+  "released_at": "2023-04-21",
+  "scryfall_id": "2f5689e2-d8a2-442b-8027-f89686adcb67",
+  "retrieved_at_utc": "2026-10-29T10:56:55Z",
+  "provider": "scryfall",
+  "url": "https://scryfall.com/card/moc/287/krenko-tin-street-kingpin",
+  "legalities_commander": "legal"
+}

@@ -1,0 +1,51 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+warning: function `creature_card` is never used
+  --> crates\core\tests\issue17_slice49.rs:31:4
+   |
+31 | fn creature_card() -> CardId {
+   |    ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `library_cards` is never used
+  --> crates\core\tests\issue17_slice49.rs:35:4
+   |
+35 | fn library_cards(g: &Game, p: PlayerId) -> Vec<CardId> {
+   |    ^^^^^^^^^^^^^
+
+warning: function `run_to_step` is never used
+  --> crates\core\tests\issue17_slice49.rs:77:4
+   |
+77 | fn run_to_step(g: &mut Game, step: Step) {
+   |    ^^^^^^^^^^^
+
+warning: fields `player`, `remaining`, `chosen`, and `mode` are never read
+  --> crates\core\tests\issue17_slice49.rs:95:5
+   |
+94 | struct Look {
+   |        ---- fields in this struct
+95 |     player: PlayerId,
+   |     ^^^^^^
+96 |     remaining: u8,
+   |     ^^^^^^^^^
+97 |     chosen: Vec<ObjectId>,
+   |     ^^^^^^
+98 |     eligible: Vec<ObjectId>,
+99 |     mode: LibrarySearchMode,
+   |     ^^^^
+
+warning: `aperture-core` (test "issue17_slice49") generated 4 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.87s
+     Running tests\issue17_slice49.rs (target\debug\deps\issue17_slice49-9b081ebe60690af6.exe)
+
+running 5 tests
+test review329_attack_restriction_is_not_intervening_if ... ok
+test review329_no_creatures_still_requires_private_look ... ok
+test review329_owner_must_see_every_looked_card ... ok
+test review329_look_pending_cannot_replace_titania_search_on_load ... ok
+test review329_post_pick_valid_continuation_control ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+EXIT=0

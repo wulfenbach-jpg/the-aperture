@@ -1,0 +1,43 @@
+7375-                    rules: vec!["605.1a"],
+7376-                });
+7377-            }
+7378-        }
+7379-
+7380-        // Activated abilities (CR 602.2). Each legal target and each legal
+7381-        // combination of named cost cards is its own option.
+7382-        for object in self.state.battlefield(player) {
+7383:            self.push_activation_actions(player, object.id, object.card, &mut out);
+7384-        }
+7385-        // CR 602.2: an ability whose cost exiles its own card is activated from
+7386-        // the graveyard, so it is offered from that zone and offered nowhere
+7387-        // else (the validator refuses any other zone).
+7388-        let graveyard_sources: Vec<(ObjectId, CardId)> = self
+7389-            .state
+7390-            .player(player)
+7391-            .graveyard
+--
+7400-                crate::ability::abilities(*card).iter().any(|ability| {
+7401-                    ability
+7402-                        .activated()
+7403-                        .is_some_and(|activated| activated.cost.exile_source_from_graveyard)
+7404-                })
+7405-            })
+7406-            .collect();
+7407-        for (source, card) in graveyard_sources {
+7408:            self.push_activation_actions(player, source, card, &mut out);
+7409-        }
+7410-        out
+7411-    }
+7412-
+7413-    /// Every legal way to activate one permanent's (or graveyard card's)
+7414-    /// abilities: one entry per printed ability, target and legal set of named
+7415-    /// cost cards. Nothing is offered that `validate` would refuse.
+7416:    fn push_activation_actions(
+7417-        &self,
+7418-        player: PlayerId,
+7419-        source: ObjectId,
+7420-        card: CardId,
+7421-        out: &mut Vec<LegalAction>,
+7422-    ) {
+7423-        for (index, ability) in crate::ability::abilities(card).iter().enumerate() {
+7424-            let Ability::Activated(activated) = ability else {

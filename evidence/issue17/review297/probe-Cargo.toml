@@ -1,0 +1,11 @@
+[package]
+name = "r297-probe"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aperture-core = { path = "C:/AI/r297a/crates/core" }
+
+[[bin]]
+name = "probe"
+path = "src/probe.rs"

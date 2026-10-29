@@ -1,0 +1,36 @@
+   Compiling aperture-core v0.1.0 (C:\AI\aperture-worktrees\issue-17\crates\core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.32s
+     Running tests\issue17_slice53_ruxa.rs (target\debug\deps\issue17_slice53_ruxa-06c8b90dabc425f5.exe)
+
+running 15 tests
+test ruxa_is_registered_with_its_printed_text_and_three_implemented_surfaces ... ok
+test the_anthem_pumps_only_your_creatures_with_no_abilities ... ok
+test a_creature_card_with_any_ability_is_never_offered ... ok
+test a_graveyard_card_cannot_be_named_as_a_permanent_or_from_an_opponent ... ok
+test the_attack_trigger_returns_a_card_without_touching_the_draw_path ... ok
+test an_unblocked_attacker_is_never_asked ... ok
+test assigning_as_though_unblocked_deals_all_damage_to_the_player ... ok
+test a_blocked_attacker_with_abilities_is_never_asked ... ok
+test declining_keeps_the_ordinary_assignment ... ok
+test the_enters_trigger_returns_the_chosen_no_ability_creature_card ... ok
+test battlefield_trample_grants_do_not_reach_graveyard_cards ... ok
+test a_commander_card_in_a_graveyard_is_offered_the_command_zone ... ok
+test a_forged_pending_for_a_creature_with_abilities_is_refused ... ok
+test two_eligible_attackers_are_asked_in_order_and_damage_is_dealt_once ... ok
+test forged_assignment_pendings_are_refused_by_validate_and_by_a_real_load ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests\issue17_slice62.rs (target\debug\deps\issue17_slice62-64c0257e086a991f.exe)
+
+running 7 tests
+test chieftain_haste_is_an_ability_for_ruxas_no_abilities_predicate ... ok
+test actual_attack_declaration_records_the_turn_fact_after_the_attacker_leaves ... ok
+test goblin_chieftain_anthem_and_haste_are_other_owned_goblins_only ... ok
+test raid_does_not_trigger_when_entering_end_step_without_an_attack ... ok
+test searslicer_casts_and_raid_end_step_makes_a_real_token_after_attackers_leave ... ok
+test real_attack_history_save_loads_and_both_games_finish_identically ... ok
+test raid_history_resets_on_turn_transition_and_roundtrips_a_save ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

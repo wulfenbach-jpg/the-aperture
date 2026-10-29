@@ -1,0 +1,40 @@
+{
+  "anthem_checks": 7110,
+  "casts": {
+    "Bear Cub": 1,
+    "Circle of the Moon Druid": 3,
+    "Exuberant Wolfbear": 3,
+    "Grizzly Bears": 8,
+    "Ordinary Bear": 5,
+    "Runeclaw Bear": 3,
+    "Spider-Ham, Peter Porker": 8
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice38.txt",
+  "digest": "726fe20e72e17b353e8d7fc9f4f8317bc06ab6b2bfd9ab1fbc0f2fb1a871cb31",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "food_activations": 8,
+  "food_objects_left_at_game_end": 0,
+  "food_tokens_ceased": 8,
+  "food_tokens_created": 8,
+  "kind": "40-card package, not a desired starter",
+  "life_gained_from_food": 24,
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 2
+    }
+  },
+  "purpose": "slice 38: Spider-Ham is cast, its Food token is created and activated for 3 life, and the printed-subtype anthem is asserted on every action boundary of a four-seat game",
+  "replay_digest_matches": true,
+  "replay_events": 3861,
+  "seats": 4,
+  "seed": 3838,
+  "snapshot_sha256": "b141662be86fd899f837666505be4b726ae893faef805818fea8b5552d4a100e",
+  "snapshots_exact": true,
+  "spider_ham_casts": 8,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1450,
+  "turns": 34
+}

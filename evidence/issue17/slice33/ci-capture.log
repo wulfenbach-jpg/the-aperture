@@ -1,0 +1,16 @@
+5 checks, 4 pending
+10 checks, 9 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 8 pending
+10 checks, 5 pending
+10 checks, 0 pending
+TOTAL=10 ALL_SUCCESS=False ALL_KEYED=True PENDING=0
+CI_EXIT=1

@@ -1,0 +1,27 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-27T21:06:29.666092+00:00",
+ "cards": [
+  {
+   "name": "Words of Wilding",
+   "oracle_id": "888582df-4fe2-4d05-9b62-10c90aaa76f2",
+   "scryfall_id": "fdb9565f-5b09-4127-b169-3146079dab84",
+   "set": "ons",
+   "collector_number": "305",
+   "layout": "normal",
+   "mana_cost": "{2}{G}",
+   "type_line": "Enchantment",
+   "power": null,
+   "toughness": null,
+   "oracle_text": "{1}: The next time you would draw a card this turn, create a 2/2 green Bear creature token instead.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [],
+   "legalities_commander": "legal",
+   "printing_url": "https://api.scryfall.com/cards/fdb9565f-5b09-4127-b169-3146079dab84",
+   "retrieved_at": "2026-10-27T21:06:29.666092+00:00"
+  }
+ ]
+}

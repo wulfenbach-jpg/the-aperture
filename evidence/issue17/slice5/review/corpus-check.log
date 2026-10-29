@@ -1,0 +1,23 @@
+isamaru-white-aggro        cards=59   supported=3   missing=56
+jasmine-vanilla-stompy     cards=61   supported=61  missing=0
+talrand-draw-go            cards=59   supported=7   missing=52
+krenko-goblin-tokens       cards=59   supported=8   missing=51
+ayula-bear-counters        cards=59   supported=12  missing=47
+elas-sacrifice             cards=60   supported=3   missing=57
+tatyova-landfall           cards=60   supported=5   missing=55
+zada-spells                cards=59   supported=4   missing=55
+
+union names      : 459  (docs claim 459)
+catalog size     : 103  (docs claim 103)
+supported in union: 91  (docs claim 91)
+missing in union : 368  (docs claim 368)
+home list Stitcher's Supplier  -> ['elas-sacrifice'] (claimed elas-sacrifice) ok
+home list Ruin Crab            -> ['tatyova-landfall'] (claimed tatyova-landfall) ok
+home list Negate               -> ['talrand-draw-go'] (claimed talrand-draw-go) ok
+home list Preordain            -> ['talrand-draw-go'] (claimed talrand-draw-go) ok
+home list Pyretic Ritual       -> ['zada-spells'] (claimed zada-spells) ok
+home list Seething Song        -> ['zada-spells'] (claimed zada-spells) ok
+
+elas unsupported nonland names: 57  (docs claim 57)
+
+no failures

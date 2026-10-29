@@ -1,0 +1,1155 @@
+ HANDOFF.md                                         |     2 +-
+ README.md                                          |     2 +-
+ crates/core/src/ability.rs                         |    28 +
+ crates/core/src/card.rs                            |    15 +-
+ crates/core/src/catalog.rs                         |    50 +-
+ crates/core/src/engine.rs                          |    43 +-
+ crates/core/src/tokens.rs                          |     2 +
+ crates/core/tests/card_printings.rs                |     7 +
+ crates/core/tests/catalog_pool.rs                  |    14 +-
+ crates/core/tests/issue13_commander_combat.rs      |     2 +-
+ crates/core/tests/issue17_slice12.rs               |   369 +
+ decks/package-slice12.txt                          |     9 +
+ decks/starter-corpus/manifest.json                 |     7 +-
+ docs/issue17-starter-corpus.md                     |    10 +-
+ evidence/issue17/ASSIGN-REVIEW-2.md                |     8 +
+ evidence/issue17/ASSIGN-REVIEW227-DELTA.md         |     8 +
+ evidence/issue17/HUMAN-CHECKPOINT.md               |    44 +
+ evidence/issue17/IMPLEMENT-1.md                    |    16 +
+ evidence/issue17/IMPLEMENT-2.md                    |    10 +
+ evidence/issue17/PR-BODY.md                        |    22 +
+ evidence/issue17/REPAIR-1.md                       |    10 +
+ evidence/issue17/SLICE11-HUMAN-CHECKPOINT.md       |   141 +
+ evidence/issue17/SLICE2-ASSIGN-REVIEW-1.md         |     8 +
+ evidence/issue17/SLICE2-ASSIGN-REVIEW-2.md         |     8 +
+ evidence/issue17/SLICE2-HUMAN-CHECKPOINT.md        |    16 +
+ evidence/issue17/SLICE2-IMPLEMENT-1.md             |    12 +
+ evidence/issue17/SLICE2-IMPLEMENT-2.md             |    13 +
+ evidence/issue17/SLICE2-IMPLEMENT-3.md             |    12 +
+ evidence/issue17/SLICE2-PR-BODY.md                 |    29 +
+ evidence/issue17/SLICE2-REPAIR-1.md                |     8 +
+ evidence/issue17/SLICE3-ASSIGN-REVIEW-1.md         |     8 +
+ evidence/issue17/SLICE3-ASSIGN-REVIEW-2.md         |     8 +
+ evidence/issue17/SLICE3-ASSIGN-REVIEW-3.md         |     4 +
+ evidence/issue17/SLICE3-HUMAN-CHECKPOINT.md        |    32 +
+ evidence/issue17/SLICE3-IMPLEMENT-1.md             |     6 +
+ evidence/issue17/SLICE3-IMPLEMENT-2.md             |     8 +
+ evidence/issue17/SLICE3-IMPLEMENT-3.md             |    10 +
+ evidence/issue17/SLICE3-REPAIR-1.md                |     6 +
+ evidence/issue17/SLICE3-REPAIR-2.md                |     8 +
+ evidence/issue17/SLICE4-ASSIGN-REVIEW-1.md         |    78 +
+ evidence/issue17/SLICE7-HUMAN-CHECKPOINT.md        |    66 +
+ evidence/issue17/SLICE7-IMPLEMENT-1.md             |    10 +
+ evidence/issue17/SLICE7-IMPLEMENT-HANDOFF.md       |    77 +
+ evidence/issue17/SLICE7-PR-BODY.md                 |    19 +
+ evidence/issue17/SLICE7-REPAIR-2.md                |     8 +
+ evidence/issue17/SLICE8-ASSIGN-REVIEW-1.md         |    11 +
+ evidence/issue17/SLICE8-ASSIGN-REVIEW-2.md         |     3 +
+ evidence/issue17/SLICE8-EXTRA-BLOCKER.md           |     1 +
+ evidence/issue17/SLICE8-IMPLEMENT-1.md             |    15 +
+ evidence/issue17/SLICE8-REPAIR-1.md                |    10 +
+ evidence/issue17/SLICE8-REPAIR-2.md                |     4 +
+ evidence/issue17/SLICE8-REPAIR-3.md                |     8 +
+ evidence/issue17/SLICE9-ASSIGN-REVIEW-1.md         |    12 +
+ evidence/issue17/SLICE9-ASSIGN-REVIEW-2.md         |     4 +
+ evidence/issue17/SLICE9-ATTACHMENT-CHECKPOINT.md   |    14 +
+ evidence/issue17/SLICE9-HUMAN-CHECKPOINT.md        |    45 +
+ evidence/issue17/SLICE9-IMPLEMENT-1.md             |    12 +
+ evidence/issue17/SLICE9-PR-BODY.md                 |    22 +
+ evidence/issue17/SLICE9-REPAIR-1.md                |     9 +
+ .../issue17/SLICE9-reviewed-increment-evidence.zip |   Bin 0 -> 78409 bytes
+ evidence/issue17/ci-watch-head2.log                |   200 +
+ evidence/issue17/ci-watch.log                      |   188 +
+ evidence/issue17/commander-check.stderr.log        |     0
+ evidence/issue17/corpus-union-audit.json           |     8 +
+ evidence/issue17/corpus-union-audit.py             |    26 +
+ evidence/issue17/final-ci.json                     |     1 +
+ evidence/issue17/finalize-slice9-receipt.py        |    61 +
+ evidence/issue17/implement-1.log                   |    25 +
+ evidence/issue17/implement-2.log                   |    19 +
+ evidence/issue17/inspect_overlay.py                |     8 +
+ evidence/issue17/repair-1.log                      |    20 +
+ evidence/issue17/review-1-worker.log               |    27 +
+ evidence/issue17/review-2-worker.log               |    21 +
+ evidence/issue17/review-2.json                     |    73 +
+ evidence/issue17/review-2.md                       |    63 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |  1094 +
+ .../105.bash-original.log                          |    41 +
+ .../110.bash.log                                   |    22 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ .../92.bash-original.log                           |    43 +
+ evidence/issue17/review1-assignment-original.md    |    10 +
+ evidence/issue17/review1-cli-tests.log             |    33 +
+ evidence/issue17/review1-coach.log                 |    31 +
+ evidence/issue17/review1-commander-check.json      |    92 +
+ evidence/issue17/review1-commander-check.stderr    |     0
+ evidence/issue17/review1-commander-check.stdout    |    92 +
+ evidence/issue17/review1-core-tests.log            |    74 +
+ evidence/issue17/review1-default-names.json        |    62 +
+ evidence/issue17/review1-default-names.log         |     3 +
+ evidence/issue17/review1-import-tests.log          |    18 +
+ evidence/issue17/review1-jasmine-in-library.txt    |     2 +
+ evidence/issue17/review1-missing-deck.log          |     1 +
+ evidence/issue17/review1-planned-zada.stderr       |     0
+ evidence/issue17/review1-planned-zada.stdout       |   382 +
+ evidence/issue17/review1-refusal.log               |     1 +
+ evidence/issue17/review1-replay.log                |     2 +
+ evidence/issue17/review1-save-replay.log           |     5 +
+ evidence/issue17/review1-save.json                 | 55573 +++++++++++++++++
+ evidence/issue17/review1-save.log                  |     3 +
+ evidence/issue17/review1-selfplay.json             |   137 +
+ evidence/issue17/review1-selfplay.replay.json      | 16160 +++++
+ evidence/issue17/review1-selfplay.verbose.log      |  6065 ++
+ evidence/issue17/review2-cli-tests.log             |    34 +
+ evidence/issue17/review2-default-names.json        |    62 +
+ evidence/issue17/review2-default-names.log         |     3 +
+ evidence/issue17/review2-replay-prior.log          |     2 +
+ evidence/issue17/review2-replay-tracked.log        |     2 +
+ evidence/issue17/review224-probe/Cargo.lock        |   218 +
+ evidence/issue17/review224-probe/Cargo.toml        |     7 +
+ evidence/issue17/review224-probe/output-green.log  |    37 +
+ .../review224-probe/output-merged-green.log        |    39 +
+ evidence/issue17/review224-probe/output.log        |    49 +
+ evidence/issue17/review224-probe/src/lib.rs        |    55 +
+ evidence/issue17/review227-audit.py                |    20 +
+ evidence/issue17/review227-delta.json              |    37 +
+ evidence/issue17/review227-delta.md                |    38 +
+ evidence/issue17/review227-engine-integration.diff |   824 +
+ evidence/issue17/review227-focused.log             |    58 +
+ evidence/issue17/review227-journey.json            |    95 +
+ evidence/issue17/review227-journey.log             |     4 +
+ evidence/issue17/review227-journey.replay.json     | 19290 ++++++
+ evidence/issue17/review227-probe.log               |    37 +
+ evidence/issue17/review227-worker.log              |    14 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  2276 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../211.bash-original.log                          |   120 +
+ .../230.bash-original.log                          |   114 +
+ .../232.bash-original.log                          |    65 +
+ .../24.bash.log                                    |    80 +
+ .../245.bash-original.log                          |    41 +
+ .../246.bash.log                                   |   123 +
+ .../247.bash-original.log                          |   122 +
+ .../248.bash.log                                   |    65 +
+ .../255.bash-original.log                          |   141 +
+ .../257.bash-original.log                          |    59 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice11/PR-BODY.md                |    80 +
+ evidence/issue17/slice11/exact-head-ci.json        |     1 +
+ evidence/issue17/slice12/WRITER-HANDOFF.md         |   117 +
+ evidence/issue17/slice12/corpus-audit.py           |    18 +
+ evidence/issue17/slice12/corpus-state.json         |    51 +
+ evidence/issue17/slice12/demo-cli-replay.log       |     2 +
+ evidence/issue17/slice12/demo-journey.json         |    36 +
+ evidence/issue17/slice12/demo-journey.log          |   138 +
+ evidence/issue17/slice12/demo-replay.json          | 11603 ++++
+ evidence/issue17/slice12/game.json                 |    95 +
+ evidence/issue17/slice12/game.log                  |  7055 +++
+ evidence/issue17/slice12/game.replay.json          | 12227 ++++
+ evidence/issue17/slice12/gates.log                 |     1 +
+ evidence/issue17/slice12/journey-driver/Cargo.lock |  1285 +
+ evidence/issue17/slice12/journey-driver/Cargo.toml |    11 +
+ .../issue17/slice12/journey-driver/src/main.rs     |   165 +
+ evidence/issue17/slice12/native-source-check.json  |    41 +
+ evidence/issue17/slice12/replay.log                |     3 +
+ evidence/issue17/slice2-approval-receipt.json      |    14 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   283 +
+ .../42.bash.log                                    |    19 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |   787 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../18.bash-original.log                           |   203 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice2-ci-initial.json            |     1 +
+ evidence/issue17/slice2-ci-watch-final.log         |   164 +
+ evidence/issue17/slice2-final-ci-check-runs.json   |     1 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   460 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  1236 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice2-final-pr.json              |     1 +
+ evidence/issue17/slice2-gates.log                  |     0
+ evidence/issue17/slice2-history-readback.json      |    20 +
+ evidence/issue17/slice2-implement-1.log            |     3 +
+ evidence/issue17/slice2-implement-1b.log           |    24 +
+ evidence/issue17/slice2-implement-2.log            |    24 +
+ evidence/issue17/slice2-implement-3.log            |    33 +
+ evidence/issue17/slice2-input-list-hashes.json     |    38 +
+ evidence/issue17/slice2-kanban-doc.html            |   747 +
+ evidence/issue17/slice2-krenko-game.json           |    95 +
+ evidence/issue17/slice2-krenko-game.log            |  5934 ++
+ evidence/issue17/slice2-krenko-game.replay.json    | 12171 ++++
+ evidence/issue17/slice2-krenko-save.json           | 53378 ++++++++++++++++
+ evidence/issue17/slice2-native-talrand-replay.log  |     8 +
+ evidence/issue17/slice2-native-talrand-save.json   | 40692 ++++++++++++
+ evidence/issue17/slice2-native-verification.json   |    80 +
+ .../issue17/slice2-native-verification.stdout.json |    80 +
+ evidence/issue17/slice2-native-verify.py           |    54 +
+ evidence/issue17/slice2-pr-after.json              |     1 +
+ evidence/issue17/slice2-pr-before.json             |     1 +
+ evidence/issue17/slice2-pr-receipt-payload.json    |     1 +
+ evidence/issue17/slice2-pr-receipt-post.json       |     1 +
+ evidence/issue17/slice2-pr-receipt-readback.json   |     1 +
+ evidence/issue17/slice2-pr-receipt.md              |    94 +
+ evidence/issue17/slice2-repair-1.log               |    24 +
+ evidence/issue17/slice2-repairs-gates.log          |     1 +
+ evidence/issue17/slice2-repairs-jasmine-replay.log |     2 +
+ evidence/issue17/slice2-repairs-krenko-game.log    |  6043 ++
+ evidence/issue17/slice2-repairs-krenko-save.json   | 54032 ++++++++++++++++
+ evidence/issue17/slice2-repairs-replay.log         |     3 +
+ evidence/issue17/slice2-repairs-save-replay.log    |     5 +
+ evidence/issue17/slice2-replay.log                 |     3 +
+ evidence/issue17/slice2-required-checks.json       |     1 +
+ evidence/issue17/slice2-review-1-worker.log        |    21 +
+ evidence/issue17/slice2-review-2-worker.log        |    23 +
+ evidence/issue17/slice2-review-2.json              |    84 +
+ evidence/issue17/slice2-review-2.md                |    69 +
+ evidence/issue17/slice2-review-core.log            |   115 +
+ evidence/issue17/slice2-review-import.log          |    19 +
+ evidence/issue17/slice2-review-krenko-replay.log   |     2 +
+ .../issue17/slice2-review-krenko-save-replay.log   |     5 +
+ evidence/issue17/slice2-review-krenko-save.json    | 43483 +++++++++++++
+ evidence/issue17/slice2-review-krenko-save.log     |     3 +
+ evidence/issue17/slice2-review-krenko.json         |    95 +
+ evidence/issue17/slice2-review-krenko.log          |  4914 ++
+ evidence/issue17/slice2-review-krenko.replay.json  | 10327 +++
+ .../issue17/slice2-review-old-jasmine-replay.log   |     2 +
+ evidence/issue17/slice2-review-talrand.json        |   111 +
+ evidence/issue17/slice2-review-talrand.log         |  7255 +++
+ evidence/issue17/slice2-review-talrand.replay.json | 18896 ++++++
+ evidence/issue17/slice2-review2-cli.log            |    37 +
+ evidence/issue17/slice2-review2-core.log           |    54 +
+ evidence/issue17/slice2-review2-krenko-replay.log  |     2 +
+ evidence/issue17/slice2-review2-talrand-replay.log |     2 +
+ evidence/issue17/slice2-rules-source.txt           |  9372 +++
+ evidence/issue17/slice2-save-replay.log            |     5 +
+ evidence/issue17/slice2-talrand-game.log           |  4762 ++
+ evidence/issue17/slice2-talrand-jasmine-replay.log |     2 +
+ evidence/issue17/slice2-talrand-replay.log         |     3 +
+ evidence/issue17/slice2-talrand-save-replay.log    |     5 +
+ evidence/issue17/slice2-talrand-save.json          | 40692 ++++++++++++
+ evidence/issue17/slice3-approval-receipt.json      |    68 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   460 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  1236 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice3-ci-watch.log               |   284 +
+ evidence/issue17/slice3-cross-focused.log          |    40 +
+ evidence/issue17/slice3-cross-game.json            |    78 +
+ evidence/issue17/slice3-cross-game.log             |  2823 +
+ evidence/issue17/slice3-cross-game.replay.json     |  7241 +++
+ evidence/issue17/slice3-cross-gates.log            |     1 +
+ evidence/issue17/slice3-cross-repair-focused.log   |    40 +
+ evidence/issue17/slice3-cross-repair-gates.log     |     5 +
+ evidence/issue17/slice3-cross-repair-replay.log    |     2 +
+ .../issue17/slice3-cross-repair-tatyova-replay.log |     2 +
+ evidence/issue17/slice3-cross-replay.log           |     3 +
+ evidence/issue17/slice3-cross-save-replay.log      |     5 +
+ evidence/issue17/slice3-cross-save.json            | 24790 ++++++++
+ evidence/issue17/slice3-cross-tatyova-replay.log   |     2 +
+ evidence/issue17/slice3-exact-head-ci-compact.json |    68 +
+ evidence/issue17/slice3-final-ci-check-runs.json   |     1 +
+ evidence/issue17/slice3-final-ci-watch-2.log       |   248 +
+ evidence/issue17/slice3-final-ci-watch.log         |     1 +
+ evidence/issue17/slice3-focused.log                |    50 +
+ evidence/issue17/slice3-gates.log                  |     3 +
+ evidence/issue17/slice3-history-readback.json      |    14 +
+ evidence/issue17/slice3-history-readback.py        |    13 +
+ evidence/issue17/slice3-implement-1.log            |    21 +
+ evidence/issue17/slice3-implement-2.log            |    22 +
+ evidence/issue17/slice3-implement-3.log            |    33 +
+ evidence/issue17/slice3-pr-published.json          |     1 +
+ evidence/issue17/slice3-repair-1.log               |    20 +
+ evidence/issue17/slice3-repair-2.log               |    13 +
+ evidence/issue17/slice3-repair-focused.log         |    50 +
+ evidence/issue17/slice3-repair-gates.log           |     5 +
+ evidence/issue17/slice3-repair-replay.log          |     2 +
+ evidence/issue17/slice3-replay.log                 |     3 +
+ .../issue17/slice3-required-checks-progress.json   |     0
+ evidence/issue17/slice3-required-checks.json       |     1 +
+ evidence/issue17/slice3-review-1-worker.log        |    20 +
+ evidence/issue17/slice3-review-1.json              |    71 +
+ evidence/issue17/slice3-review-1.md                |    64 +
+ evidence/issue17/slice3-review-2-worker.log        |    24 +
+ evidence/issue17/slice3-review-2.json              |    77 +
+ evidence/issue17/slice3-review-2.md                |    67 +
+ evidence/issue17/slice3-review-3-worker.log        |    16 +
+ evidence/issue17/slice3-review-3.json              |    49 +
+ evidence/issue17/slice3-review-3.md                |    48 +
+ evidence/issue17/slice3-review-cli.log             |    38 +
+ evidence/issue17/slice3-review-core.log            |   100 +
+ evidence/issue17/slice3-review-import.log          |     8 +
+ evidence/issue17/slice3-review-tatyova-replay.log  |     2 +
+ evidence/issue17/slice3-review-tatyova.json        |   152 +
+ evidence/issue17/slice3-review-tatyova.log         |  7553 +++
+ evidence/issue17/slice3-review-tatyova.replay.json | 19366 ++++++
+ evidence/issue17/slice3-review2-core.log           |   111 +
+ evidence/issue17/slice3-review2-cross-replay.log   |     2 +
+ evidence/issue17/slice3-review2-cross.json         |    78 +
+ evidence/issue17/slice3-review2-cross.log          |  2823 +
+ evidence/issue17/slice3-review2-cross.replay.json  |  7241 +++
+ evidence/issue17/slice3-save-replay.log            |     5 +
+ evidence/issue17/slice3-selfplay-help.txt          |    33 +
+ .../issue17/slice3-starter-corpus-manifest.json    |   495 +
+ evidence/issue17/slice3-tatyova-ci-check-runs.json |     1 +
+ evidence/issue17/slice3-tatyova-game.json          |   152 +
+ evidence/issue17/slice3-tatyova-game.log           |  7553 +++
+ evidence/issue17/slice3-tatyova-game.replay.json   | 19366 ++++++
+ evidence/issue17/slice3-tatyova-save.json          | 62414 +++++++++++++++++++
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   644 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  1562 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice4-clippy.log                 |     1 +
+ evidence/issue17/slice4-focused.log                |    21 +
+ evidence/issue17/slice4-review-1-worker.log        |    24 +
+ evidence/issue17/slice4-review-2-worker.log        |    24 +
+ evidence/issue17/slice4-workspace.log              |  1003 +
+ evidence/issue17/slice4/slice4-review-2-clippy.log |     1 +
+ .../issue17/slice4/slice4-review-2-focused.log     |    21 +
+ .../slice4/slice4-review-2-journey1-replay.log     |     4 +
+ .../issue17/slice4/slice4-review-2-journey1.json   |    95 +
+ .../issue17/slice4/slice4-review-2-journey1.log    |  4218 ++
+ .../slice4/slice4-review-2-journey1.replay.json    | 10366 +++
+ .../slice4/slice4-review-2-journey2-replay.log     |     4 +
+ .../issue17/slice4/slice4-review-2-journey2.json   |    78 +
+ .../issue17/slice4/slice4-review-2-journey2.log    |  3250 +
+ .../slice4/slice4-review-2-journey2.replay.json    |  7809 +++
+ evidence/issue17/slice4/slice4-review-2-probe.log  |  4974 ++
+ .../issue17/slice4/slice4-review-2-workspace.log   |  1005 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   789 +
+ .../105.bash-original.log                          |    41 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ .../92.bash-original.log                           |    43 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  1562 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice7-ci-watch.log               |    44 +
+ evidence/issue17/slice7-exact-head-ci.json         |     1 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   789 +
+ .../105.bash-original.log                          |    41 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ .../92.bash-original.log                           |    43 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  1838 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../211.bash-original.log                          |   120 +
+ .../230.bash-original.log                          |   114 +
+ .../232.bash-original.log                          |    65 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice7-gates.log                  |     5 +
+ evidence/issue17/slice7-implement-1.log            |     4 +
+ evidence/issue17/slice7-implement-1b.log           |    22 +
+ evidence/issue17/slice7-journey-replay.log         |     2 +
+ evidence/issue17/slice7-journey.json               |    95 +
+ evidence/issue17/slice7-journey.log                |     4 +
+ evidence/issue17/slice7-journey.replay.json        | 19290 ++++++
+ evidence/issue17/slice7-native-audit.py            |    31 +
+ evidence/issue17/slice7-native-build.log           |     7 +
+ evidence/issue17/slice7-native-clippy.log          |     6 +
+ evidence/issue17/slice7-native-corpus.json         |    50 +
+ evidence/issue17/slice7-native-journey-replay.log  |     2 +
+ evidence/issue17/slice7-native-journey.json        |    95 +
+ evidence/issue17/slice7-native-journey.log         |     4 +
+ evidence/issue17/slice7-native-journey.replay.json | 19290 ++++++
+ evidence/issue17/slice7-native-probe-green.log     |    39 +
+ evidence/issue17/slice7-native-tests.log           |  1188 +
+ evidence/issue17/slice7-package-evidence.py        |    26 +
+ evidence/issue17/slice7-pr-readback.json           |     1 +
+ evidence/issue17/slice7-read-command.py            |    10 +
+ evidence/issue17/slice7-repair-2.log               |    22 +
+ evidence/issue17/slice7-repair-gates.log           |     5 +
+ evidence/issue17/slice7-required-checks.json       |     1 +
+ evidence/issue17/slice7-review-packet.zip          |   Bin 0 -> 65327 bytes
+ evidence/issue17/slice7-selfplay-help.txt          |    33 +
+ evidence/issue17/slice7-token-ordering-red.log     |    12 +
+ evidence/issue17/slice7-trace-red.log              |    22 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   856 +
+ .../105.bash-original.log                          |    41 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ .../92.bash-original.log                           |    43 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  1838 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../211.bash-original.log                          |   120 +
+ .../230.bash-original.log                          |   114 +
+ .../232.bash-original.log                          |    65 +
+ .../24.bash.log                                    |    80 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice8-ci-watch.log               |   224 +
+ evidence/issue17/slice8-exact-head-ci.json         |  1395 +
+ evidence/issue17/slice8-implement-1.log            |    23 +
+ evidence/issue17/slice8-kanban-doc.html            |   747 +
+ evidence/issue17/slice8-native-source-check.json   |    50 +
+ evidence/issue17/slice8-repair-1.log               |    27 +
+ evidence/issue17/slice8-repair-2.log               |    20 +
+ evidence/issue17/slice8-repair-3.log               |    20 +
+ evidence/issue17/slice8-review-1-worker.log        |    25 +
+ evidence/issue17/slice8-review-1.json              |    68 +
+ evidence/issue17/slice8-review-1.md                |    54 +
+ evidence/issue17/slice8-review-2-focused.log       |    16 +
+ evidence/issue17/slice8-review-2-worker.log        |    16 +
+ evidence/issue17/slice8-review-2.json              |    52 +
+ evidence/issue17/slice8-review-2.md                |    36 +
+ evidence/issue17/slice8-review-focused.log         |   145 +
+ evidence/issue17/slice8-review-game-replay.log     |     2 +
+ evidence/issue17/slice8-review-game.json           |   132 +
+ evidence/issue17/slice8-review-game.log            |  6097 ++
+ evidence/issue17/slice8-review-game.replay.json    | 15362 +++++
+ evidence/issue17/slice8/retained-red-results.json  |    57 +
+ evidence/issue17/slice8/save.json                  | 50102 +++++++++++++++
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |   999 +
+ .../105.bash-original.log                          |    41 +
+ .../110.bash.log                                   |    22 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ .../92.bash-original.log                           |    43 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  2156 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../211.bash-original.log                          |   120 +
+ .../230.bash-original.log                          |   114 +
+ .../232.bash-original.log                          |    65 +
+ .../24.bash.log                                    |    80 +
+ .../245.bash-original.log                          |    41 +
+ .../246.bash.log                                   |   123 +
+ .../247.bash-original.log                          |   122 +
+ .../248.bash.log                                   |    65 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice9-ci-watch.log               |   583 +
+ evidence/issue17/slice9-code-head-ci.json          |  1395 +
+ evidence/issue17/slice9-evidence-archive.json      |     6 +
+ evidence/issue17/slice9-exact-head-ci.json         |  1395 +
+ ...067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl |  1094 +
+ .../105.bash-original.log                          |    41 +
+ .../110.bash.log                                   |    22 +
+ .../42.bash.log                                    |    19 +
+ .../78.bash-original.log                           |    26 +
+ .../92.bash-original.log                           |    43 +
+ ...971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl |  2276 +
+ .../1.bash-original.log                            |    29 +
+ .../110.bash.log                                   |     3 +
+ .../125.bash.log                                   |    12 +
+ .../128.bash.log                                   |    10 +
+ .../158.bash.log                                   |     1 +
+ .../160.bash-original.log                          |    51 +
+ .../163.bash-original.log                          |   209 +
+ .../178.bash-original.log                          |    61 +
+ .../18.bash-original.log                           |   203 +
+ .../188.bash-original.log                          |   118 +
+ .../195.bash.log                                   |     1 +
+ .../198.bash-original.log                          |   134 +
+ .../206.bash-original.log                          |    54 +
+ .../211.bash-original.log                          |   120 +
+ .../230.bash-original.log                          |   114 +
+ .../232.bash-original.log                          |    65 +
+ .../24.bash.log                                    |    80 +
+ .../245.bash-original.log                          |    41 +
+ .../246.bash.log                                   |   123 +
+ .../247.bash-original.log                          |   122 +
+ .../248.bash.log                                   |    65 +
+ .../255.bash-original.log                          |   141 +
+ .../257.bash-original.log                          |    59 +
+ .../48.bash.log                                    |     2 +
+ evidence/issue17/slice9-implement-1.log            |    29 +
+ evidence/issue17/slice9-pr-before-body.json        |     8 +
+ evidence/issue17/slice9-pr-readback.json           |     7 +
+ evidence/issue17/slice9-publication-receipt.json   |    24 +
+ evidence/issue17/slice9-repair-1.log               |    24 +
+ evidence/issue17/slice9-required-checks.json       |    42 +
+ evidence/issue17/slice9-review-1-worker.log        |    21 +
+ evidence/issue17/slice9-review-2-worker.log        |    16 +
+ evidence/issue17/slice9-review-2.json              |    46 +
+ evidence/issue17/slice9-review-2.md                |    32 +
+ evidence/issue17/slice9-review-game-replay.log     |     2 +
+ evidence/issue17/slice9-review-game.json           |    95 +
+ evidence/issue17/slice9-review-game.log            |  4388 ++
+ evidence/issue17/slice9-review-game.replay.json    |  8919 +++
+ evidence/issue17/slice9-review-slice8-replay.log   |     2 +
+ evidence/issue17/slice9/save.json                  | 38750 ++++++++++++
+ evidence/issue17/verify-checkpoint.py              |    28 +
+ fixtures/starter-corpus/slice12-sourced.json       |    65 +
+ 577 files changed, 853371 insertions(+), 27 deletions(-)
+M	HANDOFF.md
+M	README.md
+M	crates/core/src/ability.rs
+M	crates/core/src/card.rs
+M	crates/core/src/catalog.rs
+M	crates/core/src/engine.rs
+M	crates/core/src/tokens.rs
+M	crates/core/tests/card_printings.rs
+M	crates/core/tests/catalog_pool.rs
+M	crates/core/tests/issue13_commander_combat.rs
+A	crates/core/tests/issue17_slice12.rs
+A	decks/package-slice12.txt
+M	decks/starter-corpus/manifest.json
+M	docs/issue17-starter-corpus.md
+A	evidence/issue17/ASSIGN-REVIEW-2.md
+A	evidence/issue17/ASSIGN-REVIEW227-DELTA.md
+A	evidence/issue17/HUMAN-CHECKPOINT.md
+A	evidence/issue17/IMPLEMENT-1.md
+A	evidence/issue17/IMPLEMENT-2.md
+A	evidence/issue17/PR-BODY.md
+A	evidence/issue17/REPAIR-1.md
+A	evidence/issue17/SLICE11-HUMAN-CHECKPOINT.md
+A	evidence/issue17/SLICE2-ASSIGN-REVIEW-1.md
+A	evidence/issue17/SLICE2-ASSIGN-REVIEW-2.md
+A	evidence/issue17/SLICE2-HUMAN-CHECKPOINT.md
+A	evidence/issue17/SLICE2-IMPLEMENT-1.md
+A	evidence/issue17/SLICE2-IMPLEMENT-2.md
+A	evidence/issue17/SLICE2-IMPLEMENT-3.md
+A	evidence/issue17/SLICE2-PR-BODY.md
+A	evidence/issue17/SLICE2-REPAIR-1.md
+A	evidence/issue17/SLICE3-ASSIGN-REVIEW-1.md
+A	evidence/issue17/SLICE3-ASSIGN-REVIEW-2.md
+A	evidence/issue17/SLICE3-ASSIGN-REVIEW-3.md
+A	evidence/issue17/SLICE3-HUMAN-CHECKPOINT.md
+A	evidence/issue17/SLICE3-IMPLEMENT-1.md
+A	evidence/issue17/SLICE3-IMPLEMENT-2.md
+A	evidence/issue17/SLICE3-IMPLEMENT-3.md
+A	evidence/issue17/SLICE3-REPAIR-1.md
+A	evidence/issue17/SLICE3-REPAIR-2.md
+A	evidence/issue17/SLICE4-ASSIGN-REVIEW-1.md
+A	evidence/issue17/SLICE7-HUMAN-CHECKPOINT.md
+A	evidence/issue17/SLICE7-IMPLEMENT-1.md
+A	evidence/issue17/SLICE7-IMPLEMENT-HANDOFF.md
+A	evidence/issue17/SLICE7-PR-BODY.md
+A	evidence/issue17/SLICE7-REPAIR-2.md
+A	evidence/issue17/SLICE8-ASSIGN-REVIEW-1.md
+A	evidence/issue17/SLICE8-ASSIGN-REVIEW-2.md
+A	evidence/issue17/SLICE8-EXTRA-BLOCKER.md
+A	evidence/issue17/SLICE8-IMPLEMENT-1.md
+A	evidence/issue17/SLICE8-REPAIR-1.md
+A	evidence/issue17/SLICE8-REPAIR-2.md
+A	evidence/issue17/SLICE8-REPAIR-3.md
+A	evidence/issue17/SLICE9-ASSIGN-REVIEW-1.md
+A	evidence/issue17/SLICE9-ASSIGN-REVIEW-2.md
+A	evidence/issue17/SLICE9-ATTACHMENT-CHECKPOINT.md
+A	evidence/issue17/SLICE9-HUMAN-CHECKPOINT.md
+A	evidence/issue17/SLICE9-IMPLEMENT-1.md
+A	evidence/issue17/SLICE9-PR-BODY.md
+A	evidence/issue17/SLICE9-REPAIR-1.md
+A	evidence/issue17/SLICE9-reviewed-increment-evidence.zip
+A	evidence/issue17/ci-watch-head2.log
+A	evidence/issue17/ci-watch.log
+A	evidence/issue17/commander-check.stderr.log
+A	evidence/issue17/corpus-union-audit.json
+A	evidence/issue17/corpus-union-audit.py
+A	evidence/issue17/final-ci.json
+A	evidence/issue17/finalize-slice9-receipt.py
+A	evidence/issue17/implement-1.log
+A	evidence/issue17/implement-2.log
+A	evidence/issue17/inspect_overlay.py
+A	evidence/issue17/repair-1.log
+A	evidence/issue17/review-1-worker.log
+A	evidence/issue17/review-2-worker.log
+A	evidence/issue17/review-2.json
+A	evidence/issue17/review-2.md
+A	evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/105.bash-original.log
+A	evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/110.bash.log
+A	evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/92.bash-original.log
+A	evidence/issue17/review1-assignment-original.md
+A	evidence/issue17/review1-cli-tests.log
+A	evidence/issue17/review1-coach.log
+A	evidence/issue17/review1-commander-check.json
+A	evidence/issue17/review1-commander-check.stderr
+A	evidence/issue17/review1-commander-check.stdout
+A	evidence/issue17/review1-core-tests.log
+A	evidence/issue17/review1-default-names.json
+A	evidence/issue17/review1-default-names.log
+A	evidence/issue17/review1-import-tests.log
+A	evidence/issue17/review1-jasmine-in-library.txt
+A	evidence/issue17/review1-missing-deck.log
+A	evidence/issue17/review1-planned-zada.stderr
+A	evidence/issue17/review1-planned-zada.stdout
+A	evidence/issue17/review1-refusal.log
+A	evidence/issue17/review1-replay.log
+A	evidence/issue17/review1-save-replay.log
+A	evidence/issue17/review1-save.json
+A	evidence/issue17/review1-save.log
+A	evidence/issue17/review1-selfplay.json
+A	evidence/issue17/review1-selfplay.replay.json
+A	evidence/issue17/review1-selfplay.verbose.log
+A	evidence/issue17/review2-cli-tests.log
+A	evidence/issue17/review2-default-names.json
+A	evidence/issue17/review2-default-names.log
+A	evidence/issue17/review2-replay-prior.log
+A	evidence/issue17/review2-replay-tracked.log
+A	evidence/issue17/review224-probe/Cargo.lock
+A	evidence/issue17/review224-probe/Cargo.toml
+A	evidence/issue17/review224-probe/output-green.log
+A	evidence/issue17/review224-probe/output-merged-green.log
+A	evidence/issue17/review224-probe/output.log
+A	evidence/issue17/review224-probe/src/lib.rs
+A	evidence/issue17/review227-audit.py
+A	evidence/issue17/review227-delta.json
+A	evidence/issue17/review227-delta.md
+A	evidence/issue17/review227-engine-integration.diff
+A	evidence/issue17/review227-focused.log
+A	evidence/issue17/review227-journey.json
+A	evidence/issue17/review227-journey.log
+A	evidence/issue17/review227-journey.replay.json
+A	evidence/issue17/review227-probe.log
+A	evidence/issue17/review227-worker.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/211.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/230.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/232.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/245.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/246.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/247.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/248.bash.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/255.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/257.bash-original.log
+A	evidence/issue17/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice11/PR-BODY.md
+A	evidence/issue17/slice11/exact-head-ci.json
+A	evidence/issue17/slice12/WRITER-HANDOFF.md
+A	evidence/issue17/slice12/corpus-audit.py
+A	evidence/issue17/slice12/corpus-state.json
+A	evidence/issue17/slice12/demo-cli-replay.log
+A	evidence/issue17/slice12/demo-journey.json
+A	evidence/issue17/slice12/demo-journey.log
+A	evidence/issue17/slice12/demo-replay.json
+A	evidence/issue17/slice12/game.json
+A	evidence/issue17/slice12/game.log
+A	evidence/issue17/slice12/game.replay.json
+A	evidence/issue17/slice12/gates.log
+A	evidence/issue17/slice12/journey-driver/Cargo.lock
+A	evidence/issue17/slice12/journey-driver/Cargo.toml
+A	evidence/issue17/slice12/journey-driver/src/main.rs
+A	evidence/issue17/slice12/native-source-check.json
+A	evidence/issue17/slice12/replay.log
+A	evidence/issue17/slice2-approval-receipt.json
+A	evidence/issue17/slice2-backup-run202/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice2-backup-run202/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice2-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice2-ci-initial.json
+A	evidence/issue17/slice2-ci-watch-final.log
+A	evidence/issue17/slice2-final-ci-check-runs.json
+A	evidence/issue17/slice2-final-history-backup-run202/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice2-final-history-backup-run202/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice2-final-history-backup-run202/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice2-final-pr.json
+A	evidence/issue17/slice2-gates.log
+A	evidence/issue17/slice2-history-readback.json
+A	evidence/issue17/slice2-implement-1.log
+A	evidence/issue17/slice2-implement-1b.log
+A	evidence/issue17/slice2-implement-2.log
+A	evidence/issue17/slice2-implement-3.log
+A	evidence/issue17/slice2-input-list-hashes.json
+A	evidence/issue17/slice2-kanban-doc.html
+A	evidence/issue17/slice2-krenko-game.json
+A	evidence/issue17/slice2-krenko-game.log
+A	evidence/issue17/slice2-krenko-game.replay.json
+A	evidence/issue17/slice2-krenko-save.json
+A	evidence/issue17/slice2-native-talrand-replay.log
+A	evidence/issue17/slice2-native-talrand-save.json
+A	evidence/issue17/slice2-native-verification.json
+A	evidence/issue17/slice2-native-verification.stdout.json
+A	evidence/issue17/slice2-native-verify.py
+A	evidence/issue17/slice2-pr-after.json
+A	evidence/issue17/slice2-pr-before.json
+A	evidence/issue17/slice2-pr-receipt-payload.json
+A	evidence/issue17/slice2-pr-receipt-post.json
+A	evidence/issue17/slice2-pr-receipt-readback.json
+A	evidence/issue17/slice2-pr-receipt.md
+A	evidence/issue17/slice2-repair-1.log
+A	evidence/issue17/slice2-repairs-gates.log
+A	evidence/issue17/slice2-repairs-jasmine-replay.log
+A	evidence/issue17/slice2-repairs-krenko-game.log
+A	evidence/issue17/slice2-repairs-krenko-save.json
+A	evidence/issue17/slice2-repairs-replay.log
+A	evidence/issue17/slice2-repairs-save-replay.log
+A	evidence/issue17/slice2-replay.log
+A	evidence/issue17/slice2-required-checks.json
+A	evidence/issue17/slice2-review-1-worker.log
+A	evidence/issue17/slice2-review-2-worker.log
+A	evidence/issue17/slice2-review-2.json
+A	evidence/issue17/slice2-review-2.md
+A	evidence/issue17/slice2-review-core.log
+A	evidence/issue17/slice2-review-import.log
+A	evidence/issue17/slice2-review-krenko-replay.log
+A	evidence/issue17/slice2-review-krenko-save-replay.log
+A	evidence/issue17/slice2-review-krenko-save.json
+A	evidence/issue17/slice2-review-krenko-save.log
+A	evidence/issue17/slice2-review-krenko.json
+A	evidence/issue17/slice2-review-krenko.log
+A	evidence/issue17/slice2-review-krenko.replay.json
+A	evidence/issue17/slice2-review-old-jasmine-replay.log
+A	evidence/issue17/slice2-review-talrand.json
+A	evidence/issue17/slice2-review-talrand.log
+A	evidence/issue17/slice2-review-talrand.replay.json
+A	evidence/issue17/slice2-review2-cli.log
+A	evidence/issue17/slice2-review2-core.log
+A	evidence/issue17/slice2-review2-krenko-replay.log
+A	evidence/issue17/slice2-review2-talrand-replay.log
+A	evidence/issue17/slice2-rules-source.txt
+A	evidence/issue17/slice2-save-replay.log
+A	evidence/issue17/slice2-talrand-game.log
+A	evidence/issue17/slice2-talrand-jasmine-replay.log
+A	evidence/issue17/slice2-talrand-replay.log
+A	evidence/issue17/slice2-talrand-save-replay.log
+A	evidence/issue17/slice2-talrand-save.json
+A	evidence/issue17/slice3-approval-receipt.json
+A	evidence/issue17/slice3-backup-run209/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice3-backup-run209/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice3-backup-run209/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice3-backup-run209/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice3-ci-watch.log
+A	evidence/issue17/slice3-cross-focused.log
+A	evidence/issue17/slice3-cross-game.json
+A	evidence/issue17/slice3-cross-game.log
+A	evidence/issue17/slice3-cross-game.replay.json
+A	evidence/issue17/slice3-cross-gates.log
+A	evidence/issue17/slice3-cross-repair-focused.log
+A	evidence/issue17/slice3-cross-repair-gates.log
+A	evidence/issue17/slice3-cross-repair-replay.log
+A	evidence/issue17/slice3-cross-repair-tatyova-replay.log
+A	evidence/issue17/slice3-cross-replay.log
+A	evidence/issue17/slice3-cross-save-replay.log
+A	evidence/issue17/slice3-cross-save.json
+A	evidence/issue17/slice3-cross-tatyova-replay.log
+A	evidence/issue17/slice3-exact-head-ci-compact.json
+A	evidence/issue17/slice3-final-ci-check-runs.json
+A	evidence/issue17/slice3-final-ci-watch-2.log
+A	evidence/issue17/slice3-final-ci-watch.log
+A	evidence/issue17/slice3-focused.log
+A	evidence/issue17/slice3-gates.log
+A	evidence/issue17/slice3-history-readback.json
+A	evidence/issue17/slice3-history-readback.py
+A	evidence/issue17/slice3-implement-1.log
+A	evidence/issue17/slice3-implement-2.log
+A	evidence/issue17/slice3-implement-3.log
+A	evidence/issue17/slice3-pr-published.json
+A	evidence/issue17/slice3-repair-1.log
+A	evidence/issue17/slice3-repair-2.log
+A	evidence/issue17/slice3-repair-focused.log
+A	evidence/issue17/slice3-repair-gates.log
+A	evidence/issue17/slice3-repair-replay.log
+A	evidence/issue17/slice3-replay.log
+A	evidence/issue17/slice3-required-checks-progress.json
+A	evidence/issue17/slice3-required-checks.json
+A	evidence/issue17/slice3-review-1-worker.log
+A	evidence/issue17/slice3-review-1.json
+A	evidence/issue17/slice3-review-1.md
+A	evidence/issue17/slice3-review-2-worker.log
+A	evidence/issue17/slice3-review-2.json
+A	evidence/issue17/slice3-review-2.md
+A	evidence/issue17/slice3-review-3-worker.log
+A	evidence/issue17/slice3-review-3.json
+A	evidence/issue17/slice3-review-3.md
+A	evidence/issue17/slice3-review-cli.log
+A	evidence/issue17/slice3-review-core.log
+A	evidence/issue17/slice3-review-import.log
+A	evidence/issue17/slice3-review-tatyova-replay.log
+A	evidence/issue17/slice3-review-tatyova.json
+A	evidence/issue17/slice3-review-tatyova.log
+A	evidence/issue17/slice3-review-tatyova.replay.json
+A	evidence/issue17/slice3-review2-core.log
+A	evidence/issue17/slice3-review2-cross-replay.log
+A	evidence/issue17/slice3-review2-cross.json
+A	evidence/issue17/slice3-review2-cross.log
+A	evidence/issue17/slice3-review2-cross.replay.json
+A	evidence/issue17/slice3-save-replay.log
+A	evidence/issue17/slice3-selfplay-help.txt
+A	evidence/issue17/slice3-starter-corpus-manifest.json
+A	evidence/issue17/slice3-tatyova-ci-check-runs.json
+A	evidence/issue17/slice3-tatyova-game.json
+A	evidence/issue17/slice3-tatyova-game.log
+A	evidence/issue17/slice3-tatyova-game.replay.json
+A	evidence/issue17/slice3-tatyova-save.json
+A	evidence/issue17/slice4-backup-run211/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice4-backup-run211/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice4-backup-run211/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice4-backup-run211/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice4-clippy.log
+A	evidence/issue17/slice4-focused.log
+A	evidence/issue17/slice4-review-1-worker.log
+A	evidence/issue17/slice4-review-2-worker.log
+A	evidence/issue17/slice4-workspace.log
+A	evidence/issue17/slice4/slice4-review-2-clippy.log
+A	evidence/issue17/slice4/slice4-review-2-focused.log
+A	evidence/issue17/slice4/slice4-review-2-journey1-replay.log
+A	evidence/issue17/slice4/slice4-review-2-journey1.json
+A	evidence/issue17/slice4/slice4-review-2-journey1.log
+A	evidence/issue17/slice4/slice4-review-2-journey1.replay.json
+A	evidence/issue17/slice4/slice4-review-2-journey2-replay.log
+A	evidence/issue17/slice4/slice4-review-2-journey2.json
+A	evidence/issue17/slice4/slice4-review-2-journey2.log
+A	evidence/issue17/slice4/slice4-review-2-journey2.replay.json
+A	evidence/issue17/slice4/slice4-review-2-probe.log
+A	evidence/issue17/slice4/slice4-review-2-workspace.log
+A	evidence/issue17/slice7-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice7-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/105.bash-original.log
+A	evidence/issue17/slice7-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice7-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice7-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/92.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice7-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice7-ci-watch.log
+A	evidence/issue17/slice7-exact-head-ci.json
+A	evidence/issue17/slice7-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice7-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/105.bash-original.log
+A	evidence/issue17/slice7-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice7-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice7-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/92.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/211.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/230.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/232.bash-original.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice7-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice7-gates.log
+A	evidence/issue17/slice7-implement-1.log
+A	evidence/issue17/slice7-implement-1b.log
+A	evidence/issue17/slice7-journey-replay.log
+A	evidence/issue17/slice7-journey.json
+A	evidence/issue17/slice7-journey.log
+A	evidence/issue17/slice7-journey.replay.json
+A	evidence/issue17/slice7-native-audit.py
+A	evidence/issue17/slice7-native-build.log
+A	evidence/issue17/slice7-native-clippy.log
+A	evidence/issue17/slice7-native-corpus.json
+A	evidence/issue17/slice7-native-journey-replay.log
+A	evidence/issue17/slice7-native-journey.json
+A	evidence/issue17/slice7-native-journey.log
+A	evidence/issue17/slice7-native-journey.replay.json
+A	evidence/issue17/slice7-native-probe-green.log
+A	evidence/issue17/slice7-native-tests.log
+A	evidence/issue17/slice7-package-evidence.py
+A	evidence/issue17/slice7-pr-readback.json
+A	evidence/issue17/slice7-read-command.py
+A	evidence/issue17/slice7-repair-2.log
+A	evidence/issue17/slice7-repair-gates.log
+A	evidence/issue17/slice7-required-checks.json
+A	evidence/issue17/slice7-review-packet.zip
+A	evidence/issue17/slice7-selfplay-help.txt
+A	evidence/issue17/slice7-token-ordering-red.log
+A	evidence/issue17/slice7-trace-red.log
+A	evidence/issue17/slice8-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice8-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/105.bash-original.log
+A	evidence/issue17/slice8-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice8-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice8-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/92.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/211.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/230.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/232.bash-original.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice8-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice8-ci-watch.log
+A	evidence/issue17/slice8-exact-head-ci.json
+A	evidence/issue17/slice8-implement-1.log
+A	evidence/issue17/slice8-kanban-doc.html
+A	evidence/issue17/slice8-native-source-check.json
+A	evidence/issue17/slice8-repair-1.log
+A	evidence/issue17/slice8-repair-2.log
+A	evidence/issue17/slice8-repair-3.log
+A	evidence/issue17/slice8-review-1-worker.log
+A	evidence/issue17/slice8-review-1.json
+A	evidence/issue17/slice8-review-1.md
+A	evidence/issue17/slice8-review-2-focused.log
+A	evidence/issue17/slice8-review-2-worker.log
+A	evidence/issue17/slice8-review-2.json
+A	evidence/issue17/slice8-review-2.md
+A	evidence/issue17/slice8-review-focused.log
+A	evidence/issue17/slice8-review-game-replay.log
+A	evidence/issue17/slice8-review-game.json
+A	evidence/issue17/slice8-review-game.log
+A	evidence/issue17/slice8-review-game.replay.json
+A	evidence/issue17/slice8/retained-red-results.json
+A	evidence/issue17/slice8/save.json
+A	evidence/issue17/slice9-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice9-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/105.bash-original.log
+A	evidence/issue17/slice9-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/110.bash.log
+A	evidence/issue17/slice9-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice9-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice9-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/92.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/211.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/230.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/232.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/245.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/246.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/247.bash-original.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/248.bash.log
+A	evidence/issue17/slice9-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice9-ci-watch.log
+A	evidence/issue17/slice9-code-head-ci.json
+A	evidence/issue17/slice9-evidence-archive.json
+A	evidence/issue17/slice9-exact-head-ci.json
+A	evidence/issue17/slice9-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d.jsonl
+A	evidence/issue17/slice9-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/105.bash-original.log
+A	evidence/issue17/slice9-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/110.bash.log
+A	evidence/issue17/slice9-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/42.bash.log
+A	evidence/issue17/slice9-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/78.bash-original.log
+A	evidence/issue17/slice9-final-backup/review-sessions/2026-10-25T08-39-41-067Z_01a17237-2d0b-7000-9ed9-5b89f398f17d/92.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469.jsonl
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/1.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/110.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/125.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/128.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/158.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/160.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/163.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/178.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/18.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/188.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/195.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/198.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/206.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/211.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/230.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/232.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/24.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/245.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/246.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/247.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/248.bash.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/255.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/257.bash-original.log
+A	evidence/issue17/slice9-final-backup/sessions/2026-10-25T07-56-17-971Z_01a1720f-74b3-7000-bb34-cf8988951469/48.bash.log
+A	evidence/issue17/slice9-implement-1.log
+A	evidence/issue17/slice9-pr-before-body.json
+A	evidence/issue17/slice9-pr-readback.json
+A	evidence/issue17/slice9-publication-receipt.json
+A	evidence/issue17/slice9-repair-1.log
+A	evidence/issue17/slice9-required-checks.json
+A	evidence/issue17/slice9-review-1-worker.log
+A	evidence/issue17/slice9-review-2-worker.log
+A	evidence/issue17/slice9-review-2.json
+A	evidence/issue17/slice9-review-2.md
+A	evidence/issue17/slice9-review-game-replay.log
+A	evidence/issue17/slice9-review-game.json
+A	evidence/issue17/slice9-review-game.log
+A	evidence/issue17/slice9-review-game.replay.json
+A	evidence/issue17/slice9-review-slice8-replay.log
+A	evidence/issue17/slice9/save.json
+A	evidence/issue17/verify-checkpoint.py
+A	fixtures/starter-corpus/slice12-sourced.json

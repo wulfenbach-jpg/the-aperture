@@ -1,0 +1,38 @@
+{
+  "casts": {
+    "Bear Cub": 10,
+    "Centaur Courser": 2,
+    "Druid's Familiar": 2,
+    "Forest Bear": 8,
+    "Grizzly Bears": 5,
+    "Ordinary Bear": 1,
+    "Rootwalla": 2,
+    "Runeclaw Bear": 3
+  },
+  "commanders": "Jasmine Boreal injected for all four seats by this demonstrator",
+  "deck": "decks/package-slice37.txt",
+  "digest": "c4c5985cd04875e804455b05a47a8d6f4e6c78228561b85b65e918cda80393bd",
+  "driver": "evidence-only masked cast/attack-preferring demonstrator; NOT product heuristic or strength evidence",
+  "druids_familiar_casts": 2,
+  "kind": "40-card package, not a desired starter",
+  "outcome": {
+    "Win": {
+      "reason": "opponents' life totals reached 0 or less (CR 704.5a)",
+      "winner": 3
+    }
+  },
+  "pair_invariant_checks": 574,
+  "pairings_created": 2,
+  "pairs_ended_in_game": 0,
+  "purpose": "slice 37: Druid's Familiar is cast and a real soulbond pairing is created and observed in a four-seat game (a pair ending is covered by the focused test, not by this game)",
+  "replay_digest_matches": true,
+  "replay_events": 4530,
+  "seats": 4,
+  "seed": 3737,
+  "snapshot_sha256": "874bbdff2c968e827f9a2937b0fb1fc6d4062e8e69cee5b16d1a67edec4e362f",
+  "snapshots_exact": true,
+  "starting_life": 40,
+  "status": "terminal",
+  "steps": 1758,
+  "turns": 42
+}

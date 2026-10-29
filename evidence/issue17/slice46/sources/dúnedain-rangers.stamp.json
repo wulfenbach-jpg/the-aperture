@@ -1,0 +1,17 @@
+{
+  "name": "Dúnedain Rangers",
+  "set": "LTR",
+  "collector_number": "159",
+  "mana_cost": "{3}{G}",
+  "type_line": "Creature — Human Ranger",
+  "power": "4",
+  "toughness": "4",
+  "oracle_text": "Landfall — Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
+  "printing_id": "630e1e36-2f5d-44d4-9ff2-19ae75295016",
+  "oracle_id": "7de2a364-4383-437a-b6d6-55e4721a0141",
+  "retrieved_utc": "2026-10-28T13:49:35.417772+00:00",
+  "request_url": "https://api.scryfall.com/cards/named?fuzzy=D%C3%BAnedain%20Rangers",
+  "request_kind": "named_fuzzy",
+  "sha256": "f51431a446d20980653e62716155378d579e16cad948afbd653d9a8ea2573db1",
+  "bytes": 5838
+}

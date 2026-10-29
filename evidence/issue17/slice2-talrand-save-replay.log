@@ -1,0 +1,5 @@
+save evidence/issue17/slice2-talrand-save.json — 4 seat(s): P0 'package-talrand-drakes' vs P1 'package-talrand-drakes' vs P2 'package-talrand-drakes' vs P3 'package-talrand-drakes'
+  stored digest c9fb97c6fc08 | recomputed c9fb97c6fc08 | matches
+  turn 39 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P0, P1, P2, P3 = deterministic baseline heuristic; autoplay off
+  replay of 1830 action(s) -> digest c9fb97c6fc08 | events 4740 | reproduces the save

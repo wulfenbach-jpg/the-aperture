@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::layer::SubtypeLine;
+
 const NO_EFFECTS: &[Effect] = &[];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -38,11 +40,24 @@ impl ManaColor {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum ManaChoice {
+    CommanderIdentity,
+    OpponentLandColors,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Kind {
     Land,
     Creature,
     Instant,
     Sorcery,
+    Artifact,
+    /// CR 303: an enchantment permanent. Slice 15 adds the first two pool
+    /// cards of this kind (Ayula's Influence, Bearscape); they behave as
+    /// ordinary noncreature permanents with activated abilities and are not
+    /// creatures, so nothing in combat or the layer system treats them
+    /// specially.
+    Enchantment,
 }
 
 impl Kind {
@@ -52,6 +67,8 @@ impl Kind {
             Kind::Creature => "Creature",
             Kind::Instant => "Instant",
             Kind::Sorcery => "Sorcery",
+            Kind::Artifact => "Artifact",
+            Kind::Enchantment => "Enchantment",
         }
     }
 }
@@ -62,8 +79,69 @@ pub enum TargetSpec {
     None,
     /// "any target": a player or a creature (CR 115.4 covers the wider set).
     AnyTarget,
+    /// CR 115.1 + 115.4: a player ("target player"). Every live seat is a legal
+    /// target, including the ability's own controller (Hedron Crab, Blood
+    /// Artist).
+    Player,
     Creature,
+    /// A creature controlled by an opponent of the effect's controller.
+    OpponentCreature,
+    /// CR 115.1: "target creature you control" — every creature the ability's
+    /// controller controls, **including the ability's own source** when that
+    /// source is a creature at the time targets are chosen. The printed word
+    /// "another" is a different spec (`AnotherCreatureYouControl`), because it
+    /// removes exactly that object.
+    CreatureYouControl,
+    /// CR 115.1: "another target creature you control" — the same set minus the
+    /// ability's own source (Little Bear's enters trigger). Only a card that
+    /// prints "another" may use this spec; using it for plain "target creature
+    /// you control" would silently narrow the card's own text.
+    AnotherCreatureYouControl,
     Spell,
+    /// CR 115.1 + 205.2a: a spell on the stack that is not a creature spell
+    /// (Negate). A creature spell on the stack is not a legal target.
+    NoncreatureSpell,
+    /// CR 115.1: a Bear on the battlefield, either controller.
+    Bear,
+    /// A Bear controlled by the effect's controller, including the source.
+    BearYouControl,
+    /// A Human controlled by the effect's controller.
+    HumanYouControl,
+    /// CR 115.6 + 601.2c: "up to one target creature you control" — zero or one
+    /// legal creature. A trigger with this spec is put on the stack with no
+    /// target when its controller declines, so the choice surface must offer a
+    /// decline even when legal targets exist (Beorn the Fierce).
+    UpToOneCreatureYouControl,
+    /// CR 702.94a: soulbond's pairing choice — "another unpaired creature you
+    /// control". The set is every creature this player controls except the
+    /// ability's own source (soulbond pairs with *another* creature) and except
+    /// any creature that is already in a pair, because pairing needs an
+    /// unpaired creature on both sides.
+    UnpairedAnotherCreatureYouControl,
+    /// CR 115.1 + 110.1: "target creature card with no abilities from your
+    /// graveyard" (Ruxa, Patient Professor). The set is every **card** in the
+    /// ability controller's graveyard that is a creature card and has no
+    /// abilities, read as a card (CR 113.6: a card's abilities are its printed
+    /// ones plus anything granting it abilities in that zone; nothing in this
+    /// pool grants abilities to a graveyard card, so the printed list plus the
+    /// intrinsic mana ability is the whole answer). Targets are
+    /// [`crate::action::Target::Card`], never `Target::Permanent`.
+    NoAbilityCreatureCardInYourGraveyard,
+    /// CR 115.1 + 601.2c: "target artifacts and/or enchantments" — every
+    /// artifact and/or enchantment on the battlefield, either controller. A
+    /// single-target spec cannot express the printed aggregate restriction
+    /// ("total mana value X or less"), so the ability that prints it is answered
+    /// as a *set*: `Pending::TriggerTarget` carries the announced budget in
+    /// `aggregate` and the chosen set in `chosen`, and resolution destroys every
+    /// member still on the battlefield (Rampaging Yao Guai).
+    ArtifactOrEnchantment,
+    /// CR 115.1: "target artifact" — exactly one artifact on the battlefield,
+    /// either controller. Distinct from `ArtifactOrEnchantment`, which is the
+    /// printed aggregate "any number of target artifacts and/or enchantments":
+    /// an artifact-only card must never be able to name an enchantment, and an
+    /// aggregate card must never be answered with a single target (Goblin
+    /// Trashmaster).
+    Artifact,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -82,6 +160,12 @@ pub enum Effect {
     EachPlayerSacrifice,
     /// Return the target creature to its owner's hand.
     ReturnToHand,
+    /// CR 400.7 + 608.2c: return the target *card* from its owner's graveyard to
+    /// its owner's hand. The card is moved with the same zone-change path every
+    /// other move uses, so it never travels the draw path and never fires a draw
+    /// trigger (Ruxa, Patient Professor). A commander card is offered the CR
+    /// 903.9b command-zone replacement before the move.
+    ReturnGraveyardCardToHand,
     /// Put the target creature on top of its owner's library.
     PutOnTopOfLibrary,
     /// Exile the target creature, then its controller gains life equal to its
@@ -99,19 +183,364 @@ pub enum Effect {
     /// turn. A one-shot shield: once it has absorbed N damage it stops applying
     /// and is removed in cleanup (CR 514.2).
     PreventNextDamage(u32),
+    /// Create N 1/1 red Goblin creature tokens controlled by the source's
+    /// controller (CR 111.2, 608.2c). The token card is never importable.
+    CreateGoblinTokens(u8),
+    /// Create one 1/1 red Goblin creature token for each Goblin the source's
+    /// controller controls as this resolves (Krenko, Mob Boss).
+    CreateGoblinTokensForEachGoblin,
+    /// Create one 2/2 blue Drake creature token with flying (Talrand).
+    CreateDrakeToken,
+    /// "Deals N damage to that land's controller" (Zo-Zu): the affected player
+    /// was captured when the land-entry trigger was queued.
+    DamageAffectedPlayer(u8),
+    /// Lieutenant: create N 1/1 red Goblin tokens and grant each haste until
+    /// end of turn.
+    CreateHasteGoblinTokens(u8),
+    /// CR 701.54a: the Ring's attack trigger draws a card and then its
+    /// controller discards one. The discard is a distinct resumable pending
+    /// choice, never the cleanup-step discard.
+    DiscardOne,
+    /// CR 701.54a: the Ring's becomes-blocked trigger creates a delayed
+    /// EndCombat sacrifice of the captured blocker.
+    RingScheduleDelayedSacrifice,
+    /// CR 603.7: execute the delayed sacrifice captured on The Ring trigger.
+    RingDelayedSacrifice,
+    /// Deal N damage to each opponent of the ability's controller, excluding
+    /// the controller and eliminated seats (Guttersnipe).
+    DamageEachOpponent(u8),
+    /// CR 701.13a: the effect's controller mills N cards — the top N cards of
+    /// their library go to their graveyard (Stitcher's Supplier).
+    MillSelf(u8),
+    /// CR 701.13a: each opponent of the effect's controller mills N cards.
+    /// Eliminated seats are skipped, and the controller never mills.
+    MillEachOpponent(u8),
+    /// CR 106.4: add N mana of one colour to the effect controller's mana pool
+    /// (Pyretic Ritual, Seething Song). No permanent is tapped.
+    AddMana {
+        color: ManaColor,
+        amount: u8,
+    },
+    /// CR 701.13a: the *target player* mills N cards (Hedron Crab).
+    MillTargetPlayer(u8),
+    /// CR 118.2 + 119.3: the *target player* loses N life. This is life loss,
+    /// not damage: nothing is dealt, so damage prevention and damage triggers
+    /// never apply (Blood Artist).
+    LoseLife(i32),
+    /// CR 118.2 + 119.3: each opponent of the effect's controller loses N life
+    /// (Zulaport Cutthroat). Loss of life is not damage.
+    LoseLifeEachOpponent(i32),
+    /// Damage to the spell's target creature equal to the number of Goblins its
+    /// controller controls (Volley Veteran).
+    DamageTargetCreatureForEachGoblin,
+    /// Damage to the spell's target player equal to the number of Goblins its
+    /// controller controls (Goblin War Strike).
+    DamageTargetPlayerForEachGoblin,
+    /// Untap every nonland permanent the effect's controller controls
+    /// (Dramatic Reversal).
+    UntapAllNonlandsYouControl,
+    /// Add {R} for each Goblin on the battlefield (Brightstone Ritual).
+    AddManaForEachGoblin,
+    /// Add {R} for each tapped land an opponent controls (Mana Geyser).
+    AddManaForEachTappedOpponentLand,
+    /// Add {R}{R}, then {R} for each Rite of Flame card in all graveyards.
+    AddManaForRiteOfFlame,
+    /// Put one +1/+1 counter on the ability's source (landfall Sazh's Chocobo).
+    PutPlusOneCounterOnSource,
+    /// Create one 4/4 green Beast token (Rampaging Baloths).
+    CreateBeastToken,
+    /// Create one 1/1 black and green Pest token with its dies trigger.
+    CreatePestToken,
+    /// Create N 2/2 green Bear creature tokens (Ayula's Influence, Bearscape,
+    /// Mother Bear).
+    CreateBearTokens(u8),
+    /// "Each player who controls an artifact or enchantment creates a 2/2 green
+    /// Bear creature token" (Fade from History). The token's controller is the
+    /// seat that controlled the permanent, not the spell's controller.
+    BearTokenForEachPlayerWithPermanent,
+    /// "Then destroy all artifacts and enchantments" (Fade from History). One
+    /// simultaneous event (CR 704.3): every death is recorded before the
+    /// dies-watcher triggers are dispatched for the whole batch.
+    DestroyAllArtifactsAndEnchantments,
+    /// "Untap another target creature you control. If that creature is a Bear,
+    /// put a +1/+1 counter on it" (Little Bear). The counter is conditional on
+    /// the target's own *effective* subtype — `Game::has_subtype`, so a layer 4
+    /// type change counts — never on the source's subtype.
+    UntapTargetAndCounterIfBear,
+    /// Each live player draws N cards in APNAP order from the active player.
+    EachPlayerDraws(u8),
+    /// Put N +1/+1 counters on the target creature.
+    PutPlusOneCountersOnTarget(u32),
+    /// Create one 2/2 green Bear token per nontoken creature its controller
+    /// owned that was put into their graveyard from the battlefield this turn.
+    CreateBearTokensForEachDeathThisTurn,
+    /// CR 111.10 + 205.3: create one Food token, the first *artifact* token in
+    /// the pool (Spider-Ham, Peter Porker). Its characteristics and its
+    /// "{2}, {T}, Sacrifice this token: You gain 3 life" ability live in the
+    /// token card table, so the token is a real rules object with a real
+    /// activated ability and never an importable card.
+    CreateFoodToken,
+    /// CR 701.16a: create one Clue token, the pool's second *artifact* token and
+    /// its first token whose activated ability draws (Thijarian Witness,
+    /// "investigate"). Characteristics and the "{2}, Sacrifice this token: Draw
+    /// a card" ability live in the token card table, so the token is a real
+    /// rules object and never an importable card.
+    CreateClueToken,
+    /// "Exile it and investigate" (Thijarian Witness). The "it" is the creature
+    /// the trigger watched die (CR 603.6c, CR 700.4): the card is exiled from
+    /// its owner's graveyard where the trigger found it and the trigger's
+    /// controller then investigates. The two halves are one instruction pair in
+    /// printed order; a card that already left the graveyard is simply not
+    /// found, and the investigate still happens (CR 609.3 has no "if you do").
+    ExileDeadCreatureAndInvestigate,
+    /// "Look at the top eight cards of your library. You may put a creature card
+    /// from among them onto the battlefield tapped and attacking that player.
+    /// Put the rest on the bottom of your library in a random order" (Owlbear
+    /// Cub). CR 701.20a: looking at the top N is a private look, not a search, so
+    /// nothing is shuffled for it; the looked-at cards stay where they are until
+    /// the choice is answered, and only the *unchosen* looked-at cards go to the
+    /// bottom, in a random order among themselves (CR 701.20e) — the rest of the
+    /// library is never reordered. A creature put onto the battlefield attacking
+    /// never "attacked" (CR 508.1) and is therefore not part of the CR 506.5
+    /// declaration record.
+    LookAtTopPutCreatureAttacking,
+    /// CR 701.14a: two target creatures deal damage equal to their power to
+    /// each other simultaneously. Both must still satisfy the printed
+    /// Bear/opponent relation at resolution or no damage is dealt.
+    FightTargets,
+    /// "It doesn't untap during your next untap step" (Spectral Bears). The
+    /// source object is recorded in `GameState::skip_next_untap` and its
+    /// controller's next untap step leaves it tapped exactly once.
+    SkipNextUntapStep,
+    /// "Each player may reveal any number of creature cards from their hand.
+    /// Then each player creates a 2/2 green Bear creature token for each card
+    /// they revealed this way" (Kamahl's Summons). The choice is a per-seat
+    /// arbitrary hand subset answered in APNAP order from the active player
+    /// (CR 101.4, 608.2f); the tokens are created only after every live seat
+    /// has answered, and each seat's count is fixed by its own reveal.
+    EachPlayerMayRevealCreatureCardsForBears,
+    /// "{1}: The next time you would draw a card this turn, create a 2/2 green
+    /// Bear creature token instead" (Words of Wilding). CR 614.1a: a one-shot
+    /// replacement armed on the resolving ability's controller, held in
+    /// `GameState::draw_replacements` and consumed by the next draw that seat
+    /// would perform; cleanup clears an unspent one (CR 514.2). It is not bound
+    /// to the source's existence, so destroying the enchantment does not undo a
+    /// replacement that already resolved.
+    ReplaceNextDrawWithBearToken,
+    /// CR 702.94a: pair the ability's own source with the chosen unpaired
+    /// creature it names, the resolution half of soulbond's "you may pair this
+    /// creature with another unpaired creature when either enters the
+    /// battlefield". Pairing is a state of both permanents, not a continuous
+    /// effect, and it lasts only while one player controls both (Druid's
+    /// Familiar).
+    PairSourceWithChosenCreature,
+    /// Look at the top card without moving it. A creature/planeswalker card
+    /// gets a take-or-bottom choice; any other card goes to the bottom without
+    /// being revealed. Empty library is not a draw.
+    LookTopTakeOrBottom,
+    /// CR 701.19a: create a regeneration shield on the ability's source.
+    RegenerateSource,
+    /// "Put X +1/+1 counters on target creature you control, where X is that
+    /// spell's mana value" (Dancing from Dark to Dawn). The triggering creature
+    /// spell's mana value travels with the trigger (`TriggerRef` →
+    /// `StackItem::spell_mana_value`) so resolution reads the value the spell
+    /// had when it was cast, never the board's current state.
+    PutPlusOneCountersOnTargetForTriggerSpellManaValue,
+    /// "Each creature you control with power N or greater gets +P/+T and gains
+    /// trample until end of turn" (Goreclaw, Terror of Qal Sisma). Power is the
+    /// permanent's *current* power at resolution (CR 613.4c results included),
+    /// and the trample grant is a layer 6 continuous effect with the same
+    /// until-end-of-turn duration as the pump.
+    BoostAndTrampleEachCreatureYouControlWithPowerAtLeast {
+        minimum_power: i32,
+        power: i32,
+        toughness: i32,
+    },
+    /// Put a +1/+1 counter on and grant haste to the entered object captured
+    /// by the trigger (`it`, not a target).
+    PutCounterAndHasteOnEntered,
+    /// Set the target Human's base P/T to the ability source's effective P/T
+    /// captured at resolution (or its LKI if the source departed).
+    SetBasePowerToughnessFromSource,
+    /// CR 613.1d: the ability's own source becomes this subtype line until end
+    /// of turn, replacing its printed subtypes (Ursine Champion). A layer 4
+    /// continuous effect, so `Game::has_subtype` answers for it everywhere the
+    /// printed type line used to be read directly.
+    SetSourceCreatureSubtypes(SubtypeLine),
+    /// CR 613.1d: the ability's own source *gains* the creature card type and
+    /// this subtype line until end of turn, in addition to its printed types
+    /// (Stuffed Bear: "becomes a 4/4 green Bear artifact creature"). The
+    /// artifact type is untouched, and `Game::is_creature` answers for the
+    /// animation everywhere the printed card type used to be read directly.
+    AddSourceCreatureType(SubtypeLine),
+    /// CR 613.1e: the ability's own source becomes this colour until end of
+    /// turn (Stuffed Bear's "green"). A set, not an addition.
+    SetSourceColor(ManaColor),
+    /// CR 613.4b: set the ability's own source's base power and toughness until
+    /// end of turn (Stuffed Bear's 4/4). It is a *base*, so pumps and counters
+    /// sit on top of it in later layers.
+    SetSourceBasePowerToughness(i32, i32),
+    /// CR 613.1d: the ability's own source *gains* the creature card type and
+    /// this subtype line for as long as that source remains the same object on
+    /// the battlefield (Beorn's Hospitality: "This enchantment becomes a Bear
+    /// creature in addition to its other types" — the printed text says the
+    /// effect doesn't end, CR 611.2b). Same layer and same `has_subtype` /
+    /// `is_creature` answers as `AddSourceCreatureType`, but no cleanup expiry.
+    AddSourceCreatureTypeWhileOnBattlefield(SubtypeLine),
+    /// CR 613.4a: the ability's own source gains the characteristic-defining
+    /// ability "This creature's power and toughness are each equal to the
+    /// number of lands you control" for as long as it remains on the
+    /// battlefield. The value is read from the board on every layer pass, so
+    /// lands that enter later raise it without the ability resolving again.
+    SetSourcePowerToughnessEqualToLands,
+    /// CR 702.171a: creatures the source's controller controls currently gain trample.
+    GrantTrampleToControlledCreatures,
+    /// CR 702.171a: mark the source Mount saddled until end of turn.
+    SaddleSource,
+    /// CR 122.1b: put one trample counter on the target creature. A keyword
+    /// counter is a counter, not a continuous effect: it stays on the permanent
+    /// after cleanup and grants trample for as long as it is there (Beorn the
+    /// Fierce).
+    PutTrampleCounterOnTarget,
+    /// CR 613.1d: the target permanent *gains* this creature subtype line in
+    /// addition to its other types until end of turn (Beorn the Fierce's "it
+    /// becomes a Bear in addition to its other types"). A continuous effect on
+    /// the target, so `Game::has_subtype` answers for it everywhere.
+    AddTargetCreatureType(SubtypeLine),
+    /// "Then if you control N or more Bears, draw M cards" (Beorn the Fierce).
+    /// The Bear count is the *effective* subtype of the permanents the effect's
+    /// controller controls at resolution, so a Bear made a moment earlier in
+    /// the same resolution counts (CR 608.2c).
+    CreateEarthKingBearToken,
+    SearchBasicLandsUpToTriggerAmount,
+    /// CR 701.23b + 608.2c: return *every* land card from the effect
+    /// controller's graveyard to the battlefield tapped (Lumra, Bellow of the
+    /// Woods). One simultaneous zone change: each returned land enters through
+    /// the canonical entry path, so landfall watchers fire once per land.
+    ReturnLandCardsFromGraveyardTapped,
+    AttachSourceToTarget,
+    SearchSnowLandToHand,
+    ExileTargetPlayersGraveyardAndGainLife,
+    SearchAnyLandUpToTwo,
+    PutTwoCountersOnEachCreatureYouControl,
+    UrsineCombatTrigger,
+    RingTempts,
+    DrawIfControlsBears {
+        minimum: u8,
+        cards: u8,
+    },
+    /// CR 701.7a + 601.2c: destroy every artifact and/or enchantment named by
+    /// the ability's targets. The set was chosen against an aggregate mana-value
+    /// budget (Rampaging Yao Guai), so the effect destroys exactly the recorded
+    /// targets that are still artifacts/enchantments on resolution; a target
+    /// that left the battlefield does nothing (CR 608.2b).
+    DestroyTargetArtifactsAndEnchantments,
+    /// CR 701.7a: destroy the single artifact the ability targeted. Only
+    /// artifacts may be destroyed by it — an enchantment target is refused by
+    /// the target spec, never quietly accepted (Goblin Trashmaster's
+    /// "Sacrifice a Goblin: Destroy target artifact").
+    DestroyTargetArtifact,
+    /// CR 702.75a (hideaway): "look at the top N cards of your library, exile
+    /// one of them face down, then put the rest on the bottom of your library in
+    /// a random order." The exiled card is linked to the source permanent
+    /// (`Object::hideaway_source` on the exiled card), which is what "cards
+    /// exiled with it" means. The look is private (CR 701.20a) and the bottom
+    /// order is random among the looked-at cards only (CR 701.20e).
+    Hideaway(u8),
+    /// "Whenever this creature deals combat damage to a player, if there are
+    /// cards exiled with it, you may play one of them without paying its mana
+    /// cost." The choice is a resumable pending offer, one action per playable
+    /// linked card (plus decline); playing happens while the ability resolves,
+    /// per the printed ruling, so normal timing restrictions do not apply, a
+    /// land still needs an unused land play, and a printed {X} is 0.
+    PlayCardExiledWithSource,
+    /// CR 701.26a: untap the ability's own source ("Whenever a creature dies,
+    /// untap this creature" — Goblin Sharpshooter). Untapping is not an unlock:
+    /// nothing else about the permanent changes, and an already-untapped source
+    /// is simply already untapped.
+    UntapSource,
+    /// "Create a number of 1/1 red Goblin creature tokens equal to this
+    /// creature's power" (Krenko, Tin Street Kingpin). The power is read at the
+    /// moment this instruction resolves, so a +1/+1 counter placed earlier in
+    /// the same resolution is already counted (CR 608.2c, 613.4c).
+    CreateGoblinTokensEqualToSourcePower,
+    /// "Deals damage equal to the number of Goblins that entered the battlefield
+    /// under your control this turn to any target" (Hobgoblin Bandit Lord). The
+    /// count is this turn's entry history, captured per seat as permanents
+    /// arrived, and it is read when the ability resolves.
+    DamageTargetForGoblinsEnteredThisTurn,
+    /// CR 701.23: "you may search your library for a Goblin card, reveal that
+    /// card, put it into your hand, then shuffle" (Goblin Matron). A real search
+    /// of the whole library, answered as a resumable pending choice with one
+    /// action per Goblin card in the library plus a "finish searching" action
+    /// that finds nothing.
+    SearchGoblinCardToHand,
+    /// CR 701.23: "{3}, {T}: Search your library for a Goblin permanent card,
+    /// put it onto the battlefield, then shuffle" (Moggcatcher). The same
+    /// resumable search as [`Effect::SearchGoblinCardToHand`], but the found card
+    /// is put onto the battlefield instead of into hand, so it is not revealed
+    /// separately and it enters through the ordinary entry path (entry triggers
+    /// fire, CR 603.6a).
+    SearchGoblinPermanentToBattlefield,
+}
+
+const TITANIA_EXILE_GRAVE: &[Effect] = &[Effect::ExileTargetPlayersGraveyardAndGainLife];
+const TITANIA_SEARCH: &[Effect] = &[Effect::SearchAnyLandUpToTwo];
+const TITANIA_BEARS: &[Effect] = &[Effect::CreateBearTokens(2)];
+const TITANIA_COUNTERS: &[Effect] = &[Effect::PutTwoCountersOnEachCreatureYouControl];
+
+/// Public labels for the same printed modal indices used by the resolver.
+pub fn modal_mode_name(card: CardId, mode: u8) -> Option<&'static str> {
+    if card != CardId::TitaniasCommand {
+        return None;
+    }
+    [
+        "Exile target player's graveyard and gain life",
+        "Search for up to two land cards",
+        "Create two Bear tokens",
+        "Put two +1/+1 counters on each creature you control",
+    ]
+    .get(usize::from(mode))
+    .copied()
+}
+
+/// Printed modal spell modes, indexed by the mode action's u8.
+pub fn modal_spell_effects(card: CardId) -> Option<&'static [&'static [Effect]]> {
+    match card {
+        CardId::TitaniasCommand => Some(&[
+            TITANIA_EXILE_GRAVE,
+            TITANIA_SEARCH,
+            TITANIA_BEARS,
+            TITANIA_COUNTERS,
+        ]),
+        _ => None,
+    }
 }
 
 impl Effect {
     pub fn describe(self) -> String {
         match self {
             Effect::Draw(n) => format!("draw {n}"),
+            Effect::DiscardOne => "discard a card".to_string(),
+            Effect::RingScheduleDelayedSacrifice => {
+                "sacrifice the blocking creature at end of combat".to_string()
+            }
+            Effect::RingDelayedSacrifice => {
+                "sacrifice the captured blocking creature at end of combat".to_string()
+            }
             Effect::Scry(n) => format!("scry {n}"),
             Effect::Surveil(n) => format!("surveil {n}"),
             Effect::Damage(n) => format!("deal {n} damage to the target"),
+            Effect::DamageAffectedPlayer(n) => {
+                format!("deal {n} damage to the affected land's controller")
+            }
             Effect::CounterTargetSpell => "counter target spell".to_string(),
             Effect::Pump(p, t) => format!("target creature gets {p:+}/{t:+} until end of turn"),
             Effect::EachPlayerSacrifice => "each player sacrifices a permanent".to_string(),
             Effect::ReturnToHand => "return the target creature to its owner's hand".to_string(),
+            Effect::ReturnGraveyardCardToHand => {
+                "return the target creature card from your graveyard to your hand".to_string()
+            }
             Effect::PutOnTopOfLibrary => {
                 "put the target creature on top of its owner's library".to_string()
             }
@@ -128,6 +557,201 @@ impl Effect {
             }
             Effect::PreventNextDamage(n) => {
                 format!("prevent the next {n} damage that would be dealt to the target this turn")
+            }
+            Effect::CreateGoblinTokens(n) => format!("create {n} 1/1 red Goblin tokens"),
+            Effect::CreateHasteGoblinTokens(n) => {
+                format!("create {n} 1/1 red Goblin tokens with haste until end of turn")
+            }
+            Effect::CreateGoblinTokensForEachGoblin => {
+                "create a 1/1 red Goblin token for each Goblin you control".to_string()
+            }
+            Effect::CreateDrakeToken => "create a 2/2 blue Drake token with flying".to_string(),
+            Effect::DamageEachOpponent(n) => format!("deal {n} damage to each opponent"),
+            Effect::DamageTargetCreatureForEachGoblin => {
+                "deal damage to the target creature equal to Goblins you control".to_string()
+            }
+            Effect::DamageTargetPlayerForEachGoblin => {
+                "deal damage to the target player equal to Goblins you control".to_string()
+            }
+            Effect::UntapAllNonlandsYouControl => {
+                "untap all nonland permanents you control".to_string()
+            }
+            Effect::AddManaForEachGoblin => {
+                "add {R} for each Goblin on the battlefield".to_string()
+            }
+            Effect::AddManaForEachTappedOpponentLand => {
+                "add {R} for each tapped land an opponent controls".to_string()
+            }
+            Effect::AddManaForRiteOfFlame => {
+                "add {R}{R}, then {R} per graveyard Rite of Flame".to_string()
+            }
+            Effect::MillSelf(n) => format!("mill {n}"),
+            Effect::MillEachOpponent(n) => format!("each opponent mills {n}"),
+            Effect::AddMana { color, amount } => {
+                format!("add {amount} {} mana", color.name())
+            }
+            Effect::MillTargetPlayer(n) => format!("target player mills {n}"),
+            Effect::LoseLife(n) => format!("the target player loses {n} life"),
+            Effect::LoseLifeEachOpponent(n) => format!("each opponent loses {n} life"),
+            Effect::PutPlusOneCounterOnSource => "put a +1/+1 counter on this creature".to_string(),
+            Effect::CreateBeastToken => "create a 4/4 green Beast token".to_string(),
+            Effect::CreatePestToken => "create a 1/1 black and green Pest token".to_string(),
+            Effect::CreateBearTokens(n) => format!("create {n} 2/2 green Bear token(s)"),
+            Effect::CreateFoodToken => "create a Food token".to_string(),
+            Effect::CreateClueToken => "create a Clue token".to_string(),
+            Effect::ExileDeadCreatureAndInvestigate => {
+                "exile it and investigate".to_string()
+            }
+            Effect::LookAtTopPutCreatureAttacking => {
+                "look at the top eight cards, put a creature card from among them onto the \
+                 battlefield tapped and attacking, then put the rest on the bottom in a random \
+                 order"
+                    .to_string()
+            }
+            Effect::BearTokenForEachPlayerWithPermanent => {
+                "each player who controls an artifact or enchantment creates a 2/2 green Bear token"
+                    .to_string()
+            }
+            Effect::DestroyAllArtifactsAndEnchantments => {
+                "destroy all artifacts and enchantments".to_string()
+            }
+            Effect::DestroyTargetArtifactsAndEnchantments => {
+                "destroy the chosen artifacts and/or enchantments".to_string()
+            }
+            Effect::DestroyTargetArtifact => "destroy target artifact".to_string(),
+            Effect::Hideaway(n) => format!(
+                "hideaway {n}: look at the top {n}, exile one face down, put the rest on the bottom in a random order"
+            ),
+            Effect::PlayCardExiledWithSource => {
+                "you may play a card exiled with this creature without paying its mana cost"
+                    .to_string()
+            }
+            Effect::UntapSource => "untap this creature".to_string(),
+            Effect::CreateGoblinTokensEqualToSourcePower => {
+                "create a 1/1 red Goblin token for each point of this creature's power".to_string()
+            }
+            Effect::DamageTargetForGoblinsEnteredThisTurn => {
+                "deal damage to the target equal to the Goblins that entered under your control \
+                 this turn"
+                    .to_string()
+            }
+            Effect::SearchGoblinCardToHand => {
+                "search your library for a Goblin card, reveal it, put it into your hand, then \
+                 shuffle"
+                    .to_string()
+            }
+            Effect::SearchGoblinPermanentToBattlefield => {
+                "search your library for a Goblin permanent card, put it onto the battlefield, \
+                 then shuffle"
+                    .to_string()
+            }
+            Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
+            Effect::PutPlusOneCountersOnTarget(n) => {
+                format!("put {n} +1/+1 counter(s) on the target creature")
+            }
+            Effect::FightTargets => {
+                "target Bear you control fights target creature you don't control".to_string()
+            }
+            Effect::RegenerateSource => "regenerate this creature".to_string(),
+            Effect::GrantTrampleToControlledCreatures => {
+                "creatures you control gain trample until end of turn".to_string()
+            }
+            Effect::SaddleSource => "this Mount becomes saddled".to_string(),
+            Effect::CreateEarthKingBearToken => "create a 4/4 green Bear token".to_string(),
+            Effect::SearchBasicLandsUpToTriggerAmount => {
+                "search for up to that many basic land cards".to_string()
+            }
+            Effect::ReturnLandCardsFromGraveyardTapped => {
+                "return all land cards from your graveyard to the battlefield tapped".to_string()
+            }
+            Effect::AttachSourceToTarget => "attach this Equipment to the target creature".to_string(),
+            Effect::SearchSnowLandToHand => {
+                "search for a snow land card, reveal it, put it into hand, then shuffle".to_string()
+            }
+            Effect::ExileTargetPlayersGraveyardAndGainLife => {
+                "exile target player's graveyard and gain 1 life per card".to_string()
+            }
+            Effect::SearchAnyLandUpToTwo => {
+                "search for up to two land cards, put them onto the battlefield tapped, then shuffle"
+                    .to_string()
+            }
+            Effect::PutTwoCountersOnEachCreatureYouControl => {
+                "put two +1/+1 counters on each creature you control".to_string()
+            }
+            Effect::RingTempts => "the Ring tempts you".to_string(),
+            Effect::UrsineCombatTrigger => {
+                "mill a card, choose an opponent at random, attack them if able, gain indestructible and +1/+1 per graveyard card type".to_string()
+            }
+            Effect::PutTrampleCounterOnTarget => {
+                "put a trample counter on the target creature".to_string()
+            }
+            Effect::AddTargetCreatureType(line) => format!(
+                "the target becomes a creature with type {} in addition to its other types until end of turn",
+                line.text()
+            ),
+            Effect::DrawIfControlsBears { minimum, cards } => {
+                format!("if you control {minimum} or more Bears, draw {cards} cards")
+            }
+            Effect::SetBasePowerToughnessFromSource => {
+                "set target Human's base P/T to this creature's P/T".to_string()
+            }
+            Effect::PutCounterAndHasteOnEntered => {
+                "put a +1/+1 counter on it and it gains haste".to_string()
+            }
+            Effect::LookTopTakeOrBottom => {
+                "look at the top card; take a creature/planeswalker or put it on the bottom"
+                    .to_string()
+            }
+            Effect::SkipNextUntapStep => "it doesn't untap during your next untap step".to_string(),
+            Effect::ReplaceNextDrawWithBearToken => {
+                "the next time you would draw this turn, create a 2/2 green Bear token instead"
+                    .to_string()
+            }
+            Effect::PairSourceWithChosenCreature => {
+                "pair this creature with another unpaired creature you control".to_string()
+            }
+            Effect::EachPlayerMayRevealCreatureCardsForBears => {
+                "each player may reveal any number of creature cards from their hand, then creates a 2/2 green Bear token for each card revealed this way"
+                    .to_string()
+            }
+            Effect::CreateBearTokensForEachDeathThisTurn => {
+                "create a 2/2 green Bear token per nontoken creature death this turn".to_string()
+            }
+            Effect::UntapTargetAndCounterIfBear => {
+                "untap the target creature; if it is a Bear, put a +1/+1 counter on it".to_string()
+            }
+            Effect::PutPlusOneCountersOnTargetForTriggerSpellManaValue => {
+                "put X +1/+1 counters on the target creature, X = that spell's mana value"
+                    .to_string()
+            }
+            Effect::BoostAndTrampleEachCreatureYouControlWithPowerAtLeast {
+                minimum_power,
+                power,
+                toughness,
+            } => format!(
+                "each creature you control with power {minimum_power} or greater gets \
+                 {power:+}/{toughness:+} and gains trample until end of turn"
+            ),
+            Effect::SetSourceCreatureSubtypes(line) => {
+                format!("this creature becomes a {} until end of turn", line.text())
+            }
+            Effect::AddSourceCreatureType(line) => format!(
+                "this permanent becomes a creature with type {} until end of turn",
+                line.text()
+            ),
+            Effect::SetSourceColor(color) => {
+                format!("this permanent becomes {} until end of turn", color.name())
+            }
+            Effect::SetSourceBasePowerToughness(power, toughness) => {
+                format!("this permanent's base power/toughness becomes {power}/{toughness}")
+            }
+            Effect::AddSourceCreatureTypeWhileOnBattlefield(line) => format!(
+                "this permanent becomes a creature with type {} (this effect doesn't end)",
+                line.text()
+            ),
+            Effect::SetSourcePowerToughnessEqualToLands => {
+                "this creature's power and toughness are each equal to the number of lands you control"
+                    .to_string()
             }
         }
     }
@@ -152,7 +776,23 @@ pub struct CardDef {
     pub kinds: &'static [Kind],
     /// Set for basic lands: the single mana the land's mana ability produces.
     pub basic_mana: Option<ManaColor>,
+    /// CR 605.1a mana ability on a nonland artifact: (color, amount), tap cost.
+    pub artifact_mana: Option<(ManaColor, u8)>,
     pub type_line: &'static str,
+    /// Printed colors. Tokens carry theirs here; catalog cards leave it empty
+    /// because the engine only needs it for token characteristics in this slice.
+    pub colors: &'static [ManaColor],
+    pub flying: bool,
+    pub defender: bool,
+    /// CR 702.8a: "You may cast this spell any time you could cast an instant."
+    /// Only printed Flash is modelled; nothing grants it to another card.
+    pub flash: bool,
+    /// CR 702.19b: excess combat damage may be assigned to the defending
+    /// player once every blocker has been assigned lethal damage.
+    pub trample: bool,
+    /// CR 702.14a: printed islandwalk. A blocking restriction, executed by
+    /// `tokens::can_block` through the keyword table; nothing grants it.
+    pub islandwalk: bool,
     pub power: Option<i32>,
     pub toughness: Option<i32>,
     pub oracle: &'static str,
@@ -166,6 +806,105 @@ impl CardDef {
 
     pub fn is_creature(&self) -> bool {
         self.kinds.contains(&Kind::Creature)
+    }
+
+    pub fn is_artifact(&self) -> bool {
+        self.kinds.contains(&Kind::Artifact)
+    }
+
+    /// CR 303.1: an enchantment card. Enchantments are permanents but never
+    /// creatures, so combat, blocking and the layer system ignore them.
+    pub fn is_enchantment(&self) -> bool {
+        self.kinds.contains(&Kind::Enchantment)
+    }
+
+    pub fn has_flying(&self) -> bool {
+        self.flying
+    }
+
+    pub fn has_defender(&self) -> bool {
+        self.defender
+    }
+
+    pub fn has_flash(&self) -> bool {
+        self.flash
+    }
+
+    pub fn has_trample(&self) -> bool {
+        self.trample
+    }
+
+    /// CR 702.14a: "This creature can't be blocked as long as defending
+    /// player controls an Island."
+    pub fn has_islandwalk(&self) -> bool {
+        self.islandwalk
+    }
+
+    /// CR 202.2: the card's *printed* colour. Tokens carry their colors in
+    /// [`CardDef::colors`]; for catalog cards the printed color is derived from
+    /// the mana cost, which is what CR 202.2a makes authoritative. A layer 5
+    /// effect can replace a permanent's colour (Stuffed Bear's green
+    /// animation), so the rules layer asks `Game::has_color` instead of reading
+    /// this directly; this predicate is the printed baseline that query starts
+    /// from.
+    pub fn is_color(&self, color: ManaColor) -> bool {
+        if self.colors.contains(&color) {
+            return true;
+        }
+        if color == ManaColor::Colorless {
+            // CR 202.2: an object is colourless when nothing gives it a colour —
+            // an artifact or land with an empty printed colour and no coloured
+            // mana symbol. Tokens carry `colors`, catalog cards print a cost.
+            return self.colors.is_empty()
+                && self
+                    .cost
+                    .is_none_or(|cost| crate::mana::parse_cost(cost).pips.is_empty());
+        }
+        self.cost
+            .is_some_and(|cost| crate::mana::parse_cost(cost).pips.contains(&color))
+    }
+
+    /// CR 202.2b: the card is printed black.
+    pub fn is_black(&self) -> bool {
+        self.is_color(ManaColor::Black)
+    }
+
+    /// CR 117.1a: an instant, or a card that prints Flash, may be cast while
+    /// any player has priority.
+    pub fn casts_at_instant_timing(&self) -> bool {
+        self.is_instant() || self.flash
+    }
+
+    /// The Goblin creature subtype (CR 205.3m), read from the printed type
+    /// line. Krenko counts Goblins by this predicate, tokens included.
+    pub fn is_goblin(&self) -> bool {
+        self.has_subtype("Goblin")
+    }
+
+    /// Snow supertype (CR 205.4a), parsed from the printed type line before the
+    /// subtype dash. Never inferred from a card name or arbitrary substring.
+    pub fn is_snow(&self) -> bool {
+        self.type_line
+            .split_once('—')
+            .map_or(self.type_line, |(types, _)| types)
+            .split_whitespace()
+            .any(|word| word == "Snow")
+    }
+
+    /// A creature/land subtype (CR 205.3) from the printed type line, which is
+    /// written `Types — Subtype Subtype`. Landwalk (CR 702.14b) and tribal
+    /// counts both read subtypes here rather than special-casing a card name.
+    pub fn has_subtype(&self, subtype: &str) -> bool {
+        self.type_line
+            .split_once('—')
+            .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|s| s == subtype))
+    }
+
+    /// An Island land (CR 305.6), read from the subtype so a nonbasic land with
+    /// the Island subtype counts and a card merely named "Island" elsewhere does
+    /// not. Islandwalk asks the defending player's battlefield for this.
+    pub fn is_island(&self) -> bool {
+        self.is_land() && self.has_subtype("Island")
     }
 
     pub fn is_instant(&self) -> bool {
@@ -185,16 +924,36 @@ impl CardDef {
         self.cost.map(crate::mana::parse_cost)
     }
 
+    /// CR 107.3a: the printed cost contains `{X}`, so its value is announced as
+    /// the spell is cast and is 0 anywhere else. Only a card that prints it can
+    /// be cast through [`crate::action::Action::CastSpellWithX`], and a spell that
+    /// prints it must be, so X is never silently 0.
+    pub fn has_x_cost(&self) -> bool {
+        self.cost.is_some_and(|cost| cost.contains("{X}"))
+    }
+
+    /// CR 202.3: a card's mana value is the total amount of mana in its mana
+    /// cost. Read from the printed cost string: a numeric generic symbol adds
+    /// that number, `{X}` adds 0 (its value is fixed only while the spell is on
+    /// the stack, and no X-cost spell in this pool is a creature), a hybrid or
+    /// Phyrexian symbol adds its numeric half when it prints one and otherwise
+    /// 1, and any other single symbol adds 1.
+    pub fn mana_value(&self) -> u8 {
+        self.cost.map_or(0, cost_mana_value)
+    }
+
     /// Spell characteristics used for casting and resolution. A vanilla
     /// creature is a permanent spell with no targets and no effects (CR 608.3).
     pub fn spell_spec(&self) -> Option<SpellSpec> {
         match self.spell {
             Some(spec) => Some(spec),
-            None if self.is_creature() => Some(SpellSpec {
-                target: TargetSpec::None,
-                instant: false,
-                effects: NO_EFFECTS,
-            }),
+            None if self.is_creature() || self.is_artifact() || self.is_enchantment() => {
+                Some(SpellSpec {
+                    target: TargetSpec::None,
+                    instant: false,
+                    effects: NO_EFFECTS,
+                })
+            }
             None => None,
         }
     }
@@ -202,13 +961,25 @@ impl CardDef {
     /// A creature spell becomes a permanent on resolution rather than going to
     /// the graveyard (CR 608.3).
     pub fn is_permanent_spell(&self) -> bool {
-        self.is_creature()
+        self.is_creature() || self.is_artifact() || self.is_enchantment()
+    }
+
+    /// CR 110.4a: a permanent card is a card that can be put onto the
+    /// battlefield — an artifact, creature, enchantment, land or planeswalker
+    /// card. Used by "search your library for a Goblin permanent card"
+    /// (Moggcatcher), which must not find a Goblin instant or sorcery.
+    pub fn is_permanent_card(&self) -> bool {
+        self.is_creature() || self.is_artifact() || self.is_enchantment() || self.is_land()
     }
 }
 
 /// Card identity inside the supported pool.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub enum CardId {
+    /// Engine-only The Ring emblem. It is not a catalog card, token, permanent
+    /// or importable card; its definition and four triggered abilities exist so
+    /// the Ring's abilities use the normal trigger/stack pipeline.
+    TheRing,
     Island,
     Mountain,
     Forest,
@@ -240,14 +1011,266 @@ pub enum CardId {
     MendingHands,
     AngrathsMarauders,
     WightOfPrecinctSix,
-    /// 1/1 vanilla Soldier token (CR 111). Never importable: it is absent from
-    /// [`crate::catalog::CARDS`] and only reachable from `GameState::create_token`.
+    KrenkoMobBoss,
+    TalrandSkySummoner,
+    TatyovaBenthicDruid,
+    JaddiOffshoot,
+    Swamp,
+    LightningBolt,
+    ForestBear,
+    StripedBears,
+    Guttersnipe,
+    SoulsAttendant,
+    RazorclawBear,
+    VolleyVeteran,
+    DramaticReversal,
+    GoblinWarStrike,
+    SolRing,
+    MindStone,
+    HedronArchive,
+    ArcaneSignet,
+    FellwarStone,
+    Werebear,
+    CommandersSphere,
+    FriendlyTeddy,
+    UlvenwaldBear,
+    CallerOfTheClaw,
+    AyulaQueenAmongBears,
+    ViviensGrizzly,
+    DragonScarredBear,
+    SurrakAndGoreclaw,
+    ExuberantWolfbear,
+    DroverGrizzly,
+    TheEarthKing,
+    LumraBellowOfTheWoods,
+    LightningGreaves,
+    SwiftfootBoots,
+    SpiritOfTheAldergard,
+    SnowCoveredForest,
+    TitaniasCommand,
+    UrsineMonstrosity,
+    /// Issue 17 slice 60: Evercoat Ursine (BLC 30).
+    EvercoatUrsine,
+    DunedainRangers,
+    AyulasInfluence,
+    Bearscape,
+    MotherBear,
+    FadeFromHistory,
+    LittleBear,
+    DancingFromDarkToDawn,
+    GoreclawTerrorOfQalSisma,
+    UrsineChampion,
+    /// Issue 17 slice 28: Circle of the Moon Druid (AFR 177).
+    CircleOfTheMoonDruid,
+    /// Issue 17 slice 29: Stuffed Bear (MID 259).
+    StuffedBear,
+    /// Issue 17 slice 31: Beorn the Fierce (HOB 119).
+    BeornTheFierce,
+    /// Issue 17 slice 32: Kamahl's Summons (ONS 269).
+    KamahlsSummons,
+    /// Issue 17 slice 33: Beorn's Hospitality (HOB 120).
+    BeornsHospitality,
+    /// Issue 17 slice 35: Words of Wilding (ONS 305).
+    WordsOfWilding,
+    /// Issue 17 slice 37: Druid's Familiar (AVR 175).
+    DruidSFamiliar,
+    /// Issue 17 slice 38: Spider-Ham, Peter Porker (SPM 114).
+    SpiderHamPeterPorker,
+    /// Issue 17 slice 38: the Food token card (never importable, CR 111.10).
+    FoodToken,
+    SazhsChocobo,
+    RampagingBaloths,
+    ProfessorOfZoomancy,
+    BeastToken,
+    PestToken,
+    BearToken,
+    EarthKingBearToken,
+    BrightstoneRitual,
+    ManaGeyser,
+    RiteOfFlame,
+    DrakeToken,
+    DragonFodder,
+    KrenkosCommand,
+    HordelingOutburst,
+    GoblinInstigator,
+    GoblinChieftain,
+    SearslicerGoblin,
+    GoblinWarchief,
+    GoblinKing,
+    DragonlordsServant,
+    VolcanicDragon,
+    SiegeGangLieutenant,
+    SkirkProspector,
+    ZoZuThePunisher,
+    GoblinSharpshooter,
+    KrenkoTinStreetKingpin,
+    HobgoblinBanditLord,
+    GoblinMatron,
+    SiegeGangCommander,
+    PashalikMons,
+    GoblinTrashmaster,
+    Moggcatcher,
+    BeetlebackChief,
+    GoblinToken,
+    AlabornTrooper,
+    ArmoredWarhorse,
+    BastionEnforcer,
+    BladeOfTheSixthPride,
+    DevotedHero,
+    EagerCadet,
+    EliteVanguard,
+    GlorySeeker,
+    IndomitableAncients,
+    KnightErrant,
+    LoomingAltisaur,
+    LoxodonLineBreaker,
+    OreskosSwiftclaw,
+    PearledUnicorn,
+    PillarfieldOx,
+    RaptorCompanion,
+    SavannahLions,
+    SiegeMastodon,
+    SilentArtisan,
+    SilvercoatLion,
+    StaunchShieldmate,
+    ValiantGuard,
+    YokedOx,
+    AlphaTyrranax,
+    AlpineGrizzly,
+    AxebaneBeast,
+    BalduvianBears,
+    BearCub,
+    BlanchwoodTreefolk,
+    CylianElf,
+    DurkwoodBoars,
+    EnormousBaloth,
+    FeralKrushok,
+    GoldenBear,
+    HollowhengeBeast,
+    KalonianTusker,
+    NessianCourser,
+    NorwoodRanger,
+    SwordwiseCentaur,
+    TerrainElemental,
+    TrainedArmodon,
+    TrainedJackal,
+    VastwoodGorger,
+    WillowElf,
+    ArmoredWolfRider,
+    GrizzledLeotau,
+    Watchwolf,
+    JasmineBoreal,
+    OrdinaryBear,
+    AshcoatBear,
+    Owlbear,
+    SoulWarden,
+    StitchersSupplier,
+    RuinCrab,
+    Negate,
+    Preordain,
+    PyreticRitual,
+    SeethingSong,
+    ZulaportCutthroat,
+    BloodArtist,
+    HedronCrab,
+    PaleBears,
+    RiverBear,
+    SpectralBears,
+    /// 1/1 vanilla Soldier token (CR 111). Never importable.
     SoldierToken,
     /// 1/1 flying Spirit token (CR 111, 702.9).
     SpiritToken,
+    /// Issue 17 slice 46: Thijarian Witness (WHO 111), the pool's first
+    /// "another creature dies if it was attacking or blocking alone" watcher.
+    ThijarianWitness,
+    /// Issue 17 slice 48: Owlbear Cub (CLB 246), the pool's first "look at the
+    /// top N cards, you may put a creature card from among them onto the
+    /// battlefield tapped and attacking" trigger.
+    OwlbearCub,
+    /// Issue 17 slice 53: Ruxa, Patient Professor (C21 66), the pool's first
+    /// "return target creature card with no abilities from your graveyard to
+    /// your hand" trigger, first no-abilities anthem and first combat-damage
+    /// assignment choice.
+    RuxaPatientProfessor,
+    /// Issue 17 slice 57: Rampaging Yao Guai (PIP 82), the pool's first `{X}`
+    /// spell, first "enters with X +1/+1 counters" replacement and first
+    /// "any number of target ... with total mana value X or less" aggregate
+    /// target set.
+    RampagingYaoGuai,
+    /// Issue 17 slice 46: the Clue token card (never importable, CR 111.10,
+    /// 701.16a).
+    ClueToken,
 }
 
+/// Explicit command-zone practice allow-list. This is deliberately narrower
+/// than CR 903.3: every entry is a genuine printed legendary creature added here
+/// and to the catalog, never inferred from a type line. Commander-only cards are
+/// refused in ordinary starting libraries because the named command-zone profile
+/// owns their setup; the CR 704.5j legend rule itself is implemented separately.
+pub const SUPPORTED_COMMANDERS: &[CardId] = &[
+    CardId::IsamaruHoundOfKonda,
+    CardId::JasmineBoreal,
+    CardId::AyulaQueenAmongBears,
+    CardId::KrenkoMobBoss,
+    CardId::TalrandSkySummoner,
+    CardId::TatyovaBenthicDruid,
+];
+
+/// Token cards exist as engine objects but are never importable: `catalog::all`
+/// and `catalog::by_name` deliberately exclude them, and the deck parser
+/// refuses them like any other unknown name.
+pub const TOKEN_CARDS: &[CardId] = &[
+    CardId::SoldierToken,
+    CardId::SpiritToken,
+    CardId::GoblinToken,
+    CardId::DrakeToken,
+    CardId::BeastToken,
+    CardId::PestToken,
+    CardId::BearToken,
+    CardId::FoodToken,
+    CardId::EarthKingBearToken,
+    CardId::ClueToken,
+];
+
 impl CardId {
+    /// Printed color identity of the supported commanders, in canonical WUBRG
+    /// order. Known only for the explicit registry; unknown cards return empty.
+    pub fn commander_color_identity(self) -> &'static [ManaColor] {
+        match self {
+            CardId::IsamaruHoundOfKonda => &[ManaColor::White],
+            CardId::JasmineBoreal => &[ManaColor::White, ManaColor::Green],
+            CardId::KrenkoMobBoss => &[ManaColor::Red],
+            CardId::TalrandSkySummoner => &[ManaColor::Blue],
+            CardId::TatyovaBenthicDruid => &[ManaColor::Blue, ManaColor::Green],
+            _ => &[],
+        }
+    }
+
+    pub fn dynamic_mana(self) -> Option<ManaChoice> {
+        match self {
+            CardId::ArcaneSignet => Some(ManaChoice::CommanderIdentity),
+            CardId::FellwarStone => Some(ManaChoice::OpponentLandColors),
+            CardId::CommandersSphere => Some(ManaChoice::CommanderIdentity),
+            _ => None,
+        }
+    }
+
+    /// CR 605.1a: a mana ability whose cost is "Sacrifice a Goblin" rather than
+    /// `{T}`. It may be activated while summoning sick and never taps.
+    pub fn sacrifice_mana(self) -> Option<ManaColor> {
+        match self {
+            CardId::SkirkProspector => Some(ManaColor::Red),
+            _ => None,
+        }
+    }
+
+    pub fn creature_mana(self) -> Option<ManaColor> {
+        match self {
+            CardId::Werebear => Some(ManaColor::Green),
+            _ => None,
+        }
+    }
+
     pub fn def(self) -> &'static CardDef {
         crate::catalog::def(self)
     }
@@ -260,22 +1283,66 @@ impl CardId {
         self.def().mana_cost()
     }
 
-    /// Explicit command-zone practice allow-list. This is deliberately narrower
-    /// than CR 903.3: no general legendary/Vehicle/Spacecraft support exists in
-    /// this slice.
     pub fn is_supported_commander(self) -> bool {
-        matches!(self, CardId::IsamaruHoundOfKonda)
+        SUPPORTED_COMMANDERS.contains(&self)
     }
 
     /// True for a token's synthetic characteristic card (CR 111.1: a token is
     /// not a card, but it needs characteristics and an identity).
+    ///
+    /// [`TOKEN_CARDS`] is the single source of this predicate, so registering a
+    /// variant there is what makes every CR 111.7 path (the cease-to-exist SBA,
+    /// the state validator, the nontoken filters and the public view) treat it as
+    /// a token; a creatable variant left out of the registry would be treated as
+    /// an ordinary card once it left the battlefield.
+    /// `slice38::every_token_card_is_registered_as_a_token` keeps the registry
+    /// and the two characteristics tables in step.
     pub fn is_token(self) -> bool {
-        matches!(self, CardId::SoldierToken | CardId::SpiritToken)
+        TOKEN_CARDS.contains(&self)
     }
+}
+
+/// `true` for a card that prints "this creature enters with X +1/+1 counters on
+/// it" (CR 614.1c: a replacement that modifies how the permanent enters). The
+/// counters are placed by the entry itself, before any enters-the-battlefield
+/// trigger is queued, with X read from the spell that is resolving — never from
+/// the board and never from a later re-computation.
+pub fn enters_with_x_counters(card: CardId) -> bool {
+    card == CardId::RampagingYaoGuai
 }
 
 impl std::fmt::Display for CardId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.name())
     }
+}
+
+/// CR 202.3: mana value of a printed mana cost string, without needing a
+/// `CardDef`. Exposed separately from `CardDef::mana_value` so the rule can be
+/// tested on symbol shapes the current pool does not print (hybrid, Phyrexian,
+/// snow), instead of adding fixture cards only a test would ever use.
+///
+/// Each symbol counts as:
+/// * a pure number — that number (`{3}` = 3);
+/// * `{X}` — 0, because an X outside the stack is 0 (Rampaging Yao Guai is an
+///   X-cost creature, and its own mana value is 3 on the battlefield);
+/// * a hybrid/Phyrexian symbol with a numeric half — that number (`{2/W}` = 2);
+/// * any other hybrid or Phyrexian symbol — 1 (`{G/W}`, `{W/P}`);
+/// * any other single symbol — 1 (`{G}`, `{S}`, `{C}`).
+pub fn cost_mana_value(cost: &str) -> u8 {
+    cost.split('{')
+        .skip(1)
+        .filter_map(|rest| rest.split_once('}').map(|(symbol, _)| symbol))
+        .map(|symbol| {
+            if let Ok(generic) = symbol.parse::<u8>() {
+                generic
+            } else if symbol.eq_ignore_ascii_case("X") {
+                0
+            } else if let Some((half, _)) = symbol.split_once('/') {
+                half.parse::<u8>().unwrap_or(1)
+            } else {
+                1
+            }
+        })
+        .sum()
 }
