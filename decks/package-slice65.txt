@@ -1,10 +1,6 @@
 // package-slice65 — evidence-only 40-card package, NOT a certified starter.
-// Siege-Gang Commander (this slice) plus the Goblin payoffs it shares costs and
-// payoffs with, so the journey really casts what this slice enabled and really
-// pays a "Sacrifice a Goblin" cost.
-4 Siege-Gang Commander
-4 Goblin Chieftain
-4 Goblin Matron
-4 Goblin Instigator
-4 Goblin Warchief
-20 Mountain
+// Siege-Gang Commander (this slice) beside one other Goblin payoff, with 34
+// Mountains, so the journey really casts what this slice enabled and really
+// pays a "Sacrifice a Goblin" cost without a token explosion.
+3 Siege-Gang Commander
+37 Mountain
