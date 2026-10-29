@@ -281,7 +281,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::PairSourceWithChosenCreature
                 | Effect::ReturnGraveyardCardToHand
                 | Effect::LookAtTopPutCreatureAttacking
-                | Effect::DestroyTargetArtifactsAndEnchantments => {
+                | Effect::DestroyTargetArtifactsAndEnchantments
+                | Effect::DestroyTargetArtifact => {
                     panic!(
                         "{} uses an ability-only effect in its spell text",
                         card.name

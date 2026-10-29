@@ -46,14 +46,14 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **163** are in the supported 177-card catalog and **296** are missing. Slice
+* **165** are in the supported 179-card catalog and **294** are missing. Slice
  25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
   slice 31 adds `Beorn the Fierce` (134→135) to the previously verified split. Later
-  slices bring the current implemented total to **177**; slice 53 adds Ruxa,
+  slices bring the current implemented total to **179**; slice 53 adds Ruxa,
   Patient Professor (161→162, so supported 148→149 and missing 311→310, and
-  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). Slice 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit Lord and Goblin Matron (172→176, supported 158→162, missing 301→297, Krenko 43→39). Slice 65 adds Siege-Gang Commander (176→177, supported 162→163, missing 297→296, Krenko 39→38). The intervening per-slice list is
+  Ruxa leaves the Ayula gap 5→4). Slice 54 adds Ursine Monstrosity (162→163, supported 149→150, missing 310→309, Ayula 4→3). Slice 57 adds Rampaging Yao Guai (163→164, supported 150→151, missing 309→308, Ayula 3→2). Slice 59 adds Dúnedain Rangers (164→165, supported 151→152, missing 308→307). Slice 60 adds Evercoat Ursine (165→166, supported 152→153, missing 307→306, Ayula gap 2→0). Slice 62 adds Goblin Chieftain and Searslicer Goblin (166→168, supported 153→155, missing 306→304, Krenko 48→46). Slice 63 adds Goblin Warchief, Goblin King and Dragonlord's Servant (168→171, supported 155→158, missing 304→301, Krenko 46→43) plus the out-of-list positive control Volcanic Dragon (171→172; it is supported but is not one of the 459 union names, so the union split is unchanged by it). Slice 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit Lord and Goblin Matron (172→176, supported 158→162, missing 301→297, Krenko 43→39). Slice 65 adds Siege-Gang Commander (176→177, supported 162→163, missing 297→296, Krenko 39→38). Slice 66 adds Pashalik Mons and Goblin Trashmaster (177→179, supported 163→165, missing 296→294, Krenko 38→36). The intervening per-slice list is
   historical. The union is unchanged because its deck snapshots have not changed; Snow-Covered Forest is an additional supported card outside that union. The
   five basic land types are part of the union, which is why the union exceeds the
   sum of nonbasic names.
@@ -345,7 +345,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 177 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 179 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1363,3 +1363,51 @@ missing**, per-list `[55, 0, 51, 43, 0, 52, 52, 53]`, Krenko **43** missing;
 **Evidence.** `crates/core/tests/issue17_slice63.rs`, the printing chain in
 `crates/core/tests/card_printings.rs`, and the 40-card four-seat journey under
 `evidence/issue17/slice63/repair-final-native/` with a separate shipped CLI replay.
+
+## Slice 66: Pashalik Mons and Goblin Trashmaster — cost triggers resolve above the ability that paid for them
+
+Review 365 (R365-1) found a real ordering defect in the activation path, not a
+card defect: paying a cost that changes a zone queued the departed permanent's
+**dies trigger**, but `apply_activate_ability` never staged it, so the trigger
+resolved *below* the ability it paid for — after the damage, with no response
+window. `crates/core/src/engine.rs` now calls `put_triggers` immediately after
+the ability's `StackItem` is pushed, the same point the cast path and the
+land-play path use (CR 603.3, 602.2b applying 601.2h–i). Every cost shape in
+that function — sacrifice of a chosen creature, self-sacrifice, discard, exile
+from a graveyard — pays through that single staging point, so the fix covers all
+of them by construction rather than one case. The two regressions assert
+**order**: the trigger sits above the ability on the stack, its target is asked
+for while the ability is still waiting, and its resolution precedes the
+ability's damage.
+
+Two demanded "Sacrifice a Goblin" cards are now implemented, both from the live
+printing (one distinct oracle text across 5 and 6 printings respectively,
+recorded in `fixtures/starter-corpus/slice66-sourced.json`):
+
+* **Pashalik Mons** (DMR 133, `{2}{R}`, legendary 2/2 Goblin Warrior). Its dies
+  watcher is a *subtype-narrowed* event (`GoblinYouControlDies`): a dying Bear
+  never triggers it, an opponent's Goblin never triggers it, and the source
+  itself does. The dying permanent's effective Goblin subtype is captured on the
+  death record before the zone change (CR 613.1d), so a layer-4 animation
+  counts. Its `{3}{R}, Sacrifice a Goblin` ability creates two 1/1 Goblin
+  tokens through the same chosen-cost primitive Siege-Gang Commander uses.
+* **Goblin Trashmaster** (M19 144, `{2}{R}{R}`, 3/3 Goblin Warrior). "Other
+  Goblins you control get +1/+1" is the printed layer 7c subtype anthem, so it
+  never pumps itself. "Sacrifice a Goblin: Destroy target artifact" adds two
+  primitives: `TargetSpec::Artifact` (exactly one artifact, either controller —
+  never an enchantment, and never the aggregate "any number" set) and
+  `Effect::DestroyTargetArtifact`. Resolution legality reads the ability's own
+  target spec, so a target that stopped being an artifact makes the ability
+  fizzle instead of resolving against a legal-looking object.
+
+**Corpus after this slice.** 179 catalog / 459 union = **165 supported + 294
+missing**, per-list `[55, 0, 51, 36, 0, 52, 52, 53]`, Krenko **36** missing;
+**still two of eight** lists certified. The two cards still outside this family
+are Skirk Prospector (a nonland *mana* ability, which must not use the stack,
+CR 605.1a) and Siege-Gang Lieutenant (the Lieutenant ability word plus a haste
+grant to its own tokens); both remain listed as missing rather than approximated.
+
+**Evidence.** `crates/core/tests/issue17_slice66.rs` (ordering regressions),
+`issue17_slice66_cards.rs` (the two cards), `issue17_slice66_journey.rs` (a real
+four-seat 40-life game), the printing chain in `crates/core/tests/card_printings.rs`,
+and `evidence/issue17/slice66/` for the audit, the journey and the CI receipt.

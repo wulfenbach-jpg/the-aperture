@@ -135,6 +135,13 @@ pub enum TargetSpec {
     /// `aggregate` and the chosen set in `chosen`, and resolution destroys every
     /// member still on the battlefield (Rampaging Yao Guai).
     ArtifactOrEnchantment,
+    /// CR 115.1: "target artifact" — exactly one artifact on the battlefield,
+    /// either controller. Distinct from `ArtifactOrEnchantment`, which is the
+    /// printed aggregate "any number of target artifacts and/or enchantments":
+    /// an artifact-only card must never be able to name an enchantment, and an
+    /// aggregate card must never be answered with a single target (Goblin
+    /// Trashmaster).
+    Artifact,
 }
 
 /// The complete set of effects this slice implements. Anything not here is not
@@ -422,6 +429,11 @@ pub enum Effect {
     /// targets that are still artifacts/enchantments on resolution; a target
     /// that left the battlefield does nothing (CR 608.2b).
     DestroyTargetArtifactsAndEnchantments,
+    /// CR 701.7a: destroy the single artifact the ability targeted. Only
+    /// artifacts may be destroyed by it — an enchantment target is refused by
+    /// the target spec, never quietly accepted (Goblin Trashmaster's
+    /// "Sacrifice a Goblin: Destroy target artifact").
+    DestroyTargetArtifact,
     /// CR 702.75a (hideaway): "look at the top N cards of your library, exile
     /// one of them face down, then put the rest on the bottom of your library in
     /// a random order." The exiled card is linked to the source permanent
@@ -587,6 +599,7 @@ impl Effect {
             Effect::DestroyTargetArtifactsAndEnchantments => {
                 "destroy the chosen artifacts and/or enchantments".to_string()
             }
+            Effect::DestroyTargetArtifact => "destroy target artifact".to_string(),
             Effect::Hideaway(n) => format!(
                 "hideaway {n}: look at the top {n}, exile one face down, put the rest on the bottom in a random order"
             ),
@@ -1059,6 +1072,8 @@ pub enum CardId {
     HobgoblinBanditLord,
     GoblinMatron,
     SiegeGangCommander,
+    PashalikMons,
+    GoblinTrashmaster,
     BeetlebackChief,
     GoblinToken,
     AlabornTrooper,

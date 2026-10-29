@@ -59,6 +59,9 @@ const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE62_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice62-sourced.json");
 /// Slice 65: Siege-Gang Commander (DMR 136), fetched 2026-10-29.
 const SLICE65_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice65-sourced.json");
+/// Slice 66: Pashalik Mons (DMR 133) and Goblin Trashmaster (M19 144), fetched
+/// 2026-10-29.
+const SLICE66_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice66-sourced.json");
 /// Slice 64: Goblin Sharpshooter (C13 111), Krenko, Tin Street Kingpin (MOC
 /// 287), Hobgoblin Bandit Lord (AFR 147) and Goblin Matron (PLST DMR-123),
 /// fetched 2026-10-29.
@@ -518,6 +521,11 @@ fn slice63_cards() -> Vec<Value> {
 
 fn slice65_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE65_SOURCED).expect("sourced slice65 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice66_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE66_SOURCED).expect("sourced slice66 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -1151,6 +1159,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice37_cards())
         .chain(slice38_cards())
         .chain(slice65_cards())
+        .chain(slice66_cards())
         .collect();
     let starter_names: Vec<&str> = starter
         .iter()
@@ -1977,4 +1986,106 @@ fn slice65_siege_gang_commander_matches_its_recorded_printing() {
         );
         assert_eq!(activated.cost.mana, Some("{1}{R}"));
     }
+}
+
+/// Slice 66: Pashalik Mons (DMR 133) and Goblin Trashmaster (M19 144). Both
+/// catalog rows must equal the recorded printings verbatim, both are Goblins,
+/// and the two printed shapes are typed: Pashalik's subtype-narrowed dies
+/// watcher plus a `{3}{R}, Sacrifice a Goblin` token maker, and Trashmaster's
+/// `Sacrifice a Goblin: Destroy target artifact` with an artifact-only target.
+#[test]
+fn slice66_pashalik_and_trashmaster_match_their_recorded_printings() {
+    use aperture_core::ability::{Ability, StaticAbility, abilities, static_abilities};
+
+    let cards = slice66_cards();
+    assert_eq!(cards.len(), 2, "slice 66 adds two sourced cards");
+    for record in &cards {
+        let name = sourced_text(record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+        assert!(def.is_creature() && def.is_goblin(), "{name} is a Goblin");
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name}'s wording never changed between printings"
+        );
+        assert!(
+            abilities(def.id)
+                .iter()
+                .all(|ability| { def.oracle.contains(ability.text()) })
+        );
+    }
+
+    let mons = catalog::by_name("Pashalik Mons")
+        .expect("Pashalik Mons")
+        .def();
+    assert!(
+        mons.type_line.contains("Legendary"),
+        "the printed supertype is modelled, so the legend rule applies"
+    );
+    let mons_abilities = abilities(mons.id);
+    assert_eq!(mons_abilities.len(), 2);
+    let Ability::Triggered(watcher) = &mons_abilities[0] else {
+        panic!("the dies watcher is the first printed ability");
+    };
+    assert_eq!(
+        watcher.event,
+        aperture_core::ability::TriggerEvent::GoblinYouControlDies,
+        "the watcher is narrowed to Goblins, not every creature"
+    );
+    assert_eq!(watcher.target, aperture_core::TargetSpec::AnyTarget);
+    let Ability::Activated(maker) = &mons_abilities[1] else {
+        panic!("the token maker is the second printed ability");
+    };
+    assert_eq!(maker.cost.mana, Some("{3}{R}"));
+    assert_eq!(maker.cost.sacrifice_creature_subtype, Some("Goblin"));
+
+    let trash = catalog::by_name("Goblin Trashmaster")
+        .expect("Goblin Trashmaster")
+        .def();
+    let trash_abilities = abilities(trash.id);
+    assert_eq!(trash_abilities.len(), 1);
+    let Ability::Activated(destroyer) = &trash_abilities[0] else {
+        panic!("Trashmaster prints one activated ability");
+    };
+    assert_eq!(destroyer.target, aperture_core::TargetSpec::Artifact);
+    assert_eq!(destroyer.cost.sacrifice_creature_subtype, Some("Goblin"));
+    assert_eq!(
+        destroyer.cost.mana, None,
+        "the printed ability has no mana cost"
+    );
+    assert!(
+        static_abilities(trash.id)
+            .iter()
+            .any(|static_ability| matches!(
+                static_ability,
+                StaticAbility::OtherControlledCreaturesWithAnySubtypeGet { .. }
+            )),
+        "the printed anthem is a typed layer 7c static"
+    );
 }

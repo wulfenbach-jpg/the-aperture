@@ -85,6 +85,13 @@ pub enum TriggerEvent {
     /// The trigger's controller is the creature's controller, and the damage
     /// must have been actually dealt (a prevented instance does not trigger).
     ThisDealsCombatDamageToPlayer,
+    /// CR 603.6c + 700.4 with the printed wording "Pashalik Mons or another
+    /// Goblin you control dies": a *Goblin* creature controlled by this source's
+    /// controller died. Narrower than `CreatureYouControlDies` on purpose — a
+    /// dying Bear never triggers it — and, like that event, it includes the
+    /// source itself. "Goblin" is the dying permanent's effective subtype at the
+    /// moment it left (CR 613.1d), captured on the death record.
+    GoblinYouControlDies,
 }
 
 impl TriggerEvent {
@@ -110,6 +117,9 @@ impl TriggerEvent {
             TriggerEvent::EndStep => "at the beginning of your end step",
             TriggerEvent::ThisDealsCombatDamageToPlayer => {
                 "this creature deals combat damage to a player"
+            }
+            TriggerEvent::GoblinYouControlDies => {
+                "this creature or another Goblin you control dies"
             }
         }
     }
@@ -1239,6 +1249,8 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD,
         CardId::GoblinMatron => GOBLIN_MATRON,
         CardId::SiegeGangCommander => SIEGE_GANG_COMMANDER,
+        CardId::PashalikMons => PASHALIK_MONS,
+        CardId::GoblinTrashmaster => GOBLIN_TRASHMASTER,
         CardId::BeetlebackChief => BEETLEBACK_CHIEF,
         CardId::ProdigalSorcerer => TORCHER,
         CardId::Rootwalla => ROOTWALLA,
@@ -1889,6 +1901,58 @@ const GOBLIN_SHARPSHOOTER_STATIC: &[StaticAbility] =
         text: "This creature doesn't untap during your untap step.",
     }];
 
+/// Pashalik Mons (DMR 133). Two printed abilities: a subtype-narrowed dies
+/// watcher ("Pashalik Mons or another Goblin you control dies") that deals 1
+/// damage to any target, and a `{3}{R}, Sacrifice a Goblin` token maker. The
+/// sacrifice cost is the same chosen-cost primitive Siege-Gang Commander uses.
+const PASHALIK_MONS: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.",
+        event: TriggerEvent::GoblinYouControlDies,
+        optional: false,
+        target: TargetSpec::AnyTarget,
+        effects: &[Effect::Damage(1)],
+    }),
+    Ability::Activated(ActivatedAbility {
+        text: "{3}{R}, Sacrifice a Goblin: Create two 1/1 red Goblin creature tokens.",
+        cost: AbilityCost {
+            mana: Some("{3}{R}"),
+            sacrifice_creature_subtype: Some("Goblin"),
+            ..AbilityCost::NONE
+        },
+        target: TargetSpec::None,
+        modes: SINGLE_MODE,
+        effects: &[Effect::CreateGoblinTokens(2)],
+        once_per_turn: false,
+        sorcery_timing: false,
+    }),
+];
+
+/// Goblin Trashmaster (M19 144). The anthem is the Chieftain's layer 7c
+/// subtype-filtered static with this card's own printed text; the activated
+/// ability is a *chosen* Goblin sacrifice with a `target artifact` destroy, so
+/// it can never name an enchantment and never picks the sacrifice itself.
+const GOBLIN_TRASHMASTER: &[Ability] = &[Ability::Activated(ActivatedAbility {
+    text: "Sacrifice a Goblin: Destroy target artifact.",
+    cost: AbilityCost {
+        sacrifice_creature_subtype: Some("Goblin"),
+        ..AbilityCost::NONE
+    },
+    target: TargetSpec::Artifact,
+    modes: SINGLE_MODE,
+    effects: &[Effect::DestroyTargetArtifact],
+    once_per_turn: false,
+    sorcery_timing: false,
+})];
+
+const GOBLIN_TRASHMASTER_STATIC: &[StaticAbility] =
+    &[StaticAbility::OtherControlledCreaturesWithAnySubtypeGet {
+        subtypes: GOBLIN_SUBTYPES,
+        power: 1,
+        toughness: 1,
+        text: "Other Goblins you control get +1/+1.",
+    }];
+
 /// Krenko, Tin Street Kingpin (MOC 287). One attack trigger, two instructions in
 /// printed order: the counter lands first and the token count is Krenko's power
 /// *after* it, which is why the two cannot be merged into one effect.
@@ -1985,6 +2049,7 @@ pub fn static_abilities(card: CardId) -> &'static [StaticAbility] {
     match card {
         CardId::GoblinChieftain => GOBLIN_CHIEFTAIN_STATIC,
         CardId::GoblinSharpshooter => GOBLIN_SHARPSHOOTER_STATIC,
+        CardId::GoblinTrashmaster => GOBLIN_TRASHMASTER_STATIC,
         CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD_STATIC,
         CardId::GoblinWarchief => GOBLIN_WARCHIEF_STATIC,
         CardId::GoblinKing => GOBLIN_KING_STATIC,

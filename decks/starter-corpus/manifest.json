@@ -196,7 +196,6 @@
         "Goblin Recruiter",
         "Goblin Ringleader",
         "Goblin Traprunner",
-        "Goblin Trashmaster",
         "Goblin War Party",
         "Goblin Welder",
         "Goro-Goro, Disciple of Ryusei",
@@ -209,7 +208,6 @@
         "Legion Warboss",
         "Mogg War Marshal",
         "Moggcatcher",
-        "Pashalik Mons",
         "Redcap Gutter-Dweller",
         "Rundvelt Hordemaster",
         "Scuzzback Scrounger",
@@ -224,9 +222,9 @@
         "Zo-Zu the Punisher"
       ],
       "missing_interactions": [
-        "remaining 38 desired-list cards are not in the supported pool (first unsupported names: Brash Taunter, Breeches, Eager Pillager, Conspicuous Snoop, Crime Novelist, Empty the Warrens, General Kreat, the Boltbringer)",
-        "goblin tribal payoffs still unsupported: the remaining sacrifice-a-Goblin costs (Skirk Prospector's mana ability, Siege-Gang Lieutenant's damage, Goblin Trashmaster's artifact destruction, Pashalik Mons' token making and death pings \u2014 one demanded card of this family is now supported, so this entry lists only the cards still outside the pool), library search onto the battlefield (Moggcatcher), goblin-count-scaled combat payoffs (Grenzo, Howlsquad Heavy, General Kreat), and artifact/graveyard Goblin recursion (Goblin Engineer, Goblin Welder, Squee)",
-        "tokens outside the typed 1/1 red Goblin package; the three-token enters package of this family is now implemented, so what remains under this heading is the other token-making cards named above"
+        "remaining 36 desired-list cards are not in the supported pool (first unsupported names: Brash Taunter, Breeches, Eager Pillager, Conspicuous Snoop, Crime Novelist, Empty the Warrens, General Kreat, the Boltbringer)",
+        "goblin tribal payoffs still unsupported: the remaining sacrifice-a-Goblin costs (Skirk Prospector's nonland mana ability and Siege-Gang Lieutenant's Lieutenant combat trigger are the two remaining members of this family, so this entry lists only the cards still outside the pool), library search onto the battlefield (Moggcatcher), goblin-count-scaled combat payoffs (Grenzo, Howlsquad Heavy, General Kreat), and artifact/graveyard Goblin recursion (Goblin Engineer, Goblin Welder, Squee)",
+        "tokens outside the typed 1/1 red Goblin package; the three-token enters package, the two-token sacrifice payoff and the artifact-destruction sacrifice of this family are now implemented, so what remains under this heading is the other token-making cards named above"
       ]
     },
     {

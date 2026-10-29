@@ -2303,8 +2303,18 @@ impl Game {
         // from the moment it leaves rather than the printed card type (an
         // animated Stuffed Bear is a creature when it is put into a graveyard).
         let dying = self.state.try_object(id).and_then(|object| {
-            (object.zone == Zone::Battlefield)
-                .then(|| (object.card, object.controller, self.is_creature(object)))
+            (object.zone == Zone::Battlefield).then(|| {
+                (
+                    object.card,
+                    object.controller,
+                    self.is_creature(object),
+                    // CR 613.1d + 700.4: "Goblin" is the dying permanent's
+                    // *effective* subtype at the moment it left, so a creature
+                    // animated or given the subtype by a layer 4 effect counts
+                    // for Pashalik Mons, and a Bear never does.
+                    self.has_subtype(object, "Goblin"),
+                )
+            })
         });
         // CR 508.1 + 509.1: "was attacking or blocking alone" is read from the
         // live pre-death combat membership captured ONCE for this batch by
@@ -2340,7 +2350,7 @@ impl Game {
         // CR 700.4 + 603.6c: a permanent put into a graveyard from the
         // battlefield "dies". The trigger keeps the card and its controller as
         // last known information; `source` is the graveyard object.
-        if let Some((card, controller, was_creature)) = dying {
+        if let Some((card, controller, was_creature, was_goblin)) = dying {
             if was_creature && self.tracks_death_history() {
                 self.state.creature_died_this_turn = true;
                 if !card.is_token() {
@@ -2354,12 +2364,13 @@ impl Game {
             self.queue_triggers(new_id, card, controller, TriggerEvent::Dies);
             // The dying permanent's own "this creature ... dies" trigger is
             // order-independent, so it is queued here rather than in the batch.
-            self.queue_self_death(new_id, card, controller, was_creature);
+            self.queue_self_death(new_id, card, controller, was_creature, was_goblin);
             return Some(DeathRecord {
                 battlefield_id: id,
                 graveyard_id: new_id,
                 controller,
                 was_creature,
+                was_goblin,
                 alone_in_combat,
             });
         }
@@ -2653,6 +2664,7 @@ impl Game {
         card: CardId,
         controller: PlayerId,
         was_creature: bool,
+        was_goblin: bool,
     ) {
         // CR 700.4: only a creature dying is a "creature dies" event; a milled
         // creature card or a sacrificed artifact never triggers these.
@@ -2666,6 +2678,12 @@ impl Game {
             controller,
             TriggerEvent::CreatureYouControlDies,
         );
+        // CR 603.6c: "Pashalik Mons or another Goblin you control dies" — the
+        // dying permanent may be the watcher itself, and the subtype is the
+        // effective one it had when it left.
+        if was_goblin {
+            self.queue_triggers(dying, card, controller, TriggerEvent::GoblinYouControlDies);
+        }
     }
 
     /// Queue the "creature dies" watchers once for a whole batch of deaths.
@@ -2717,6 +2735,17 @@ impl Game {
                         source_controller,
                         TriggerEvent::AnotherCreatureYouControlDies,
                     );
+                    // CR 603.6c: the subtype-narrowed watcher (Pashalik Mons)
+                    // sees another Goblin its controller controlled die, from
+                    // the death record's pre-departure effective subtype.
+                    if record.was_goblin {
+                        self.queue_triggers(
+                            source,
+                            source_card,
+                            source_controller,
+                            TriggerEvent::GoblinYouControlDies,
+                        );
+                    }
                 }
                 // CR 603.6c: "whenever another creature dies" has no controller
                 // restriction. "Was attacking or blocking alone" uses the
@@ -3763,6 +3792,16 @@ impl Game {
                     })
                 })
                 .map(Target::Card)
+                .collect(),
+            // CR 115.1: "target artifact" — one artifact on the battlefield,
+            // either controller. Enchantments are never legal here even though
+            // the aggregate spec below accepts them.
+            TargetSpec::Artifact => self
+                .state
+                .objects
+                .values()
+                .filter(|o| o.zone == Zone::Battlefield && o.card.def().is_artifact())
+                .map(|o| Target::Permanent(o.id))
                 .collect(),
             // CR 115.1 + 601.2c: every artifact and/or enchantment on the
             // battlefield, either controller. "Any number" is an aggregate
@@ -5693,6 +5732,17 @@ impl Game {
             spell_mana_value: 0,
             x_value: 0,
         });
+        // CR 603.3 + 602.2b (which applies 601.2h–i to activation): a triggered
+        // ability that triggers *while* an ability is being activated is put on
+        // the stack above that ability, so it resolves first and the table gets
+        // a response window. Every cost payment above can perform a zone
+        // change — the subtype sacrifice and self-sacrifice move a permanent to
+        // its owner's graveyard (queuing dies triggers), discarding and
+        // exiling from a graveyard are zone changes too — so the queue is
+        // drained once here, exactly like the cast path (`engine.rs:5221`) and
+        // the land-play path (`engine.rs:4692`). Staging before the push would
+        // put the trigger below the ability and resolve it after (R365-1).
+        self.put_triggers(events);
         // CR 117.3c: activating is treated like casting for priority purposes.
         self.state.turn.passed = 0;
         self.state.turn.priority = Some(player);
@@ -8156,13 +8206,20 @@ impl Game {
             Target::Permanent(id) => self.state.try_object(id).is_some_and(|o| {
                 // CR 115.1: a permanent target must still be a permanent this
                 // instruction can name. An artifact/enchantment target is not a
-                // creature, so the check is by the zone plus the printed card
-                // type the spec reads.
+                // creature, so the check reads the ability's own printed target
+                // spec rather than assuming the creature default.
+                let spec = ability::abilities(item.card)
+                    .get(ability_index(item.entry) as usize)
+                    .map(Ability::target_spec);
                 o.zone == Zone::Battlefield
-                    && if trigger_targets_a_set(item.card, ability_index(item.entry)) {
-                        o.card.def().is_artifact() || o.card.def().is_enchantment()
-                    } else {
-                        self.is_creature(o)
+                    && match spec {
+                        Some(TargetSpec::ArtifactOrEnchantment) => {
+                            o.card.def().is_artifact() || o.card.def().is_enchantment()
+                        }
+                        // "target artifact" never accepts an enchantment, so a
+                        // target that stopped being an artifact is illegal.
+                        Some(TargetSpec::Artifact) => o.card.def().is_artifact(),
+                        _ => self.is_creature(o),
                     }
             }),
             // CR 608.2b: the target is checked against the zone the printed
@@ -9565,6 +9622,48 @@ impl Game {
                             doomed.len()
                         ),
                     });
+                }
+                false
+            }
+            // CR 701.7a: destroy the single targeted artifact. Only artifacts
+            // are ever named by this spec; a target that has left the
+            // battlefield, or is somehow not an artifact any more, is simply
+            // not found and the ability does nothing (CR 608.2b).
+            Effect::DestroyTargetArtifact => {
+                let doomed: Vec<ObjectId> = self
+                    .state
+                    .objects
+                    .values()
+                    .filter(|object| {
+                        object.zone == Zone::Battlefield
+                            && item.targets.contains(&Target::Permanent(object.id))
+                            && object.card.def().is_artifact()
+                    })
+                    .map(|object| object.id)
+                    .collect();
+                if let Some(id) = doomed.first().copied() {
+                    if self.has_indestructible(id) {
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "{} is indestructible and is not destroyed (CR 702.12b)",
+                                self.describe_object(id)
+                            ),
+                        });
+                    } else if !self.try_regenerate(id, events) {
+                        let watchers = death_watchers(self);
+                        let combat = self.capture_combat_alone();
+                        let mut deaths = Vec::new();
+                        if let Some(record) = self.move_to_graveyard_inner(id, events, &combat) {
+                            deaths.push(record);
+                        }
+                        self.queue_watchers_for_deaths(&watchers, &deaths);
+                        events.push(Event::StateBasedAction {
+                            description: format!(
+                                "{} was destroyed by target artifact destruction (CR 701.7a)",
+                                self.describe_object(id)
+                            ),
+                        });
+                    }
                 }
                 false
             }
@@ -12430,6 +12529,9 @@ fn death_watchers(game: &Game) -> Vec<(ObjectId, CardId, PlayerId)> {
                 || ability::triggers_on(object.card, TriggerEvent::AnotherCreatureDies)
                     .next()
                     .is_some()
+                || ability::triggers_on(object.card, TriggerEvent::GoblinYouControlDies)
+                    .next()
+                    .is_some()
         })
         .map(|object| (object.id, object.card, object.controller))
         .collect()
@@ -12451,6 +12553,12 @@ struct DeathRecord {
     graveyard_id: ObjectId,
     controller: PlayerId,
     was_creature: bool,
+    /// CR 613.1d + 700.4: the dying permanent's effective Goblin subtype at the
+    /// moment it left the battlefield, captured for the subtype-narrowed dies
+    /// watcher (Pashalik Mons). It is the same pre-departure snapshot as
+    /// `was_creature`, so a layer 4 animation counts and a dead object cannot
+    /// change the answer afterwards.
+    was_goblin: bool,
     alone_in_combat: bool,
 }
 
@@ -12531,6 +12639,7 @@ fn target_spec_rule(spec: TargetSpec) -> &'static str {
         TargetSpec::ArtifactOrEnchantment => {
             "any number of target artifacts and/or enchantments: CR 115.1, 601.2c"
         }
+        TargetSpec::Artifact => "target artifact: CR 115.1",
     }
 }
 

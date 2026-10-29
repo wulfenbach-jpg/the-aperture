@@ -334,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 177] = [
+pub static CARDS: [CardDef; 179] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -1475,6 +1475,23 @@ pub static CARDS: [CardDef; 177] = [
         SiegeGangCommander, "Siege-Gang Commander", cost: Some("{3}{R}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),
         oracle: "When this creature enters, create three 1/1 red Goblin creature tokens.\n{1}{R}, Sacrifice a Goblin: This creature deals 2 damage to any target.",
+        spell: None
+    ),
+    // Slice 66. Pashalik Mons (DMR 133) and Goblin Trashmaster (M19 144) are the
+    // next two demanded "Sacrifice a Goblin" cards. Both printings were fetched
+    // live from Scryfall on 2026-10-29 and every printing was checked for one
+    // distinct oracle text; the records live in
+    // fixtures/starter-corpus/slice66-sourced.json.
+    card!(
+        PashalikMons, "Pashalik Mons", cost: Some("{2}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "Whenever Pashalik Mons or another Goblin you control dies, Pashalik Mons deals 1 damage to any target.\n{3}{R}, Sacrifice a Goblin: Create two 1/1 red Goblin creature tokens.",
+        spell: None
+    ),
+    card!(
+        GoblinTrashmaster, "Goblin Trashmaster", cost: Some("{2}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin Warrior", power: Some(3), toughness: Some(3),
+        oracle: "Other Goblins you control get +1/+1.\nSacrifice a Goblin: Destroy target artifact.",
         spell: None
     ),
 ];
