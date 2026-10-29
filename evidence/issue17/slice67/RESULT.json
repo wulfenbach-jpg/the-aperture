@@ -45,7 +45,8 @@
     "slice15": "2 passed",
     "replay_digest": "6 passed",
     "import": "3+1 passed",
-    "workspace": "159 result lines / 1174 passed / 0 failed / 2 ignored"
+    "workspace": "159 result lines / 1174 passed / 0 failed / 2 ignored",
+    "strengthened_recheck": "checkpoint/cards/order/command_zone_setup/fmt/clippy all exit 0"
   },
   "gates": {
     "script": "evidence/issue17/slice67/gates.sh",
@@ -60,7 +61,8 @@
     "clippy": 0,
     "release": 0,
     "workspace_log": "evidence/issue17/slice67/native-check/workspace-repair.log",
-    "workspace_summary": "159 result lines / 1174 passed / 0 failed / 2 ignored"
+    "workspace_summary": "159 result lines / 1174 passed / 0 failed / 2 ignored",
+    "recheck_log": "evidence/issue17/slice67/final-native/recheck.log"
   },
   "journey": {
     "path": "evidence/issue17/slice67/final-native/demo-journey.json",

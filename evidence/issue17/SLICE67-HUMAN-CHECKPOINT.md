@@ -53,5 +53,5 @@ still receive the same seat they previously did, so accepted active-player cases
 cannot regress; the full workspace is green.
 
 ## Honest TDD note
-R367 has retained compiling REDs. No separate Siege pretest RED was retained;
+R367 has retained compiling REDs. The continuation, whole-offer, exact-two, save-load, Siege expiry/pre-existing/commander-zone assertions were added after the initial GREEN and are not claimed as pretest RED. No separate Siege pretest RED was retained;
 that GREEN is not claimed as TDD.
