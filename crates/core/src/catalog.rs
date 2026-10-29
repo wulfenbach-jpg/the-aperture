@@ -334,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 180] = [
+pub static CARDS: [CardDef; 182] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -742,6 +742,18 @@ pub static CARDS: [CardDef; 180] = [
     ),
     // Native-authorized real Dragon positive control for the Servant's reducer;
     // out-of-list, entire text is Flying, haste.
+    card!(
+        SkirkProspector, "Skirk Prospector", cost: Some("{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Goblin", power: Some(1), toughness: Some(1),
+        oracle: "Sacrifice a Goblin: Add {R}.",
+        spell: None
+    ),
+    card!(
+        ZoZuThePunisher, "Zo-Zu the Punisher", cost: Some("{1}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Legendary Creature — Goblin Warrior", power: Some(2), toughness: Some(2),
+        oracle: "Whenever a land enters, Zo-Zu deals 2 damage to that land's controller.",
+        spell: None
+    ),
     card!(
         SiegeGangLieutenant, "Siege-Gang Lieutenant", cost: Some("{3}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin", power: Some(2), toughness: Some(2),

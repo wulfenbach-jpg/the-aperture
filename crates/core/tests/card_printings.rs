@@ -70,6 +70,7 @@ const SLICE64_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 /// Servant (TDC 210), fetched 2026-10-29.
 const SLICE63_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice63-sourced.json");
 const SLICE67_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice67-sourced.json");
+const SLICE68_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice68-sourced.json");
 /// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
@@ -515,6 +516,11 @@ fn slice60_cards() -> Vec<Value> {
     value["cards"].as_array().expect("cards").to_vec()
 }
 
+fn slice68_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE68_SOURCED).expect("sourced slice68 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
 fn slice67_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE67_SOURCED).expect("sourced slice67 JSON");
     value["cards"].as_array().expect("cards").to_vec()
@@ -695,6 +701,28 @@ const PRINTINGS: &[Printing] = &[
         printings_checked: 3,
         retrieved: "2026-10-29",
         oracle_text: "Lieutenant — At the beginning of combat on your turn, if you control your commander, create two 1/1 red Goblin creature tokens. Those tokens gain haste until end of turn.\n{2}, Sacrifice a Goblin: This creature deals 1 damage to any target.",
+        power: Some("2"),
+        toughness: Some("2"),
+    },
+    Printing {
+        name: "Skirk Prospector",
+        set: "dmr",
+        collector_number: "137",
+        scryfall_uri: "https://scryfall.com/card/dmr/137/skirk-prospector",
+        printings_checked: 9,
+        retrieved: "2026-10-29",
+        oracle_text: "Sacrifice a Goblin: Add {R}.",
+        power: Some("1"),
+        toughness: Some("1"),
+    },
+    Printing {
+        name: "Zo-Zu the Punisher",
+        set: "dds",
+        collector_number: "41",
+        scryfall_uri: "https://scryfall.com/card/dds/41/zo-zu-the-punisher",
+        printings_checked: 4,
+        retrieved: "2026-10-29",
+        oracle_text: "Whenever a land enters, Zo-Zu deals 2 damage to that land's controller.",
         power: Some("2"),
         toughness: Some("2"),
     },
@@ -2127,4 +2155,26 @@ fn every_slice67_card_matches_its_recorded_printing_and_abilities() {
     );
     assert_eq!(aperture_core::ability::abilities(def.id).len(), 2);
     assert_eq!(sourced_text(record, "legalities_commander"), "legal");
+}
+
+#[test]
+fn every_slice68_card_matches_its_recorded_printing() {
+    let cards = slice68_cards();
+    assert_eq!(cards.len(), 2);
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name).expect("in pool").def();
+        assert_eq!(def.oracle, sourced_text(&record, "oracle_text"));
+        assert_eq!(def.type_line, sourced_text(&record, "type_line"));
+        assert_eq!(def.cost, Some(sourced_text(&record, "mana_cost")));
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+    }
 }

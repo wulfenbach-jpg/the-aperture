@@ -347,6 +347,9 @@ pub struct TriggerRef {
     /// never retargeted; dangling after a battlefield departure.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affected: Option<ObjectId>,
+    /// Non-targeted affected player captured by a land-entry trigger (Zo-Zu).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affected_player: Option<PlayerId>,
     /// The creature a "whenever another creature dies" trigger watched die,
     /// captured when the death was dispatched so the resolution can exile that
     /// exact card from its owner's graveyard (CR 603.6c). Absent for every other
@@ -860,6 +863,9 @@ pub struct StackItem {
     /// Non-target object captured by the trigger's "it" wording.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affected: Option<ObjectId>,
+    /// Non-targeted affected player captured by a land-entry trigger.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affected_player: Option<PlayerId>,
     /// The dead card a "whenever another creature dies" trigger watched, copied
     /// from `TriggerRef::dead_object` when the item was put on the stack.
     #[serde(default, skip_serializing_if = "Option::is_none")]

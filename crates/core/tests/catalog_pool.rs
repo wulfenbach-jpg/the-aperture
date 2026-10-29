@@ -136,7 +136,8 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                         !abilities.is_empty()
                             || !statics.is_empty()
                             || card.artifact_mana.is_some()
-                            || card.id.dynamic_mana().is_some(),
+                            || card.id.dynamic_mana().is_some()
+                            || card.id.sacrifice_mana().is_some(),
                         "{} prints text but has no implementation",
                         card.name
                     );
@@ -321,6 +322,7 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::PutTwoCountersOnEachCreatureYouControl
                 | Effect::UrsineCombatTrigger
                 | Effect::RingTempts
+                | Effect::DamageAffectedPlayer(_)
                 | Effect::DiscardOne
                 | Effect::RingScheduleDelayedSacrifice
                 | Effect::RingDelayedSacrifice

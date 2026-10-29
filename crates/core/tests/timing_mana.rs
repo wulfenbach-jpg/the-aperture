@@ -334,6 +334,7 @@ fn spell_target_that_is_not_on_the_stack_is_rejected() {
         targets: Vec::new(),
         modes: Vec::new(),
         affected: None,
+        affected_player: None,
         dead_object: None,
         source_pt_lki: None,
         search_amount: 0,

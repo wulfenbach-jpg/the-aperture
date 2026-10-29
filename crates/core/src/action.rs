@@ -59,6 +59,13 @@ pub enum Action {
     ActivateManaAbility {
         land: ObjectId,
     },
+    /// CR 605.1a: a costed mana ability whose cost is sacrificing a chosen
+    /// Goblin ("Sacrifice a Goblin: Add {R}"). It resolves immediately and never
+    /// uses the stack.
+    ActivateSacrificeManaAbility {
+        source: ObjectId,
+        sacrifice: ObjectId,
+    },
     /// Dynamic mana ability with an explicit chosen color.
     ActivateColorManaAbility {
         source: ObjectId,
@@ -213,6 +220,7 @@ impl Action {
             Action::CastSpellWithModes { .. } => "cast modal spell",
             Action::CastSpellWithX { .. } => "cast spell",
             Action::ActivateManaAbility { .. } => "mana ability",
+            Action::ActivateSacrificeManaAbility { .. } => "mana ability",
             Action::ActivateColorManaAbility { .. } => "mana ability",
             Action::DeclareAttackers { .. } => "declare attackers",
             Action::DeclareBlockers { .. } => "declare blockers",

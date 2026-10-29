@@ -1,0 +1,15 @@
+catalog_cards      = 182
+union_names        = 459
+supported_union    = 168
+missing_union      = 291
+  isamaru-white-aggro        status=planned   missing=55
+  jasmine-vanilla-stompy     status=certified missing=0
+  talrand-draw-go            status=planned   missing=51
+  krenko-goblin-tokens       status=planned   missing=33
+  ayula-bear-counters        status=certified missing=0
+  elas-sacrifice             status=planned   missing=52
+  tatyova-landfall           status=planned   missing=52
+  zada-spells                status=planned   missing=53
+per_list_missing   = [55, 0, 51, 33, 0, 52, 52, 53]
+certified_lists    = 2 ['jasmine-vanilla-stompy', 'ayula-bear-counters']
+AUDIT OK

@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **166** are in the supported 180-card catalog and **293** are missing. Slice
+* **168** are in the supported 182-card catalog and **291** are missing. Slice
  25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
@@ -345,7 +345,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 180 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 182 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1446,4 +1446,34 @@ ability.
 
 **Corpus after this slice.** 180 catalog / 459 union = **166 supported + 293
 missing**, per-list `[55, 0, 51, 35, 0, 52, 52, 53]`, Krenko **35** missing;
+two of eight lists certified. No 3/8 claim.
+
+
+## Slice 68: Skirk Prospector and Zo-Zu the Punisher
+
+**Skirk Prospector** (DMR 137, `{R}`, Goblin 1/1, fetched
+2026-10-29T19:26:17Z, nine printings / one text) prints
+"Sacrifice a Goblin: Add {R}." This is a real CR 605.1a nonstack mana ability:
+the offered action names the source and the sacrificed Goblin, never taps,
+ignores summoning sickness, adds red immediately, and has no response window.
+Every legal controlled Goblin is offered, including the source itself; wrong
+subtype, opponent-controlled, missing-object and nonbattlefield choices are
+refused atomically by typed validation. Cost deaths go through the normal
+zone-change/death trigger queue and the canonical post-payment checkpoint, so
+Pashalik and similar triggers stage after the mana ability with no fake stack
+item. Tests pay a real `{R}` Goblin War Strike from the produced mana and verify
+pending-trigger save/load.
+
+**Zo-Zu the Punisher** (DDS 41, `{1}{R}{R}`, Legendary Goblin Warrior 2/2,
+fetched 2026-10-29T19:26:18Z, four printings / one text) prints "Whenever a land
+enters, Zo-Zu deals 2 damage to that land's controller." A typed
+`AnyLandEnters` trigger captures the entering land's controller as non-targeted
+affected-player provenance; damage uses the existing replacement pipeline with
+the source's last-known controller, so it still works after Zo-Zu leaves. It
+watches all players, not only the controller, and does not fire for creatures.
+Existing own-only landfall watchers remain own-only. Tests cover opponent land,
+source-left damage and creature-entry control.
+
+**Corpus after this slice.** 182 catalog / 459 union = **168 supported + 291
+missing**, per-list `[55, 0, 51, 33, 0, 52, 52, 53]`, Krenko **33** missing;
 **two of eight** lists certified. No 3/8 claim.

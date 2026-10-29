@@ -36,6 +36,9 @@ pub enum TriggerEvent {
     SpellCast,
     /// CR 603.6a: a land entered under this source's controller.
     LandEnters,
+    /// CR 603.6a: any land entered, regardless of who controls the land or the
+    /// triggering source (Zo-Zu the Punisher).
+    AnyLandEnters,
     /// CR 509.3c: this creature became blocked.
     BecomesBlocked,
     /// CR 603.6a with the printed word "another" (CR 603.6a + 109.5): a
@@ -101,6 +104,7 @@ impl TriggerEvent {
             TriggerEvent::Dies => "dies",
             TriggerEvent::SpellCast => "you cast an instant or sorcery spell",
             TriggerEvent::LandEnters => "a land you control enters",
+            TriggerEvent::AnyLandEnters => "a land enters",
             TriggerEvent::BecomesBlocked => "this creature becomes blocked",
             TriggerEvent::AnotherCreatureEnters => "another creature enters",
             TriggerEvent::CreatureDies => "a creature dies",
@@ -1245,6 +1249,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::GoblinInstigator => GOBLIN_INSTIGATOR,
         CardId::SearslicerGoblin => SEARSLICER_GOBLIN,
         CardId::SiegeGangLieutenant => SIEGE_GANG_LIEUTENANT,
+        CardId::ZoZuThePunisher => ZO_ZU,
         CardId::GoblinSharpshooter => GOBLIN_SHARPSHOOTER,
         CardId::KrenkoTinStreetKingpin => KRENKO_TIN_STREET_KINGPIN,
         CardId::HobgoblinBanditLord => HOBGOBLIN_BANDIT_LORD,
@@ -1822,6 +1827,14 @@ const SPIDER_HAM_SUBTYPES: &[&str] = &[
 ];
 
 const GOBLIN_SUBTYPES: &[&str] = &["Goblin"];
+
+const ZO_ZU: &[Ability] = &[Ability::Triggered(TriggeredAbility {
+    text: "Whenever a land enters, Zo-Zu deals 2 damage to that land's controller.",
+    event: TriggerEvent::AnyLandEnters,
+    optional: false,
+    target: TargetSpec::None,
+    effects: &[Effect::DamageAffectedPlayer(2)],
+})];
 
 const SIEGE_GANG_LIEUTENANT: &[Ability] = &[
     Ability::Triggered(TriggeredAbility {

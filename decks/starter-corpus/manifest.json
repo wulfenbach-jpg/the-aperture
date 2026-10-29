@@ -211,18 +211,16 @@
         "Redcap Gutter-Dweller",
         "Rundvelt Hordemaster",
         "Scuzzback Scrounger",
-        "Skirk Prospector",
         "Squee, Goblin Nabob",
         "Squee, the Immortal",
         "Stadium Headliner",
         "Sting, the Glinting Dagger",
         "Treasure Nabber",
-        "Zada, Hedron Grinder",
-        "Zo-Zu the Punisher"
+        "Zada, Hedron Grinder"
       ],
       "missing_interactions": [
-        "remaining 35 desired-list cards are not in the supported pool (first unsupported names: Brash Taunter, Breeches, Eager Pillager, Conspicuous Snoop, Crime Novelist, Empty the Warrens, General Kreat, the Boltbringer)",
-        "goblin tribal payoffs still unsupported: Skirk Prospector's nonland mana ability remains outside the pool; library search onto the battlefield (Moggcatcher), goblin-count-scaled combat payoffs (Grenzo, Howlsquad Heavy, General Kreat), and artifact/graveyard Goblin recursion (Goblin Engineer, Goblin Welder, Squee)",
+        "remaining 33 desired-list cards are not in the supported pool (first unsupported names: Brash Taunter, Breeches, Eager Pillager, Conspicuous Snoop, Crime Novelist, Empty the Warrens, General Kreat, the Boltbringer)",
+        "goblin tribal payoffs still unsupported: library search onto the battlefield (Moggcatcher), goblin-count-scaled combat payoffs (Grenzo, Howlsquad Heavy, General Kreat), and artifact/graveyard Goblin recursion (Goblin Engineer, Goblin Welder, Squee)",
         "tokens outside the typed 1/1 red Goblin package; the three-token enters package, the two-token sacrifice payoff and the artifact-destruction sacrifice of this family are now implemented, so what remains under this heading is the other token-making cards named above"
       ]
     },

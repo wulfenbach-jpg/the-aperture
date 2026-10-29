@@ -191,6 +191,9 @@ pub enum Effect {
     CreateGoblinTokensForEachGoblin,
     /// Create one 2/2 blue Drake creature token with flying (Talrand).
     CreateDrakeToken,
+    /// "Deals N damage to that land's controller" (Zo-Zu): the affected player
+    /// was captured when the land-entry trigger was queued.
+    DamageAffectedPlayer(u8),
     /// Lieutenant: create N 1/1 red Goblin tokens and grant each haste until
     /// end of turn.
     CreateHasteGoblinTokens(u8),
@@ -521,6 +524,9 @@ impl Effect {
             Effect::Scry(n) => format!("scry {n}"),
             Effect::Surveil(n) => format!("surveil {n}"),
             Effect::Damage(n) => format!("deal {n} damage to the target"),
+            Effect::DamageAffectedPlayer(n) => {
+                format!("deal {n} damage to the affected land's controller")
+            }
             Effect::CounterTargetSpell => "counter target spell".to_string(),
             Effect::Pump(p, t) => format!("target creature gets {p:+}/{t:+} until end of turn"),
             Effect::EachPlayerSacrifice => "each player sacrifices a permanent".to_string(),
@@ -1074,6 +1080,8 @@ pub enum CardId {
     DragonlordsServant,
     VolcanicDragon,
     SiegeGangLieutenant,
+    SkirkProspector,
+    ZoZuThePunisher,
     GoblinSharpshooter,
     KrenkoTinStreetKingpin,
     HobgoblinBanditLord,
@@ -1222,6 +1230,15 @@ impl CardId {
             CardId::ArcaneSignet => Some(ManaChoice::CommanderIdentity),
             CardId::FellwarStone => Some(ManaChoice::OpponentLandColors),
             CardId::CommandersSphere => Some(ManaChoice::CommanderIdentity),
+            _ => None,
+        }
+    }
+
+    /// CR 605.1a: a mana ability whose cost is "Sacrifice a Goblin" rather than
+    /// `{T}`. It may be activated while summoning sick and never taps.
+    pub fn sacrifice_mana(self) -> Option<ManaColor> {
+        match self {
+            CardId::SkirkProspector => Some(ManaColor::Red),
             _ => None,
         }
     }

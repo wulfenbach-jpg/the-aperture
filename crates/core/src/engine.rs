@@ -2788,6 +2788,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                affected_player: None,
                 dead_object: Some(dead_object),
                 source_pt_lki: None,
                 search_amount: 0,
@@ -3002,6 +3003,9 @@ impl Game {
                 self.validate_cast_with_x(player, *card, *x, targets)
             }
             Action::ActivateManaAbility { land } => self.validate_mana_ability(player, *land),
+            Action::ActivateSacrificeManaAbility { source, sacrifice } => {
+                self.validate_sacrifice_mana_ability(player, *source, *sacrifice)
+            }
             Action::ActivateColorManaAbility { source, color } => {
                 self.validate_color_mana_ability(player, *source, *color)
             }
@@ -4599,6 +4603,9 @@ impl Game {
                 self.apply_cast(player, *card, *x, &[], targets, events)
             }
             Action::ActivateManaAbility { land } => self.apply_mana_ability(player, *land, events),
+            Action::ActivateSacrificeManaAbility { source, sacrifice } => {
+                self.apply_sacrifice_mana_ability(player, *source, *sacrifice, events)
+            }
             Action::ActivateColorManaAbility { source, color } => {
                 self.apply_color_mana_ability(player, *source, *color, events)
             }
@@ -4740,7 +4747,9 @@ impl Game {
     /// played or put onto the battlefield by an effect. Staging remains with
     /// the caller so searches finish their entire instruction before priority.
     fn queue_land_enters(&mut self, player: PlayerId) {
-        let sources: Vec<(ObjectId, CardId)> = self
+        // Existing landfall watchers are controller-scoped; Zo-Zu's
+        // "Whenever a land enters" watches every land in every seat.
+        let own: Vec<(ObjectId, CardId)> = self
             .state
             .objects
             .values()
@@ -4752,9 +4761,59 @@ impl Game {
             })
             .map(|object| (object.id, object.card))
             .collect();
-        for (source, source_card) in sources {
-            self.queue_triggers(source, source_card, player, TriggerEvent::LandEnters);
+        for (source, source_card) in own {
+            self.queue_land_trigger(source, source_card, player, TriggerEvent::LandEnters, None);
         }
+        let any: Vec<(ObjectId, CardId, PlayerId)> = self
+            .state
+            .objects
+            .values()
+            .filter(|object| object.zone == Zone::Battlefield)
+            .filter(|object| {
+                ability::triggers_on(object.card, TriggerEvent::AnyLandEnters)
+                    .next()
+                    .is_some()
+            })
+            .map(|object| (object.id, object.card, object.controller))
+            .collect();
+        for (source, source_card, controller) in any {
+            self.queue_land_trigger(
+                source,
+                source_card,
+                controller,
+                TriggerEvent::AnyLandEnters,
+                Some(player),
+            );
+        }
+    }
+
+    fn queue_land_trigger(
+        &mut self,
+        source: ObjectId,
+        card: CardId,
+        controller: PlayerId,
+        event: TriggerEvent,
+        affected_player: Option<PlayerId>,
+    ) {
+        let seq = self.state.next_trigger_seq;
+        self.state.next_trigger_seq += 1;
+        self.state.trigger_queue.push(crate::state::TriggerRef {
+            source,
+            card,
+            controller,
+            ability: ability::triggers_on(card, event)
+                .next()
+                .map(|(index, _)| index)
+                .unwrap_or(0),
+            seq,
+            spell_mana_value: 0,
+            affected: None,
+            affected_player,
+            dead_object: None,
+            source_pt_lki: None,
+            search_amount: 0,
+            x_value: 0,
+        });
     }
 
     fn dynamic_mana_colors(&self, player: PlayerId, source: ObjectId) -> Vec<ManaColor> {
@@ -4809,6 +4868,80 @@ impl Game {
             .zip(set)
             .filter_map(|(color, present)| present.then_some(*color))
             .collect()
+    }
+
+    fn validate_sacrifice_mana_ability(
+        &self,
+        player: PlayerId,
+        source: ObjectId,
+        sacrifice: ObjectId,
+    ) -> Result<(), EngineError> {
+        if self.state.pending.is_some() || self.state.turn.priority != Some(player) {
+            return Err(EngineError::illegal(
+                "mana ability",
+                "mana abilities need priority and cannot be used while a choice is pending (CR 605.3a, 608.2d)",
+            ));
+        }
+        let source_object = self
+            .state
+            .try_object(source)
+            .ok_or(EngineError::UnknownObject)?;
+        if source_object.zone != Zone::Battlefield || source_object.controller != player {
+            return Err(EngineError::WrongZone {
+                name: source_object.card.name(),
+                zone: "battlefield",
+            });
+        }
+        if source_object.card.sacrifice_mana().is_none() {
+            return Err(EngineError::NotAManaSource);
+        }
+        let sacrifice_object = self
+            .state
+            .try_object(sacrifice)
+            .ok_or(EngineError::UnknownObject)?;
+        if sacrifice_object.zone != Zone::Battlefield || sacrifice_object.controller != player {
+            return Err(EngineError::illegal(
+                "mana ability",
+                "the sacrificed Goblin must be a battlefield permanent you control",
+            ));
+        }
+        if !self.has_subtype(sacrifice_object, "Goblin") {
+            return Err(EngineError::illegal(
+                "mana ability",
+                "the sacrifice cost requires a Goblin",
+            ));
+        }
+        Ok(())
+    }
+
+    fn apply_sacrifice_mana_ability(
+        &mut self,
+        player: PlayerId,
+        source: ObjectId,
+        sacrifice: ObjectId,
+        events: &mut Vec<Event>,
+    ) {
+        let color = self
+            .state
+            .object(source)
+            .card
+            .sacrifice_mana()
+            .unwrap_or(ManaColor::Red);
+        let name = self.state.object(sacrifice).card.def().name;
+        events.push(Event::StateBasedAction {
+            description: format!("P{player} sacrifices {name} for mana (CR 605.1a)"),
+        });
+        self.move_to_graveyard(sacrifice, events);
+        self.state.players[player as usize].mana.add(color, 1);
+        events.push(Event::ManaAdded {
+            player,
+            color,
+            amount: 1,
+            pool_total: self.state.players[player as usize].mana.total(),
+        });
+        self.state.turn.passed = 0;
+        self.state.turn.priority = None;
+        self.state.activation_priority = Some(player);
     }
 
     fn validate_color_mana_ability(
@@ -5223,6 +5356,7 @@ impl Game {
             targets: targets.to_vec(),
             modes: modes.to_vec(),
             affected: None,
+            affected_player: None,
             dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
@@ -5324,6 +5458,7 @@ impl Game {
             targets: Vec::new(),
             modes: Vec::new(),
             affected: Some(source),
+            affected_player: None,
             dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
@@ -5727,6 +5862,7 @@ impl Game {
             targets: targets.to_vec(),
             modes: Vec::new(),
             affected: attach.then_some(source),
+            affected_player: None,
             dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
@@ -5834,6 +5970,7 @@ impl Game {
             seq,
             spell_mana_value: 0,
             affected,
+            affected_player: None,
             dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
@@ -5859,6 +5996,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: Some(source),
+                affected_player: None,
                 source_pt_lki: None,
                 search_amount: 0,
                 dead_object: None,
@@ -5883,6 +6021,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                affected_player: None,
                 dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
@@ -5901,6 +6040,7 @@ impl Game {
                 seq,
                 spell_mana_value: 0,
                 affected: None,
+                affected_player: None,
                 dead_object: None,
                 source_pt_lki: None,
                 search_amount: 0,
@@ -6201,6 +6341,7 @@ impl Game {
             targets,
             modes: Vec::new(),
             affected: trigger.affected,
+            affected_player: trigger.affected_player,
             dead_object: trigger.dead_object,
             source_pt_lki: trigger.source_pt_lki,
             search_amount: trigger.search_amount,
@@ -6569,6 +6710,7 @@ impl Game {
             targets: targets.to_vec(),
             modes: modes.to_vec(),
             affected: None,
+            affected_player: None,
             dead_object: None,
             source_pt_lki: None,
             search_amount: 0,
@@ -6783,6 +6925,7 @@ impl Game {
                         seq,
                         spell_mana_value: 0,
                         affected: None,
+                        affected_player: None,
                         dead_object: None,
                         source_pt_lki: None,
                         search_amount: qualifying,
@@ -8398,6 +8541,7 @@ impl Game {
                     seq: 0,
                     spell_mana_value: item.spell_mana_value,
                     affected: item.affected,
+                    affected_player: None,
                     dead_object: None,
                     source_pt_lki: item.source_pt_lki,
                     search_amount: item.search_amount,
@@ -9339,6 +9483,35 @@ impl Game {
                     .is_some_and(|object| object.zone == Zone::Battlefield)
                 {
                     self.move_to_graveyard(blocker, events);
+                }
+                false
+            }
+            Effect::DamageAffectedPlayer(amount) => {
+                let Some(target_player) = item.affected_player else {
+                    return false;
+                };
+                if !self.state.is_live(target_player) {
+                    return false;
+                }
+                let dealt = self.deal_damage_from(
+                    Some(item.object),
+                    Some(item.controller),
+                    DamageTarget::Player(target_player),
+                    u32::from(amount),
+                    false,
+                    events,
+                );
+                if dealt > 0 {
+                    events.push(Event::Damage {
+                        source: Some(item.object),
+                        target: format!("P{target_player}"),
+                        amount: dealt,
+                    });
+                    events.push(Event::LifeChange {
+                        player: target_player,
+                        delta: -(dealt as i32),
+                        life: self.state.player(target_player).life,
+                    });
                 }
                 false
             }
@@ -10855,6 +11028,7 @@ impl Game {
                         seq,
                         spell_mana_value: 0,
                         affected: Some(entering),
+                        affected_player: None,
                         dead_object: None,
                         source_pt_lki: None,
                         search_amount: 0,
@@ -11519,6 +11693,38 @@ impl Game {
         }
 
         let mana_timing = self.state.pending.is_none() && self.state.turn.priority == Some(player);
+        // CR 605.1a: sacrifice-a-Goblin mana abilities are immediate, need no
+        // tap and ignore summoning sickness. Every legal Goblin is an offer,
+        // including the source itself.
+        if mana_timing {
+            let goblins: Vec<ObjectId> = self
+                .state
+                .battlefield(player)
+                .into_iter()
+                .filter(|object| self.has_subtype(object, "Goblin"))
+                .map(|object| object.id)
+                .collect();
+            for source in self.state.battlefield(player) {
+                if source.card.sacrifice_mana().is_none() {
+                    continue;
+                }
+                for sacrifice in &goblins {
+                    out.push(LegalAction {
+                        action: Action::ActivateSacrificeManaAbility {
+                            source: source.id,
+                            sacrifice: *sacrifice,
+                        },
+                        label: format!(
+                            "Sacrifice {} to {} for mana",
+                            self.state.object(*sacrifice).card.name(),
+                            source.card.name()
+                        ),
+                        rules: vec!["605.1a"],
+                    });
+                }
+            }
+        }
+
         for object in self.state.battlefield(player) {
             if !mana_timing || object.tapped {
                 continue;
@@ -13115,6 +13321,7 @@ mod slice17_cleanup_history_tests {
                     seq: 0,
                     spell_mana_value: 0,
                     affected: None,
+                    affected_player: None,
                     dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
@@ -13128,6 +13335,7 @@ mod slice17_cleanup_history_tests {
                     seq: 1,
                     spell_mana_value: 0,
                     affected: None,
+                    affected_player: None,
                     dead_object: None,
                     source_pt_lki: None,
                     search_amount: 0,
