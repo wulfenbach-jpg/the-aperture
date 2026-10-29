@@ -337,7 +337,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 162 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 163 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -918,3 +918,54 @@ Whole-field discipline: Ruxa left `missing_cards` **and** its `missing_interacti
 `decks/starter-corpus/manifest.json` in the same change; Ayula is now four missing names and
 the corpus is 162 catalog / 459 union = 149 supported + 310 missing, per-list
 `[55, 0, 51, 48, 4, 52, 52, 53]`, still one of eight lists certified.
+
+## Slice 54: Ursine Monstrosity — the CR 508.1d maximal attack requirement and indestructible
+
+Ursine Monstrosity (**DSC 36**, `{2}{G}`, 3/3 Bear Mutant) is sourced in
+`fixtures/starter-corpus/slice54-sourced.json` (Scryfall printing
+`73cc6df4-3564-4ace-bf8a-eac3e62d725a`, oracle id `647feda9-2876-4430-902f-10dc1f4f99a9`,
+retrieved 2026-10-28). It prints trample plus one combat trigger:
+
+> At the beginning of combat on your turn, mill a card and choose an opponent at random.
+> This creature attacks that player this combat if able. Until end of turn, this creature
+> gains indestructible and gets +1/+1 for each card type among cards in your graveyard.
+
+**«If able» is a declaration requirement, not a suggestion.** The random opponent is drawn
+from the live opponents at the beginning of combat and stored as the required defender;
+declaring this creature against any other player — or not declaring it — is refused while
+it is able. Enforcement is CR 508.1d **maximal**: the number of satisfied requirements is
+compared against the maximum achievable under the declaration actually submitted, so
+attacking a different opponent cannot evade the requirement, and every offered declaration
+still validates. A second creature may join the required attacker and unrelated attackers
+to other seats are unaffected; the requirement ends with the combat (CR 508.1d's "this
+combat") and never carries into the next one.
+
+**Indestructible is a keyword in the state-based-action path**, not a damage-prevention
+shield: lethal damage accumulates and is then ignored by the destroy check, while a
+zero-toughness permanent is still put into its owner's graveyard (CR 704.5f). The +N/+N is
+a layer 7c additive value fixed when the trigger resolves (CR 611.2d), counting the six
+card kinds this pool can put in a graveyard, so a later mill in the same turn does not
+retroactively grow it; the mill itself happens before the count.
+
+**Deliberate limits recorded, not hidden.** (a) CR 508.1d maximisation is implemented
+inside the inherited single-defender combat model, so "maximum requirements" means the
+maximum this engine's declarations can express, not full multi-defender Commander combat.
+(b) Indestructible does not prevent a zero-toughness graveyard move. (c) The +N/+N counts
+only the card kinds this pool can actually place in a graveyard, and it is fixed at
+resolution rather than recomputed. (d) The exit path of the ability logs its grant line
+after the battlefield gate, so a bounced source still logs the grant attempt; the
+effects themselves are correctly skipped. (e) `ContinuousKind::MustAttackThisCombat`
+stores the required defender in the `controller` field, so no future consumer may read
+that field as a controller.
+
+Regression coverage is `crates/core/tests/issue17_slice54.rs` and
+`crates/core/tests/issue17_slice54_regressions.rs`: the printed trigger, random opponent
+choice, maximal-requirement refusal and acceptance, wrong-opponent evasion refused, the
+fixed +N/+N vs a later mill, indestructible through lethal damage and its own cleanup,
+zero toughness still dying, the bounced-source control, and the whole-field gap rewrite.
+
+Whole-field discipline: Ursine Monstrosity left `missing_cards` **and** its
+`missing_interactions` entry in `decks/starter-corpus/manifest.json` in the same change;
+Ayula is now three missing names and the corpus is 163 catalog / 459 union = 150 supported
++ 309 missing, per-list `[55, 0, 51, 48, 3, 52, 52, 53]`, still one of eight lists
+certified.

@@ -19,8 +19,10 @@ implementation and it says so everywhere it matters.
   and payment, London mulligan, priority and stack resolution (consecutive passes
   resolve exactly one stack item), sorcery/instant timing, targets with
   revalidation on resolution, counterspell, scry/surveil pending choices, cleanup
-  discard, damage removal, state-based actions, bounded combat with attack/block
-  declarations and simultaneous damage, empty-library loss, game win/loss.
+  discard, damage removal, state-based actions, the CR 508.1d maximal attack
+  requirement, indestructible in the state-based-action path, bounded combat with
+  attack/block declarations and simultaneous damage, empty-library loss, game
+  win/loss.
 * **Supported branch-candidate pool (163 real cards)**: the 16-card practice
   corpus (Island, Mountain, Forest, Grizzly Bears, Runeclaw Bear, Centaur
   Courser, Craw Wurm, Hill Giant, Giant Growth, Shock, Lightning Strike,
@@ -309,10 +311,16 @@ Commander gameplay. The offline deck-profile analyzer above is
 analysis only;
 Commander graveyard/exile return is an SBA **after** zone entry (CR 903.9a),
 so a commander put into the graveyard does die before the return choice.
-Earlier "never dies" / replacement-effect guidance was incorrect and must not
-be implemented. Thijarian Witness's declaration-only interpretation of
-"was attacking or blocking alone" remains a known rules-reading gap before
-Ayula certification: CR 506.5 distinguishes attacks-alone from is-attacking-alone.
+Earlier "never dies" / replacement-effect guidance was incorrect and must not be implemented.
+Thijarian Witness's "was attacking or blocking alone" is read from the **live**
+pre-death combat state, not from a declaration record: CR 506.5 distinguishes
+"attacks alone" (declaration) from "is attacking alone" (live membership), and the
+printed past tense names the live state, snapshotted once per simultaneous death
+batch (CR 704.3). The declaration record is bookkeeping for other questions and is
+never read for this predicate. The residual limits are stated here rather than as a
+rules gap: a save captured mid-combat before that record existed re-executes to a
+different digest, and `GameState::validate` does not constrain the recorded
+declaration lists.
 networked multiplayer is absent (the native table is local 2–4 seats), as are
 generic hidden-zone APNAP or
 dynamic/restarting APNAP choices beyond the single public fixed-set Crack the
