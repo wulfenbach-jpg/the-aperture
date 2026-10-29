@@ -4,6 +4,7 @@
 
 pub mod app;
 pub mod perf;
+pub mod review;
 pub mod session;
 pub mod theme;
 

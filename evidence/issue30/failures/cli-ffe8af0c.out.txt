@@ -1,0 +1,73 @@
+{
+  "source": "text list 'unsupported-practice-list'",
+  "provider": "text",
+  "deck_id": null,
+  "deck_name": "unsupported-practice-list",
+  "format_code": null,
+  "total_cards": 3,
+  "recognized_cards": 3,
+  "supported_cards": 1,
+  "unsupported_cards": 2,
+  "entries": [
+    {
+      "name": "Black Lotus",
+      "quantity": 1,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Unsupported",
+      "detail": "'Black Lotus' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Sol Ring",
+      "quantity": 1,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Unsupported",
+      "detail": "'Sol Ring' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Island",
+      "quantity": 1,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    }
+  ],
+  "unsupported": [
+    {
+      "name": "Black Lotus",
+      "quantity": 1,
+      "reason": "'Black Lotus' is not in the supported pool (31 cards)"
+    },
+    {
+      "name": "Sol Ring",
+      "quantity": 1,
+      "reason": "'Sol Ring' is not in the supported pool (31 cards)"
+    }
+  ],
+  "excluded": [],
+  "excluded_categories": [
+    "Maybeboard"
+  ],
+  "sideboard": [],
+  "commander": [],
+  "companion": [],
+  "legality": [
+    "practice profile: exactly 40 main-deck cards (found 3)",
+    "at most 4 copies of each nonbasic card (basics unlimited)",
+    "every card must be in the supported pool (31 cards)",
+    "1v1, 20 life, London mulligan: Commander is not implemented"
+  ],
+  "launchable": false,
+  "refusal": "unsupported card(s) in the main deck: Black Lotus x1 ('Black Lotus' is not in the supported pool (31 cards)); Sol Ring x1 ('Sol Ring' is not in the supported pool (31 cards)) ΓÇö the supported pool has 31 cards; unsupported cards are refused, never substituted",
+  "raw_sha256": null,
+  "cached_path": null,
+  "notes": [
+    "excluded categories honored: Maybeboard"
+  ]
+}
+  text list refused for play: the deck cannot be launched: unsupported card(s) in the main deck: Black Lotus x1 ('Black Lotus' is not in the supported pool (31 cards)); Sol Ring x1 ('Sol Ring' is not in the supported pool (31 cards)) ΓÇö the supported pool has 31 cards; unsupported cards are refused, never substituted

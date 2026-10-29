@@ -1,0 +1,116 @@
+{
+  "source": "text list 'izzet-control'",
+  "provider": "text",
+  "deck_id": null,
+  "deck_name": "izzet-control",
+  "format_code": null,
+  "total_cards": 40,
+  "recognized_cards": 40,
+  "supported_cards": 40,
+  "unsupported_cards": 0,
+  "entries": [
+    {
+      "name": "Island",
+      "quantity": 12,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Mountain",
+      "quantity": 5,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Counterspell",
+      "quantity": 4,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Divination",
+      "quantity": 4,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Opt",
+      "quantity": 4,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Consider",
+      "quantity": 3,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Hill Giant",
+      "quantity": 4,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Shock",
+      "quantity": 2,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    },
+    {
+      "name": "Lightning Strike",
+      "quantity": 2,
+      "categories": [
+        "Deck"
+      ],
+      "status": "Supported",
+      "detail": null
+    }
+  ],
+  "unsupported": [],
+  "excluded": [],
+  "excluded_categories": [
+    "Maybeboard"
+  ],
+  "sideboard": [],
+  "commander": [],
+  "companion": [],
+  "legality": [
+    "practice profile: exactly 40 main-deck cards (found 40)",
+    "at most 4 copies of each nonbasic card (basics unlimited)",
+    "every card must be in the supported pool (31 cards)",
+    "1v1, 20 life, London mulligan: Commander is not implemented"
+  ],
+  "launchable": true,
+  "refusal": null,
+  "raw_sha256": null,
+  "cached_path": null,
+  "notes": [
+    "excluded categories honored: Maybeboard"
+  ]
+}
+  text list is playable as-is: 40 card(s), 9 distinct

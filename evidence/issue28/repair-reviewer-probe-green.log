@@ -1,0 +1,73 @@
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ai)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+   Compiling issue28-review-probe v0.0.0 (C:\AI\aperture-worktrees\issue-28\target\issue28-review-probe)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.54s
+     Running unittests probe.rs (target\debug\deps\issue28_review_probe-e1a1aa18070beff5.exe)
+
+running 3 tests
+test reviewer_lattice_output_must_pass_its_own_audit ... preference=Some(AmongEquals { chosen: 0, offer_indices: [0, 1] }); violations=[]
+ok
+test reviewer_renderer_must_not_duplicate_overlapping_ties ... rows=[(0, EffectivelyTied { with: [1] }), (1, EffectivelyTied { with: [0, 2] }), (2, EffectivelyTied { with: [1] })]
+reviewed decision point: P0 · session generation 1 · engine revision 0 · decision 0 · rules 2026-09-25
+masked view digest: efb437333375 (this review is bound to it — a different view is a different review)
+payload: move-review/1.2 — a read-only presentation of the ranking layer's own data
+[PROVENANCE] budget: 4 determinization seed(s) · 12000 engine decisions total · 2000 decisions per rollout · unbounded wall clock · at most 4 engine-offered candidates · used 400 · stopped: determinizations exhausted · reproducible: yes
+[PROVENANCE] determinization fidelity (verbatim): test fidelity: neutral belief deck
+[PROVENANCE] bound to seat P0 · generation 1 · revision 0 · decision 0 · rules 2026-09-25 · masked view digest efb437333375
+[PROVENANCE] this review is read-only: producing it submits no action, grants no priority and changes no engine state
+[PROVENANCE] no depth or plies figure is reported: this analysis is a bounded rollout ensemble over determinizations, and only the rollout counts and the decision budget are measurements it actually made
+[UNCERTAINTY] sample counts: 11 scored sample(s) over 3 engine-offered alternative(s), 0 rollout(s) without a result, 0 root refusal(s) by the search world
+[UNCERTAINTY] effectively tied at this budget's resolution, not ordered against each other: "Pass priority" (+1.00 over 4 scored sample(s)), "Play Forest" (+0.67 over 3 scored sample(s))
+[POLICY] the search's own choice among effectively tied offers is offer 0 ("Pass priority"); the leading offer is not separable from its 1 listed peers at this sample count
+stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap, the round schedule or the wall clock it reaches first, so a partial sample is normal
+ordering: no order is claimed at the top — the leading offer is not separable from its listed peers at this sample count; only pairwise-complete closed groups are displayed together
+pairwise effective ties: offer 0 ↔ offer 1; offer 1 ↔ offer 2 — inseparability is not transitive
+• Pass priority [offer 0] — mean +1.00 over 4 scored samples · the search's own choice among effectively tied offers
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+1.00)
+    line: decision 0 · P0 · "Pass priority"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+• Play Forest [offer 1] — mean +0.67 over 3 scored samples
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+0.67)
+    line: decision 0 · P0 · "Play Forest"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+• Cast Grizzly Bears [offer 2] — mean +0.50 over 4 scored samples
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+0.50)
+    line: decision 0 · P0 · "Cast Grizzly Bears"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+ok
+test reviewer_renderer_must_preserve_interleaved_single_sample ... rows=[(0, EffectivelyTied { with: [2] }), (1, SingleSample), (2, EffectivelyTied { with: [0] })]
+reviewed decision point: P0 · session generation 1 · engine revision 0 · decision 0 · rules 2026-09-25
+masked view digest: efb437333375 (this review is bound to it — a different view is a different review)
+payload: move-review/1.2 — a read-only presentation of the ranking layer's own data
+[PROVENANCE] budget: 4 determinization seed(s) · 12000 engine decisions total · 2000 decisions per rollout · unbounded wall clock · at most 4 engine-offered candidates · used 400 · stopped: determinizations exhausted · reproducible: yes
+[PROVENANCE] determinization fidelity (verbatim): test fidelity: neutral belief deck
+[PROVENANCE] bound to seat P0 · generation 1 · revision 0 · decision 0 · rules 2026-09-25 · masked view digest efb437333375
+[PROVENANCE] this review is read-only: producing it submits no action, grants no priority and changes no engine state
+[PROVENANCE] no depth or plies figure is reported: this analysis is a bounded rollout ensemble over determinizations, and only the rollout counts and the decision budget are measurements it actually made
+[UNCERTAINTY] sample counts: 7 scored sample(s) over 3 engine-offered alternative(s), 0 rollout(s) without a result, 0 root refusal(s) by the search world
+[UNCERTAINTY] effectively tied at this budget's resolution, not ordered against each other: "Pass priority" (+1.00 over 2 scored sample(s)), "Cast Grizzly Bears" (+0.75 over 4 scored sample(s))
+[POLICY] the search's own choice among effectively tied offers is offer 0 ("Pass priority"); the leading offer is not separable from its 1 listed peers at this sample count
+stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap, the round schedule or the wall clock it reaches first, so a partial sample is normal
+ordering: no order is claimed at the top — the leading offer is not separable from its listed peers at this sample count; only pairwise-complete closed groups are displayed together
+pairwise effective ties: offer 0 ↔ offer 2 — inseparability is not transitive
+effectively tied at this sample count (different means) — not ordered inside this group:
+• Pass priority [offer 0] — mean +1.00 over 2 scored samples · the search's own choice among effectively tied offers
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+1.00)
+    line: decision 0 · P0 · "Pass priority"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+• Cast Grizzly Bears [offer 2] — mean +0.75 over 4 scored samples
+    teaching note (heuristic from the search's reason tags — not a rule statement): level with another offered alternative at this sample count (+0.75)
+    line: decision 0 · P0 · "Cast Grizzly Bears"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+• Play Forest [offer 1] — mean +1.00 · one scored sample — not ordered against other rows
+    teaching note (heuristic from the search's reason tags — not a rule statement): one sample cannot establish an order
+    line: decision 0 · P0 · "Play Forest"
+    line scope: this line was played in the search's own reconstructed game under the disclosed determinization (search world only — not the real game's hidden cards) · determinization seed 0 · recorded outcome a win (+1) in the search world
+this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.00s
+
+
+probe_exit=0

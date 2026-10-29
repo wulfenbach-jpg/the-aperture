@@ -1,0 +1,56 @@
+
+running 7 tests
+test session::tests::a_move_review_refusal_is_typed_and_ranks_nothing ... FAILED
+test session::tests::a_table_change_drops_the_review_and_stops_the_worker ... FAILED
+test session::tests::a_move_review_ranks_only_engine_offered_actions ... FAILED
+test session::tests::a_stale_move_review_does_not_replace_the_current_panel ... FAILED
+test session::tests::a_move_review_for_another_seat_is_discarded ... FAILED
+test session::tests::a_move_review_never_submits_or_changes_the_table ... FAILED
+test session::tests::an_accepted_action_invalidates_an_in_flight_load ... ok
+
+failures:
+
+---- session::tests::a_move_review_refusal_is_typed_and_ranks_nothing stdout ----
+
+thread 'session::tests::a_move_review_refusal_is_typed_and_ranks_nothing' (39388) panicked at crates\ui\src\session.rs:1782:9:
+the first review request must be accepted
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- session::tests::a_table_change_drops_the_review_and_stops_the_worker stdout ----
+
+thread 'session::tests::a_table_change_drops_the_review_and_stops_the_worker' (15816) panicked at crates\ui\src\session.rs:2013:9:
+assertion failed: ui.request_move_review_with(REVIEW_BUDGET)
+
+---- session::tests::a_move_review_ranks_only_engine_offered_actions stdout ----
+
+thread 'session::tests::a_move_review_ranks_only_engine_offered_actions' (22704) panicked at crates\ui\src\session.rs:1820:9:
+assertion `left == right` failed: the fixture must reach the human seat's priority
+  left: Some(1)
+ right: Some(0)
+
+---- session::tests::a_stale_move_review_does_not_replace_the_current_panel stdout ----
+
+thread 'session::tests::a_stale_move_review_does_not_replace_the_current_panel' (42040) panicked at crates\ui\src\session.rs:1943:9:
+a stale review must be discarded with a stale code, got None
+
+---- session::tests::a_move_review_for_another_seat_is_discarded stdout ----
+
+thread 'session::tests::a_move_review_for_another_seat_is_discarded' (3304) panicked at crates\ui\src\session.rs:1987:9:
+a review for another seat must be discarded, got None
+
+---- session::tests::a_move_review_never_submits_or_changes_the_table stdout ----
+
+thread 'session::tests::a_move_review_never_submits_or_changes_the_table' (39432) panicked at crates\ui\src\session.rs:1886:9:
+assertion failed: ui.request_move_review_with(test_budget())
+
+
+failures:
+    session::tests::a_move_review_for_another_seat_is_discarded
+    session::tests::a_move_review_never_submits_or_changes_the_table
+    session::tests::a_move_review_ranks_only_engine_offered_actions
+    session::tests::a_move_review_refusal_is_typed_and_ranks_nothing
+    session::tests::a_stale_move_review_does_not_replace_the_current_panel
+    session::tests::a_table_change_drops_the_review_and_stops_the_worker
+
+test result: FAILED. 1 passed; 6 failed; 0 ignored; 0 measured; 43 filtered out; finished in 0.01s
+

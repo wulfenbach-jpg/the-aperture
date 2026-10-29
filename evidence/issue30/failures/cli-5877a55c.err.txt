@@ -1,0 +1,1 @@
+Error: host 'example.com' is not allowlisted (approved hosts: archidekt.com, www.archidekt.com)

@@ -1,0 +1,40 @@
+# TDD RED for repair-1 finding F1 — review::tests::a_unique_maximum_is_not_described_as_an_equal_score
+# worktree: C:/AI/aperture-worktrees/issue-28
+# state at capture: head 330fc2543208ab1569123dd230d404baeb5c10ab with ONLY the new test
+#   added in the working tree; the F1 fix was absent, so this ran the pre-fix code.
+#   Captured 2026-10-26 (Pacific) immediately before fix commit ab71129.
+#   Reproduce: `git checkout 330fc25`, add the test, run the command below — or at the
+#   repaired head ab71129 revert the `ties_top` argument of `candidate_line` instead.
+# command: cargo test -p aperture-ui --lib a_unique_maximum_is_not_described_as_an_equal_score -- --exact review::tests::a_unique_maximum_is_not_described_as_an_equal_score --nocapture
+# note: the transcript below is the tail of that command's stdout; the exit status is
+#   cargo's own (PIPESTATUS was checked), not a pipe's status.
+# --- output ---
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 33.67s
+     Running unittests src\lib.rs (target\debug\deps\aperture_ui-e53520c93d743991.exe)
+
+running 1 test
+
+thread 'review::tests::a_unique_maximum_is_not_described_as_an_equal_score' (33960) panicked at crates\ui\src\review.rs:545:9:
+a unique maximum must not be described as an equal score: reviewed decision point: P0 · engine revision 9 · decision 12
+budget: 2 determinization seed(s) · 900 engine decisions total · 150 decisions per rollout · 400 ms wall clock · at most 4 engine-offered candidates
+used: 480 of 900 engine decision(s)
+stopping rule: the analysis ends at whichever of the node budget, the per-rollout cap or the wall clock it reaches first, so a partial sample is normal
+fidelity: opponents: neutral belief deck (1 opponent(s)); no real hand or library order read
+lines: the search exposes no principal variation — it returns root candidate scores only, not a played-out line — so no candidate line is shown here rather than synthesising one
+policy preference (a preference from scored practice outcomes — not a rule, and not a claim of strength): "Play Forest"
+ordering: highest mean practice outcome first
+score: mean practice outcome = win +1 / loss -1 / draw 0 over scored determinizations; a capped or failed rollout is counted as "without result", never as a win or a loss
+uncertainty: sample counts differ between rows and more samples do not make a row better; these samples are small and small samples are not evidence of strength
+1. Play Forest — mean +1.00 over 2 scored samples · 0 without result · 0 refused by the search world · the search's own choice among equally scored offers
+2. Pass priority — mean -0.50 over 2 scored samples · 0 without result · 0 refused by the search world
+this panel reports the engine's own counts and the search's own preference only: it passes no verdict on your play, and it labels no alternative as an error
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test review::tests::a_unique_maximum_is_not_described_as_an_equal_score ... FAILED
+
+failures:
+    review::tests::a_unique_maximum_is_not_described_as_an_equal_score
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 55 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p aperture-ui --lib`
+# exit status: 101

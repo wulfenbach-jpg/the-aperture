@@ -1,0 +1,5 @@
+save C:\Users\alex3\AppData\Local\hermes\cache\scratch\issue30-60b89b5a\pkg\the-aperture-save.json ΓÇö 4 seat(s): P0 'Temur Beats' vs P1 'Izzet Control' vs P2 'Temur Beats P2' vs P3 'Izzet Control P3'
+  stored digest 3f574cca93c0 | recomputed 3f574cca93c0 | matches
+  turn 38 step combat damage step | pending None | sandbox modified: false
+  ai: human P0; AI seats P1, P2, P3 = deterministic baseline heuristic; autoplay on
+  replay of 1534 action(s) -> digest 3f574cca93c0 | events 3826 | reproduces the save

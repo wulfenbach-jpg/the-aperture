@@ -6,6 +6,8 @@ mod heuristic;
 mod search;
 mod selfplay;
 
+pub mod review;
+
 pub use decider::{
     ChoiceAnswer, DeciderClient, DeciderConfig, DeciderError, DeciderPolicy, DecisionBinding,
     DecisionEnvelope, DecisionRequest, MAX_OPTIONS, MAX_RESPONSE_BYTES, MIN_OPTIONS, OptionSpec,
@@ -13,8 +15,9 @@ pub use decider::{
 };
 pub use heuristic::{HeuristicPolicy, available_mana, card_mana_value, land_color, pool_size};
 pub use search::{
-    CandidateScore, Knowledge, SearchAnalysis, SearchCancellation, SearchConfig, SearchOutcome,
-    SearchUnavailable, determinization_seed, fallback, search,
+    CandidateScore, Knowledge, MAX_LINE_PLIES, RecordedLine, RecordedStep, SearchAnalysis,
+    SearchCancellation, SearchConfig, SearchOutcome, SearchUnavailable, StopReason,
+    determinization_seed, fallback, search,
 };
 pub use selfplay::{RunStatus, SelfplayLimits, SelfplayOutcome, play_to_end};
 

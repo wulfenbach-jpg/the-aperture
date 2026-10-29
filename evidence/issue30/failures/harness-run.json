@@ -1,0 +1,136 @@
+{
+    "mode":  "failures",
+    "harness":  "C:\\AI\\aperture-worktrees\\issue-30\\scripts\\platform_qa\\platform-qa.ps1",
+    "harness_sha256":  "f105334a30723a0984211cd03f92411cefea9301f8a8052259ab1bee9dc6ec90",
+    "exe":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe",
+    "exe_sha256":  "c1372dd036af4fd2b89532b83b1746b6482ed0fa079765030c79373a59906f65",
+    "journey":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg",
+    "seed":  4242,
+    "seats":  4,
+    "window":  "1280x720",
+    "started":  "2026-10-26T10:16:13.4140660-07:00",
+    "finished":  "2026-10-26T10:16:53.9678206-07:00",
+    "results":  [
+                    {
+                        "step":  "no-model-service",
+                        "status":  "passed",
+                        "detail":  "absent model service reported (\u0027decider-2b unreachable (request failed: error sending request for url (http://127.0.0.1:8765/health)); heuristic active\u0027) and the window kept accepting input (help panel opened afterwards)",
+                        "data":  {
+                                     "status":  "decider-2b unreachable (request failed: error sending request for url (http://127.0.0.1:8765/health)); heuristic active"
+                                 },
+                        "at":  "2026-10-26T10:16:38.0788844-07:00"
+                    },
+                    {
+                        "step":  "unsupported-import-cli",
+                        "status":  "passed",
+                        "detail":  "packaged CLI on an unsupported list: exit 0; launchable=False, unsupported_cards=2;   text list refused for play: the deck cannot be launched: unsupported card(s) in the main deck: Black Lotus x1 (\u0027Black Lotus\u0027 is not in the supported pool (31 cards)); Sol Ring x1 (\u0027Sol Ring\u0027 is not in the supported pool (31 cards)) ΓÇö the supported pool has 31 cards; unsupported cards are refused, never substituted",
+                        "data":  {
+                                     "note":  "import-txt is a reporting command and exits 0 by design; the refusal is the report field and the printed refusal line",
+                                     "stderr_file":  "C:\\AI\\aperture-worktrees\\issue-30\\evidence\\issue30\\failures\\cli-ffe8af0c.err.txt",
+                                     "launchable":  false,
+                                     "exit":  0,
+                                     "unsupported_cards":  2,
+                                     "refusal":  "unsupported card(s) in the main deck: Black Lotus x1 (\u0027Black Lotus\u0027 is not in the supported pool (31 cards)); Sol Ring x1 (\u0027Sol Ring\u0027 is not in the supported pool (31 cards)) ΓÇö the supported pool has 31 cards; unsupported cards are refused, never substituted",
+                                     "stdout_file":  "C:\\AI\\aperture-worktrees\\issue-30\\evidence\\issue30\\failures\\cli-ffe8af0c.out.txt"
+                                 },
+                        "at":  "2026-10-26T10:16:38.1979943-07:00"
+                    },
+                    {
+                        "step":  "malformed-import-url-cli",
+                        "status":  "passed",
+                        "detail":  "packaged CLI on \u0027https://archidekt.com/decks/not-a-deck-id\u0027: exit 1; Error: \u0027not-a-deck-id\u0027 is not a numeric Archidekt deck id",
+                        "data":  {
+                                     "output":  "Error: \u0027not-a-deck-id\u0027 is not a numeric Archidekt deck id\n",
+                                     "url":  "https://archidekt.com/decks/not-a-deck-id",
+                                     "exit":  1
+                                 },
+                        "at":  "2026-10-26T10:16:38.2270206-07:00"
+                    },
+                    {
+                        "step":  "foreign-host-url-cli",
+                        "status":  "passed",
+                        "detail":  "packaged CLI on \u0027https://example.com/decks/1\u0027: exit 1; Error: host \u0027example.com\u0027 is not allowlisted (approved hosts: archidekt.com, www.archidekt.com)",
+                        "data":  {
+                                     "output":  "Error: host \u0027example.com\u0027 is not allowlisted (approved hosts: archidekt.com, www.archidekt.com)\n",
+                                     "url":  "https://example.com/decks/1",
+                                     "exit":  1
+                                 },
+                        "at":  "2026-10-26T10:16:38.2550465-07:00"
+                    },
+                    {
+                        "step":  "unsupported-import-ui",
+                        "status":  "passed",
+                        "detail":  "native table on the same unsupported list: DECK REFUSED — deck file C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\unsupported-practice-list.txt is invalid: line 1: \u0027Black Lotus\u0027 is not in the supported pool. Refusing to substitute the bundled practice deck.",
+                        "data":  {
+                                     "text":  "DECK REFUSED — deck file C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\unsupported-practice-list.txt is invalid: line 1: \u0027Black Lotus\u0027 is not in the supported pool. Refusing to substitute the bundled practice deck."
+                                 },
+                        "at":  "2026-10-26T10:16:41.4672240-07:00"
+                    },
+                    {
+                        "step":  "unwritable-save",
+                        "status":  "passed",
+                        "detail":  "the default save target was made unwritable and the app reported: save failed: Access is denied. (os error 5)",
+                        "data":  {
+                                     "how":  {
+                                                 "name":  "Save (S)",
+                                                 "how":  "uia-invoke"
+                                             },
+                                     "blocking_path":  "C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\the-aperture-save.json"
+                                 },
+                        "at":  "2026-10-26T10:16:42.1106667-07:00"
+                    },
+                    {
+                        "step":  "stale-background-result",
+                        "status":  "passed",
+                        "detail":  "the in-flight decision was discarded after the new game: discarded a stale AI decision [stale_generation] (the game changed)",
+                        "data":  {
+                                     "confirm":  true,
+                                     "notes":  [
+                                                   "discarded a stale AI decision [stale_generation] (the game changed)"
+                                               ]
+                                 },
+                        "at":  "2026-10-26T10:16:53.4566039-07:00"
+                    },
+                    {
+                        "step":  "offline-practice",
+                        "status":  "passed",
+                        "detail":  "the whole practice path was driven with no decider service configured and no import: no network surface was available to it, and every step still worked (see no-model-service above and the journey run)",
+                        "data":  null,
+                        "at":  "2026-10-26T10:16:53.8837437-07:00"
+                    },
+                    {
+                        "step":  "offline-network-off",
+                        "status":  "not-exercised",
+                        "detail":  "a hard network-off capture (adapter disabled / no route) was not taken: the QA host offers no isolated network namespace to the harness and disabling its NIC is not available to a scripted run, so the row above records service-absence, not interface-down",
+                        "data":  null,
+                        "at":  "2026-10-26T10:16:53.8847456-07:00"
+                    }
+                ],
+    "transcript":  [
+                       "[10:16:13.469] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe --seed 4242 --seats 2 --size 1280x720 --decider",
+                       "[10:16:16.019] window hwnd=17242910 pid=24772 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[10:16:35.116] invoke \u0027Check local Decider-2B health\u0027 via uia-invoke",
+                       "[10:16:35.118] invoked \u0027Check local Decider-2B health\u0027 via uia-invoke",
+                       "[10:16:37.820] invoke \u0027Help (H)\u0027 via uia-invoke",
+                       "[10:16:37.821] invoked \u0027Help (H)\u0027 via uia-invoke",
+                       "[10:16:38.081] STEP no-model-service: PASSED - absent model service reported (\u0027decider-2b unreachable (request failed: error sending request for url (http://127.0.0.1:8765/health)); heuristic active\u0027) and the window kept accepting input (help panel opened afterwards)",
+                       "[10:16:38.197] STEP unsupported-import-cli: PASSED - packaged CLI on an unsupported list: exit 0; launchable=False, unsupported_cards=2;   text list refused for play: the deck cannot be launched: unsupported card(s) in the main deck: Black Lotus x1 (\u0027Black Lotus\u0027 is not in the supported pool (31 cards)); Sol Ring x1 (\u0027Sol Ring\u0027 is not in the supported pool (31 cards)) ΓÇö the supported pool has 31 cards; unsupported cards are refused, never substituted",
+                       "[10:16:38.227] STEP malformed-import-url-cli: PASSED - packaged CLI on \u0027https://archidekt.com/decks/not-a-deck-id\u0027: exit 1; Error: \u0027not-a-deck-id\u0027 is not a numeric Archidekt deck id",
+                       "[10:16:38.256] STEP foreign-host-url-cli: PASSED - packaged CLI on \u0027https://example.com/decks/1\u0027: exit 1; Error: host \u0027example.com\u0027 is not allowlisted (approved hosts: archidekt.com, www.archidekt.com)",
+                       "[10:16:38.664] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe --seed 4242 --seats 2 --size 1280x720 --deck-a C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\unsupported-practice-list.txt",
+                       "[10:16:41.127] window hwnd=17308408 pid=46696 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[10:16:41.467] STEP unsupported-import-ui: PASSED - native table on the same unsupported list: DECK REFUSED — deck file C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\unsupported-practice-list.txt is invalid: line 1: \u0027Black Lotus\u0027 is not in the supported pool. Refusing to substitute the bundled practice deck.",
+                       "[10:16:41.798] invoke \u0027Save (S)\u0027 via uia-invoke",
+                       "[10:16:41.799] invoked \u0027Save (S)\u0027 via uia-invoke",
+                       "[10:16:42.110] STEP unwritable-save: PASSED - the default save target was made unwritable and the app reported: save failed: Access is denied. (os error 5)",
+                       "[10:16:46.736] launch: C:\\Users\\alex3\\AppData\\Local\\hermes\\cache\\scratch\\issue30-60b89b5a\\pkg\\aperture.exe --seed 4242 --seats 2 --size 1280x720 --decider",
+                       "[10:16:49.204] window hwnd=5905230 pid=23256 title=\u0027THE APERTURE — practice slice\u0027",
+                       "[10:16:49.522] invoke \u0027Let the AI answer (step)\u0027 via uia-invoke",
+                       "[10:16:49.523] invoked \u0027Let the AI answer (step)\u0027 via uia-invoke",
+                       "[10:16:50.483] invoke \u0027Confirm new game\u0027 via uia-invoke",
+                       "[10:16:50.484] invoked \u0027Confirm new game\u0027 via uia-invoke",
+                       "[10:16:53.456] STEP stale-background-result: PASSED - the in-flight decision was discarded after the new game: discarded a stale AI decision [stale_generation] (the game changed)",
+                       "[10:16:53.883] STEP offline-practice: PASSED - the whole practice path was driven with no decider service configured and no import: no network surface was available to it, and every step still worked (see no-model-service above and the journey run)",
+                       "[10:16:53.885] STEP offline-network-off: NOT-EXERCISED - a hard network-off capture (adapter disabled / no route) was not taken: the QA host offers no isolated network namespace to the harness and disabling its NIC is not available to a scripted run, so the row above records service-absence, not interface-down"
+                   ]
+}

@@ -13,9 +13,10 @@ use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, Sender, channel};
 use std::thread;
 
+use aperture_ai::review::{ReviewBinding, rank_outcome, review_config};
 use aperture_ai::{
     DeciderConfig, DeciderPolicy, Decision, DecisionBinding, DecisionEnvelope, DecisionSource,
-    HeuristicPolicy, MIN_OPTIONS, Policy,
+    HeuristicPolicy, Knowledge, MIN_OPTIONS, Policy, SearchCancellation, SearchConfig, search,
 };
 use aperture_core::sandbox::{SandboxOp as EngineSandboxOp, SandboxRecord};
 use aperture_core::view::{PendingKind, PlayerView};
@@ -25,6 +26,8 @@ use aperture_core::{
 };
 use aperture_import::DeckReport;
 use aperture_import::start::{DeckCertification, plan_start};
+
+use crate::review::{MoveReview, NOT_YOUR_DECISION, refused};
 
 /// Everything a completed replay-branch job produces: the base recorded line,
 /// the branched line cut at the chosen action boundary, and the state the
@@ -149,6 +152,11 @@ pub enum WorkerMessage {
         decision_serial: u64,
         seat: PlayerId,
         decision: Decision,
+    },
+    /// A finished move review, bound to the decision it was computed for. The
+    /// binding inside the report is the authority on which decision that is.
+    MoveReview {
+        report: Box<MoveReview>,
     },
 }
 
@@ -362,6 +370,13 @@ pub struct UiSession {
     pub deck_refusal: Option<String>,
     /// Short note about the last discarded/aborted background result.
     pub busy_note: Option<String>,
+    /// The last accepted move review and the decision it is bound to.
+    pub review: Option<MoveReview>,
+    /// A move-review worker is running.
+    pub review_busy: bool,
+    /// Cancellation handle for the running move review, so a table change stops
+    /// the search instead of letting it finish work nobody will read.
+    review_cancel: Option<SearchCancellation>,
     /// Exposed for deterministic delayed-queue tests: tests enqueue finished
     /// worker results directly instead of racing real threads.
     pub worker_tx: Sender<WorkerMessage>,
@@ -445,6 +460,9 @@ impl UiSession {
             io_busy: false,
             deck_refusal: None,
             busy_note: None,
+            review: None,
+            review_busy: false,
+            review_cancel: None,
             worker_tx,
             worker_rx,
         })
@@ -461,6 +479,16 @@ impl UiSession {
         self.health_busy = false;
         self.io_busy = false;
         self.import_busy = vec![false; self.seats.len()];
+        if let Some(cancel) = self.review_cancel.take() {
+            cancel.cancel();
+        }
+        self.review_busy = false;
+        if self.review.take().is_some() {
+            self.busy_note = Some(
+                "discarded the previous move review [stale_generation] (the table changed)"
+                    .to_string(),
+            );
+        }
     }
 
     /// Ask a background thread to compute the current AI decision. `work`
@@ -617,6 +645,39 @@ impl UiSession {
         let mut applied = Vec::new();
         while let Ok(message) = self.worker_rx.try_recv() {
             match message {
+                WorkerMessage::MoveReview { report } => {
+                    if report.generation() != self.generation {
+                        // The seat's busy flag belongs to the discarded run:
+                        // clear it, or a table change during a review would
+                        // leave the panel spinning with no way to retry.
+                        self.review_busy = false;
+                        self.busy_note = Some(
+                            "discarded a stale move review [stale_generation] (the table changed)"
+                                .to_string(),
+                        );
+                        continue;
+                    }
+                    self.review_busy = false;
+                    // §5.5: the binding is five fields, and the masked-view
+                    // digest is one of them. The comparison is against the
+                    // *live reviewing seat's* projection, so a review of another
+                    // seat is rejected as well as a review of another view.
+                    let live = ReviewBinding::for_view(
+                        &self.view(self.human_seat()),
+                        self.generation,
+                        self.game.revision(),
+                        self.game.decision(),
+                    );
+                    if let Some(code) = report.discard_reason(&live) {
+                        self.busy_note = Some(format!(
+                            "discarded a stale move review [{code}] (the decision point moved)"
+                        ));
+                        continue;
+                    }
+                    let summary = report.summary_line();
+                    self.review = Some(*report);
+                    applied.push(summary);
+                }
                 WorkerMessage::Ai {
                     generation,
                     revision,
@@ -647,22 +708,62 @@ impl UiSession {
                         ));
                         continue;
                     }
-                    // The engine remains the final authority; this check only
-                    // avoids applying a completion whose offered action has
-                    // already disappeared from the live legal offer.
-                    if !self
+                    // The engine remains the final authority on legality; this
+                    // pre-check only notices that the completion is not one the
+                    // table is enumerating right now. An unenumerated action can
+                    // still be legal (a cleanup discard accepts any legal set of
+                    // cards, CR 514.1), so try it, and when the engine refuses it
+                    // apply a plainly legal offered action. A dropped answer must
+                    // never leave the table waiting forever.
+                    let offered: Vec<Action> = self
                         .view(seat)
                         .legal
                         .iter()
-                        .any(|legal| legal.action == decision.action)
-                    {
-                        self.busy_note = Some(
-                            "discarded an AI decision [illegal_choice] (not in the live legal offer)"
-                                .to_string(),
-                        );
+                        .map(|legal| legal.action.clone())
+                        .collect();
+                    if offered.contains(&decision.action) {
+                        applied.push(self.apply_ai_decision(decision));
                         continue;
                     }
-                    applied.push(self.apply_ai_decision(decision));
+                    self.note = decision.note.clone();
+                    let source = decision.source.label().to_string();
+                    if self.submit(decision.action).is_ok() {
+                        // Engine-validated, so it is legal at application time even
+                        // though the offer under-describes the choice space.
+                        applied.push(source);
+                        continue;
+                    }
+                    let refusal = self.message.clone();
+                    match self.view(seat).legal.first().cloned() {
+                        Some(legal) => {
+                            let label = legal.label.clone();
+                            match self.submit(legal.action) {
+                                Ok(()) => {
+                                    // The refused attempt left a "refused: …" line in
+                                    // `message`; the table has moved on, so clear it.
+                                    self.message.clear();
+                                    self.busy_note = Some(format!(
+                                        "rejected an AI decision [illegal_choice] ({refusal}); applied the engine's legal offer \"{label}\" instead"
+                                    ));
+                                    applied.push(format!(
+                                        "applied \"{label}\" after refusing an illegal completion"
+                                    ));
+                                }
+                                Err(second) => {
+                                    // Genuinely impossible: the engine refused both
+                                    // its own offer and the completion.
+                                    self.busy_note = Some(format!(
+                                        "discarded an AI decision [illegal_choice] ({refusal}); the offered action \"{label}\" was also refused ({second})"
+                                    ));
+                                }
+                            }
+                        }
+                        None => {
+                            self.busy_note = Some(format!(
+                                "discarded an AI decision [illegal_choice] ({refusal}); the table offers no action at this decision"
+                            ));
+                        }
+                    }
                 }
                 WorkerMessage::Import {
                     generation,
@@ -773,7 +874,86 @@ impl UiSession {
 
     /// True when a background worker is running.
     pub fn worker_busy(&self) -> bool {
-        self.ai_busy || self.health_busy || self.io_busy || self.import_busy.iter().any(|b| *b)
+        self.ai_busy
+            || self.health_busy
+            || self.io_busy
+            || self.review_busy
+            || self.import_busy.iter().any(|b| *b)
+    }
+
+    /// Ask a background worker to review the reviewing seat's current decision
+    /// point with the default review budget. Returns false when a review is
+    /// already running. Never blocks the caller and never mutates the engine.
+    pub fn request_move_review(&mut self) -> bool {
+        self.request_move_review_with(review_config())
+    }
+
+    /// The same request with an explicit budget (tests use a smaller one; the
+    /// evidence journey records the real one).
+    pub fn request_move_review_with(&mut self, config: SearchConfig) -> bool {
+        if self.review_busy {
+            return false;
+        }
+        let seat = self.human_seat();
+        // The masked view of the seat being reviewed is the only observation
+        // the analysis may use; the engine stays the authority on the main
+        // thread and receives nothing from the worker.
+        let view = self.view(seat);
+        let generation = self.generation;
+        let revision = self.game.revision();
+        let decision_serial = self.game.decision();
+        // The review is bound to this exact masked projection (§5.5). The
+        // binding is computed here, on the main thread, from the same view the
+        // worker is handed.
+        let binding = ReviewBinding::for_view(&view, generation, revision, decision_serial);
+        if view.legal.is_empty() {
+            // No engine offer for this viewer: there is nothing to rank, and
+            // starting a search that must fail would only hide the reason.
+            self.review = Some(refused(
+                &view,
+                &config,
+                binding,
+                NOT_YOUR_DECISION.to_string(),
+            ));
+            self.review_busy = false;
+            return true;
+        }
+        // The worker gets a copy of the engine world and the masked view. The
+        // search reconstructs its own world from the view; the copy is only the
+        // engine authority it validates against.
+        let world = self.game.clone();
+        let knowledge = Knowledge {
+            own_deck: self.seats.get(seat as usize).cloned(),
+        };
+        let cancel = SearchCancellation::new();
+        self.review_cancel = Some(cancel.clone());
+        let tx = self.worker_tx.clone();
+        thread::spawn(move || {
+            let outcome = search(&world, &view, &knowledge, &config, &cancel);
+            // One path for a finished search and one for its typed refusal: the
+            // ranking layer builds the payload either way (D-1).
+            let ranked = rank_outcome(&view, &outcome, &config, binding);
+            let report = MoveReview::from_ranked(ranked);
+            let _ = tx.send(WorkerMessage::MoveReview {
+                report: Box::new(report),
+            });
+        });
+        self.review_busy = true;
+        true
+    }
+
+    /// Why the stored review no longer describes the live table, if it does not.
+    /// The live masked view is the only authority for the digest part of the
+    /// binding: two different games can share a seat/revision/decision triple.
+    pub fn review_fresh(&self, view: &PlayerView) -> Option<&'static str> {
+        let review = self.review.as_ref()?;
+        let live = ReviewBinding::for_view(
+            view,
+            self.generation,
+            self.game.revision(),
+            self.game.decision(),
+        );
+        review.discard_reason(&live)
     }
 
     // ------------------------------------------------------------- per-seat import
@@ -1625,12 +1805,423 @@ pub fn block_list(pairs: &[(ObjectId, ObjectId)]) -> Vec<BlockDecl> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::time::Duration;
 
     fn test_session(seed: u64) -> UiSession {
         let a = DeckList::parse_practice("Temur Beats", BUNDLED_A).expect("deck A");
         let b = DeckList::parse_practice("Izzet Control", BUNDLED_B).expect("deck B");
         UiSession::new(seed, vec![a, b], AiSettings::default(), false, false)
             .expect("two-seat session")
+    }
+
+    /// A review budget small enough to finish inside a test but large enough to
+    /// score the opening offers.
+    fn test_budget() -> SearchConfig {
+        SearchConfig {
+            seeds: 1,
+            node_budget: 400,
+            max_rollout_nodes: 120,
+            max_millis: 1_200,
+            max_candidates: 4,
+        }
+    }
+
+    /// A review of the live decision point the search did not run, built the
+    /// only way the UI builds one: through the ranking layer's refusal
+    /// constructor, bound to this session's masked view and to `generation`.
+    fn refused_bound(ui: &UiSession, seat: PlayerId, generation: u64, reason: &str) -> MoveReview {
+        let view = ui.view(seat);
+        refused(
+            &view,
+            &test_budget(),
+            ReviewBinding::for_view(&view, generation, ui.game.revision(), ui.game.decision()),
+            reason.to_string(),
+        )
+    }
+
+    fn refused_for(ui: &UiSession, seat: PlayerId, reason: &str) -> MoveReview {
+        refused_bound(ui, seat, ui.generation, reason)
+    }
+
+    /// Poll the worker channel until the move review has been applied, exactly
+    /// as the frame loop does.
+    fn wait_for_review(ui: &mut UiSession) -> Vec<String> {
+        let mut applied = Vec::new();
+        for _ in 0..4_000 {
+            applied.extend(ui.poll_workers());
+            if !ui.review_busy {
+                return applied;
+            }
+            std::thread::sleep(Duration::from_millis(2));
+        }
+        panic!("the move review worker never finished");
+    }
+
+    /// Keep every opening hand so the table reaches a real priority decision.
+    fn finish_opening(ui: &mut UiSession) {
+        let mut guard = 0;
+        while ui.game.state.pending.is_some() {
+            ui.submit(Action::Mulligan { keep: true })
+                .unwrap_or_else(|err| panic!("opening keep refused: {err}"));
+            guard += 1;
+            assert!(guard < 40, "the opening procedure did not finish");
+        }
+    }
+
+    #[test]
+    fn a_move_review_refusal_is_typed_and_ranks_nothing() {
+        let mut ui = test_session(11);
+        assert!(
+            ui.game.state.pending.is_some(),
+            "the fixture must start at the opening (mulligan) decision"
+        );
+        assert!(
+            ui.request_move_review(),
+            "the first review request must be accepted"
+        );
+        assert!(
+            ui.review_busy,
+            "the request must hand the work to a worker instead of computing it inline"
+        );
+        wait_for_review(&mut ui);
+        let review = ui
+            .review
+            .as_ref()
+            .expect("a refusal panel is still a panel");
+        let reason = review
+            .refusal()
+            .expect("search must refuse the mulligan decision with a typed reason")
+            .to_string();
+        assert!(
+            reason.contains("non-priority decision") && reason.contains("mulligan"),
+            "the panel must show the search's own typed reason: {reason}"
+        );
+        assert!(
+            review.ranked().candidates.is_empty(),
+            "a refused review must rank nothing: {review:?}"
+        );
+        let shown = review.policy_section().lines.join("\n");
+        assert!(
+            shown.contains(&reason),
+            "the typed reason must reach the panel verbatim: {shown}"
+        );
+        assert!(
+            !shown.contains("mean ") && !shown.contains("1. "),
+            "a refusal must not print a scored ordering: {shown}"
+        );
+    }
+
+    #[test]
+    fn a_move_review_ranks_only_engine_offered_actions() {
+        let mut ui = test_session(12);
+        finish_opening(&mut ui);
+        let seat = ui.human_seat();
+        // Play the AI's decisions until priority reaches the human seat: the
+        // review is of the reviewing seat's own decision point.
+        let mut guard = 0;
+        while ui.owner() != Some(seat) {
+            ui.step_ai();
+            guard += 1;
+            assert!(
+                guard < 400,
+                "the fixture never reached the human's priority"
+            );
+        }
+        assert_eq!(
+            ui.owner(),
+            Some(seat),
+            "the fixture must reach the human seat's priority"
+        );
+        let offers: Vec<String> = ui
+            .view(seat)
+            .legal
+            .iter()
+            .map(|legal| legal.label.clone())
+            .collect();
+        assert!(
+            !offers.is_empty(),
+            "the priority decision must offer at least one action"
+        );
+        assert!(
+            ui.request_move_review_with(test_budget()),
+            "the review request must be accepted at a priority decision"
+        );
+        assert!(
+            ui.review_busy && ui.worker_busy(),
+            "the review must run on the background worker"
+        );
+        wait_for_review(&mut ui);
+        let review = ui.review.as_ref().expect("a review");
+        assert!(
+            review.refusal().is_none(),
+            "a priority decision must not be refused: {:?}",
+            review.refusal()
+        );
+        assert!(
+            !review.ranked().candidates.is_empty(),
+            "the review must score the engine's offers: {review:?}"
+        );
+        for candidate in &review.ranked().candidates {
+            assert!(
+                offers.contains(&candidate.move_label),
+                "the review invented a candidate the engine never offered: {candidate:?} not in {offers:?}"
+            );
+        }
+        assert!(
+            review.ranked().budget.decisions_used > 0,
+            "the panel must report the engine decisions the analysis used"
+        );
+        assert!(
+            review
+                .ranked()
+                .budget
+                .fidelity
+                .contains("no real hand or library order read"),
+            "the search's own fidelity disclosure must reach the panel: {}",
+            review.ranked().budget.fidelity
+        );
+        let budget = &review.ranked().budget;
+        assert_eq!(
+            (budget.seeds, budget.node_budget, budget.max_candidates),
+            (
+                test_budget().seeds,
+                test_budget().node_budget,
+                test_budget().max_candidates
+            ),
+            "the panel must report the budget that was actually used"
+        );
+        // Every recorded line the search produced must reach the panel step by
+        // step, and every row without one must say so (AC-15).
+        let shown = review.policy_section().lines.join("\n");
+        let mut without_line = 0;
+        for candidate in &review.ranked().candidates {
+            match &candidate.line {
+                Some(line) if !line.steps.is_empty() => {
+                    let step_text: Vec<String> = line
+                        .steps
+                        .iter()
+                        .map(|step| {
+                            format!(
+                                "decision {} · P{} · \"{}\"",
+                                step.decision, step.seat, step.label
+                            )
+                        })
+                        .collect();
+                    let wanted = step_text.join(" → ");
+                    assert!(
+                        shown.contains(&wanted),
+                        "the panel must render this candidate's recorded line exactly: {wanted}\n{shown}"
+                    );
+                    assert!(
+                        shown.contains("search world only"),
+                        "a rendered line must state its scope: {shown}"
+                    );
+                }
+                _ => {
+                    without_line += 1;
+                    assert!(
+                        shown.contains("line: none available —"),
+                        "a row with no recorded line must say so: {shown}"
+                    );
+                }
+            }
+        }
+        assert!(
+            without_line + shown.matches("    line: decision ").count() >= 1,
+            "the panel must account for every candidate's line state"
+        );
+        // No rendered line may carry a percent figure (AC-2 on the shipped text).
+        for line in &review.policy_section().lines {
+            assert!(
+                !line.contains('%'),
+                "the panel printed a percent figure: {line:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_move_review_never_submits_or_changes_the_table() {
+        let mut ui = test_session(15);
+        finish_opening(&mut ui);
+        let digest = ui.game.digest();
+        let revision = ui.game.revision();
+        let decision = ui.game.decision();
+        let log_len = ui.log.len();
+        let replay_len = ui.replay.steps.len();
+        let undo_before = ui.can_undo();
+        let priority_before = ui.game.state.turn.priority;
+        let pending_before = ui.game.state.pending.is_some();
+        assert!(ui.request_move_review_with(test_budget()));
+        wait_for_review(&mut ui);
+        assert!(ui.review.is_some(), "the review must be applied");
+        assert_eq!(
+            ui.game.state.turn.priority, priority_before,
+            "the review granted priority"
+        );
+        assert_eq!(
+            ui.game.state.pending.is_some(),
+            pending_before,
+            "the review changed the pending decision"
+        );
+        // Rendering the panel again must not touch the engine either.
+        if let Some(review) = ui.review.as_ref() {
+            let _ = review.policy_section();
+            let _ = review.summary_line();
+        }
+        assert_eq!(ui.game.digest(), digest, "the review changed the table");
+        assert_eq!(
+            ui.game.revision(),
+            revision,
+            "the review moved the revision"
+        );
+        assert_eq!(
+            ui.game.decision(),
+            decision,
+            "the review moved the decision"
+        );
+        assert_eq!(ui.log.len(), log_len, "the review wrote to the log");
+        assert_eq!(
+            ui.replay.steps.len(),
+            replay_len,
+            "the review recorded an action"
+        );
+        assert!(
+            !ui.review_mode,
+            "a move review must not switch the session into omniscient postgame review"
+        );
+        assert_eq!(
+            ui.can_undo(),
+            undo_before,
+            "a move review must not change whether undo is offered"
+        );
+    }
+
+    #[test]
+    fn a_stale_move_review_does_not_replace_the_current_panel() {
+        let mut ui = test_session(14);
+        let stale_generation = ui.generation;
+        let stale = refused_bound(
+            &ui,
+            ui.human_seat(),
+            stale_generation,
+            "an older decision point",
+        );
+        // The table moves on before the worker answers.
+        ui.submit(Action::Mulligan { keep: true })
+            .expect("the opening keep must be accepted");
+        ui.worker_tx
+            .send(WorkerMessage::MoveReview {
+                report: Box::new(stale),
+            })
+            .expect("queue the stale review");
+        let current = refused_for(&ui, ui.human_seat(), "the current decision point");
+        ui.review = Some(current.clone());
+
+        let applied = ui.poll_workers();
+        assert!(
+            ui.busy_note
+                .as_deref()
+                .unwrap_or("")
+                .contains("[stale_generation]"),
+            "a stale review must be discarded with a stale code, got {:?}",
+            ui.busy_note
+        );
+        assert_eq!(
+            ui.review,
+            Some(current),
+            "a stale review replaced the current panel"
+        );
+        assert!(
+            applied
+                .iter()
+                .all(|line| !line.contains("move review ready")),
+            "a stale review must not report success: {applied:?}"
+        );
+    }
+
+    #[test]
+    fn a_move_review_for_another_seat_is_discarded() {
+        let mut ui = test_session(16);
+        let report = refused_for(&ui, 0, "reviewed for the wrong seat");
+        // The reviewing seat changes while the worker runs.
+        ui.ai.human_seat = 1;
+        ui.ai.ai_seats = vec![0];
+        ui.worker_tx
+            .send(WorkerMessage::MoveReview {
+                report: Box::new(report),
+            })
+            .expect("queue the wrong-seat review");
+        ui.poll_workers();
+        assert!(
+            ui.busy_note
+                .as_deref()
+                .unwrap_or("")
+                .contains("[wrong_seat]"),
+            "a review for another seat must be discarded, got {:?}",
+            ui.busy_note
+        );
+        assert!(
+            ui.review.is_none(),
+            "a review for another seat must not become the panel"
+        );
+    }
+
+    /// §5.5: the digest is part of the binding, so a review computed on a
+    /// different masked projection is discarded even when seat, revision and
+    /// decision serial all still match.
+    #[test]
+    fn a_review_bound_to_another_masked_view_is_discarded() {
+        let mut ui = test_session(18);
+        finish_opening(&mut ui);
+        let seat = ui.human_seat();
+        let view = ui.view(seat);
+        let mut payload = aperture_ai::review::refused(
+            &view,
+            &test_budget(),
+            ReviewBinding::for_view(&view, ui.generation, ui.game.revision(), ui.game.decision()),
+            "a review of another masked view".to_string(),
+        );
+        payload.binding.view_digest = "a-different-games-masked-view".to_string();
+        ui.worker_tx
+            .send(WorkerMessage::MoveReview {
+                report: Box::new(MoveReview::from_ranked(payload)),
+            })
+            .expect("queue the review of another view");
+        ui.poll_workers();
+        assert!(
+            ui.busy_note
+                .as_deref()
+                .unwrap_or("")
+                .contains("[stale_view_digest]"),
+            "a review of another masked view must be discarded by digest, got {:?}",
+            ui.busy_note
+        );
+        assert!(
+            ui.review.is_none(),
+            "a review of another masked view must not become the panel"
+        );
+    }
+
+    #[test]
+    fn a_table_change_drops_the_review_and_stops_the_worker() {
+        let mut ui = test_session(17);
+        finish_opening(&mut ui);
+        ui.review = Some(refused_for(&ui, ui.human_seat(), "the previous decision"));
+        assert!(ui.request_move_review_with(test_budget()));
+        ui.new_game(21);
+        assert!(
+            ui.review.is_none(),
+            "a table change must drop the review of the old decision"
+        );
+        assert!(!ui.review_busy, "the review worker flag must be cleared");
+        assert!(
+            ui.busy_note
+                .as_deref()
+                .unwrap_or("")
+                .contains("[stale_generation]"),
+            "dropping the review must be reported, got {:?}",
+            ui.busy_note
+        );
     }
 
     /// Deterministic delayed-load regression: the load message is enqueued with

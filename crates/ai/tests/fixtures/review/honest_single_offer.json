@@ -1,0 +1,82 @@
+{
+  "spec": "move-review/1.2",
+  "binding": {
+    "seat": 0,
+    "generation": 5,
+    "revision": 13,
+    "decision": 9,
+    "view_digest": "masked-projection:be1031",
+    "rules_revision": "2026-09-25"
+  },
+  "budget": {
+    "seeds": 2,
+    "node_budget": 30000,
+    "max_rollout_nodes": 6000,
+    "max_millis": "unbounded",
+    "max_candidates": 6,
+    "decisions_used": 6000,
+    "stop": "determinizations_exhausted",
+    "cancelled": false,
+    "reproducible": true,
+    "fidelity": "single offered action; the search world is not the real game"
+  },
+  "candidates": [
+    {
+      "offer_index": 0,
+      "move_label": "Pass priority",
+      "offer_rules": [
+        "117.3d"
+      ],
+      "score": -1.0,
+      "scored_samples": 1,
+      "without_result": 0,
+      "refused_times": 0,
+      "line": null,
+      "reasons": [
+        "sole_legal_offer",
+        "low_sample"
+      ],
+      "uncertainty": "single_sample",
+      "chosen": true,
+      "rollouts_attempted": 1
+    }
+  ],
+  "preference": {
+    "no_order": {
+      "chosen": 0
+    }
+  },
+  "refusal": null,
+  "notes": [
+    {
+      "kind": "policy",
+      "body": "not a preference \u2014 the engine offers only this action",
+      "evidence": [
+        {
+          "engine_offer": {
+            "index": 0
+          }
+        },
+        {
+          "engine_label": {
+            "index": 0
+          }
+        }
+      ]
+    },
+    {
+      "kind": "uncertainty",
+      "body": "one sample cannot establish an order, so no row is ordered against another",
+      "evidence": [
+        {
+          "search_count": {
+            "offer_index": 0,
+            "scored": 1,
+            "without_result": 0,
+            "refused": 0
+          }
+        }
+      ]
+    }
+  ]
+}

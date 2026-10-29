@@ -1,0 +1,34 @@
+
+running 3 tests
+test app::viewport_tests::the_move_review_refusal_and_stale_states_show_no_ranking_at_the_minimum ... FAILED
+test app::viewport_tests::the_move_review_panel_is_readable_at_the_minimum_1024x640 ... FAILED
+test app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface ... FAILED
+
+failures:
+
+---- app::viewport_tests::the_move_review_refusal_and_stale_states_show_no_ranking_at_the_minimum stdout ----
+
+thread 'app::viewport_tests::the_move_review_refusal_and_stale_states_show_no_ranking_at_the_minimum' (41028) panicked at crates\ui\src\app.rs:3109:9:
+a refusal must say plainly that nothing is ranked
+
+---- app::viewport_tests::the_move_review_panel_is_readable_at_the_minimum_1024x640 stdout ----
+
+thread 'app::viewport_tests::the_move_review_panel_is_readable_at_the_minimum_1024x640' (24384) panicked at crates\ui\src\app.rs:3070:13:
+"MOVE REVIEW — ranked practice outcomes" is not fully visible inside a clip rect at the enforced minimum 1024x640
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface stdout ----
+journey: reached the reviewing seat's decision (turn 3, step precombat main phase, 6 engine offers)
+journey: review applied after 33 frame(s) · refused=None · 6 candidate(s) · 5374 engine decisions · budget ReviewBudget { seeds: 2, node_budget: 30000, max_rollout_nodes: 6000, max_millis: 8000, max_candidates: 6 }
+
+thread 'app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface' (20332) panicked at crates\ui\src\app.rs:3267:9:
+the ranking is not readable in the rendered frame
+
+
+failures:
+    app::viewport_tests::the_move_review_journey_reads_its_ranking_back_from_the_interface
+    app::viewport_tests::the_move_review_panel_is_readable_at_the_minimum_1024x640
+    app::viewport_tests::the_move_review_refusal_and_stale_states_show_no_ranking_at_the_minimum
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 52 filtered out; finished in 9.25s
+

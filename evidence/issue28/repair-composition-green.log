@@ -1,0 +1,15 @@
+   Compiling aperture-ai v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ai)
+   Compiling aperture-ui v0.1.0 (C:\AI\aperture-worktrees\issue-28\crates\ui)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.91s
+     Running tests\review_composition.rs (target\debug\deps\review_composition-081ce74f500bfed5.exe)
+
+running 4 tests
+test canonical_unequal_tie_passes_audit_without_claiming_equal_scores ... ok
+test interleaved_single_sample_survives_canonical_pipeline ... ok
+test overlapping_ties_preserve_pairwise_facts_without_transitive_grouping ... ok
+test canonical_exact_tie_separated_and_single_sample_controls_pass ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+test_exit=0
