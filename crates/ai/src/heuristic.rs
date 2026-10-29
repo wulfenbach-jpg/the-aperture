@@ -83,6 +83,24 @@ impl HeuristicPolicy {
             },
             Some(PendingKind::DeclareAttackers) => {
                 let (attackers, defender) = self.attackers(view);
+                // A required attack removes the engine's no-attack offer. In
+                // that case use an actual offered declaration: the ordinary
+                // tactical subset can omit the required creature or choose a
+                // different opponent. Keep the old policy unchanged when no
+                // requirement applies; this is a legality adapter, not ranking.
+                let may_decline = view.legal.iter().any(|legal| {
+                    matches!(&legal.action, Action::DeclareAttackers { attackers, .. } if attackers.is_empty())
+                });
+                if !may_decline {
+                    let offered = view.legal.iter().find(|legal| {
+                        matches!(&legal.action, Action::DeclareAttackers { defender: offered, .. } if *offered == defender)
+                    }).or_else(|| view.legal.iter().find(|legal| {
+                        matches!(legal.action, Action::DeclareAttackers { .. })
+                    }));
+                    if let Some(offered) = offered {
+                        return offered.action.clone();
+                    }
+                }
                 Action::DeclareAttackers {
                     attackers,
                     defender,

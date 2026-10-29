@@ -3693,24 +3693,26 @@ impl Game {
                     .map(|defender| (*id, defender))
             })
             .collect();
-        if forced.is_empty() {
-            // Nothing is required; any legal declaration is allowed.
-        } else if let Some(chosen) = defender {
-            for (attacker, required_defender) in &forced {
-                if *required_defender == chosen && !attackers.contains(attacker) {
-                    return Err(EngineError::illegal(
-                        "declare attackers",
-                        format!(
-                            "{} must attack P{chosen} this combat if able (CR 508.1d)",
-                            self.describe_object(*attacker)
-                        ),
-                    ));
-                }
-            }
-        } else {
+        // CR 508.1d: obey the greatest number of requirements possible without
+        // violating restrictions. The inherited one-defender combat model can
+        // satisfy only one opponent's group; choosing an unrelated opponent (or
+        // a smaller group) must not evade an able creature's requirement.
+        let maximum = (0..self.state.seat_count() as PlayerId)
+            .map(|p| forced.iter().filter(|(_, required)| *required == p).count())
+            .max()
+            .unwrap_or(0);
+        let obeyed = forced
+            .iter()
+            .filter(|(attacker, required)| {
+                defender == Some(*required) && attackers.contains(attacker)
+            })
+            .count();
+        if obeyed < maximum {
             return Err(EngineError::illegal(
                 "declare attackers",
-                "at least one forced attacker is able to attack this combat (CR 508.1d)",
+                format!(
+                    "this declaration obeys {obeyed} attack requirements, but {maximum} can be obeyed (CR 508.1d)"
+                ),
             ));
         }
         let mut seen = Vec::new();

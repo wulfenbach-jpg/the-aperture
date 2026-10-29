@@ -1,16 +1,15 @@
 //! Evidence-only demonstration driver for slice 54, NOT a product AI and NOT a
 //! strength claim. It chooses only from masked legal actions projected for the
 //! seat that has priority: no deck substitution, no state injection, no
-//! hidden-information access. It prefers offered search picks, nonempty attacks,
-//! lands, Ursine Monstrosity casts and other creatures, so selected exile/search,
-//! Bear and counter modes plus normal combat are exercised.
+//! hidden-information access. It prefers offered nonempty attacks, lands,
+//! Ursine Monstrosity casts and other creatures to exercise the new combat trigger.
 //! It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
 use aperture_core::state::Step;
 use aperture_core::view::PendingKind;
 use aperture_core::{
     Action, AiSettings, CardId, CommanderSetup, DeckList, Event, Game, Replay, ReplayStep,
-    SessionSave, Target, P1,
+    SessionSave,
 };
 use std::collections::BTreeMap;
 
@@ -39,12 +38,12 @@ fn main() {
     .unwrap();
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
-    let mut modal_round = 0usize;
+
     // Public-state instrumentation only; never fed to the projected policy.
     while !game.state.is_over() && steps < 20000 {
         let player = game.decision_owner().expect("decision owner");
         let view = game.view_for(player, &events);
-        let desired_modes = if modal_round % 2 == 0 { [0u8, 1] } else { [2u8, 3] };
+
         let search_action = if view.pending_kind.is_some() {
             view.legal
                 .iter()
@@ -151,15 +150,25 @@ fn main() {
         loaded.game, game.state,
         "fresh save preserves the exact state"
     );
-    let out = root.join("evidence/issue17/slice54");
+    let out = root.join("evidence/issue17/slice54/native");
     std::fs::create_dir_all(&out).unwrap();
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 
     let mut casts = BTreeMap::<String, usize>::new();
-    for event in &events { if let Event::Cast { card, .. } = event { *casts.entry(card.name().to_string()).or_default() += 1; } }
-    assert!(casts.get("Ursine Monstrosity").copied().unwrap_or(0) > 0, "Ursine must be cast");
+    for event in &events {
+        if let Event::Cast { card, .. } = event {
+            *casts.entry(card.name().to_string()).or_default() += 1;
+        }
+    }
+    assert!(
+        casts.get("Ursine Monstrosity").copied().unwrap_or(0) > 0,
+        "Ursine must be cast"
+    );
     let mills = events.iter().filter(|e| matches!(e, Event::StateBasedAction { description } if description.contains("Ursine Monstrosity mills a card"))).count();
-    let combat = events.iter().filter(|e| matches!(e, Event::CombatDamage { .. })).count();
+    let combat = events
+        .iter()
+        .filter(|e| matches!(e, Event::CombatDamage { .. }))
+        .count();
     assert!(mills > 0, "beginning-of-combat trigger must resolve");
     assert!(combat > 0, "combat must happen");
     std::fs::write(

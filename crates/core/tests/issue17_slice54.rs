@@ -47,7 +47,7 @@ fn grave(g: &mut Game, p: PlayerId, c_: CardId) {
 }
 
 #[test]
-fn begin_combat_mills_forces_attack_and_sets_indestructible_dynamic_body() {
+fn begin_combat_mills_forces_attack_and_sets_indestructible_body() {
     let mut g = fixture(5401)
         .hand(P0, &[c54("Ursine Monstrosity")])
         .battlefield(P0, &[CardId::Forest, CardId::Forest, CardId::Forest])
