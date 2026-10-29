@@ -60,6 +60,21 @@ Siege-Gang Commanders is also slow in a debug build (more than 12 minutes at 250
 before it was stopped); that performance observation is disclosed, not measured as a
 regression.
 
+## CI, stated exactly
+
+* Code head **`a9844dc`**'s own runs were **cancelled** when the evidence checkpoint
+  (`a03d088`) was pushed into the same workflow concurrency group: `a9844dc` shows
+  1 completed success and 4 cancelled, which is NOT a green gate.
+* The evidence tip **`a03d088`** — whose tree is identical to `a9844dc` apart from
+  `evidence/` paths — has **10/10 completed success**, every run keyed to
+  `a03d0882f3ab90e6c88d3fdfc5cd1f1de5aa9d6e` (receipt
+  `evidence/issue17/slice65/exact-head-ci-a03d088.json`).
+* This is the R364-3 lesson repeating in a new shape: pushing evidence starts its own
+  runs and cancels the code head's in-flight runs, so the code head must not be
+  described as green. The tree that passed is the tree under review; the reviewer should
+  bind the verdict to `a03d088`'s own keyed runs and re-run the code head if it wants a
+  run bound to `a9844dc`.
+
 ## Honest scope
 
 * Original issue #17 remains **unfinished**: 2 of 8 lists certified, six planned lists with
