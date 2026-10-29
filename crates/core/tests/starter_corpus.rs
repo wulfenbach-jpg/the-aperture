@@ -213,7 +213,10 @@ fn jasmine_is_refused_in_every_ordinary_library() {
     let err = DeckList::parse_practice("bad", "1 Jasmine Boreal\n39 Forest\n")
         .expect_err("a commander-only legend must not enter an ordinary library");
     assert!(err.contains("commander-only"), "{err}");
-    assert!(err.contains("legend rule"), "{err}");
+    // The legend rule (CR 704.5j) is implemented independently; the refusal is
+    // the named command-zone profile's ownership of this card.
+    assert!(err.contains("command-zone"), "{err}");
+    assert!(!err.contains("legend rule is not"), "{err}");
 
     let mut cards = vec![(catalog::by_name("Jasmine Boreal").unwrap(), 1u8)];
     cards.push((CardId::Forest, 39));
