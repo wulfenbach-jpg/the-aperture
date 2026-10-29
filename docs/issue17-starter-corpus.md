@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **152** are in the supported 165-card catalog and **307** are missing. Slice
+* **153** are in the supported 166-card catalog and **306** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
@@ -337,7 +337,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 165 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 166 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1145,9 +1145,9 @@ full independent rules implementation of all Ring-bearer replacement/control-cha
 interactions. The evidence journey reaches Ring level 2 for one seat (a standing Ring-bearer
 stops further Rangers temptations by its own intervening-if), so levels 3-4 are exercised by
 the focused trigger tests and not by that journey. The final evidence journey is a 40-card
-package, not a 100-card starter certification. The corpus remains 165 catalog / 459 union =
-152 supported + 307 missing, Ayula one name short, and only the Jasmine list is certified
-(1 of 8).
+package, not a 100-card starter certification. At that slice the corpus was 165 catalog /
+459 union = 152 supported + 307 missing, Ayula one name short, and only the Jasmine list
+was certified (1 of 8); slice 60 (below) closes the Ayula gap.
 
 **Legend-rule correction.** The first implementation treated a Ring-bearer's whole
 same-name group as legendary, which would have sacrificed an ordinary second Grizzly Bears.
@@ -1160,3 +1160,61 @@ choice is refused by both `GameState::validate` and a real save load).
 `crates/core/tests/issue17_slice59_ring_repairs.rs` and
 `crates/core/tests/issue17_slice59.rs`; final logs and journey under
 `evidence/issue17/slice59/final/`.
+
+## Slice 60 — Evercoat Ursine: hideaway twice, linked face-down exile, free play
+
+The last name in the Ayula list is implemented from its authoritative printing:
+**Evercoat Ursine** (BLC 30, oracle `65c32889-…`, printing
+`b299d768-b171-47e5-b69d-82ce13917c43`, `{4}{G}`, Creature — Elemental Bear,
+6/5, Trample; Scryfall fetch recorded in
+`fixtures/starter-corpus/slice60-sourced.json` with retrieval time
+2026-10-29T06:58:12Z, 2 printings, 1 distinct rules text, and the card's six
+official rulings).
+
+**Printed text and implementation.** `Trample` is a real keyword flag.
+`Hideaway 3, hideaway 3` is two instances of the keyword, so the card carries two
+separate enters-the-battlefield triggered abilities; entering resolves two
+independent looks (CR 702.75a). Each look is private (CR 701.20a), exiles exactly
+one of the looked-at cards face down, links it to that permanent
+(`GameState::hideaway`, `GameState::face_down_exile`), and puts the *looked-at*
+cards that were not chosen on the bottom in a random order (CR 701.20e) — the
+rest of the library is never reordered. The third ability is a normal triggered
+ability on "this creature deals combat damage to a player" whose intervening-if
+"if there are cards exiled with it" is evaluated when it triggers and again at
+resolution (CR 603.4); the "you may" is the ordinary CR 603.5 yes/no choice, and
+the play itself is a resumable `Pending::PlayExiled` offer with one action per
+playable linked card plus an explicit decline.
+
+**The printed ruling fixes four things, and all four are enforced.** The card is
+played while the ability resolves, so no normal timing restriction applies; a
+land may be played only while the seat still has its land play for the turn
+(CR 305.2); a printed `{X}` is 0; and no alternative cost is chosen (the pool has
+no alternative-cost cards). Playing the card for free casts it through the same
+stack and cast-trigger path as a normal cast with no mana paid, and the card stops
+being exiled with anything the moment it changes zone (CR 400.7).
+
+**Deliberate limits.** Hideaway's "any player who has controlled a permanent with
+a hideaway ability since a card was exiled with it may look at that card" is
+recorded only for the player who controlled the exiling permanent; control
+changes of that permanent are not tracked for the look permission. Additional
+costs on a free-cast card are not modelled because no card in the pool prints
+one. A card whose exiling permanent has left the battlefield stays exiled face
+down but is unreachable, which is the correct CR 400.7 outcome. The face-down
+flag is a `GameState` set, so a save from before this slice is byte-identical.
+
+**A real defect in the accepted slice-54 increment, fixed here.** Ursine
+Monstrosity printed `Trample` but was registered through the plain catalog macro,
+so its own keyword was not implemented. It is now a `card_trample!` row and the
+regression `ursine_monstrosity_now_really_has_its_printed_trample` keeps it that
+way.
+
+**Corpus after this slice.** 166 catalog / 459 union = **153 supported + 306
+missing**, per-list `[55, 0, 51, 48, 0, 52, 52, 53]`, one of eight lists
+certified. The Ayula list is now `implemented`: every card of the exact 100-card
+snapshot is supported and both gap fields are empty. It is **not** certified —
+certification needs the exact 100-card four-seat games and separate replays,
+which have not been run.
+
+**Evidence.** `crates/core/tests/issue17_slice60.rs` (nine regressions, including
+the two real `SessionSave` probes) and the printing chain in
+`crates/core/tests/card_printings.rs`.

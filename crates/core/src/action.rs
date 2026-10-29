@@ -134,6 +134,23 @@ pub enum Action {
     ChooseRingBearer {
         bearer: Option<ObjectId>,
     },
+    /// CR 702.75a: answer a hideaway look by exiling one of the looked-at cards
+    /// face down. The card must be one of the offered `looked` cards; the rest
+    /// go to the bottom in a random order when this is submitted.
+    HideawayExile {
+        card: ObjectId,
+    },
+    /// "You may play one of them without paying its mana cost" (Evercoat
+    /// Ursine): play one card exiled with the resolving permanent. `modes` is
+    /// empty except for a printed modal spell, and `targets` are the spell's
+    /// normal targets; a printed `{X}` is always 0 (printed ruling).
+    PlayExiledCard {
+        card: ObjectId,
+        modes: Vec<u8>,
+        targets: Vec<Target>,
+    },
+    /// Decline the "you may play" offer; the ability has no other effect.
+    DeclinePlayExiled,
     ChooseLegendaryKeep {
         permanent: ObjectId,
     },
@@ -214,6 +231,9 @@ impl Action {
             Action::SearchLibraryDone => "finish searching",
             Action::ChooseRingBearer { .. } => "choose Ring-bearer",
             Action::ChooseLegendaryKeep { .. } => "choose legendary permanent",
+            Action::HideawayExile { .. } => "choose a hideaway exile",
+            Action::PlayExiledCard { .. } => "play a card exiled with hideaway",
+            Action::DeclinePlayExiled => "decline the hideaway play",
             Action::ChooseTriggerTarget { .. } => "choose trigger target",
             Action::DeclineTriggerTarget => "decline trigger target",
             Action::FinishTriggerTargets => "finish trigger targets",

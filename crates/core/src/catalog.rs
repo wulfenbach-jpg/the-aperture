@@ -306,7 +306,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 165] = [
+pub static CARDS: [CardDef; 166] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -929,10 +929,21 @@ pub static CARDS: [CardDef; 165] = [
         oracle: "Landfall — Whenever a land you control enters, if you don't control a Ring-bearer, the Ring tempts you.",
         spell: None
     ),
-    card!(
+    card_trample!(
         UrsineMonstrosity, "Ursine Monstrosity", cost: Some("{2}{G}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Bear Mutant", power: Some(3), toughness: Some(3),
         oracle: "Trample\nAt the beginning of combat on your turn, mill a card and choose an opponent at random. This creature attacks that player this combat if able. Until end of turn, this creature gains indestructible and gets +1/+1 for each card type among cards in your graveyard.",
+        spell: None
+    ),
+    // Issue 17 slice 60: Evercoat Ursine (BLC 30). Text copied verbatim from the
+    // printing recorded in fixtures/starter-corpus/slice60-sourced.json. Trample
+    // is a real keyword flag, and the two hideaway 3 abilities are separate
+    // triggered abilities, so entering exiles two cards face down, each linked to
+    // this permanent (CR 702.75a).
+    card_trample!(
+        EvercoatUrsine, "Evercoat Ursine", cost: Some("{4}{G}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Elemental Bear", power: Some(6), toughness: Some(5),
+        oracle: "Trample\nHideaway 3, hideaway 3 (When this creature enters, look at the top three cards of your library, exile one face down, then put the rest on the bottom in a random order. Then do it again.)\nWhenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
         spell: None
     ),
     card!(

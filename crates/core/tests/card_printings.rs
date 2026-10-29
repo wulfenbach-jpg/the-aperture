@@ -52,6 +52,8 @@ const SLICE44_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/sli
 const SLICE45_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice45-sourced.json");
 const SLICE54_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice54-sourced.json");
 const SLICE59_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice59-sourced.json");
+/// Slice 60: Evercoat Ursine (BLC 30), fetched 2026-10-29.
+const SLICE60_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice60-sourced.json");
 /// Slice 46: Thijarian Witness (WHO 111), fetched 2026-10-28.
 const SLICE46_SOURCED: &str = include_str!("../../../fixtures/starter-corpus/slice46-sourced.json");
 /// Slice 48: Owlbear Cub (CLB 246), fetched 2026-10-28.
@@ -489,6 +491,11 @@ fn slice57_cards() -> Vec<Value> {
 
 fn slice59_cards() -> Vec<Value> {
     let value: Value = serde_json::from_str(SLICE59_SOURCED).expect("sourced slice59 JSON");
+    value["cards"].as_array().expect("cards").to_vec()
+}
+
+fn slice60_cards() -> Vec<Value> {
+    let value: Value = serde_json::from_str(SLICE60_SOURCED).expect("sourced slice60 JSON");
     value["cards"].as_array().expect("cards").to_vec()
 }
 
@@ -990,6 +997,7 @@ fn every_pool_card_added_after_issue_15_has_a_recorded_printing() {
         .chain(slice45_cards())
         .chain(slice54_cards())
         .chain(slice59_cards())
+        .chain(slice60_cards())
         .chain(slice46_cards())
         .chain(slice48_cards())
         .chain(slice53_cards())
@@ -1298,6 +1306,70 @@ fn every_slice5_card_matches_its_recorded_printing() {
         assert!(
             !sourced_text(&record, "retrieved_at").is_empty(),
             "{name} records when it was read"
+        );
+    }
+}
+
+/// Slice 60 adds Evercoat Ursine: the catalog text, type line, cost, P/T and
+/// printed Trample keyword must all come from the BLC 30 printing, and its two
+/// hideaway abilities plus the free-play trigger must be typed on the card.
+#[test]
+fn every_slice60_card_matches_its_recorded_printing() {
+    let cards = slice60_cards();
+    assert_eq!(cards.len(), 1, "slice 60 adds one sourced card");
+    for record in cards {
+        let name = sourced_text(&record, "name");
+        let def = catalog::by_name(name)
+            .unwrap_or_else(|| panic!("{name} is not in the pool"))
+            .def();
+        assert_eq!(
+            def.oracle,
+            sourced_text(&record, "oracle_text"),
+            "{name} text"
+        );
+        assert_eq!(
+            def.type_line,
+            sourced_text(&record, "type_line"),
+            "{name} type"
+        );
+        assert_eq!(
+            def.cost,
+            Some(sourced_text(&record, "mana_cost")),
+            "{name} cost"
+        );
+        assert_eq!(
+            def.power.map(|p| p.to_string()).as_deref(),
+            record["power"].as_str()
+        );
+        assert_eq!(
+            def.toughness.map(|t| t.to_string()).as_deref(),
+            record["toughness"].as_str()
+        );
+        assert!(
+            def.has_trample(),
+            "{name} prints Trample, so the keyword flag must be set"
+        );
+        assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
+        assert!(
+            record["printings_checked"].as_u64().unwrap_or(0) >= 1,
+            "{name} records how many printings were checked"
+        );
+        assert_eq!(
+            record["printings_distinct_oracle_texts"].as_u64(),
+            Some(1),
+            "{name} prints one rules text across its printings"
+        );
+        assert!(
+            sourced_text(&record, "printing_url").starts_with("https://api.scryfall.com/cards/")
+        );
+        assert!(!sourced_text(&record, "retrieved_at").is_empty());
+        let abilities = aperture_core::abilities(def.id);
+        assert_eq!(abilities.len(), 3, "{name} carries three typed abilities");
+        assert!(
+            abilities
+                .iter()
+                .all(|ability| def.oracle.contains(ability.text())),
+            "{name} prints every typed ability it declares"
         );
     }
 }

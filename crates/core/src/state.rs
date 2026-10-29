@@ -293,6 +293,32 @@ pub enum Pending {
         /// `true` = assign as though unblocked, aligned with `order[..cursor]`.
         answers: Vec<bool>,
     },
+    /// CR 702.75a (hideaway): the controller looks at up to N cards (the
+    /// `looked` cards, top first, still anchored in their library) and exiles one
+    /// of them face down, linked to `source`. The rest go to the bottom in a
+    /// random order. At least one card is present whenever this pending exists;
+    /// an empty library resolves the ability with nothing to look at.
+    HideawayChoice {
+        player: PlayerId,
+        /// The permanent whose linked hideaway ability is resolving. Its
+        /// battlefield identity is what the exiled card is linked to (the entry
+        /// recorded in `GameState::hideaway`), so a permanent that leaves the
+        /// battlefield before the answer makes the choice stale.
+        source: ObjectId,
+        looked: Vec<ObjectId>,
+    },
+    /// "If there are cards exiled with it, you may play one of them without
+    /// paying its mana cost" (Evercoat Ursine). `options` are the linked exiled
+    /// cards that are playable right now: any nonland card (the printed ruling
+    /// plays it while the ability resolves, so normal timing does not apply) and
+    /// a land only when the controller still has a land play available this turn.
+    /// The answer either plays one card or declines; the ability has no other
+    /// effect, so declining finishes it.
+    PlayExiled {
+        player: PlayerId,
+        source: ObjectId,
+        options: Vec<ObjectId>,
+    },
 }
 
 /// One triggered ability waiting to be put on the stack (CR 603.2, 603.3).
@@ -466,6 +492,8 @@ impl Pending {
             | Pending::LegendaryChoice { player, .. }
             | Pending::EffectDiscard { player }
             | Pending::TopCardChoice { player, .. }
+            | Pending::HideawayChoice { player, .. }
+            | Pending::PlayExiled { player, .. }
             | Pending::SearchLibrary { player, .. } => *player,
         }
     }
@@ -641,6 +669,16 @@ impl Pending {
                     format!("P{player}: put the looked-at card on the bottom")
                 }
             }
+            Pending::HideawayChoice { player, looked, .. } => format!(
+                "P{player}: hideaway — exile one of the {} looked-at card(s) face down, then put the rest on the bottom (CR 702.75a)",
+                looked.len()
+            ),
+            Pending::PlayExiled {
+                player, options, ..
+            } => format!(
+                "P{player}: you may play one of the {} card(s) exiled with this creature without paying its mana cost",
+                options.len()
+            ),
         }
     }
 }
@@ -983,6 +1021,24 @@ pub struct RegenerationShield {
     pub object: ObjectId,
 }
 
+/// CR 702.75a: one card exiled face down *with* a specific permanent.
+///
+/// The link is the whole printed meaning of "cards exiled with it"; it is not a
+/// property of the exiled card's zone, and it dies with the permanent's
+/// battlefield identity (CR 400.7), which is why it names the exact
+/// [`ObjectId`] rather than a card.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct HideawayLink {
+    /// The exiled card, in its owner's exile zone and in `face_down_exile`.
+    pub card: ObjectId,
+    /// The permanent it was exiled with.
+    pub source: ObjectId,
+    /// The player who controlled the exiling permanent, and therefore the one
+    /// who may look at the face-down card (CR 406.3). Control changes of the
+    /// permanent are not tracked; see the slice-60 documentation.
+    pub controller: PlayerId,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GameState {
     pub seed: u64,
@@ -1078,6 +1134,18 @@ pub struct GameState {
     /// Per-seat The Ring state; empty/skipped when untouched.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub rings: Vec<RingState>,
+    /// CR 702.75a + 400.7: hideaway's linked exile. One entry per card exiled
+    /// face down by a hideaway ability, naming the exact battlefield object it
+    /// was exiled *with*. Empty and skipped when nothing was ever exiled face
+    /// down, so every pre-slice-60 save and replay digest is byte-identical.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub hideaway: Vec<HideawayLink>,
+    /// Identity of a card exiled face down (CR 406.3): every viewer except the
+    /// player who may look at it sees a face-down card. Kept as a set so the
+    /// public view can never leak a hidden identity, and skipped when empty for
+    /// the same digest reason as `hideaway`.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub face_down_exile: BTreeSet<ObjectId>,
     /// Next rule-visible effect id.
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     pub next_effect: u32,
@@ -1286,6 +1354,8 @@ impl GameState {
                 Pending::RingTemptation { eligible, .. } => eligible.contains(&id),
                 Pending::LegendaryChoice { options, .. } => options.contains(&id),
                 Pending::TopCardChoice { card, .. } => *card == id,
+                Pending::HideawayChoice { looked, .. } => looked.contains(&id),
+                Pending::PlayExiled { options, .. } => options.contains(&id),
                 Pending::SearchLibrary {
                     chosen, eligible, ..
                 } => chosen.contains(&id) || eligible.contains(&id),
@@ -1514,6 +1584,123 @@ impl GameState {
                     if offered != group {
                         return Err(EngineError::InvalidState {
                             reason: "legendary choice does not list the whole legendary group"
+                                .to_string(),
+                        });
+                    }
+                }
+                Pending::HideawayChoice {
+                    player,
+                    source,
+                    looked,
+                } => {
+                    if looked.is_empty() {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway look offers no card".to_string(),
+                        });
+                    }
+                    let mut unique = looked.clone();
+                    unique.sort_unstable();
+                    unique.dedup();
+                    if unique.len() != looked.len() {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway look repeats a card".to_string(),
+                        });
+                    }
+                    let source_ok = self.objects.get(source).is_some_and(|object| {
+                        object.zone == Zone::Battlefield && object.controller == *player
+                    });
+                    if !source_ok {
+                        return Err(EngineError::InvalidState {
+                            reason:
+                                "hideaway look names a source that is not this seat's permanent"
+                                    .to_string(),
+                        });
+                    }
+                    // The offer must be exactly the current top of the library,
+                    // so a save cannot smuggle a card from the middle of it.
+                    let library = &self.player(*player).library;
+                    if looked.len() > library.len() || library[..looked.len()] != looked[..] {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway look is not the current top of that seat's library"
+                                .to_string(),
+                        });
+                    }
+                    let stack_ok = self.stack.last().is_some_and(|item| {
+                        item.card == CardId::EvercoatUrsine
+                            && matches!(item.entry, StackEntry::Triggered { .. })
+                            && item.controller == *player
+                    });
+                    if !stack_ok {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway look is not bound to the resolving hideaway trigger"
+                                .to_string(),
+                        });
+                    }
+                }
+                Pending::PlayExiled {
+                    player,
+                    source,
+                    options,
+                } => {
+                    if options.is_empty() {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway play offers no card".to_string(),
+                        });
+                    }
+                    let mut unique = options.clone();
+                    unique.sort_unstable();
+                    unique.dedup();
+                    if unique.len() != options.len() {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway play repeats a card".to_string(),
+                        });
+                    }
+                    let source_ok = self.objects.get(source).is_some_and(|object| {
+                        object.zone == Zone::Battlefield && object.controller == *player
+                    });
+                    if !source_ok {
+                        return Err(EngineError::InvalidState {
+                            reason:
+                                "hideaway play names a source that is not this seat's permanent"
+                                    .to_string(),
+                        });
+                    }
+                    for id in options {
+                        let Some(object) = self.objects.get(id) else {
+                            return Err(EngineError::InvalidState {
+                                reason: "hideaway play names a missing card".to_string(),
+                            });
+                        };
+                        if object.zone != Zone::Exile || !self.face_down_exile.contains(id) {
+                            return Err(EngineError::InvalidState {
+                                reason: "hideaway play names a card that is not face down in exile"
+                                    .to_string(),
+                            });
+                        }
+                        let linked = self.hideaway.iter().any(|link| {
+                            link.card == *id && link.source == *source && link.controller == *player
+                        });
+                        if !linked {
+                            return Err(EngineError::InvalidState {
+                                reason: "hideaway play names a card exiled with another object"
+                                    .to_string(),
+                            });
+                        }
+                        if object.card.def().is_land() && self.turn.lands_played != 0 {
+                            return Err(EngineError::InvalidState {
+                                reason: "hideaway play offers a land although this turn's land play is used"
+                                    .to_string(),
+                            });
+                        }
+                    }
+                    let stack_ok = self.stack.last().is_some_and(|item| {
+                        item.card == CardId::EvercoatUrsine
+                            && matches!(item.entry, StackEntry::Triggered { .. })
+                            && item.controller == *player
+                    });
+                    if !stack_ok {
+                        return Err(EngineError::InvalidState {
+                            reason: "hideaway play is not bound to the resolving hideaway trigger"
                                 .to_string(),
                         });
                     }

@@ -916,6 +916,8 @@ fn reconstruct(
         nontoken_creature_deaths_this_turn: real_state.nontoken_creature_deaths_this_turn.clone(),
         commanders: real_state.commanders.clone(),
         rings,
+        hideaway: real_state.hideaway.clone(),
+        face_down_exile: real_state.face_down_exile.clone(),
         profile: real_state.profile,
         commander_damage: real_state.commander_damage.clone(),
         retired_commanders: real_state.retired_commanders.clone(),

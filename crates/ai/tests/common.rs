@@ -52,6 +52,8 @@ pub fn fixture(seed: u64) -> Fixture {
             nontoken_creature_deaths_this_turn: Vec::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            hideaway: Vec::new(),
+            face_down_exile: Default::default(),
             profile: Profile::Practice20,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
@@ -309,6 +311,13 @@ pub fn run_until(
                     })
                     .map(|legal| legal.action)
                     .expect("a combat damage assignment option is offered"),
+                Pending::HideawayChoice { .. } => game
+                    .legal_actions()
+                    .into_iter()
+                    .find(|legal| matches!(legal.action, Action::HideawayExile { .. }))
+                    .map(|legal| legal.action)
+                    .expect("a hideaway exile option is offered"),
+                Pending::PlayExiled { .. } => Action::DeclinePlayExiled,
             }
         } else {
             Action::Pass

@@ -422,6 +422,20 @@ pub enum Effect {
     /// targets that are still artifacts/enchantments on resolution; a target
     /// that left the battlefield does nothing (CR 608.2b).
     DestroyTargetArtifactsAndEnchantments,
+    /// CR 702.75a (hideaway): "look at the top N cards of your library, exile
+    /// one of them face down, then put the rest on the bottom of your library in
+    /// a random order." The exiled card is linked to the source permanent
+    /// (`Object::hideaway_source` on the exiled card), which is what "cards
+    /// exiled with it" means. The look is private (CR 701.20a) and the bottom
+    /// order is random among the looked-at cards only (CR 701.20e).
+    Hideaway(u8),
+    /// "Whenever this creature deals combat damage to a player, if there are
+    /// cards exiled with it, you may play one of them without paying its mana
+    /// cost." The choice is a resumable pending offer, one action per playable
+    /// linked card (plus decline); playing happens while the ability resolves,
+    /// per the printed ruling, so normal timing restrictions do not apply, a
+    /// land still needs an unused land play, and a printed {X} is 0.
+    PlayCardExiledWithSource,
 }
 
 const TITANIA_EXILE_GRAVE: &[Effect] = &[Effect::ExileTargetPlayersGraveyardAndGainLife];
@@ -551,6 +565,13 @@ impl Effect {
             }
             Effect::DestroyTargetArtifactsAndEnchantments => {
                 "destroy the chosen artifacts and/or enchantments".to_string()
+            }
+            Effect::Hideaway(n) => format!(
+                "hideaway {n}: look at the top {n}, exile one face down, put the rest on the bottom in a random order"
+            ),
+            Effect::PlayCardExiledWithSource => {
+                "you may play a card exiled with this creature without paying its mana cost"
+                    .to_string()
             }
             Effect::EachPlayerDraws(n) => format!("each player draws {n}"),
             Effect::PutPlusOneCountersOnTarget(n) => {
@@ -948,6 +969,8 @@ pub enum CardId {
     SnowCoveredForest,
     TitaniasCommand,
     UrsineMonstrosity,
+    /// Issue 17 slice 60: Evercoat Ursine (BLC 30).
+    EvercoatUrsine,
     DunedainRangers,
     AyulasInfluence,
     Bearscape,

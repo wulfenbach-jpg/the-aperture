@@ -330,6 +330,11 @@ fn every_printed_ability_maps_to_implemented_semantics() {
                 | Effect::CreateBearTokensForEachDeathThisTurn
                 | Effect::CreateClueToken
                 | Effect::ExileDeadCreatureAndInvestigate => {}
+                // Ability-only effects never appear in a printed spell's text;
+                // the two hideaway instructions are checked where they are
+                // declared (ability.rs), not here.
+                Effect::Hideaway(n) => assert!(*n > 0, "{} prints hideaway 0", card.name),
+                Effect::PlayCardExiledWithSource => {}
                 Effect::MillTargetPlayer(_)
                 | Effect::LoseLife(_)
                 | Effect::LoseLifeEachOpponent(_) => {

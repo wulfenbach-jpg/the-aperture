@@ -143,7 +143,8 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // Cub, which closes one more and grows the pool by one. Slice 53 registers
     // Ruxa, Patient Professor, so both numbers move together one more time.
     // Slice 57 registers Rampaging Yao Guai, so the gap closes by one and the
-    // pool grows by one again.
-    assert_eq!(missing.len(), 1, "Ayula's remaining sourced gap");
-    assert_eq!(catalog::all().len(), 165, "the compiled pool");
+    // pool grows by one again. Slice 60 registers Evercoat Ursine, which leaves
+    // no sourced name missing from the Ayula list at all.
+    assert_eq!(missing.len(), 0, "Ayula's sourced gap is closed");
+    assert_eq!(catalog::all().len(), 166, "the compiled pool");
 }

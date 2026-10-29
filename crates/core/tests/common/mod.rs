@@ -56,6 +56,8 @@ pub fn fixture_n(seed: u64, seat_count: usize) -> Fixture {
             objects: BTreeMap::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            hideaway: Vec::new(),
+            face_down_exile: Default::default(),
             profile: Profile::Practice20,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
@@ -329,6 +331,15 @@ pub fn auto_answer(game: &Game) -> Action {
                 .find(|legal| matches!(legal.action, Action::AnswerCombatDamageAssignment { .. }))
                 .map(|legal| legal.action)
                 .expect("a combat damage assignment option is offered"),
+            // Hideaway's look takes the first offered card; the "you may play"
+            // offer is declined so the fixed policy never adds a free cast.
+            Pending::HideawayChoice { .. } => game
+                .legal_actions()
+                .into_iter()
+                .find(|legal| matches!(legal.action, Action::HideawayExile { .. }))
+                .map(|legal| legal.action)
+                .expect("a hideaway exile option is offered"),
+            Pending::PlayExiled { .. } => Action::DeclinePlayExiled,
         };
     }
     Action::Pass

@@ -416,6 +416,8 @@ pub fn explain(game: &Game, viewer: PlayerId, legal: &[LegalAction]) -> Vec<Expl
             Pending::RingTemptation { .. } => vec!["701.54a"],
             Pending::LegendaryChoice { .. } => vec!["704.5j"],
             Pending::TopCardChoice { .. } => vec!["701.20e"],
+            Pending::HideawayChoice { .. } => vec!["702.75a", "701.20a", "701.20e"],
+            Pending::PlayExiled { .. } => vec!["702.75a", "608.2g"],
             Pending::SearchLibrary { .. } => vec!["701.23"],
         };
         let text = if pending.player() != viewer

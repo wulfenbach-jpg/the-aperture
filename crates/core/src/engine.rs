@@ -287,6 +287,8 @@ impl Game {
             objects: BTreeMap::new(),
             commanders: Vec::new(),
             rings: Vec::new(),
+            hideaway: Vec::new(),
+            face_down_exile: Default::default(),
             profile,
             commander_damage: Vec::new(),
             retired_commanders: Vec::new(),
@@ -2778,6 +2780,8 @@ impl Game {
             Some(Pending::RingTemptation { .. })
                 | Some(Pending::EffectDiscard { .. })
                 | Some(Pending::LegendaryChoice { .. })
+                | Some(Pending::HideawayChoice { .. })
+                | Some(Pending::PlayExiled { .. })
         ) {
             state.validate()?;
         }
@@ -2827,6 +2831,55 @@ impl Game {
                     "no legend choice is waiting",
                 )),
             },
+            Action::HideawayExile { card } => match &state.pending {
+                Some(Pending::HideawayChoice {
+                    player: p,
+                    source,
+                    looked,
+                }) if *p == player => {
+                    if !looked.contains(card) {
+                        return Err(EngineError::illegal(
+                            "hideaway",
+                            "that card is not one of the looked-at cards (CR 702.75a)",
+                        ));
+                    }
+                    let live_source = state.try_object(*source).is_some_and(|object| {
+                        object.zone == Zone::Battlefield && object.controller == player
+                    });
+                    if !live_source {
+                        return Err(EngineError::illegal(
+                            "hideaway",
+                            "the permanent whose hideaway ability is resolving is no longer a \
+                             permanent this player controls (CR 400.7)",
+                        ));
+                    }
+                    Ok(())
+                }
+                Some(Pending::HideawayChoice { .. }) => Err(EngineError::illegal(
+                    "hideaway",
+                    "that looked-at card is not this player's decision",
+                )),
+                _ => Err(EngineError::illegal(
+                    "hideaway",
+                    "no hideaway look is waiting",
+                )),
+            },
+            Action::DeclinePlayExiled => match &state.pending {
+                Some(Pending::PlayExiled { player: p, .. }) if *p == player => Ok(()),
+                Some(Pending::PlayExiled { .. }) => Err(EngineError::illegal(
+                    "play exiled card",
+                    "that offer is not this player's decision",
+                )),
+                _ => Err(EngineError::illegal(
+                    "play exiled card",
+                    "no hideaway play offer is waiting",
+                )),
+            },
+            Action::PlayExiledCard {
+                card,
+                modes,
+                targets,
+            } => self.validate_play_exiled(player, *card, modes, targets),
             Action::Pass => {
                 if state.pending.is_some() {
                     return Err(EngineError::illegal(
@@ -3877,6 +3930,142 @@ impl Game {
         Ok(())
     }
 
+    /// "You may play one of them without paying its mana cost" (Evercoat
+    /// Ursine). Everything the printed ruling fixes is enforced here: the card
+    /// must be one of the offered face-down cards still exiled with the live
+    /// source, a land needs the seat's unused land play for the turn, a printed
+    /// `{X}` is 0 (never announced), and a spell's targets must be legal for its
+    /// own printed target spec. Normal timing restrictions are *not* applied,
+    /// because the play happens while the ability resolves.
+    fn validate_play_exiled(
+        &self,
+        player: PlayerId,
+        card: ObjectId,
+        modes: &[u8],
+        targets: &[Target],
+    ) -> Result<(), EngineError> {
+        let state = &self.state;
+        let Some(Pending::PlayExiled {
+            player: p,
+            source,
+            options,
+        }) = &state.pending
+        else {
+            return Err(EngineError::illegal(
+                "play exiled card",
+                "no hideaway play offer is waiting",
+            ));
+        };
+        if *p != player {
+            return Err(EngineError::illegal(
+                "play exiled card",
+                "that offer is not this player's decision",
+            ));
+        }
+        if !options.contains(&card) {
+            return Err(EngineError::illegal(
+                "play exiled card",
+                "that card is not one of the offered cards exiled with this creature",
+            ));
+        }
+        let object = state.try_object(card).ok_or(EngineError::UnknownObject)?;
+        if object.zone != Zone::Exile || !state.face_down_exile.contains(&card) {
+            return Err(EngineError::WrongZone {
+                name: object.card.def().name,
+                zone: "the exile zone, face down, exiled with this creature",
+            });
+        }
+        let linked = state
+            .hideaway
+            .iter()
+            .any(|link| link.card == card && link.source == *source && link.controller == player);
+        let live_source = state
+            .try_object(*source)
+            .is_some_and(|object| object.zone == Zone::Battlefield && object.controller == player);
+        if !linked || !live_source {
+            return Err(EngineError::illegal(
+                "play exiled card",
+                "that card is not exiled with this creature any more (CR 702.75a, 400.7)",
+            ));
+        }
+        let def = object.card.def();
+        if def.is_land() {
+            if !modes.is_empty() || !targets.is_empty() {
+                return Err(EngineError::illegal(
+                    "play exiled card",
+                    "a land has no modes and no targets",
+                ));
+            }
+            if state.turn.lands_played != 0 {
+                return Err(EngineError::BadTiming {
+                    name: def.name,
+                    reason: "playing a land needs an unused land play for the turn (CR 305.2)"
+                        .to_string(),
+                });
+            }
+            return Ok(());
+        }
+        let Some(spec) = def.spell_spec() else {
+            return Err(EngineError::illegal(
+                "play exiled card",
+                format!("{} is not a spell", def.name),
+            ));
+        };
+        if def.id == CardId::TitaniasCommand {
+            if modes.len() != 2 || modes[0] == modes[1] || modes.iter().any(|mode| *mode > 3) {
+                return Err(EngineError::illegal(
+                    "play exiled card",
+                    "Titania's Command needs exactly two distinct printed modes (CR 700.2)",
+                ));
+            }
+            if modes.contains(&0) {
+                let one_live_player = matches!(
+                    targets,
+                    [Target::Player(p)] if state.is_live(*p)
+                );
+                if !one_live_player {
+                    return Err(EngineError::BadTarget {
+                        card: def.id,
+                        reason: "the printed graveyard mode needs one live player target"
+                            .to_string(),
+                    });
+                }
+            } else if !targets.is_empty() {
+                return Err(EngineError::TargetKind { card: def.id });
+            }
+            return Ok(());
+        }
+        if !modes.is_empty() {
+            return Err(EngineError::illegal(
+                "play exiled card",
+                format!("{} is not a modal spell", def.name),
+            ));
+        }
+        let required = if spec.target == TargetSpec::None {
+            0
+        } else {
+            1
+        };
+        if targets.len() != required {
+            return Err(EngineError::TargetKind { card: def.id });
+        }
+        if required == 1 {
+            let legal = self.legal_targets(player, spec.target, card);
+            if !legal.contains(&targets[0]) {
+                return Err(EngineError::BadTarget {
+                    card: def.id,
+                    reason: format!(
+                        "{} is not a legal target for {} ({})",
+                        self.describe_target(targets[0]),
+                        def.name,
+                        target_spec_rule(spec.target)
+                    ),
+                });
+            }
+        }
+        Ok(())
+    }
+
     fn check_timing(
         &self,
         player: PlayerId,
@@ -4147,10 +4336,49 @@ impl Game {
     /// defending seat's current board. Called when an attack trigger would fire
     /// and again when it resolves, so a clause that stops being true removes the
     /// ability instead of applying it.
+    /// CR 702.75a + 400.7: the cards currently exiled *with* `source` that
+    /// `player` may look at and play. Re-validated on every read: the link must
+    /// name this exact object, the card must still be in an exile zone and still
+    /// marked face down, and the link's recorded controller must be the player
+    /// asking. A link whose source has left the battlefield therefore matches
+    /// nothing, which is exactly what CR 400.7 says.
+    fn hideaway_linked_for(&self, source: ObjectId, player: PlayerId) -> Vec<ObjectId> {
+        let mut out: Vec<ObjectId> = self
+            .state
+            .hideaway
+            .iter()
+            .filter(|link| link.source == source && link.controller == player)
+            .filter(|link| self.state.face_down_exile.contains(&link.card))
+            .filter(|link| {
+                self.state
+                    .try_object(link.card)
+                    .is_some_and(|object| object.zone == Zone::Exile)
+            })
+            .map(|link| link.card)
+            .collect();
+        out.sort_unstable();
+        out.dedup();
+        out
+    }
+
     fn trigger_condition_holds(&self, card: CardId, defender: PlayerId, source: ObjectId) -> bool {
         match ability::trigger_condition(card) {
             ability::TriggerCondition::Always => true,
             ability::TriggerCondition::SourceIsSaddled => self.has_saddled(source),
+            ability::TriggerCondition::CardsExiledWithSource => {
+                // "if there are cards exiled with it": the source must still be
+                // the same battlefield object and must still have at least one
+                // face-down card linked to it. Read through the trigger's own
+                // controller, which is the seat whose link records were made.
+                let controller = self
+                    .state
+                    .try_object(source)
+                    .filter(|object| object.zone == Zone::Battlefield)
+                    .map(|object| object.controller);
+                controller.is_some_and(|controller| {
+                    !self.hideaway_linked_for(source, controller).is_empty()
+                })
+            }
             ability::TriggerCondition::NoRingBearer => self
                 .state
                 .try_object(source)
@@ -4191,6 +4419,20 @@ impl Game {
                         }
                     }
                 }
+            }
+            Action::HideawayExile { card } => self.apply_hideaway_exile(player, *card, events),
+            Action::PlayExiledCard {
+                card,
+                modes,
+                targets,
+            } => self.apply_play_exiled(player, *card, modes, targets, events),
+            Action::DeclinePlayExiled => {
+                // "You may" declined: the ability has no other instruction, so
+                // resolution resumes and finishes without a play.
+                self.state.pending = None;
+                events.push(Event::StateBasedAction {
+                    description: format!("P{player} declines to play a card exiled with it"),
+                });
             }
             Action::Pass => self.apply_pass(player, events),
             Action::PlayLand { card } => self.apply_play_land(player, *card, events),
@@ -4706,6 +4948,172 @@ impl Game {
                 "P{player} puts the rest of the looked-at cards on the bottom of their library in a random order (CR 701.20e)"
             ),
         });
+        self.state.turn.priority = None;
+    }
+
+    /// CR 702.75a: answer one hideaway look. The chosen looked-at card is exiled
+    /// face down and linked to the resolving permanent; the other looked-at cards
+    /// go to the bottom in a random order (CR 701.20e). Nothing else in the
+    /// library moves.
+    fn apply_hideaway_exile(&mut self, player: PlayerId, card: ObjectId, events: &mut Vec<Event>) {
+        let Some(Pending::HideawayChoice { source, looked, .. }) = self.state.pending.take() else {
+            return;
+        };
+        self.state.players[player as usize]
+            .library
+            .retain(|id| *id != card);
+        let mut looked_object = self
+            .state
+            .objects
+            .remove(&card)
+            .expect("hideaway looked-at card exists in its library");
+        looked_object.zone = Zone::Exile;
+        let exiled = self.insert_object(looked_object, Zone::Exile);
+        self.state.face_down_exile.insert(exiled);
+        self.state.hideaway.push(crate::state::HideawayLink {
+            card: exiled,
+            source,
+            controller: player,
+        });
+        // CR 406.3: the identity of a face-down exiled card is hidden, so the
+        // public event log never names it — not even the card the owner chose.
+        let source_name = self.state.object(source).card.name();
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{player} exiles one card face down with {source_name} (hideaway, CR 702.75a)"
+            ),
+        });
+        let mut rest: Vec<ObjectId> = looked.into_iter().filter(|id| *id != card).collect();
+        self.state.rng.shuffle(&mut rest);
+        let library = &mut self.state.players[player as usize].library;
+        library.retain(|id| !rest.contains(id));
+        library.extend(rest.iter().copied());
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{player} puts the rest of the looked-at cards on the bottom of their library in a random order (CR 701.20e)"
+            ),
+        });
+        self.state.turn.priority = None;
+    }
+
+    /// "You may play one of them without paying its mana cost" (Evercoat
+    /// Ursine). The played card leaves its face-down exile, stops being linked,
+    /// and is either put onto the battlefield as a land play (CR 305.2) or cast
+    /// for free with a printed `{X}` of 0 (printed ruling). The ability that
+    /// offered the play finishes resolving first, so the new spell is on the
+    /// stack above nothing but the triggers its own cast caused.
+    fn apply_play_exiled(
+        &mut self,
+        player: PlayerId,
+        card: ObjectId,
+        modes: &[u8],
+        targets: &[Target],
+        events: &mut Vec<Event>,
+    ) {
+        let Some(Pending::PlayExiled { source, .. }) = self.state.pending.take() else {
+            return;
+        };
+        let card_id = self.state.object(card).card;
+        self.state.face_down_exile.remove(&card);
+        self.state.hideaway.retain(|link| link.card != card);
+        // Finish the offering ability before the played card exists anywhere.
+        if let Some(item) = self.state.stack.last().cloned()
+            && item.entry != StackEntry::Spell
+            && item.object == source
+        {
+            let text = ability::abilities(item.card)
+                .get(ability_index(item.entry) as usize)
+                .map(|ability| ability.text().to_string())
+                .unwrap_or_default();
+            events.push(Event::AbilityResolved {
+                controller: player,
+                source: item.object,
+                card: item.card,
+                text,
+            });
+            self.pop_ability(item.object, item.entry);
+        }
+        self.state.resolving = None;
+        if card_id.def().is_land() {
+            self.state.players[player as usize]
+                .exile
+                .retain(|id| *id != card);
+            self.enter_battlefield(card, player, events, 0);
+            self.state.turn.lands_played = self.state.turn.lands_played.saturating_add(1);
+            events.push(Event::StateBasedAction {
+                description: format!(
+                    "P{player} plays {card_id} from exile with hideaway as their land play for the turn (CR 305.2)"
+                ),
+            });
+            self.state.turn.priority = None;
+            return;
+        }
+        // CR 601.2a: the card becomes a spell on the stack; no cost is paid, and
+        // the printed ruling fixes an {X} cost at 0.
+        let stack_object = self.move_object_to_stack(player, card, None);
+        self.state.stack.push(StackItem {
+            object: stack_object,
+            card: card_id,
+            controller: player,
+            targets: targets.to_vec(),
+            modes: modes.to_vec(),
+            affected: None,
+            dead_object: None,
+            source_pt_lki: None,
+            search_amount: 0,
+            cursor: 0,
+            entry: StackEntry::Spell,
+            trigger_answered: false,
+            spell_mana_value: 0,
+            x_value: 0,
+        });
+        let def = card_id.def();
+        let cast_event = if def.kinds.contains(&crate::card::Kind::Instant)
+            || def.kinds.contains(&crate::card::Kind::Sorcery)
+        {
+            Some(TriggerEvent::SpellCast)
+        } else if def.kinds.contains(&crate::card::Kind::Creature) {
+            Some(TriggerEvent::CreatureSpellCast)
+        } else {
+            None
+        };
+        if let Some(event) = cast_event {
+            let sources: Vec<(ObjectId, CardId)> = self
+                .state
+                .objects
+                .values()
+                .filter(|object| object.zone == Zone::Battlefield && object.controller == player)
+                .filter(|object| ability::triggers_on(object.card, event).next().is_some())
+                .map(|object| (object.id, object.card))
+                .collect();
+            for (trigger_source, trigger_card) in sources {
+                let first_new = self.state.trigger_queue.len();
+                self.queue_triggers(trigger_source, trigger_card, player, event);
+                if event == TriggerEvent::CreatureSpellCast {
+                    let mana_value = def.mana_value();
+                    for trigger in &mut self.state.trigger_queue[first_new..] {
+                        trigger.spell_mana_value = mana_value;
+                    }
+                }
+            }
+            self.put_triggers(events);
+        }
+        let target_labels = targets
+            .iter()
+            .map(|target| self.describe_target(*target))
+            .collect::<Vec<_>>();
+        events.push(Event::Cast {
+            player,
+            object: stack_object,
+            card: card_id,
+            targets: target_labels,
+        });
+        events.push(Event::StateBasedAction {
+            description: format!(
+                "P{player} plays {card_id} from exile with hideaway without paying its mana cost (X = 0)"
+            ),
+        });
+        self.state.turn.passed = 0;
         self.state.turn.priority = None;
     }
 
@@ -5841,6 +6249,13 @@ impl Game {
         self.state.players[player as usize]
             .command_zone
             .retain(|c| *c != card);
+        // CR 702.75a: a card played out of a hideaway exile stops being exiled
+        // with anything the moment it changes zone.
+        self.state.players[player as usize]
+            .exile
+            .retain(|c| *c != card);
+        self.state.hideaway.retain(|link| link.card != card);
+        self.state.face_down_exile.remove(&card);
         let mut object = self
             .state
             .objects
@@ -8899,6 +9314,105 @@ impl Game {
                 }
                 false
             }
+            // CR 702.75a: hideaway. The look is private (CR 701.20a), the exiled
+            // card is linked to this permanent, and only the looked-at cards are
+            // randomised onto the bottom (CR 701.20e).
+            Effect::Hideaway(n) => {
+                let on_battlefield = self
+                    .state
+                    .try_object(item.object)
+                    .is_some_and(|object| object.zone == Zone::Battlefield);
+                let looked: Vec<ObjectId> = self
+                    .state
+                    .player(controller)
+                    .library
+                    .iter()
+                    .take(usize::from(n))
+                    .copied()
+                    .collect();
+                events.push(Event::StateBasedAction {
+                    description: format!(
+                        "P{controller} looks at the top {} card(s) of their library (CR 701.20a)",
+                        looked.len()
+                    ),
+                });
+                if looked.is_empty() || !on_battlefield {
+                    // An empty library has nothing to exile; a source that has
+                    // already left the battlefield has no linked ability left to
+                    // resolve (CR 400.7), so both are simply nothing.
+                    if !on_battlefield {
+                        events.push(Event::TriggerRemoved {
+                            controller,
+                            card: item.card,
+                            reason:
+                                "hideaway's source is no longer a permanent, so no card can be \
+                                     exiled with it (CR 400.7)"
+                                    .to_string(),
+                        });
+                    }
+                    false
+                } else {
+                    self.state.pending = Some(Pending::HideawayChoice {
+                        player: controller,
+                        source: item.object,
+                        looked,
+                    });
+                    self.state.turn.priority = None;
+                    true
+                }
+            }
+            // "Whenever this creature deals combat damage to a player, if there
+            // are cards exiled with it, you may play one of them without paying
+            // its mana cost." The optional trigger's yes/no was already answered
+            // (CR 603.5) and the intervening-if is re-read here (CR 603.4).
+            Effect::PlayCardExiledWithSource => {
+                let source = item.object;
+                let on_battlefield = self
+                    .state
+                    .try_object(source)
+                    .is_some_and(|object| object.zone == Zone::Battlefield);
+                let linked = self.hideaway_linked_for(source, controller);
+                if !on_battlefield || linked.is_empty() {
+                    events.push(Event::TriggerRemoved {
+                        controller,
+                        card: item.card,
+                        reason: "no cards are exiled with this creature any more (CR 603.4, 400.7)"
+                            .to_string(),
+                    });
+                    return false;
+                }
+                // CR 305.2 + the printed ruling: a land may be played only while
+                // the seat still has its land play for the turn; a spell is
+                // played while the ability resolves, so no other timing
+                // restriction applies.
+                let land_play_available = self.state.turn.lands_played == 0;
+                let options: Vec<ObjectId> = linked
+                    .into_iter()
+                    .filter(|id| {
+                        let is_land = self
+                            .state
+                            .try_object(*id)
+                            .is_some_and(|object| object.card.def().is_land());
+                        !is_land || land_play_available
+                    })
+                    .collect();
+                if options.is_empty() {
+                    events.push(Event::StateBasedAction {
+                        description: format!(
+                            "P{controller} may play a card exiled with {} but none is playable now",
+                            item.card.name()
+                        ),
+                    });
+                    return false;
+                }
+                self.state.pending = Some(Pending::PlayExiled {
+                    player: controller,
+                    source,
+                    options,
+                });
+                self.state.turn.priority = None;
+                true
+            }
             // CR 701.26a: untapping an untapped permanent is a no-op, so the
             // same instruction works whether or not the target was tapped. The
             // counter reads the target's own effective subtype: a layer 4
@@ -10212,6 +10726,22 @@ impl Game {
                     {
                         self.queue_ring_trigger(source_controller, 2, source, None);
                     }
+                    // CR 603.6c: "whenever this creature deals combat damage to a
+                    // player". A prevented instance never reaches this branch, so
+                    // it never triggers. The printed intervening-if is evaluated
+                    // before queueing (CR 603.4) and again on resolution.
+                    if ability::triggers_on(card, TriggerEvent::ThisDealsCombatDamageToPlayer)
+                        .next()
+                        .is_some()
+                        && self.trigger_condition_holds(card, defender, source)
+                    {
+                        self.queue_triggers(
+                            source,
+                            card,
+                            source_controller,
+                            TriggerEvent::ThisDealsCombatDamageToPlayer,
+                        );
+                    }
                     // CR 903.10a: only combat damage actually dealt to a player
                     // by a commander credits the ledger, keyed by the stable
                     // CommanderId + recipient. Control changes and fresh zone
@@ -10721,6 +11251,106 @@ impl Game {
                     rules: vec!["704.5j"],
                 })
                 .collect(),
+            Pending::HideawayChoice { looked, .. } => looked
+                .iter()
+                .map(|id| LegalAction {
+                    action: Action::HideawayExile { card: *id },
+                    // The deciding player is looking at these cards, so naming
+                    // them in their own offer is not a leak; the public event
+                    // log never does.
+                    label: format!("Exile {} face down (hideaway)", self.describe_object(*id)),
+                    rules: vec!["702.75a", "701.20a"],
+                })
+                .collect(),
+            Pending::PlayExiled {
+                player,
+                source,
+                options,
+            } => {
+                let source_name = self.state.object(*source).card.name();
+                let mut out: Vec<LegalAction> = Vec::new();
+                for id in options {
+                    let card = self.state.object(*id).card;
+                    let def = card.def();
+                    if def.is_land() {
+                        out.push(LegalAction {
+                            action: Action::PlayExiledCard {
+                                card: *id,
+                                modes: Vec::new(),
+                                targets: Vec::new(),
+                            },
+                            label: format!("Play {source_name}'s exiled {card} as your land play"),
+                            rules: vec!["305.2", "702.75a"],
+                        });
+                        continue;
+                    }
+                    if card == CardId::TitaniasCommand {
+                        for first in 0u8..4 {
+                            for second in (first + 1)..4 {
+                                let modes = [first, second];
+                                let target_sets: Vec<Vec<Target>> = if modes.contains(&0) {
+                                    (0..self.state.seat_count() as PlayerId)
+                                        .filter(|p| self.state.is_live(*p))
+                                        .map(|p| vec![Target::Player(p)])
+                                        .collect()
+                                } else {
+                                    vec![Vec::new()]
+                                };
+                                for targets in target_sets {
+                                    let action = Action::PlayExiledCard {
+                                        card: *id,
+                                        modes: modes.to_vec(),
+                                        targets: targets.clone(),
+                                    };
+                                    if self.validate(*player, &action).is_err() {
+                                        continue;
+                                    }
+                                    out.push(LegalAction {
+                                        action,
+                                        label: format!(
+                                            "Play exiled {card} free ({}; {})",
+                                            crate::card::modal_mode_name(card, first)
+                                                .expect("printed mode"),
+                                            crate::card::modal_mode_name(card, second)
+                                                .expect("printed mode")
+                                        ),
+                                        rules: vec!["700.2", "702.75a"],
+                                    });
+                                }
+                            }
+                        }
+                        continue;
+                    }
+                    for targets in self.target_combinations(*player, *id) {
+                        let action = Action::PlayExiledCard {
+                            card: *id,
+                            modes: Vec::new(),
+                            targets: targets.clone(),
+                        };
+                        if self.validate(*player, &action).is_err() {
+                            continue;
+                        }
+                        let label = if targets.is_empty() {
+                            format!("Play exiled {card} without paying its mana cost")
+                        } else {
+                            let rendered: Vec<String> =
+                                targets.iter().map(|t| self.describe_target(*t)).collect();
+                            format!("Play exiled {card} free -> {}", rendered.join(", "))
+                        };
+                        out.push(LegalAction {
+                            action,
+                            label,
+                            rules: vec!["608.2g", "702.75a"],
+                        });
+                    }
+                }
+                out.push(LegalAction {
+                    action: Action::DeclinePlayExiled,
+                    label: "Decline to play a card exiled with it".to_string(),
+                    rules: vec!["603.5"],
+                });
+                out
+            }
             Pending::Mulligan { player } => {
                 let mut out = vec![LegalAction {
                     action: Action::Mulligan { keep: true },

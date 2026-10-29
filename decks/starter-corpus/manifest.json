@@ -246,14 +246,10 @@
       "id": "ayula-bear-counters",
       "commander": "Ayula, Queen Among Bears",
       "style": "green bear tribal +1/+1 counters",
-      "status": "planned",
+      "status": "implemented",
       "deck_path": "decks/starter-corpus/planned/ayula-bear-counters.txt",
-      "missing_cards": [
-        "Evercoat Ursine"
-      ],
-      "missing_interactions": [
-        "hideaway, and playing a card exiled with the same permanent (Evercoat Ursine)"
-      ]
+      "missing_cards": [],
+      "missing_interactions": []
     },
     {
       "id": "elas-sacrifice",

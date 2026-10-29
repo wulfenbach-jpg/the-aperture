@@ -1,0 +1,47 @@
+{
+ "schema": "aperture.starter-sourced-cards.v1",
+ "provider": "scryfall",
+ "retrieved_at": "2026-10-29T06:58:12Z",
+ "cards": [
+  {
+   "name": "Evercoat Ursine",
+   "oracle_id": "65c32889-3d70-449f-af76-05385c78c5a9",
+   "scryfall_id": "b299d768-b171-47e5-b69d-82ce13917c43",
+   "set": "blc",
+   "collector_number": "30",
+   "layout": "normal",
+   "released_at": "2024-08-02",
+   "mana_cost": "{4}{G}",
+   "mana_value": 5,
+   "type_line": "Creature — Elemental Bear",
+   "power": "6",
+   "toughness": "5",
+   "oracle_text": "Trample\nHideaway 3, hideaway 3 (When this creature enters, look at the top three cards of your library, exile one face down, then put the rest on the bottom in a random order. Then do it again.)\nWhenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
+   "color_identity": [
+    "G"
+   ],
+   "keywords": [
+    "Trample",
+    "Hideaway"
+   ],
+   "legalities_commander": "legal",
+   "printings_checked": 2,
+   "printings": [
+    "blc/30",
+    "blc/64"
+   ],
+   "printings_distinct_oracle_texts": 1,
+   "rulings_retrieved_at": "2026-10-29T06:58:12Z",
+   "rulings": [
+    "Hideaway N means \"When this permanent enters, look at the top N cards of your library. Exile one of them face down and put the rest on the bottom of your library in a random order. The exiled card gains 'The player who controls the permanent that exiled this card may look at this card in the exile zone.'\"",
+    "Any player who has controlled a permanent with a hideaway ability since a card was exiled with it may look at that card.",
+    "You choose and play the card while Evercoat Ursine's last ability is resolving and still on the stack. You can't wait to play it later in the turn.",
+    "If one of the exiled cards is a land card, you may play it only if you have an available land play remaining this turn.",
+    "If a spell has {X} in its mana cost, you must choose 0 as the value of X when playing it without paying its mana cost.",
+    "If you cast a spell \"without paying its mana cost,\" you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the spell has any mandatory additional costs, those must be paid to cast the spell."
+   ],
+   "printing_url": "https://api.scryfall.com/cards/b299d768-b171-47e5-b69d-82ce13917c43",
+   "retrieved_at": "2026-10-29T06:58:12Z"
+  }
+ ]
+}

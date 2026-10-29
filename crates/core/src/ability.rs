@@ -79,6 +79,10 @@ pub enum TriggerEvent {
     RingCombatDamage,
     /// CR 603.7: the Ring's delayed sacrifice trigger at end of combat.
     EndOfCombat,
+    /// CR 603.6c + 509.3 + 510.2: this creature dealt combat damage to a player.
+    /// The trigger's controller is the creature's controller, and the damage
+    /// must have been actually dealt (a prevented instance does not trigger).
+    ThisDealsCombatDamageToPlayer,
 }
 
 impl TriggerEvent {
@@ -101,6 +105,9 @@ impl TriggerEvent {
             TriggerEvent::AnotherCreatureDies => "another creature dies",
             TriggerEvent::RingCombatDamage => "your Ring-bearer deals combat damage to a player",
             TriggerEvent::EndOfCombat => "at end of combat",
+            TriggerEvent::ThisDealsCombatDamageToPlayer => {
+                "this creature deals combat damage to a player"
+            }
         }
     }
 }
@@ -526,6 +533,37 @@ const URSINE_MONSTROSITY: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     target: TargetSpec::None,
     effects: &[Effect::UrsineCombatTrigger],
 })];
+
+/// Issue 17 slice 60: Evercoat Ursine. The printed "Hideaway 3, hideaway 3" is
+/// two instances of the hideaway keyword, so the card carries two separate
+/// enters-the-battlefield triggered abilities (abilities 0 and 1) and entering
+/// resolves two independent looks. The combat-damage ability (index 2) is
+/// optional ("you may") and prints an intervening-if, which is
+/// `ability::trigger_condition(EvercoatUrsine)`: cards exiled with this
+/// permanent must exist when it triggers and again when it resolves (CR 603.4).
+const EVERCOAT_URSINE: &[Ability] = &[
+    Ability::Triggered(TriggeredAbility {
+        text: "Hideaway 3",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::Hideaway(3)],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Hideaway 3",
+        event: TriggerEvent::EntersBattlefield,
+        optional: false,
+        target: TargetSpec::None,
+        effects: &[Effect::Hideaway(3)],
+    }),
+    Ability::Triggered(TriggeredAbility {
+        text: "Whenever this creature deals combat damage to a player, if there are cards exiled with it, you may play one of them without paying its mana cost.",
+        event: TriggerEvent::ThisDealsCombatDamageToPlayer,
+        optional: true,
+        target: TargetSpec::None,
+        effects: &[Effect::PlayCardExiledWithSource],
+    }),
+];
 
 const SPIRIT_OF_THE_ALDERGARD: &[Ability] = &[Ability::Triggered(TriggeredAbility {
     text: "When this creature enters, search your library for a snow land card, reveal it, put it into your hand, then shuffle.",
@@ -1156,6 +1194,7 @@ pub fn abilities(card: CardId) -> &'static [Ability] {
         CardId::LumraBellowOfTheWoods => LUMRA,
         CardId::SpiritOfTheAldergard => SPIRIT_OF_THE_ALDERGARD,
         CardId::UrsineMonstrosity => URSINE_MONSTROSITY,
+        CardId::EvercoatUrsine => EVERCOAT_URSINE,
         CardId::DunedainRangers => DUNEDAIN_RANGERS,
         CardId::LightningGreaves => LIGHTNING_GREAVES,
         CardId::SwiftfootBoots => SWIFTFOOT_BOOTS,
@@ -1240,6 +1279,12 @@ pub enum TriggerCondition {
     /// read from printed color (CR 202.2a, `CardDef::is_black`), and a token is
     /// excluded by CR 111.6 even though it can have a color.
     DefendingPlayerControlsNoBlackNontokenPermanent,
+    /// "if there are cards exiled with it" (Evercoat Ursine). Read from the
+    /// live battlefield source: the cards are the face-down exile cards whose
+    /// `hideaway_source` is that exact permanent object, so the clause is false
+    /// once the permanent that exiled them has left the battlefield (CR 400.7:
+    /// it is a new object in its new zone).
+    CardsExiledWithSource,
 }
 
 /// The intervening-if clause of `card`'s trigger, if it prints one.
@@ -1248,6 +1293,7 @@ pub fn trigger_condition(card: CardId) -> TriggerCondition {
         CardId::SpectralBears => TriggerCondition::DefendingPlayerControlsNoBlackNontokenPermanent,
         CardId::DunedainRangers => TriggerCondition::NoRingBearer,
         CardId::DroverGrizzly => TriggerCondition::SourceIsSaddled,
+        CardId::EvercoatUrsine => TriggerCondition::CardsExiledWithSource,
         _ => TriggerCondition::Always,
     }
 }

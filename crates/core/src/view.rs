@@ -247,7 +247,7 @@ fn card_view(game: &Game, id: ObjectId) -> CardView {
     }
 }
 
-fn zone_cards(game: &Game, p: PlayerId, zone: Zone) -> Vec<CardView> {
+fn zone_cards(game: &Game, viewer: PlayerId, p: PlayerId, zone: Zone) -> Vec<CardView> {
     let ids: Vec<ObjectId> = match zone {
         Zone::Graveyard => game.state.player(p).graveyard.clone(),
         Zone::Exile => game.state.player(p).exile.clone(),
@@ -261,7 +261,29 @@ fn zone_cards(game: &Game, p: PlayerId, zone: Zone) -> Vec<CardView> {
         Zone::Command => game.state.player(p).command_zone.clone(),
         Zone::Library | Zone::Stack | Zone::Removed => Vec::new(),
     };
-    ids.into_iter().map(|id| card_view(game, id)).collect()
+    ids.into_iter()
+        .map(|id| {
+            let mut view = card_view(game, id);
+            // CR 406.3 + the printed hideaway ruling: a card exiled face down is
+            // not identified to anyone except a player who controlled the
+            // exiling permanent. Every other viewer sees a face-down card with no
+            // printed characteristics, so the projection never renders its
+            // identity.
+            if game.state.face_down_exile.contains(&id) {
+                let may_look = game
+                    .state
+                    .hideaway
+                    .iter()
+                    .any(|link| link.card == id && link.controller == viewer);
+                if !may_look {
+                    view.name = "a face-down exiled card";
+                    view.oracle = "";
+                    view.cost = None;
+                }
+            }
+            view
+        })
+        .collect()
 }
 
 /// Render one event from `viewer`'s perspective, masking hidden information.
@@ -710,10 +732,10 @@ impl Game {
                         life: player.life,
                         hand_count: player.hand_size(),
                         library_count: player.library.len(),
-                        battlefield: zone_cards(self, seat, Zone::Battlefield),
-                        graveyard: zone_cards(self, seat, Zone::Graveyard),
-                        exile: zone_cards(self, seat, Zone::Exile),
-                        command_zone: zone_cards(self, seat, Zone::Command),
+                        battlefield: zone_cards(self, viewer, seat, Zone::Battlefield),
+                        graveyard: zone_cards(self, viewer, seat, Zone::Graveyard),
+                        exile: zone_cards(self, viewer, seat, Zone::Exile),
+                        command_zone: zone_cards(self, viewer, seat, Zone::Command),
                     }
                 }
             })
@@ -723,11 +745,11 @@ impl Game {
             viewer_name: me.name.clone(),
             seat_count: self.state.seat_count(),
             opponents,
-            own_hand: zone_cards(self, viewer, Zone::Hand),
-            own_battlefield: zone_cards(self, viewer, Zone::Battlefield),
-            own_graveyard: zone_cards(self, viewer, Zone::Graveyard),
-            own_exile: zone_cards(self, viewer, Zone::Exile),
-            own_command_zone: zone_cards(self, viewer, Zone::Command),
+            own_hand: zone_cards(self, viewer, viewer, Zone::Hand),
+            own_battlefield: zone_cards(self, viewer, viewer, Zone::Battlefield),
+            own_graveyard: zone_cards(self, viewer, viewer, Zone::Graveyard),
+            own_exile: zone_cards(self, viewer, viewer, Zone::Exile),
+            own_command_zone: zone_cards(self, viewer, viewer, Zone::Command),
             revealed: self
                 .state
                 .revealed_hidden()
@@ -855,6 +877,8 @@ impl Game {
                 | crate::state::Pending::RingTemptation { .. }
                 | crate::state::Pending::EffectDiscard { .. } => PendingKind::TriggerChoice,
                 crate::state::Pending::LegendaryChoice { .. } => PendingKind::TriggerChoice,
+                crate::state::Pending::HideawayChoice { .. }
+                | crate::state::Pending::PlayExiled { .. } => PendingKind::TriggerChoice,
             }),
             pending_index: match &self.state.pending {
                 Some(crate::state::Pending::OrderCard { player, index, .. })

@@ -485,6 +485,13 @@ fn the_starter_manifest_names_eight_targets_and_claims_only_one() {
             );
             assert_eq!(starter["missing_cards"].as_array().unwrap().len(), 0);
             assert_eq!(starter["missing_interactions"].as_array().unwrap().len(), 0);
+        } else if status == "implemented" {
+            // Slice 60 closed Ayula's sourced gap: every card of the exact list is
+            // implemented, so both gap fields are empty, but the list is not
+            // certified until the exact 100-card snapshot has been played.
+            assert_eq!(starter["id"], "ayula-bear-counters");
+            assert_eq!(starter["missing_cards"].as_array().unwrap().len(), 0);
+            assert_eq!(starter["missing_interactions"].as_array().unwrap().len(), 0);
         } else {
             assert_eq!(status, "planned", "only Jasmine is certified now");
             let path = starter["deck_path"]
