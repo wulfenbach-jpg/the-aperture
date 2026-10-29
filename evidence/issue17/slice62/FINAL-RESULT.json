@@ -87,11 +87,12 @@
       "Beetleback Chief": 3,
       "Goblin Instigator": 2
     },
-    "raid_goblin_tokens": 15,
+    "raid_goblin_tokens": 7,
+    "all_goblin_tokens": 15,
     "attack_declarations": 15,
     "combat_damage_events": 74,
     "cli_replay_matches": true,
-    "path": "evidence/issue17/slice62/final-native/demo-journey.json"
+    "path": "evidence/issue17/slice62-native/demo-journey.json"
   },
   "artifacts": {
     "manifest": "decks/starter-corpus/manifest.json",
@@ -114,8 +115,8 @@
     "initial RESULT/TDD wording that overclaimed digest continuity"
   ],
   "evidence_paths": {
-    "journey": "evidence/issue17/slice62/final-native/demo-journey.json",
-    "replay": "evidence/issue17/slice62/final-native/demo-replay.json",
+    "journey": "evidence/issue17/slice62-native/demo-journey.json",
+    "replay": "evidence/issue17/slice62-native/demo-replay.json",
     "gates": "evidence/issue17/slice62/final-native/gates.log",
     "audit": "evidence/issue17/slice62/final-native/corpus-audit.log"
   }

@@ -2,11 +2,11 @@
 //! strength claim. It chooses only from masked legal actions projected for the
 //! seat that has priority: no deck substitution, no state injection, no
 //! hidden-information access. It prefers offered nonempty attacks, lands,
-//! Dúnedain Rangers casts and other creatures to exercise the new combat trigger.
+//! Goblin Chieftain / Searslicer Goblin casts to exercise the new static and Raid.
 //! It is a 40-card package, not a starter certificate.
 use aperture_ai::{HeuristicPolicy, Policy};
-use aperture_core::state::Step;
 use aperture_core::ids::ObjectId;
+use aperture_core::state::Step;
 use aperture_core::view::PendingKind;
 use aperture_core::{
     Action, AiSettings, CardId, CommanderSetup, DeckList, Event, Game, Replay, ReplayStep,
@@ -39,6 +39,7 @@ fn main() {
     .unwrap();
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
+    let mut raid_tokens = 0;
 
     // Public-state instrumentation only; never fed to the projected policy.
     while !game.state.is_over() && steps < 20000 {
@@ -46,8 +47,13 @@ fn main() {
         let view = game.view_for(player, &events);
 
         let ring_action = if view.pending_kind.is_some() {
-            view.legal.iter().find(|a| matches!(a.action, Action::ChooseRingBearer { .. })).map(|a| a.action.clone())
-        } else { None };
+            view.legal
+                .iter()
+                .find(|a| matches!(a.action, Action::ChooseRingBearer { .. }))
+                .map(|a| a.action.clone())
+        } else {
+            None
+        };
         let search_action = if view.pending_kind.is_some() {
             view.legal
                 .iter()
@@ -91,17 +97,19 @@ fn main() {
                     })
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                                c.id == *card && c.card == CardId::GoblinChieftain
-                            }),
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::GoblinChieftain),
                             _ => false,
                         })
                     })
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
-                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
-                                c.id == *card && c.card == CardId::SearslicerGoblin
-                            }),
+                            Action::CastSpell { card, .. } => view
+                                .own_hand
+                                .iter()
+                                .any(|c| c.id == *card && c.card == CardId::SearslicerGoblin),
                             _ => false,
                         })
                     })
@@ -148,11 +156,43 @@ fn main() {
                     "REJECT player={player} action={action:?} step={:?} rings={:?} objects={:?}",
                     game.state.turn.step,
                     game.state.rings,
-                    game.state.objects.iter().filter(|(id, _)| **id == ObjectId(1)).map(|(id, o)| (*id, o.card, o.zone, o.controller)).collect::<Vec<_>>()
+                    game.state
+                        .objects
+                        .iter()
+                        .filter(|(id, _)| **id == ObjectId(1))
+                        .map(|(id, o)| (*id, o.card, o.zone, o.controller))
+                        .collect::<Vec<_>>()
                 );
                 panic!("all actions must be accepted; no rejection fallback: {error:?}");
             }
         };
+        // One accepted pass resolves at most one stack entry. Attribute actual
+        // token-entry events only to batches that finish Searslicer's ability,
+        // not to Instigator/Beetleback entries elsewhere in the same game.
+        if accepted.iter().any(|event| {
+            matches!(
+                event,
+                Event::AbilityResolved {
+                    card: CardId::SearslicerGoblin,
+                    ..
+                }
+            )
+        }) {
+            let created = accepted
+                .iter()
+                .filter(|event| {
+                    matches!(
+                        event,
+                        Event::PermanentEntered {
+                            card: CardId::GoblinToken,
+                            ..
+                        }
+                    )
+                })
+                .count();
+            assert_eq!(created, 1, "one resolved Raid creates exactly one Goblin");
+            raid_tokens += created;
+        }
         events.extend(accepted);
         replay.record(ReplayStep {
             player,
@@ -173,7 +213,10 @@ fn main() {
     let (replayed, replay_events) = replay.run().unwrap();
     assert_eq!(replayed.digest(), game.digest());
     let save = SessionSave::capture(&game, replay.clone(), Vec::new(), false);
-    assert!(!save.sandbox_modified, "journey save is not sandbox-modified");
+    assert!(
+        !save.sandbox_modified,
+        "journey save is not sandbox-modified"
+    );
     let save_text = save.to_json();
     let loaded_save = SessionSave::from_json(&save_text).expect("journey save loads");
     let loaded_game = Game::from_state(loaded_save.game).expect("journey state restores");
@@ -183,7 +226,7 @@ fn main() {
         loaded.game, game.state,
         "fresh save preserves the exact state"
     );
-    let out = root.join("evidence/issue17/slice62/final-native");
+    let out = root.join("evidence/issue17/slice62-native");
     std::fs::create_dir_all(&out).unwrap();
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 
@@ -193,13 +236,36 @@ fn main() {
             *casts.entry(card.name().to_string()).or_default() += 1;
         }
     }
-    assert!(casts.get("Goblin Chieftain").copied().unwrap_or(0) > 0, "Goblin Chieftain cast");
-    assert!(casts.get("Searslicer Goblin").copied().unwrap_or(0) > 0, "Searslicer Goblin cast");
-    let raid_tokens = events.iter().filter(|event| matches!(event, Event::PermanentEntered { card: CardId::GoblinToken, .. })).count();
+    assert!(
+        casts.get("Goblin Chieftain").copied().unwrap_or(0) > 0,
+        "Goblin Chieftain cast"
+    );
+    assert!(
+        casts.get("Searslicer Goblin").copied().unwrap_or(0) > 0,
+        "Searslicer Goblin cast"
+    );
+    let goblin_tokens = events
+        .iter()
+        .filter(|event| {
+            matches!(
+                event,
+                Event::PermanentEntered {
+                    card: CardId::GoblinToken,
+                    ..
+                }
+            )
+        })
+        .count();
     assert!(raid_tokens > 0, "Raid produced an actual Goblin token");
-    let attacks = events.iter().filter(|event| matches!(event, Event::AttackersDeclared { .. })).count();
+    let attacks = events
+        .iter()
+        .filter(|event| matches!(event, Event::AttackersDeclared { .. }))
+        .count();
     assert!(attacks > 0, "the driver declared actual attacks");
-    let combat = events.iter().filter(|e| matches!(e, Event::CombatDamage { .. })).count();
+    let combat = events
+        .iter()
+        .filter(|e| matches!(e, Event::CombatDamage { .. }))
+        .count();
     std::fs::write(
         out.join("demo-replay.json"),
         serde_json::to_string_pretty(&replay).unwrap(),
@@ -216,6 +282,7 @@ fn main() {
         "replay_events": replay_events.len(), "replay_digest_matches": true,
         "casts": casts,
         "raid_goblin_tokens": raid_tokens,
+        "all_goblin_tokens": goblin_tokens,
         "attack_declarations": attacks,
         "driver": "projected legal-offer evidence driver; explicitly not product AI",
         "combat_damage_events": combat,

@@ -33,7 +33,7 @@
 - Fresh slice-local audit: **168 catalog / 459 union = 155 supported + 304 missing**,
   per-list `[55, 0, 51, 46, 0, 52, 52, 53]`, Krenko **46**, **2/8 certified**.
 - Four-seat/40-life package journey: 1030 steps, 25 turns, terminal P3; Chieftain
-  cast 5, Searslicer cast 6, 15 Raid Goblin tokens, 15 attack declarations, 74
+  cast 5, Searslicer cast 6, 7 Raid Goblin tokens (15 total Goblin entries from all cards), 15 attack declarations, 74
   combat-damage events, digest `8753aeb5…35ae`, snapshot `e7f1a198…b735`.
   Separate shipped CLI replay: **matches recorded**, exit 0.
 
