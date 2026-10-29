@@ -1,0 +1,4 @@
+    Updating crates.io index
+error: cannot create the lock file C:\AI\aperture-worktrees\issue-17\evidence\issue17\slice57-journey-driver\Cargo.lock because --locked was passed to prevent this
+help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.
+EXIT=101
