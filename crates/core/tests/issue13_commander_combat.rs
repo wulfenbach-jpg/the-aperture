@@ -1385,9 +1385,15 @@ fn fog_is_a_sourced_catalog_card() {
     // Hospitality, and to 151 with slice 37's Druid's Familiar, and to 152 with
     // slice 38's Spider-Ham, Peter Porker, and to 160 with the Ayula-list cards
     // of slices 41-46 (the last being Thijarian Witness).
-    // Slice 48 adds Owlbear Cub (160 -> 161) and slice 53 adds Ruxa, Patient
-    // Professor (161 -> 162); the assertion's purpose is unchanged.
-    assert_eq!(aperture_core::catalog::pool_size(), 172);
+    // Slice 48 adds Owlbear Cub (160 -> 161), slice 53 adds Ruxa, Patient
+    // Professor (161 -> 162), slices 59/60 add Dúnedain Rangers and Evercoat
+    // Ursine (162 -> 164), slice 62 adds Goblin Chieftain and Searslicer Goblin
+    // (164 -> 166), slice 63 adds Goblin Warchief, Goblin King, Dragonlord's
+    // Servant and the authorized Volcanic Dragon control (166 -> 170) and slice
+    // 64 adds Goblin Sharpshooter, Krenko, Tin Street Kingpin, Hobgoblin Bandit
+    // Lord and Goblin Matron (170 -> 176 with the two slice-57/59 pieces already
+    // counted above); the assertion's purpose is unchanged.
+    assert_eq!(aperture_core::catalog::pool_size(), 176);
     assert!(aperture_core::catalog::by_name("Prodigal Sorcerer").is_some());
     assert!(aperture_core::catalog::by_name("Festering Goblin").is_some());
 }

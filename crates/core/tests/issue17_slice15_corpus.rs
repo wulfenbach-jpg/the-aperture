@@ -146,5 +146,5 @@ fn the_three_slice15_cards_leave_the_ayula_gap() {
     // pool grows by one again. Slice 60 registers Evercoat Ursine, which leaves
     // no sourced name missing from the Ayula list at all.
     assert_eq!(missing.len(), 0, "Ayula's sourced gap is closed");
-    assert_eq!(catalog::all().len(), 172, "the compiled pool");
+    assert_eq!(catalog::all().len(), 176, "the compiled pool");
 }
