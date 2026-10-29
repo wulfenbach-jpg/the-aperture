@@ -8,7 +8,11 @@
     "evidence/issue17/slice59/native/"
   ],
   "base_commit": "11b9507",
-  "local_prepublication_heads": ["c6b62eb", "cc5cd00", "333fe76"],
+  "local_prepublication_heads": [
+    "c6b62eb",
+    "cc5cd00",
+    "333fe76"
+  ],
   "native_legend_correction": "CR 704.5j groups only legendary permanents; one Ring-bearer beside an ordinary same-name card is not a legend choice",
   "ring_semantics": {
     "level1": "effective legendary (printed legend or controller's Ring-bearer) + cannot be blocked by greater power",
@@ -21,13 +25,24 @@
     "union": 459,
     "supported": 152,
     "missing": 307,
-    "per_list": [55, 0, 51, 48, 1, 52, 52, 53],
-    "ayula_missing": ["Evercoat Ursine"],
+    "per_list": [
+      55,
+      0,
+      51,
+      48,
+      1,
+      52,
+      52,
+      53
+    ],
+    "ayula_missing": [
+      "Evercoat Ursine"
+    ],
     "certified": 1
   },
   "tests": {
     "native_repairs": "7 passed",
-    "ring_repairs": "9 passed",
+    "ring_repairs": "10 passed",
     "slice59": "3 passed",
     "focused_command_total": "0 exit (fmt/focused/corpus/clippy/release)",
     "workspace_one_failure_then_fixed": "command_zone_setup 44/44 exit 0 on rerun; no full green workspace total claimed"
@@ -55,7 +70,12 @@
     "snapshot_sha256": "0607cfa72b425883ac636d44c511c9d63f781d677a08e02813b80c1c67c9f4c0",
     "rangers_casts": 9,
     "ring_choices": 4,
-    "ring_levels": [0, 1, 1, 2],
+    "ring_levels": [
+      0,
+      1,
+      1,
+      2
+    ],
     "combat_damage_events": 68,
     "cli_replay_matches": true,
     "non_sandbox_save_loads": true,
@@ -69,5 +89,11 @@
     "40-card journey is not 100-card starter certification.",
     "No full green local workspace total: one command_zone reason assertion failed in the first run, was corrected and rerun 44/44; exact-head CI supplies the broad gate.",
     "Reporter pointer still targets old #20; ops files untouched."
-  ]
+  ],
+  "master_reconciliation": {
+    "merge_commit": "2f8cbd8",
+    "merged_base": "origin/master 73820d7",
+    "defect": "published merge ref lacked fn sample_discard after master #34 removed it, while the branch still called it; the Ring discard also offered one hard-coded sample while check_selection accepted any legal card",
+    "fix": "Ring discard now uses master hand_choice_offers(player, 1, HandChoice::Discard); regression asserts one named offer per card in hand and every offer validates"
+  }
 }

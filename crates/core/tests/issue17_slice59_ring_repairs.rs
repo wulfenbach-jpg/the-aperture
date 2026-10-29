@@ -480,3 +480,49 @@ fn emblem_abilities_are_not_abilities_of_the_ring_bearer() {
             .any(|def| def.id == CardId::TheRing)
     );
 }
+
+/// The #34 defect class at the Ring's own discard: one hard-coded sample while
+/// `check_selection` accepts any legal card freezes a table that answers a
+/// different legal set. The offer must enumerate the real bounded choice space.
+#[test]
+fn ring_discard_offers_every_single_card_in_hand_not_one_sample() {
+    let mut g = fixture(59510)
+        .battlefield(P0, &[CardId::GrizzlyBears])
+        .hand(P0, &[CardId::Forest, CardId::Mountain, CardId::Island])
+        .library(P0, &[CardId::Forest; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .main(P0, Step::DeclareAttackers)
+        .build();
+    let bearer = battlefield_card(&g, P0, CardId::GrizzlyBears);
+    ring(&mut g, 2, bearer);
+    attack(&mut g, bearer, P1);
+    for _ in 0..12 {
+        if matches!(g.state.pending, Some(Pending::EffectDiscard { .. })) {
+            break;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    assert!(matches!(
+        g.state.pending,
+        Some(Pending::EffectDiscard { player: P0 })
+    ));
+    let hand = g.state.player(P0).hand.clone();
+    let offers: Vec<Action> = g
+        .legal_actions()
+        .into_iter()
+        .filter(|legal| matches!(legal.action, Action::Discard { .. }))
+        .map(|legal| legal.action)
+        .collect();
+    assert_eq!(
+        offers.len(),
+        hand.len(),
+        "one named offer per card in hand (bounded enumeration)"
+    );
+    for offer in &offers {
+        assert!(
+            g.validate(P0, offer).is_ok(),
+            "every enumerated Ring discard must validate: {offer:?}"
+        );
+    }
+}

@@ -10707,13 +10707,12 @@ impl Game {
                 }
                 out
             }
-            Pending::EffectDiscard { player } => vec![LegalAction {
-                action: Action::Discard {
-                    cards: self.sample_discard(*player, 1),
-                },
-                label: "Discard a card (The Ring)".to_string(),
-                rules: vec!["701.54a"],
-            }],
+            Pending::EffectDiscard { player } => {
+                // Reuse the canonical hand-choice offer (#57): one named offer per
+                // card in hand, so the Ring discard cannot present one hard-coded
+                // sample while `check_selection` accepts any legal card.
+                self.hand_choice_offers(*player, 1, HandChoice::Discard)
+            }
             Pending::LegendaryChoice { options, .. } => options
                 .iter()
                 .map(|id| LegalAction {

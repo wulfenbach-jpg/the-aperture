@@ -11,7 +11,14 @@
   validating and sandbox-loading. After the repair, a second native test found the
   legend rule counted a whole same-name group when only the Ring-bearer was
   legendary: **5 passed / 2 failed, exit 101** (`slice59/native-legend-red.log`).
-  Both are now green: native **7/7** and the focused Ring suite **9/9**.
+  Both are now green: native **7/7** and the focused Ring suite **10/10**.
+- **Master-drift reconciliation (supervisor diagnosis accepted):** the published f359dc7
+  merge ref failed to compile because master's #34 repair removed `sample_discard`. The
+  branch is merged with `origin/master` 73820d7; the Ring discard now uses master's
+  canonical `hand_choice_offers(..., HandChoice::Discard)` enumeration instead of a
+  one-sample offer, and a new regression asserts one named offer per card in hand and that
+  every offer validates. Merge commit `2f8cbd8`; product diff after it is the offer fix and
+  that regression only.
 - **Legend-rule correction (CR 704.5j):** only printed legendary permanents or
   their controller's level-1+ Ring-bearer form a legend group; one legend beside an
   ordinary same-name card is not a choice, the offer must be the complete group, and

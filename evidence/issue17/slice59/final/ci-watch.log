@@ -1,0 +1,5 @@
+2026-10-29T05:30:01.057883+00:00 checks=0/5 keyed=True both_workflows=False workflow_names=[('Rust quality', 'push', 'in_progress', None)]
+2026-10-29T05:30:27.229673+00:00 checks=2/10 keyed=True both_workflows=False workflow_names=[('Rust quality', 'pull_request', 'in_progress', None), ('Rust quality', 'push', 'in_progress', None)]
+2026-10-29T05:30:53.550926+00:00 checks=2/10 keyed=True both_workflows=False workflow_names=[('Rust quality', 'pull_request', 'in_progress', None), ('Rust quality', 'push', 'in_progress', None)]
+CI_FAILURE_OR_CANCELLATION
+CI_WATCH_EXIT=1
