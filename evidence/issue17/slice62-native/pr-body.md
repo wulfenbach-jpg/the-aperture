@@ -1,0 +1,18 @@
+## Slice62 — Goblin Chieftain + Searslicer Goblin; original #17 remains2of8 certified
+
+Same draft PR/branch. Candidate for independent practical increment review, **not self-approved and not original-issue acceptance**. Accepted slices1–61 are preserved.
+
+### Product
+- **Goblin Chieftain** (JMP324; full sourced text retrieved2026-10-29T08:48:15Z): printed haste plus other controlled Goblin creatures get+1/+1 and haste. Shared effective subtype/static machinery; self/opponent/non-Goblin/source-departure controls; Ruxa's shared no-abilities predicate recognizes granted haste.
+- **Searslicer Goblin** (FDN93; retrieved2026-10-29T08:48:16Z): beginning-of-your-end-step Raid, whole-turn declaration history, intervening-if recheck, real1/1redGoblin token. Real declaration/save continuation and end-step-entry negative controls.
+- Both Krenko manifest fields updated together:48→46 missing. **168catalog/459union=155supported+304missing**, gaps `[55,0,51,46,0,52,52,53]`, **2of8 certified**. No third certificate claimed.
+
+### Verification
+- Focused writer gates88passed/0failed across8binaries; fmt, locked workspace all-target Clippy-Dwarnings and locked workspace release pass. Native affected suites22/0 (overlaps, not additive).
+- Actual four-seat40life executable package journey:1030actions/25turns/2772events, terminalP3, digest8753aeb5…35ae; Chieftain5casts/Searslicer6casts/**7Raidtokens/15totalGoblinentries**,15attacks,74combat-damage events. Non-sandbox save/load and separate shipped release CLI replay match. This40-card projected-offer demonstrator is NOT100-card certification/productAI/strength/GUI evidence.
+- **10/10 exact-head CI at526cb3130b5dc3390bb950393d498e423c65574c**, all keyed, both workflows attempt1 (push40847562713/PR40847573775), zero cancellations. Both finished BEFORE evidence publication; evidence successor claims no own CI.
+
+### Disclosures / next gate
+Native coauthored the increment and is NOT independent reviewer. Prepublication self-check repaired the real Chieftain→Ruxa interaction and a vacuous no-attack control, and corrected the journey's wrong15-Raid label (7Raid,15allGoblinentries). Exact source/RED/gates/journey/CI receipts retained. New attacked_this_turn is omitted when empty, but historical states/replays that now materialize attack history can redigest; no broad backward-continuity claim. AI files have only two mechanical public-history copy/initialization lines, no policy redesign.
+
+Read `evidence/issue17/SLICE62-FINAL-HUMAN-CHECKPOINT.md` and `evidence/issue17/slice62-native/RESULT.json`. Next: one concise independent practical delta review, then continue sourced grouped Krenko cards on the SAME task/history/branch/PR. Original#17, fullCommander, arbitraryArchidekt, strongerplay and v1 remain unaccepted. No merge/masterpush/closure/dependentunlock/newteam/globalconfig change.
