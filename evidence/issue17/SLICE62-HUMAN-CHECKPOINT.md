@@ -1,6 +1,6 @@
 # Slice 62 checkpoint
 
-**Product batch, self-check only — not independent review.** Same writer, branch
+**Product batch (product commit `a77182a`), self-check only — not independent review.** Same writer, branch
 `aperture/issue-17`, draft PR46, base `f5e36dc3…`. No push/merge/closure/unlock.
 
 ## Delivered

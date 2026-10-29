@@ -108,7 +108,7 @@
   ],
   "ai_compatibility": "crates/ai/src/search.rs copies public attack declaration history; crates/ai/tests/common.rs initializes the field. No policy/search behavior redesign.",
   "ruxa_predicate": "object_has_no_abilities shares effective subtype/creature queries; Chieftain-granted vanilla Goblin token is not ability-less; noncreature/opponent/graveyard guards tested.",
-  "commit": "final repair commit recorded in receipt",
+  "commit": "a77182a",
   "supersedes": [
     "evidence/issue17/slice62/final/native/",
     "initial RESULT/TDD wording that overclaimed digest continuity"
