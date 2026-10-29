@@ -109,6 +109,7 @@ pub fn keywords(card: CardId) -> &'static [Keyword] {
         // Goblin Chieftain prints Haste; its other-Goblin haste grant is a
         // separate static ability.
         CardId::GoblinChieftain => &[Keyword::Haste],
+        CardId::VolcanicDragon => &[Keyword::Flying, Keyword::Haste],
         _ => &[],
     }
 }

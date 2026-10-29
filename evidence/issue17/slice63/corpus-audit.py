@@ -16,10 +16,10 @@ MANIFEST = json.loads((ROOT / "decks/starter-corpus/manifest.json").read_text(en
 
 # `card!(Id, "Name", ...` and the helper macros card_artifact!/card_defender!/...
 names = set()
-for macro in ("card", "card_artifact", "card_defender", "card_flash", "card_green", "card_islandwalk", "card_trample", "card_vigilance_trample"):
+for macro in ("card", "card_artifact", "card_defender", "card_flash", "card_green", "card_islandwalk", "card_trample", "card_vigilance_trample", "card_flying_haste"):
     for m in re.finditer(rf"\b{macro}!\(\s*\w+,\s*\"([^\"]+)\"", CATALOG):
         names.add(m.group(1).lower())
-assert len(names) == 171, f"catalog parse found {len(names)} names, expected 171"
+assert len(names) == 172, f"catalog parse found {len(names)} names, expected 172"
 
 union = set()
 report = []

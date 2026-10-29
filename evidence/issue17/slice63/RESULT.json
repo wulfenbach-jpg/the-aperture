@@ -1,6 +1,6 @@
 {
   "slice": 63,
-  "status": "PRODUCT BATCH COMPLETE; original #17 gate open",
+  "status": "PRODUCT BATCH WITH NATIVE-AUTHORIZED DRAGON CONTROL; original #17 gate open",
   "self_check": true,
   "independent_review": false,
   "base_commit": "a4ac11ca9813d6ba8327c658e8f793673755dc27",
@@ -41,6 +41,19 @@
         "Dragon spells cost {1} less generic",
         "does not reduce Goblin spells"
       ]
+    },
+    {
+      "name": "Volcanic Dragon",
+      "set": "cmr",
+      "collector_number": "207",
+      "scryfall_id": "46419d29-21a1-4753-a2f0-1d0d996ec54e",
+      "retrieved_at_utc": "2026-10-29T09:54:11Z",
+      "printings_checked": 12,
+      "scope": "native-authorized out-of-list positive control; entire text Flying, haste",
+      "implemented": [
+        "flying",
+        "haste"
+      ]
     }
   ],
   "shared_machinery": [
@@ -52,7 +65,7 @@
     "no-abilities predicate shares effective subtype/creature queries for granted haste/mountainwalk"
   ],
   "counts": {
-    "catalog": 171,
+    "catalog": 172,
     "union": 459,
     "supported_union": 158,
     "missing_union": 301,
@@ -60,7 +73,7 @@
     "certified_lists": "2 of 8"
   },
   "tests": {
-    "issue17_slice63": "8 passed",
+    "issue17_slice63": "10 passed",
     "core_lib": "passed",
     "card_printings": "22 passed",
     "catalog_pool": "5 passed",
@@ -68,11 +81,14 @@
     "slice15_corpus": "2 passed",
     "replay_digest": "6 passed",
     "import_planned": "3 passed",
-    "import_analyzer": "1 passed"
+    "import_analyzer": "1 passed",
+    "issue17_slice62": "7 passed",
+    "issue17_slice53_ruxa": "passed",
+    "issue17_slice23": "passed"
   },
   "gates": {
     "script": "evidence/issue17/slice63/gates.sh",
-    "log": "evidence/issue17/slice63/final-native/gates.log",
+    "log": "evidence/issue17/slice63/repair-final-native/gates.log",
     "aggregate_failure_propagates": true,
     "lib": 0,
     "slice63": 0,
@@ -83,40 +99,42 @@
     "fmt": 0,
     "clippy": 0,
     "release": 0,
-    "aggregate": 0
+    "aggregate": 0,
+    "historical_pre_repair": "evidence/issue17/slice63/final-native/ (c58213a preserved); repair receipts in repair-final-native"
   },
   "journey": {
-    "path": "evidence/issue17/slice63/final-native/demo-journey.json",
+    "path": "evidence/issue17/slice63/repair-final-native/demo-journey.json",
     "driver": "evidence/issue17/slice63-journey-driver",
     "driver_label": "projected legal-offer evidence driver; explicitly not product AI, strength or GUI evidence",
     "package": "decks/package-slice63.txt",
     "seats": 4,
     "starting_life": 40,
     "seed": 2323,
-    "steps": 959,
+    "steps": 954,
     "turns": 23,
     "status": "terminal",
     "winner": 3,
-    "digest": "9d9a923865a99af2a6679d391eb6b1d322cd4fd92e5f6461ee96b8d18e2f4a88",
-    "snapshot_sha256": "18fd35fb0e03250d20cc25ee743c24a4d4790a374be431275c34631473d2df33",
+    "digest": "43bbcce4a480a38d810525bf8fa30961616e94c5ee2b1645f7abb231ce448848",
+    "snapshot_sha256": "b2539164ff5335e672549608b0d17a51a714137981ff99eb6819f2d01f68fa6a",
     "casts": {
       "Goblin Warchief": 6,
       "Goblin King": 6,
       "Dragonlord's Servant": 3,
-      "Goblin Instigator": 2,
-      "Beetleback Chief": 1
+      "Volcanic Dragon": 1,
+      "Goblin Instigator": 2
     },
     "attack_declarations": 14,
-    "combat_damage_events": 51,
-    "cli_replay_matches": true
+    "combat_damage_events": 44,
+    "cli_replay_matches": true,
+    "dragon_casts_with_servant": 1
   },
   "limitations": [
-    "Supported pool has no castable Dragon spell; Dragonlord's positive Dragon payment is not exercised end-to-end. Typed static and shared generic-reduction machinery are tested, and the Goblin-negative path is tested.",
-    "None of the three cards is a legal commander, so commander tax is not applicable.",
     "Whole Krenko list remains planned with 43 missing names; this is not 3/8.",
+    "Volcanic Dragon is out-of-list and does not increase desired-union support; it exists as the authorized positive Dragon reducer control.",
     "Focused affected suites only; no unrelated full acceptance matrix.",
     "No product AI/policy/search redesign."
   ],
   "sources": "evidence/issue17/slice63/sources",
-  "fixture": "fixtures/starter-corpus/slice63-sourced.json"
+  "fixture": "fixtures/starter-corpus/slice63-sourced.json",
+  "commander_tax": "Focused real Krenko command-zone test: {2}{R}{R}+{2} tax = {4}{R}{R}, payable {3}{R}{R} with Warchief and refused without it."
 }

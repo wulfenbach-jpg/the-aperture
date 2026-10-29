@@ -603,6 +603,17 @@ const PRINTINGS: &[Printing] = &[
         toughness: Some("3"),
     },
     Printing {
+        name: "Volcanic Dragon",
+        set: "cmr",
+        collector_number: "207",
+        scryfall_uri: "https://scryfall.com/card/cmr/207/volcanic-dragon",
+        printings_checked: 12,
+        retrieved: "2026-10-29",
+        oracle_text: "Flying, haste",
+        power: Some("4"),
+        toughness: Some("4"),
+    },
+    Printing {
         name: "Angrath's Marauders",
         set: "otc",
         collector_number: "153",
@@ -1660,7 +1671,15 @@ fn every_slice62_card_matches_its_recorded_printing_and_keywords() {
                 aperture_core::tokens::keywords(def.id)
                     .contains(&aperture_core::tokens::Keyword::Haste)
             );
-            assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+            if sourced_text(&record, "name") != "Volcanic Dragon" {
+                assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+            } else {
+                assert!(def.has_flying());
+                assert!(
+                    aperture_core::tokens::keywords(def.id)
+                        .contains(&aperture_core::tokens::Keyword::Haste)
+                );
+            }
         } else {
             assert!(keywords.contains(&"Raid"));
             assert!(
@@ -1678,7 +1697,11 @@ fn every_slice62_card_matches_its_recorded_printing_and_keywords() {
 #[test]
 fn every_slice63_card_matches_its_recorded_printing_and_shared_statics() {
     let cards = slice63_cards();
-    assert_eq!(cards.len(), 3, "slice 63 adds three sourced cards");
+    assert_eq!(
+        cards.len(),
+        4,
+        "slice 63 adds three demanded cards plus the authorized Dragon control"
+    );
     for record in cards {
         let name = sourced_text(&record, "name");
         let def = catalog::by_name(name)
@@ -1708,6 +1731,14 @@ fn every_slice63_card_matches_its_recorded_printing_and_shared_statics() {
             record["toughness"].as_str()
         );
         assert_eq!(sourced_text(&record, "legalities_commander"), "legal");
-        assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+        if sourced_text(&record, "name") != "Volcanic Dragon" {
+            assert!(!aperture_core::ability::static_abilities(def.id).is_empty());
+        } else {
+            assert!(def.has_flying());
+            assert!(
+                aperture_core::tokens::keywords(def.id)
+                    .contains(&aperture_core::tokens::Keyword::Haste)
+            );
+        }
     }
 }

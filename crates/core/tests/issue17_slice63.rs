@@ -414,3 +414,167 @@ fn servant_static_is_typed_for_dragons_not_goblins() {
         }
     )));
 }
+
+#[test]
+fn servant_reduces_a_real_dragon_cast_and_stacks_with_servant_controls() {
+    let mut g = fixture(6311)
+        .battlefield(P0, &[CardId::DragonlordsServant])
+        .hand(P0, &[CardId::VolcanicDragon])
+        .library(P0, &[CardId::Mountain; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .mana(P0, red(3, 2))
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let dragon = hand_card(&g, P0, CardId::VolcanicDragon);
+    let log = cast(&mut g, dragon).expect("{4}{R}{R} becomes {3}{R}{R} with one Servant");
+    assert!(log.iter().any(|e| matches!(
+        e,
+        Event::Cast {
+            card: CardId::VolcanicDragon,
+            ..
+        }
+    )));
+    for _ in 0..8 {
+        if g.state.battlefield(P0).iter().any(|o| o.id == dragon) {
+            break;
+        }
+        let p = g.decision_owner().unwrap();
+        submit_ok(&mut g, p, Action::Pass);
+    }
+    let def = g.state.object(dragon).card.def();
+    assert!(def.has_flying());
+    assert!(
+        aperture_core::tokens::keywords(def.id).contains(&aperture_core::tokens::Keyword::Haste)
+    );
+    assert!(
+        g.legal_attackers(P0).contains(&dragon),
+        "haste enables the sick Dragon"
+    );
+
+    let mut control = fixture(6312)
+        .hand(P0, &[CardId::VolcanicDragon])
+        .library(P0, &[CardId::Mountain; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .mana(P0, red(3, 2))
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let dragon = hand_card(&control, P0, CardId::VolcanicDragon);
+    assert!(
+        cast(&mut control, dragon).is_err(),
+        "without Servant the full four generic plus two red is unpaid"
+    );
+
+    let mut stacked = fixture(6313)
+        .battlefield(
+            P0,
+            &[CardId::DragonlordsServant, CardId::DragonlordsServant],
+        )
+        .hand(P0, &[CardId::VolcanicDragon])
+        .library(P0, &[CardId::Mountain; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .mana(P0, red(2, 2))
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let dragon = hand_card(&stacked, P0, CardId::VolcanicDragon);
+    cast(&mut stacked, dragon).expect("two Servants reduce {4}{R}{R} to {2}{R}{R}");
+
+    let mut colored = fixture(6314)
+        .battlefield(P0, &[CardId::DragonlordsServant])
+        .hand(P0, &[CardId::VolcanicDragon])
+        .library(P0, &[CardId::Mountain; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .mana(P0, red(3, 1))
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let dragon = hand_card(&colored, P0, CardId::VolcanicDragon);
+    assert!(
+        cast(&mut colored, dragon).is_err(),
+        "generic reduction never pays a red pip"
+    );
+
+    let mut opponent = fixture(6315)
+        .battlefield(P1, &[CardId::DragonlordsServant])
+        .hand(P0, &[CardId::VolcanicDragon])
+        .library(P0, &[CardId::Mountain; 8])
+        .library(P1, &[CardId::Forest; 8])
+        .mana(P0, red(3, 2))
+        .main(P0, Step::PrecombatMain)
+        .build();
+    let dragon = hand_card(&opponent, P0, CardId::VolcanicDragon);
+    assert!(
+        cast(&mut opponent, dragon).is_err(),
+        "opponent's Servant does not reduce your Dragon"
+    );
+}
+
+fn add_battlefield_object(g: &mut Game, p: PlayerId, card: CardId) -> ObjectId {
+    let id = ObjectId(g.state.next_object);
+    g.state.next_object += 1;
+    g.state.objects.insert(
+        id,
+        aperture_core::state::Object {
+            id,
+            card,
+            owner: p,
+            controller: p,
+            zone: Zone::Battlefield,
+            commander: None,
+            tapped: false,
+            damage: 0,
+            summoning_sick: false,
+            pump_power: 0,
+            pump_toughness: 0,
+            plus_one_counters: 0,
+            counters: aperture_core::counters::Counters::default(),
+            paired_with: None,
+        },
+    );
+    id
+}
+
+#[test]
+fn warchief_reduction_applies_to_krenkos_generic_commander_tax() {
+    let deck = DeckList::parse_practice("A", "40 Mountain\n").unwrap();
+    let mut with = Game::new_commander_combat(
+        6316,
+        &[deck.clone(), deck.clone()],
+        &[(P0, CardId::KrenkoMobBoss), (P1, CardId::KrenkoMobBoss)],
+    )
+    .unwrap();
+    with.state.mulligan = None;
+    with.state.pending = None;
+    with.state.commanders[0].casts_from_command_zone = 1;
+    add_battlefield_object(&mut with, P0, CardId::GoblinWarchief);
+    with.state.players[P0 as usize].mana = red(3, 2);
+    with.state.turn.active = P0;
+    with.state.turn.step = Step::PrecombatMain;
+    with.state.turn.priority = Some(P0);
+    let krenko = with.state.commanders[0].object;
+    let log = cast(&mut with, krenko).expect("tax {4}{R}{R} reduced by Warchief to {3}{R}{R}");
+    assert!(log.iter().any(|e| matches!(
+        e,
+        Event::Cast {
+            card: CardId::KrenkoMobBoss,
+            ..
+        }
+    )));
+
+    let mut without = Game::new_commander_combat(
+        6317,
+        &[deck.clone(), deck.clone()],
+        &[(P0, CardId::KrenkoMobBoss), (P1, CardId::KrenkoMobBoss)],
+    )
+    .unwrap();
+    without.state.mulligan = None;
+    without.state.pending = None;
+    without.state.commanders[0].casts_from_command_zone = 1;
+    without.state.players[P0 as usize].mana = red(3, 2);
+    without.state.turn.active = P0;
+    without.state.turn.step = Step::PrecombatMain;
+    without.state.turn.priority = Some(P0);
+    let krenko = without.state.commanders[0].object;
+    assert!(
+        cast(&mut without, krenko).is_err(),
+        "without Warchief the taxed generic is unpaid"
+    );
+}

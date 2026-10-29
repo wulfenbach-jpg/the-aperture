@@ -244,6 +244,34 @@ macro_rules! card_trample {
 /// A card that prints both vigilance and trample (Rampaging Yao Guai). Two
 /// printed keywords on one card, so a dedicated macro keeps every other macro's
 /// single-keyword defaults honest instead of inventing a flags struct.
+macro_rules! card_flying_haste {
+    (
+        $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
+        type_line: $tl:literal, power: $power:expr, toughness: $toughness:expr,
+        oracle: $oracle:literal, spell: $spell:expr
+    ) => {
+        CardDef {
+            id: CardId::$id,
+            name: $name,
+            cost: $cost,
+            kinds: $kinds,
+            basic_mana: $basic,
+            artifact_mana: None,
+            type_line: $tl,
+            colors: &[],
+            flying: true,
+            defender: false,
+            flash: false,
+            trample: false,
+            islandwalk: false,
+            power: $power,
+            toughness: $toughness,
+            oracle: $oracle,
+            spell: $spell,
+        }
+    };
+}
+
 macro_rules! card_vigilance_trample {
     (
         $id:ident, $name:literal, cost: $cost:expr, kinds: $kinds:expr, basic: $basic:expr,
@@ -306,7 +334,7 @@ macro_rules! card_green {
 }
 
 /// Compiled-in pool; the order matches the catalog documentation.
-pub static CARDS: [CardDef; 171] = [
+pub static CARDS: [CardDef; 172] = [
     card!(
         Island, "Island", cost: None, kinds: LAND, basic: Some(ManaColor::Blue),
         type_line: "Basic Land — Island", power: None, toughness: None,
@@ -710,6 +738,14 @@ pub static CARDS: [CardDef; 171] = [
         DragonlordsServant, "Dragonlord's Servant", cost: Some("{1}{R}"), kinds: CREATURE, basic: None,
         type_line: "Creature — Goblin Shaman", power: Some(1), toughness: Some(3),
         oracle: "Dragon spells you cast cost {1} less to cast.",
+        spell: None
+    ),
+    // Native-authorized real Dragon positive control for the Servant's reducer;
+    // out-of-list, entire text is Flying, haste.
+    card_flying_haste!(
+        VolcanicDragon, "Volcanic Dragon", cost: Some("{4}{R}{R}"), kinds: CREATURE, basic: None,
+        type_line: "Creature — Dragon", power: Some(4), toughness: Some(4),
+        oracle: "Flying, haste",
         spell: None
     ),
     // Issue 17 starter corpus: sourced vanilla green/white creatures. Every

@@ -127,6 +127,46 @@
       ],
       "printings_distinct_oracle_texts": 1,
       "retrieved_at_utc": "2026-10-29T09:40:02Z"
+    },
+    {
+      "name": "Volcanic Dragon",
+      "oracle_id": "994db177-03f5-43dd-bf7b-2994e8d430d3",
+      "scryfall_id": "46419d29-21a1-4753-a2f0-1d0d996ec54e",
+      "set": "cmr",
+      "collector_number": "207",
+      "layout": "normal",
+      "released_at": "2020-11-20",
+      "mana_cost": "{4}{R}{R}",
+      "type_line": "Creature — Dragon",
+      "power": "4",
+      "toughness": "4",
+      "oracle_text": "Flying, haste",
+      "color_identity": [
+        "R"
+      ],
+      "keywords": [
+        "Flying",
+        "Haste"
+      ],
+      "legalities_commander": "legal",
+      "mana_value": 6,
+      "printings_checked": 12,
+      "printings": [
+        "6ed/214",
+        "anb/88",
+        "ath/51",
+        "cmr/207",
+        "m12/158",
+        "m19/167",
+        "m20/336",
+        "mir/201",
+        "plst/M19-167",
+        "plst/M20-336",
+        "por/153",
+        "s99/122"
+      ],
+      "printings_distinct_oracle_texts": 1,
+      "retrieved_at_utc": "2026-10-29T09:54:11Z"
     }
   ]
 }

@@ -39,6 +39,7 @@ fn main() {
     .unwrap();
     let mut baseline = HeuristicPolicy::new();
     let mut steps = 0;
+    let mut dragon_casts_with_servant = 0usize;
 
     // Public-state instrumentation only; never fed to the projected policy.
     while !game.state.is_over() && steps < 20000 {
@@ -118,6 +119,14 @@ fn main() {
                     })
                     .or_else(|| {
                         view.legal.iter().find(|legal| match &legal.action {
+                            Action::CastSpell { card, .. } => view.own_hand.iter().any(|c| {
+                                c.id == *card && c.card == CardId::VolcanicDragon
+                            }),
+                            _ => false,
+                        })
+                    })
+                    .or_else(|| {
+                        view.legal.iter().find(|legal| match &legal.action {
                             Action::CastSpell { card, .. } => view
                                 .own_hand
                                 .iter()
@@ -150,6 +159,18 @@ fn main() {
             }
         });
         let action = demo_action.unwrap_or_else(|| baseline.decide(&view).action);
+        if let Action::CastSpell { card, .. } = &action
+            && view
+                .own_hand
+                .iter()
+                .any(|c| c.id == *card && c.card == CardId::VolcanicDragon)
+            && view
+                .own_battlefield
+                .iter()
+                .any(|c| c.card == CardId::DragonlordsServant)
+        {
+            dragon_casts_with_servant += 1;
+        }
         let revision = game.revision();
         let decision = game.decision();
         let accepted = match game.submit_action(player, action.clone()) {
@@ -202,7 +223,7 @@ fn main() {
         loaded.game, game.state,
         "fresh save preserves the exact state"
     );
-    let out = root.join("evidence/issue17/slice63/final-native");
+    let out = root.join("evidence/issue17/slice63/repair-final-native");
     std::fs::create_dir_all(&out).unwrap();
     std::fs::write(out.join("demo-save.json"), save_text).expect("write save");
 
@@ -236,6 +257,14 @@ fn main() {
         casts.get("Dragonlord's Servant").copied().unwrap_or(0) > 0,
         "Dragonlord's Servant cast"
     );
+    assert!(
+        casts.get("Volcanic Dragon").copied().unwrap_or(0) > 0,
+        "Volcanic Dragon cast"
+    );
+    assert!(
+        dragon_casts_with_servant > 0,
+        "a Dragon cast was offered while its Servant reducer was on the battlefield"
+    );
     let attacks = events
         .iter()
         .filter(|event| matches!(event, Event::AttackersDeclared { .. }))
@@ -262,6 +291,7 @@ fn main() {
         "casts": casts,
         "all_goblin_tokens": goblin_tokens,
         "attack_declarations": attacks,
+        "dragon_casts_with_servant": dragon_casts_with_servant,
         "driver": "projected legal-offer evidence driver; explicitly not product AI",
         "combat_damage_events": combat,
         "static_measurement": "public battlefield after each accepted action; not policy input; repeated observations, not unique events",

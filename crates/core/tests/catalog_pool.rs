@@ -42,6 +42,9 @@ fn rules_text_is_modelled_keywords(card: &CardDef) -> bool {
     if card.has_islandwalk() {
         modelled.push("Islandwalk");
     }
+    if aperture_core::tokens::keywords(card.id).contains(&aperture_core::tokens::Keyword::Haste) {
+        modelled.push("Haste");
+    }
     if modelled.is_empty() {
         return false;
     }
@@ -51,14 +54,20 @@ fn rules_text_is_modelled_keywords(card: &CardDef) -> bool {
         if line.is_empty() {
             continue;
         }
-        let keyword = match line.split_once(" (") {
+        let line = match line.split_once(" (") {
             Some((keyword, reminder)) if reminder.ends_with(')') => keyword,
             _ => line.trim_end_matches('.'),
         };
-        if !modelled.contains(&keyword) {
-            return false;
+        for keyword in line.split(',').map(str::trim) {
+            if keyword.is_empty()
+                || !modelled
+                    .iter()
+                    .any(|modelled| modelled.eq_ignore_ascii_case(keyword))
+            {
+                return false;
+            }
+            saw_keyword = true;
         }
-        saw_keyword = true;
     }
     saw_keyword
 }

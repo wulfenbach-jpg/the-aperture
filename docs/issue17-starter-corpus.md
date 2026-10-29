@@ -46,7 +46,7 @@ basic lands (coordinator evidence
 `evidence/issue17/slice54/corpus-audit.py` + `corpus-audit.log`; earlier audits retained as historical):
 
 * union of all referenced names: **459 unique names**;
-* **158** are in the supported 171-card catalog and **301** are missing. Slice
+* **158** are in the supported 172-card catalog and **301** are missing. Slice
   25 adds `Exuberant Wolfbear` (129→130), slice 26 adds `Ursine Champion`
   (130→131), slice 28 adds `Circle of the Moon Druid` (131→132), slice 29
   adds `Stuffed Bear` (132→133), slice 30 adds `Drover Grizzly` (133→134) and
@@ -338,7 +338,7 @@ plays it well.
 
 ## Phased gaps (why the eight-list gate is open)
 
-1. **Card-support surface.** The implemented pool is 171 cards. Non-vanilla
+1. **Card-support surface.** The implemented pool is 172 cards. Non-vanilla
    archetypes need token creation, activated abilities beyond land mana,
    triggered abilities, keyword semantics, counters as rules objects and
    static/layer effects that this slice does not implement. Those are the
@@ -1336,16 +1336,23 @@ mountainwalk as an ability and preserves non-Goblin/graveyard controls.
 **Dragonlord's Servant** (TDC 210, `{1}{R}`, Goblin Shaman 1/3) prints "Dragon
 spells you cast cost {1} less to cast." It uses the same subtype-reduction
 static with subtype **Dragon**, and tests require that it never reduces Goblin
-spells. The supported pool has no castable Dragon spell, so the positive
-Dragon-payment path is not exercised end-to-end; the typed static and the
-shared reduction machinery are, and this is recorded as a test limitation rather
-than hidden. None of these three cards is a legal commander, so commander tax is
-not applicable to this package.
+spells. Native authorized one out-of-list positive control, **Volcanic Dragon**
+(CMR 207, `{4}{R}{R}`, Dragon 4/4, entire text "Flying, haste"), sourced with
+the same printing sweep and implemented from the shared flying/haste tables.
+Real offered hand→paid stack→resolved tests prove one Servant reduces it to
+`{3}{R}{R}`, two stack to `{2}{R}{R}`, a missing red pip is refused, and an
+opponent's Servant does not reduce it. Volcanic Dragon is not in the desired
+union, so union support stays 158.
 
-**Corpus after this slice.** 171 catalog / 459 union = **158 supported + 301
+Krenko is a legal commander even though these three are not. A focused real
+command-zone test verifies Warchief's generic reduction applies after Krenko's
+`{2}` commander tax: the taxed `{4}{R}{R}` is payable from `{3}{R}{R}` with
+Warchief and refused without it.
+
+**Corpus after this slice.** 172 catalog / 459 union = **158 supported + 301
 missing**, per-list `[55, 0, 51, 43, 0, 52, 52, 53]`, Krenko **43** missing;
 **two of eight** lists certified. This is not a 3/8 claim.
 
 **Evidence.** `crates/core/tests/issue17_slice63.rs`, the printing chain in
 `crates/core/tests/card_printings.rs`, and the 40-card four-seat journey under
-`evidence/issue17/slice63/final-native/` with a separate shipped CLI replay.
+`evidence/issue17/slice63/repair-final-native/` with a separate shipped CLI replay.

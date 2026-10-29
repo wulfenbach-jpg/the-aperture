@@ -1018,6 +1018,7 @@ pub enum CardId {
     GoblinWarchief,
     GoblinKing,
     DragonlordsServant,
+    VolcanicDragon,
     BeetlebackChief,
     GoblinToken,
     AlabornTrooper,

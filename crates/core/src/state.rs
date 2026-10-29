@@ -3690,7 +3690,8 @@ impl GameState {
                             crate::ability::StaticAbility::OtherControlledCreaturesWithAnySubtypeHaveHaste {
                                 subtypes,
                                 ..
-                            } if self.object_is_creature(object)
+                            } if source.controller == object.controller
+                                && self.object_is_creature(object)
                                 && subtypes
                                     .iter()
                                     .any(|subtype| self.object_has_subtype(object, subtype))

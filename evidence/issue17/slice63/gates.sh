@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set +e
-log=evidence/issue17/slice63/final-native/gates.log
+log=evidence/issue17/slice63/repair-final-native/gates.log
 : > "$log"
 fail=0
 run() { name=$1; shift; "$@" >>"$log" 2>&1; code=$?; echo "$name exit=$code" | tee -a "$log"; [ "$code" -eq 0 ] || fail=1; }
 run lib cargo test --locked -q -p aperture-core --lib
+run slice62 cargo test --locked -q -p aperture-core --test issue17_slice62
 run slice63 cargo test --locked -q -p aperture-core --test issue17_slice63
+run ruxa cargo test --locked -q -p aperture-core --test issue17_slice53_ruxa
+run reduction cargo test --locked -q -p aperture-core --test issue17_slice23
 run card_printings cargo test --locked -q -p aperture-core --test card_printings
 run catalog_pool cargo test --locked -q -p aperture-core --test catalog_pool
 run corpus_pins cargo test --locked -q -p aperture-core --test issue17_slice15_corpus --test issue13_commander_combat --test replay_digest
